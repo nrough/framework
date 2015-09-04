@@ -7,94 +7,36 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
           
-    [Serializable]    
-    //TODO single points should also be DendrogramNodes! for simplicity!    
+    [Serializable]        
 
     public class DendrogramNode : IComparable, IComparable<DendrogramNode>
     {
-        private DendrogramNode left;
-        private DendrogramNode right;
-        private DendrogramNode parent;
-        private int nodeId;
-        private int leftInstance;
-        private int rightInstance;        
-        private double leftLength;
-        private double rightLength;
-        private double height;
-
-        public int LeftInstance
-        {
-            get { return this.leftInstance; }
-            set { this.leftInstance = value; }
-        }
-
-        public int RightInstance
-        {
-            get { return this.rightInstance; }
-            set { this.rightInstance = value; }
-        }
-
-        public double LeftLength
-        {
-            get { return this.leftLength; }
-            set { this.leftLength = value; }
-        }
-
-        public double RightLength
-        {
-            get { return this.rightLength; }
-            set { this.rightLength = value; }
-        }
-
-        public DendrogramNode LeftNode
-        {
-            get { return this.left; }
-            set { this.left = value; }
-        }
-
-        public DendrogramNode RightNode
-        {
-            get { return this.right ; }
-            set { this.right = value; }
-        }
-
-        public DendrogramNode Parent
-        {
-            get { return this.parent; }
-            set { this.parent = value; }
-        }
-
-        public int NodeId
-        {
-            get { return this.nodeId; }
-            set { this.nodeId = value; }
-        }
+        public int Id { get; set; }
+        public DendrogramNode LeftNode { get; set; }
+        public DendrogramNode RightNode { get; set; }
+        public DendrogramNode Parent { get; set; }        
+        public double Height { get; set; }
+        public double LeftLength { get; set; }
+        public double RightLength { get; set; }
 
         public virtual bool IsRoot
         {
-            get { return parent == null && (left != null || right != null); }
+            get { return this.Parent == null && (this.LeftNode != null || this.RightNode != null); }
         }
 
         public virtual bool IsLeaf
         {
-            get { return left == null && right == null && parent != null; }
-        }
-
-        public virtual double Height
-        {
-            get { return this.height; }
-            set { this.height = value; }
-        }
+            get { return this.LeftNode == null && this.RightNode == null && this.Parent != null; }
+        }        
 
         public DendrogramNode()
         {
-
         }
 
         public DendrogramNode(int nodeId)
             : this()
         {
-            this.NodeId = nodeId;
+            this.Id = nodeId;
         }
 
         public int CompareTo(object obj)

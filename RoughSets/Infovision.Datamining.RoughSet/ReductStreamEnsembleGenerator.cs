@@ -193,8 +193,16 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
 
             double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
+
+            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
+            for (int i = 0; i < errorVectors.Length; i++)
+            {
+                errors.Add(i, errorVectors[i]);
+            }
+
             this.hCluster = new HierarchicalClustering(distance, linkage);
-            this.hCluster.Compute(errorVectors);
+            this.hCluster.Instances = errors;
+            this.hCluster.Compute();
         }
 
 
@@ -229,6 +237,8 @@ namespace Infovision.Datamining.Roughset
                 errors[i] = recognition(store.GetReduct(i), this.WeightGenerator.Weights);
             return errors;
         }
+
+
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
         {

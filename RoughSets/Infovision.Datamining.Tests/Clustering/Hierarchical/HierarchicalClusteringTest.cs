@@ -6,6 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
+using Infovision.Datamining.Visualization;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
@@ -31,6 +32,18 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             return data;
         }
 
+        public static Dictionary<int, double[]> GetDataAsDict()
+        {
+            Dictionary<int, double[]> result = new Dictionary<int, double[]>();
+            double[][] data = HierarchicalClusteringTest.GetData();
+            for (int i = 0; i < data.Length; i++)
+            {
+                result.Add(i, data[i]);
+            }
+            return result;
+        }
+
+
         private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>[] DistancesAndLinkages =
         {            
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single, 1),
@@ -51,7 +64,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         public void ComputeTest()
         {                                    
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();            
             Assert.IsTrue(true);
         }        
 
@@ -63,16 +77,20 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             int id = t.Item3;            
 
             HierarchicalClustering aggregativeVersion = new HierarchicalClustering(distance, linkage);
-            aggregativeVersion.Compute(HierarchicalClusteringTest.GetData());
-
+            aggregativeVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            aggregativeVersion.Compute();
+            
             HierarchicalClusteringSimple simpleVersion = new HierarchicalClusteringSimple(distance, linkage);
-            simpleVersion.Compute(HierarchicalClusteringTest.GetData());            
+            simpleVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            simpleVersion.Compute();            
 
-            Bitmap bitmap = aggregativeVersion.GetDendrogramAsBitmap(640, 480);
+            DendrogramChart dc1 = new DendrogramChart(aggregativeVersion, 640, 480);
+            Bitmap bitmap = dc1.GetAsBitmap();
             string fileName = String.Format(@"F:\Dendrogram\DndrA_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            bitmap = simpleVersion.GetDendrogramAsBitmap(640, 480);
+            DendrogramChart dc2 = new DendrogramChart(simpleVersion, 640, 480);
+            bitmap = dc2.GetAsBitmap();
             fileName = String.Format(@"F:\Dendrogram\DndrS_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
@@ -94,28 +112,16 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 //Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
                 Assert.AreEqual(simpleLink.Distance, aggregativeLink.Distance, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
             }
-        }
-
-        [Test]
-        public void ComputeLeafNodesTest()
-        {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
-            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodes();
-            Assert.IsTrue(true);
-            foreach (int i in leaves)
-            {
-                Console.Write("{0} ", i);
-            }
-            Console.WriteLine();            
-        }
+        }       
 
         [Test]
         public void ComputeLeafNodesFromTreeTest()
         {
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
-            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
+
+            int[] leaves = hClustering.ComputeLeafNodes();
             Assert.IsTrue(true);
             foreach (int i in leaves)
             {
@@ -138,8 +144,10 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 }
             }
             HierarchicalClustering hClustering = new HierarchicalClustering(matrix, ClusteringLinkage.Single);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
-            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
+
+            int[] leaves = hClustering.ComputeLeafNodes();
             Assert.IsTrue(true);
             foreach (int i in leaves)
             {
@@ -157,12 +165,14 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             int id = t.Item3;
 
             HierarchicalClustering hClustering = new HierarchicalClustering(distance, linkage);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
             
             Console.Write(hClustering.DendrogramLinkCollection.ToString());
             Console.WriteLine();
 
-            Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
+            DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
+            Bitmap bitmap = dc.GetAsBitmap();
             string fileName = String.Format(@"F:\Dendrogram\Dendrogram_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
@@ -172,7 +182,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         public void GetClusterMembershipTest()
         {
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());            
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
+
             int[] membership2 = hClustering.GetClusterMembership(3.6);
             int[] membership = hClustering.GetClusterMembership(4);            
             

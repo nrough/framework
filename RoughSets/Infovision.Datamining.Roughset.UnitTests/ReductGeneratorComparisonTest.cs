@@ -13,6 +13,7 @@ using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Datamining.Experimenter;
 using Infovision.Datamining.Experimenter.Parms;
 using System.Drawing;
+using Infovision.Datamining.Visualization;
 
 
 
@@ -184,7 +185,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
-                Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int)ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
+                DendrogramChart dc = new DendrogramChart(ensembleGenerator.Dendrogram, 640, (int)ensembleGenerator.Dendrogram.Root.Height + 100);
+                Bitmap dendrogram = dc.GetAsBitmap();                
                 dendrogram.Save((string)args["DendrogramBitmapFile"]);
             }
 

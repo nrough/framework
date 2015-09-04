@@ -157,8 +157,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
-                Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int) ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
-                dendrogram.Save((string) args["DendrogramBitmapFile"]);                
+                Bitmap dendrogramLinkCollection = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int) ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
+                dendrogramLinkCollection.Save((string) args["DendrogramBitmapFile"]);                
             }
             */
         }

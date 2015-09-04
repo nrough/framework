@@ -153,12 +153,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i < numberOfPermutations; i++)
                     epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
                 
-                Args args = new Args();                
+                Args args = new Args();
+                args.AddParameter("FactoryKey", "ReductEnsemble");
                 args.AddParameter("DataStore", data);
                 args.AddParameter("PermutationEpsilon", epsilons);
                 args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
-                args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);                
-                args.AddParameter("FactoryKey", "ReductEnsemble");
+                args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);                                
                 args.AddParameter("PermutationCollection", permList);
                 args.AddParameter("WeightGenerator", weightGenerator);
                 args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);                

@@ -21,10 +21,10 @@ namespace Infovision.Datamining.Roughset
         private WeightGenerator weightGenerator;        
         private Func<IReduct, double[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
-        private Func<double[], double[], double> distance;
-        private HierarchicalClustering hCluster;
+        private Func<double[], double[], double> distance;                
+        private HierarchicalClusteringBase hCluster;
         
-        public HierarchicalClustering Dendrogram
+        public HierarchicalClusteringBase Dendrogram
         {
             get { return this.hCluster; }
         }        
@@ -173,10 +173,17 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
 
             double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
+
+            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
+            for (int i = 0; i < errorVectors.Length; i++)
+            {
+                errors.Add(i, errorVectors[i]);
+            }
+                            
             this.hCluster = new HierarchicalClustering(distance, linkage);
-            this.hCluster.Compute(errorVectors);
-        }
-        
+            this.hCluster.Instances = errors;
+            this.hCluster.Compute();
+        }        
 
         public override IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {            
@@ -225,7 +232,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual double GetPartitionQuality(IReduct reduct)
         {
-            //TODO Consider changing to information measue
+            //TODO Consider changing to information measure
             //return this.InformationMeasure.Calc(reduct);
 
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);

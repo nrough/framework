@@ -17,7 +17,7 @@ namespace Infovision.Data
         private long maxValueInternalId;
         private Histogram histogram;
 
-        #region Constuctors
+        #region Constructors
 
         public DataFieldInfo(int attributeId, Type fieldValueType)
         {

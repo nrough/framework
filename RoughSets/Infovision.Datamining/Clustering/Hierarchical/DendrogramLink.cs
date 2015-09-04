@@ -47,7 +47,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public override string ToString()
         {
-            return String.Format("{0} -> d({1};{2}) = {3}", this.id, this.cluster1, this.cluster2, this.distance);
+            return String.Format("{0} -> d({1};{2}) = {3} ", this.id, this.cluster1, this.cluster2, this.distance);
         }
 
         public override int GetHashCode()
@@ -70,7 +70,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return false;            
         }
 
-        #endregion
-        
+        #endregion        
+    }
+
+    public class DendrogramLinkDistAscendingComparer : Comparer<DendrogramLink>
+    {
+        public override int Compare(DendrogramLink left, DendrogramLink right)
+        {
+            return left.Distance.CompareTo(right.Distance);
+        }
+    }
+
+    public class DendrogramLinkDistDescendingComparer : Comparer<DendrogramLink>
+    {
+        public override int Compare(DendrogramLink left, DendrogramLink right)
+        {
+            return left.Distance.CompareTo(right.Distance) * -1;
+        }
     }
 }

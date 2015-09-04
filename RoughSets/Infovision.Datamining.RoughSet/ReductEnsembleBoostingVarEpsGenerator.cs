@@ -135,11 +135,11 @@ namespace Infovision.Datamining.Roughset
 			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
 			this.M0 = this.GetPartitionQuality(emptyReduct);
 
-            if (!args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
-            {
-                int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
-                this.Epsilon = (1.0 / (double)K) * this.Threshold;
-            }
+			if (!args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+			{
+				int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+				this.Epsilon = (1.0 / (double)K) * this.Threshold;
+			}
 		}
 	}
 

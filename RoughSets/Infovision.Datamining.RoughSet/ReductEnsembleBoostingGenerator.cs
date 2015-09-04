@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset
 
 				//clear objects and memory
 				classifier = null;
-				GC.Collect();
+				//GC.Collect();
 				
 				if (error >= this.Threshold)
 				{

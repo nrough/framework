@@ -45,14 +45,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet1.Add("DataStore", data);
             argSet1.Add("NumberOfThreads", 1);
             argSet1.Add("PermutationEpsilon", epsilons);
-            //argSet1.Add("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
-            //argSet1.Add("Distance", SimilarityIndex.ReductSimDelegate(0.5));
-            argSet1.Add("Distance", (Func<double[], double[], double>)Distance.SquaredEuclidean);
+            //argSet1.Add("Distance", Similarity.TverskyDelegate(0.5, 0.5));            
+            //argSet1.Add("Distance", Similarity.ReductSimDelegate(0.5));
+            argSet1.Add("Distance", (Func<double[], double[], double>)Disimilarity.SquaredEuclidean);
             argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
             argSet1.Add("NumberOfClusters", 3);
             argSet1.Add("FactoryKey", "ReductEnsemble");
-            //argSet1.Add("UseErrosAsVectors", true);
-            argSet1.Add("ReverseDistanceFunction", true);
+            //argSet1.Add("UseErrosAsVectors", true);            
             argSet1.Add("PermutationCollection", permList);
             argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
             argSet1.Add("ReductWeightFileName", @"f:\euclidean_reversed.csv");
@@ -60,7 +59,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet1);
 
             Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);
-            argSet2["ReverseDistanceFunction"] = false;
+            argSet2.Add("Distance", (Func<double[], double[], double>)Disimilarity.SquaredEuclidean);
             argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
 
             argsList.Add(argSet2);
@@ -70,7 +69,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         [Test, TestCaseSource("GetGenerateTestArgs")]
         public void GenerateTest(Dictionary<string, object> args)
-        {            
+        {
+
+            Console.WriteLine("{0}", args["Distance"].ToString());
             
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
@@ -112,6 +113,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Dendrogram");
             Console.WriteLine(reductGenerator.Dendrogram);
 
+            /*
             Console.WriteLine("Reduct groups");
             Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)parms.GetParameter("NumberOfClusters"));
             foreach (KeyValuePair<int, List<int>> kvp in membership)
@@ -124,12 +126,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Console.WriteLine(reductGenerator.ReductPool.GetReduct(reductId));
                 }
             }
+            */
 
-
+             
             int k=1;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
-                Console.WriteLine("Reduct Ensemble: {0}", k++);
+                Console.WriteLine("Reduct Group Alias {0}: {0}", k++);
                 Console.WriteLine("==================");
                 
                 foreach (IReduct reduct in reductStore)
@@ -168,20 +171,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Dictionary<string, object> argSet1 = new Dictionary<string, object>();
             argSet1.Add("DataStore", data);
             argSet1.Add("NumberOfThreads", 1);
-            argSet1.Add("PermutationEpsilon", epsilons);            
-            argSet1.Add("Distance", (Func<double[], double[], double>)Distance.SquaredEuclidean);
+            argSet1.Add("PermutationEpsilon", epsilons);
+            argSet1.Add("Distance", (Func<double[], double[], double>)Similarity.SquaredEuclidean);
             argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
             argSet1.Add("NumberOfClusters", 3);
-            argSet1.Add("FactoryKey", "ReductEnsemble");            
-            argSet1.Add("ReverseDistanceFunction", true);
+            argSet1.Add("FactoryKey", "ReductEnsemble");
             argSet1.Add("PermutationCollection", permList);
             argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
             argSet1.Add("ReductWeightFileName", @"f:\euclidean_reversed.csv");
 
             argsList.Add(argSet1);
 
-            Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);
-            argSet2["ReverseDistanceFunction"] = false;
+            Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);            
             argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
 
             //argsList.Add(argSet2);

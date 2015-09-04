@@ -16,8 +16,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     class ReductEnsembleGeneratorTest
     {
-        //Refactor
-        //TODO include algorithm name in Args
+        //Refactor        
         //TODO Replace Args by Dictionary<string, object>
         //TODO Add parameter names as static variables            
         //TODO Make cache keys shorter 
@@ -50,7 +49,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet1.Add("Distance", (Func<double[], double[], double>)Distance.SquaredEuclidean);
             argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
             argSet1.Add("NumberOfClusters", 3);
-            argSet1.Add("GeneratorName", "ReductEnsemble");
+            argSet1.Add("FactoryKey", "ReductEnsemble");
             //argSet1.Add("UseErrosAsVectors", true);
             argSet1.Add("ReverseDistanceFunction", true);
             argSet1.Add("PermutationCollection", permList);
@@ -75,14 +74,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (KeyValuePair<string, object> kvp in args)
             {
                 parms.AddParameter(kvp.Key, kvp.Value);
-            }
-
-            string generatorName = "ReductEnsemble";                       
+            }                                 
                                     
             //TODO Create generator based on parms, not generator name
             //TODO Store args inside generator
             //TODO Generate method without parameters
-            ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms) as ReductEnsembleGenerator;
+            ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
 
             Console.WriteLine("All reducts");            

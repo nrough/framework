@@ -28,18 +28,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args parms = new Args();
             parms.AddParameter("DataStore", dataStoreTrain);
             parms.AddParameter("NumberOfThreads", 1);
+            parms.AddParameter("FactoryKey", "ApproximateReductRelative");
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
             parms.AddParameter("PermutationCollection", permGen.Generate(100));
             
-            reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelative", parms);
+            reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
             parmsMulti.AddParameter("DataStore", dataStoreTrain);
             parmsMulti.AddParameter("NumberOfThreads", InfovisionHelper.NumberOfCores());
             parmsMulti.AddParameter("PermutationCollection", (PermutationCollection)parms.GetParameter("PermutationCollection"));
+            parmsMulti.AddParameter("FactoryKey", "ApproximateReductRelative");
 
-            reductGeneratorMulti = ReductFactory.GetReductGenerator("ApproximateReductRelative", parmsMulti);
+            reductGeneratorMulti = ReductFactory.GetReductGenerator(parmsMulti);
         }
 
         [Test]

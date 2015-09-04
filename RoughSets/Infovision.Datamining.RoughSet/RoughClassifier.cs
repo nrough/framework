@@ -373,9 +373,10 @@ namespace Infovision.Datamining.Roughset
             args.AddParameter("ApproximationRatio", approximationRatio);
             args.AddParameter("NumberOfThreads", 32);
             args.AddParameter("PermutationCollection", permutations);
+            args.AddParameter("FactoryKey", reductFactoryKey);
             //args.AddParameter("USECACHE", null);
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(reductFactoryKey, args);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
             reductGenerator.ApproximationDegree = (double)approximationRatio / (double)100;
             this.reductStore = reductGenerator.Generate(args).First();

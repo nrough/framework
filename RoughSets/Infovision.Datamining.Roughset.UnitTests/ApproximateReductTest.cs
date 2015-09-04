@@ -231,8 +231,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductRelative");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelative", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             for (Int32 epsilon = 0; epsilon < 100; epsilon+= 11)
             {
@@ -277,8 +278,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductPositive", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductPositive");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductPositive", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = reductGenerator.Generate(parms).First();
 
             foreach (Reduct reduct in reductStore)
@@ -300,8 +302,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajority", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductMajority");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductMajority", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = reductGenerator.Generate(parms).First();
 
             foreach (IReduct reduct in reductStore)
@@ -322,8 +325,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductRelative");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelative", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = reductGenerator.Generate(parms).First();
 
             foreach (IReduct reduct in reductStore)

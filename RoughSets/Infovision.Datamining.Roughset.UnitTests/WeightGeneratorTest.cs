@@ -318,18 +318,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
             
             Args args = new Args();
-            args.AddParameter("DataStore", localDataStore);
-            
-            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(reductGeneratorKey1, args).Generate(10);
-            
+            args.AddParameter("DataStore", localDataStore);            
+            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(reductGeneratorKey1, args).Generate(10);            
             args.AddParameter("PermutationCollection", permutationList);
             args.AddParameter("ApproximationRatio", 10);
+            args.AddParameter("FactoryKey", reductGeneratorKey1);
             
-            IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(reductGeneratorKey1, args);
+            IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(args);
             IReductStore reductStore1 = reductGenerator1.Generate(args).First();
+
+            Args args2 = new Args();
+            args2.AddParameter("DataStore", localDataStore);
+            args2.AddParameter("PermutationCollection", permutationList);
+            args2.AddParameter("ApproximationRatio", 10);
+            args2.AddParameter("FactoryKey", reductGeneratorKey2);
             
-            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(reductGeneratorKey2, args);
-            IReductStore reductStore2 = reductGenerator2.Generate(args).First();
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            IReductStore reductStore2 = reductGenerator2.Generate(args2).First();
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 

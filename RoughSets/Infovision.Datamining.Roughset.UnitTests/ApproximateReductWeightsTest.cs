@@ -224,8 +224,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajorityWeights", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductMajorityWeights", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             for (int epsilon = 0; epsilon < 100; epsilon+= 11)
             {
@@ -274,8 +275,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajorityWeights", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductMajorityWeights", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = reductGenerator.Generate(parms).First();
 
             foreach (IReduct reduct in reductStore)
@@ -297,8 +299,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeights", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter("FactoryKey", "ApproximateReductRelativeWeights");
 
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelativeWeights", parms);
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = reductGenerator.Generate(parms).First();
 
             foreach (IReduct reduct in reductStore)

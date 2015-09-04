@@ -25,10 +25,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CreateBireductTest()
         {
-            Args args = new Args(new String[] { "DataStore", "NumberOfPermutations" }, 
-                                  new Object[] { dataStoreTrain, 100});
+            Args args = new Args(new String[] { "FactoryKey", "DataStore", "NumberOfPermutations" }, 
+                                  new Object[] { "Bireduct", dataStoreTrain, 100});
 
-            BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator("Bireduct", args);
+            BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator(args);
             IReductStore reductStore = bireductGenerator.Generate(args).First();                                                 
             Assert.AreEqual(true, true);
         }
@@ -54,8 +54,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TestFactoryRegister()
         {
             ReductFactory.Instance.RegisterFactory("Infovision.TestAssembly.TestReductFactory");
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IReductGenerator factory = ReductFactory.GetReductGenerator("TestReduct", parms);
+            Args parms = new Args(new String[] { "FactoryKey", "DataStore" }, new Object[] { "TestReduct", dataStoreTrain });
+            IReductGenerator factory = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = factory.Generate(null).First();
 
             Assert.NotNull(reductStore);

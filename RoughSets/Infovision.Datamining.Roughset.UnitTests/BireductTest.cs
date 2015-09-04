@@ -47,10 +47,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void CheckBireductUnique(String reductGeneratorKey)
         {
-            Args parms = new Args(new String[] { "DataStore", "NumberOfPermutations" }, 
-                                  new Object[] { dataStoreTrain, 100 });
+            Args parms = new Args(new String[] { "FactoryKey", "DataStore", "NumberOfPermutations" },
+                                  new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
             
-            IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(reductGeneratorKey, parms);
+            IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
             IReductStore reductStore = bireductGenerator.Generate(parms).First();
 
             foreach (IReduct reduct in reductStore)

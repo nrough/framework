@@ -157,5 +157,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
-    }      
+    }
+    
+  
 }

@@ -95,6 +95,24 @@ namespace Infovision.Datamining.Roughset
             return reduct;
         }
 
+        public virtual IReduct CalculateReduct(int[] attributes)
+        {
+            //IReduct reduct = this.CreateReductObject(new int[] { },
+            //                                         this.Epsilon,
+            //                                         this.GetNextReductId().ToString());
+
+            int[] localAttr = (int[]) attributes.Clone();
+            IReduct reduct = this.CreateReductObject(localAttr,
+                                                     this.Epsilon,
+                                                     this.GetNextReductId().ToString());
+
+
+            //this.Reach(reduct, attributes, null, false);
+            this.ReduceForward(reduct, attributes, null, false);
+
+            return reduct;
+        }
+
         protected virtual void Reach(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
         {
             for (int i = 0; i < permutation.Length; i++)
@@ -122,6 +140,21 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
             }            
+        }
+
+        protected virtual void ReduceForward(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
+        {
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                int attributeId = permutation[i];
+                if (reduct.TryRemoveAttribute(attributeId))
+                {
+                    if (!this.IsReduct(reduct, reductStore, useCache))
+                    {
+                        reduct.AddAttribute(attributeId);
+                    }
+                }
+            }
         }
 
         public virtual bool CheckIsReduct(IReduct reduct)
@@ -152,7 +185,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             bool isReduct = false;
-            if (reductStore.IsSuperSet(reduct))
+            if (reductStore != null && reductStore.IsSuperSet(reduct))
                 isReduct = true;
             else
                 isReduct = this.CheckIsReduct(reduct);

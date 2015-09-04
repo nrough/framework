@@ -247,7 +247,7 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return String.Format("[{0}] {1} ({2})", this.Id, this.attributeSet.ToString(), this.Epsilon);
+            return String.Format("[Id:{0}] {1} (eps:{2})", this.Id, this.attributeSet.Count > 1 ? this.attributeSet.ToString() : "empty", this.Epsilon);
         }
 
         public override int GetHashCode()

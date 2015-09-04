@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
             return r;
-        }       
+        }
 
         #endregion
     }

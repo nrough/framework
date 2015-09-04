@@ -400,6 +400,15 @@ namespace Infovision.Datamining.Roughset
             return stringBuilder.ToString();
         }
 
+        public string ToString2()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendFormat("{0} ", this.Instance);
+            foreach(int decision in this.DecisionSet)
+                stringBuilder.AppendFormat("d={0} ({1}) ", decision, this.GetDecisionWeigth((long)decision));
+            return stringBuilder.ToString();
+        }
+
         #endregion
 
         #endregion

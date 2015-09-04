@@ -74,12 +74,10 @@ namespace Infovision.Datamining.Roughset
 
         public static EquivalenceClassCollection Create(DataStore dataStore, int[] attributes, double epsilon, double[] weights = null)
         {
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore);
-            eqClassCollection.attributes = attributes;
-            eqClassCollection.InitPartitions();
- 
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
                 throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of recors in dataStore");
+
+            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(attributes);
 
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
@@ -267,6 +265,17 @@ namespace Infovision.Datamining.Roughset
                 stringBuilder.AppendLine(kvp.Value.ToString());
             }
 
+            return stringBuilder.ToString();
+        }
+
+        public string ToString2()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < this.Attributes.Length; i++ )
+                stringBuilder.AppendFormat("a{0} ", this.Attributes[i]);
+            stringBuilder.Append(Environment.NewLine);
+            foreach (KeyValuePair<AttributeValueVector, EquivalenceClass> kvp in this.partitions)
+                stringBuilder.AppendLine(kvp.Value.ToString2());
             return stringBuilder.ToString();
         }
 

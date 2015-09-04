@@ -397,15 +397,22 @@ namespace Infovision.Datamining.Roughset
         {
             if (attributes.Length < 1)
                 throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");
-            
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(this.DataStore, attributes, this.Epsilon, this.WeightGenerator.Weights);
+
+            //Console.WriteLine("Initial decision destibution");
+            //Console.WriteLine("{0}", eqClasses.ToString2());
+
+            //Console.WriteLine("Trying to remove minority decisions");
             foreach (EquivalenceClass eq in eqClasses)
                 if (eq.DecisionSet.Count > 1)
                     eq.KeepMajorDecisions(this.Epsilon);
-
+            //Console.WriteLine("{0}", eqClasses.ToString2());
+ 
             for (int i = 0; i < attributes.Length; i++)
             {
+                //Console.WriteLine("===== Trying to remove attribute {0} ======", attributes[i]);
                 eqClasses = this.Reduce(eqClasses, attributes[i], this.Epsilon, this.DataStore);
+                //Console.WriteLine("{0}", eqClasses.ToString2());
             }
 
             return (ReductGeneralizedMajorityDecision)this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());            
@@ -435,11 +442,11 @@ namespace Infovision.Datamining.Roughset
                 //AttributeValueVector values = eq.Instance.RemoveAttribute(attributeIdToReduce);
                 AttributeValueVector values = eq.Instance.RemoveAttributeAtPosition(attributeIdxToRemove);
 
-                EquivalenceClass tmpClass = new EquivalenceClass(values, dataStore, true);                                                
+                EquivalenceClass tmpClass = new EquivalenceClass(values, dataStore, true);
                 EquivalenceClass eqNew = null;
                 if (eqClassCollection.Partitions.TryGetValue(values, out eqNew))
                 {
-                    tmpClass.DecisionSet = tmpClass.DecisionSet.Intersection(eq.DecisionSet);
+                    tmpClass.DecisionSet = eqNew.DecisionSet.Intersection(eq.DecisionSet);
                     foreach (long decision in tmpClass.DecisionSet)
                     {
                         tmpClass.AddDecision(decision, eqNew.GetDecisionWeigth(decision) + eq.GetDecisionWeigth(decision));

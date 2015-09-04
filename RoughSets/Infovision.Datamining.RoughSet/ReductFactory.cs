@@ -311,21 +311,7 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
             return new ReductGeneratorWeightsMajority(dataStore);
         }
-    }
-
-    public class ApproximateReductMajorityWeightEnsembleFactory : ApproximateReductRelativeWeightsFactory
-    {
-        public override string FactoryKey
-        {
-            get { return "ApproximateReductMajorityWeightsEnsemble"; }
-        }
-
-        public override IReductGenerator GetReductGenerator(Args args)
-        {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorWeightsEnsembleMajority(dataStore);
-        }
-    }
+    }    
 
     public class ApproximateReductRelativeFactory : ApproximateReductFactory
     {
@@ -353,21 +339,7 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
             return new ReductGeneratorWeightsRelative(dataStore);
         }
-    }
-
-    public class ApproximateReductRelativeWeightEnsembleFactory : ApproximateReductRelativeWeightsFactory
-    {
-        public override string FactoryKey
-        {
-            get { return "ApproximateReductRelativeWeightsEnsemble"; }
-        }
-
-        public override IReductGenerator GetReductGenerator(Args args)
-        {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorWeightsEnsembleRelative(dataStore);
-        }
-    }
+    }    
 
     public class ApproximateReductPositiveFactory : ApproximateReductFactory
     {
@@ -441,7 +413,7 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
-    public class GammaBireductFactory : BireductFactory
+    public class BireductGammaFactory : BireductFactory
     {
         public override string FactoryKey
         {
@@ -451,7 +423,7 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new GammaBireductGenerator(dataStore);
+            return new BireductGammaGenerator(dataStore);
         }
     }   
 

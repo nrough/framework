@@ -15,28 +15,7 @@ namespace Infovision.Datamining.Roughset
         protected object syncRoot = new object();
 
         #endregion
-
-        #region Constructors
-
-        private ReductGenerator()
-        {
-        }
         
-        protected ReductGenerator(DataStore dataStore)
-        {
-            this.dataStore = dataStore;
-
-            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
-            this.fieldGroups = new int[fieldIds.Length][];
-            for (int i = 0; i < fieldIds.Length; i++)
-            {
-                this.fieldGroups[i] = new int[1];
-                this.fieldGroups[i][0] = fieldIds[i];
-            }
-        }
-
-        #endregion 
-
         #region Properties
 
         public DataStore DataStore
@@ -68,9 +47,30 @@ namespace Infovision.Datamining.Roughset
                     Buffer.BlockCopy(value[i], 0, this.fieldGroups[i], 0, value[i].Length * sizeof(int));
                 }   
             }
-        }
+        }        
 
         #endregion
+
+        #region Constructors
+
+        private ReductGenerator()
+        {
+        }
+
+        protected ReductGenerator(DataStore dataStore)
+        {
+            this.dataStore = dataStore;
+
+            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            this.fieldGroups = new int[fieldIds.Length][];
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                this.fieldGroups[i] = new int[1];
+                this.fieldGroups[i][0] = fieldIds[i];
+            }
+        }
+
+        #endregion 
 
         #region Methods
         

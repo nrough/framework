@@ -65,9 +65,9 @@ namespace Infovision.Math
         #endregion
     }
 
-    public class MatrixTupleValueComparer : IComparer<MatrixTuple>
+    public class MatrixTupleValueComparer : Comparer<MatrixTuple>
     {
-        public int Compare(MatrixTuple t1, MatrixTuple t2)
+        public override int Compare(MatrixTuple t1, MatrixTuple t2)
         {
             if (t1.Value < t2.Value)
                 return -1;

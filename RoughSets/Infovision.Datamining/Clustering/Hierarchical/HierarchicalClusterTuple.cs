@@ -116,9 +116,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         #endregion
     }
 
-    internal class MHierarchicalClusterTupleValueComparer : IComparer<HierarchicalClusterTuple>
+    internal class MHierarchicalClusterTupleValueComparer : Comparer<HierarchicalClusterTuple>
     {
-        public int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
+        public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
         {
             if (t1.Value < t2.Value)
                 return -1;

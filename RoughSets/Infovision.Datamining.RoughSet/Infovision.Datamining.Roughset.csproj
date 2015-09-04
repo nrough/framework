@@ -96,7 +96,6 @@
     <Compile Include="ReductEnsembleDistanceHelper.cs" />
     <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />
-    <Compile Include="ReductGeneratorWeightsEnsemble.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />
     <Compile Include="EnumHelper.cs" />

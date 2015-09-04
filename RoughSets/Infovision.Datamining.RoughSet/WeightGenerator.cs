@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
 
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                this.Weights[i] = 1.0 / (double)this.DataStore.NumberOfRecords;
+                this.Weights[i] = 1.0 / this.DataStore.NumberOfRecords;
             }
         }
     }
@@ -118,8 +118,8 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
                 weight = 1.0
-                    / ((double)this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
-                                                * (double)this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+                    / (this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
+                        * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
 
                 this.Weights[i] = weight;
             }
@@ -143,12 +143,12 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override void Generate()
-        {            
+        {
+            this.CalcFlag = true;
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                this.Weights[i] = 1.0 / (double)this.DataStore.NumberOfRecords;
-            }
-            this.CalcFlag = true;
+                this.Weights[i] = value;
+            }            
         }
     }
 }

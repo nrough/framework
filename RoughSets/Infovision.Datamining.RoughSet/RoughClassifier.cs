@@ -353,7 +353,7 @@ namespace Infovision.Datamining.Roughset
         public IReductStore ReductStore
         {
             get { return this.reductStore; }
-            private set { this.reductStore = value; }
+            set { this.reductStore = value; }
                         
         } 
         #endregion
@@ -393,6 +393,11 @@ namespace Infovision.Datamining.Roughset
             PermutationCollection permutations = permGen.Generate(numberOfPermutations);
             
             Train(trainingData, reductFactoryKey, approximationRatio, permutations);
+        }
+
+        public void Train(DataStore trainingtData, IReductStore reductStore)
+        {
+            this.reductStore = reductStore;
         }
 
         public IReductStore Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStore reductStore)

@@ -271,9 +271,9 @@ namespace Infovision.Datamining.Roughset
         #endregion
     }
 
-    public class ReductNumericalEpsilonComparer : IComparer<IReduct>
+    public class ReductNumericalEpsilonComparer : Comparer<IReduct>
     {
-        public int Compare(IReduct x, IReduct y)
+        public override int Compare(IReduct x, IReduct y)
         {
             if (x == null)
             {

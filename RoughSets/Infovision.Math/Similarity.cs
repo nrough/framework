@@ -198,8 +198,8 @@ namespace Infovision.Math
             for (int i = 0; i < v1.Length; i++)
             {
                 dot += v1[i] * v2[i];
-                d1 += System.Math.Pow(v1[i], 2.0);
-                d2 += System.Math.Pow(v2[i], 2.0);
+                d1 += v1[i] * v1[i];
+                d2 += v2[i] * v2[i];
             }
             return dot / (System.Math.Sqrt(d1) * System.Math.Sqrt(d2));            
         }
@@ -391,7 +391,8 @@ namespace Infovision.Math
         {
             double sum = 0;
             for (int i = 0; i < v1.Length; i++)
-                sum += System.Math.Abs(v1[i] - v2[i]) / (System.Math.Abs(v1[i]) + System.Math.Abs(v2[i]));
+                if ((System.Math.Abs(v1[i]) + System.Math.Abs(v2[i])) > 0.0)
+                    sum += System.Math.Abs(v1[i] - v2[i]) / (System.Math.Abs(v1[i]) + System.Math.Abs(v2[i]));
             return sum;
         }
 

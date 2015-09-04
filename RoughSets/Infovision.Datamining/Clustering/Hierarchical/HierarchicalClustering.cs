@@ -483,6 +483,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Color foreground = Color.Black;            
 
             int xMajorScalePx = (int) System.Math.Floor((double)dendrogramWidth / this.numberOfInstances);
+            
             //TODO scale if MaxHeight < 1
             double maxHeight = this.DendrogramLinkCollection.MaxHeight;
             double heightScale = 1;
@@ -493,6 +494,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     maxHeight *= 10;
                     heightScale *= 10;
                 }
+            }
+
+            if (dendrogramHeight < maxHeight)
+            {
+
             }
 
             int yMajorScalePx = (int)System.Math.Floor((double)(dendrogramHeight - 40) / (maxHeight + 1));                        

@@ -68,9 +68,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="RDotNet">
+      <HintPath>..\packages\R.NET.Community.1.5.16\lib\net40\RDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="RDotNet.NativeLibrary">
+      <HintPath>..\packages\R.NET.Community.1.5.16\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -79,11 +86,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppriximateReductWeightRelativeEnsembleTest.cs" />
     <Compile Include="BireductTest.cs" />
     <Compile Include="ApproximateReductWeightsTest.cs" />
     <Compile Include="MatrixTest.cs" />
-    <Compile Include="ParameterListTest.cs" />
     <Compile Include="PermutationTest.cs" />
     <Compile Include="ApproximateReductTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,10 +97,16 @@
     <Compile Include="ReductDiscernibilityMatrixTest.cs" />
     <Compile Include="ReductEnsembleGeneratorTest.cs" />
     <Compile Include="ReductFactoryTest.cs" />
+    <Compile Include="ReductGeneratorComparisonTest.cs" />
     <Compile Include="ReductGeneratorTest.cs" />
+    <Compile Include="RNetTest.cs" />
     <Compile Include="WeightGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">
+      <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
+      <Name>Infovision.Datamining.Experimenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj">
       <Project>{2D23E210-FFB7-46EF-AD27-18B5DE007EE3}</Project>
       <Name>Infovision.Datamining.Roughset</Name>
@@ -115,10 +126,6 @@
     <ProjectReference Include="..\Infovision.TestAssembly\Infovision.TestAssembly.csproj">
       <Project>{9DDFE474-0A4C-492C-82B2-C0A850217774}</Project>
       <Name>Infovision.TestAssembly</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infovision.Test\Infovision.Test.csproj">
-      <Project>{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}</Project>
-      <Name>Infovision.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>

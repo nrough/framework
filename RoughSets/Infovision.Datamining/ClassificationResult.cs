@@ -362,6 +362,40 @@ namespace Infovision.Datamining
             return stringBuilder.ToString();
         }
 
+        public string ToString2()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("Number of classified: ");
+            stringBuilder.Digits(this.numberOfClassified);
+            stringBuilder.Append('\n');
+            
+            stringBuilder.Append("Number of misclassified: ");
+            stringBuilder.Digits(this.numberOfMisclassified);
+            stringBuilder.Append('\n');
+
+            stringBuilder.Append("Number of unclassified: ");
+            stringBuilder.Digits(this.numberOfUnclassified);
+            stringBuilder.Append('\n');
+
+            stringBuilder.Append("Accuracy: ");
+            stringBuilder.AppendFormat("{0:0.0000}", this.Accuracy);
+            stringBuilder.Append('\n');
+
+            stringBuilder.Append("Balanced Accuracy: ");
+            stringBuilder.AppendFormat("{0:0.0000}", this.BalancedAccuracy);
+            stringBuilder.Append('\n');
+
+            stringBuilder.Append("Confidence: ");
+            stringBuilder.AppendFormat("{0:0.0000}", this.Confidence);
+            stringBuilder.Append('\n');
+
+            stringBuilder.Append("Coverage: ");
+            stringBuilder.AppendFormat("{0:0.0000}", this.Coverage);
+            stringBuilder.Append('\n');            
+
+            return stringBuilder.ToString();
+        }
+
         #endregion
     }
 }

@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 5;
+            int numberOfPermutations = 20;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
@@ -55,31 +55,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     return result;
                 };
+
+            Dictionary<string, object> argSet;
+
+            argSet = new Dictionary<string, object>();
+            argSet.Add("DataStore", data);
+            argSet.Add("NumberOfThreads", 1);
+            argSet.Add("PermutationEpsilon", epsilons);            
+            argSet.Add("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
+            argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
+            argSet.Add("NumberOfClusters", 3);
+            argSet.Add("FactoryKey", "ReductEnsemble");                
+            argSet.Add("PermutationCollection", permList);
+            argSet.Add("DendrogramBitmapFile", @"euclidean");
+            argSet.Add("ReductWeightFileName", @"euclidean");
+            argSet.Add("WeightGenerator", weightGenerator);
+            argSet.Add("ReconWeights", reconWeights);
+            argsList.Add(argSet);
                         
-            
-            Dictionary<string, object> argSet1 = new Dictionary<string, object>();
-            argSet1.Add("DataStore", data);
-            argSet1.Add("NumberOfThreads", 1);
-            argSet1.Add("PermutationEpsilon", epsilons);            
-            argSet1.Add("Distance", (Func<double[], double[], double>)Similarity.SquaredEuclidean);
-            argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
-            argSet1.Add("NumberOfClusters", 3);
-            argSet1.Add("FactoryKey", "ReductEnsemble");                
-            argSet1.Add("PermutationCollection", permList);
-            argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
-            argSet1.Add("ReductWeightFileName", @"f:\euclidean_reversed.csv");
-            argSet1.Add("WeightGenerator", weightGenerator);
-            argSet1.Add("ReconWeights", reconWeights);
-
-            argsList.Add(argSet1);
-
-            Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);
-            argSet2["Distance"] = (Func<double[], double[], double>) Disimilarity.SquaredEuclidean;
-            argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
-            argSet1["ReductWeightFileName"] = @"f:\euclidean_standard.csv";
-
-            argsList.Add(argSet2);
-
             return argsList;
         }
 
@@ -149,7 +142,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int k=1;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
-                Console.WriteLine("Reduct Group Alias {0}: {0}", k++);
+                Console.WriteLine("Reduct Group Alias {0}:", k++);
                 Console.WriteLine("======================");
                 
                 foreach (IReduct reduct in reductStore)
@@ -158,12 +151,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
             
+            /*
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
-                Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
+                Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int) ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
                 dendrogram.Save((string) args["DendrogramBitmapFile"]);                
-            }            
+            }
+            */
         }
      
 

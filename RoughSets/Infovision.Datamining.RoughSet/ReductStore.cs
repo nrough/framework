@@ -193,7 +193,7 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        internal virtual void DoAddReduct(IReduct reduct)
+        public virtual void DoAddReduct(IReduct reduct)
         {
             reductSet.Add(reduct);
         }

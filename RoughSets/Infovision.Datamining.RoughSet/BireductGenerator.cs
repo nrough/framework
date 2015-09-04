@@ -126,11 +126,11 @@ namespace Infovision.Datamining.Roughset
     }
 
     [Serializable]
-    public class GammaBireductGenerator : BireductGenerator
+    public class BireductGammaGenerator : BireductGenerator
     {
         #region Constructors
 
-        public GammaBireductGenerator(DataStore dataStore)
+        public BireductGammaGenerator(DataStore dataStore)
             : base(dataStore)
         {
         }

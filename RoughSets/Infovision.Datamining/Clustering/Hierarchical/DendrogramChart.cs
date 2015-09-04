@@ -190,7 +190,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 {
                     int id = (this.HCluster.Root.LeftNode != null)
                            ? this.HCluster.Root.LeftNode.Id
-                           : this.HCluster.Root.RightNode.Id;
+                           : this.HCluster.Root.Id;
 
                     linkChartData = new DendrogramChartNode(id);
 

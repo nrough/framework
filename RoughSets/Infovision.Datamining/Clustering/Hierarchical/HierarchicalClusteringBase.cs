@@ -307,25 +307,32 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             queue.Enqueue(this.Root);
             double currentHeight = this.Root.Height;
             DendrogramNode node = null;
+            List<DendrogramNode> result = new List<DendrogramNode>();
             while (queue.Count > 0 && currentHeight > threshold)
             {
                 node = queue.Dequeue();
-                double heightLeft = 0.0, heightRight = 0.0;
-                if (node.LeftNode != null)
+                if (node.IsLeaf)
                 {
-                    queue.Enqueue(node.LeftNode);
-                    heightLeft = node.LeftNode.Height;
+                    result.Add(node);                    
                 }
-                if (node.RightNode != null)
+                else
                 {
-                    queue.Enqueue(node.RightNode);
-                    heightRight = node.RightNode.Height;
-                }
+                    double heightLeft = 0.0, heightRight = 0.0;
+                    if (node.LeftNode != null)
+                    {
+                        queue.Enqueue(node.LeftNode);
+                        heightLeft = node.LeftNode.Height;
+                    }
+                    if (node.RightNode != null)
+                    {
+                        queue.Enqueue(node.RightNode);
+                        heightRight = node.RightNode.Height;
+                    }
 
-                currentHeight = System.Math.Max(heightLeft, heightRight);                                    
+                    currentHeight = System.Math.Max(heightLeft, heightRight);
+                }
             }           
-
-            List<DendrogramNode> result = new List<DendrogramNode>(queue.Count);
+            
             while (queue.Count > 0)
                 result.Add(queue.Dequeue());
             return result;

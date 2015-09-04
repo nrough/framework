@@ -7,6 +7,7 @@ using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    [Serializable]
     public class HierarchicalClusteringIncremental : HierarchicalClusteringBase
     {        
         private Dictionary<int, DendrogramNode> nodes;
@@ -63,7 +64,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
         }
 
-        public void AddToCluster(int id, double[] instance)
+        public virtual void AddToCluster(int id, double[] instance)
         {            
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
@@ -78,11 +79,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         HierarchicalClustering initialClustering = new HierarchicalClustering(this.Distance, this.Linkage);
                         initialClustering.DistanceMatrix = this.DistanceMatrix;
                         initialClustering.Instances = this.Instances;
-                        initialClustering.Compute();
-
+                        initialClustering.Compute();                        
+                        
                         this.Root = initialClustering.Root;
                         this.NextClusterId = initialClustering.NextClusterId;
                         this.Nodes = initialClustering.Nodes;
+                                                
                         return;
                     }
                     else

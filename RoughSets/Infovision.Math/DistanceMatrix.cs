@@ -141,7 +141,12 @@ namespace Infovision.Math
         public void Add(MatrixKey key, double distance)
         {            
             matrix.Add(key, distance);                       
-        }        
+        }
+
+        public void Remove(MatrixKey key)
+        {
+            matrix.Remove(key);
+        }
 
         public bool ContainsKey(MatrixKey key)
         {

@@ -67,7 +67,37 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();            
             Assert.IsTrue(true);
-        }        
+        }
+
+        [Test]
+        public void CalcLCATest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
+
+            DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
+            Bitmap bitmap = dc.GetAsBitmap();
+            string fileName = @"F:\Dendrogram\Dendrogram_LCA.bmp";
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            
+            hClustering.CalcLCA();
+            hClustering.CalcNode2RootDistances();
+
+            Assert.AreEqual(8, hClustering.GetLeafDistance(1, 5));
+            Assert.AreEqual(2, hClustering.GetLeafDistance(5, 9));
+            Assert.AreEqual(2, hClustering.GetLeafDistance(9, 5));
+            //Assert.AreEqual(1, hClustering.GetLeafDistance(5, -1));
+            //Assert.AreEqual(1, hClustering.GetLeafDistance(-1, 5));
+            Assert.AreEqual(4, hClustering.GetLeafDistance(4, 3));
+            Assert.AreEqual(4, hClustering.GetLeafDistance(3, 4));
+            //Assert.AreEqual(5, hClustering.GetLeafDistance(-9, 6));
+            //Assert.AreEqual(5, hClustering.GetLeafDistance(6, -9));
+            Assert.AreEqual(7, hClustering.GetLeafDistance(7, 5));
+            Assert.AreEqual(7, hClustering.GetLeafDistance(5, 7));
+
+            Assert.IsTrue(true);
+        }
 
         [Test, TestCaseSource("DistancesAndLinkages")]
         public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int> t)

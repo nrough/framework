@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
-{
-          
+{          
     [Serializable]        
-
     public class DendrogramNode : IComparable, IComparable<DendrogramNode>
     {
         public int Id { get; set; }
@@ -18,6 +16,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public double Height { get; set; }
         public double LeftLength { get; set; }
         public double RightLength { get; set; }
+        public int Level { get; set; }
 
         public virtual bool IsRoot
         {
@@ -27,7 +26,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public virtual bool IsLeaf
         {
             get { return this.LeftNode == null && this.RightNode == null && this.Parent != null; }
-        }        
+        } 
 
         public DendrogramNode()
         {
@@ -37,6 +36,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             : this()
         {
             this.Id = nodeId;
+        }
+
+        /// <summary>
+        /// Returns number of levels to reach root node
+        /// </summary>
+        /// <returns></returns>
+        public int GetLevel()
+        {
+            DendrogramNode node = this;
+            int level = 0;
+            while (node.Parent != null)
+            {
+                level++;
+                node = node.Parent;
+            }
+            return level;
         }
 
         public int CompareTo(object obj)

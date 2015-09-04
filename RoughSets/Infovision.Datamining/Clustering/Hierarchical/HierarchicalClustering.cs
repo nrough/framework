@@ -266,7 +266,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 c2 = x;
             }            
 
-            dendrogramLinkCollection[nextLinkagesIdx++] = new DendrogramLink(this.NextClusterId, c1, c2, distance);            
+            dendrogramLinkCollection[nextLinkagesIdx++] = new DendrogramLink(this.NextClusterId, c1, c2, distance);
 
             DendrogramNode leftNode = nodes[c1];
             DendrogramNode rightNode = nodes[c2];

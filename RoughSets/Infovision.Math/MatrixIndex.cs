@@ -5,27 +5,21 @@ using System.Text;
 
 namespace Infovision.Math
 {
+    [Serializable]
     public struct MatrixKey
     {
         private readonly int x;
         private readonly int y;
+
+        public int X { get { return x; } }
+        public int Y { get { return this.y; } }
 
         public MatrixKey(int x, int y)
         {
             this.x = x;
             this.y = y;
         } 
-
-        public int X
-        {
-            get { return x; }            
-        }
-
-        public int Y
-        {
-            get { return this.y; }
-        }                
-
+        
         #region System.Object Methods
 
         public override string ToString()
@@ -47,9 +41,7 @@ namespace Infovision.Math
             if (obj is MatrixKey)
             {
                 index = (MatrixKey)obj;
-                return (this.X == index.X && this.Y == index.Y) 
-                    || (this.X == index.Y && this.Y == index.X);
-                //return this.X == index.X && this.Y == index.Y;
+                return (this.X == index.X && this.Y == index.Y)  || (this.X == index.Y && this.Y == index.X);                
             }
 
             return false;            

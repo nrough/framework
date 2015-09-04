@@ -6,23 +6,19 @@ using System.Text;
 namespace Infovision.Data
 {
     [Serializable]
-    public class DataStore
+    public class DataStore : IDataTable
     {
         #region Globals
 
         private string name;
         private Int64 nextObjectId = 1;
-        private bool isCommitted;
-        private Int64[] storage;
+        private Int64[] data;
         private Int64 capacity;
         private int lastIndex;
         private double capacityFactor;
         private Dictionary<Int64, int> objectId2Index;
         private Dictionary<int, Int64> index2ObjectId;
-        private Int64 minObjectId, maxObjectId;
         private DataStoreInfo dataStoreInfo;
-        private const double defaultCapacityFactor = 0.2;
-        private int splitId = 0;
         private Dictionary<Int64, List<int>> decisionValue2ObjectIndex;
 
         #endregion
@@ -37,8 +33,7 @@ namespace Infovision.Data
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
         {
-            this.isCommitted = true;
-            storage = new Int64[capacity * attributeSize];
+            data = new Int64[capacity * attributeSize];
             this.capacity = capacity;
             this.capacityFactor = capacityFactor;
             lastIndex = -1;
@@ -55,27 +50,6 @@ namespace Infovision.Data
         {
             get { return name; }
             set { name = value; }
-        }
-
-        public int SplitId
-        {
-            get { return splitId; }
-            set { splitId = value; }
-        }
-
-        public Int64 MinObjectId
-        {
-            get { return minObjectId; }
-        }
-
-        public Int64 MaxObjectId
-        {
-            get { return maxObjectId; }
-        }
-
-        public bool IsCommitted
-        {
-            get { return isCommitted; }
         }
 
         public DataStoreInfo DataStoreInfo
@@ -104,26 +78,9 @@ namespace Infovision.Data
         {
             Int64 newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
             Int64[] newStorage = new Int64[newCapacity * this.dataStoreInfo.NumberOfFields];
-            Buffer.BlockCopy(storage, 0, newStorage, 0, storage.Length * sizeof(Int64));
+            Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
-            storage = newStorage;
-        }
-
-        private void SetMinMaxObjectId()
-        {
-            this.minObjectId = Int64.MaxValue;
-            this.maxObjectId = Int64.MinValue;
-
-            foreach (Int64 objectId in this.GetObjectIds())
-            {
-                if (objectId < this.minObjectId)
-                    this.minObjectId = objectId;
-
-                if (objectId > this.maxObjectId)
-                    this.maxObjectId = objectId;
-            }
-
-            nextObjectId = maxObjectId + 1;
+            data = newStorage;
         }
 
         public Int64 Insert(DataRecordInternal record)
@@ -147,7 +104,7 @@ namespace Infovision.Data
             foreach (int fieldId in record.GetFields())
             {
                 Int64 value = record[fieldId];
-                storage[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
+                data[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
                 this.dataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
             }
 
@@ -244,7 +201,7 @@ namespace Infovision.Data
             
             int index = objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1);
 
-            return storage[index];
+            return data[index];
         }
 
         public Int64[] GetObjectIds()
@@ -271,11 +228,6 @@ namespace Infovision.Data
         public Int64 GetDecisionValue(int objectIndex)
         {
             return this.GetObjectField(objectIndex, this.DataStoreInfo.DecisionFieldId);
-        }
-
-        public void PostLoad()
-        {
-            this.SetMinMaxObjectId();
         }
 
         public Int64 ObjectIndex2ObjectId(int objectIndex)

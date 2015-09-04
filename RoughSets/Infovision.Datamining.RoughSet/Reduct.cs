@@ -97,7 +97,6 @@ namespace Infovision.Datamining.Roughset
                 stringBuilder.Append("m=Partition");
                 stringBuilder.Append("|a=").Append(this.attributeSet.CacheKey);
                 stringBuilder.Append("|d=").Append(this.dataStore.Name);
-                stringBuilder.Append("|s=").Append(this.dataStore.SplitId);
                 
                 return stringBuilder.ToString();
             }

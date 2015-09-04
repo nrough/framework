@@ -225,12 +225,10 @@ namespace Infovision.RunTest
 
             if (this.CheckTrimCache())
             {
-                // >>>> ReductCache.Instance.Trim(100);
+                ReductCache.Instance.Trim(100);
                 
                 foreach (var element in ReductCache.Instance)
                 {
-                    //TODO we should remove partitions when split and test id (each test can generate new split) are changed, we can skip test id when fold number is 1
-                    //if(element.Key.IndexOf("m=Partition") == -1)
                     ReductCache.Instance.Remove(element.Key);
                 }
             }

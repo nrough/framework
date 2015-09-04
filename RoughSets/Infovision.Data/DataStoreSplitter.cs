@@ -76,27 +76,15 @@ namespace Infovision.Data
             dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[this.ActiveFold - 1];
 
             dataStore1 = new DataStore(dataStoreInfo1);
-            dataStore1.Name = dataStore.Name;
-            dataStore1.SplitId = this.ActiveFold;
-            /*
-            dataStore1.Name = Path.GetFileNameWithoutExtension(dataStore.Name)
-                            + "_1_"
-                            + this.ActiveFold.ToString(CultureInfo.InvariantCulture)
-                            + Path.GetExtension(dataStore.Name);
-            */ 
+            dataStore1.Name = dataStore.Name + "-" + this.ActiveFold.ToString();
+            
             DataStoreInfo dataStoreInfo2 = new DataStoreInfo();
             dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo);
             dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold - 1];
            
             dataStore2 = new DataStore(dataStoreInfo2);
-            dataStore2.Name = dataStore.Name;
-            dataStore2.SplitId = this.ActiveFold;
-            /*
-            dataStore2.Name = Path.GetFileNameWithoutExtension(dataStore.Name) 
-                            + "_2_" 
-                            + this.ActiveFold.ToString(CultureInfo.InvariantCulture)
-                            + Path.GetExtension(dataStore.Name);
-            */
+            dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;
+            
             for (int i = 0; i < folds.Length; i++)
             {
                 if (folds[i] != this.ActiveFold)
@@ -108,9 +96,6 @@ namespace Infovision.Data
                     dataStore2.Insert(dataStore.GetRecordByIndex(i));
                 }
             }
-
-            dataStore1.PostLoad();
-            dataStore2.PostLoad();
         }
 
     }

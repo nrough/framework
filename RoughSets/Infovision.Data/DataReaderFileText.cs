@@ -225,7 +225,6 @@ namespace Infovision.Data
                 }
             }
 
-            dataStore.PostLoad();
         }
 
         protected virtual void AnalyzeHeader(StreamReader streamReader)

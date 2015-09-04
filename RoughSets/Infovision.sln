@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.RunTest", "Infov
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Genetic", "Infovision.Datamining.GeneticAlgorithm\Infovision.Datamining.Genetic.csproj", "{21A46E93-32AA-4E2A-887B-E043094740AC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementy rozwiązania", "Elementy rozwiązania", "{D7E14808-35AD-4298-96BE-91C13071A754}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Utils", "Infovision.Utils\Infovision.Utils.csproj", "{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Roughset", "Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj", "{2D23E210-FFB7-46EF-AD27-18B5DE007EE3}"
@@ -97,9 +95,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Exper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.ReductGenerator", "Infovision.Datamining.ReductGenerator\Infovision.Datamining.ReductGenerator.csproj", "{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Roughset.Ensemble.UnitTests", "Infovision.Datamining.Roughset.Ensemble.UnitTests\Infovision.Datamining.Roughset.Ensemble.UnitTests.csproj", "{57DEC689-FCC3-4123-876E-0A04CC76309C}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 26
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://hujolopter:8080/tfs/infovision.roughsets
 		SccLocalPath0 = .
@@ -107,12 +109,14 @@ Global
 		SccProjectName1 = Configuration
 		SccLocalPath1 = Configuration
 		SccProjectUniqueName2 = Infovision.CudaLib.UnitTests\\Infovision.CudaLib.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName2 = Infovision.sln
 		SccProjectName2 = Infovision.CudaLib.UnitTests
 		SccLocalPath2 = Infovision.CudaLib.UnitTests
 		SccProjectUniqueName3 = Infovision.CudaLib\\Infovision.CudaLib.csproj
 		SccProjectName3 = Infovision.CudaLib
 		SccLocalPath3 = Infovision.CudaLib
 		SccProjectUniqueName4 = Infovision.Data.UnitTests\\Infovision.Data.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName4 = Infovision.sln
 		SccProjectName4 = Infovision.Data.UnitTests
 		SccLocalPath4 = Infovision.Data.UnitTests
 		SccProjectUniqueName5 = Infovision.Data\\Infovision.Data.csproj
@@ -122,9 +126,11 @@ Global
 		SccProjectName6 = Infovision.Datamining.GeneticAlgorithm
 		SccLocalPath6 = Infovision.Datamining.GeneticAlgorithm
 		SccProjectUniqueName7 = Infovision.Datamining.NeuralNets.UnitTests\\Infovision.Datamining.NeuralNets.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName7 = Infovision.sln
 		SccProjectName7 = Infovision.Datamining.NeuralNets.UnitTests
 		SccLocalPath7 = Infovision.Datamining.NeuralNets.UnitTests
 		SccProjectUniqueName8 = Infovision.Datamining.Roughset.UnitTests\\Infovision.Datamining.Roughset.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName8 = Infovision.sln
 		SccProjectName8 = Infovision.Datamining.Roughset.UnitTests
 		SccLocalPath8 = Infovision.Datamining.Roughset.UnitTests
 		SccProjectUniqueName9 = Infovision.Datamining.RoughSet\\Infovision.Datamining.Roughset.csproj
@@ -140,6 +146,7 @@ Global
 		SccProjectName12 = Infovision.MRI.DAL
 		SccLocalPath12 = Infovision.MRI.DAL
 		SccProjectUniqueName13 = Infovision.MRI.UnitTests\\Infovision.MRI.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName13 = Infovision.sln
 		SccProjectName13 = Infovision.MRI.UnitTests
 		SccLocalPath13 = Infovision.MRI.UnitTests
 		SccProjectUniqueName14 = Infovision.MRI\\Infovision.MRI.csproj
@@ -149,6 +156,7 @@ Global
 		SccProjectName15 = infovision.MRIFeatureExtractor
 		SccLocalPath15 = infovision.MRIFeatureExtractor
 		SccProjectUniqueName16 = Infovision.RunTest.UnitTests\\Infovision.RunTest.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName16 = Infovision.sln
 		SccProjectName16 = Infovision.RunTest.UnitTests
 		SccLocalPath16 = Infovision.RunTest.UnitTests
 		SccProjectUniqueName17 = Infovision.RunTest\\Infovision.RunTest.csproj
@@ -158,9 +166,11 @@ Global
 		SccProjectName18 = Infovision.Test
 		SccLocalPath18 = Infovision.Test
 		SccProjectUniqueName19 = Infovision.TestAssembly\\Infovision.TestAssembly.csproj
+		SccProjectTopLevelParentUniqueName19 = Infovision.sln
 		SccProjectName19 = Infovision.TestAssembly
 		SccLocalPath19 = Infovision.TestAssembly
 		SccProjectUniqueName20 = Infovision.Utils.UnitTests\\Infovision.Utils.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName20 = Infovision.sln
 		SccProjectName20 = Infovision.Utils.UnitTests
 		SccLocalPath20 = Infovision.Utils.UnitTests
 		SccProjectUniqueName21 = Infovision.Utils\\Infovision.Utils.csproj
@@ -173,11 +183,16 @@ Global
 		SccProjectName23 = Infovision.Datamining.Experimenter
 		SccLocalPath23 = Infovision.Datamining.Experimenter
 		SccProjectUniqueName24 = Infovision.Datamining.Experimenter.Test\\Infovision.Datamining.Experimenter.Test.csproj
+		SccProjectTopLevelParentUniqueName24 = Infovision.sln
 		SccProjectName24 = Infovision.Datamining.Experimenter.Test
 		SccLocalPath24 = Infovision.Datamining.Experimenter.Test
 		SccProjectUniqueName25 = Infovision.Datamining.ReductGenerator\\Infovision.Datamining.ReductGenerator.csproj
 		SccProjectName25 = Infovision.Datamining.ReductGenerator
 		SccLocalPath25 = Infovision.Datamining.ReductGenerator
+		SccProjectUniqueName26 = Infovision.Datamining.Roughset.Ensemble.UnitTests\\Infovision.Datamining.Roughset.Ensemble.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName26 = Infovision.sln
+		SccProjectName26 = Infovision.Datamining.Roughset.Ensemble.UnitTests
+		SccLocalPath26 = Infovision.Datamining.Roughset.Ensemble.UnitTests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -567,8 +582,34 @@ Global
 		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Win32.ActiveCfg = Release|Any CPU
 		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|x64.ActiveCfg = Release|x64
 		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|x86.ActiveCfg = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|Win32.ActiveCfg = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|x64.ActiveCfg = Release|Any CPU
+		{57DEC689-FCC3-4123-876E-0A04CC76309C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D273260-69B2-49ED-8B82-21E0BC9D0778} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{C2F37EAA-40B1-4FE0-8FEF-E251EB4C957B} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{D4C765AF-AC85-472D-9549-5D682015A124} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{914C35DA-94B7-4A68-9F2D-C6C426A03540} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{520A0AD7-41EA-4779-9142-3BC13868168D} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{7182079F-C9E0-4D46-AB68-4F86443F1244} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{EA325EEA-CB1E-4517-974B-7205C8420198} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{9DDFE474-0A4C-492C-82B2-C0A850217774} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
+		{57DEC689-FCC3-4123-876E-0A04CC76309C} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 	EndGlobalSection
 EndGlobal

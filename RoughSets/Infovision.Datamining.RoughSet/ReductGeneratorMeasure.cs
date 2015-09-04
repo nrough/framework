@@ -266,9 +266,8 @@ namespace Infovision.Datamining.Roughset
             // >>>> stringBuilder.Append("m=").Append(this.informationMeasure.ToString());
 
             stringBuilder.Append("m=").Append(this.GetType().Name);
-            // >>>> stringBuilder.Append("|d=").Append(this.DataStore.Name);
+            stringBuilder.Append("|d=").Append(this.DataStore.Name);
             stringBuilder.Append("|a=").Append(reduct.AttributeSet.CacheKey);
-            stringBuilder.Append("|s=").Append(this.DataStore.SplitId);
 
             return stringBuilder.ToString();
         }

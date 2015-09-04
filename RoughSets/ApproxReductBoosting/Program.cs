@@ -78,7 +78,7 @@ namespace ApproxReductBoosting
 					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
 					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
 					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
-					new ParameterNumericRange<int>("Epsilon", 0, 100, 1)
+					new ParameterNumericRange<int>("Epsilon", 0, 50, 5)
 				}
 			);
 

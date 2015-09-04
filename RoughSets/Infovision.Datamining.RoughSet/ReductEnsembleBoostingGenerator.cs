@@ -13,10 +13,9 @@ namespace Infovision.Datamining.Roughset
 	public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
 	
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
-	{						
-		private ReductStoreCollection models;
-		private int iterPassed;
-		private int numberOfWeightResets;
+	{								
+		protected int iterPassed;
+		protected int numberOfWeightResets;
 
 		public int MaxReductLength { get; set; }
 		public int MinReductLength { get; set; }
@@ -32,6 +31,8 @@ namespace Infovision.Datamining.Roughset
 		public WeightGenerator WeightGenerator { get; set; }				
 		public UpdateWeightsDelegate UpdateWeights { get; set; }		
 		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
+		
+		protected ReductStoreCollection Models { get; set; }
 
 		public DataSet testDataSet {get; set;}
 				
@@ -46,9 +47,9 @@ namespace Infovision.Datamining.Roughset
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
-			this.CheckEnsembleErrorDuringTraining = true;			
-			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoostM1;
-			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1;
+			this.CheckEnsembleErrorDuringTraining = true;
+			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -69,9 +70,9 @@ namespace Infovision.Datamining.Roughset
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
-			this.CheckEnsembleErrorDuringTraining = true;			
-			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoostM1;
-			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1;
+			this.CheckEnsembleErrorDuringTraining = true;
+			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
 		}
 
 		public override void InitFromArgs(Args args)
@@ -142,7 +143,7 @@ namespace Infovision.Datamining.Roughset
 			this.ReductPool = this.CreateReductStore();
 			this.ReductPool.AllowDuplicates = true;
 			
-			this.models = new ReductStoreCollection();
+			this.Models = new ReductStoreCollection();
 
 			double alphaSum = 0.0;
 			iterPassed = 0;
@@ -215,42 +216,42 @@ namespace Infovision.Datamining.Roughset
 
 				if (this.CheckEnsembleErrorDuringTraining)
 				{
-					if (this.models.Count > 1)
+					if (this.Models.Count > 1)
 					{
 						// Normalize weights for models confidence
-						foreach (IReductStore rs in this.models)
+						foreach (IReductStore rs in this.Models)
 							if (rs.IsActive)
 								rs.Weight /= alphaSum;
 						
 						RoughClassifier classifierEnsemble = new RoughClassifier();
-						classifierEnsemble.ReductStoreCollection = this.models;
+						classifierEnsemble.ReductStoreCollection = this.Models;
 						classifierEnsemble.Classify(this.DataStore);
 						ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
 						// De-normalize weights for models confidence
-						foreach (IReductStore rs in this.models)
+						foreach (IReductStore rs in this.Models)
 							if (rs.IsActive)
 								rs.Weight *= alphaSum;
 
 						if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified <= 0.0001)
 						{
 							bool modelHasConverged = true;
-							foreach (IReductStore model in this.models)
+							foreach (IReductStore model in this.Models)
 							{
 								model.IsActive = false;
 
 								// Normalize weights for models confidence
-								foreach (IReductStore rs in this.models)
+								foreach (IReductStore rs in this.Models)
 									if(rs.IsActive)
 										rs.Weight /= (alphaSum - model.Weight);
 
 								RoughClassifier localClassifierEnsemble = new RoughClassifier();
-								localClassifierEnsemble.ReductStoreCollection = this.models;
+								localClassifierEnsemble.ReductStoreCollection = this.Models;
 								localClassifierEnsemble.Classify(this.DataStore);
 								ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
 								// De-normalize weights for models confidence
-								foreach (IReductStore rs in this.models)
+								foreach (IReductStore rs in this.Models)
 									if (rs.IsActive)
 										rs.Weight *= (alphaSum - model.Weight);
 
@@ -276,30 +277,35 @@ namespace Infovision.Datamining.Roughset
 			} while(iterPassed < this.MaxIterations);
 						
 			// Normalize weights for models confidence
-			foreach(IReductStore rs in this.models)
+			foreach(IReductStore rs in this.Models)
 				rs.Weight /= alphaSum;
 		}		
 
 		protected virtual void AddModel(IReductStore model, double modelWeight)
 		{
 			model.Weight = modelWeight;
-			this.models.AddStore(model);
+			this.Models.AddStore(model);
 		}
 
 		public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles = Int32.MaxValue)
 		{
-			return this.models;
+			return this.Models;
 		}
 
 		public virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
-			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
-			int length = System.Math.Min(maximumLength, permutation.Length - 1);
-			int minLen = System.Math.Max(minimumLength - 1, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, length);
+			if (minimumLength > maximumLength)
+				throw new ArgumentOutOfRangeException();
 			
-			int[] attributes = new int[cutoff + 1];
-			for (int i = 0; i <= cutoff; i++)
+			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
+			
+			int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+			int minLen = System.Math.Max(minimumLength, 0);
+
+			int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
+			
+			int[] attributes = new int[cutoff];            
+			for (int i = 0; i < cutoff; i++)
 				attributes[i] = permutation[i];			
 
 			return this.CreateReduct(attributes, this.Epsilon, weights);
@@ -313,12 +319,10 @@ namespace Infovision.Datamining.Roughset
 			return reduct;
 		}
 
-		//protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
-		//{
-		//	ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
-		//	r.Id = id;
-		//	return r;
-		//}
+		protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+		{
+			throw new NotImplementedException("ReductEnsembleBoostingGenerator.CreateReductObject(...) is not implemented");
+		}
 
 		#region Delegate implementations
 		
@@ -326,13 +330,13 @@ namespace Infovision.Datamining.Roughset
 		{            
 			if (actualOutput == predictedOutput)
 				return 1.0;
-			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1(numberOfOutputValues, totalError);
+			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			return currentWeight * System.Math.Exp(alpha); 
 		}        
 
 		public static double UpdateWeightsAdaBoost_All(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{
-			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1(numberOfOutputValues, totalError);
+			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			if (actualOutput == predictedOutput)
 				return currentWeight * System.Math.Exp(-alpha);
 			return currentWeight * System.Math.Exp(alpha);
@@ -340,7 +344,7 @@ namespace Infovision.Datamining.Roughset
 
 		public static double UpdateWeightsAdaBoost_OnlyCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{
-			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1(numberOfOutputValues, totalError);
+			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			if (actualOutput == predictedOutput)
 				return currentWeight * System.Math.Exp(-alpha);
 			return currentWeight;
@@ -350,7 +354,7 @@ namespace Infovision.Datamining.Roughset
 		{            
 			if (actualOutput == predictedOutput)
 				return currentWeight;
-			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoosM1(numberOfOutputValues, totalError);
+			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			return currentWeight * System.Math.Exp(alpha);
 		}
 
@@ -359,7 +363,7 @@ namespace Infovision.Datamining.Roughset
 			return currentWeight;
 		}
 
-		public static double ModelConfidenceAdaBoosM1(int numberOfOutputValues, double totalError)
+		public static double ModelConfidenceAdaBoostM1(int numberOfOutputValues, double totalError)
 		{			
 			return System.Math.Log((1.0 - totalError) / (totalError + 0.0000001)) + System.Math.Log(numberOfOutputValues - 1);
 		}

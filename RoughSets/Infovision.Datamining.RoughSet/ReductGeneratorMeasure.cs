@@ -31,9 +31,7 @@ namespace Infovision.Datamining.Roughset
             get
             {
                 if (this.dataSetQuality < -1.0)
-                {
-                    this.CalcDataSetQuality();                
-                }
+                    this.CalcDataSetQuality();
 
                 return this.dataSetQuality;
             }            

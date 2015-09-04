@@ -78,12 +78,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.CudaLib\Infovision.CudaLib.csproj">
-      <Project>{761687f2-a06d-4921-b90b-3b4e5cf25444}</Project>
-      <Name>Infovision.CudaLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

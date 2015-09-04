@@ -331,6 +331,102 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
+        [Test]
+        public void GenerateExperimentBoostingVarEps()
+        {
+            Console.WriteLine("GenerateExperimentBoostingStandard");
+
+            //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            //DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
+
+            DataStore trnData = DataStore.Load(@"Data\optdigits.trn", FileFormat.Rses1);
+            DataStore tstData = DataStore.Load(@"Data\optdigits.tst", FileFormat.Rses1, trnData.DataStoreInfo);
+
+            WeightingSchema weightingSchema = WeightingSchema.Majority;
+            int numberOfTests = 20;
+            //int maxNumberOfIterations = 100;
+
+            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
+                                     "METHOD",
+                                     "IDENTYFICATION",
+                                     "VOTETYPE",
+                                     "MIN_LEN",
+                                     "UPDATE_WEIGHTS",
+                                     "WEIGHT_TYPE",
+                                     "CHECK_ENSEBLE_ERROR",
+                                     "TESTID",
+                                     "MAXITER",
+                                     "NOF_MODELS",
+                                     "NOF_WRESET",
+                                     "TRN_ERROR",
+                                     "TST_ERROR",
+                                     "AVG_REDUCT");
+
+            List<int> iterList = new List<int>(new int[] { 1, 2, 5, 10, 20, 50, 100 });            
+
+            //for (int iter = 1; iter <= maxNumberOfIterations; iter++)
+            foreach(int iter in iterList)
+            {
+                for (int t = 0; t < numberOfTests; t++)
+                {
+                    Args parms = new Args();
+                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
+                    parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
+                    parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);                    
+
+                    WeightGenerator weightGenerator;
+                    switch (weightingSchema)
+                    {
+                        case WeightingSchema.Majority:
+                            weightGenerator = new WeightGeneratorMajority(trnData);
+                            break;
+
+                        case WeightingSchema.Relative:
+                            weightGenerator = new WeightGeneratorRelative(trnData);
+                            break;
+
+                        default:
+                            weightGenerator = new WeightBoostingGenerator(trnData);
+                            break;
+                    }
+
+                    parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                    parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
+
+                    ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
+                    reductGenerator.Generate();
+
+                    RoughClassifier classifierTrn = new RoughClassifier();
+                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
+                    classifierTrn.Classify(trnData);
+                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    RoughClassifier classifierTst = new RoughClassifier();
+                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
+                    classifierTst.Classify(tstData);
+                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
+                                      parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
+                                      reductGenerator.IdentyficationType,
+                                      reductGenerator.VoteType,
+                                      reductGenerator.MinReductLength,
+                                      reductGenerator.UpdateWeights,
+                                      weightingSchema,
+                                      reductGenerator.CheckEnsembleErrorDuringTraining,
+                                      t + 1,
+                                      reductGenerator.MaxIterations,
+                                      reductGenerator.IterationsPassed,
+                                      reductGenerator.NumberOfWeightResets,
+                                      resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
+                                      resultTst.WeightMisclassified + resultTst.WeightUnclassified,
+                                      reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                }
+            }
+        }
+
         [Test, Ignore]
         public void GenerateExperimentBoostingWithDiversity()
         {
@@ -485,21 +581,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
                 }
             }
-        }
-
-        /*
-        [Test]
-        public void RandomSingletonTest()
-        {
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
-            Console.WriteLine(RandomSingleton.Random.Next(1, 5));            
-        }
-        */
+        }        
     }
 }

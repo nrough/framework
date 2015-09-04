@@ -56,10 +56,11 @@ namespace ApproxReductBoosting
 			{
 				
 				DataStore trnDataReplaced = new ReplaceMissingValues().Compute(trnDataOrig);
-				DataStore tstDataReplaced = new ReplaceMissingValues().Compute(tstDataOrig, trnDataOrig);
+				//DataStore tstDataReplaced = new ReplaceMissingValues().Compute(tstDataOrig, trnDataOrig);
+
 
 				trnDataOrig = trnDataReplaced;
-				tstDataOrig = tstDataReplaced;
+				//tstDataOrig = tstDataReplaced;
 
 				Console.WriteLine("Missing values replacing...DONE");
 			}            
@@ -71,8 +72,11 @@ namespace ApproxReductBoosting
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
 					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
-					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", ReductFactoryKeyHelper.ReductEnsembleBoosting,
-																								 ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity),
+					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", 
+																				 //ReductFactoryKeyHelper.ReductEnsembleBoosting,
+																				 //ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity,
+                                                                                 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
 					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),

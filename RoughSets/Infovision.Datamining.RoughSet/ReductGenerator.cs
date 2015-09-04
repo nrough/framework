@@ -180,10 +180,17 @@ namespace Infovision.Datamining.Roughset
             {
                 int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
                 this.permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
-            }            
+            }
             
             if (args.Exist("USECACHE"))
                 this.useCache = true;
+
+            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+            {
+                this.Epsilon = (double)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio);
+            }
+
+            //TODO FieldGroups
         }
 
         #endregion

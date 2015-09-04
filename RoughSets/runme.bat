@@ -1,0 +1,11 @@
+start "zoo" /i /min /low .\Program\Test.exe zoo.dta zoo.dta 10 100 10 10 zoo
+start "letter" /i /min /low .\Program\Test.exe letter.trn letter.tst 10 100 10 1 letter
+start "monk-1" /i /min /low .\Program\Test.exe monks-1.train monks-1.test 10 100 10 1 monks-1
+start "monk-2" /i /min /low .\Program\Test.exe monks-2.train monks-2.test 10 100 10 1 monks-2
+start "monk-3" /i /min /low .\Program\Test.exe monks-3.train monks-3.test 10 100 10 1 monks-3
+start "dna_modified" /i /min /low .\Program\Test.exe dna_modified.trn dna_modified.tst 10 100 10 1 dna_modified
+start "pendigits" /i /min /low .\Program\Test.exe pendigits.trn pendigits.tst 10 100 10 1 pendigits
+start "optdigits" /i /min /low .\Program\Test.exe optdigits.trn optdigits.tst 10 100 10 1 optdigits
+start "chess" /i /min /low .\Program\Test.exe chess.data chess.data 10 100 10 10 chess
+start "spect" /i /min /low .\Program\Test.exe spect.train spect.test 10 100 10 1 spect
+start "semeion" /i /min /low .\Program\Test.exe semeion.data semeion.data 10 100 10 10 semeion

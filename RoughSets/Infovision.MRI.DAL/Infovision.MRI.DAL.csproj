@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Infovision.MRI.DAL</RootNamespace>
+    <AssemblyName>Infovision.MRI.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SimpleITKCSharpManaged">
+      <HintPath>..\SimpleITK\SimpleITK-0.5.1-CSharp-Win64-anycpu\SimpleITKCSharpManaged.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasicEnums.cs" />
+    <Compile Include="ImageFilterBase.cs" />
+    <Compile Include="ImageNeighbour.cs" />
+    <Compile Include="IMiningObjectPropertyModel.cs" />
+    <Compile Include="IMiningObjectViewImage.cs" />
+    <Compile Include="MiningObjectImageExtract.cs" />
+    <Compile Include="MiningObjectNeighbour.cs" />
+    <Compile Include="MiningObjectViewModel.cs" />
+    <Compile Include="Histogram.cs" />
+    <Compile Include="HistogramClustering.cs" />
+    <Compile Include="ImageRead.cs" />
+    <Compile Include="ImageDatabase.cs" />
+    <Compile Include="ImageEdge.cs" />
+    <Compile Include="ImageExtract.cs" />
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="ImageMask.cs" />
+    <Compile Include="ImageMaskItems.cs" />
+    <Compile Include="IMiningObject.cs" />
+    <Compile Include="MiningObject.cs" />
+    <Compile Include="MiningObjectEventArgs.cs" />
+    <Compile Include="MiningObjectHistogramCluster.cs" />
+    <Compile Include="MiningObjectImageEdge.cs" />
+    <Compile Include="MiningObjectImageHistogram.cs" />
+    <Compile Include="MiningObjectImage.cs" />
+    <Compile Include="MiningObjectImageMask.cs" />
+    <Compile Include="MiningObjectSOMCluster.cs" />
+    <Compile Include="MiningObjectType.cs" />
+    <Compile Include="MiningProject.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SOMClustering.cs" />
+    <Compile Include="MiningObjectDisplay.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infovision.MRI\Infovision.MRI.csproj">
+      <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
+      <Name>Infovision.MRI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+      <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
+      <Name>Infovision.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SimpleITKCSharpNative.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

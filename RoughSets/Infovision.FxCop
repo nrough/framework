@@ -1,0 +1,643 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FxCopProject Version="10.0" Name="Infovision">
+ <ProjectOptions>
+  <SharedProject>True</SharedProject>
+  <Stylesheet Apply="False">c:\program files (x86)\microsoft fxcop 1.36\Xml\FxCopReport.xsl</Stylesheet>
+  <SaveMessages>
+   <Project Status="Active, Excluded" NewOnly="False" />
+   <Report Status="Active" NewOnly="False" />
+  </SaveMessages>
+  <ProjectFile Compress="True" DefaultTargetCheck="True" DefaultRuleCheck="True" SaveByRuleGroup="" Deterministic="True" />
+  <EnableMultithreadedLoad>True</EnableMultithreadedLoad>
+  <EnableMultithreadedAnalysis>True</EnableMultithreadedAnalysis>
+  <SourceLookup>True</SourceLookup>
+  <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
+  <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
+  <Spelling Locale="pl-PL" />
+  <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
+  <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
+  <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
+  <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
+ </ProjectOptions>
+ <Targets>
+  <AssemblyReferenceDirectories>
+   <Directory>$(ProjectDir)/Infovision.Datamining.GeneticAlgorithm/bin/Debug/</Directory>
+   <Directory>$(ProjectDir)/Data/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Infovision.Datamining.RoughSet/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Infovision.Test/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Infovision.Utils/obj/Debug/</Directory>
+  </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/Data/bin/Debug/Infovision.Data.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Infovision.Datamining.RoughSet/bin/Debug/Infovision.Datamining.RoughSet.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Infovision.Datamining/bin/Debug/Infovision.Datamining.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Infovision.Test/bin/Debug/Infovision.Test.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Infovision.Utils/bin/Debug/Infovision.Utils.dll" Analyze="True" AnalyzeAllChildren="True" />
+ </Targets>
+ <Rules>
+  <RuleFiles>
+   <RuleFile Name="$(FxCopDir)\Rules\DesignRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\GlobalizationRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="True" />
+  </RuleFiles>
+  <Groups />
+  <Settings />
+ </Rules>
+ <FxCopReport Version="10.0">
+  <Targets>
+   <Target Name="$(ProjectDir)/Data/bin/Debug/Infovision.Data.dll">
+    <Modules>
+     <Module Name="infovision.data.dll">
+      <Namespaces>
+       <Namespace Name="Infovision.Data">
+        <Types>
+         <Type Name="IDataStoreSplitter">
+          <Members>
+           <Member Name="#Split(Infovision.Data.DataStore&amp;,Infovision.Data.DataStore&amp;)">
+            <Messages>
+             <Message Id="0#" TypeName="DoNotPassTypesByReference" Category="Microsoft.Design" CheckId="CA1045" Created="2012-06-02 18:58:12Z">
+              <Issue Level="CriticalWarning">
+               <Item>'dataStore1'</Item>
+              </Issue>
+             </Message>
+             <Message Id="1#" TypeName="DoNotPassTypesByReference" Category="Microsoft.Design" CheckId="CA1045" Created="2012-06-02 18:58:12Z">
+              <Issue Level="CriticalWarning">
+               <Item>'dataStore2'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="IObjectSetInfo">
+          <Members>
+           <Member Name="#GetDecisionValues()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Created="2012-06-10 15:01:00Z">
+              <Issue Certainty="50">
+               <Item>'IObjectSetInfo.GetDecisionValues()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/Infovision.Datamining.RoughSet/bin/Debug/Infovision.Datamining.RoughSet.dll">
+    <Modules>
+     <Module Name="infovision.datamining.roughset.dll">
+      <Namespaces>
+       <Namespace Name="Infovision.Datamining.Roughset">
+        <Types>
+         <Type Name="Bireduct">
+          <Members>
+           <Member Name="#.ctor(Infovision.Data.DataStore,System.Int32[],System.Int32[])">
+            <Messages>
+             <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>'Bireduct.Bireduct(DataStore, int[], int[])'</Item>
+               <Item>&#xD;&#xA;&#xD;&#xA;Bireduct..ctor(DataStore, Int32[], Int32[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ToString()">
+            <Messages>
+             <Message Id="System.Int32.ToString" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Created="2012-07-28 09:44:46Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'int.ToString()'</Item>
+               <Item>'Bireduct.ToString()'</Item>
+               <Item>'int.ToString(IFormatProvider)'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="PermutationGenerator">
+          <Members>
+           <Member Name="#elements">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>'PermutationGenerator.elements'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="PermutationGeneratorFieldObject">
+          <Members>
+           <Member Name="#GetAndRemoveListElement`1(System.Collections.Generic.List`1&lt;!!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2012-06-27 07:00:32Z">
+              <Issue>
+               <Item>'List&lt;T&gt;'</Item>
+               <Item>'PermutationGeneratorFieldObject.GetAndRemoveListElement&lt;T&gt;(List&lt;T&gt;)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="PermutationList">
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.List`1&lt;Infovision.Datamining.Roughset.Permutation&gt;)">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>'List&lt;Permutation&gt;'</Item>
+               <Item>'PermutationList.PermutationList(List&lt;Permutation&gt;)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#InternalList">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>'List&lt;Permutation&gt;'</Item>
+               <Item>'PermutationList.InternalList'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#LoadFromJson(System.String)">
+            <Messages>
+             <Message Id="json" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-06-09 08:26:20Z">
+              <Issue>
+               <Item>'PermutationList.LoadFromJson(string)'</Item>
+               <Item>'json'</Item>
+               <Item>'JObject'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Reduct">
+          <Members>
+           <Member Name="#.ctor(Infovision.Data.DataStore,System.Int32[])">
+            <Messages>
+             <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>'Reduct.Reduct(DataStore, int[])'</Item>
+               <Item>&#xD;&#xA;&#xD;&#xA;Reduct..ctor(DataStore, Int32[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#partitionMap">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2012-06-24 11:58:11Z">
+              <Issue>
+               <Item>'Reduct.partitionMap'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductCache">
+          <Members>
+           <Member Name="#Set(System.String,System.Object,System.String)">
+            <Messages>
+             <Message Id="Set" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2012-06-02 18:58:12Z">
+              <Issue Name="Member">
+               <Item>'ReductCache.Set(string, object, string)'</Item>
+               <Item>Set</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductGenerator">
+          <Members>
+           <Member Name="#numberOfThreads">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-07-28 09:44:46Z">
+              <Issue>
+               <Item>'ReductGenerator.numberOfThreads'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductMeasureGenerator">
+          <Members>
+           <Member Name="#dataSetQuality">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2012-06-04 06:40:28Z">
+              <Issue>
+               <Item>'ReductMeasureGenerator.dataSetQuality'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetReductQuality()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Created="2012-06-22 21:41:58Z">
+              <Issue Certainty="50">
+               <Item>'ReductMeasureGenerator.GetReductQuality()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#roughMeasure">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2012-06-04 06:40:28Z">
+              <Issue>
+               <Item>'ReductMeasureGenerator.roughMeasure'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductStatistic">
+          <Members>
+           <Member Name="#AddObject(System.Int32,System.Int64)">
+            <Messages>
+             <Message Id="objectIndex" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-07-28 09:44:46Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'objectIndex'</Item>
+               <Item>'ReductStatistic.AddObject(int, long)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#RemoveObject(System.Int32,System.Int64)">
+            <Messages>
+             <Message Id="objectIndex" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-07-28 09:44:46Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'objectIndex'</Item>
+               <Item>'ReductStatistic.RemoveObject(int, long)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductStore">
+          <Members>
+           <Member Name="#ReductSet">
+            <Messages>
+             <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2012-07-28 09:44:46Z">
+              <Issue>
+               <Item>'List&lt;IReduct&gt;'</Item>
+               <Item>'ReductStore.ReductSet'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ReductStoreMulti">
+          <Members>
+           <Member Name="#ReductCheckWorkItem(System.Object)">
+            <Messages>
+             <Message Id="obj" TypeName="IdentifiersShouldNotContainTypeNames" Category="Microsoft.Naming" CheckId="CA1720" Created="2012-06-27 06:47:47Z">
+              <Issue Name="LanguageIndependentMemberParameter">
+               <Item>'ReductStoreMulti.ReductCheckWorkItem(object)'</Item>
+               <Item>obj</Item>
+               <Item>'obj'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="RoughClassifier">
+          <Members>
+           <Member Name="#ReductStore">
+            <Accessors>
+             <Accessor Name="#set_ReductStore(Infovision.Datamining.Roughset.IReductStore)">
+              <Messages>
+               <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Created="2012-07-28 09:44:46Z">
+                <Issue>
+                 <Item>'RoughClassifier.ReductStore.set(IReductStore)'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/Infovision.Datamining/bin/Debug/Infovision.Datamining.dll">
+    <Modules>
+     <Module Name="infovision.datamining.dll">
+      <Namespaces>
+       <Namespace Name="Infovision.Datamining">
+        <Types>
+         <Type Name="ClassificationResult">
+          <Members>
+           <Member Name="#ResultHeader()">
+            <Messages>
+             <Message TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822" Created="2012-06-02 18:58:12Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'ClassificationResult.ResultHeader()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/Infovision.Test/bin/Debug/Infovision.Test.dll">
+    <Modules>
+     <Module Name="infovision.test.dll">
+      <Namespaces>
+       <Namespace Name="Infovision.Test">
+        <Types>
+         <Type Name="ITestRunable">
+          <Members>
+           <Member Name="#GetResult()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Created="2012-06-02 18:58:12Z">
+              <Issue Certainty="50">
+               <Item>'ITestRunable.GetResult()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ParameterNumericRange`1">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterNumericRange&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterNumericRange&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParameterObject`1">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterObject&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterObject&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParameterObjectReference`1">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterObjectReference&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterObjectReference&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParameterValue`1">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterValue&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterValue&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParameterValueList`1">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterValueList&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterValueList&lt;T&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ParameterVectorEnumerator">
+          <Messages>
+           <Message TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038" Created="2012-06-02 18:58:12Z">
+            <Issue>
+             <Item>'ParameterVectorEnumerator'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="TestParameter">
+          <Members>
+           <Member Name="#Count">
+            <Accessors>
+             <Accessor Name="#get_Count()">
+              <Messages>
+               <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Created="2012-06-02 18:58:12Z" FixCategory="Breaking">
+                <Issue Name="PropertyGetter" Level="Warning">
+                 <Item>'TestParameter.Count.get()'</Item>
+                 <Item>'NotImplementedException'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+           <Member Name="#Current">
+            <Accessors>
+             <Accessor Name="#get_Current()">
+              <Messages>
+               <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Created="2012-06-02 18:58:12Z" FixCategory="Breaking">
+                <Issue Name="PropertyGetter" Level="Warning">
+                 <Item>'TestParameter.Current.get()'</Item>
+                 <Item>'NotImplementedException'</Item>
+                </Issue>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/Infovision.Utils/bin/Debug/Infovision.Utils.dll">
+    <Modules>
+     <Module Name="infovision.utils.dll">
+      <Namespaces>
+       <Namespace Name="Infovision.Utils">
+        <Types>
+         <Type Name="HashHelper">
+          <Members>
+           <Member Name="#CombineHashCode`1(System.Int32,!!0)">
+            <Messages>
+             <Message Id="31*hashCode" TypeName="OperationsShouldNotOverflow" Category="Microsoft.Usage" CheckId="CA2233" Created="2012-06-02 18:58:12Z">
+              <Issue>
+               <Item>31*hashCode</Item>
+               <Item>'HashHelper.CombineHashCode&lt;T&gt;(this int, T)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="InfovisionHelper">
+          <Members>
+           <Member Name="#IntArray2Ranges(System.Int32[],System.String,System.String)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Created="2012-07-28 09:44:46Z">
+              <Issue>
+               <Item>'InfovisionHelper.IntArray2Ranges(int[], string, string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#IntArray2Ranges(System.Int64[],System.String,System.String)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Created="2012-07-28 09:44:46Z">
+              <Issue>
+               <Item>'InfovisionHelper.IntArray2Ranges(long[], string, string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="PascalSet">
+          <Members>
+           <Member Name="#op_Addition(Infovision.Utils.PascalSet,Infovision.Utils.PascalSet)">
+            <Messages>
+             <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
+              <Issue>
+               <Item>'PascalSet'</Item>
+               <Item>'PascalSet.operator +(PascalSet, PascalSet)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Subtraction(Infovision.Utils.PascalSet,Infovision.Utils.PascalSet)">
+            <Messages>
+             <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
+              <Issue>
+               <Item>'PascalSet'</Item>
+               <Item>'PascalSet.operator -(PascalSet, PascalSet)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Rules>
+   <Rule TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811">
+    <Resolution Name="Default">{0} appears to have no upstream public or protected callers.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823">
+    <Resolution Name="Default">It appears that field {0} is never used or is only ever assigned to. Use this field or remove it.</Resolution>
+   </Rule>
+   <Rule TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026">
+    <Resolution Name="Default">Replace method {0} with an overload that supplies all default arguments.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214">
+    <Resolution Name="Default">{0} contains a call chain that results in a call to a virtual method defined by the class. Review the following call stack for unintended consequences: {1}</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051">
+    <Resolution Name="Default">Because field {0} is visible outside of its declaring type, change its accessibility to private and add a property, with the same accessibility as the field has currently, to provide access to it.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002">
+    <Resolution Name="Default">Change {0} in {1} to use Collection&lt;T&gt;, ReadOnlyCollection&lt;T&gt; or KeyedCollection&lt;K,V&gt;</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotPassTypesByReference" Category="Microsoft.Design" CheckId="CA1045">
+    <Resolution Name="Default">Consider a design that does not require that {0} be a reference parameter.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065">
+    <Resolution Name="PropertyGetter">{0} creates an exception of type {1}, an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Resolution>
+   </Rule>
+   <Rule TypeName="EnumeratorsShouldBeStronglyTyped" Category="Microsoft.Design" CheckId="CA1038">
+    <Resolution Name="Default">{0} should provide a strongly typed implementation of IEnumerator.Current.</Resolution>
+   </Rule>
+   <Rule TypeName="ICollectionImplementationsHaveStronglyTypedMembers" Category="Microsoft.Design" CheckId="CA1035">
+    <Resolution Name="Default">{0} should provide a strongly typed implementation of ICollection.CopyTo.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotContainTypeNames" Category="Microsoft.Naming" CheckId="CA1720">
+    <Resolution Name="LanguageIndependentMemberParameter">In member {0}, consider replacing the data type identifier '{1}' in parameter name {2} with a more generic term, such as 'value'.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716">
+    <Resolution Name="Member">Rename virtual/interface member {0} so that it no longer conflicts with the reserved language keyword '{1}'. Using a reserved keyword as the name of a virtual/interface member makes it harder for consumers in other languages to override/implement the member.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822">
+    <Resolution Name="Default">The 'this' parameter (or 'Me' in Visual Basic) of {0} is never used. Mark the member as static (or Shared in Visual Basic) or use 'this'/'Me' in the method body or at least one property accessor, if appropriate.</Resolution>
+   </Rule>
+   <Rule TypeName="OperationsShouldNotOverflow" Category="Microsoft.Usage" CheckId="CA2233">
+    <Resolution Name="Default">Correct the potential overflow in the operation '{0}' in {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013">
+    <Resolution Name="Default">Consider adding an overload of the equality operator for {0} that takes the same parameters as {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804">
+    <Resolution Name="Default">{0} declares a variable, {1}, of type {2}, which is never used or is only assigned to. Use this variable or remove it.</Resolution>
+   </Rule>
+   <Rule TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801">
+    <Resolution Name="Default">Parameter {0} of {1} is never used. Remove the parameter or use it in the method body.</Resolution>
+   </Rule>
+   <Rule TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305">
+    <Resolution Name="IFormatProviderAlternateString">Because the behavior of {0} could vary based on the current user's locale settings, replace this call in {1} with a call to {2}. If the result of {2} will be displayed to the user, specify {3} as the 'IFormatProvider' parameter. Otherwise, if the result will be stored and accessed by software, such as when it is persisted to disk or to a database, specify {4}.</Resolution>
+   </Rule>
+   <Rule TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024">
+    <Resolution Name="Default">Change {0} to a property if appropriate.</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
+</FxCopProject>

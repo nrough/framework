@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2D23E210-FFB7-46EF-AD27-18B5DE007EE3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Infovision.Datamining.Roughset</RootNamespace>
+    <AssemblyName>Infovision.Datamining.RoughSet</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Infovision.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Infovision.Datamining.RoughSet.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug - Dna\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BireductGenerator.cs" />
+    <Compile Include="ReductGeneratorWeightsEnsemble.cs" />
+    <Compile Include="ReductGeneratorMeasure.cs" />
+    <Compile Include="ReductGeneratorWeights.cs" />
+    <Compile Include="EnumHelper.cs" />
+    <Compile Include="IReductStoreMeasure.cs" />
+    <Compile Include="PermutationGeneratorFieldGroup.cs" />
+    <Compile Include="ReductComparer.cs" />
+    <Compile Include="Bireduct.cs" />
+    <Compile Include="BireductStore.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="GammaBireduct.cs" />
+    <Compile Include="IReductGenerator.cs" />
+    <Compile Include="IReductMeasure.cs" />
+    <Compile Include="IReductStore.cs" />
+    <Compile Include="Permutation.cs" />
+    <Compile Include="PermutationGenerator.cs" />
+    <Compile Include="PermutationGeneratorFieldObject.cs" />
+    <Compile Include="PermutationGeneratorFieldObjectRelative.cs" />
+    <Compile Include="PermutationGeneratorReverse.cs" />
+    <Compile Include="PermutationGeneratorTwin.cs" />
+    <Compile Include="PermutationGeneratorTwinReverse.cs" />
+    <Compile Include="PermutationList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IReduct.cs" />
+    <Compile Include="Reduct.cs" />
+    <Compile Include="ReductCache.cs" />
+    <Compile Include="ReductCacheInfo.cs" />
+    <Compile Include="ReductFactory.cs" />
+    <Compile Include="ReductGenerator.cs" />
+    <Compile Include="ReductMeasure.cs" />
+    <Compile Include="EquivalenceClassInfo.cs" />
+    <Compile Include="ReductStore.cs" />
+    <Compile Include="ReductStoreMulti.cs" />
+    <Compile Include="ReductStoreWeights.cs" />
+    <Compile Include="ReductStoreWorkerTaskInfo.cs" />
+    <Compile Include="ReductWeight.cs" />
+    <Compile Include="RoughClassifier.cs" />
+    <Compile Include="InformationMeasure.cs" />
+    <Compile Include="EquivalenceClassMap.cs" />
+    <Compile Include="RuleMeasure.cs" />
+    <Compile Include="WeightGeneratorEnsemble.cs" />
+    <Compile Include="WeightGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infovision.Datamining\Infovision.Datamining.csproj">
+      <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
+      <Name>Infovision.Datamining</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">
+      <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
+      <Name>Infovision.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+      <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
+      <Name>Infovision.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Infovision.pfx" />
+    <None Include="packages.config" />
+    <None Include="ReductClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

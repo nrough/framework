@@ -69,7 +69,7 @@ namespace Infovision.Data
         public int DecisionFieldId
         {
             get { return decisionFieldId; }
-            //set { this.DecisionFieldId = value; }
+            set { this.decisionFieldId = value; }
         }
 
         public DataFieldInfo DecisionInfo

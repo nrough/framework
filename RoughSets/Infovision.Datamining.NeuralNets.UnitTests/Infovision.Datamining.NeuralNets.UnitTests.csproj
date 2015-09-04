@@ -56,10 +56,16 @@
   <ItemGroup>
     <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.dll</HintPath>
+      <HintPath>..\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Genetic">
+      <HintPath>..\packages\AForge.Genetic.2.2.5\lib\AForge.Genetic.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math">
+      <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Neuro">
-      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Neuro.dll</HintPath>
+      <HintPath>..\packages\AForge.Neuro.2.2.5\lib\AForge.Neuro.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\packages\NUnitTestAdapter.1.0\lib\nunit.core.dll</HintPath>

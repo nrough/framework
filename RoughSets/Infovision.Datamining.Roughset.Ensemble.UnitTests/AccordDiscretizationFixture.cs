@@ -23,7 +23,7 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 {
-    [TestFixture, System.Runtime.InteropServices.GuidAttribute("4E3ED8F3-DCFA-45BA-922B-F5F12FFE6095")]
+    [TestFixture]
     public class AccordDiscretizationFixture
     {
         #region Member fields
@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
         public AccordDiscretizationFixture()
         {
             filename = @"Data\german.data";
-            numberOfReducts = 1;
+            numberOfReducts = 2;
             reductFactoryKey = "ApproximateReductMajority";
             reductMeasureKey = "ReductMeasureLength";
             epsilon = 5;
@@ -68,7 +68,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
             decisionIdx = 21;
             idIdx = 0;
 
-            numberOfPermutations = 100;
+            numberOfPermutations = numberOfReducts;
 
             permutationList = new PermutationGenerator(attributes).Generate(numberOfPermutations);
             identificationType = IdentificationType.Confidence;
@@ -121,109 +121,106 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
             }
             tmpSymbols.Dispose();
             tmpSymbols = null;
+            
 
+            int[] folds = CrossValidation.Splittings(symbols.Rows.Count, numberOfFolds);
+            CrossValidation<RoughClassifier> val = new CrossValidation<RoughClassifier>(folds, numberOfFolds);
+            val.RunInParallel = false;
 
-            for (int m = 1; m <= 20; m++)
+            val.Fitting = delegate(int k, int[] indicesTrain, int[] indicesValidation)
             {
-                numberOfReducts = m;
+                DataTable trainingSet = symbols.Subtable(indicesTrain);
+                trainingSet.TableName = "Train-" + k.ToString();
+                trainingSet.WriteToCSVFile("{0}.csv", trainingSet.TableName);
 
-                int[] folds = CrossValidation.Splittings(symbols.Rows.Count, numberOfFolds);
-                CrossValidation<RoughClassifier> val = new CrossValidation<RoughClassifier>(folds, numberOfFolds);
-                val.RunInParallel = false;
+                DataTable validationSet = symbols.Subtable(indicesValidation);
+                validationSet.TableName = "Test-" + k.ToString();
+                validationSet.WriteToCSVFile("{0}.csv", trainingSet.TableName);
 
-                val.Fitting = delegate(int k, int[] indicesTrain, int[] indicesValidation)
+                Accord.Statistics.Visualizations.Histogram[] histograms
+                    = new Accord.Statistics.Visualizations.Histogram[continuesAttributes.Length];
+
+                DataTable tmp = trainingSet.Clone();
+
+                for (int i = 0; i < continuesAttributes.Length; i++)
                 {
-                    DataTable trainingSet = symbols.Subtable(indicesTrain);
-                    trainingSet.TableName = "Train-" + k.ToString();
+                    double[] values = trainingSet.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
+                    histograms[i] = new Accord.Statistics.Visualizations.Histogram("hist" + continuesAttributes[i]);
+                    histograms[i].AutoAdjustmentRule = BinAdjustmentRule.None;
+                    histograms[i].Compute(values, numberOfBins: numberOfHistBins);
 
-                    DataTable validationSet = symbols.Subtable(indicesValidation);
-                    validationSet.TableName = "Test-" + k.ToString();
+                    tmp.Columns[continuesAttributes[i]].DataType = typeof(int);
 
-                    Accord.Statistics.Visualizations.Histogram[] histograms
-                        = new Accord.Statistics.Visualizations.Histogram[continuesAttributes.Length];
+                    //TODO can we make this operation reversable, now we lost the original values
 
-                    DataTable tmp = trainingSet.Clone();
+                    Dictionary<string, int> histCode = new Dictionary<string, int>(histograms[i].Bins.Count);
+                    for (int j = 0; j < histograms[i].Bins.Count; j++)
+                    {
+                        histCode.Add(j.ToString(), j);
+                    }
 
+                    //in the second pass codification is already created, we need to substitute the coding
+                    if (codebook.Columns.Contains(continuesAttributes[i]))
+                        codebook.Columns.Remove(continuesAttributes[i]);
+
+                    codebook.Columns.Add(new Codification.Options(continuesAttributes[i], histCode));
+                }
+
+                foreach (DataRow row in trainingSet.Rows)
+                {
                     for (int i = 0; i < continuesAttributes.Length; i++)
                     {
-                        double[] values = trainingSet.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
-                        histograms[i] = new Accord.Statistics.Visualizations.Histogram("hist" + continuesAttributes[i]);
-                        histograms[i].AutoAdjustmentRule = BinAdjustmentRule.None;
-                        histograms[i].Compute(values, numberOfBins: numberOfHistBins);
-
-                        tmp.Columns[continuesAttributes[i]].DataType = typeof(int);
-
-                        //TODO can we make this operation reversable, now we lost the original values
-
-                        Dictionary<string, int> histCode = new Dictionary<string, int>(histograms[i].Bins.Count);
-                        for (int j = 0; j < histograms[i].Bins.Count; j++)
-                        {
-                            histCode.Add(j.ToString(), j);
-                        }
-
-                        //in the second pass codification is already created, we need to substitute the coding
-                        if (codebook.Columns.Contains(continuesAttributes[i]))
-                            codebook.Columns.Remove(continuesAttributes[i]);
-
-                        codebook.Columns.Add(new Codification.Options(continuesAttributes[i], histCode));
+                        row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
                     }
 
-                    foreach (DataRow row in trainingSet.Rows)
-                    {
-                        for (int i = 0; i < continuesAttributes.Length; i++)
-                        {
-                            row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
-                        }
+                    tmp.ImportRow(row);
+                }
 
-                        tmp.ImportRow(row);
-                    }
+                trainingSet = tmp;
 
-                    trainingSet = tmp;
+                tmp = validationSet.Clone();
+                for (int i = 0; i < continuesAttributes.Length; i++)
+                {
+                    tmp.Columns[continuesAttributes[i]].DataType = typeof(int);
+                }
 
-                    tmp = validationSet.Clone();
+                foreach (DataRow row in validationSet.Rows)
+                {
                     for (int i = 0; i < continuesAttributes.Length; i++)
                     {
-                        tmp.Columns[continuesAttributes[i]].DataType = typeof(int);
+                        row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
                     }
 
-                    foreach (DataRow row in validationSet.Rows)
-                    {
-                        for (int i = 0; i < continuesAttributes.Length; i++)
-                        {
-                            row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
-                        }
+                    tmp.ImportRow(row);
+                }
 
-                        tmp.ImportRow(row);
-                    }
+                validationSet = tmp;
 
-                    validationSet = tmp;
+                DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
+                DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);
 
-                    DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
-                    DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);
+                RoughClassifier roughClassifier = new RoughClassifier();
+                roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
-                    RoughClassifier roughClassifier = new RoughClassifier();
-                    roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
+                IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+                ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
+                classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
 
-                    IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
-                    ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
-                    classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+                IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+                ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
+                classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
 
-                    IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
-                    ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
-                    classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+                //Console.WriteLine("Training result: {0}", classificationResultTrn.Accuracy);
+                //Console.WriteLine("Validation result: {0}", classificationResultTst.Accuracy);
 
-                    //Console.WriteLine("Training result: {0}", classificationResultTrn.Accuracy);
-                    //Console.WriteLine("Validation result: {0}", classificationResultTst.Accuracy);
+                return new CrossValidationValues<RoughClassifier>(roughClassifier,
+                                                                    classificationResultTrn.Accuracy,
+                                                                    classificationResultTst.Accuracy);
+            };
 
-                    return new CrossValidationValues<RoughClassifier>(roughClassifier,
-                                                                      classificationResultTrn.Accuracy,
-                                                                      classificationResultTst.Accuracy);
-                };
+            var result = val.Compute();
 
-                var result = val.Compute();
-
-                Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
-            }
+            Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
         }
 
         public void HistogramTest()
@@ -384,6 +381,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
         }
     }
 
+    /*
     public class BenchmarkDataSet
     {
         private int numberOfAttributes;
@@ -393,7 +391,6 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
         private string filename;
         private string[] nominalAttributes;
         private string[] continuesAttributes;
-
-
     }
+    */
 }

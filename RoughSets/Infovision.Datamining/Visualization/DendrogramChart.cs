@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Visualization
                 dahedGridPen.Dispose();
 
                 //calculate leaf node positions
-                int[] leafOrder = this.HCluster.ComputeLeafNodes();
+                int[] leafOrder = this.HCluster.GetLeaves();
                 Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
                 int xAxisOffset = 10;
                 int nodePointX = yAxisEnd.X + xAxisOffset;

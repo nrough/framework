@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
 
-            int[] leaves = hClustering.ComputeLeafNodes();
+            int[] leaves = hClustering.GetLeaves();
 
             foreach (int i in leaves)
             {

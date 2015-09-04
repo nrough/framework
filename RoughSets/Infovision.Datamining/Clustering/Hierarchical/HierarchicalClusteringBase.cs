@@ -17,8 +17,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private Dictionary<int, double[]> instances;
         private int nextNodeId;
         
-        //Average leaf level distance
-        private double avgNodeLevelDistance;        
+        //Average leaf level distance        
+        private bool isLeafDistanceCalculated;
+        private double avgNodeLevelDistance;
         private Dictionary<int, int> node2RootDistance;
         private Dictionary<Tuple<int, int>, int> lca;
         
@@ -134,8 +135,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Linkage = ClusteringLinkage.Complete;
             this.nextNodeId = -1;                        
             this.instances = new Dictionary<int, double[]>();
-            this.avgNodeLevelDistance = Double.MinValue;
-            this.node2RootDistance = new Dictionary<int,int>();
+            this.avgNodeLevelDistance = Double.MinValue;           
+            this.isLeafDistanceCalculated = false;
         }
 
         protected virtual int GetNextNodeId()
@@ -163,54 +164,33 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
         }
         
-        public int[] ComputeLeafNodes()
+        public virtual int[] GetLeaves()
         {
             int[] order = new int[this.NumberOfInstances];
             int pos = 0;
-            WalkChildrenTree(ref order, ref pos, this.root);
+            Action<DendrogramNode> getLeaves = delegate(DendrogramNode d)
+            {
+                if (d.IsLeaf)
+                    order[pos++] = d.Id;
+            };
+
+            HierarchicalClusteringBase.TraversePreOrder(this.Root, getLeaves);
             return order;
-        }
-
-        private void WalkChildrenTree(ref int[] order, ref int pos, DendrogramNode node)
-        {
-            if (node == null)
-                throw new ArgumentNullException("node");
-
-            if (node.IsLeaf)
-            {
-                order[pos++] = node.Id;
-                return;
-            }
-            else
-            {
-                if (node.LeftNode != null)
-                    WalkChildrenTree(ref order, ref pos, node.LeftNode);
-                
-                if (node.RightNode != null)
-                    WalkChildrenTree(ref order, ref pos, node.RightNode);
-            }                        
-        }
+        }        
 
         protected virtual int[] GetLeaves(DendrogramNode node)
-        {
+        {            
             HashSet<int> leaves = new HashSet<int>();
-            GetLeaves(node, leaves);
-            return leaves.ToArray();
-        }
 
-        private void GetLeaves(DendrogramNode node, HashSet<int> leaves)
-        {
-            if (node.IsLeaf)
+            Action<DendrogramNode> getLeaves = delegate(DendrogramNode d)
             {
-                leaves.Add(node.Id);
-                return;
-            }
+                if (d.IsLeaf)
+                    leaves.Add(node.Id);
+            };
 
-            if (node.LeftNode != null)
-                GetLeaves(node.LeftNode, leaves);
-            if (node.RightNode != null)
-                GetLeaves(node.RightNode, leaves);
-        }
+            HierarchicalClusteringBase.TraversePreOrder(this.Root, getLeaves);
+            return leaves.ToArray();
+        }        
 
         protected abstract double GetClusterDistance(int[] cluster1, int[] cluster2);
 
@@ -365,19 +345,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private void SetClusterIdRecursive(int clusterId, ref int[] result, DendrogramNode node)
         {
             if (node == null)
-                throw new ArgumentNullException("node");
+                return;
 
             if (node.IsLeaf)
             {
                 result[node.Id] = clusterId;
-                return;
             }
-            
-            if (node.LeftNode != null)
+            else
+            {
                 SetClusterIdRecursive(clusterId, ref result, node.LeftNode);
-            
-            if (node.RightNode != null)
-                SetClusterIdRecursive(clusterId, ref result, node.RightNode);            
+                SetClusterIdRecursive(clusterId, ref result, node.RightNode);
+            }
         }        
 
         /// <summary>
@@ -387,22 +365,20 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// </summary>
         /// <returns>Average distance</returns>
         public virtual double GetAvgNodeLevelDistance()
-        {
-            double ret = 0.0;
-            this.CalcLCA();
-            this.CalcNode2RootDistances();
-            int n = 0;
-            int[] leaves = this.GetLeaves(this.Root);
-            for (int i = 0; i < leaves.Length; i++)
-            {
-                for (int j = i + 1; j < leaves.Length; j++)
-                {
-                    ret += this.GetLeafDistance(leaves[i], leaves[j]);
-                    n++;
-                }
-            }
+        {            
+            if (this.isLeafDistanceCalculated == false)
+                this.CalculateLeavesDistance();
 
-            return ret / n;
+            double ret = 0.0;
+            foreach (KeyValuePair<Tuple<int, int>, int> kvp in this.lca)
+                ret += this.GetLeafDistance(kvp.Key.Item1, kvp.Key.Item2);                        
+            return ret / lca.Count;
+        }
+
+        protected virtual void CalculateLeavesDistance()
+        {                                                
+            this.CalcLCA();            
+            this.isLeafDistanceCalculated = true;
         }
 
         public virtual void CalcLCA()
@@ -411,6 +387,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             int[] leaves = new int[this.NumberOfInstances];
             int[] nodeIds = new int[2 * this.NumberOfInstances - 1];
             Dictionary<int, int> nodeId2Idx = new Dictionary<int, int>(nodeIds.Length);
+            this.node2RootDistance = new Dictionary<int, int>();
             Action<DendrogramNode> node2Lookup = delegate(DendrogramNode d)
             {
                 nodeIds[i] = d.Id;
@@ -418,6 +395,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 i++;
                 if (d.IsLeaf)
                     leaves[l++] = d.Id;
+
+                if (d.IsRoot == true)
+                    d.Level = 0;
+                else
+                    d.Level = d.Parent.Level + 1;
+                this.node2RootDistance[d.Id] = d.Level;
             };
             HierarchicalClusteringBase.TraversePreOrder(this.Root, node2Lookup);
 
@@ -428,13 +411,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 eulerPath.Add(nodeId2Idx[d.Id]);
                 if (!firstVisit.TryGetValue(d.Id, out nodeIdx))
-                    firstVisit[d.Id] = i;
+                {
+                    firstVisit[d.Id] = i;                    
+                }
                 i++;
             };
             HierarchicalClusteringBase.TraverseEulerPath(this.Root, node2Array);
 
             this.lca = new Dictionary<Tuple<int, int>, int>();
-            int indexX, indexY, temp;
+            int indexX, indexY, temp;            
+            
             for (i = 0; i < leaves.Length; i++)
             {
                 indexX = firstVisit[leaves[i]];
@@ -451,12 +437,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                     temp = Int32.MaxValue;
                     for (int m = indexX; m < indexY; m++)
-                    {
                         if (eulerPath[m] < temp)
-                        {
                             temp = eulerPath[m];
-                        }
-                    }
 
                     this.lca.Add(leaves[i] <= leaves[j] 
                                     ? new Tuple<int, int>(leaves[i], leaves[j]) 
@@ -467,26 +449,97 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         /// <summary>
-        /// Calculate nodes distance to root node (distance between node and its parent is equal to 1)
+        /// https://sites.google.com/site/indy256/algo/sparse_table_rmq
+        /// https://sites.google.com/site/indy256/algo/sparse_table_lca
+        /// 
         /// </summary>
-        public virtual void CalcNode2RootDistances()
+        public virtual void CalcLCASparseTable()
         {
-            this.node2RootDistance = new Dictionary<int, int>();
             
-            Action<DendrogramNode> calcNodeLevel = delegate(DendrogramNode d)
+            //TODO
+
+            
+            int i = 0, j, nodeIdx, l = 0;
+            int[] leaves = new int[this.NumberOfInstances];
+            int[] nodeIds = new int[2 * this.NumberOfInstances - 1];
+            Dictionary<int, int> nodeId2Idx = new Dictionary<int, int>(nodeIds.Length);
+            this.node2RootDistance = new Dictionary<int, int>();
+            Action<DendrogramNode> node2Lookup = delegate(DendrogramNode d)
             {
-                if (d.IsRoot == true)                
+                nodeIds[i] = d.Id;
+                nodeId2Idx[d.Id] = i;
+                i++;
+                if (d.IsLeaf)
+                    leaves[l++] = d.Id;
+
+                if (d.IsRoot == true)
                     d.Level = 0;
                 else
                     d.Level = d.Parent.Level + 1;
                 this.node2RootDistance[d.Id] = d.Level;
             };
+            HierarchicalClusteringBase.TraversePreOrder(this.Root, node2Lookup);
 
-            HierarchicalClusteringBase.TraverseLevelOrder(this.Root, calcNodeLevel);
-        }         
+            List<int> eulerPath = new List<int>();
+            Dictionary<int, int> firstVisit = new Dictionary<int, int>();
+            i = 0;
+            Action<DendrogramNode> node2Array = delegate(DendrogramNode d)
+            {
+                eulerPath.Add(nodeId2Idx[d.Id]);
+                if (!firstVisit.TryGetValue(d.Id, out nodeIdx))
+                {
+                    firstVisit[d.Id] = i;
+                }
+                i++;
+            };
+            HierarchicalClusteringBase.TraverseEulerPath(this.Root, node2Array);
+
+            this.lca = new Dictionary<Tuple<int, int>, int>();
+            
+            int[] logTable = new int[eulerPath.Count + 1];
+            for (i = 2; i <= eulerPath.Count; i++)
+                logTable[i] = logTable[i >> 1] + 1;
+
+            int[][] rmq = new int[logTable[eulerPath.Count] + 1][];
+            for (i = 0; i < rmq.Length; i++)
+                rmq[i] = new int[eulerPath.Count];
+
+            for (i = 0; i < eulerPath.Count; ++i)
+                rmq[0][i] = i;
+
+            for (int k = 1; (1 << k) < eulerPath.Count; ++k)
+            {
+                for (i = 0; i + (1 << k) <= eulerPath.Count; i++)
+                {
+                    int x = rmq[k - 1][i];
+                    int y = rmq[k - 1][i + (1 << k - 1)];
+                    rmq[k][i] = eulerPath[x] <= eulerPath[y] ? x : y;
+                }
+            }
+
+            for (i = 0; i < leaves.Length; i++)
+            {
+                for (j = i + 1; j < leaves.Length; j++)
+                {
+                    int k = logTable[leaves[j] - leaves[i]];
+                    int x = rmq[k][leaves[i]];
+                    int y = rmq[k][leaves[j] - (1 << k) + 1];
+                    
+                    this.lca.Add(leaves[i] <= leaves[j] 
+                                    ? new Tuple<int, int>(leaves[i], leaves[j]) 
+                                    : new Tuple<int, int>(leaves[j], leaves[i]), 
+                                 eulerPath[x] <= eulerPath[y] ? x : y);                    
+                }
+            }
+            
+        }                 
 
         public virtual double GetLeafDistance(int node1, int node2)
         {
+
+            if (this.isLeafDistanceCalculated == false)
+                this.CalculateLeavesDistance();
+            
             int dist1 = this.node2RootDistance[node1];
             int dist2 = this.node2RootDistance[node2];
             int lcsDist = this.node2RootDistance[this.lca[node1 <= node2 

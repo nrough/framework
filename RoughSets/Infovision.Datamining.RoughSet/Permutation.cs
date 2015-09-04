@@ -41,7 +41,7 @@ namespace Infovision.Datamining.Roughset
 
         public int[] ToArray()
         {
-            return elements;
+            return elements;            
         }
 
         public virtual Permutation Reverse()

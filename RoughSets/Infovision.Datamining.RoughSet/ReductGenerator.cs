@@ -120,10 +120,14 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods               
 
-        public abstract void Generate();        
-        protected abstract IReductStore CreateReductStore();
+        public abstract void Generate();                
         protected abstract IReduct CreateReductObject(int[] fieldIds, double epsilon, string id);
         public abstract IReduct CreateReduct(Permutation permutation);
+
+        protected virtual IReductStore CreateReductStore()
+        {
+            return new ReductStore();
+        }
 
         public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {

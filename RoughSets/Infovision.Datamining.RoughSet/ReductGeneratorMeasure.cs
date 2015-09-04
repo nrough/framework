@@ -48,11 +48,6 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #region Methods
-                
-        protected override IReductStore CreateReductStore()
-        {
-            return new ReductStore();            
-        }
 
         protected virtual void CalcDataSetQuality()
         {

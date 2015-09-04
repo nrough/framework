@@ -336,12 +336,7 @@ namespace Infovision.Datamining.Roughset
         {
             IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
-        }
-
-        protected override IReductStore CreateReductStore()
-        {
-            return new ReductStore();
-        }
+        }        
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
@@ -351,7 +346,7 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
-    public class ReductStreamEnsambleFactory : IReductFactory
+    public class ReductEnsambleStreamFactory : IReductFactory
     {
         public virtual string FactoryKey
         {

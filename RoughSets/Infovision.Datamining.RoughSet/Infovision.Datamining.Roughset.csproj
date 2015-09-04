@@ -97,11 +97,13 @@
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
     <Compile Include="ReductCrisp.cs" />
+    <Compile Include="ReductEnsembleBoostingGenerator.cs" />
     <Compile Include="ReductEnsembleDistanceHelper.cs" />
     <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />
     <Compile Include="ReductGeneralDecisionGenerator.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
+    <Compile Include="ReductGeneratorParamHelper.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="IReductStoreMeasure.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="InformationMeasure.cs" />
     <Compile Include="EquivalenceClassMap.cs" />
     <Compile Include="RuleMeasure.cs" />
+    <Compile Include="WeightBoostingGenerator.cs" />
     <Compile Include="WeightGeneratorEnsemble.cs" />
     <Compile Include="WeightGenerator.cs" />
   </ItemGroup>

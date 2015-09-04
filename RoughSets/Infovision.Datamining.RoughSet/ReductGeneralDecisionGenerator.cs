@@ -81,11 +81,6 @@ namespace Infovision.Datamining.Roughset
             r.Id = id;
             return r;
         }
-
-        protected override IReductStore CreateReductStore()
-        {
-            return new ReductStore();
-        }
     }
 
     public class ReductGeneralDecisionFactory : IReductFactory

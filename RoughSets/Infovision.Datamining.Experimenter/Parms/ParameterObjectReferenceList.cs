@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
 {
+    //TODO Change "List" to "Collection" in class name
+
     [Serializable]
     public class ParameterObjectReferenceList<T> : ParameterBase<T>
     {

@@ -97,7 +97,7 @@ namespace Infovision.MRI.DAL
             return typeof(MiningObjectHistogramCluster);
         }
 
-        public void Train(itk.simple.Image image)
+        public void Train(IImage image)
         {
             cluster = new ImageHistogramCluster()
             {

@@ -134,7 +134,7 @@ namespace Infovision.MRI.DAL
                     IMiningObjectViewImage refObject = project.GetMiningObject(this.RefId) as IMiningObjectViewImage;
                     ImageITK image = (ImageITK)refObject.Image;
 
-                    histogramCluster.Image = image.ItkImage;
+                    histogramCluster.Image = image;
                     histogramCluster.Train();
                 }     
             }

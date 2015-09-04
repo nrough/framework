@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Application", "..\..\Users\Sebastian\Documents\Visual Studio 2012\Projects\Infovision\Infovision.Application.csproj", "{9B0EACA6-EAD5-4EFB-8569-BF9DC6A37E75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Application", "Infovision\Infovision.Application.csproj", "{9B0EACA6-EAD5-4EFB-8569-BF9DC6A37E75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Configuration", "Configuration\Infovision.Configuration.csproj", "{FB06CF74-AACD-4AE0-B799-F87F6E774034}"
 EndProject
@@ -78,8 +78,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{79AD8C
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.CudaLib", "Infovision.CudaLib\Infovision.CudaLib.csproj", "{761687F2-A06D-4921-B90B-3B4E5CF25444}"
@@ -114,6 +112,43 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntervalTreeLib", "Interval
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MRI", "MRI", "{C18F4048-EE40-400A-9283-3F419EB04BF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx64", "SimpleITKx64", "{640ABD90-29B0-4CEF-99B5-68B0FA9FAC09}"
+	ProjectSection(SolutionItems) = preProject
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\ITK-4.5-NOTICE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\ITK-4.5-NOTICE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\ITK-4.5-README.txt = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\ITK-4.5-README.txt
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\LICENSE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\LICENSE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\NOTICE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\NOTICE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\Readme.md = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\Readme.md
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\SimpleITKCSharpManaged.dll = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\SimpleITKCSharpManaged.dll
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\SimpleITKCSharpNative.dll = external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\SimpleITKCSharpNative.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GenericParsing", "GenericParsing", "{150B212C-FB52-4A96-8A5C-9B00477875C6}"
+	ProjectSection(SolutionItems) = preProject
+		external\GenericParsing\GenericParser.xml = external\GenericParsing\GenericParser.xml
+		external\GenericParsing\GenericParsing.chm = external\GenericParsing\GenericParsing.chm
+		external\GenericParsing\GenericParsing.dll = external\GenericParsing\GenericParsing.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skmDataStructures", "skmDataStructures", "{40F3E529-C9BC-4C90-BC5B-EFB93E93E3D3}"
+	ProjectSection(SolutionItems) = preProject
+		external\skmDataStructures\skmDataStructures.dll = external\skmDataStructures\skmDataStructures.dll
+		external\skmDataStructures\skmDataStructures.pdb = external\skmDataStructures\skmDataStructures.pdb
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx86", "SimpleITKx86", "{E0FD0250-8740-4501-BDCB-13AED3D208CE}"
+	ProjectSection(SolutionItems) = preProject
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\ITK-4.5-NOTICE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\ITK-4.5-NOTICE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\ITK-4.5-README.txt = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\ITK-4.5-README.txt
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\LICENSE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\LICENSE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\NOTICE = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\NOTICE
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\Readme.md = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\Readme.md
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpManaged.dll = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpManaged.dll
+		external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpNative.dll = external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpNative.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{F198125A-8AA1-4258-9545-6C6C50EAD439}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -195,9 +230,9 @@ Global
 		SccProjectUniqueName21 = Infovision.Utils\\Infovision.Utils.csproj
 		SccProjectName21 = Infovision.Utils
 		SccLocalPath21 = Infovision.Utils
-		SccProjectUniqueName22 = ..\\..\\Users\\Sebastian\\Documents\\Visual\u0020Studio\u00202012\\Projects\\Infovision\\Infovision.Application.csproj
+		SccProjectUniqueName22 = Infovision\\Infovision.Application.csproj
 		SccProjectName22 = Infovision
-		SccLocalPath22 = ..\\..\\Users\\Sebastian\\Documents\\Visual\u0020Studio\u00202012\\Projects\\Infovision
+		SccLocalPath22 = Infovision
 		SccProjectUniqueName23 = Infovision.Datamining.Experimenter\\Infovision.Datamining.Experimenter.csproj
 		SccProjectName23 = Infovision.Datamining.Experimenter
 		SccLocalPath23 = Infovision.Datamining.Experimenter
@@ -493,7 +528,6 @@ Global
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|x64.ActiveCfg = Debug|x64
-		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|x64.Build.0 = Debug|x64
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -501,7 +535,6 @@ Global
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|Win32.ActiveCfg = Release|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|x64.ActiveCfg = Release|x64
-		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|x64.Build.0 = Release|x64
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Release|x86.ActiveCfg = Release|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -509,7 +542,6 @@ Global
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|x64.ActiveCfg = Debug|x64
-		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|x64.Build.0 = Debug|x64
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -517,7 +549,6 @@ Global
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|Win32.ActiveCfg = Release|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|x64.ActiveCfg = Release|x64
-		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|x64.Build.0 = Release|x64
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|x86.ActiveCfg = Release|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -651,7 +682,8 @@ Global
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|x64.ActiveCfg = Debug|x64
+		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|x64.Build.0 = Debug|x64
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -670,15 +702,20 @@ Global
 		{EA325EEA-CB1E-4517-974B-7205C8420198} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{7182079F-C9E0-4D46-AB68-4F86443F1244} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{914C35DA-94B7-4A68-9F2D-C6C426A03540} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
-		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{C2F37EAA-40B1-4FE0-8FEF-E251EB4C957B} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{D4C765AF-AC85-472D-9549-5D682015A124} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{5D273260-69B2-49ED-8B82-21E0BC9D0778} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{57DEC689-FCC3-4123-876E-0A04CC76309C} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{C32F57FC-32D0-4853-8145-2645A559BF6B} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
-		{3B9034D2-15EB-48E7-A5EC-46351458B117} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
-		{3E09373E-33C7-4119-9FC9-068A141668E1} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
-		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
+		{F198125A-8AA1-4258-9545-6C6C50EAD439} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
+		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
+		{3E09373E-33C7-4119-9FC9-068A141668E1} = {C18F4048-EE40-400A-9283-3F419EB04BF2}
+		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E} = {F198125A-8AA1-4258-9545-6C6C50EAD439}
+		{3B9034D2-15EB-48E7-A5EC-46351458B117} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+		{640ABD90-29B0-4CEF-99B5-68B0FA9FAC09} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+		{150B212C-FB52-4A96-8A5C-9B00477875C6} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+		{40F3E529-C9BC-4C90-BC5B-EFB93E93E3D3} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+		{E0FD0250-8740-4501-BDCB-13AED3D208CE} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 	EndGlobalSection
 EndGlobal

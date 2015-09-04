@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Infovision.Datamining</RootNamespace>
     <AssemblyName>Infovision.Datamining</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -75,7 +75,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Accord.2.12.0.0\lib\Accord.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.MachineLearning">
+    <Reference Include="Accord.MachineLearning, Version=2.12.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Accord.MachineLearning.2.12.0.0\lib\Accord.MachineLearning.dll</HintPath>
     </Reference>
     <Reference Include="Accord.Math, Version=2.12.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
@@ -104,8 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationResult.cs" />
-    <Compile Include="Clustering\Hierarchical\Agnes.cs" />
-    <Compile Include="Clustering\Hierarchical\AgnesCluster.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimple.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalCluster.cs" />
     <Compile Include="Clustering\Hierarchical\DistanceMatrix.cs" />
     <Compile Include="Clustering\Hierarchical\MatrixIndex.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
@@ -117,11 +119,12 @@
       <Name>Infovision.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
-      <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
+      <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>Infovision.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
   </ItemGroup>

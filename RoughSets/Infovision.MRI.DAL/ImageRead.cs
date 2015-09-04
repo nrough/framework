@@ -193,7 +193,7 @@ namespace Infovision.MRI.DAL
                                                            this.Depth,
                                                            this.PixelType, 
                                                            this.Endianness, 
-                                                           this.Header);
+                                                           (uint) this.Header);
                     break;
 
                 default:

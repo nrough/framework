@@ -112,9 +112,9 @@ namespace Infovision.MRI.DAL
             row.SetField<long>(ImageFields.Id, image.Id);
             row.SetField<string>(ImageFields.Name, image.Name);
             row.SetField<long?>(ImageFields.ParentId, image.ParentId);
-            row.SetField<int>(ImageFields.Width, image.Width);
-            row.SetField<int>(ImageFields.Height, image.Height);
-            row.SetField<int>(ImageFields.Depth, image.Depth);
+            row.SetField<int>(ImageFields.Width, (int) image.Width);
+            row.SetField<int>(ImageFields.Height, (int) image.Height);
+            row.SetField<int>(ImageFields.Depth, (int) image.Depth);
             row.SetField<string>(ImageFields.FileName, image.FileName);
             row.SetField<Endianness>(ImageFields.Endianness, image.Endianness);
             row.SetField<PixelType>(ImageFields.PixelType, image.PixelType);
@@ -144,9 +144,9 @@ namespace Infovision.MRI.DAL
                 image.ParentId = null;
             }
 
-            image.Width = (int)dataRow[ImageFields.Width];
-            image.Height = (int)dataRow[ImageFields.Height];
-            image.Depth = (int)dataRow[ImageFields.Depth];
+            image.Width = (uint)dataRow[ImageFields.Width];
+            image.Height = (uint)dataRow[ImageFields.Height];
+            image.Depth = (uint)dataRow[ImageFields.Depth];
             image.FileName = (string)dataRow[ImageFields.FileName];
             image.Endianness = (Endianness)dataRow[ImageFields.Endianness];
             image.PixelType = (PixelType)dataRow[ImageFields.PixelType];

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -13,11 +14,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set;
         }
     }
-    
-    
+        
     public class DistanceMatrix
     {
         private Dictionary<MatrixKey, double> matrix = new Dictionary<MatrixKey, double>();
+        private ReadOnlyDictionary<MatrixKey, double> readOnlyMatrix;
         private Func<double[], double[], double> distance;
 
         public DistanceMatrix(Func<double[], double[], double> distance)
@@ -36,6 +37,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set { this.distance = value; }
         }
 
+        public ReadOnlyDictionary<MatrixKey, double> ReadOnlyMatrix
+        {
+            get { return this.readOnlyMatrix; }
+        }
+
         public void Initialize(double[][] points)
         {
             //calculate initial distance matrix
@@ -46,7 +52,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     MatrixKey key = new MatrixKey(i, j);
                     matrix.Add(key, this.Distance(points[i], points[j]));
                 }
-            }   
+            }
+
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
         }
 
         public MatrixKey FindMinimumDistance()
@@ -62,14 +70,20 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     result[1] = kvp.Key.Y;
                     minDistance = kvp.Value;
                 }
-            }
-
-            Console.WriteLine("Smallest distance is {0}. Under key: {1}-{2}", minDistance,  result[0],  result[1]);
-
+            }           
+            
             return new MatrixKey(result[0], result[1]);
+        }        
+
+        public double GetDistance(int x, int y)
+        {
+            MatrixKey key = new MatrixKey(x, y);
+            if (!matrix.ContainsKey(new MatrixKey(x, y)))
+                key = new MatrixKey(y, x);
+            return matrix[key];
         }
 
-        public void CalculateDistanceMatrix(AgnesCluster mergedCluster1, AgnesCluster mergedCluster2, AgnesCluster newCluster)
+        public void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)
         {
             CalculateDistanceMatrix(mergedCluster1.Index, mergedCluster2.Index, newCluster.Index);                        
         }
@@ -95,13 +109,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     MatrixKey newKey = new MatrixKey(newCluster, kvp.Key.Y);
 
                     var query = matrix.Where(x => (x.Key.X == mergedCluster1 || x.Key.X == mergedCluster2)
-                                                    && x.Key.Y == kvp.Key.Y);
+                                                    && x.Key.Y == kvp.Key.Y);                    
 
-                    foreach (KeyValuePair<MatrixKey, double> item in query)
-                    {
-                        Console.WriteLine("{0} Checking distance d({1}) = {2}", kvp.Key, item.Key, item.Value);
-                    }
-
+                    //TODO To be substituted by linkage delegate
                     var newDistance = query.Aggregate(query.First(), (min, curr) => curr.Value < min.Value ? curr : min);
 
                     if (newMatrix.ContainsKey(newKey))
@@ -122,12 +132,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                     var query = matrix.Where(x => (x.Key.Y == mergedCluster1 || x.Key.Y == mergedCluster2)
                                                     && x.Key.X == kvp.Key.X);
-                    
-                    foreach (KeyValuePair<MatrixKey, double> item in query)
-                    {
-                        Console.WriteLine("{0} Checking distance d({1}) = {2}", kvp.Key, item.Key, item.Value);
-                    }
 
+                    //TODO To be substituted by linkage delegate
                     var newDistance = query.Aggregate(query.First(), (min, curr) => curr.Value < min.Value ? curr : min);
 
                     if (newMatrix.ContainsKey(newKey))

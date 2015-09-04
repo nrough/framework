@@ -66,11 +66,15 @@ namespace Infovision.Datamining.Roughset
         public ReductCrisp CalculateReduct(int[] attributes)
         {
             ReductCrisp reduct = (ReductCrisp)this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());
+            reduct.Reduce(attributes, 0);
+
+            /*
             foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 eq.RemoveObjectsWithMinorDecisions();
 
             for (int i = attributes.Length - 1; i >= 0; i--)
                 reduct.TryRemoveAttribute(attributes[i]);
+            */
 
             return reduct;
         }

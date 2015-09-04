@@ -93,8 +93,8 @@ namespace Infovision.Datamining.Roughset
 				if (emptyReduct.Attributes.Count != 0)
 					throw new InvalidOperationException("Empty reduct must be of zero length");
 
-				double M = new InformationMeasureWeights().Calc(emptyReduct);
-				this.Threshold = 1.0 - M;
+				double m0 = new InformationMeasureWeights().Calc(emptyReduct);
+				this.Threshold = 1.0 - m0;
 			}
 
 			if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset
 
 		public override void Generate()
 		{
-            this.ReductPool = this.CreateReductStore(this.NumberOfReductsInWeakClassifier * this.MaxIterations);
+			this.ReductPool = this.CreateReductStore(this.NumberOfReductsInWeakClassifier * this.MaxIterations);
 			this.ReductPool.AllowDuplicates = true;
 			
 			this.Models = new ReductStoreCollection(this.MaxIterations);
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset
 
 			do
 			{
-                IReductStore localReductStore = this.CreateReductStore(this.NumberOfReductsInWeakClassifier);				
+				IReductStore localReductStore = this.CreateReductStore(this.NumberOfReductsInWeakClassifier);				
 				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
 				{
 					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights, this.MinReductLength, this.MaxReductLength);
@@ -164,17 +164,17 @@ namespace Infovision.Datamining.Roughset
 
 				RoughClassifier classifier = new RoughClassifier();
 				classifier.ReductStore = localReductStore;
-                classifier.ReductStoreCollection = new ReductStoreCollection(1);
-                classifier.ReductStoreCollection.AddStore(localReductStore);
+				classifier.ReductStoreCollection = new ReductStoreCollection(1);
+				classifier.ReductStoreCollection.AddStore(localReductStore);
 				classifier.Classify(this.DataStore);
 				ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, this.WeightGenerator.Weights);
 				error = result.WeightUnclassified + result.WeightMisclassified;				
 
 				//clear objects and memory
-                classifier = null;
-                GC.Collect();
-                
-                if (error >= this.Threshold)
+				classifier = null;
+				GC.Collect();
+				
+				if (error >= this.Threshold)
 				{
 					this.NumberOfWeightResets++;
 
@@ -206,7 +206,7 @@ namespace Infovision.Datamining.Roughset
 					sum += this.WeightGenerator.Weights[i];
 				}
 
-                result = null;
+				result = null;
 
 				//Normalize object weights
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )

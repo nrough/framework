@@ -92,7 +92,7 @@ namespace Infovision.Datamining.Roughset
 			double mB = this.GetPartitionQuality(reduct);
 			double mA = this.GetDataSetQuality(reduct);
 
-			if( (mB - this.m0) >= ((1.0 - this.Epsilon) * (mA-m0) - tinyDouble))
+			if( (mB - this.m0) >= ((1.0 - this.Epsilon) * (mA - m0) - tinyDouble))
 				return true;
 			
 			return false;
@@ -135,8 +135,11 @@ namespace Infovision.Datamining.Roughset
 			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
 			this.M0 = this.GetPartitionQuality(emptyReduct);
 
-			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
-			this.Epsilon = (1.0 / (double) K) * this.Threshold;
+            if (!args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+            {
+                int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+                this.Epsilon = (1.0 / (double)K) * this.Threshold;
+            }
 		}
 	}
 

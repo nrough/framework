@@ -190,10 +190,8 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("USECACHE"))
                 this.useCache = true;
 
-            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
-            {
+            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))            
                 this.Epsilon = (double)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio);
-            }
 
             //TODO FieldGroups
         }

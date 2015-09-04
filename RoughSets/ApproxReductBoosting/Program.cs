@@ -64,24 +64,25 @@ namespace ApproxReductBoosting
 			ParameterCollection parmList = new ParameterCollection(
 				new IParameter[] {
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
-					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
-					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100),
+					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
+					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
 					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
 																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
-					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All)
+					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
 					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
 					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+					new ParameterNumericRange<int>("Epsilon", 0, 100, 1)
 				}
 			);
 
-			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
+			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
 									 "DATASET",
 									 "METHOD",
 									 "IDENTYFICATION",
@@ -98,6 +99,7 @@ namespace ApproxReductBoosting
 									 "TRN_ERROR",
 									 "TST_ERROR",
 									 "AVG_REDUCT",
+									 "FOLD",
 									 "EPSILON");
 
 			int i = 0;
@@ -111,6 +113,7 @@ namespace ApproxReductBoosting
 				bool checkEnsembleErrorDuringTraining = (bool)p[4];
 				UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
 				//int minLen = (int)p[6];
+				int epsilon = (int)p[6];
 				
 				Args parms = new Args();
 				if (trnDataOrig.DataStoreInfo.HasMissingData)
@@ -125,6 +128,7 @@ namespace ApproxReductBoosting
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 				parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
+				parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (double)epsilon / 100.0);
 
 				WeightGenerator weightGenerator;
 				switch (weightingSchema)
@@ -192,7 +196,7 @@ namespace ApproxReductBoosting
 						break;
 				}
 
-				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
+				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
 									trnDataOrig.Name,
 									factoryKey,
 									reductGenerator.IdentyficationType,
@@ -209,6 +213,7 @@ namespace ApproxReductBoosting
 									resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
 									resultTst.WeightMisclassified + resultTst.WeightUnclassified,
 									reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()),
+									1,
 									reductGenerator.Epsilon);
 			}
 		}

@@ -47,7 +47,9 @@ namespace Infovision.Math
             if (obj is MatrixKey)
             {
                 index = (MatrixKey)obj;
-                return this.X == index.X && this.Y == index.Y;
+                return (this.X == index.X && this.Y == index.Y) 
+                    || (this.X == index.Y && this.Y == index.X);
+                //return this.X == index.X && this.Y == index.Y;
             }
 
             return false;            

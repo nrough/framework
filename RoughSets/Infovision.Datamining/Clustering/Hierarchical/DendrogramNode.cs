@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public virtual bool IsRoot
         {
-            get { return parent == null && left != null && right != null; }
+            get { return parent == null && (left != null || right != null); }
         }
 
         public virtual bool IsLeaf
@@ -88,6 +88,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public DendrogramNode()
         {
+
         }
 
         public DendrogramNode(int nodeId)

@@ -45,19 +45,20 @@ namespace Infovision.Datamining.Roughset
         {
             get { return this.attributes; }
         }
-
+        
         #endregion
 
         #region Constructors        
 
-        public EquivalenceClassCollection()
+        public EquivalenceClassCollection(int[] attributes)
         {
+            this.attributes = attributes;
+            this.InitPartitions();
         }
         
         public EquivalenceClassCollection(DataStore data)
         {            
-            this.InitDecisionCount(data.DataStoreInfo);
-            //this.dataStore = data;
+            this.InitDecisionCount(data.DataStoreInfo);            
         }
 
         private EquivalenceClassCollection(EquivalenceClassCollection equivalenceClassMap)
@@ -90,10 +91,7 @@ namespace Infovision.Datamining.Roughset
                                                    decision, 
                                                    weights != null ? weights[i] : 1.0,
                                                    dataStore);
-            }
-
-            foreach (EquivalenceClass eq in eqClassCollection)
-                eq.KeepMajorDecisions(epsilon);
+            }            
 
             return eqClassCollection;
         }
@@ -102,46 +100,13 @@ namespace Infovision.Datamining.Roughset
         {            
             AttributeValueVector vector = new AttributeValueVector(attributes, attributeValues);
             EquivalenceClass eq = null;
-            if ( ! this.partitions.TryGetValue(vector, out eq))
-                eq = new EquivalenceClass(vector, dataStore);
-            eq.AddObject(decision, weight);
-        }
-
-        public static EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeToReduce, double epsilon, DataStore dataStore)
-        {
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection();
-            foreach (EquivalenceClass eq in eqClasses)
+            if (!this.partitions.TryGetValue(vector, out eq))
             {
-                //TODO RemoveAttribute builds new AttributeValueVector scanning and checking all attributes, 
-                //onsider changing this to one operation (performed for example on binary flag vector)
-                AttributeValueVector values = eq.Instance.RemoveAttribute(attributeToReduce);
-                
-                EquivalenceClass eqNew = null;
-                if (!eqClassCollection.Partitions.TryGetValue(values, out eqNew))
-                {
-                    eqNew = new EquivalenceClass(values, dataStore);
-                    eqClassCollection.Partitions.Add(values, eqNew);
-                    eqNew = eqNew.Merge(eq);
-                }
-                else
-                {
-                    eqNew = eqNew.Intersect(eq);
-                }
-
-                if (eqNew.DecisionSet.Count == 0)
-                    return eqClasses;
+                eq = new EquivalenceClass(vector, dataStore, true);
+                this.partitions.Add(vector, eq);
             }
-
-            foreach (EquivalenceClass eq in eqClassCollection)
-                eq.KeepMajorDecisions(epsilon);
-
-            return eqClassCollection;
-        }
-
-        public bool AddRecord(int[] attributes, long[] attributeValues, long decision)
-        {
-            return true;
-        }
+            eq.AddDecision(decision, weight);
+        }              
 
         protected void InitPartitions()
         {

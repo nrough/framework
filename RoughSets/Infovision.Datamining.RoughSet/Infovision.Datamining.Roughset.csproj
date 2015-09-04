@@ -97,7 +97,6 @@
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
     <Compile Include="PermutationGeneratorEnsemble.cs" />
-    <Compile Include="ReductGeneralizedMajorityDecision.cs" />
     <Compile Include="ReductEnsembleBoostingGenerator.cs" />
     <Compile Include="ReductEnsembleBoostingVarEpsGenerator.cs" />
     <Compile Include="ReductEnsembleBoostingVarEpsWithAttributeDiversity.cs" />
@@ -107,7 +106,7 @@
     <Compile Include="ReductEnsembleDistanceHelper.cs" />
     <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />
-    <Compile Include="ReductGeneralDecision.cs" />
+    <Compile Include="ReductGeneralizedDecision.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
     <Compile Include="ReductGeneratorParamHelper.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />

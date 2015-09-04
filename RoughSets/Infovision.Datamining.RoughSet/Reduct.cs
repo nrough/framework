@@ -60,7 +60,11 @@ namespace Infovision.Datamining.Roughset
 
                 return this.eqClassMap; 
             }
-            protected set { this.eqClassMap = value; }
+            
+            protected set 
+            { 
+                this.eqClassMap = value; 
+            }
         }
 
         public bool UseGlobalCache { get; set; }

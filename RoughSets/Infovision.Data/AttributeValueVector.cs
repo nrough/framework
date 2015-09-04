@@ -91,8 +91,32 @@ namespace Infovision.Data
                 }
             }
 
-            return new AttributeValueVector(newAttributes, newValues);
-        }       
+            return new AttributeValueVector(newAttributes, newValues, false);
+        }
+
+        public AttributeValueVector RemoveAttributeAtPosition(int index)
+        {
+            int[] attributes = this.GetAttributes();
+            long[] values = this.GetValues();
+
+            int[] newAttributes = new int[attributes.Length - 1];
+            long[] newValues = new long[values.Length - 1];
+
+            //TODO copy twice
+            
+            int k = 0;
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                if (i != index)
+                {
+                    newAttributes[k] = attributes[i];
+                    newValues[k] = values[i];
+                    k++;
+                }
+            }
+
+            return new AttributeValueVector(newAttributes, newValues, false);
+        }
 
         #region System.Object Methods
 
@@ -105,12 +129,15 @@ namespace Infovision.Data
             if (p == null)
                 return false;
 
-            if (p.values.Length != values.Length)
+            if (p.attributes.Length != attributes.Length)
                 return false;
 
-            for (int i = 0; i < values.Length; i++)
-                if (this.values[i] != p.values[i])
+            for (int i = 0; i < attributes.Length; i++)
+            {                
+                if (this.values[i] != p.values[i]
+                    || this.attributes[i] != p.attributes[i])
                     return false;
+            }
 
             return true;
         }

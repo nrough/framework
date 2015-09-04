@@ -81,7 +81,8 @@ namespace ApproxReductBoosting
 				}
 			);
 
-			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
+			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
+									 "DATASET",
 									 "METHOD",
 									 "IDENTYFICATION",
 									 "VOTETYPE",
@@ -191,7 +192,8 @@ namespace ApproxReductBoosting
 						break;
 				}
 
-				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
+				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
+									trnDataOrig.Name,
 									factoryKey,
 									reductGenerator.IdentyficationType,
 									reductGenerator.VoteType,

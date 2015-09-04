@@ -68,8 +68,9 @@ namespace ApproxReductBoostingCV
                 }
             );
 
-            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
-                                     "METHOD",
+            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+                                    "DATASET", 
+                                    "METHOD",
                                      "IDENTYFICATION",
                                      "VOTETYPE",
                                      "MIN_LEN",
@@ -211,7 +212,8 @@ namespace ApproxReductBoostingCV
                             break;
                     }
 
-                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+                                        data.Name,
                                         factoryKey,
                                         reductGenerator.IdentyficationType,
                                         reductGenerator.VoteType,

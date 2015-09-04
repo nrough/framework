@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		DebugCommandLines.txt = DebugCommandLines.txt
 		Infovision.FxCop = Infovision.FxCop
+		Infovision.nunit = Infovision.nunit
 		Infovision.pfx = Infovision.pfx
 		runme.bat = runme.bat
 		TODO.txt = TODO.txt

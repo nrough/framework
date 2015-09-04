@@ -71,8 +71,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
             this.AddInstance(id, instance);
-                        
-            //TODO remove this line
+                                    
             Console.WriteLine("{0} {1}", id, correlation);
             
             this.Root = newClustering.Root;
@@ -120,8 +119,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
             this.AddInstance(id, instance);
-
-            //TODO remove this line
+            
             Console.WriteLine("{0} {1}", id, correlation);
 
             this.Root = newClustering.Root;

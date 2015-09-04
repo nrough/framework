@@ -96,7 +96,7 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="GenericParsing">
-      <HintPath>..\..\GenericParser_bin\GenericParsing.dll</HintPath>
+      <HintPath>..\external\GenericParsing\GenericParsing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

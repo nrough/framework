@@ -430,6 +430,28 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return this.DendrogramLinkCollection.GetClusterMembership(numberOfClusters);
         }
 
+        public Dictionary<int, List<int>> GetClusterMembershipAsDict(int numberOfClusters)
+        {
+            int[] membership = this.GetClusterMembership(numberOfClusters);
+            Dictionary<int, List<int>> result = new Dictionary<int, List<int>>();
+            for (int i = 0; i < membership.Length; i++)
+            {
+                if (result.ContainsKey(membership[i]))
+                {
+                    List<int> tmpList = result[membership[i]];
+                    tmpList.Add(i);
+                }
+                else
+                {
+                    List<int> tmpList = new List<int>();
+                    tmpList.Add(i);
+                    result.Add(membership[i], tmpList);
+                }
+            }
+
+            return result;
+        }
+
         public int[] GetClusterMembership(double threshold)
         {
             return this.DendrogramLinkCollection.GetClusterMembership(threshold);

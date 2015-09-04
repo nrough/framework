@@ -139,6 +139,10 @@
     <Compile Include="WeightGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">
+      <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
+      <Name>Infovision.Datamining.Experimenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Infovision.Datamining\Infovision.Datamining.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
       <Name>Infovision.Datamining</Name>

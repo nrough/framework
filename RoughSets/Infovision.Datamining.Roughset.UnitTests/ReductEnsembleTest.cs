@@ -32,8 +32,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int numberOfPermutations = 100;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
+            //TODO Epsilon generaton according to some distribution
             int[] epsilons = new int[numberOfPermutations];
-
             for (int i = 0; i < numberOfPermutations; i++)
             {
                 epsilons[i] = rand.Next(36);
@@ -43,33 +43,41 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("DataStore", data);
             parms.AddParameter("NumberOfThreads", 1);
             parms.AddParameter("PermutationEpsilon", epsilons);
-            parms.AddParameter("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
+            //parms.AddParameter("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
+            parms.AddParameter("Distance", SimilarityIndex.ReductSimDelegate(0.5));            
             parms.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
+            parms.AddParameter("NumberOfClusters", 2);
+            parms.AddParameter("GeneratorName", "ReductEnsemble");
 
             string generatorName = "ReductEnsemble";                       
                         
             parms.AddParameter("PermutationCollection", permList);
 
+            //TODO Create generator based on parms, not generator name
+            //TODO Store args inside generator
+            //TODO Generate method without parameters
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms);
             IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
 
-            ReductStore reductStore = reductStoreCollection.First() as ReductStore;
-            Assert.IsNotNull(reductStore);            
-
-            int j = 0;
-            foreach (IReduct reduct in reductStore)
+            int j=1;
+            foreach (IReductStore reductStore in reductStoreCollection)
             {
-                Console.WriteLine("{0,2}: {1} -> {2}", j, permList[j], reduct);
-                j++;
+                Console.WriteLine("Reduct Store: {0}", j++);
+                Console.WriteLine("==================", j++);
+                
+                foreach (IReduct reduct in reductStore)
+                {
+                    Console.WriteLine("{0}", reduct);
+                    j++;
+                }
             }
 
+            
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
                 Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
-                dendrogram.Save(@"f:\test.bmp");
-
-                
+                dendrogram.Save(@"f:\test.bmp");                
             }
 
 

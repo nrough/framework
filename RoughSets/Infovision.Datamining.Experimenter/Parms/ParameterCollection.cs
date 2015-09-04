@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         #region Constructors
 
         public ParameterCollection()
-            : this(20, 20)
+            : this(0, 0)
         {
         }
 
@@ -128,7 +128,10 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             if (this.parmCount >= parameters.Length)
             {
-                int newSize = (int)(parameters.Length * resizeFactor);
+                int newSize = (int)((parameters.Length + 1) * resizeFactor);
+                if (newSize <= parameters.Length)
+                    newSize = parameters.Length + 1;
+
                 Array.Resize<IParameter>(ref parameters, newSize);
             }
                 

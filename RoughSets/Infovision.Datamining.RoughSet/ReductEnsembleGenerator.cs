@@ -8,6 +8,7 @@ using Infovision.Utils;
 using Infovision.Datamining;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
+using Infovision.Datamining.Experimenter.Parms;
 
 namespace Infovision.Datamining.Roughset
 {       
@@ -96,12 +97,19 @@ namespace Infovision.Datamining.Roughset
             PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);                                    
             Func<double[], double[], double> distance = SimilarityIndex.ReductSimDelegate(0.5);
             Func<int[], int[], DistanceMatrix, double> linkage = ClusteringLinkage.Min;
+            int numberOfClusters = 5;
 
             if (args.Exist("Distance"))
                 distance = (Func<double[], double[], double>) args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
                 linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
+
+            if (args.Exist("NumberOfClusters"))
+                numberOfClusters = (int) args.GetParameter("NumberOfClusters");
+
+            if (numberOfClusters > this.DataStore.NumberOfRecords)
+                numberOfClusters = this.DataStore.NumberOfRecords;
             
             int k = -1;            
             foreach (Permutation permutation in permutations)
@@ -140,13 +148,51 @@ namespace Infovision.Datamining.Roughset
 
             internalStore = internalStore.RemoveDuplicates();
 
+            for (int j = 0; j < internalStore.Count; j++)
+            {
+                IReduct reduct = internalStore.GetReduct(j);
+                Console.WriteLine("{0}: {1}", j, reduct);
+            }            
+
             double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore, false);
             hCluster = new HierarchicalClustering(distance, linkage);
             hCluster.Compute(errorVectors);
-            Console.WriteLine(hCluster.ToString());
             
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();            
-            reductStoreCollection.AddStore(internalStore);
+            Console.WriteLine(hCluster.ToString());            
+
+            //int[] clusterMembership = hCluster.GetClusterMembership(numberOfClusters);
+            Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
+
+            ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);            
+            foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
+            {
+                ParameterValueCollection<int> valueCollection = new ParameterValueCollection<int>(String.Format("{0}", kvp.Key), kvp.Value.ToArray<int>());
+                clusterCollection.Add(valueCollection);
+            }
+
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            foreach (object[] ensemble in clusterCollection.Values())
+            {
+                ReductStore tmpReductStore = new ReductStore();
+                for (int i = 0; i < numberOfClusters; i++)
+                {
+                    tmpReductStore.DoAddReduct(internalStore.GetReduct((int) ensemble[i]));    
+                }
+                reductStoreCollection.AddStore(tmpReductStore);
+            }
+
+            //alternative approach, we change the standard way of dendrogam (inverse distance)
+            /*
+            foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
+            {
+                ReductStore tmpReductStore = new ReductStore();
+                foreach (int r in kvp.Value)
+                {
+                    tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
+                }
+                reductStoreCollection.AddStore(tmpReductStore);
+            }
+            */
 
             return reductStoreCollection;
         }        

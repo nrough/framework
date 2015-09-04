@@ -108,7 +108,9 @@
   <ItemGroup>
     <Compile Include="Distance.cs" />
     <Compile Include="DistanceMatrix.cs" />
+    <Compile Include="DoubleEpsilonComparer.cs" />
     <Compile Include="MatrixIndex.cs" />
+    <Compile Include="MatrixTuple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

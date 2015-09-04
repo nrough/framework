@@ -31,8 +31,11 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             for (int i = 0; i < data.Length; i++)
             {
                 for (int j = i + 1; j < data.Length; j++)
-                {
+                {                    
                     double distance = Infovision.Math.Distance.SquaredEuclidean(data[i], data[j]);
+
+                    Console.WriteLine("{0}, {1}, {2}", i, j, distance);
+
                     matrix.Add(new MatrixKey(i, j), distance);
                 }
             }

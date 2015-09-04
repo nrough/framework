@@ -34,6 +34,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
         }
 
+        public DendrogramLink this[int index]
+        {
+            get { return linkages[index]; }
+        }
+
         public DendrogramLinkCollection(int numOfInstances)
         {
             this.numOfInstances = numOfInstances;

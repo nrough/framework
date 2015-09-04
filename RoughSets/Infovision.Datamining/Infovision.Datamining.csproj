@@ -115,6 +115,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalCluster.cs" />
     <Compile Include="Clustering\Hierarchical\ClusteringLinkage.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusterTuple.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

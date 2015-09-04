@@ -24,27 +24,7 @@ namespace Infovision.Math
         public int Y
         {
             get { return this.y; }
-        }
-
-        public int SmallerIndex
-        {
-            get 
-            { 
-                if (this.X < this.Y) 
-                    return this.X;
-                return this.Y;
-            }
-        }
-
-        public int GreaterIndex
-        {
-            get
-            {
-                if (this.X < this.Y)
-                    return this.Y;
-                return this.X;
-            }
-        }
+        }                
 
         #region System.Object Methods
 

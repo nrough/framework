@@ -43,6 +43,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return result;
         }
 
+        public static void MergeClustersInPlace(HierarchicalCluster destination, HierarchicalCluster source)
+        {            
+            destination.Objects = destination.Objects.Concat(source.Objects).ToList();
+            source.Objects.RemoveAll(i => (i >= 0));
+        }
+
         public void AddMemberObject(int objectId)
         {
             this.Objects.Add(objectId);

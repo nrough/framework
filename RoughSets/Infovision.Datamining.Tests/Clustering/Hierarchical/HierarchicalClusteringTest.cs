@@ -33,9 +33,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
         private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>[] DistancesAndLinkages =
         {            
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1)
-            /*
-            ,
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Max, 2),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min, 4),
@@ -43,16 +41,65 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9)
-             * */
-        };
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9)             
+        };        
 
         [Test]
         public void ComputeTest()
         {                                    
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());            
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
             Assert.IsTrue(true);
+        }
+
+        private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>[] AgregativeLinkages =
+        {            
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1)
+            /*
+            ,
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Max, 2),            
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min, 4),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Max, 5),            
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8)                   
+             * */
+        };
+
+        [Test, TestCaseSource("AgregativeLinkages")]
+        public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int> t)
+        {
+            Func<double[], double[], double> distance = t.Item1;
+            Func<int[], int[], DistanceMatrix, double> linkage = t.Item2;
+            int id = t.Item3;            
+
+            HierarchicalClustering aggregativeVersion = new HierarchicalClustering(distance, linkage);
+            aggregativeVersion.Compute(HierarchicalClusteringTest.GetData());
+
+            HierarchicalClusteringSimple simpleVersion = new HierarchicalClusteringSimple(distance, linkage);
+            simpleVersion.Compute(HierarchicalClusteringTest.GetData());
+
+            Assert.AreEqual(simpleVersion.DendrogramLinkCollection.Count, 
+                            aggregativeVersion.DendrogramLinkCollection.Count, 
+                            String.Format("DendrogramLinkCollections have different sizes: {0} {1}", simpleVersion.DendrogramLinkCollection, aggregativeVersion.DendrogramLinkCollection));
+
+            Bitmap bitmap = aggregativeVersion.GetDendrogramAsBitmap(640, 480);
+            string fileName = String.Format(@"F:\DndrA_{0}.bmp", id);
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            bitmap = simpleVersion.GetDendrogramAsBitmap(640, 480);
+            fileName = String.Format(@"F:\DndrS_{0}.bmp", id);
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            for (int i = 0; i < simpleVersion.DendrogramLinkCollection.Count; i++ )
+            {
+                DendrogramLink simpleLink = simpleVersion.DendrogramLinkCollection[i];
+                DendrogramLink aggregativeLink = aggregativeVersion.DendrogramLinkCollection[i];
+
+                Assert.AreEqual(simpleLink.Id, aggregativeLink.Id, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                Assert.AreEqual(simpleLink.Cluster1, aggregativeLink.Cluster1, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                Assert.AreEqual(simpleLink.Distance, aggregativeLink.Distance, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+            }
         }
 
         [Test]
@@ -140,8 +187,6 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             {
                 Assert.AreEqual(membership[i], membership2[i]);
             }
-        }
-
-
+        }       
     }
 }

@@ -435,57 +435,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 			System.IO.File.WriteAllText(filePath, sb.ToString());
 		}
-	}    
-
-	public class EpsilonDoubleComparer : IEqualityComparer<double>
-	{
-		private double epsilon = 0.00000001;
-
-		public EpsilonDoubleComparer()
-		{
-		}
-
-		public EpsilonDoubleComparer(double epsilon)
-			: base()
-		{
-			this.epsilon = epsilon;
-		}
-
-		public bool Equals(double a, double b)
-		{
-			//return System.Math.Abs(a - b) < this.epsilon;
-			return NearlyEqual(a, b, this.epsilon);
-		}
-
-		public int GetHashCode(double a)
-		{            
-			return a.GetHashCode();
-		}
-
-		public static bool NearlyEqual(double a, double b, double epsilon) 
-		{
-			double absA = Math.Abs(a);
-			double absB = Math.Abs(b);
-			double diff = Math.Abs(a - b);
-
-			if (a == b) 
-			{ 
-				// shortcut, handles infinities
-				return true;
-			} 
-			else if (a == 0 || b == 0 || diff < Double.MinValue)
-			{
-				// a or b is zero or both are extremely close to it
-				// relative error is less meaningful here
-				return diff < (epsilon * Double.MinValue);
-			}
-			else 
-			{ 
-				// use relative error
-				return diff / (absA + absB) < epsilon;
-			}
-		}
-	}
+	}    	
 
 	/*
 	public class BenchmarkDataSet

@@ -37,12 +37,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
-            int[] epsilons;
+            double[] epsilons;
 
             //Record weights should always be used from data store. Remove weights from reduct store
             data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
 
-            epsilons = new int[numberOfPermutations];
+            epsilons = new double[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
                 epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
 

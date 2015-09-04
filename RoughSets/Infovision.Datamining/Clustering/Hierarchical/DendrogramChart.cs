@@ -144,10 +144,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         linkChartData.LeftNodeY = yAxisEnd.Y;
                         linkChartData.RightNodeX = nodePointX;
                         linkChartData.RightNodeY = yAxisEnd.Y;
-                        linkChartData.ParentNodeY = yAxisEnd.Y;
-
-                        if (!node2cluster.ContainsKey(d.Id))
-                            Console.WriteLine("xxx");                        
+                        linkChartData.ParentNodeY = yAxisEnd.Y;                                                
 
                         linkChartData.LeftColor = this.Colors.Count > 1 
                                             ? this.Colors[cluster2color[node2cluster[d.Id]]] 

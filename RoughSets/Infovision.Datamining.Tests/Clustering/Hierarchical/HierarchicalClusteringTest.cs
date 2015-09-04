@@ -280,6 +280,103 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.AreEqual(-5, membership2[2]);
 
             Assert.AreEqual(7, membership2[7]);
-        }        
+        }
+
+        [Test]
+        public void GetCutOffNodesTest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
+            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
+            hClustering.Compute();
+            
+            List<DendrogramNode> result = hClustering.GetCutOffNodes(1);
+            Assert.AreEqual(hClustering.Root.Id, result[0].Id);
+
+            result = hClustering.GetCutOffNodes(2);
+            
+            Assert.AreEqual(hClustering.Root.LeftNode.Id, result[0].Id);
+            Assert.AreEqual(hClustering.Root.RightNode.Id, result[1].Id);
+
+            Assert.AreEqual(-8, result[0].Id);
+            Assert.AreEqual(7, result[1].Id);
+
+            result = hClustering.GetCutOffNodes(3);
+            
+            Assert.AreEqual(-7, result[0].Id);
+            Assert.AreEqual(-5, result[1].Id);
+            Assert.AreEqual(7, result[2].Id);
+
+            result = hClustering.GetCutOffNodes(4);
+
+            Assert.AreEqual(-6, result[0].Id);            
+            Assert.AreEqual(-5, result[1].Id);
+            Assert.AreEqual(3, result[2].Id);
+            Assert.AreEqual(7, result[3].Id);
+
+            result = hClustering.GetCutOffNodes(5);
+
+            Assert.AreEqual(-5, result[0].Id);
+            Assert.AreEqual(-4, result[1].Id);
+            Assert.AreEqual(-3, result[2].Id);
+            Assert.AreEqual(3, result[3].Id);
+            Assert.AreEqual(7, result[4].Id);
+
+            result = hClustering.GetCutOffNodes(6);
+
+            Assert.AreEqual(-4, result[0].Id);
+            Assert.AreEqual(-3, result[1].Id);
+            Assert.AreEqual(-2, result[2].Id);
+            Assert.AreEqual(7, result[3].Id);
+            Assert.AreEqual(3, result[4].Id);
+            Assert.AreEqual(2, result[5].Id);
+
+            result = hClustering.GetCutOffNodes(7);
+
+            Assert.AreEqual(-3, result[0].Id);
+            Assert.AreEqual(-2, result[1].Id);
+            Assert.AreEqual(-1, result[2].Id);
+            Assert.AreEqual(2, result[3].Id);
+            Assert.AreEqual(7, result[4].Id);
+            Assert.AreEqual(3, result[5].Id);
+            Assert.AreEqual(8, result[6].Id);
+
+            result = hClustering.GetCutOffNodes(8);
+
+            Assert.AreEqual(-2, result[0].Id);
+            Assert.AreEqual(-1, result[1].Id);
+            Assert.AreEqual(4, result[2].Id);
+            Assert.AreEqual(3, result[3].Id);
+            Assert.AreEqual(2, result[4].Id);
+            Assert.AreEqual(7, result[5].Id);
+            Assert.AreEqual(6, result[6].Id);
+            Assert.AreEqual(8, result[7].Id);
+
+            result = hClustering.GetCutOffNodes(9);
+
+            Assert.AreEqual(-1, result[0].Id);
+            Assert.AreEqual(1, result[1].Id);
+            Assert.AreEqual(0, result[2].Id);
+            Assert.AreEqual(4, result[3].Id);
+            Assert.AreEqual(3, result[4].Id);
+            Assert.AreEqual(2, result[5].Id);
+            Assert.AreEqual(7, result[6].Id);
+            Assert.AreEqual(6, result[7].Id);
+            Assert.AreEqual(8, result[8].Id);
+
+            result = hClustering.GetCutOffNodes(10);
+
+            Assert.AreEqual(1, result[0].Id);
+            Assert.AreEqual(9, result[1].Id);
+            Assert.AreEqual(5, result[2].Id);
+            Assert.AreEqual(0, result[3].Id);
+            Assert.AreEqual(4, result[4].Id);
+            Assert.AreEqual(3, result[5].Id);
+            Assert.AreEqual(2, result[6].Id);
+            Assert.AreEqual(7, result[7].Id);
+            Assert.AreEqual(6, result[8].Id);
+            Assert.AreEqual(8, result[9].Id);
+            
+            
+        }
     }
 }

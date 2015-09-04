@@ -275,20 +275,28 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             queue.Enqueue(this.Root);
             int clusters2Find = numberOfClusters - 1;
             DendrogramNode node = null;
-            
-            //TODO Problem with flat dendrogram (all Heights = 0.0)
+
+            List<DendrogramNode> result = new List<DendrogramNode>(numberOfClusters);            
             while (queue.Count > 0 && clusters2Find > 0)
-            {
+            {                
                 node = queue.Dequeue();
-                if (node.LeftNode != null)
-                    queue.Enqueue(node.LeftNode);
-                if (node.RightNode != null)
-                    queue.Enqueue(node.RightNode);
+                
+                if (node.IsLeaf)
+                {
+                    result.Add(node);
+                }
+                else
+                {
+                    if (node.LeftNode != null)
+                        queue.Enqueue(node.LeftNode);
+                    if (node.RightNode != null)
+                        queue.Enqueue(node.RightNode);
+                }
+
                 clusters2Find--;
-            }
+            }            
             
-            List<DendrogramNode> result = new List<DendrogramNode>(numberOfClusters);
-            while (queue.Count > 0)
+            while (queue.Count > 0 && result.Count <= numberOfClusters)
                 result.Add(queue.Dequeue());
             return result;
         }

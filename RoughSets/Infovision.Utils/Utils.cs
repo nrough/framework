@@ -430,6 +430,61 @@ namespace Infovision.Utils
         #endregion
     }
 
+    public static class Qickselect
+    {
+        public static int RandomizedSelect(int[] a, int p, int r, int k)
+        {
+            if (p == r)
+            {
+                return a[p];
+            }
+            int q = RandomizedPartition(a, p, r);
+            int length = q - p + 1;
+            if (k == length)
+            {
+                return a[q];
+            }
+            else if (k < length)
+            {
+                return RandomizedSelect(a, p, q - 1, k);
+            }
+            else
+            {
+                return RandomizedSelect(a, q + 1, r, k - length);
+            }
+        }
+
+        static int RandomizedPartition(int[] a, int p, int r)
+        {
+            int i = new Random(Environment.TickCount).Next(p, r + 1);
+            Swap(ref a[r], ref a[i]);
+            return Partition(a, p, r);
+        }
+
+        static int Partition(int[] a, int p, int r)
+        {
+            int x = a[r];
+            int i = p - 1;
+            for (int j = p; j < r; j++)
+            {
+                if (a[j] <= x)
+                {
+                    i++;
+                    Swap(ref a[i], ref a[j]);
+                }
+            }
+            Swap(ref a[i + 1], ref a[r]);
+            return i + 1;
+        }
+
+        static void Swap(ref int a, ref int b)
+        {
+            int temp = a;
+            a = b;
+            b = temp;
+        }
+    }
+
     public static class BitArrayExtensions
     {
         static FieldInfo _internalArrayGetter = GetInternalArrayGetter();

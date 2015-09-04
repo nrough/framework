@@ -10,21 +10,27 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClusteringIncrementalExt : HierarchicalClusteringIncremental
     {
-        private double currentAvgNodeDistance = 0;
+        private double currentAvgNodeDistance = 0.0;
 
         public HierarchicalClusteringIncrementalExt()
+            : base()
         {                        
         }
 
-        public override void AddToCluster(int id, double[] instance)
+        public HierarchicalClusteringIncrementalExt(Func<double[], double[], double> distance,
+                                                    Func<int[], int[], DistanceMatrix, double[][], double> linkage)
+            : base(distance, linkage)
+        {         
+        }
+
+        public override bool AddToCluster(int id, double[] instance)
         {
 
             if (this.NumberOfInstances < this.MinimumNumberOfInstances
                 || (this.NumberOfInstances >= this.MinimumNumberOfInstances
                     && this.NumberOfInstances <= 1))
             {
-                base.AddToCluster(id, instance);
-                return;
+                return base.AddToCluster(id, instance);                
             }
 
             //Add new instance
@@ -39,20 +45,24 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             double newAvgNodeDistance = initialClustering.GetAvgNodeLevelDistance();
 
+            //TODO remove this line            
+            Console.WriteLine("{0} {1}", id, newAvgNodeDistance);
+
+            //TODO commented out for test purposes
             //dendrogram has been significantly changed
-            if (newAvgNodeDistance > currentAvgNodeDistance)
+            //if (newAvgNodeDistance > currentAvgNodeDistance)
             {
                 this.Root = initialClustering.Root;
                 this.NextClusterId = initialClustering.NextClusterId;
                 this.Nodes = initialClustering.Nodes;
+                return true;
             }
-            else
-            {
-                //remove instance
-                this.RemoveInstance(id);
-                foreach (KeyValuePair<int, double[]> kvp in this.Instances)
-                    this.DistanceMatrix.Remove(new MatrixKey(kvp.Key, id));                
-            }      
+            
+            //remove instance
+            this.RemoveInstance(id);
+            foreach (KeyValuePair<int, double[]> kvp in this.Instances)
+                this.DistanceMatrix.Remove(new MatrixKey(kvp.Key, id));
+            return false;
         }
     }
 }

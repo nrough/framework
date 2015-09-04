@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class ReductStore : ReductStoreBase
     {
-        #region Globals
+        #region Members
 
         private List<IReduct> reductSet;
 
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset
             {
                 foreach (IReduct localReduct in reductSet)
                 {
-                    if (localReduct.Epsilon < reduct.Epsilon)
+                    if (localReduct.Epsilon <= reduct.Epsilon)
                     {
                         if (reduct.Attributes.Superset(localReduct.Attributes))
                         {

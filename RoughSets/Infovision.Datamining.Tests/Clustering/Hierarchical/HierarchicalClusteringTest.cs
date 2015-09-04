@@ -122,32 +122,50 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             DendrogramChart dc1 = new DendrogramChart(aggregativeVersion, 640, 480);
             Bitmap bitmap = dc1.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\DndrA_{0}.bmp", id);
+            string fileName = String.Format(@"F:\Dendrogram\Dndr_{0}_A.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             DendrogramChart dc2 = new DendrogramChart(simpleVersion, 640, 480);
             bitmap = dc2.GetAsBitmap();
-            fileName = String.Format(@"F:\Dendrogram\DndrS_{0}.bmp", id);
+            fileName = String.Format(@"F:\Dendrogram\Dndr_{0}_S.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            Assert.AreEqual(simpleVersion.DendrogramLinkCollection.Count,
-                            aggregativeVersion.DendrogramLinkCollection.Count,
-                            String.Format("DendrogramLinkCollections have different sizes: {0} {1}", simpleVersion.DendrogramLinkCollection, aggregativeVersion.DendrogramLinkCollection));
-            
-            Console.WriteLine(simpleVersion.DendrogramLinkCollection.ToString());
-            Console.WriteLine(aggregativeVersion.DendrogramLinkCollection.ToString());
-
-            for (int i = 0; i < simpleVersion.DendrogramLinkCollection.Count; i++ )
+            Dictionary<int, DendrogramNode> nodesSimple = simpleVersion.Nodes;
+            Dictionary<int, DendrogramNode> nodesAggregative = aggregativeVersion.Nodes;
+            DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0000000001);
+            foreach (KeyValuePair<int, DendrogramNode> kvp in nodesSimple)
             {
-                DendrogramLink simpleLink = simpleVersion.DendrogramLinkCollection[i];
-                DendrogramLink aggregativeLink = aggregativeVersion.DendrogramLinkCollection[i];
+                DendrogramNode otherNode = nodesAggregative[kvp.Key];
 
-                Assert.AreEqual(simpleLink.Id, aggregativeLink.Id, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                //The ordering of items with the same distance might be different
-                //Assert.AreEqual(simpleLink.Cluster1, aggregativeLink.Cluster1, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                //Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                Assert.AreEqual(System.Math.Round(simpleLink.Distance, 11), System.Math.Round(aggregativeLink.Distance, 11), String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                if (!comparer.Equals(kvp.Value.Height, otherNode.Height))
+                    Assert.True(false, String.Format("Node hight is different"));
+
+                if (otherNode.LeftNode != null && otherNode.RightNode != null)
+                {
+                    if(kvp.Value.LeftNode.Id != otherNode.LeftNode.Id
+                        && kvp.Value.LeftNode.Id != otherNode.RightNode.Id
+                        && kvp.Value.Height != otherNode.Height)
+                        Assert.True(false, String.Format("Node children are different."));
+                }
             }
+
+            foreach (KeyValuePair<int, DendrogramNode> kvp in nodesAggregative)
+            {
+                DendrogramNode otherNode = nodesSimple[kvp.Key];
+
+                if (!comparer.Equals(kvp.Value.Height, otherNode.Height))
+                    Assert.True(false, String.Format("Node hight is different"));
+
+                if (otherNode.LeftNode != null && otherNode.RightNode != null)
+                {
+                    if (kvp.Value.LeftNode.Id != otherNode.LeftNode.Id
+                        && kvp.Value.LeftNode.Id != otherNode.RightNode.Id
+                        && kvp.Value.Height != otherNode.Height)
+                        Assert.True(false, String.Format("Node children are different."));
+                }
+            }
+
+            Assert.True(true);
         }       
 
         [Test]
@@ -204,7 +222,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
             
-            Console.Write(hClustering.DendrogramLinkCollection.ToString());
+            Console.Write(hClustering.ToString());
             Console.WriteLine();
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
@@ -221,14 +239,48 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
 
-            int[] membership2 = hClustering.GetClusterMembership(3.6);
-            int[] membership = hClustering.GetClusterMembership(4);            
+            Dictionary<int, int> membership = hClustering.GetClusterMembership(4);
+            Dictionary<int, int> membership2 = hClustering.GetClusterMembership(3.6);
+
+            DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
+            dc.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Green, Color.Yellow });
+            Bitmap bitmap = dc.GetAsBitmap();
+            string fileName = String.Format(@"F:\Dendrogram\HierarchicalClusteringTest_GetClusterMembershipTest.bmp");
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             
-            Assert.AreEqual(membership.Length, membership2.Length);
-            for (int i = 0; i < membership.Length; i++)
+            Assert.AreEqual(membership.Count, membership2.Count);
+            foreach(KeyValuePair<int, int> kvp in membership)
             {
-                Assert.AreEqual(membership[i], membership2[i]);
+                Assert.AreEqual(kvp.Value, membership2[kvp.Key]);
             }
-        }       
+
+            Assert.AreEqual(-6, membership[5]);
+            Assert.AreEqual(-6, membership[9]);
+            Assert.AreEqual(-6, membership[8]);
+            Assert.AreEqual(-6, membership[4]);
+            Assert.AreEqual(-6, membership[6]);
+
+            Assert.AreEqual(3, membership[3]);
+            
+            Assert.AreEqual(-5, membership[0]);
+            Assert.AreEqual(-5, membership[1]);
+            Assert.AreEqual(-5, membership[2]);
+
+            Assert.AreEqual(7, membership[7]);
+
+            Assert.AreEqual(-6, membership2[5]);
+            Assert.AreEqual(-6, membership2[9]);
+            Assert.AreEqual(-6, membership2[8]);
+            Assert.AreEqual(-6, membership2[4]);
+            Assert.AreEqual(-6, membership2[6]);
+
+            Assert.AreEqual(3, membership2[3]);
+
+            Assert.AreEqual(-5, membership2[0]);
+            Assert.AreEqual(-5, membership2[1]);
+            Assert.AreEqual(-5, membership2[2]);
+
+            Assert.AreEqual(7, membership2[7]);
+        }        
     }
 }

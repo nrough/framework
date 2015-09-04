@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;//TODO Remove this lib after tests
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,23 +10,24 @@ using Infovision.Datamining;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
 using Infovision.Datamining.Experimenter.Parms;
+using Infovision.Datamining.Visualization;
 
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class ReductStreamEnsembleGenerator : ReductGenerator
+    public class ReductEnsembleStreamGenerator : ReductGenerator
     {
-        private int[] permEpsilon;
+        private double[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;
         private WeightGenerator weightGenerator;
         private Func<IReduct, double[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;
-        private HierarchicalClustering hCluster;
-        private ReductStore localReductPool;
+        private HierarchicalClusteringIncrementalExt hCluster;
+        //private ReductStore localReductPool;
 
-        public HierarchicalClustering Dendrogram
+        public HierarchicalClusteringIncrementalExt Dendrogram
         {
             get { return this.hCluster; }
         }
@@ -93,7 +95,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public ReductStreamEnsembleGenerator()
+        public ReductEnsembleStreamGenerator()
             : base()
         {
         }
@@ -113,8 +115,8 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("PermutationEpsilon"))
             {
-                int[] epsilons = (int[])args.GetParameter("PermutationEpsilon");
-                this.permEpsilon = new int[epsilons.Length];
+                double[] epsilons = (double[])args.GetParameter("PermutationEpsilon");
+                this.permEpsilon = new double[epsilons.Length];
                 Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
             }
 
@@ -134,16 +136,19 @@ namespace Infovision.Datamining.Roughset
 
         private IReduct GetNextReduct()
         {
+            //TODO do not use permutations list - generate new permutations and epsilons here
+            
             int idx = this.GetNextReductId();
-            IReduct reduct = this.CreateReductObject(new int[] { }, this.permEpsilon[idx], idx.ToString());
-            Permutation permutation = this.Permutations[idx];
+            IReduct reduct = this.CreateReductObject(new int[] { }, this.permEpsilon[idx - 1], idx.ToString());
+            this.Epsilon = this.permEpsilon[idx - 1];
+            Permutation permutation = this.Permutations[idx - 1];
 
             //Reach
             for (int i = 0; i < permutation.Length; i++)
             {
                 reduct.AddAttribute(permutation[i]);
 
-                if (this.IsReduct(reduct, localReductPool, false))
+                if (this.IsReduct(reduct, this.ReductPool, false))
                 {
                     break;
                 }
@@ -152,57 +157,54 @@ namespace Infovision.Datamining.Roughset
             //Reduce
             int len = permutation.Length - 1;
             for (int i = len; i >= 0; i--)
-            {
-                int attributeId = permutation[i];
-                if (reduct.TryRemoveAttribute(attributeId))
-                {
-                    if (!this.IsReduct(reduct, localReductPool, false))
-                    {
-                        reduct.AddAttribute(attributeId);
-                    }
-                }
+            {                
+                if (reduct.TryRemoveAttribute(permutation[i]))
+                    if (!this.IsReduct(reduct, this.ReductPool, false))
+                        reduct.AddAttribute(permutation[i]);
             }
 
             return reduct;
-        }
-
-        private void ProcessReduct(IReduct reduct)
-        {
-            this.ReductPool.AddReduct(reduct);
-        }
+        }        
 
         private bool HasConverged()
         {
-            if (this.ReductPool.Count() > 20)
+            //TODO Add Stop criteria
+            if(this.NextReductId >= this.permEpsilon.Length)            
+            //if (this.ReductPool.Count() >= 20)
                 return true;
             return false;
         }
 
         public override void Generate()
-        {
-            localReductPool = new ReductStore();
-            this.ReductPool = localReductPool;
+        {            
+            this.ReductPool = new ReductStore();
+
+            this.hCluster = new HierarchicalClusteringIncrementalExt(distance, linkage);
+            this.hCluster.MinimumNumberOfInstances = 0;
 
             while (!this.HasConverged())
             {
                 IReduct reduct = this.GetNextReduct();
-                this.ProcessReduct(reduct);
-            }
+                if (reduct.Attributes.GetCardinality() > 0)
+                {
+                    double[] errorvector = this.recognition(reduct, this.WeightGenerator.Weights);
 
-            localReductPool = localReductPool.RemoveDuplicates();
-            this.ReductPool = localReductPool;
-
-            double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
-
-            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
-            for (int i = 0; i < errorVectors.Length; i++)
-            {
-                errors.Add(i, errorVectors[i]);
-            }
-
-            this.hCluster = new HierarchicalClustering(distance, linkage);
-            this.hCluster.Instances = errors;
-            this.hCluster.Compute();
+                    if (this.hCluster.AddToCluster(Convert.ToInt32(reduct.Id), errorvector))
+                    {
+                        this.ReductPool.AddReduct(reduct);
+                        
+                        DendrogramChart chart = new DendrogramChart(this.hCluster, 1920, 1200);
+                        //chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange});
+                        Bitmap chartBitmap = chart.GetAsBitmap();
+                        if (reduct.Id.Length == 1)
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_00{0}.bmp", reduct.Id));
+                        else if (reduct.Id.Length == 2)
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_0{0}.bmp", reduct.Id));
+                        else
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}.bmp", reduct.Id));
+                    }
+                }
+            }            
         }
 
 
@@ -234,20 +236,18 @@ namespace Infovision.Datamining.Roughset
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)
-                errors[i] = recognition(store.GetReduct(i), this.WeightGenerator.Weights);
+                errors[i] = this.recognition(store.GetReduct(i), this.WeightGenerator.Weights);
             return errors;
         }
 
-
-
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
-        {
+        {                       
             if (reductStore.IsSuperSet(reduct))
                 return true;
 
             double partitionQuality = this.GetPartitionQuality(reduct);
             double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - (reduct.Epsilon / 100.0)) * this.DataSetQuality) - tinyDouble))
+            if (partitionQuality >= (((1.0 - reduct.Epsilon) * this.DataSetQuality) - tinyDouble))
                 return true;
 
             return false;
@@ -307,12 +307,12 @@ namespace Infovision.Datamining.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return "ReductStreamEnsemble"; }
+            get { return "ReductEnsembleStream"; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
         {
-            ReductStreamEnsembleGenerator rGen = new ReductStreamEnsembleGenerator();
+            ReductEnsembleStreamGenerator rGen = new ReductEnsembleStreamGenerator();
             rGen.InitFromArgs(args);
             return rGen;
         }

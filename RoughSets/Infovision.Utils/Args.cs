@@ -108,8 +108,7 @@ namespace Infovision.Utils
             this.index2parameter[this.nextIndex] = key;
             this.nextIndex++;
         }
-
-        //TODO Remove parameters
+        
         public void RemoveParameter(string key)
         {
             this.parameters.Remove(key);

@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator
     {                        
-        private int[] permEpsilon;
+        private double[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;        
         private WeightGenerator weightGenerator;
@@ -111,8 +111,8 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("PermutationEpsilon"))
             {
-                int[] epsilons = (int[])args.GetParameter("PermutationEpsilon");
-                this.permEpsilon = new int[epsilons.Length];
+                double[] epsilons = (double[])args.GetParameter("PermutationEpsilon");
+                this.permEpsilon = new double[epsilons.Length];
                 Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
             }
             
@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Roughset
             int k = -1;            
             foreach (Permutation permutation in this.Permutations)
             {                
-                int localApproxLevel = this.permEpsilon[++k];
+                double localApproxLevel = this.permEpsilon[++k];
 
                 IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel, this.GetNextReductId().ToString());
                 
@@ -224,7 +224,7 @@ namespace Infovision.Datamining.Roughset
                         
             double partitionQuality = this.GetPartitionQuality(reduct);
             double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - (reduct.Epsilon / 100.0)) * this.DataSetQuality) - tinyDouble))             
+            if (partitionQuality >= (((1.0 - reduct.Epsilon) * this.DataSetQuality) - tinyDouble))             
                 return true;            
             
             return false;

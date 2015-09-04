@@ -14,9 +14,14 @@ namespace Infovision.Datamining.Visualization
         public int Width { get; set; }
         public int Height { get; set; }
         public HierarchicalClusteringBase HCluster { get; set; }
+        public List<Color> Colors { get; set; }
 
         public DendrogramChart()
         {
+            this.Colors = new List<Color>();
+            this.Colors.Add(Color.Black);
+            this.Width = 800;
+            this.Height = 600;
         }
 
         public DendrogramChart(HierarchicalClusteringBase clustering, int width, int height)
@@ -33,30 +38,31 @@ namespace Infovision.Datamining.Visualization
             int bottomMargin = 1;
             int leftMargin = 1;
             int rightMargin = 1;
-
             int dendrogramWidth = this.Width - (leftMargin + rightMargin);
             int dendrogramHeight = this.Height - (topMargin + bottomMargin);
-
             Color background = Color.White;
             Color foreground = Color.Black;
-
-            int xMajorScalePx = (int)System.Math.Floor((double)dendrogramWidth / this.HCluster.NumberOfInstances);
-
-            //TODO scale if MaxHeight < 1
+            int xMajorScalePx = (int)System.Math.Floor((double)dendrogramWidth / this.HCluster.NumberOfInstances);            
             double maxHeight = this.HCluster.Root.Height;
             double heightScale = 1;
-            if (maxHeight < 1)
+            
+            if (maxHeight > 0.0 && maxHeight < 1.0)
             {
+                //TODO scale if 0 < maxHeight < 1
                 while (maxHeight < 1)
                 {
                     maxHeight *= 10;
                     heightScale *= 10;
                 }
             }
+            else if (maxHeight == 0.0)
+            {
+                maxHeight = 1;                
+            }
 
             if (dendrogramHeight < maxHeight)
             {
-
+                //TODO scale
             }
 
             int yMajorScalePx = (int)System.Math.Floor((double)(dendrogramHeight - 40) / (maxHeight + 1));
@@ -95,9 +101,7 @@ namespace Infovision.Datamining.Visualization
                 }
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
-
-
-                //TODO Use tree PostOrderTraversal instead of LeafOrder + DendrogramLink collection!
+                
                 Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(this.HCluster.NumberOfInstances - 1);
                 int xAxisOffset = 10;
                 int nodePointX = yAxisEnd.X + xAxisOffset;
@@ -105,6 +109,20 @@ namespace Infovision.Datamining.Visualization
                 DendrogramLinkChartData linkChartData = null;
                 DendrogramLinkChartData linkChartData1 = null;
                 DendrogramLinkChartData linkChartData2 = null;
+
+                Dictionary<int, int> node2cluster = null;
+                Dictionary<int, int> cluster2color = null;
+                if (this.Colors.Count > 1)
+                {
+                    node2cluster = this.HCluster.GetClusterMembership(this.Colors.Count);
+                    cluster2color = new Dictionary<int, int>(this.Colors.Count);
+                    int c = 0;
+                    foreach (KeyValuePair<int, int> kvp in node2cluster)
+                    {
+                        if (!cluster2color.ContainsKey(kvp.Value))
+                            cluster2color.Add(kvp.Value, c++);
+                    }
+                }
 
                 Action<DendrogramNode> buildChartPoints = delegate(DendrogramNode d)
                 {
@@ -117,7 +135,10 @@ namespace Infovision.Datamining.Visualization
                         linkChartData.RightNodeX = nodePointX;
                         linkChartData.RightNodeY = yAxisEnd.Y;
                         linkChartData.ParentNodeY = yAxisEnd.Y;
-
+                        linkChartData.Color = this.Colors.Count > 1 
+                                            ? this.Colors[cluster2color[node2cluster[d.Id]]] 
+                                            : foreground;
+                                                
                         dendrogramChartData.Add(d.Id, linkChartData);
 
                         nodePointX += xMajorScalePx;
@@ -132,20 +153,44 @@ namespace Infovision.Datamining.Visualization
                         linkChartData.LeftNodeY = linkChartData1.ParentNodeY;
                         linkChartData.RightNodeX = linkChartData2.ParentNodeX;
                         linkChartData.RightNodeY = linkChartData2.ParentNodeY;
-
+                        
                         int nodeHeight = (int)(d.Height * heightScale * yMajorScalePx);
                         linkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;
+
+                        linkChartData.Color = linkChartData1.Color == linkChartData2.Color
+                                            ? linkChartData1.Color
+                                            : foreground;
 
                         dendrogramChartData.Add(d.Id, linkChartData);
                     }
                 };
 
-                HierarchicalClusteringBase.TraversePostOrder(this.HCluster.Root, buildChartPoints);                                                
+                if (this.HCluster.NumberOfInstances > 1)
+                {
+                    HierarchicalClusteringBase.TraversePostOrder(this.HCluster.Root, buildChartPoints);
+                }
+                else
+                {
+                    int id = (this.HCluster.Root.LeftNode != null)
+                           ? this.HCluster.Root.LeftNode.Id
+                           : this.HCluster.Root.RightNode.Id;
+
+                    linkChartData = new DendrogramLinkChartData(id);
+
+                    linkChartData.LeftNodeX = nodePointX;
+                    linkChartData.LeftNodeY = yAxisEnd.Y;
+                    linkChartData.RightNodeX = nodePointX;
+                    linkChartData.RightNodeY = yAxisEnd.Y;
+                    linkChartData.ParentNodeY = yAxisEnd.Y;
+
+                    dendrogramChartData.Add(id, linkChartData);
+                }
 
                 Font font = new Font("Tahoma", 9);
                 Pen dendrogramPen = new Pen(foreground, 2);
                 foreach (KeyValuePair<int, DendrogramLinkChartData> kvp in dendrogramChartData)
                 {
+                    dendrogramPen.Color = kvp.Value.Color;
                     kvp.Value.Draw(g, dendrogramPen, true, font);
                 }
                 dendrogramPen.Dispose();

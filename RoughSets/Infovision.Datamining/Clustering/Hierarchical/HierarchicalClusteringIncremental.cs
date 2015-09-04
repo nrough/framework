@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             */
         }
 
-        public virtual void AddToCluster(int id, double[] instance)
+        public virtual bool AddToCluster(int id, double[] instance)
         {            
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         this.NextClusterId = initialClustering.NextClusterId;
                         this.Nodes = initialClustering.Nodes;
                                                 
-                        return;
+                        return true;
                     }
                     else
                     {
@@ -100,12 +100,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
             else
             {
-                return;
+                return true;
             }
             
             
             //special case no nodes except root node
-            if (this.NumberOfInstances == 0)
+            if (this.NumberOfInstances - 1 == 0)
             {
                 DendrogramNode newNode = new DendrogramNode
                 {
@@ -116,10 +116,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 this.Root.LeftNode = newNode;
                 
                 nodes.Add(newNode.Id, newNode);
-                return;
+                return true;
             }
             //only one node (on the left) existing 
-            else if (this.NumberOfInstances == 1)
+            else if (this.NumberOfInstances - 1 == 1)
             {
                 DendrogramNode newNode = new DendrogramNode
                 {
@@ -136,10 +136,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 
                 nodes.Add(id, newNode);
 
-                return;
+                return true;
             }
             
             this.SIHC(id, this.Root);
+
+            return true;
         }
 
         protected void SIHC(int newInstanceId, DendrogramNode node)

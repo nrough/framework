@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Math;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
@@ -63,26 +64,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.nextNodeId; }
             set { this.nextNodeId = value; }
-        }
-
-        public virtual DendrogramLinkCollection DendrogramLinkCollection
-        {
-            get 
-            {
-                DendrogramLinkCollection dlc = new DendrogramLinkCollection(this.NumberOfInstances);
-                int i = this.NumberOfInstances - 2;
-                Action<DendrogramNode> addToLinkCollection = delegate(DendrogramNode d)
-                {
-                    if(d.IsLeaf == false)
-                        dlc[i--] = new DendrogramLink(d.Id,
-                                                      d.LeftNode.Id, 
-                                                      d.RightNode.Id, 
-                                                      d.Height);
-                };
-                HierarchicalClusteringBase.TraverseLevelOrder(this.Root, addToLinkCollection);
-                dlc.Sort(new DendrogramLinkDistAscendingComparer());
-                return dlc;
-            }
         }
 
         public DistanceMatrix DistanceMatrix
@@ -289,91 +270,94 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 distanceChanged(this, e);
         }
 
-        private int GetCutOffLevel(double distanceThreshold)
+        private List<DendrogramNode> GetCutOffNodes(int numberOfClusters)
         {
-            DendrogramLinkCollection linkages = this.DendrogramLinkCollection;
-            int level = 0;
-            for (int i = linkages.Count - 1; i >= 0; i--)
-            {
-                if (linkages[i].Distance < distanceThreshold)
-                    break;
-                level++;
-            }
-
-            if (level > this.NumberOfInstances - 1)
-                level = this.NumberOfInstances - 1;
-
-            int numberOfClusters = level + 1;
-            return numberOfClusters;
-        }
-
-        public int[] GetClusterMembership(double distanceThreshold)
-        {
-            return this.GetClusterMembership(this.GetCutOffLevel(distanceThreshold));
-        }
-
-        public int[] GetClusterMembership(int numberOfClusters)
-        {
-            DendrogramLinkCollection linkages = this.DendrogramLinkCollection;
-            int[] result = new int[this.NumberOfInstances];
             numberOfClusters = System.Math.Min(this.NumberOfInstances, System.Math.Max(numberOfClusters, 0));
-
-            SetClusterIdRecursive(this.Root.Id, ref result, this.Root);
-            for (int j = 0; j < numberOfClusters - 1; j++)
+            PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer> queue = new PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer>();
+            queue.Enqueue(this.Root);
+            int clusters2Find = numberOfClusters - 1;
+            DendrogramNode node = null;
+            while (queue.Count > 0 && clusters2Find > 0)
             {
-                DendrogramNode node = this.FindNode(linkages[linkages.Count - 1 - j].Id);
+                node = queue.Dequeue();
 
                 if (node.LeftNode != null)
-                    SetClusterIdRecursive(node.LeftNode.Id, ref result, node.LeftNode);
-                else
-                    result[node.Id] = node.LeftNode.Id;
+                    queue.Enqueue(node.LeftNode);
 
                 if (node.RightNode != null)
-                    SetClusterIdRecursive(node.RightNode.Id, ref result, node.RightNode);
-                else
-                    result[node.Id] = node.RightNode.Id;
+                    queue.Enqueue(node.RightNode);
+
+                clusters2Find--;
             }
 
+            //assert queue.Count == numberOfClusters
+
+            List<DendrogramNode> result = new List<DendrogramNode>(numberOfClusters);
+            while (queue.Count > 0)
+                result.Add(queue.Dequeue());
             return result;
         }
 
+        private List<DendrogramNode> GetCutOffNodes(double threshold)
+        {            
+            PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer> queue = new PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer>();
+            queue.Enqueue(this.Root);
+            double currentHeight = this.Root.Height;
+            DendrogramNode node = null;
+            while (queue.Count > 0 && currentHeight > threshold)
+            {
+                node = queue.Dequeue();
+
+                double heightLeft = 0.0, heightRight = 0.0;
+
+                if (node.LeftNode != null)
+                {
+                    queue.Enqueue(node.LeftNode);
+                    heightLeft = node.LeftNode.Height;
+                }
+                if (node.RightNode != null)
+                {
+                    queue.Enqueue(node.RightNode);
+                    heightRight = node.RightNode.Height;
+                }
+
+                currentHeight = System.Math.Max(heightLeft, heightRight);                                    
+            }
+
+            //assert queue.Count == numberOfClusters
+
+            List<DendrogramNode> result = new List<DendrogramNode>(queue.Count);
+            while (queue.Count > 0)
+                result.Add(queue.Dequeue());
+            return result;
+        }
+
+        public Dictionary<int, int> GetClusterMembership(double threshold)
+        {
+            List<DendrogramNode> subTrees = this.GetCutOffNodes(threshold);                        
+            Dictionary<int, int> node2Cluster = new Dictionary<int, int>(this.NumberOfInstances);            
+            foreach (DendrogramNode node in subTrees)
+                HierarchicalClusteringBase.TraversePreOrder(node, d => node2Cluster[d.Id] = node.Id);
+            return node2Cluster;
+        }
+
+        public Dictionary<int, int> GetClusterMembership(int numberOfClusters)
+        {
+            List<DendrogramNode> subTrees = this.GetCutOffNodes(numberOfClusters);
+            Dictionary<int, int> node2Cluster = new Dictionary<int, int>(this.NumberOfInstances);            
+            foreach (DendrogramNode node in subTrees)
+                HierarchicalClusteringBase.TraversePreOrder(node, d => node2Cluster[d.Id] = node.Id);                            
+            return node2Cluster;
+        }
+        
         public Dictionary<int, List<int>> GetClusterMembershipAsDict(int numberOfClusters)
         {
-            int[] membership = this.GetClusterMembership(numberOfClusters);
-            Dictionary<int, List<int>> result = new Dictionary<int, List<int>>();
-            for (int i = 0; i < membership.Length; i++)
-            {
-                if (result.ContainsKey(membership[i]))
-                {
-                    List<int> tmpList = result[membership[i]];
-                    tmpList.Add(i);
-                }
-                else
-                {
-                    List<int> tmpList = new List<int>();
-                    tmpList.Add(i);
-                    result.Add(membership[i], tmpList);
-                }
-            }
-
-            return result;
+            List<DendrogramNode> subTrees = this.GetCutOffNodes(numberOfClusters);
+            Dictionary<int, List<int>> result = new Dictionary<int, List<int>>(subTrees.Count);
+            foreach (DendrogramNode node in subTrees)
+                result.Add(node.Id, this.GetLeaves(node).ToList());
+            return result;                                    
         }
-
-        private void SetClusterIdRecursive(int clusterId, ref int[] result, DendrogramNode node)
-        {
-            if (node == null)
-                return;
-
-            if (node.IsLeaf)
-            {
-                result[node.Id] = clusterId;
-            }
-            else
-            {
-                SetClusterIdRecursive(clusterId, ref result, node.LeftNode);
-                SetClusterIdRecursive(clusterId, ref result, node.RightNode);
-            }
-        }        
 
         /// <summary>
         /// <par>Calculates average distance between nodes.</par>

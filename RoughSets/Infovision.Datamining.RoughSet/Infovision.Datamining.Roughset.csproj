@@ -83,6 +83,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -134,7 +135,7 @@
     <Compile Include="ReductStoreMulti.cs" />
     <Compile Include="ReductStoreWeights.cs" />
     <Compile Include="ReductStoreWorkerTaskInfo.cs" />
-    <Compile Include="ReductStreamEnsembleGenerator.cs" />
+    <Compile Include="ReductEnsembleStreamGenerator.cs" />
     <Compile Include="ReductWeight.cs" />
     <Compile Include="RoughClassifier.cs" />
     <Compile Include="InformationMeasure.cs" />

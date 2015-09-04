@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Roughset
                 else
                     epsilon = value;
             }
-        }
+        }        
 
         public int[][] FieldGroups
         {
@@ -100,6 +100,11 @@ namespace Infovision.Datamining.Roughset
 
                 return this.permutationGenerator;
             }
+        }
+
+        public int NextReductId
+        {
+            get { return this.reductIdSequence + 1; }
         }
 
         #endregion

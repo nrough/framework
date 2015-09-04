@@ -73,7 +73,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();                        
 
-            Console.Write(hClustering.DendrogramLinkCollection.ToString());
+            Console.Write(hClustering.ToString());
             Console.WriteLine();
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
 
-            Console.Write(hClustering.DendrogramLinkCollection.ToString());
+            Console.Write(hClustering.ToString());
             Console.WriteLine();
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);

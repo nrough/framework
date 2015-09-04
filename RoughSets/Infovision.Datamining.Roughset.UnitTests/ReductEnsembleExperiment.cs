@@ -149,9 +149,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
                 
-                int[] epsilons = new int[numberOfPermutations];
+                double[] epsilons = new double[numberOfPermutations];
                 for (int i = 0; i < numberOfPermutations; i++)
-                    epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
+                    epsilons[i] = (double)RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0;
                 
                 Args args = new Args();
                 args.AddParameter("FactoryKey", "ReductEnsemble");
@@ -274,5 +274,47 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             
         }        
+
+        [Test]
+        public void RunExperimentIncremental()
+        {
+            Random randSeed = new Random();
+            int seed = randSeed.Next(Int32.MaxValue);
+            RandomSingleton.Seed = seed;
+
+            int numberOfPermutations = 200;
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
+            int minEpsilon = 0;
+            int maxEpsilon = 25;
+
+            WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
+            data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
+            
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+
+            for (int testNo = 1; testNo <= 1; testNo++)
+            {                
+                PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+                double[] epsilons = new double[numberOfPermutations];
+                for (int i = 0; i < numberOfPermutations; i++)
+                    epsilons[i] = (double)RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0;
+
+                Args args = new Args();
+                args.AddParameter("FactoryKey", "ReductEnsembleStream");
+                args.AddParameter("DataStore", data);
+                args.AddParameter("PermutationEpsilon", epsilons);
+                args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Hamming);
+                args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
+                args.AddParameter("PermutationCollection", permList);
+                args.AddParameter("WeightGenerator", weightGenerator);
+                args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+
+                ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
+                reductGenerator.Generate();
+
+            } //test No           
+        }
     }
 }

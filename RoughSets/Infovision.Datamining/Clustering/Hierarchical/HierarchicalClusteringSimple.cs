@@ -8,9 +8,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringSimple : HierarchicalClustering
-    {
-        private Dictionary<int, HierarchicalCluster> clusters;
-
+    {        
         public HierarchicalClusteringSimple()
             : base()
         {

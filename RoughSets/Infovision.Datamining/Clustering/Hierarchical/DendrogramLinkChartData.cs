@@ -12,6 +12,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public DendrogramLinkChartData(int nodeId)
         {
             this.NodeId = nodeId;
+            this.Color = Color.Black;
         }
         
         public int NodeId { get; private set; }                
@@ -23,6 +24,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int RightNodeY { get; set; }
         
         public int ParentNodeY { get; set; }
+
+        public Color Color { get; set;}
 
         public int ParentNodeX
         {

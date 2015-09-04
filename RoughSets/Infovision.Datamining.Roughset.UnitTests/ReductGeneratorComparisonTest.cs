@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine(rEnsembleGen.Dendrogram.DistanceMatrix);
 
                 Console.WriteLine("------------------------ Linkages ------------------------");
-                Console.WriteLine(rEnsembleGen.Dendrogram.DendrogramLinkCollection);
+                Console.WriteLine(rEnsembleGen.Dendrogram);
             }
 
             Console.WriteLine("------------------------ Reduct Groups ------------------------");

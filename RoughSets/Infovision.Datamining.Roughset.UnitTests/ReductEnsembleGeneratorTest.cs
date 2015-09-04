@@ -37,10 +37,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             weightGenerator.Value = 1.0;            
             
             //TODO Epsilon generation according to some distribution
-            int[] epsilons = new int[numberOfPermutations];
+            double[] epsilons = new double[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {
-                epsilons[i] = RandomSingleton.Random.Next(36);
+                epsilons[i] = (double)RandomSingleton.Random.Next(36) / 100.0;
             }
 
             //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;

@@ -15,5 +15,7 @@ namespace Infovision.Datamining.Roughset
         double GetAvgMeasure(IReductMeasure reductMeasure);
 
         bool Exist(IReduct reduct);
+
+        void Save(string fileName);
     }
 }

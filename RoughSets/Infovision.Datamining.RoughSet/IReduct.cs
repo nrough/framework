@@ -7,8 +7,7 @@ namespace Infovision.Datamining.Roughset
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
-        FieldSet AttributeSet { get; }
-        //List<int> AttributeOrder { get; }
+        FieldSet AttributeSet { get; }        
         
         //TODO Move to Bireduct Interface
         ObjectSet ObjectSet { get; }
@@ -17,9 +16,7 @@ namespace Infovision.Datamining.Roughset
         //TODO Move to Reduct store
         EquivalenceClassMap EquivalenceClassMap { get; }
 
-        bool AddAttribute(int attributeId);
-        ////TODO Interface should not use position as not all objects will implement it?
-        //bool AddAttribute(int attributeId, int position);
+        bool AddAttribute(int attributeId);               
         
         bool RemoveAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);

@@ -322,7 +322,7 @@ namespace Infovision.Utils
         /// <param name="x"></param>
         /// Number to be checked
         /// <returns>true if the number is a power of two, false otherwise</returns>
-        public static bool IsPowerOfTwo(ulong x)
+        public static bool IsPowerOfTwo(long x)
         {
             return (x != 0) && ((x & (x - 1)) == 0);
         }

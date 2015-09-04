@@ -6,31 +6,31 @@ namespace Infovision.Test
 {
     [Serializable]
     public class ParameterExclusion 
-        : IEnumerable<KeyValuePair<String, Object>>
+        : IEnumerable<KeyValuePair<string, object>>
     {
-        private List<KeyValuePair<String, Object>> excludedValues;
+        private List<KeyValuePair<string, object>> excludedValues;
 
         public ParameterExclusion()
         {
-            this.excludedValues = new List<KeyValuePair<String, Object>>();
+            this.excludedValues = new List<KeyValuePair<string, object>>();
         }
 
-        public ParameterExclusion(String[] parameterNames, Object[] parameterValues)
+        public ParameterExclusion(string[] parameterNames, object[] parameterValues)
         {
             if (parameterNames.Length != parameterValues.Length)
             {
                 throw new ArgumentException("parameterValues array must have the same lengh as parameterIndexes array", "parameterValues");
             }
 
-            this.excludedValues = new List<KeyValuePair<String, Object>>(parameterNames.Length);
+            this.excludedValues = new List<KeyValuePair<string, object>>(parameterNames.Length);
 
-            for (Int32 i = 0; i < parameterNames.Length; i++)
+            for (int i = 0; i < parameterNames.Length; i++)
             {
                 this.AddExclusion(parameterNames[i], parameterValues[i]);
             }
         }
 
-        public Int32 Count
+        public int Count
         {
             get { return this.excludedValues.Count; }
         }
@@ -40,24 +40,24 @@ namespace Infovision.Test
             return (IEnumerator) GetEnumerator();
         }
 
-        public IEnumerator<KeyValuePair<String, Object>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             return this.excludedValues.GetEnumerator();
         }
-       
-        public String this[Int32 index]
+
+        public string this[int index]
         {
             get { return this.excludedValues[index].Key; }
         }
 
-        public void AddExclusion(String parameterName, Object parameterValue)
+        public void AddExclusion(string parameterName, object parameterValue)
         {
             if (String.IsNullOrEmpty(parameterName))
             {
                 throw new ArgumentException("parameterName must be greater than zero", "parameterName");
             }
 
-            KeyValuePair<String, Object> kvp = new KeyValuePair<String, Object>(parameterName, parameterValue);
+            KeyValuePair<string, object> kvp = new KeyValuePair<string, Object>(parameterName, parameterValue);
             this.excludedValues.Add(kvp);
         }
     }

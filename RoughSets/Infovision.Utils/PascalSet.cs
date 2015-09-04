@@ -7,7 +7,7 @@ using System.Text;
 namespace Infovision.Utils
 {
 	[Serializable]
-	public class PascalSet : ICloneable, ICollection, IEnumerable<Int32>
+	public class PascalSet : ICloneable, ICollection, IEnumerable<int>
 	{
 		// Private member variables
 		private int lowerBound, upperBound;
@@ -81,13 +81,13 @@ namespace Infovision.Utils
 			this.upperBound = upperBound;
 
 			// Create the BitArray
-			Int32 size = upperBound - lowerBound + 1;
+			int size = upperBound - lowerBound + 1;
 			this.data = new BitArray(size);
 			if (this.data.Length != data.Length)
 				throw new ArgumentException("data length does not match the upper and lower bound settings");            
 
 			// Populuate the BitArray with the passed-in data array.
-			for (Int32 i = 0; i < data.Length; i++)
+			for (int i = 0; i < data.Length; i++)
 			{
 				this.data[i] = data[i];
 			}

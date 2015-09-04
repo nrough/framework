@@ -20,7 +20,7 @@ namespace Infovision.Data.UnitTests
             String testFileName = @"monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTrain.DataStoreInfo);
+            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             dataStoreTestInfo = dataStoreTest.DataStoreInfo;

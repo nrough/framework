@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             String testFileName = @"monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTrain.DataStoreInfo);
+            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
         }
 
         [Test]

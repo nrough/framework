@@ -41,24 +41,24 @@
             this.DatabaseSettingGroup = new System.Windows.Forms.GroupBox();
             this.PasswordLabel = new System.Windows.Forms.Label();
             this.UserLabel = new System.Windows.Forms.Label();
+            this.Password = new System.Windows.Forms.TextBox();
+            this.UserId = new System.Windows.Forms.TextBox();
             this.AuthenticationTypeLabel = new System.Windows.Forms.Label();
+            this.AuthenticationType = new System.Windows.Forms.ComboBox();
+            this.Port = new System.Windows.Forms.TextBox();
+            this.DatabaseName = new System.Windows.Forms.TextBox();
+            this.ServerName = new System.Windows.Forms.TextBox();
             this.PortLabel = new System.Windows.Forms.Label();
             this.DatabaseNameLabel = new System.Windows.Forms.Label();
             this.ServerNameLabel = new System.Windows.Forms.Label();
             this.DatabaseTypeLabel = new System.Windows.Forms.Label();
+            this.DatabaseType = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.okBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
             this.helpBtn = new System.Windows.Forms.Button();
-            this.Password = new System.Windows.Forms.TextBox();
-            this.UserId = new System.Windows.Forms.TextBox();
-            this.AuthenticationType = new System.Windows.Forms.ComboBox();
-            this.Port = new System.Windows.Forms.TextBox();
-            this.DatabaseName = new System.Windows.Forms.TextBox();
-            this.ServerName = new System.Windows.Forms.TextBox();
-            this.DatabaseType = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.Tab.SuspendLayout();
@@ -243,6 +243,25 @@
             this.UserLabel.TabIndex = 26;
             this.UserLabel.Text = "User:";
             // 
+            // Password
+            // 
+            this.Password.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "Password", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Password.Location = new System.Drawing.Point(135, 166);
+            this.Password.Name = "Password";
+            this.Password.PasswordChar = '*';
+            this.Password.Size = new System.Drawing.Size(320, 20);
+            this.Password.TabIndex = 25;
+            this.Password.Text = global::Configuration.Properties.Settings.Default.Password;
+            // 
+            // UserId
+            // 
+            this.UserId.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "User", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.UserId.Location = new System.Drawing.Point(135, 139);
+            this.UserId.Name = "UserId";
+            this.UserId.Size = new System.Drawing.Size(320, 20);
+            this.UserId.TabIndex = 24;
+            this.UserId.Text = global::Configuration.Properties.Settings.Default.User;
+            // 
             // AuthenticationTypeLabel
             // 
             this.AuthenticationTypeLabel.AutoSize = true;
@@ -251,6 +270,43 @@
             this.AuthenticationTypeLabel.Size = new System.Drawing.Size(101, 13);
             this.AuthenticationTypeLabel.TabIndex = 23;
             this.AuthenticationTypeLabel.Text = "Authentication type:";
+            // 
+            // AuthenticationType
+            // 
+            this.AuthenticationType.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "AuthenticationType", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.AuthenticationType.FormattingEnabled = true;
+            this.AuthenticationType.Location = new System.Drawing.Point(135, 111);
+            this.AuthenticationType.Name = "AuthenticationType";
+            this.AuthenticationType.Size = new System.Drawing.Size(320, 21);
+            this.AuthenticationType.TabIndex = 22;
+            this.AuthenticationType.Text = global::Configuration.Properties.Settings.Default.AuthenticationType;
+            // 
+            // Port
+            // 
+            this.Port.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "ServerPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Port.Location = new System.Drawing.Point(550, 57);
+            this.Port.Name = "Port";
+            this.Port.Size = new System.Drawing.Size(100, 20);
+            this.Port.TabIndex = 21;
+            this.Port.Text = global::Configuration.Properties.Settings.Default.ServerPort;
+            // 
+            // DatabaseName
+            // 
+            this.DatabaseName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "DatabaseName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DatabaseName.Location = new System.Drawing.Point(135, 84);
+            this.DatabaseName.Name = "DatabaseName";
+            this.DatabaseName.Size = new System.Drawing.Size(320, 20);
+            this.DatabaseName.TabIndex = 20;
+            this.DatabaseName.Text = global::Configuration.Properties.Settings.Default.DatabaseName;
+            // 
+            // ServerName
+            // 
+            this.ServerName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "ServerName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.ServerName.Location = new System.Drawing.Point(135, 57);
+            this.ServerName.Name = "ServerName";
+            this.ServerName.Size = new System.Drawing.Size(320, 20);
+            this.ServerName.TabIndex = 19;
+            this.ServerName.Text = global::Configuration.Properties.Settings.Default.ServerName;
             // 
             // PortLabel
             // 
@@ -287,6 +343,16 @@
             this.DatabaseTypeLabel.Size = new System.Drawing.Size(79, 13);
             this.DatabaseTypeLabel.TabIndex = 15;
             this.DatabaseTypeLabel.Text = "Database type:";
+            // 
+            // DatabaseType
+            // 
+            this.DatabaseType.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "DatabaseType", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DatabaseType.FormattingEnabled = true;
+            this.DatabaseType.Location = new System.Drawing.Point(135, 30);
+            this.DatabaseType.Name = "DatabaseType";
+            this.DatabaseType.Size = new System.Drawing.Size(320, 21);
+            this.DatabaseType.TabIndex = 14;
+            this.DatabaseType.Text = global::Configuration.Properties.Settings.Default.DatabaseType;
             // 
             // tableLayoutPanel3
             // 
@@ -361,72 +427,6 @@
             this.helpBtn.TabIndex = 3;
             this.helpBtn.Text = "Help";
             this.helpBtn.UseVisualStyleBackColor = true;
-            // 
-            // Password
-            // 
-            this.Password.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "Password", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.Password.Location = new System.Drawing.Point(135, 166);
-            this.Password.Name = "Password";
-            this.Password.PasswordChar = '*';
-            this.Password.Size = new System.Drawing.Size(320, 20);
-            this.Password.TabIndex = 25;
-            this.Password.Text = global::Configuration.Properties.Settings.Default.Password;
-            // 
-            // UserId
-            // 
-            this.UserId.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "User", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.UserId.Location = new System.Drawing.Point(135, 139);
-            this.UserId.Name = "UserId";
-            this.UserId.Size = new System.Drawing.Size(320, 20);
-            this.UserId.TabIndex = 24;
-            this.UserId.Text = global::Configuration.Properties.Settings.Default.User;
-            // 
-            // AuthenticationType
-            // 
-            this.AuthenticationType.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "AuthenticationType", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.AuthenticationType.FormattingEnabled = true;
-            this.AuthenticationType.Location = new System.Drawing.Point(135, 111);
-            this.AuthenticationType.Name = "AuthenticationType";
-            this.AuthenticationType.Size = new System.Drawing.Size(320, 21);
-            this.AuthenticationType.TabIndex = 22;
-            this.AuthenticationType.Text = global::Configuration.Properties.Settings.Default.AuthenticationType;
-            // 
-            // Port
-            // 
-            this.Port.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "ServerPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.Port.Location = new System.Drawing.Point(550, 57);
-            this.Port.Name = "Port";
-            this.Port.Size = new System.Drawing.Size(100, 20);
-            this.Port.TabIndex = 21;
-            this.Port.Text = global::Configuration.Properties.Settings.Default.ServerPort;
-            // 
-            // DatabaseName
-            // 
-            this.DatabaseName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "DatabaseName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DatabaseName.Location = new System.Drawing.Point(135, 84);
-            this.DatabaseName.Name = "DatabaseName";
-            this.DatabaseName.Size = new System.Drawing.Size(320, 20);
-            this.DatabaseName.TabIndex = 20;
-            this.DatabaseName.Text = global::Configuration.Properties.Settings.Default.DatabaseName;
-            // 
-            // ServerName
-            // 
-            this.ServerName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "ServerName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.ServerName.Location = new System.Drawing.Point(135, 57);
-            this.ServerName.Name = "ServerName";
-            this.ServerName.Size = new System.Drawing.Size(320, 20);
-            this.ServerName.TabIndex = 19;
-            this.ServerName.Text = global::Configuration.Properties.Settings.Default.ServerName;
-            // 
-            // DatabaseType
-            // 
-            this.DatabaseType.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Configuration.Properties.Settings.Default, "DatabaseType", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DatabaseType.FormattingEnabled = true;
-            this.DatabaseType.Location = new System.Drawing.Point(135, 30);
-            this.DatabaseType.Name = "DatabaseType";
-            this.DatabaseType.Size = new System.Drawing.Size(320, 21);
-            this.DatabaseType.TabIndex = 14;
-            this.DatabaseType.Text = global::Configuration.Properties.Settings.Default.DatabaseType;
             // 
             // Configuration
             // 

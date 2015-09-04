@@ -49,7 +49,7 @@ namespace Infovision.Test
         /// <summary>
         /// Returns an object that can be used to synchronize access to the ICollection.
         /// </summary>
-        public virtual Object SyncRoot
+        public virtual object SyncRoot
         {
             get { return syncRoot; }
         }
@@ -57,7 +57,7 @@ namespace Infovision.Test
         /// <summary>
         /// Returns a value indicating whether access to the ICollection is synchronized (thread-safe).
         /// </summary>
-        public Boolean IsSynchronized
+        public bool IsSynchronized
         {
             get { return false; }
         }
@@ -133,6 +133,8 @@ namespace Infovision.Test
         public ParameterNumericRange(string name, T lowerBound, T upperBound, T step)
         {   
             var type = typeof(T);
+
+            //TODO Check if type is byte, short, int, long, double, float, etc.
 
             if (type == typeof(string) || type == typeof(DateTime))
             {
@@ -326,7 +328,7 @@ namespace Infovision.Test
 
         #region Constructors
 
-        public ParameterValue(String name, T value)
+        public ParameterValue(string name, T value)
         {
             this.value = value;
             this.Name = name;

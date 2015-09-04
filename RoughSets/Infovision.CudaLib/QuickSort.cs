@@ -91,7 +91,7 @@ namespace Infovision.CudaLib
         {
             int[] shared = thread.AllocateShared<int>("shared");
 
-            const unsigned int tid = thread.threadIdx.x;
+            const int tid = thread.threadIdx.x;
             int k,u,i;
  
             // Copy input to shared mem.

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -53,6 +54,29 @@ namespace Infovision.Datamining.Roughset
         public virtual int CompareTo(Object obj)
         {
             return 0;
+        }
+
+        public void Save(string fileName)
+        {
+            XDocument xmlDoc = this.GetXDocument();
+            xmlDoc.Save(fileName);
+        }
+
+        public XDocument GetXDocument()
+        {
+            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+            XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
+
+            XDocument xmlDoc = new XDocument(
+                                    new XDeclaration("1.0", "utf-8", null),
+                                    new XElement("Reducts",
+                                        new XAttribute(XNamespace.Xmlns + "xsd", xsd.NamespaceName),
+                                        new XAttribute(XNamespace.Xmlns + "xsi", xsi.NamespaceName),
+                                        from r in this
+                                        select new XElement("Reduct",
+                                            r.ToString()
+                                            )));
+            return xmlDoc;
         }
 
         #endregion
@@ -272,7 +296,8 @@ namespace Infovision.Datamining.Roughset
             return reductSet.GetEnumerator();
         }
 
-        #endregion
+        #endregion        
+        
         #endregion
     }
 }

@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string testFileName = @"dna.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTrain.DataStoreInfo);
+            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
             parms.AddParameter("DataStore", dataStoreTrain);

@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset
             return keys;
         }
 
-        public static IReductFactory GetReductFactory(String key)
+        public static IReductFactory GetReductFactory(string key)
         {
             if (String.IsNullOrEmpty(key))
                 throw new ArgumentNullException("key", "Invalid key supplied, must be non-empty string.");
@@ -179,18 +179,18 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public static IReductGenerator GetReductGenerator(String factoryKey, Args args)
+        public static IReductGenerator GetReductGenerator(string factoryKey, Args args)
         {
             IReductGenerator reductGenerator = (IReductGenerator)ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);
             return reductGenerator;
         }
 
-        public static IPermutationGenerator GetPermutationGenerator(String factoryKey, Args args)
+        public static IPermutationGenerator GetPermutationGenerator(string factoryKey, Args args)
         {
             return (IPermutationGenerator)ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
         }
 
-        public static IReductMeasure GetReductMeasure(String measureKey)
+        public static IReductMeasure GetReductMeasure(string measureKey)
         {
             if (String.IsNullOrEmpty(measureKey))
                 return null;

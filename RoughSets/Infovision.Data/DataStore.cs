@@ -339,8 +339,8 @@ namespace Infovision.Data
             stringBuilder.Append(Environment.NewLine);
             return stringBuilder.ToString();
         }
-        
-        public static DataStore Load(FileFormat fileFormat, string fileName, DataStoreInfo referenceDataStoreInfo)
+
+        public static DataStore Load(string fileName, FileFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
             IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
             DataStore dataStore = DataStore.Load(fileReader, referenceDataStoreInfo);
@@ -365,7 +365,7 @@ namespace Infovision.Data
 
         public static DataStore Load(string fileName, FileFormat fileFormat)
         {
-            return DataStore.Load(fileFormat, fileName, null);
+            return DataStore.Load(fileName, fileFormat, null);
         }
 
         #region System.Object Methods

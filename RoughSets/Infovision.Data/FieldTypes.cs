@@ -40,7 +40,7 @@ namespace Infovision.Data
                                     continue;
                                 }
 
-                                if (InfovisionHelper.IsPowerOfTwo((ulong)ft))
+                                if (InfovisionHelper.IsPowerOfTwo((long)ft))
                                 {
                                     basicTypes.Add(ft);
                                 }

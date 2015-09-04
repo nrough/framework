@@ -16,7 +16,7 @@ namespace Infovision.RunTest
                                         int numberOfFolds)
         {
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
-            DataStore dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTraining.DataStoreInfo);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
             ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
@@ -164,7 +164,7 @@ namespace Infovision.RunTest
                                         int numberOfFolds)
         {
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
-            DataStore dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTraining.DataStoreInfo);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
             ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
@@ -276,7 +276,7 @@ namespace Infovision.RunTest
                                         int numberOfFolds)
         {
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
-            DataStore dataStoreTest = DataStore.Load(FileFormat.Rses1, testFileName, dataStoreTraining.DataStoreInfo);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
             ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);

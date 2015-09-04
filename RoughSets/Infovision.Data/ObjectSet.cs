@@ -9,28 +9,7 @@ namespace Infovision.Data
     {
         DataStore dataStore = null;
         Dictionary<long, int> decisionCount = new Dictionary<long, int>();
-        
-        #region Contructors
-
-        public ObjectSet(DataStore dataStore, int[] initialData)
-            : base(0, dataStore.NumberOfRecords-1, initialData)
-        {
-            this.dataStore = dataStore;
-            this.InitDecisionCount(initialData);
-        }
-
-        public ObjectSet(DataStore dataStore)
-            : this(dataStore, new int[] { }) 
-        {
-        }
-
-        public ObjectSet(ObjectSet objectSet)
-            : this(objectSet.DataStore, objectSet.ToArray())
-        {
-        }
-
-        #endregion
-
+                
         #region Properties
 
         public DataStore DataStore
@@ -51,6 +30,27 @@ namespace Infovision.Data
         public string CacheKey
         {
             get { return this.ToString(); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public ObjectSet(DataStore dataStore, int[] initialData)
+            : base(0, dataStore.NumberOfRecords - 1, initialData)
+        {
+            this.dataStore = dataStore;
+            this.InitDecisionCount(initialData);
+        }
+
+        public ObjectSet(DataStore dataStore)
+            : this(dataStore, new int[] { })
+        {
+        }
+
+        public ObjectSet(ObjectSet objectSet)
+            : this(objectSet.DataStore, objectSet.ToArray())
+        {
         }
 
         #endregion

@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStoreHelper.cs" />
+    <Compile Include="DataStoreOrderByComparer.cs" />
     <Compile Include="FieldTypes.cs" />
     <Compile Include="DataReaderFile.cs" />
     <Compile Include="DataStoreInfo.cs" />

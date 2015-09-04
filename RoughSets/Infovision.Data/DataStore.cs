@@ -8,7 +8,7 @@ namespace Infovision.Data
     [Serializable]
     public class DataStore : IDataTable
     {
-        #region Globals
+        #region Members
 
         private string name;
         private long nextObjectId = 1;
@@ -21,28 +21,7 @@ namespace Infovision.Data
         private DataStoreInfo dataStoreInfo;
         private Dictionary<long, List<int>> decisionValue2ObjectIndex;
 
-        #endregion
-
-        #region Contructors
-
-        public DataStore(DataStoreInfo dataStoreInfo)
-        {
-            this.dataStoreInfo = dataStoreInfo;
-            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0);
-        }
-
-        private void InitStorage(int capacity, int attributeSize, double capacityFactor)
-        {
-            data = new Int64[capacity * attributeSize];
-            this.capacity = capacity;
-            this.capacityFactor = capacityFactor;
-            lastIndex = -1;
-            objectId2Index = new Dictionary<Int64, int>(capacity);
-            index2ObjectId = new Dictionary<int, Int64>(capacity);
-            decisionValue2ObjectIndex = new Dictionary<Int64, List<int>>();
-        }
-
-        #endregion
+        #endregion        
 
         #region Properties
 
@@ -65,7 +44,52 @@ namespace Infovision.Data
         
         #endregion
 
+        #region Constructors
+
+        public DataStore(DataStoreInfo dataStoreInfo)
+        {
+            this.dataStoreInfo = dataStoreInfo;
+            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0);
+        }
+
+        private void InitStorage(int capacity, int attributeSize, double capacityFactor)
+        {
+            data = new Int64[capacity * attributeSize];
+            this.capacity = capacity;
+            this.capacityFactor = capacityFactor;
+            lastIndex = -1;
+            objectId2Index = new Dictionary<Int64, int>(capacity);
+            index2ObjectId = new Dictionary<int, Int64>(capacity);
+            decisionValue2ObjectIndex = new Dictionary<Int64, List<int>>();
+        }
+
+        #endregion
+
         #region Methods
+
+        public int[] OrderBy(int[] orderBy, IComparer<int> comparer)
+        {
+            int[] sortedArray = new int[this.NumberOfRecords];
+            for (int i = 0; i < sortedArray.Length; i++)
+            {
+                sortedArray[i] = i;
+            }
+
+            Array.Sort<int>(sortedArray, comparer);
+            return sortedArray;
+        }
+
+        public int[] OrderBy(int[] orderBy, ObjectSet objectSet, IComparer<int> comparer)
+        {
+            int[] objects = objectSet.ToArray();
+            int[] sortedArray = new int[objects.Length];
+            
+            for (int i = 0; i < objects.Length; i++)            
+                sortedArray[i] = objects[i];            
+
+            Array.Sort<int>(sortedArray, comparer);
+            return sortedArray;
+        }
 
         private bool CheckResize()
         {

@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (reduct.ObjectSetInfo.NumberOfRecords > 0)
             {
-                return (double)equivalenceClassInfo.NumberOfObjectsWithDecision(decisionValue) / (double)reduct.ObjectSetInfo.NumberOfRecords;
+                return (double)equivalenceClassInfo.GetNumberOfObjectsWithDecision(decisionValue) / (double)reduct.ObjectSetInfo.NumberOfRecords;
             }
             return 0;
         }
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (equivalenceClass.NumberOfObjects > 0)
             {
-                return (double)equivalenceClass.NumberOfObjectsWithDecision(decisionValue) / (double)equivalenceClass.NumberOfObjects;
+                return (double)equivalenceClass.GetNumberOfObjectsWithDecision(decisionValue) / (double)equivalenceClass.NumberOfObjects;
             }
 
             return 0;
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0)
             {
-                return (double)equivalenceClassInfo.NumberOfObjectsWithDecision(decisionValue)
+                return (double)equivalenceClassInfo.GetNumberOfObjectsWithDecision(decisionValue)
                      / (double)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue);
             }
 
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset
                 && equivalenceClassInfo.NumberOfObjects > 0
                 && reduct.ObjectSetInfo.NumberOfRecords > 0)
             {
-                result = ((double)equivalenceClassInfo.NumberOfObjectsWithDecision(decisionValue) / (double)equivalenceClassInfo.NumberOfObjects)
+                result = ((double)equivalenceClassInfo.GetNumberOfObjectsWithDecision(decisionValue) / (double)equivalenceClassInfo.NumberOfObjects)
                      / ((double)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) / (double)reduct.ObjectSetInfo.NumberOfRecords);
 
                 return result;
@@ -254,7 +254,7 @@ namespace Infovision.Datamining.Roughset
             {
                 if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision) > 0)
                 {
-                    sum += (double)equivalenceClassInfo.NumberOfObjectsWithDecision(decision)
+                    sum += (double)equivalenceClassInfo.GetNumberOfObjectsWithDecision(decision)
                             / (double)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision);
                 }
             }
@@ -262,7 +262,7 @@ namespace Infovision.Datamining.Roughset
             if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0 
                 && sum > 0)
             {
-                return ((double)equivalenceClassInfo.NumberOfObjectsWithDecision(decisionValue)
+                return ((double)equivalenceClassInfo.GetNumberOfObjectsWithDecision(decisionValue)
                         / (double)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue))
                         / (double)sum;
             }

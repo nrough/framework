@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset
         bool ContainsAttribute(int attributeId);
         bool ContainsObject(int objectIndex);
 
-        //TODO We want to dispplay Reducts statistics
+        //TODO We want to display Reducts statistics
         //Cardinality
         //Number of objects recognizable in DS
         //Number of objects not recognizable in DS

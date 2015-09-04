@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="EquivalenceClassSortedMap.cs" />
     <Compile Include="ReductEnsembleDistanceHelper.cs" />
     <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />

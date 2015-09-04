@@ -10,35 +10,10 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class EquivalenceClassMap : IEnumerable<EquivalenceClass>, ICloneable
     {
-        #region Globals
+        #region Members
 
         private Dictionary<DataVector, EquivalenceClass> partitions;
-        private Dictionary<long, int> decisionCount;
-        private bool decisionCountCalculated;
-
-        #endregion
-
-        #region Constructors
-
-        private EquivalenceClassMap()
-        {
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>();
-            this.decisionCountCalculated = false;
-        }
-        
-        public EquivalenceClassMap(DataStoreInfo dataStoreInfo)
-        {
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
-            this.InitDecisionCount(dataStoreInfo);
-        }
-
-        private EquivalenceClassMap(EquivalenceClassMap roughPartitionMap)
-        {
-            this.partitions = (Dictionary<DataVector, EquivalenceClass>) roughPartitionMap.Partitions.CloneDictionaryCloningValues<DataVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>(roughPartitionMap.DecisionCount);
-            this.decisionCountCalculated = roughPartitionMap.DecisionCountCalculated;
-        }
+        private Dictionary<long, int> decisionCount;        
 
         #endregion
 
@@ -52,16 +27,33 @@ namespace Infovision.Datamining.Roughset
         private Dictionary<long, int> DecisionCount
         {
             get { return decisionCount; }
-        }
-
-        public bool DecisionCountCalculated
-        {
-            get { return decisionCountCalculated; }
-        }
+        }        
 
         public int Count
         {
             get { return partitions.Count; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        private EquivalenceClassMap()
+        {
+            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
+            this.decisionCount = new Dictionary<long, int>();            
+        }
+
+        public EquivalenceClassMap(DataStoreInfo dataStoreInfo)
+        {
+            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
+            this.InitDecisionCount(dataStoreInfo);
+        }
+
+        private EquivalenceClassMap(EquivalenceClassMap roughPartitionMap)
+        {
+            this.partitions = (Dictionary<DataVector, EquivalenceClass>)roughPartitionMap.Partitions.CloneDictionaryCloningValues<DataVector, EquivalenceClass>();
+            this.decisionCount = new Dictionary<long, int>(roughPartitionMap.DecisionCount);            
         }
 
         #endregion
@@ -75,8 +67,7 @@ namespace Infovision.Datamining.Roughset
             foreach (long decisionValue in decisionInfo.InternalValues())
             {
                 this.decisionCount.Add(decisionValue, decisionInfo.Histogram.GetBinValue(decisionValue));
-            }
-            this.decisionCountCalculated = true;
+            }            
         }
 
         public void Calc(FieldSet attributeSet, DataStore dataStore)

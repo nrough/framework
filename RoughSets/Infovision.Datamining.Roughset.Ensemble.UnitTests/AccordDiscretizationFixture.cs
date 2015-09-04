@@ -347,12 +347,12 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 					
                     if (decisionValue == mostFrequentDecisionValue)
 					{
-                        if(eqClass.NumberOfObjectsWithDecision(0) != eqClass.NumberOfObjectsWithDecision(1))
+                        if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
                             Assert.Greater(discernVerctor[j], 0);                                                   
 					}
 					else
 					{
-                        if (eqClass.NumberOfObjectsWithDecision(0) != eqClass.NumberOfObjectsWithDecision(1))
+                        if (eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
                             Assert.AreEqual(0, discernVerctor[j]);
 					}
                     

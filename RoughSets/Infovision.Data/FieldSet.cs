@@ -6,8 +6,18 @@ namespace Infovision.Data
 {
     [Serializable]
     public class FieldSet : PascalSet
-    {
-        #region Contructors
+    {        
+
+        #region Properties
+
+        public string CacheKey
+        {
+            get { return this.ToString(); }
+        }
+
+        #endregion
+
+        #region Constructors
 
         public FieldSet(DataStoreInfo dataStoreInfo)
             : base(dataStoreInfo.MinFieldId, dataStoreInfo.MaxFieldId)
@@ -32,15 +42,6 @@ namespace Infovision.Data
         public FieldSet(int lowerBound, int upperBound, int[] data)
             : base(lowerBound, upperBound, data)
         {
-        }
-
-        #endregion
-
-        #region Properties
-
-        public string CacheKey
-        {
-            get { return this.ToString(); }
         }
 
         #endregion

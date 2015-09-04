@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         public EquivalenceClass()
         {
             this.instances = new Dictionary<int, double>();
-            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>();            
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>();
         }
 
         public EquivalenceClass(int numberOfDecisions)
@@ -160,7 +160,7 @@ namespace Infovision.Datamining.Roughset
             this.calcStats = false;
         }                
 
-        public int NumberOfObjectsWithDecision(long decisionValue)
+        public int GetNumberOfObjectsWithDecision(long decisionValue)
         {
             HashSet<int> indices;
             if (this.decisionObjectIndexes.TryGetValue(decisionValue, out indices))
@@ -170,9 +170,9 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
-        public double DecisionProbability(long decisionValue)
+        public double GetDecisionProbability(long decisionValue)
         {
-            return (double)this.NumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfObjects;
+            return (double)this.GetNumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfObjects;
         }
 
         #region ICloneable Members

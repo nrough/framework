@@ -97,24 +97,25 @@ namespace Infovision.Datamining.Roughset
             double result = 0;
             double maxDecisionProbability = -1;
             double decProbability;
+            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
 
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
-                maxDecisionProbability = -1;
+                maxDecisionProbability = Double.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decProbability = e.DecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
+                    decProbability = e.GetDecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
 
-                    if ( decProbability > (maxDecisionProbability + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)) )
+                    if ( decProbability > maxDecisionProbability + tinyDouble)
                     {
                         maxDecisionProbability = decProbability;
                     }
                 }
 
-                result += (double)e.NumberOfObjects * maxDecisionProbability;
+                result += e.NumberOfObjects * maxDecisionProbability;
             }
 
-            return result / (double)reduct.ObjectSetInfo.NumberOfRecords;
+            return result / reduct.ObjectSetInfo.NumberOfRecords;
         }
 
         public override string Description()
@@ -140,24 +141,25 @@ namespace Infovision.Datamining.Roughset
             double result = 0;
             double maxDecisionProbability = -1;
             double decProbability;
+            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
 
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
-                maxDecisionProbability = -1;
+                maxDecisionProbability = Double.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decProbability = e.DecisionProbability(decisionValue);
+                    decProbability = e.GetDecisionProbability(decisionValue);
 
-                    if (decProbability > maxDecisionProbability + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords))
+                    if (decProbability > maxDecisionProbability + tinyDouble)
                     {
                         maxDecisionProbability = decProbability;
                     }
                 }
 
-                result += (double)e.NumberOfObjects * maxDecisionProbability;
+                result += e.NumberOfObjects * maxDecisionProbability;
             }
 
-            return result / (double)reduct.ObjectSetInfo.NumberOfRecords;
+            return result / reduct.ObjectSetInfo.NumberOfRecords;
         }
 
         public override string Description()
@@ -181,6 +183,7 @@ namespace Infovision.Datamining.Roughset
         public override double Calc(IReduct reduct)
         {
             double result = 0;
+            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 double maxValue = Double.MinValue;
@@ -193,7 +196,7 @@ namespace Infovision.Datamining.Roughset
                         sum += reduct.Weights[objectIdx];
                     }
                     
-                    if (sum > (maxValue + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)) )
+                    if (sum > maxValue + tinyDouble )
                     {
                         maxValue = sum;
                         maxDecision = decisionValue;

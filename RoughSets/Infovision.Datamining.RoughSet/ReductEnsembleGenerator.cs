@@ -21,6 +21,10 @@ namespace Infovision.Datamining.Roughset
         private WeightGenerator weightGenerator;
         private ReductStore internalStore;
         private HierarchicalClustering hCluster;
+        private Func<IReduct, double[], double[]> reconWeights;
+        private Func<int[], int[], DistanceMatrix, double> linkage;
+        private Func<double[], double[], double> distance;
+        private int numberOfClusters;
 
         public HierarchicalClustering Dendrogram
         {
@@ -76,7 +80,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.internalStore; }
         }
 
-        protected WeightGenerator WeightGenerator
+        public WeightGenerator WeightGenerator
         {
             get
             {
@@ -87,38 +91,46 @@ namespace Infovision.Datamining.Roughset
 
                 return this.weightGenerator;
             }
+
+            set 
+            { 
+                this.weightGenerator = value; 
+            }
         }
         
         public ReductEnsembleGenerator(DataStore data, int[] epsilon)
             : base(data)
         {
-            permEpsilon = new int[epsilon.Length];
-            Array.Copy(epsilon, permEpsilon, epsilon.Length);            
+            this.permEpsilon = new int[epsilon.Length];
+            Array.Copy(epsilon, this.permEpsilon, epsilon.Length);
+            this.reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            this.linkage = ClusteringLinkage.Min;
+            this.distance = Similarity.Euclidean;
+            this.numberOfClusters = 5;
         }
         
         public override IReductStoreCollection Generate(Args args)
         {
             internalStore = new ReductStore();
-            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);
-            Func<double[], double[], double> distance = Similarity.ReductSimDelegate(0.5);
-            Func<int[], int[], DistanceMatrix, double> linkage = ClusteringLinkage.Min;
-            int numberOfClusters = 5;
-            bool useErrorsAsVectors = true;            
+            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);                                                
 
             if (args.Exist("Distance"))
-                distance = (Func<double[], double[], double>)args.GetParameter("Distance");
+                this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
-                linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
+                this.linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
 
             if (args.Exist("NumberOfClusters"))
-                numberOfClusters = (int) args.GetParameter("NumberOfClusters");
+                this.numberOfClusters = (int) args.GetParameter("NumberOfClusters");
 
-            if (numberOfClusters > this.DataStore.NumberOfRecords)
-                numberOfClusters = this.DataStore.NumberOfRecords;
+            if (this.numberOfClusters > this.DataStore.NumberOfRecords)
+                this.numberOfClusters = this.DataStore.NumberOfRecords;            
 
-            if (args.Exist("UseErrosAsVectors"))
-                useErrorsAsVectors = (bool) args.GetParameter("UseErrosAsVectors");            
+            if (args.Exist("WeightGenerator"))
+                this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+
+            if (args.Exist("ReconWeights"))
+                this.reconWeights = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
             
             int k = -1;            
             foreach (Permutation permutation in permutations)
@@ -209,89 +221,30 @@ namespace Infovision.Datamining.Roughset
             */
 
             return reductStoreCollection;
-        }        
+        }                   
 
         /// <summary>
-        /// Returns a weight vector array where for each reduct an object weight is stored
-        /// When useErrorValues=true, then we store only weights for objects that were not correctly recognized by a reduct (errors), correctly recognized objects have weight = 0
-        /// When useErrorValues=false then we store only weights for objects that were correctly recognized by a reduct (no errors), not recognized objects have weight = 0
-        /// </summary>
-        /// <param name="store"></param>
-        /// <param name="useErrorValues"></param>
-        /// <returns></returns>
-        private double[][] GetErrorVectorsFromReducts(ReductStore store, bool useErrorValues)
-        {
-            double[][] errors = new double[store.Count][];
-            for (int i = 0; i < store.Count; i++)
-            {
-                errors[i] = new double[this.DataStore.NumberOfRecords];
-                IReduct reduct = store.GetReduct(i);
-                
-                if (useErrorValues)
-                {
-                    Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
-                }
-
-                foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
-                {                                        
-                    foreach (int objectIdx in e.GetObjectIndexes(e.MajorDecision))
-                    {
-                        if (useErrorValues)
-                        {
-                            errors[i][objectIdx] = 0;
-                        }
-                        else
-                        {
-                            errors[i][objectIdx] = reduct.Weights[objectIdx]; 
-                        }
-                    }                    
-                }
-            }
-
-            return errors;
-        }
-
-        /// <summary>
-        /// Returns a weight vector array, where for each reduct an object weight is stored
-        /// Correctly recognized objects get negative object weight, and not correctly recognized objects get value equal to the object weight
+        /// Returns a weight vector array, where for each reduct an recognition weight is stored        
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
         public double[][] GetWeightVectorsFromReducts(ReductStore store)
         {
             double[][] errors = new double[store.Count][];
-            for (int i = 0; i < store.Count; i++)
-            {
-                errors[i] = new double[this.DataStore.NumberOfRecords];
-                IReduct reduct = store.GetReduct(i);
-                
-                Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
-                
-                foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
-                {                    
-                    foreach ( int objectIdx in e.GetObjectIndexes(e.MajorDecision))
-                    {
-                        errors[i][objectIdx] *= -1;                        
-                    }
-                }
-            }
-
+            for (int i = 0; i < store.Count; i++)                           
+                errors[i] = reconWeights(store.GetReduct(i), this.WeightGenerator.Weights);                            
             return errors;
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
         {            
-            if (reductStore.IsSuperSet(reduct, true))
-            {                
-                return true;
-            }
+            if (reductStore.IsSuperSet(reduct, true))            
+                return true;            
                         
             double partitionQuality = this.GetPartitionQuality(reduct);
             double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - reduct.ApproximationDegree) * this.DataSetQuality) - tinyDouble))
-            {                
-                return true;
-            }
+            if (partitionQuality >= (((1.0 - reduct.ApproximationDegree) * this.DataSetQuality) - tinyDouble))             
+                return true;            
             
             return false;
         }
@@ -329,7 +282,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0);
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 

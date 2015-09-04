@@ -116,15 +116,6 @@ namespace Infovision.Math.Tests
             double result = Similarity.TverskySymetric(vec1, vec2, alpha, beta);
             Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
-        }
-
-
-        [Test]
-        public void TverskyDelegateTest()
-        {
-            double result1 = Similarity.Tversky_DEL(vectors[2], vectors[3], 0.5, 0.5);
-            double result2 = Similarity.Tversky(vectors[2], vectors[3], 0.5, 0.5);
-            Assert.AreEqual(result1, result2);
-        }        
+        }             
     }
 }

@@ -13,54 +13,70 @@ using Infovision.Datamining.Clustering.Hierarchical;
 using System.IO;
 
 namespace Infovision.Datamining.Roughset.UnitTests
-{
+{            
+    
     [TestFixture]
     class ReductEnsembleGeneratorTest
     {
         //Refactor        
         //TODO Replace Args by Dictionary<string, object>
-        //TODO Add parameter names as static variables            
-        //TODO Make cache keys shorter          
+        //TODO Add parameter names as static variables             
 
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
             Random rand = new Random();
+            
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-
             int numberOfPermutations = 5;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
+            WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
+            weightGenerator.Value = 1.0;            
+            
             //TODO Epsilon generation according to some distribution
             int[] epsilons = new int[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {
                 epsilons[i] = rand.Next(36);
             }
-            
+
+            //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;
+            Func<IReduct, double[], double[]> reconWeights = (r, w) =>
+                {
+                    double[] result = new double[w.Length];
+                    Array.Copy(w, result, w.Length);
+                    foreach (EquivalenceClass e in r.EquivalenceClassMap)
+                        foreach (int i in e.GetObjectIndexes(e.MajorDecision))
+                            result[i] *= -1;
+
+                    return result;
+                };
+                        
             
             Dictionary<string, object> argSet1 = new Dictionary<string, object>();
             argSet1.Add("DataStore", data);
             argSet1.Add("NumberOfThreads", 1);
-            argSet1.Add("PermutationEpsilon", epsilons);
-            //argSet1.Add("Distance", Similarity.TverskyDelegate(0.5, 0.5));            
-            //argSet1.Add("Distance", Similarity.ReductSimDelegate(0.5));
-            argSet1.Add("Distance", (Func<double[], double[], double>)Disimilarity.SquaredEuclidean);
+            argSet1.Add("PermutationEpsilon", epsilons);            
+            argSet1.Add("Distance", (Func<double[], double[], double>)Similarity.SquaredEuclidean);
             argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
             argSet1.Add("NumberOfClusters", 3);
-            argSet1.Add("FactoryKey", "ReductEnsemble");
-            //argSet1.Add("UseErrosAsVectors", true);            
+            argSet1.Add("FactoryKey", "ReductEnsemble");                
             argSet1.Add("PermutationCollection", permList);
             argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
             argSet1.Add("ReductWeightFileName", @"f:\euclidean_reversed.csv");
+            argSet1.Add("WeightGenerator", weightGenerator);
+            argSet1.Add("ReconWeights", reconWeights);
 
             argsList.Add(argSet1);
 
             Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);
-            argSet2.Add("Distance", (Func<double[], double[], double>)Disimilarity.SquaredEuclidean);
+            argSet2["Distance"] = (Func<double[], double[], double>) Disimilarity.SquaredEuclidean;
             argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
+            argSet1["ReductWeightFileName"] = @"f:\euclidean_standard.csv";
 
             argsList.Add(argSet2);
 
@@ -70,9 +86,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetGenerateTestArgs")]
         public void GenerateTest(Dictionary<string, object> args)
         {
-
-            Console.WriteLine("{0}", args["Distance"].ToString());
             
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];            
+            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);            
+                        
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
             {
@@ -119,7 +136,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (KeyValuePair<int, List<int>> kvp in membership)
             {
                 Console.WriteLine("Reduct Group Alias {0}", kvp.Key);
-                Console.WriteLine("==================");
+                Console.WriteLine("======================");
 
                 foreach (int reductId in kvp.Value)
                 {
@@ -133,7 +150,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 Console.WriteLine("Reduct Group Alias {0}: {0}", k++);
-                Console.WriteLine("==================");
+                Console.WriteLine("======================");
                 
                 foreach (IReduct reduct in reductStore)
                 {
@@ -147,85 +164,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
                 dendrogram.Save((string) args["DendrogramBitmapFile"]);                
             }            
-        }
-
-        public static IEnumerable<Dictionary<string, object>> GetWeightVectorsFromReductsTestArgs()
-        {
-            List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
-
-            Random rand = new Random();
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            PermutationGenerator permGenerator = new PermutationGenerator(data);
-
-            int numberOfPermutations = 10;
-            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
-
-            //TODO Epsilon generation according to some distribution
-            int[] epsilons = new int[numberOfPermutations];
-            for (int i = 0; i < numberOfPermutations; i++)
-            {
-                epsilons[i] = rand.Next(36);
-            }
-
-
-            Dictionary<string, object> argSet1 = new Dictionary<string, object>();
-            argSet1.Add("DataStore", data);
-            argSet1.Add("NumberOfThreads", 1);
-            argSet1.Add("PermutationEpsilon", epsilons);
-            argSet1.Add("Distance", (Func<double[], double[], double>)Similarity.SquaredEuclidean);
-            argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
-            argSet1.Add("NumberOfClusters", 3);
-            argSet1.Add("FactoryKey", "ReductEnsemble");
-            argSet1.Add("PermutationCollection", permList);
-            argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
-            argSet1.Add("ReductWeightFileName", @"f:\euclidean_reversed.csv");
-
-            argsList.Add(argSet1);
-
-            Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);            
-            argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
-
-            //argsList.Add(argSet2);
-
-            return argsList;
-        }
-
-        [Test, TestCaseSource("GetWeightVectorsFromReductsTestArgs")]
-        public void GetWeightVectorsFromReductsTest(Dictionary<string, object> args)
-        {
-            Args parms = new Args();
-            foreach (KeyValuePair<string, object> kvp in args)
-            {
-                parms.AddParameter(kvp.Key, kvp.Value);
-            }
-            DataStore data = (DataStore)parms.GetParameter("DataStore");
-            double epsilon = 0.0000001;
-                       
-            ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
-            reductGenerator.Generate(parms);
-            
-            ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
-            double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
-
-            for (int r = 0; r < reductPool.Count; r++)            
-            {
-                ReductWeights red = reductPool.GetReduct(r) as ReductWeights;
-                for (int i = 0; i < data.NumberOfRecords; i++)
-                {
-                    DataVector objectData = data.GetDataVector(i, red.Attributes);
-                    EquivalenceClass eqClass = red.EquivalenceClassMap.GetEquivalenceClass(objectData);
-                    
-                    if (data.GetDecisionValue(i) == eqClass.MajorDecision)
-                    {
-                        Assert.IsTrue(Infovision.Math.DoubleEpsilonComparer.NearlyEqual(-0.0005, errorWeights[r][i], epsilon));
-                    }
-                    else
-                    {
-                        Assert.IsTrue(Infovision.Math.DoubleEpsilonComparer.NearlyEqual(0.0005, errorWeights[r][i], epsilon));
-                    }
-                }
-            }
-        }
-                
+        }             
     }
 }

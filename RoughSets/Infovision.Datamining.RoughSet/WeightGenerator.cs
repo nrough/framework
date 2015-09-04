@@ -125,4 +125,30 @@ namespace Infovision.Datamining.Roughset
             }
         }
     }
+
+    [Serializable]
+    public class WeightGeneratorConstant : WeightGenerator
+    {
+        private double value = 1.0;
+
+        public double Value
+        {
+            get { return this.value; }
+            set { this.value = value; }
+        }
+        
+        public WeightGeneratorConstant(DataStore dataStore)
+            : base(dataStore)
+        {
+        }
+
+        protected override void Generate()
+        {            
+            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+            {
+                this.Weights[i] = 1.0 / (double)this.DataStore.NumberOfRecords;
+            }
+            this.CalcFlag = true;
+        }
+    }
 }

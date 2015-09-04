@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
+    /// <summary>
+    /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html
+    /// </summary>
     public static class Similarity
     {
         private static readonly double tinyDouble = 0.0000000001;
@@ -49,7 +52,7 @@ namespace Infovision.Math
             return sum;
         }        
 
-        public static double Jacard(double[] a, double[] b)
+        public static double JaccardFuzzy(double[] a, double[] b)
         {
             double minSum = 0;
             double maxSum = 0;
@@ -113,21 +116,6 @@ namespace Infovision.Math
                 sum += System.Math.Pow((a[i] - b[i]), 2.0);
             return sum;
         }        
-
-        public static double Tversky_DEL(double[] prototype, double[] variant, double alpha, double beta)
-        {
-            int[] assoc = Similarity.BinaryAssociation(prototype, variant);
-            int a = assoc[0];
-            int b = assoc[1];
-            int c = assoc[2];
-
-            double denominator = (alpha * a + beta * b + c);
-
-            if (DoubleEpsilonComparer.NearlyEqual(denominator, 0.0, tinyDouble))
-                return 0.0;
-
-            return c / denominator;
-        }
 
         public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
         {
@@ -193,54 +181,247 @@ namespace Infovision.Math
             };
 
             return tverskyDistance;
-        }
+        }                            
 
-        /// <summary>
-        /// |X| + |Y| - alpha * |X && Y|
-        /// </summary>
-        /// <param name="vec1"></param>
-        /// <param name="vec2"></param>
-        /// <param name="alpha"></param>
-        /// <returns></returns>
-        public static double ReductSim(double[] vec1, double[] vec2, double alpha)
+        public static double Cosine(double[] v1, double[] v2)
         {
-            return Similarity.ReductSimDelegate(alpha).Invoke(vec1, vec2);
-        }
-
-        public static Func<double[], double[], double> ReductSimDelegate(double alpha)
-        {
-            Func<double[], double[], double> tverskyDistance = (p, v) =>
+            double dot = 0.0, d1 = 0.0, d2 = 0.0;
+            for (int i = 0; i < v1.Length; i++)
             {
-                int[] assoc = Similarity.BinaryAssociation(p, v);
-                int a = assoc[0];
-                int b = assoc[1];
-                int c = assoc[2];
-
-                return (a + c) + (b + c) - (alpha * c);
-            };
-
-            return tverskyDistance;
+                dot += v1[i] * v2[i];
+                d1 += System.Math.Pow(v1[i], 2.0);
+                d2 += System.Math.Pow(v2[i], 2.0);
+            }
+            return dot / (System.Math.Sqrt(d1) * System.Math.Sqrt(d2));            
         }
 
-        //TODO Implement Other Similarity and disimilarity measures
-        //http://www.daylight.com/dayhtml/doc/theory/theory.finger.html
-        //Cosine
-        //Dice
-        //Euclid
-        //Forbes
-        //Hamman
-        //Jaccard
-        //Kulczynski
-        //Manthattan
-        //Matching
-        //Pearson
-        //Rogers-Tanimoto
-        //Rusell-Rao
-        //Simpson
-        //Tanimoto
-        //Yule
+        public static double CosineB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
 
-        private static int[] BinaryAssociation(int[] vec1, int[] vec2)
+            double denominator = System.Math.Sqrt((a + c) * (b + c));
+            return c / denominator;
+        }
+
+        public static double DiceB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];            
+
+            double denominator = (a + c) * (b + c);
+            return (2.0 * c) / denominator;
+        }
+
+        public static double EuclideanB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            double denominator = a + b + c + d;
+            return System.Math.Sqrt((c + d) / denominator);
+        }
+
+        public static double ForbesB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            double denominator = (a + c) * (b + c);
+            return (c * (a + b + c + d)) / denominator;
+        }
+
+        public static double HammanB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            double denominator = (a + b + c + d);
+            return ((c + d) - (a + b)) / denominator;
+        }
+
+        public static double JaccardB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];            
+
+            double denominator = (a + b + c);
+            return c / denominator;
+        }
+
+        public static double KulczynskiB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];            
+
+            return 0.5 * ((c / (a + c)) + (c / (b + c)));
+        }
+
+        public static double ManhattanB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (a + b) / (a + b + c + d);
+        }
+
+        public static double MatchingB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (c + d) / (a + b + c + d);
+        }
+
+        public static double PearsonB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return ((c * d) - (a * b)) / System.Math.Sqrt((a + c) * (b + c) * (a + d) * (b + d));
+        }
+
+        public static double RogersTanimotoB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (2.0 * (a + b)) / (c + (2.0 * (a + b)) + d);
+        }
+
+        public static double RussellRaoB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (a + b + d) / (a + b + c + d);  //denominarot was v1.Length in the original formula
+        }
+
+        public static double SimpsonB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];            
+
+            return c / System.Math.Min((a + c), (b + c));
+        }
+
+        public static double TanimotoB(double[] v1, double[] v2, double[] w)
+        {
+            return Similarity.JaccardB(v1, v2, w);
+        }
+
+        public static double YuleB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (2.0 * a * b) / ((c * d) + (a * b)); //Wolfram
+            //return ((c * d) - (a * b)) / ((c * d) + (a * b)); //Chem
+        }
+
+        public static double SokalSneathB(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return (2.0 * (a + b)) / (c + (2.0*(a * b)));
+        }
+
+        public static double BrayCurtis(double[] v1, double[] v2)
+        {
+            double d1 = 0.0, d2 = 0.0;
+            for (int i = 0; i < v1.Length; i++)
+            {                
+                d1 += System.Math.Abs(v1[i] - v2[i]);
+                d2 += System.Math.Abs(v1[i] + v2[i]);
+            }
+            return d1 / d2;
+        }
+
+        public static double Canberra(double[] v1, double[] v2)
+        {
+            double sum = 0;
+            for (int i = 0; i < v1.Length; i++)
+                sum += System.Math.Abs(v1[i] - v2[i]) / (System.Math.Abs(v1[i]) + System.Math.Abs(v2[i]));
+            return sum;
+        }
+
+        public static double Kulsinski(double[] v1, double[] v2, double[] w)
+        {
+            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double a = assoc[0];
+            double b = assoc[1];
+            double c = assoc[2];
+            double d = assoc[3];
+
+            return ((a + b - c) + v1.Length) / ((a + b) + v1.Length);
+        }
+
+        //mahalanobis        
+        //SokalMichener
+
+        
+        public static double Minkowski(double[] v1, double[] v2, double p)
+        {            
+            double ex = 0.0;
+            double min_d = Double.PositiveInfinity;
+            double max_d = Double.NegativeInfinity;
+            for (int i = 0; i < v1.Length; i++)
+            { 
+                double d = System.Math.Abs(v1[i] - v2[i]);
+                ex += System.Math.Pow(d, p);
+                min_d = System.Math.Min(min_d, d);
+                max_d = System.Math.Max(max_d, d);
+            }            
+                
+            return Double.IsNaN(ex) ? ex
+                : !ex.IsNormal() && p.SignBit() ? min_d
+                : !ex.IsNormal() && !p.SignBit() ? max_d
+                : System.Math.Pow(ex, 1.0 / p);
+        }
+
+
+        public static int[] BinaryAssociation(int[] vec1, int[] vec2)
         {
             int a = 0; //0
             int b = 0; //1
@@ -272,15 +453,15 @@ namespace Infovision.Math
 
         /// <summary>
         /// Calculated four binary association factors and returns them in the form of an array int[] {a, b, c, d} where:<br />
-        /// a is the count of bits on in object A but not in object B.<br />
-        /// b is the count of bits on in object B but not in object A. <br />   
-        /// c is the count of the bits on in both object A and object B.<br />
-        /// d is the count of the bits off in both object A and object B.<br />
+        /// <para>a is the count of bits on in object A but not in object B.</para>
+        /// <para>b is the count of bits on in object B but not in object A. </para>
+        /// <para>c is the count of the bits on in both object A and object B.</para>
+        /// <para>d is the count of the bits off in both object A and object B.</para>
         /// </summary>
         /// <param name="vec1"></param>
         /// <param name="vec2"></param>
         /// <returns></returns>
-        private static int[] BinaryAssociation(double[] vec1, double[] vec2)
+        public static int[] BinaryAssociation(double[] vec1, double[] vec2)
         {
             int a = 0; //0
             int b = 0; //1
@@ -318,7 +499,7 @@ namespace Infovision.Math
         /// <param name="vec2"></param>
         /// <param name="weights"></param>
         /// <returns></returns>
-        private static double[] BinaryAssociationDouble(double[] vec1, double[] vec2, double[] weights)
+        public static double[] BinaryAssociationDouble(double[] vec1, double[] vec2, double[] weights)
         {
             double a = 0; //0
             double b = 0; //1

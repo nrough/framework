@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DistanceMatrixTest.cs" />
+    <Compile Include="DoubleExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimilarityIndexTest.cs" />
   </ItemGroup>

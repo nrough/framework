@@ -105,8 +105,7 @@ namespace ApproxReductBoostingCV
                 UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
                 //int minLen = (int)p[6];
                 int epsilon = (int)p[6];
-
-                double[] result = new double[]
+                
                 for (int f = 1; f <= cvfolds; f++)
                 {
                     DataStore trnFoldOrig = null;

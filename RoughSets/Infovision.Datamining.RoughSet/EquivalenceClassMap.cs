@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset
 
         private Dictionary<DataVector, EquivalenceClassInfo> partitions;
         private Dictionary<Int64, int> decisionCount;
-        private Boolean decisionCountCalculated;
+        private bool decisionCountCalculated;
 
         #endregion
 
@@ -49,12 +49,12 @@ namespace Infovision.Datamining.Roughset
             get { return partitions; }
         }
 
-        private Dictionary<Int64, Int32> DecisionCount
+        private Dictionary<Int64, int> DecisionCount
         {
             get { return decisionCount; }
         }
 
-        public Boolean DecisionCountCalculated
+        public bool DecisionCountCalculated
         {
             get { return decisionCountCalculated; }
         }

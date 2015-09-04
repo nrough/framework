@@ -19,6 +19,7 @@ using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using Infovision.Datamining.Roughset;
 
 
 namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
@@ -78,14 +79,17 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 		#region Test Methods        
 	
 
-		[TestCase(2, 1, 5)]
-		[TestCase(2, 1, 10)]
-		[TestCase(2, 3, 5)]
-		[TestCase(2, 3, 10)]
-		[TestCase(2, 5, 5)]
-		[TestCase(2, 5, 10)]
-		[TestCase(2, 7, 5)]
-		[TestCase(2, 7, 10)]
+        //[TestCase(2, 1, 20)]
+        //[TestCase(2, 1, 5)]
+		//[TestCase(2, 1, 10)]
+		//[TestCase(2, 3, 5)]
+		//[TestCase(2, 3, 10)]
+		//[TestCase(2, 5, 5)]
+		//[TestCase(2, 5, 10)]
+		//[TestCase(2, 7, 5)]
+		//[TestCase(2, 7, 10)]
+        
+        [TestCase(2, 7, 20)]
 		public void LoadDataTable(int cvFolds, int numberOfReducts, int epsilon)
 		{
 			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
@@ -225,6 +229,18 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				RoughClassifier roughClassifier = new RoughClassifier();
 				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
+                double[][] discernVerctor = new double[roughClassifier.ReductStore.Count][];
+                
+                for(int i=0; i<roughClassifier.ReductStore.Count; i++)
+                {
+                    var reduct = roughClassifier.ReductStore.GetReduct(i);
+                    discernVerctor[i] = GetDiscernibilityVector(localDataStoreTrain, reduct, reduct.Weights);
+
+                    var measure = new InformationMeasureMajority().Calc(reduct);
+                    Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
+                }
+                    
+
 				IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
 				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
 				classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
@@ -247,6 +263,20 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 			Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
 		}
+
+        public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
+        {
+            double[] dicernVector = new double[data.NumberOfRecords];            
+            foreach (EquivalenceClassInfo eqClass in reduct.EquivalenceClassMap)
+            {
+                foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MostFrequentDecision))
+                {
+                    dicernVector[objectIdx] = weightVector[objectIdx];
+                }
+            }
+
+            return dicernVector;
+        }
 
 		public void HistogramTest()
 		{

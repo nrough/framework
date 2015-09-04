@@ -78,8 +78,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     }
                 }
 
-                this.MergeClusters(iMin1, iMin2, minDistance);
+                this.MergeClusters(iMin1, iMin2, minDistance);                
 
+                //TODO MergeClusters removes old cluster and adds a new one with new id
+                //The following code was based on the assumption that new cluster ids are utilized from the old ones
                 // update distances
                 for (int j = 0; j < NumberOfInstances; j++)
                 {

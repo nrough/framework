@@ -29,8 +29,12 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
             
             HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
-            sihc.Instances = data;
-            sihc.Compute();
+
+            foreach (KeyValuePair<int, double[]> kvp in data)
+            {
+                sihc.AddToCluster(kvp.Key, kvp.Value);
+            }
+                        
             DendrogramChart dc2 = new DendrogramChart(sihc, 640, 480);
             Bitmap b2 = dc2.GetAsBitmap();
             string f2 = String.Format(@"F:\Dendrogram\sihc.bmp");

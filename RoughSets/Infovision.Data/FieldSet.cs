@@ -102,7 +102,7 @@ namespace Infovision.Data
         /// <returns>A new instance of a FieldSet, using a deep copy.</returns>
         public override Object Clone()
         {
-            return new FieldSet(this);
+            return new FieldSet(this);            
         }
         
         #endregion

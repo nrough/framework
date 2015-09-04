@@ -14,6 +14,8 @@ namespace Infovision.Utils
 		private BitArray data;
 		private int cardinality;
 
+		public bool IsCardinalityCalculated { get; set; }
+
 		#region Constructors
 		/// <summary>
 		/// Creates a new PascalSet instance with a specified lower and upper bound.
@@ -23,7 +25,8 @@ namespace Infovision.Utils
 		public PascalSet(int lowerBound, int upperBound)
 		{
 			//cardinality is not yet calculated
-			cardinality = -1;
+			cardinality = 0;
+			this.IsCardinalityCalculated = true;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
@@ -46,7 +49,7 @@ namespace Infovision.Utils
 		public PascalSet(int lowerBound, int upperBound, int[] initialData)
 		{
 			//cardinality is not yet calculated
-			cardinality = -1;
+			cardinality = 0;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
@@ -78,14 +81,13 @@ namespace Infovision.Utils
 												+ this.upperBound.ToString(CultureInfo.InvariantCulture));
 			}
 
-			if (cardinality > -1)
-				cardinality++;
+			this.IsCardinalityCalculated = true;
 		}
 
 		public PascalSet(int lowerBound, int upperBound, BitArray data)
 		{
 			//cardinality is not yet calculated
-			cardinality = -1;
+			this.cardinality = 0;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
@@ -104,7 +106,11 @@ namespace Infovision.Utils
 			for (int i = 0; i < data.Length; i++)
 			{
 				this.data[i] = data[i];
+				if (data[i])
+					this.cardinality++;
 			}
+
+			this.IsCardinalityCalculated = true;
 		}
 
 		/// <summary>
@@ -162,6 +168,7 @@ namespace Infovision.Utils
 		{
 			// create a deep copy of this
 			PascalSet result = (PascalSet)Clone();
+            result.IsCardinalityCalculated = false;
 
 			// For each integer passed in, if it's within the bounds add it to the results's BitArray.
 			for (int i = 0; i < list.LongLength; i++)
@@ -211,6 +218,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise OR to union together this.data and s.data
 			PascalSet result = (PascalSet)Clone();
+            result.IsCardinalityCalculated = false;
 			result.data.Or(pascalSet.data);
 
 			return result;
@@ -306,6 +314,7 @@ namespace Infovision.Utils
 		public virtual PascalSet Intersection(params int[] list)
 		{
 			PascalSet result = new PascalSet(this.lowerBound, this.upperBound);
+            result.IsCardinalityCalculated = false;
 
 			for (int i = 0; i < list.Length; i++)
 			{
@@ -349,6 +358,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise AND to intersect this.data and s.data
 			PascalSet result = (PascalSet)Clone();
+            result.IsCardinalityCalculated = false;
 			result.data.And(pascalSet.data);
 
 			return result;
@@ -375,6 +385,7 @@ namespace Infovision.Utils
 		public virtual PascalSet Difference(params int[] list)
 		{
 			PascalSet result = new PascalSet(this.lowerBound, this.upperBound, list);
+            result.IsCardinalityCalculated = false;
 			return Difference(result);
 		}
 
@@ -403,6 +414,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise XOR and then an AND to achieve set difference
 			PascalSet result = (PascalSet)Clone();
+            result.IsCardinalityCalculated = false;
 			result.data.Xor(pascalSet.data).And(this.data);
 
 			return result;
@@ -450,6 +462,7 @@ namespace Infovision.Utils
 		public virtual PascalSet Complement()
 		{
 			PascalSet result = (PascalSet)Clone();
+            result.IsCardinalityCalculated = false;
 			result.data.Not();
 			return result;
 		}
@@ -491,6 +504,7 @@ namespace Infovision.Utils
 		public virtual bool Subset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
+            temp.IsCardinalityCalculated = false;
 			return Subset(temp);
 		}
 
@@ -546,6 +560,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSubset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
+            temp.IsCardinalityCalculated = false;
 			return ProperSubset(temp);
 		}
 
@@ -584,6 +599,7 @@ namespace Infovision.Utils
 		public virtual bool Superset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
+            temp.IsCardinalityCalculated = false;
 			return Superset(temp);
 		}
 
@@ -620,6 +636,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSuperset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
+            temp.IsCardinalityCalculated = false;
 			return ProperSuperset(temp);
 		}
 
@@ -653,19 +670,12 @@ namespace Infovision.Utils
 		{
 			int size = this.Count;
 			int[] array = new int[size];
-
 			if (size == 0)
 				return array;
-
 			int j = 0;
 			for(int i = 0; i < data.Length; i++)
-			{
 				if (data.Get(i))
-				{
 					array[j++] =  i + this.lowerBound;
-				}
-			}
-
 			return array;
 		}
 
@@ -713,6 +723,7 @@ namespace Infovision.Utils
 		{
 			PascalSet p = new PascalSet(lowerBound, upperBound);
 			p.data = new BitArray(this.data);
+			p.IsCardinalityCalculated = false;
 			return p;
 		}
 		#endregion
@@ -737,13 +748,14 @@ namespace Infovision.Utils
 		{
 			get
 			{
-				if (cardinality == -1)
+				if (this.IsCardinalityCalculated == false)
 				{
 					//int elements = 0;
 					//for (int i = 0; i < data.Length; i++)
 					//	if (data.Get(i)) elements++;
 					//cardinality = elements;
 					cardinality = this.GetCardinality();
+					this.IsCardinalityCalculated = true;
 				}
 
 				return cardinality;

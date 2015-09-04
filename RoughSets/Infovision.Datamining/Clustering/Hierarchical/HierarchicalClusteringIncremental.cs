@@ -57,11 +57,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// 
         /// <param name="data">The data where to compute the algorithm.</param>        
         public override void Compute()
-        {            
+        {
+            throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");
+            /*
             foreach(KeyValuePair<int, double[]> kvp in this.Instances)            
             {
                 this.AddToCluster(kvp.Key, kvp.Value);
             }
+            */
         }
 
         public virtual void AddToCluster(int id, double[] instance)

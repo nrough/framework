@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("FactoryKey", "ApproximateReductRelative");
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            parms.AddParameter("PermutationCollection", permGen.Generate(100));
+            parms.AddParameter("PermutationCollection", permGen.Generate(10));
             
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 

@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int seed = randSeed.Next(Int32.MaxValue);            
             RandomSingleton.Seed = seed;
 
-            int numberOfPermutations = 50;
+            int numberOfPermutations = 10;
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
             string resultFileName = @"F:\dna_modified_103.csv";
@@ -142,8 +142,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             List<ReductEnsembleExperimentResult> experimentResults = new List<ReductEnsembleExperimentResult>();
             experimentResults.SaveToFile(resultFileName, false, true);
 
-            for (int testNo = 1; testNo <= 100; testNo++)
-            //for (int testNo = 1; testNo <= 1; testNo++)
+            //for (int testNo = 1; testNo <= 100; testNo++)
+            for (int testNo = 1; testNo <= 1; testNo++)
             {
                 Console.WriteLine("Test {0}", testNo);
                 

@@ -185,10 +185,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Action<DendrogramNode> getLeaves = delegate(DendrogramNode d)
             {
                 if (d.IsLeaf)
-                    leaves.Add(node.Id);
+                    leaves.Add(d.Id);
             };
 
-            HierarchicalClusteringBase.TraversePreOrder(this.Root, getLeaves);
+            HierarchicalClusteringBase.TraversePreOrder(node, getLeaves);
             return leaves.ToArray();
         }        
 

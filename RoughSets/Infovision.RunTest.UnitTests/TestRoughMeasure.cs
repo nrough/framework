@@ -51,8 +51,8 @@ namespace Infovision.RunTest.UnitTests
 
         public TestRoughMeasure()
         {
-            trainFilename = @"Instance\playgolf.train";
-            testFilename = @"Instance\playgolf.train";
+            trainFilename = @"Data\playgolf.train";
+            testFilename = @"Data\playgolf.train";
             numberOfReducts = 10;
             numberOfPermutations = 10;
             numberOfTests = 10;

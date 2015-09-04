@@ -108,7 +108,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args = new Args(new string[] { "FactoryKey", "DataStore" }, new object[] { "ApproximateReductRelative", localDataStore });
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
-            PermutationCollection permutationList = permGen.Generate(100);
+            PermutationCollection permutationList = permGen.Generate(5);
             args.AddParameter("PermutationCollection", permutationList);
 
             redGenStd.InitFromArgs(args);

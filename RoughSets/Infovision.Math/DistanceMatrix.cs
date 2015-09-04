@@ -15,6 +15,7 @@ namespace Infovision.Math
         }
     }
 
+    [Serializable]
     public class DistanceMatrix : IDistanceMatrix
     {
         private Dictionary<MatrixKey, double> matrix;

@@ -7,6 +7,7 @@ using Accord.MachineLearning;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    [Serializable]
     public class HierarchicalCluster
     {       
         private int index;

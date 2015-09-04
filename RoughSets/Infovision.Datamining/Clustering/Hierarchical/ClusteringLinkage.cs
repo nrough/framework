@@ -7,6 +7,7 @@ using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    [Serializable]
     public static class ClusteringLinkage
     {
         public static double Min(int[] pointsA, int[] pointsB, DistanceMatrix distanceMatrix)

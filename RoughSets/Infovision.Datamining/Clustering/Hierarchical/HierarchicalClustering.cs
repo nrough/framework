@@ -15,11 +15,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected DistanceMatrix distanceMatrix;
         protected Dictionary<int, HierarchicalCluster> clusters;
         
-        private int nextClusterId = 0;        
+        private int nextClusterId = 0;
+        
         private Func<double[], double[], double> distance;
         private Func<int[], int[], DistanceMatrix, double> linkage;
 
-        private DendrogramLinkCollection dendrogram;
+        private DendrogramLinkCollection dendrogram;       
+        private int numOfInstances;
 
         /// <summary>
         ///   Gets or sets the distance function used
@@ -83,6 +85,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (points == null)
                 throw new ArgumentNullException("points");
 
+            numOfInstances = points.Length;            
+
             this.InitDistanceMatrix(points);
             this.InitClusters(points);            
         }
@@ -114,7 +118,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             // Initial argument checking
             if (data == null)
-                throw new ArgumentNullException("data");           
+                throw new ArgumentNullException("data");
+
+            if (data.Length == 0)
+                return;
 
             // Perform initialization of the clusters
             this.Initialize(data);
@@ -137,12 +144,102 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         protected virtual void CreateClusters()
         {
+            Dictionary<int, DendrogramNode> nodeDictionary = new Dictionary<int,DendrogramNode>();
+            
             while (clusters.Count > 1)
             {
                 DendrogramLink link = this.GetClustersToMerge();
-
                 int mergedClusterIdx = this.MergeClusters(link);
-                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);                               
+
+                if (link.Cluster1 < this.numOfInstances && link.Cluster2 < this.numOfInstances)
+                {
+                    DendrogramNode newNode = new DendrogramNode
+                    {
+                        NodeId = mergedClusterIdx,
+                        Parent = null,
+                        LeftNode = null,
+                        LeftInstance = link.Cluster1 < link.Cluster2
+                                     ? link.Cluster1
+                                     : link.Cluster2,
+                        LeftDistance = 0,
+                        RightNode = null,
+                        RightInstance = link.Cluster1 < link.Cluster2
+                                     ? link.Cluster2
+                                     : link.Cluster1,
+                        RightDistance = 0
+                    };
+
+                    nodeDictionary.Add(mergedClusterIdx, newNode);
+                }
+                else if (link.Cluster1 < this.numOfInstances && link.Cluster2 >= this.numOfInstances)
+                {                    
+                    DendrogramNode rightNode = nodeDictionary[link.Cluster2];
+                    DendrogramNode newNode = new DendrogramNode
+                    {
+                        NodeId = mergedClusterIdx,
+                        Parent = null,
+                        
+                        LeftNode = null,
+                        LeftInstance = link.Cluster1,
+                        LeftDistance = 0,
+                        
+                        RightNode = rightNode,
+                        RightInstance = link.Cluster2,
+                        RightDistance = 0
+                    };
+
+                    rightNode.Parent = newNode;
+
+                    nodeDictionary.Add(mergedClusterIdx, newNode);
+                }
+                else if (link.Cluster1 >= this.numOfInstances && link.Cluster2 < this.numOfInstances)
+                {
+                    DendrogramNode leftNode = nodeDictionary[link.Cluster1];
+                    DendrogramNode newNode = new DendrogramNode
+                    {
+                        NodeId = mergedClusterIdx,
+                        Parent = null,
+
+                        LeftNode = leftNode,
+                        LeftInstance = link.Cluster1,
+                        LeftDistance = 0,
+
+                        RightNode = null,
+                        RightInstance = link.Cluster2,
+                        RightDistance = 0
+                    };
+
+                    leftNode.Parent = newNode;
+
+                    nodeDictionary.Add(mergedClusterIdx, newNode);
+                }
+                else //both clusters are previously merged clusters
+                {
+                    DendrogramNode leftNode = nodeDictionary[link.Cluster1];
+                    DendrogramNode rightNode = nodeDictionary[link.Cluster2];
+
+                    DendrogramNode newNode = new DendrogramNode
+                    {
+                        NodeId = mergedClusterIdx,
+                        Parent = null,
+
+                        LeftNode = leftNode,
+                        LeftInstance = link.Cluster1,
+                        LeftDistance = 0,
+
+                        RightNode = rightNode,
+                        RightInstance = link.Cluster2,
+                        RightDistance = 0
+                    };
+
+                    leftNode.Parent = newNode;
+                    rightNode.Parent = newNode;
+
+                    nodeDictionary.Add(mergedClusterIdx, newNode);
+                }
+
+
+                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);
             }
         }        
 

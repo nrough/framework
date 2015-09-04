@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    [Serializable]
     public class Dendrogram
     {
         private DendrogramNode root;

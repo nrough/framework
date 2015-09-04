@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    [Serializable]
     public struct DendrogramLink
     {
         private readonly int cluster1;

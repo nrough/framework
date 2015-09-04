@@ -17,8 +17,10 @@ namespace Infovision.Datamining.Roughset
     }
 
     [Serializable]
-    public abstract class InformationMeasureBase : IInformationMeasure
+    public abstract class InformationMeasureBase : IInformationMeasure, IReductMeasure
     {
+        public string FactoryKey { get { return this.Description(); } }
+        
         #region Methods
 
         public abstract double Calc(IReduct reduct);
@@ -51,6 +53,11 @@ namespace Infovision.Datamining.Roughset
                 throw new System.InvalidOperationException();
 
             return roughMeasure;
+        }
+
+        public SortDirection SortDirection
+        {
+            get { return SortDirection.Descending; }
         }
 
         #endregion
@@ -142,23 +149,17 @@ namespace Infovision.Datamining.Roughset
             double maxDecisionProbability = -1;
             double decProbability;
             double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
-
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 maxDecisionProbability = Double.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.GetDecisionProbability(decisionValue);
-
                     if (decProbability > maxDecisionProbability + tinyDouble)
-                    {
                         maxDecisionProbability = decProbability;
-                    }
                 }
-
                 result += e.NumberOfObjects * maxDecisionProbability;
             }
-
             return result / reduct.ObjectSetInfo.NumberOfRecords;
         }
 

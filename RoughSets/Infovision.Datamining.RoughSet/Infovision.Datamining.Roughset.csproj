@@ -170,6 +170,10 @@
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>Infovision.Math</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Infovision.Statistics\Infovision.Statistics.csproj">
+      <Project>{d26b9d87-e914-44be-9381-73460214b7e4}</Project>
+      <Name>Infovision.Statistics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
       <Name>Infovision.Utils</Name>

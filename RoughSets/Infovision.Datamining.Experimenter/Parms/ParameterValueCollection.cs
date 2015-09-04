@@ -65,12 +65,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T[] elements)           
         {
             return new ParameterValueCollection<T>(name, elements);
-        }
-
-        //public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T element)
-        //{
-        //    return new ParameterValueCollection<T>(name, element);
-        //}
+        }        
 
         public T GetValue(int index)
         {

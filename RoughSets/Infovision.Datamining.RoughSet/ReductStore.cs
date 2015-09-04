@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using Infovision.Data;
 using Infovision.Math;
+using Infovision.Statistics;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -56,6 +57,8 @@ namespace Infovision.Datamining.Roughset
         public abstract bool IsSuperSet(IReduct reduct);
         public abstract IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         public abstract double GetAvgMeasure(IReductMeasure reductMeasure);
+        public abstract void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
+        public abstract void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
         public abstract bool Exist(IReduct reduct);
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -312,9 +315,7 @@ namespace Infovision.Datamining.Roughset
 
             double measureSum = 0;
             foreach (IReduct reduct in reducts)
-            {
                 measureSum += reductMeasure.Calc(reduct);
-            }
 
             if (this.Count > 0)
             {
@@ -322,6 +323,30 @@ namespace Infovision.Datamining.Roughset
             }
 
             return 0;
+        }
+
+        public override void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev)
+        {
+            mean = 0.0;
+            stdDev = 0.0;
+            double[] values = new double[reducts.Count];
+            int i = 0;
+            foreach (IReduct reduct in reducts)
+                values[i++] = reductMeasure.Calc(reduct);
+            mean = Tools.Mean(values);
+            stdDev = Tools.StdDev(values, mean);            
+        }
+
+        public override void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev)
+        {
+            mean = 0.0;
+            aveDev = 0.0;
+            double[] values = new double[reducts.Count];
+            int i = 0;
+            foreach (IReduct reduct in reducts)
+                values[i++] = reductMeasure.Calc(reduct);
+            mean = Tools.Mean(values);
+            aveDev = Tools.AveDev(values, mean);
         }
 
         

@@ -73,10 +73,9 @@ namespace Infovision.Datamining.Roughset
 
 		protected override void InitEquivalenceMap()
 		{
-			if (isEqMapCreated == false)
-				this.EquivalenceClasses = new EquivalenceClassSortedMap(this.DataStore);
-			else
+			if (isEqMapCreated)
 				throw new InvalidOperationException("EquicalenceClassMap can only be initialized once.");
+			this.EquivalenceClasses = new EquivalenceClassSortedMap(this.DataStore);
 		}
 
 		public override void BuildEquivalenceMap()
@@ -85,8 +84,7 @@ namespace Infovision.Datamining.Roughset
 			if (isEqMapCreated == false)
 			{ 
 				this.InitEquivalenceMap();
-				this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);
-				
+				this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);				
 				this.isEqMapCreated = true;
 			}
 		}

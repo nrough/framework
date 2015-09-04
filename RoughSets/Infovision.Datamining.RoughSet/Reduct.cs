@@ -10,14 +10,12 @@ namespace Infovision.Datamining.Roughset
     public class Reduct : IReduct
     {
         #region Members
-
-        private double epsilon;        
-        private double[] objectWeights;
-
+        
+        private double[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassCollection eqClassMap;
-        private int[] attributeOrder;
+        //private int[] attributeOrder;
 
         #endregion
 
@@ -41,11 +39,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public double Epsilon
-        {
-            get { return this.epsilon; }
-            private set { this.epsilon = value; }
-        }
+        public double Epsilon { get; private set; }        
 
         public virtual ObjectSet ObjectSet
         {
@@ -69,11 +63,7 @@ namespace Infovision.Datamining.Roughset
             protected set { this.eqClassMap = value; }
         }
 
-        public bool UseGlobalCache
-        {
-            get;
-            set;
-        }
+        public bool UseGlobalCache { get; set; }
 
         protected string ReductPartitionCacheKey
         {
@@ -97,14 +87,11 @@ namespace Infovision.Datamining.Roughset
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
-            this.epsilon = epsilon;
+            this.Epsilon = epsilon;
 
             this.objectWeights = new double[this.dataStore.NumberOfRecords];
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;
-
-            this.attributeOrder = new int[fieldIds.Length];
-            Array.Copy(fieldIds, this.attributeOrder, fieldIds.Length);
+                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;            
         }       
 
         public Reduct(DataStore dataStore, double epsilon)
@@ -121,7 +108,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
-            this.Epsilon = reduct.epsilon;                                             
+            this.Epsilon = reduct.Epsilon;                                             
             this.objectWeights = new double[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
@@ -287,28 +274,19 @@ namespace Infovision.Datamining.Roughset
             if (x == null)
             {
                 if (y == null)
-                {
                     return 0;
-                }
                 else
-                {
                     return -1;
-                }
             }
             else
             {
                 if (y == null)
-                {
                     return 1;
-                }
                 else
                 {
                     int retval = x.Attributes.Count.CompareTo(y.Attributes.Count);
-
                     if (retval != 0)
-                    {
                         return retval;
-                    }
                     else
                     {
                         for (int i = 0; i < x.Attributes.Data.Count; i++)
@@ -316,13 +294,9 @@ namespace Infovision.Datamining.Roughset
                             int xval = Convert.ToInt32(x.Attributes.Data.Get(i));
                             int yval = Convert.ToInt32(y.Attributes.Data.Get(i));
                             if (xval < yval)
-                            {
                                 return 1;
-                            }
                             else if (xval > yval)
-                            {
                                 return -1;
-                            }
                         }
 
                         return x.Epsilon.CompareTo(y.Epsilon);                        

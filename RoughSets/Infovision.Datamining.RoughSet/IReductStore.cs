@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -8,17 +9,14 @@ namespace Infovision.Datamining.Roughset
         double Weight { get; set; }
         bool AllowDuplicates { get; set; }
         bool IsActive { get; set; }
-
         void AddReduct(IReduct reduct);
-        IReduct GetReduct(int index);
-        
-        bool IsSuperSet(IReduct reduct);
-        
+        IReduct GetReduct(int index);        
+        bool IsSuperSet(IReduct reduct);        
         IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         double GetAvgMeasure(IReductMeasure reductMeasure);
-
+        void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
+        void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
         bool Exist(IReduct reduct);
-
         void Save(string fileName);
     }
 }

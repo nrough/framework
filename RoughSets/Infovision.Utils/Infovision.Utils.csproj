@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Args.cs" />
+    <Compile Include="CSVFileHelper.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="Histogram.cs" />
     <Compile Include="Matrix.cs" />

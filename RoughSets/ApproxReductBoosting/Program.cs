@@ -65,24 +65,22 @@ namespace ApproxReductBoosting
 				new IParameter[] {
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
 					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
-					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100),
+					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100, 50),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
 					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoosting
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
-					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
-					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
-					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),					
 					new ParameterNumericRange<int>("Epsilon", 0, 50, 5)
 				}
 			);
 
-			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+			Console.WriteLine(CSVFileHelper.GetRecord(' ',
 									 "DATASET",
 									 "METHOD",
 									 "IDENTYFICATION",
@@ -98,9 +96,12 @@ namespace ApproxReductBoosting
 									 "NOF_WRESET",
 									 "TRN_ERROR",
 									 "TST_ERROR",
-									 "AVG_REDUCT",
+									 "AVG_REDUCT_LEN",
+									 "AVEDEV_REDUCT_LEN",
+									 "AVG_M(B)",
+									 "STDDEV_M(B)",
 									 "FOLD",
-									 "EPSILON");
+									 "EPSILON"));
 
 			int i = 0;
 			foreach (object[] p in parmList.Values())
@@ -111,8 +112,7 @@ namespace ApproxReductBoosting
 				string factoryKey = (string)p[2];
 				WeightingSchema weightingSchema = (WeightingSchema)p[3];
 				bool checkEnsembleErrorDuringTraining = (bool)p[4];
-				UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
-				//int minLen = (int)p[6];
+				UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];				
 				int epsilon = (int)p[6];
 				
 				Args parms = new Args();
@@ -147,9 +147,7 @@ namespace ApproxReductBoosting
 				}
 
 				parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
-				//parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
-				//parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
+				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);				
 
 				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
 				reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
@@ -196,7 +194,13 @@ namespace ApproxReductBoosting
 						break;
 				}
 
-				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+				double measureMean = 0.0, measureStdDev = 0.0;
+				reductGenerator.ReductPool.GetMeanStdDev(new InformationMeasureMajority(), out measureMean, out measureStdDev);
+
+				double redLenMean = 0.0, redLenAveDev = 0.0;
+				reductGenerator.ReductPool.GetMeanAveDev(new ReductMeasureLength(), out redLenMean, out redLenAveDev);
+
+				Console.WriteLine(CSVFileHelper.GetRecord(' ',
 									trnDataOrig.Name,
 									factoryKey,
 									reductGenerator.IdentyficationType,
@@ -212,9 +216,12 @@ namespace ApproxReductBoosting
 									reductGenerator.NumberOfWeightResets,
 									resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
 									resultTst.WeightMisclassified + resultTst.WeightUnclassified,
-									reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()),
+									redLenMean,
+									redLenAveDev,
+									measureMean,
+									measureStdDev,
 									1,
-									reductGenerator.Epsilon);
+									reductGenerator.Epsilon));
 			}
 		}
 	}

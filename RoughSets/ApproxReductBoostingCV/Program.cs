@@ -69,7 +69,7 @@ namespace ApproxReductBoostingCV
                 }
             );
 
-            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+            Console.WriteLine(CSVFileHelper.GetRecord(' ',
                                     "DATASET", 
                                     "METHOD",
                                      "IDENTYFICATION",
@@ -85,9 +85,12 @@ namespace ApproxReductBoostingCV
                                      "NOF_WRESET",
                                      "TRN_ERROR",
                                      "TST_ERROR",
-                                     "AVG_REDUCT",
+                                     "AVG_REDUCT_LEN",
+                                     "AVEDEV_REDUCT_LEN",
+                                     "AVG_M(B)",
+                                     "STDDEV_M(B)",
                                      "FOLD",
-                                     "EPSILON");
+                                     "EPSILON"));
 
             int i = 0;
             foreach (object[] p in parmList.Values())
@@ -103,6 +106,7 @@ namespace ApproxReductBoostingCV
                 //int minLen = (int)p[6];
                 int epsilon = (int)p[6];
 
+                double[] result = new double[]
                 for (int f = 1; f <= cvfolds; f++)
                 {
                     DataStore trnFoldOrig = null;
@@ -162,12 +166,8 @@ namespace ApproxReductBoostingCV
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
                     parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (double)epsilon / 100.0);
-                    
-
                     parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
-                    //parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
-                    //parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
 
                     ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);
                     reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
@@ -214,7 +214,13 @@ namespace ApproxReductBoostingCV
                             break;
                     }
 
-                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17}",
+                    double measureMean = 0.0, measureStdDev = 0.0;
+                    reductGenerator.ReductPool.GetMeanStdDev(new InformationMeasureMajority(), out measureMean, out measureStdDev);
+
+                    double redLenMean = 0.0, redLenAveDev = 0.0;
+                    reductGenerator.ReductPool.GetMeanStdDev(new ReductMeasureLength(), out redLenMean, out redLenAveDev);
+
+                    Console.WriteLine(CSVFileHelper.GetRecord(' ',
                                         data.Name,
                                         factoryKey,
                                         reductGenerator.IdentyficationType,
@@ -230,9 +236,12 @@ namespace ApproxReductBoostingCV
                                         reductGenerator.NumberOfWeightResets,
                                         resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                         resultTst.WeightMisclassified + resultTst.WeightUnclassified,
-                                        reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()),
+                                        redLenMean,
+                                        redLenAveDev,
+                                        measureMean,
+                                        measureStdDev,
                                         splitter.ActiveFold,
-                                        reductGenerator.Epsilon);
+                                        reductGenerator.Epsilon));
                 }                
             }
         }

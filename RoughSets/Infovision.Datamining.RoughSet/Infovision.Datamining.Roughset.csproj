@@ -110,7 +110,7 @@
     <Compile Include="Bireduct.cs" />
     <Compile Include="BireductStore.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="GammaBireduct.cs" />
+    <Compile Include="BireductGamma.cs" />
     <Compile Include="IReductGenerator.cs" />
     <Compile Include="IReductMeasure.cs" />
     <Compile Include="IReductStore.cs" />

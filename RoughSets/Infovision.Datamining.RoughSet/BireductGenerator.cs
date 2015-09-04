@@ -79,10 +79,10 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    //bireduct.AddObject(-permutation[i]);
+                    //bireduct.TryAddObject(-permutation[i]);
                     
                     //TODO Problem: Objects numbering in permutations starts from 1
-                    bireduct.AddObject(permutation[i]-1);
+                    bireduct.TryAddObject(permutation[i]-1);
                 }
             }
         }

@@ -77,6 +77,9 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CheckAddObject(int objectIndex)
         {
+            if (this.ObjectSet.ContainsElement(objectIndex))
+                return false;
+            
             AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = this.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
@@ -94,7 +97,7 @@ namespace Infovision.Datamining.Roughset
             return false;
         }
 
-        public virtual bool AddObject(int objectIdx)
+        public virtual bool TryAddObject(int objectIdx)
         {
             if (this.CheckAddObject(objectIdx))
             {                
@@ -102,7 +105,7 @@ namespace Infovision.Datamining.Roughset
 
                 // important fist add to eqClass map, than to objectSet, otherwise 
                 // calling this.EquivalenceClassMap will invoke calculating eqClassMap based on existing objectSet
-                // than, what AddObject is called we will get duplicates of object id inside eqClass
+                // than, what TryAddObject is called we will get duplicates of object id inside eqClass
                 
                 this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, 
                                                                                    this.DataStore.GetDecisionValue(objectIdx), 

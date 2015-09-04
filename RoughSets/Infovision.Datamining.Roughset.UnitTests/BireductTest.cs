@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
-
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -119,7 +118,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
 
 
             RoughClassifier roughClassifier = new RoughClassifier();
@@ -139,7 +138,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
             
             
             /*
@@ -194,9 +193,164 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 IReduct r1 = bireductGenerator.CreateReduct(perm);
                 IReduct r2 = gammaGenerator.CreateReduct(perm);
 
-                Console.WriteLine("{0} & {1} & {2}", perm, r1.ToString(), r2.ToString());
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < perm.Length; i++ )
+                {
+                    if (perm[i] < 0)
+                    {
+                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).NameAlias)).Append(' ');
+                    }
+                    else
+                    {
+                        sb.Append(perm[i]).Append(' ');
+                    }
+                }
+
+                Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
             }                                                            
         }
+
+        //Ad 3
+        [Test]
+        public void CheckIsBireduct()
+        {
+
+            /*
+            \begin{table}[t]
+            \normalsize
+            \centering
+            \begin{tabular}{|c|c|}
+            \hline
+            \textbf{\small{Decision Bireduct}} & \textbf{\small{$\gamma$-Decision Bireduct}} \\ \hline
+            % O
+            \begin{tabular}{c}
+            (\{O\},\{1..5,7..8,10,12..13\})\\
+            (\{O\},\{1..3,6..8,12..14\})\\
+            (\{O\},\{3,6..7,9,11..14\})\\
+            \end{tabular} & (\{O\},\{3,7,12..13\})\\ \hline
+            % O,H
+            (\{O,H\},\{1..3,6..9,11..14\}) & (\{O,H\},\{1..3,7..9,11..13\}) \\ \hline
+            % O,H,W
+            (\{O,H,W\},\{1..14\}) & (\{O,H,W\},\{1..14\})\\ \hline
+            % O,T,W
+            (\{O,T,W\},\{1..14\}) & (\{O,T,W\},\{1..14\})\\ \hline
+            % T,W
+            \begin{tabular}{c}
+            (\{T,W\},\{1..2,4..5,7,9..10,14\})\\
+            (\{T,W\},\{2..6,9..13\}) \\
+            \end{tabular} & (\{T W\},\{2,5,9\})\\ \hline
+            % T,H
+            (\{T,H\},\{1..2,6,8,10..11,13..14\}) & (\{T,H\},\{10..11,13\})\\ \hline
+            % O,W
+            (\{O,W\},\{2..7,9..10,12..14\}) & (\{O,W\},\{3..7,10,12..14\})\\ \hline
+            % O,T
+            (\{O,T\},\{1..4,6..10,12..13\}) & (\{O,T\},\{1..3,7,9,12..13\})\\ \hline
+            % H,W
+            (\{H,W\},\{1,5..6,8..10,12..13\}) & (\{H,W\},\{5,9..10,13\})\\ \hline
+            % W
+            (\{W\},\{2..6,9..10,13..14\}) & (\{W\}, $\emptyset$) \\ \hline
+            \end{tabular}
+            \vspace{\baselineskip}
+            \caption{Examples of decision bireducts and $\gamma$-decision bireducts. \label{play_golf_table_bireducts}}
+            \end{table}
+             */
+            
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
+
+            int[][] attributesBireducts = new int[][]
+            {
+                new int[] { 1 },
+                new int[] { 1 },
+                new int[] { 1 },
+                new int[] { 1, 3 },
+                new int[] { 1, 3, 4 },
+                new int[] { 1, 2, 4 },
+                new int[] { 2, 4 },
+                new int[] { 2, 4 },
+                new int[] { 2, 3 },
+                new int[] { 1, 4 },
+                new int[] { 1, 2 },
+                new int[] { 3, 4 },
+                new int[] { 4 }
+            };
+
+            int[][] attributesGamma = new int[][]
+            {
+                new int[] { 1 },
+                new int[] { 1, 3 },
+                new int[] { 1, 3, 4 },
+                new int[] { 1, 2, 4 },
+                new int[] { 2, 4 },
+                new int[] { 2, 3 },
+                new int[] { 1, 4 },
+                new int[] { 1, 2 },
+                new int[] { 3, 4 },
+                new int[] { 4 }
+            };
+
+            int[][] objectsBireducts = new int[][]
+            {
+                new int[] { 0,1,2,3,4,6,7,9,11,12 },
+                new int[] { 0,1,2,5,6,7,11,12,13 },
+                new int[] { 2,5,6,8,10,11,12,13 },
+                new int[] { 0,1,2,5,6,7,8,10,11,12,13 },
+                new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13 },
+                new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13 },
+                new int[] { 0,1,3,4,6,8,9,13 },
+                new int[] { 1,2,3,4,5,8,9,10,11,12 },
+                new int[] { 0,1,5,7,9,10,12,13 },
+                new int[] { 1,2,3,4,5,6,8,9,11,12,13 },
+                new int[] { 0,1,2,3,5,6,7,8,9,11,12 },
+                new int[] { 0,4,5,7,8,9,11,12 },
+                new int[] { 1,2,3,4,5,8,9,12,13 }
+            };
+
+            int[][] objectsGamma = new int[][]
+            {
+                new int[] { 2,6,11,12 },
+                new int[] { 0,1,2,6,7,8,10,11,12 },
+                new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13 },
+                new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13 },
+                new int[] { 1,4,8 },
+                new int[] { 9,10,12 },
+                new int[] { 2,3,4,5,6,9,11,12,13 },
+                new int[] { 0,1,2,6,8,11,12 },
+                new int[] { 4,8,9,12 },
+                new int[] { }
+            };
+            
+            for (int i = 0; i < attributesBireducts.Length; i++)
+            {
+                Bireduct bireduct = new Bireduct(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
+                EquivalenceClassMap.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.ObjectSet);
+                
+                for (int k = 1; k <= 4; k++)
+                    Assert.IsFalse(bireduct.TryRemoveAttribute(k));
+
+                for(int k=0; k<14; k++)
+                    Assert.IsFalse(bireduct.TryAddObject(k));
+
+            }
+
+
+            for (int i = 0; i < attributesBireducts.Length; i++)
+            {
+                BireductGamma bireductGamma = new BireductGamma(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
+                EquivalenceClassMap.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.ObjectSet);
+
+                for (int k = 1; k <= 4; k++)
+                    Assert.IsFalse(bireductGamma.TryRemoveAttribute(k));
+
+                for (int k = 0; k < 14; k++)
+                    Assert.IsFalse(bireductGamma.TryAddObject(k));
+            }            
+        }
+
 
         //Ad 4
         [Test]
@@ -207,7 +361,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
 
 
             /*
@@ -262,7 +416,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 IReduct r1 = bireductGenerator.CreateReduct(perm);
                 IReduct r2 = gammaGenerator.CreateReduct(perm);
 
-                Console.WriteLine("{0} & {1} & {2}", perm, r1.ToString(), r2.ToString());
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < perm.Length; i++)
+                {
+                    if (perm[i] < 0)
+                    {
+                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).NameAlias)).Append(' ');
+                    }
+                    else
+                    {
+                        sb.Append(perm[i]).Append(' ');
+                    }
+                }
+
+                Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
 
                 Console.WriteLine("Bireduct rules");
                 foreach (EquivalenceClass eq in r1.EquivalenceClassMap)

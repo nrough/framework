@@ -60,7 +60,10 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override bool CheckAddObject(int objectIndex)
-        {         
+        {
+            if (this.ObjectSet.ContainsElement(objectIndex))
+                return false;
+            
             EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore);
             localPartition.Calc(this.Attributes, this.DataStore);
             

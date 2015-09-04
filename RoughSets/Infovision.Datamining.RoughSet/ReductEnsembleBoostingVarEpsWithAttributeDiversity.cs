@@ -20,16 +20,6 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        public override void SetDefaultParameters()
-        {
-            base.SetDefaultParameters();
-        }
-
-        public override void InitFromArgs(Args args)
-        {
-            base.InitFromArgs(args);
-        }
-
         public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
         {
             Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];

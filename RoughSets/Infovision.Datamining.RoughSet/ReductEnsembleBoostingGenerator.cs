@@ -246,7 +246,7 @@ namespace Infovision.Datamining.Roughset
 
 								// Normalize weights for models confidence
 								foreach (IReductStore rs in this.Models)
-									if(rs.IsActive)
+									if (rs.IsActive)
 										rs.Weight /= (alphaSum - model.Weight);
 
 								RoughClassifier localClassifierEnsemble = new RoughClassifier();
@@ -278,10 +278,10 @@ namespace Infovision.Datamining.Roughset
 					if (error == 0.0)
 						break;
 				}
-			} while(iterPassed < this.MaxIterations);
+			} while (iterPassed < this.MaxIterations);
 						
 			// Normalize weights for models confidence
-			foreach(IReductStore rs in this.Models)
+			foreach (IReductStore rs in this.Models)
 				rs.Weight /= alphaSum;
 		}		
 
@@ -371,6 +371,11 @@ namespace Infovision.Datamining.Roughset
 		{			
 			return System.Math.Log((1.0 - totalError) / (totalError + 0.0000001)) + System.Math.Log(numberOfOutputValues - 1);
 		}
+
+        public static double ModelConfidenceEqual(int numberOfOutputValues, double totalError)
+        {
+            return 1.0;
+        }
 
 		#endregion
 	}

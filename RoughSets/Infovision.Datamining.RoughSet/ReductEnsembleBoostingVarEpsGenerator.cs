@@ -38,152 +38,8 @@ namespace Infovision.Datamining.Roughset
 			: base(data)		
 		{						
 		}
-
-		public override void Generate()
-		{
-			this.ReductPool = this.CreateReductStore();
-			this.ReductPool.AllowDuplicates = true;
-
-			this.Models = new ReductStoreCollection();			
-
-			double alphaSum = 0.0;
-			iterPassed = 0;
-			numberOfWeightResets = 0;
-			double error = -1.0;			
-			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
-			this.WeightGenerator.Generate();
-
-			do
-			{
-				IReductStore localReductStore = this.CreateReductStore();
-				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
-				{
-					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights, this.MinReductLength, this.MaxReductLength);
-					localReductStore.AddReduct(reduct);
-					this.ReductPool.AddReduct(reduct);
-				}
-
-				RoughClassifier classifier = new RoughClassifier();
-				classifier.ReductStore = localReductStore;
-
-				IReductStoreCollection rsCollection = new ReductStoreCollection();
-				rsCollection.AddStore(localReductStore);
-				classifier.ReductStoreCollection = rsCollection;
-
-				classifier.Classify(this.DataStore);
-
-				ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, this.WeightGenerator.Weights);				
-
-				error = result.WeightUnclassified + result.WeightMisclassified;
-
-				if (error >= this.Threshold)
-				{
-					numberOfWeightResets++;
-
-					if (numberOfWeightResets > this.MaxNumberOfWeightResets)
-					{
-						if (iterPassed == 0)
-						{
-							this.AddModel(localReductStore, this.CalcModelConfidence(K, error));
-							iterPassed = 1;
-						}
-
-						break;
-					}
-
-					this.WeightGenerator.Reset();
-					continue;
-				}
-
-				double alpha = this.CalcModelConfidence(K, error);
-				this.AddModel(localReductStore, alpha);
-				double sum = 0.0;
-				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-				{
-					this.WeightGenerator.Weights[i] = this.UpdateWeights(this.WeightGenerator.Weights[i],
-																		 K,
-																		 this.DataStore.GetDecisionValue(i),
-																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
-																		 error);
-					sum += this.WeightGenerator.Weights[i];
-				}								
-				
-				//Normalize object weights
-				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-					this.WeightGenerator.Weights[i] /= sum;
-
-				alphaSum += alpha;
-
-				iterPassed++;
-
-				if (this.CheckEnsembleErrorDuringTraining)
-				{
-					if (this.Models.Count > 1)
-					{
-						// Normalize weights for models confidence
-						foreach (IReductStore rs in this.Models)
-							if (rs.IsActive)
-								rs.Weight /= alphaSum;
-
-						RoughClassifier classifierEnsemble = new RoughClassifier();
-						classifierEnsemble.ReductStoreCollection = this.Models;
-						classifierEnsemble.Classify(this.DataStore);
-						ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
-
-						// De-normalize weights for models confidence
-						foreach (IReductStore rs in this.Models)
-							if (rs.IsActive)
-								rs.Weight *= alphaSum;
-
-						if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified <= 0.0001)
-						{
-							bool modelHasConverged = true;
-							foreach (IReductStore model in this.Models)
-							{
-								model.IsActive = false;
-
-								// Normalize weights for models confidence
-								foreach (IReductStore rs in this.Models)
-									if (rs.IsActive)
-										rs.Weight /= (alphaSum - model.Weight);
-
-								RoughClassifier localClassifierEnsemble = new RoughClassifier();
-								localClassifierEnsemble.ReductStoreCollection = this.Models;
-								localClassifierEnsemble.Classify(this.DataStore);
-								ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
-
-								// De-normalize weights for models confidence
-								foreach (IReductStore rs in this.Models)
-									if (rs.IsActive)
-										rs.Weight *= (alphaSum - model.Weight);
-
-								model.IsActive = true;
-
-								if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified > 0.001)
-								{
-									modelHasConverged = false;
-									break;
-								}
-							}
-
-							if (modelHasConverged == true)
-								break;
-						}
-					}
-				}
-				else
-				{
-					if (error == 0.0)
-						break;
-				}
-			} while (iterPassed < this.MaxIterations);
-
-			// Normalize weights for models confidence
-			foreach (IReductStore rs in this.Models)
-				rs.Weight /= alphaSum;
-		}
 		
-		public virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];            
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
@@ -235,8 +91,6 @@ namespace Infovision.Datamining.Roughset
 			if( (mB - this.m0) >= ((1.0 - this.Epsilon) * (mA-m0) - tinyDouble))
 				return true;
 			
-			if ( mB >= (((1.0 - this.Epsilon) * mA) + (this.Epsilon * this.m0) - tinyDouble) )
-				return true;
 			return false;
 		}
 
@@ -277,8 +131,8 @@ namespace Infovision.Datamining.Roughset
 			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
 			this.M0 = this.GetPartitionQuality(emptyReduct);
 
-			this.Epsilon = 0.5 * this.Threshold;
-
+            int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+			this.Epsilon = (1.0 / (double) K) * this.Threshold;
 		}
 	}
 

@@ -38,12 +38,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             string generatorName = "ReductEnsemble";
 
+            //Refactor
             //TODO include algorithm name in Args
             //TODO Replace Args by Dictionary<string, object>
             //TODO Add parameter names as static variables
             //TODO Reduct should be struct not class (has code should be constant?)
             //TODO Make cache keys shorter
             //TODO ReductGenerator.Generator should return collection od reduct stores, usualy 1 element collection but in case of ensembles we will have more
+
 
 
             

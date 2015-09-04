@@ -29,8 +29,7 @@ namespace Infovision.Datamining.Roughset
         #region Properties
 
         protected IPermutationGenerator PermutationGenerator
-        {
-            //get { return new PermutationGeneratorReverse(this.DataStore.DataStoreInfo.GetFieldIds(false)); }
+        {            
             get
             {
                 if (permutationGenerator == null)
@@ -107,7 +106,7 @@ namespace Infovision.Datamining.Roughset
             this.DataSetQuality = this.informationMeasure.Calc(reduct);
         }
 
-        protected virtual PermutationCollection FindOrCreatePermutationList(Args args)
+        protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)
         {
             PermutationCollection permutationList = null;
             if (args.Exist("PermutationCollection"))
@@ -133,7 +132,7 @@ namespace Infovision.Datamining.Roughset
             return permutationList;
         }
 
-        protected virtual IReductStore CreateReductStoreFromPermutationList(PermutationCollection permutationList, Args args)
+        protected virtual IReductStore CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
         {
             bool useCache = false;
             if (args.Exist("USECACHE"))
@@ -151,8 +150,8 @@ namespace Infovision.Datamining.Roughset
 
         public override IReductStore Generate(Args args)
         {
-            PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
-            return this.CreateReductStoreFromPermutationList(permutationList, args);
+            PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
+            return this.CreateReductStoreFromPermutationCollection(permutationList, args);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds)

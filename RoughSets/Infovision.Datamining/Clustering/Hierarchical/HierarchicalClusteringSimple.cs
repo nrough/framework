@@ -31,14 +31,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected override DendrogramLink GetClustersToMerge()
         {
             int[] key = new int[2] {-1, -1};
+            
+            //TODO ToArray() is expensive
+            //TODO clusters need to be private in parent class
             int[] clusterIds = clusters.Keys.ToArray();                   
             double minClusterDistance = double.MaxValue;                        
 
             for (int j = 0; j < clusterIds.Length; j++)
             {
                 for (int k = j + 1; k < clusterIds.Length; k++)
-                {                    
-                    double minObjectDistance = this.Linkage(clusters[clusterIds[j]].MemberObjects.ToArray(), clusters[clusterIds[k]].MemberObjects.ToArray(), this.distanceMatrix);                                                           
+                {
+                    double minObjectDistance = this.GetClusterDistance(clusterIds[j], clusterIds[k]);                    
 
                     if (minObjectDistance < minClusterDistance)
                     {

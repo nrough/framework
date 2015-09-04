@@ -39,10 +39,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public static HierarchicalCluster MergeClusters(int newClusterIndex, HierarchicalCluster cluster1, HierarchicalCluster cluster2)
         {
             HierarchicalCluster result = new HierarchicalCluster(newClusterIndex);            
-            result.Objects = cluster1.Objects.Concat(cluster2.Objects).ToList();
-            
-            Console.WriteLine("{0} merged with {1} to {2}", cluster1.Index, cluster2.Index, result.Index); 
-            
+            result.Objects = cluster1.Objects.Concat(cluster2.Objects).ToList();                                    
             return result;
         }
 

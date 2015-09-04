@@ -35,5 +35,21 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             Assert.IsTrue(true);
         }
+
+        [Test]
+        public void ComputeLeafNodesFromTreeTest()
+        {
+            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+
+            foreach (int i in leaves)
+            {
+                Console.Write("{0} ", i);
+            }
+            Console.WriteLine();
+
+            Assert.IsTrue(true);
+        }
     }
 }

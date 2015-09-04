@@ -16,8 +16,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private int nodeId;
         private int leftInstance;
         private int rightInstance;        
-        private double leftDistance;
-        private double rightDistance;
+        private double leftLength;
+        private double rightLength;
+        private double height;
 
         public int LeftInstance
         {
@@ -31,16 +32,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set { this.rightInstance = value; }
         }
 
-        public double LeftDistance
+        public double LeftLength
         {
-            get { return this.leftDistance; }
-            set { this.leftDistance = value; }
+            get { return this.leftLength; }
+            set { this.leftLength = value; }
         }
 
-        public double RightDistance
+        public double RightLength
         {
-            get { return this.rightDistance; }
-            set { this.rightDistance = value; }
+            get { return this.rightLength; }
+            set { this.rightLength = value; }
         }
 
         public DendrogramNode LeftNode
@@ -77,6 +78,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             get { return left == null && right == null && parent != null; }
         }
 
+        public virtual double Height
+        {
+            get { return this.height; }
+            set { this.height = value; }
+        }
+
         public DendrogramNode()
         {
         }
@@ -90,10 +97,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             DendrogramNode newNode = new DendrogramNode(node.NodeId);
             newNode.LeftInstance = node.RightInstance;
-            newNode.LeftDistance = node.RightDistance;
+            newNode.LeftLength = node.RightLength;
             newNode.LeftNode = node.RightNode;
             newNode.RightInstance = node.LeftInstance;
-            newNode.RightDistance = node.LeftDistance;
+            newNode.RightLength = node.LeftLength;
             newNode.RightNode = node.LeftNode;
             newNode.Parent = node.Parent;
 

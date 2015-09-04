@@ -9,10 +9,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     public class DendrogramLinkCollection : IEnumerable<DendrogramLink>
     {        
-        List<DendrogramLink> linkages;
-        Dictionary<int, DendrogramNode> nodeDictionary;
-        DendrogramNode rootNode;
-        int numOfInstances;
+        private List<DendrogramLink> linkages;
+        private Dictionary<int, DendrogramNode> nodeDictionary;
+        private DendrogramNode rootNode;
+        private int numOfInstances;
 
         public int Count
         {
@@ -21,35 +21,48 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public DendrogramLinkCollection(int numOfInstances)
         {
-            linkages = new List<DendrogramLink>();
-            nodeDictionary = new Dictionary<int, DendrogramNode>();
             this.numOfInstances = numOfInstances;
+            linkages = new List<DendrogramLink>(this.numOfInstances - 1);
+            nodeDictionary = new Dictionary<int, DendrogramNode>(this.numOfInstances - 1);            
         }
         
         public void Add(int cluster1, int cluster2, double distance, int mergedClusterId, bool isRoot)
         {
-            linkages.Add(new DendrogramLink(cluster1, cluster2, distance));
+            int c1 = cluster1;
+            int c2 = cluster2;
+
+            if (cluster2 < cluster1)
+            {
+                c1 = cluster2;
+                c2 = cluster1;
+            }
+                        
+            linkages.Add(new DendrogramLink(c1, c2, distance));
 
             DendrogramNode newNode;
-            if (cluster1 < this.numOfInstances && cluster2 < this.numOfInstances)
+            if (c1 < this.numOfInstances && c2 < this.numOfInstances)
             {
                 newNode = new DendrogramNode
                 {
                     NodeId = mergedClusterId,
                     Parent = null,
+                    
                     LeftNode = null,
-                    LeftInstance = cluster1 < cluster2 ? cluster1 : cluster2,
-                    LeftDistance = distance,
+                    LeftInstance = c1,
+                    LeftLength = distance,
+                    
                     RightNode = null,
-                    RightInstance = cluster1 < cluster2 ? cluster2 : cluster1,
-                    RightDistance = distance
+                    RightInstance = c2,
+                    RightLength = distance,
+                    
+                    Height = distance
                 };
 
                 nodeDictionary.Add(mergedClusterId, newNode);
             }
-            else if (cluster1 < this.numOfInstances && cluster2 >= this.numOfInstances)
+            else if (c1 < this.numOfInstances && c2 >= this.numOfInstances)
             {
-                DendrogramNode rightNode = nodeDictionary[cluster2];
+                DendrogramNode rightNode = nodeDictionary[c2];
                 
                 newNode = new DendrogramNode
                 {
@@ -57,21 +70,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     Parent = null,
 
                     LeftNode = null,
-                    LeftInstance = cluster1,
-                    LeftDistance = distance,
+                    LeftInstance = c1,
+                    LeftLength = distance,
 
                     RightNode = rightNode,
-                    RightInstance = cluster2,
-                    RightDistance = distance
+                    RightInstance = c2,
+                    RightLength = distance - rightNode.Height,
+                    Height = distance
                 };
 
                 rightNode.Parent = newNode;
 
                 nodeDictionary.Add(mergedClusterId, newNode);
             }
-            else if (cluster1 >= this.numOfInstances && cluster2 < this.numOfInstances)
+            else if (c1 >= this.numOfInstances && c2 < this.numOfInstances)
             {
-                DendrogramNode leftNode = nodeDictionary[cluster1];
+                DendrogramNode leftNode = nodeDictionary[c1];
                 
                 newNode = new DendrogramNode
                 {
@@ -79,12 +93,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     Parent = null,
 
                     LeftNode = leftNode,
-                    LeftInstance = cluster1,
-                    LeftDistance = distance,
+                    LeftInstance = c1,
+                    LeftLength = distance - leftNode.Height,
 
                     RightNode = null,
-                    RightInstance = cluster2,
-                    RightDistance = distance
+                    RightInstance = c2,
+                    RightLength = distance,
+                    
+                    Height = distance
                 };
 
                 leftNode.Parent = newNode;
@@ -93,8 +109,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
             else //both clusters are previouslcluster2 merged clusters
             {
-                DendrogramNode leftNode = nodeDictionary[cluster1];
-                DendrogramNode rightNode = nodeDictionary[cluster2];
+                DendrogramNode leftNode = nodeDictionary[c1];
+                DendrogramNode rightNode = nodeDictionary[c2];
 
                 newNode = new DendrogramNode
                 {
@@ -102,12 +118,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     Parent = null,
 
                     LeftNode = leftNode,
-                    LeftInstance = cluster1,
-                    LeftDistance = distance,
+                    LeftInstance = c1,
+                    LeftLength = distance - leftNode.Height,
 
                     RightNode = rightNode,
-                    RightInstance = cluster2,
-                    RightDistance = distance
+                    RightInstance = c2,
+                    RightLength = distance - rightNode.Height,
+                    
+                    Height = distance
                 };
 
                 leftNode.Parent = newNode;
@@ -126,6 +144,30 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 rootNode = isRoot ? nodeDictionary[clusterId] : null;
             }
+        }
+
+        public int[] ComputeLeafNodesFromTree()
+        {
+            int[] order = new int[this.Count + 1];
+            int pos = 0;
+            WalkChildrenTree(ref order, ref pos, this.rootNode);
+            return order;
+        }
+
+        private void WalkChildrenTree(ref int[] order, ref int pos, DendrogramNode node)
+        {
+            if (node == null)            
+                throw new ArgumentNullException("node");
+
+            if(node.LeftNode != null)
+                WalkChildrenTree(ref order, ref pos, node.LeftNode);
+            else
+                order[pos++] = node.LeftInstance;
+
+            if(node.RightNode != null)
+                WalkChildrenTree(ref order, ref pos, node.RightNode);
+            else
+                order[pos++] = node.RightInstance;
         }
 
         public int[] ComputeLeafNodes()

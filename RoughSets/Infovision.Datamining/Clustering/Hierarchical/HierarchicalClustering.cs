@@ -12,9 +12,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClustering
     {                
-        protected DistanceMatrix distanceMatrix;
-        
-        //TODO make this private
+        private DistanceMatrix distanceMatrix;                
+        //TODO make private
         protected Dictionary<int, HierarchicalCluster> clusters;
         
         private int nextClusterId = 0;
@@ -127,6 +126,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Console.Write(distanceMatrix.ToString());
 
             this.CreateClusters();
+
+            this.Cleanup();            
         }
         
         protected void AddCluster(HierarchicalCluster cluster)
@@ -181,7 +182,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.RemoveCluster(x);
             this.RemoveCluster(y);
             this.AddCluster(mergedCluster);
-            this.dendrogram.Add(x, y, distance, mergedCluster.Index, clusters.Count <= 1);            
+            this.dendrogram.Add(x, y, distance, mergedCluster.Index, clusters.Count <= 1);
+
+            Console.WriteLine("{0} merged with {1} to {2} {3}", x, y, mergedCluster.Index, distance); 
+
             return mergedCluster.Index;
         }
 
@@ -193,6 +197,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected int MergeClusters(DendrogramLink link)
         {
             return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);            
+        }
+
+        protected double GetClusterDistance(int i, int j)
+        {
+            return this.Linkage(clusters[i].MemberObjects.ToArray(), clusters[j].MemberObjects.ToArray(), this.distanceMatrix);
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)
@@ -267,7 +276,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
 
             distanceMatrix = newMatrix;
+        }
 
+        protected void Cleanup()
+        {
+            clusters = null;
         }
     }
 }

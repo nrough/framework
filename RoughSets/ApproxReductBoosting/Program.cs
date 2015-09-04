@@ -64,19 +64,19 @@ namespace ApproxReductBoosting
 			ParameterCollection parmList = new ParameterCollection(
 				new IParameter[] {
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
-					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
+					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),					
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
 					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
-																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoosting
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
-					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
+					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All)
 					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
-					ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+					//ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
 				}
 			);
 
@@ -108,7 +108,7 @@ namespace ApproxReductBoosting
 				WeightingSchema weightingSchema = (WeightingSchema)p[3];
 				bool checkEnsembleErrorDuringTraining = (bool)p[4];
 				UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
-				int minLen = (int)p[6];
+				//int minLen = (int)p[6];
 				
 				Args parms = new Args();
 				if (trnDataOrig.DataStoreInfo.HasMissingData)
@@ -142,10 +142,11 @@ namespace ApproxReductBoosting
 
 				parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
-				parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
-				parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
+				//parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
+				//parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
 
-				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);				
+				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
+				reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
 				reductGenerator.Generate();
 
 				RoughClassifier classifierTrn = new RoughClassifier();

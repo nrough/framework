@@ -42,10 +42,10 @@ namespace Infovision.Datamining.Roughset
 		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			//this means empty reduct
-            if(minimumLength == 0 && maximumLength == 0)
-                return this.CreateReduct(new int[] {}, this.Epsilon, weights);
-            
-            Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];            
+			if(minimumLength == 0 && maximumLength == 0)
+				return this.CreateReduct(new int[] {}, this.Epsilon, weights);
+			
+			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];            
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
 		}
 
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset
 			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
 			this.M0 = this.GetPartitionQuality(emptyReduct);
 
-            int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 			this.Epsilon = (1.0 / (double) K) * this.Threshold;
 		}
 	}

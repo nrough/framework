@@ -14,8 +14,7 @@ namespace Infovision.Datamining.Roughset
 	
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
 	{								
-		protected int iterPassed;
-		protected int numberOfWeightResets;
+		protected int iterPassed;		
 
 		public int MaxReductLength { get; set; }
 		public int MinReductLength { get; set; }
@@ -26,7 +25,7 @@ namespace Infovision.Datamining.Roughset
 		public int MaxIterations { get; set; }
 		public int IterationsPassed { get { return this.iterPassed; } }
 		public int MaxNumberOfWeightResets { get; set; }
-		public int NumberOfWeightResets { get { return this.numberOfWeightResets; } }
+		public int NumberOfWeightResets { get; protected set; }
 		public bool CheckEnsembleErrorDuringTraining { get; set; }
 		public WeightGenerator WeightGenerator { get; set; }				
 		public UpdateWeightsDelegate UpdateWeights { get; set; }		
@@ -151,7 +150,7 @@ namespace Infovision.Datamining.Roughset
 
 			double alphaSum = 0.0;
 			iterPassed = 0;
-			numberOfWeightResets = 0;
+			this.NumberOfWeightResets = 0;
 			double error = -1.0;
 			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 			this.WeightGenerator.Generate();
@@ -180,9 +179,9 @@ namespace Infovision.Datamining.Roughset
 
 				if (error >= this.Threshold)
 				{
-					numberOfWeightResets++;
+					this.NumberOfWeightResets++;
 
-					if (numberOfWeightResets > this.MaxNumberOfWeightResets)
+					if (this.NumberOfWeightResets > this.MaxNumberOfWeightResets)
 					{
 						if (iterPassed == 0)
 						{
@@ -306,11 +305,12 @@ namespace Infovision.Datamining.Roughset
 			int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 			int minLen = System.Math.Max(minimumLength, 0);
 
-			int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
+			//int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
+			int cutoff = maxLen;
 			
-			int[] attributes = new int[cutoff];            
+			int[] attributes = new int[cutoff];
 			for (int i = 0; i < cutoff; i++)
-				attributes[i] = permutation[i];			
+				attributes[i] = permutation[i];
 
 			return this.CreateReduct(attributes, this.Epsilon, weights);
 		}
@@ -372,10 +372,10 @@ namespace Infovision.Datamining.Roughset
 			return System.Math.Log((1.0 - totalError) / (totalError + 0.0000001)) + System.Math.Log(numberOfOutputValues - 1);
 		}
 
-        public static double ModelConfidenceEqual(int numberOfOutputValues, double totalError)
-        {
-            return 1.0;
-        }
+		public static double ModelConfidenceEqual(int numberOfOutputValues, double totalError)
+		{
+			return 1.0;
+		}
 
 		#endregion
 	}

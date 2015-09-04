@@ -141,8 +141,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             List<ReductEnsembleExperimentResult> experimentResults = new List<ReductEnsembleExperimentResult>();
             experimentResults.SaveToFile(resultFileName, false, true);
-            
-            for (int testNo = 1; testNo <= 100; testNo++)
+
+            //for (int testNo = 1; testNo <= 100; testNo++)
+            for (int testNo = 1; testNo <= 1; testNo++)
             {
                 Console.WriteLine("Test {0}", testNo);
                 

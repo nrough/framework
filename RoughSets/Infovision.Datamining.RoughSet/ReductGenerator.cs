@@ -145,7 +145,7 @@ namespace Infovision.Datamining.Roughset
                 this.fieldGroups[i][0] = fieldIds[i];
             }
         }
-
+         
         public virtual void InitFromArgs(Args args)
         {                        
             if (args.Exist("DataStore"))

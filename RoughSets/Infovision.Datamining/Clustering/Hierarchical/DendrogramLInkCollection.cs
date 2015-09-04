@@ -288,13 +288,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if(level > this.numOfInstances - 1)
                 level = this.numOfInstances - 1;
 
-            int[] result = new int[level];
+            int numberOfClusters = level + 1;
+            int[] result = new int[numberOfClusters];
 
-            int j = 0;
-            for (int i = this.linkages.Length - 1 - level; i < this.linkages.Length; i++)
+            level = 0;
+            for (int i = this.linkages.Length - 1; i >= 0; i--)
             {
-                result[j++] = this.linkages[i].Id;
-            }                
+                result[level++] = this.linkages[i].Id;
+                if (level >= numberOfClusters)
+                    break;
+            }             
 
             return result;
         }
@@ -314,6 +317,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private int[] GetClusterMembership(int[] clusters)
         {
             int[] result = new int[this.numOfInstances];
+
             for (int i = 0; i < clusters.Length; i++)
             {
                 if(clusters[i] < this.numOfInstances)
@@ -350,11 +354,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             StringBuilder sb = new StringBuilder();
             foreach (DendrogramLink link in this)
-            {
-                sb.AppendLine(link.ToString());
-            }
-
-
+                sb.AppendLine(link.ToString());            
             return sb.ToString();
         }
 

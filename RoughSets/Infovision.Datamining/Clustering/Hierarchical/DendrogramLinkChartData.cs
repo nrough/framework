@@ -51,7 +51,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
         }
 
-        public void Draw(Graphics g, Pen pen)
+        public void Draw(Graphics g, Pen pen, bool showLabel, Font font)
         {
             Point a = new Point(this.LeftBottomX, this.LeftBottomY);
             Point b = new Point(this.LeftTopX, this.LeftTopY);
@@ -59,6 +59,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Point d = new Point(this.RightBottomX, this.RightBottomY);
 
             g.DrawLines(pen, new Point[] { a, b, c, d });
+
+            SolidBrush brush = new SolidBrush(pen.Color);
+
+            if (showLabel)
+            {
+                g.DrawString(this.NodeId.ToString(), font, brush, new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
+            }
+
+            brush.Dispose();
         }
         
 

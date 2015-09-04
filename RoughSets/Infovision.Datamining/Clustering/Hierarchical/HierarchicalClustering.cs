@@ -344,12 +344,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public int[] GetClusterMembership(int numberOfClusters)
         {
-            int[] clusters = new int[this.numberOfInstances];
-            
-            //TODO implement
+            return this.DendrogramLinkCollection.GetClusterMembership(numberOfClusters);
+        }
 
-
-            return clusters;
+        public int[] GetClusterMembership(double threshold)
+        {
+            return this.DendrogramLinkCollection.GetClusterMembership(threshold);
         }
 
         public Bitmap GetDendrogramAsBitmap(int width, int height)
@@ -363,19 +363,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             int dendrogramHeight = height - (topMargin + bottomMargin);
 
             Color background = Color.White;
-            Color foreground = Color.Black;
+            Color foreground = Color.Black;            
 
-            //double xMajorScale = dendrogramWidth / (this.numberOfInstances + 1);
-            //double xMinorScale = 0;
-
-            int xMajorScalePx = (int) System.Math.Floor((double) dendrogramWidth / (this.numberOfInstances + 1));
-            //int xMinorScalePx = 0;
-
-            //double yMajorScale = 1;
-            //double yMinorScale = 0.5;
-            
-            int yMajorScalePx = (int) ((double) (dendrogramHeight - 40) / System.Math.Ceiling(this.DendrogramLinkCollection.MaxHeight)); //TODO
-            //int yMinorScalePx = 10; //TODO
+            int xMajorScalePx = (int) System.Math.Floor((double) dendrogramWidth / this.numberOfInstances);                        
+            int yMajorScalePx = (int) ((double) (dendrogramHeight - 40) / System.Math.Ceiling(this.DendrogramLinkCollection.MaxHeight));            
 
             int[] leafOrder = this.DendrogramLinkCollection.ComputeLeafNodesFromTree();
             Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
@@ -383,45 +374,57 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Bitmap bitmap = new Bitmap(width, height);
 
             using (Graphics g = Graphics.FromImage(bitmap))
-            {
-                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
+            {                
                 g.Clear(background);
                 Pen pen = new Pen(foreground, 1);
 
                 System.Drawing.Point p1, p2, p3;
 
                 //draw Y axis
-                p1 = new System.Drawing.Point(leftMargin + 10, topMargin);
-                p2 = new System.Drawing.Point(leftMargin + 10, (height - (bottomMargin + 30)));
+                p1 = new System.Drawing.Point(leftMargin + 10, topMargin + 20);
+                p2 = new System.Drawing.Point(leftMargin + 10, (height - (bottomMargin + 20)));
                 g.DrawLine(pen, p1, p2);
 
+                //draw Y major scale
                 pen.Width = 1;
-                p1.X = p2.X - 2;
+                p1.X = p2.X - 1;
                 p1.Y = p2.Y - yMajorScalePx;
-                p3 = new System.Drawing.Point(p1.X + 4, p1.Y);
+                p3 = new System.Drawing.Point(p1.X + 2, p1.Y);
+
+                //draw dashed grid
+
+                System.Drawing.Point dashedBegin, dashedEnd;
+                float[] dashValues = { 5, 3 };
+                Pen dahedGridPen = new Pen(Color.Black, 1);
+                dahedGridPen.DashPattern = dashValues;
+                dashedBegin = new System.Drawing.Point(p2.X, p2.Y - yMajorScalePx);
+                dashedEnd = new System.Drawing.Point(width - (leftMargin + 20), p2.Y - yMajorScalePx);                
 
                 while (p1.Y >= topMargin)
                 {
-                    g.DrawLine(pen, p1, p3);
+                    g.DrawLine(pen, p1, p3);                    
                     p1.Y -= yMajorScalePx;
                     p3.Y = p1.Y;
+
+                    g.DrawLine(dahedGridPen, dashedBegin, dashedEnd);
+                    dashedBegin.Y -= yMajorScalePx;
+                    dashedEnd.Y -= yMajorScalePx;
                 }
                 
                 //draw X axis only labels
                 pen.Width = 2;
-                Font font = new Font("Tahoma", 8);
+                Font font = new Font("Tahoma", 9);
                 p1.X = p2.X + 10;
-                p1.Y = p2.Y - 10;
-                PointF pointF = new PointF(p1.X, p1.Y);
+                p1.Y = p2.Y + 3;
+                PointF pointF = new PointF(p1.X - 3, p1.Y);
                 SolidBrush brush = new SolidBrush(foreground);
                 for (int i = 0; i < leafOrder.Length; i++)
                 {
-                    g.DrawString(leafOrder[i].ToString(), font, brush, pointF);
+                    //g.DrawString(leafOrder[i].ToString(), font, brush, pointF);
                     
                     DendrogramLinkChartData linkChartData = new DendrogramLinkChartData(leafOrder[i]);
-                    linkChartData.LeftBottomX = (int) pointF.X;
-                    linkChartData.LeftBottomY =  (int) pointF.Y;
+                    linkChartData.LeftBottomX = (int) pointF.X + 3;
+                    linkChartData.LeftBottomY =  (int) pointF.Y - 3;
                     linkChartData.LeftTopX = linkChartData.LeftBottomX;
                     linkChartData.LeftTopY = linkChartData.LeftBottomY;
                     linkChartData.RightBottomX = linkChartData.LeftBottomX;
@@ -433,7 +436,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     dendrogramChartData.Add(leafOrder[i], linkChartData);
 
                     pointF.X += xMajorScalePx;
-                }
+                }                               
 
                 //draw dendrogram                
                 foreach (DendrogramLink link in this.DendrogramLinkCollection)
@@ -446,10 +449,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     newLinkChartData.LeftBottomY = linkChartData1.ParentNodeY;
                     newLinkChartData.LeftTopX = linkChartData1.ParentNodeX;
 
-                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx);
-
-                    //TODO
-                    //newLinkChartData.LeftTopY = linkChartData1.ParentNodeY - nodeHeight;
+                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx) + 1;                    
                     newLinkChartData.LeftTopY = p1.Y - nodeHeight;
                     
                     newLinkChartData.RightBottomX = linkChartData2.ParentNodeX;
@@ -457,18 +457,21 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     newLinkChartData.RightTopX = linkChartData2.ParentNodeX;
                     newLinkChartData.RightTopY = newLinkChartData.LeftTopY;
 
+                    
+                    /*
                     if (link.Cluster1 < this.numberOfInstances)
                         dendrogramChartData.Remove(link.Cluster1);
 
                     if(link.Cluster2 < this.numberOfInstances)
                         dendrogramChartData.Remove(link.Cluster2);
+                    */
 
                     dendrogramChartData.Add(link.Id, newLinkChartData);
                 }
                 
                 foreach (KeyValuePair<int, DendrogramLinkChartData> kvp in dendrogramChartData)
                 {
-                    kvp.Value.Draw(g, pen);
+                    kvp.Value.Draw(g, pen, true, font);
                 }
 
 
@@ -479,6 +482,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 pen.Dispose();
                 font.Dispose();
                 brush.Dispose();
+                dahedGridPen.Dispose();
             }
 
             return bitmap;

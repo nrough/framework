@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 new double[] {1, 2, 0, 0, 0, 7, 1}, //6
                 new double[] {0, 9, 1, 2, 1, 7, 1}, //7
                 new double[] {1, 5, 0, 0, 0, 7, 1}, //8
-                new double[] {1, 5, 1, 2, 0, 7, 1}  //9
+                new double[] {1, 5, 1, 2, 0, 7, 1}  //9                
             };
 
             return data;
@@ -94,11 +94,40 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void GetDendrogramAsBitmapTest()
         {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             Console.Write(hClustering.DendrogramLinkCollection.ToString());
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            bitmap.Save(@"F:\test.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmap.Save(@"F:\test_euc_max.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            Assert.IsTrue(true);
         }
+
+        [Test]
+        public void GetDendrogramAsBitmapMinLinkageTest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            Console.Write(hClustering.DendrogramLinkCollection.ToString());
+            Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
+            bitmap.Save(@"F:\test_euc_min.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void GetClusterMembershipTest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());            
+            int[] membership2 = hClustering.GetClusterMembership(3.6);
+            int[] membership = hClustering.GetClusterMembership(4);            
+            
+            Assert.AreEqual(membership.Length, membership2.Length);
+            for (int i = 0; i < membership.Length; i++)
+            {
+                Assert.AreEqual(membership[i], membership2[i]);
+            }
+        }
+
+
     }
 }

@@ -463,7 +463,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             ClassificationResult classificationResult = classifier.Vote(dataStoreTest,
                                                                         IdentificationType.Confidence,
-                                                                        VoteType.MajorDecision);
+                                                                        VoteType.MajorDecision,
+                                                                        null);
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Classified
                                                             + classificationResult.Misclassified

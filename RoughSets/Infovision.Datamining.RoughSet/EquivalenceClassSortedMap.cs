@@ -52,12 +52,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
-        {
-            if (attributeSet.Count == 0)
-            {
-                int z = 0;
-            }
-            
+        {                        
             this.InitPartitions();            
             int[] orderByTmp = attributeSet.ToArray();
             int[] orderBy = new int[orderByTmp.Length + 1];

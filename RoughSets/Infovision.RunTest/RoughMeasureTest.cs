@@ -245,7 +245,7 @@ namespace Infovision.RunTest
                 roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
             }
 
-            result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);            
+            result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);            
 
             this.SaveLast();
         }

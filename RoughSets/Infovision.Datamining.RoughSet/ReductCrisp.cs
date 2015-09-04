@@ -95,16 +95,21 @@ namespace Infovision.Datamining.Roughset
 		/// Method tries to remove attributes from current reduct. Attributes are removed in order passed in attributeOrder array.
 		/// </summary>
 		/// <param name="attributeOrder">Attributes to be tried to be removed in given order.</param>
-		public virtual void Reduce(int[] attributeOrder)
+		public virtual void Reduce(int[] attributeOrder, int minimumLength)
 		{
 			foreach (EquivalenceClass eq in this.EquivalenceClassMap)
 				eq.RemoveObjectsWithMinorDecisions();
 			
 			bool isReduced = false;
-			for (int i = attributeOrder.Length - 1; i >= 0; i--)
+			int len = attributeOrder.Length;
+			int reduced = 0;
+			for (int i = len - 1; (i >= 0) && (len - minimumLength - reduced > 0); i--)
 			{
-				this.TryRemoveAttribute(attributeOrder[i]);
-				isReduced = true;
+				if (this.TryRemoveAttribute(attributeOrder[i]))
+				{
+					reduced++;
+					isReduced = true;
+				}
 			}
 
 			if (isReduced)
@@ -146,7 +151,7 @@ namespace Infovision.Datamining.Roughset
 		/// </remarks>
 		public virtual void Reduce()
 		{
-			this.Reduce(this.Attributes.ToArray());
+			this.Reduce(this.Attributes.ToArray(), 0);
 		}
 
 		public override bool TryRemoveAttribute(int attributeId)
@@ -177,7 +182,7 @@ namespace Infovision.Datamining.Roughset
 						
 			//duplicate current attribute set and remove selected attribute
 			FieldSet newFieldSet = (FieldSet) (this.Attributes - attributeId);
-			
+					
 			//new temporary equivalence class map with decision set intersection  (data vector --> generalized decision)
 			Dictionary<AttributeValueVector, PascalSet> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet>();                                                            
 			DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();

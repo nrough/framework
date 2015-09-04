@@ -88,6 +88,7 @@ namespace Infovision.Data
             }
             catch (KeyNotFoundException e)
             {
+                Console.WriteLine(e.Message);
                 return false;
             }
 

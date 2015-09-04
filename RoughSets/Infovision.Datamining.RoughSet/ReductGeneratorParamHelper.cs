@@ -27,6 +27,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string IdentificationType = "IdentificationType";
         public static readonly string VoteType = "VoteType";
         public static readonly string MaxReductLength = "MaxReductLength";
+        public static readonly string MinReductLength = "MinReductLength";
         public static readonly string Threshold = "Threshold";
         public static readonly string NumberOfReductsInWeakClassifier = "NumberOfReductsInWeakClassifier";
         public static readonly string MaxIterations = "MaxIterations";

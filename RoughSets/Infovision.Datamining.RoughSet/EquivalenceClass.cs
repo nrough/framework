@@ -244,12 +244,7 @@ namespace Infovision.Datamining.Roughset
         public double GetWeight(long decision)
         {            
             if (!this.isStatCalculated)
-                this.CalcStatistics();
-
-            if (this.decisionWeigthSums == null)
-            {
-                int i = 0;
-            }
+                this.CalcStatistics();            
             
             double ret = 0.0;
             if (this.decisionWeigthSums.TryGetValue(decision, out ret))

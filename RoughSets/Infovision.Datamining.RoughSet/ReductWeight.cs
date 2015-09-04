@@ -15,7 +15,8 @@ namespace Infovision.Datamining.Roughset
         public ReductWeights(DataStore dataStore, int[] fieldIds, double[] objectWeights, double epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
-            this.Weights = objectWeights;
+            this.Weights = new double[objectWeights.Length];
+            Array.Copy(objectWeights, this.Weights, objectWeights.Length);
         }
 
         public ReductWeights(DataStore dataStore, int[] fieldIds, double epsilon)

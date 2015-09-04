@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
@@ -88,6 +89,15 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 Console.Write("{0} ", i);
             }
             Console.WriteLine();            
+        }
+
+        [Test]
+        public void GetDendrogramAsBitmapTest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
+            bitmap.Save(@"F:\test.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
         }
     }
 }

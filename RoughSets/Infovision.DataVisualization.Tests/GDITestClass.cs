@@ -29,14 +29,17 @@ namespace Infovision.DataVisualization.Tests
             
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                SolidBrush brush = new SolidBrush(Color.Black);
-                Pen pen = new Pen(brush);
-                Point p1 = new Point(x1, y1);
-                Point p2 = new Point(x2, y2);
-                
                 g.Clear(Color.White);
+
+                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                Pen pen = new Pen(Color.Black, 2);                
+                Point p1 = new Point(x1, y1);
+                Point p2 = new Point(x2, y2);                                
                 g.DrawLine(pen, p1, p2);
                 g.Flush();
+
+                pen.Dispose();                
 
                 bitmap.Save(outputFileName, System.Drawing.Imaging.ImageFormat.Bmp);
             }            

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -349,6 +350,82 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
 
             return clusters;
+        }
+
+        public Bitmap GetDendrogramAsBitmap(int width, int height)
+        {
+            int topMargin = 1;
+            int bottomMargin = 1;
+            int leftMargin = 1;
+            int rightMargin = 1;
+
+            int dendrogramWidth = width - (leftMargin + rightMargin); 
+            int dendrogramHeight = height - (topMargin + bottomMargin);
+
+            Color background = Color.White;
+            Color foreground = Color.Black;
+
+            double xMajorScale = dendrogramWidth / (this.numberOfInstances + 1);
+            double xMinorScale = 0;
+
+            int xMajorScalePx = (int) System.Math.Floor((double) dendrogramWidth / (this.numberOfInstances + 1));
+            int xMinorScalePx = 0;
+
+            double yMajorScale = 1;
+            double yMinorScale = 0.5;
+            int yMajorScalePx = 20; //TODO
+            int yMinorScalePx = 10; //TODO
+
+            int[] leafOrder = this.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+                                               
+            Bitmap bitmap = new Bitmap(width, height);
+
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.Clear(background);
+                Pen pen = new Pen(foreground, 1);
+
+                System.Drawing.Point p1, p2, p3;
+
+                //draw Y axis
+                p1 = new System.Drawing.Point(leftMargin + 10, topMargin);
+                p2 = new System.Drawing.Point(leftMargin + 10, (height - (bottomMargin + 30)));
+                g.DrawLine(pen, p1, p2);
+
+                pen.Width = 1;
+                p1.X = p2.X - 2;
+                p1.Y = p2.Y - yMajorScalePx;
+                p3 = new System.Drawing.Point(p1.X + 4, p1.Y);
+
+                while (p1.Y >= topMargin)
+                {
+                    g.DrawLine(pen, p1, p3);
+                    p1.Y -= yMajorScalePx;
+                    p3.Y = p1.Y;
+                }
+
+                
+                //draw X axis only labels
+                p1.X = p2.X + ;
+                p1.Y = p2.Y;
+
+                
+
+
+                
+
+                //draw dendrogram
+
+                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                                                
+                g.Flush();
+                Bitmap result = new Bitmap(bitmap);
+
+                pen.Dispose();                
+            }
+
+            return bitmap;
         }
 
 

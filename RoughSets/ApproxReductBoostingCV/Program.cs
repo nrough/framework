@@ -55,7 +55,7 @@ namespace ApproxReductBoostingCV
                     //ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100, 50, 20),
                     new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
                     ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
-                                                                                ,ReductFactoryKeyHelper.ReductEnsembleBoosting
+                                                                                //,ReductFactoryKeyHelper.ReductEnsembleBoosting
                                                                                 ,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity

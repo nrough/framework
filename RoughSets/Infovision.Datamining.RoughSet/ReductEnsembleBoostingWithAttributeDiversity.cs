@@ -40,7 +40,9 @@ namespace Infovision.Datamining.Roughset
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
 			int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 			int minLen = System.Math.Max(minimumLength, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
+			
+			//int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
+			int cutoff = maxLen;
 
 			int[] attributes = new int[cutoff];
 			for (int i = 0; i < cutoff; i++)

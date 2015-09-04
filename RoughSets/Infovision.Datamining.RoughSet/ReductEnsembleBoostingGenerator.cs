@@ -313,7 +313,7 @@ namespace Infovision.Datamining.Roughset
 				attributes[i] = permutation[i];
 
 			return this.CreateReduct(attributes, this.Epsilon, weights);
-		}
+		}        
 
 		public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
 		{

@@ -64,10 +64,11 @@ namespace ApproxReductBoosting
 			ParameterCollection parmList = new ParameterCollection(
 				new IParameter[] {
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
-					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),					
+					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
+					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
 					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
-																				 ,ReductFactoryKeyHelper.ReductEnsembleBoosting
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
 																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
 																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
 																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity

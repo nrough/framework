@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i < numberOfPermutations; i++)
                     epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
 
-                for (int clusterNo = 1; clusterNo <= 5; clusterNo++)
+                for (int clusterNo = 1; clusterNo <= 7; clusterNo++)
                 {                    
                     Args args = new Args();
 
@@ -174,46 +174,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     //TODO Add additional method for getting hierarchical cluster results for different number of clusters
                     IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                     reductGenerator.Generate();
-                    IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;                    
-
-                    int groupId = 0;
-                    foreach (IReductStore reductStore in reductStoreCollection)
-                    {
-                        RoughClassifier rc = new RoughClassifier();
-                        rc.ReductStore = reductStore;
-                        rc.Classify(testData);
-                        ClassificationResult classificationResult = rc.Vote(testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence);
-
-                        ReductEnsembleExperimentResult result = new ReductEnsembleExperimentResult
-                        {
-                            Id = String.Format("{0}", testNo),
-                            NumberOfClusters = clusterNo,
-                            ClusterId = groupId,
-                            TestType = "Group",
-                            MinEpsilon = minEpsilon,
-                            MaxEpsilon = maxEpsilon,
-                            NumberOfPermuations = numberOfPermutations,
-                            NumberOfReducts = reductStore.Count,
-                            Distance = (Func<double[], double[], double>)args["Distance"],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
-                            Dataset = data,
-                            WeightGenerator = (WeightGenerator)args["WeightGenerator"],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args["ReconWeights"],
-                            PermutationCollection = (PermutationCollection)args["PermutationCollection"],
-
-                            Accuracy = classificationResult.Accuracy,
-                            BalancedAccuracy = classificationResult.BalancedAccuracy,
-                            Coverage = classificationResult.Coverage,
-                            Confidence = classificationResult.Confidence,
-                            NumberOfClassified = classificationResult.NumberOfClassified,
-                            NumberOfMisclassified = classificationResult.NumberOfMisclassified,
-                            NumberOfUnclassifed = classificationResult.NumberOfUnclassifed
-                        };
-
-                        experimentResults.Add(result);
-
-                        groupId++;
-                    }
+                    IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;                                        
 
                     ParameterCollection clusterCollection = new ParameterCollection(clusterNo, 0);
                     int counter = 0;
@@ -229,7 +190,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     foreach (object[] ensemble in clusterCollection.Values())
                     {
                         ReductStore tmpReductStore = new ReductStore();
-                        for (int i = 0; i < clusterNo; i++)
+                        for (int i = 0; i < ensemble.Length; i++)
                         {
                             tmpReductStore.DoAddReduct((IReduct)ensemble[i]);
                         }
@@ -268,9 +229,54 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         };
 
                         experimentResults.Add(result);
-                        
+                                                
+                        //random reduct ensemble of the same size
+
+                        ReductStore randomReductStore = new ReductStore();
+                        for (int i = 0; i < ensemble.Length; i++)
+                        {
+                            int randomIdx = RandomSingleton.Random.Next(reductGenerator.ReductPool.Count());
+                            randomReductStore.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomIdx));
+                        }
+
+                        RoughClassifier rc2 = new RoughClassifier();
+                        rc2.ReductStore = randomReductStore;
+                        rc2.Classify(testData);
+                        ClassificationResult classificationResult2 = rc2.Vote(testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence);
+
+                        ReductEnsembleExperimentResult result2 = new ReductEnsembleExperimentResult
+                        {
+                            Id = String.Format("{0}", testNo),
+                            NumberOfClusters = clusterNo,
+                            ClusterId = ensembleId,
+                            TestType = "Group",
+                            MinEpsilon = minEpsilon,
+                            MaxEpsilon = maxEpsilon,
+                            NumberOfPermuations = numberOfPermutations,
+                            NumberOfReducts = randomReductStore.Count,
+                            Distance = (Func<double[], double[], double>)args["Distance"],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
+                            Dataset = data,
+                            WeightGenerator = (WeightGenerator)args["WeightGenerator"],
+                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args["ReconWeights"],
+                            PermutationCollection = (PermutationCollection)args["PermutationCollection"],
+
+                            Accuracy = classificationResult2.Accuracy,
+                            BalancedAccuracy = classificationResult2.BalancedAccuracy,
+                            Coverage = classificationResult2.Coverage,
+                            Confidence = classificationResult2.Confidence,
+                            NumberOfClassified = classificationResult2.NumberOfClassified,
+                            NumberOfMisclassified = classificationResult2.NumberOfMisclassified,
+                            NumberOfUnclassifed = classificationResult2.NumberOfUnclassifed
+                        };
+
+                        experimentResults.Add(result2);
+
                         ensembleId++;
+
                     } //for each ensemble
+
+
                 } //clusterNo                
             } //test No           
 

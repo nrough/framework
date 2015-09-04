@@ -20,14 +20,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
 {                
     [TestFixture]
     class ReductGeneratorComparisonTest
-    {                
-        public IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
+    {
+        public ReductGeneratorComparisonTest()
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            //int seed = 1243882054;
+            Console.WriteLine("Seed: {0}");
             RandomSingleton.Seed = seed;
-            
+        }
+        
+        public IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
+        {
             int numberOfPermutations = 20;
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
@@ -49,7 +52,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet = new Dictionary<string, object>();
 
             argSet.Add("_TestData", testData);
-            argSet.Add("_Seed", seed);
 
             argSet.Add("DataStore", data);
             argSet.Add("PermutationEpsilon", epsilons);
@@ -86,10 +88,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore data = (DataStore)args["DataStore"];
             DataStore testData = (DataStore)args["_TestData"];
-            int seed = (int)args["_Seed"];
             int numberOfClusters = (int)args["NumberOfClusters"];
-
-            Console.WriteLine("Random seed: {0}", seed);
 
             Console.WriteLine("Generator: {0}", (string)args["FactoryKey"]);
             Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];

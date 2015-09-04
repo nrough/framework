@@ -22,6 +22,7 @@ namespace Infovision.Datamining.Roughset
         public object SyncRoot { get { return syncRoot; } }
         public double Weight { get; set; }
         public bool AllowDuplicates { get; set; }
+        public bool IsActive { get; set; }
         
         #endregion
 
@@ -30,11 +31,13 @@ namespace Infovision.Datamining.Roughset
         public ReductStoreBase()
         {
             this.Weight = 1.0;
+            this.IsActive = true;
         }
 
         protected ReductStoreBase(ReductStoreBase reductStore)
         {
             this.Weight = reductStore.Weight;
+            this.IsActive = true;
         }
 
         #endregion

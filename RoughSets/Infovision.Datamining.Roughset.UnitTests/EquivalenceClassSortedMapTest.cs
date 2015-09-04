@@ -12,13 +12,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class EquivalenceClassSortedMapTest
     {
+        public EquivalenceClassSortedMapTest()
+        {
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            RandomSingleton.Seed = seed;
+        }
+        
         [Test]
         public void RemoveObjectsWithMinorDecisionsTest()
         {
-            Random randSeed = new Random();
-            int seed = randSeed.Next(Guid.NewGuid().GetHashCode());
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);

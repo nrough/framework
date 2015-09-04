@@ -107,6 +107,7 @@ namespace Infovision.Datamining.Roughset
 			iterPassed = 0;
 			numberOfWeightResets = 0;
 			double error = -1.0;
+            int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 
 			do
 			{								
@@ -143,7 +144,6 @@ namespace Infovision.Datamining.Roughset
 					continue;
 				}
 
-				int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 				double alpha = error != 0.0 
 					? System.Math.Log((1.0 - error) / error) + System.Math.Log(K - 1)
 					: (Double.MaxValue / 2.0);
@@ -172,7 +172,39 @@ namespace Infovision.Datamining.Roughset
 
 				if (error == 0.0)
 					break;
-				
+
+                if (this.models.Count > 1)
+                {
+                    RoughClassifier classifierEnsemble = new RoughClassifier();
+                    classifierEnsemble.ReductStoreCollection = this.models;
+                    classifierEnsemble.Classify(this.DataStore);
+                    ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
+
+                    if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified == 0.0)
+                    {
+                        bool modelHasConverged = true;
+                        foreach (IReductStore model in this.models)
+                        {
+                            model.IsActive = false;
+
+                            RoughClassifier localClassifierEnsemble = new RoughClassifier();
+                            localClassifierEnsemble.ReductStoreCollection = this.models;
+                            localClassifierEnsemble.Classify(this.DataStore);
+                            ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
+
+                            model.IsActive = true;
+
+                            if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified != 0.0)
+                            {
+                                modelHasConverged = false;
+                                break;
+                            }
+                        }
+
+                        if (modelHasConverged == true)
+                            break;
+                    }
+                }
 			} while(iterPassed < this.MaxIterations);
 						
 			// Normalize weights for models confidence
@@ -192,8 +224,8 @@ namespace Infovision.Datamining.Roughset
 		}
 
 		protected virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
-		{            			
-			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
+		{
+            Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.models).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);
 			int minLen = System.Math.Max(minimumLength - 1, 0);
 			int cutoff = RandomSingleton.Random.Next(minLen, length);

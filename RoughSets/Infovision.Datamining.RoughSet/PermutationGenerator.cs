@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
     
     public class PermutationGenerator : IPermutationGenerator
     {
-        #region Globals
+        #region Members
 
         protected int[] elements;
 
@@ -35,10 +35,6 @@ namespace Infovision.Datamining.Roughset
             : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
         {
         }
-
-        #endregion
-
-        #region Properties
 
         #endregion
 

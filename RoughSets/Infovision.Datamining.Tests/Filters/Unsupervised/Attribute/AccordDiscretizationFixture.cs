@@ -257,7 +257,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
 		{
 			double[] dicernVector = new double[data.NumberOfRecords];            
-			foreach (EquivalenceClass eqClass in reduct.EquivalenceClassMap)
+			foreach (EquivalenceClass eqClass in reduct.EquivalenceClasses)
 			{
 				//TODO Most frequent decision is ok for normal approximate reducts
 				//TODO for weighted approximate reduct we should choose decision with highest object weight sum?
@@ -334,7 +334,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					Console.Write("({0} {1}) ", objectId, discernVerctor[j]);
 
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
-					EquivalenceClassMap eqMap = reduct.EquivalenceClassMap;
+					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
 					AttributeValueVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
 					long mostFrequentDecisionValue = eqClass.MajorDecision;

@@ -7,6 +7,7 @@ namespace Infovision.Datamining.Roughset
         int Count { get; }
         double Weight { get; set; }
         bool AllowDuplicates { get; set; }
+        bool IsActive { get; set; }
 
         void AddReduct(IReduct reduct);
         IReduct GetReduct(int index);

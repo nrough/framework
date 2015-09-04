@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
+    <Compile Include="PermutationGeneratorEnsemble.cs" />
     <Compile Include="ReductCrisp.cs" />
     <Compile Include="ReductEnsembleBoosting.cs" />
     <Compile Include="ReductEnsembleBoostingWithDendrogram.cs" />

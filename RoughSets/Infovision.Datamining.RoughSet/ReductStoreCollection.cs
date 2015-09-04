@@ -11,6 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         void AddStore(IReductStore reductStore);
         int Count { get; }
+        List<IReductStore> ActiveModels();
     }
 
     public class ReductStoreCollection : IReductStoreCollection
@@ -37,6 +38,11 @@ namespace Infovision.Datamining.Roughset
         IEnumerator IEnumerable.GetEnumerator()
         {
             return stores.GetEnumerator();
+        }
+
+        public List<IReductStore> ActiveModels()
+        {
+            return stores.FindAll(x => x.IsActive == true);
         }
     }
 }

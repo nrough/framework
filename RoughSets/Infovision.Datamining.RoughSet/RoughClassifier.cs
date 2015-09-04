@@ -426,7 +426,7 @@ namespace Infovision.Datamining.Roughset
         {
             List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);
 
-            foreach (IReductStore rs in reductStoreCollection)
+            foreach (IReductStore rs in reductStoreCollection.ActiveModels())
             {
                 ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
                 reductRuleDescriptor.Weight = rs.Weight;

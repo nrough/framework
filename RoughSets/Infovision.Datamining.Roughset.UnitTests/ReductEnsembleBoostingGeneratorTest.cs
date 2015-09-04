@@ -17,12 +17,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     class ReductEnsembleBoostingGeneratorTest
     {
+        public ReductEnsembleBoostingGeneratorTest()
+        {
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}");
+            RandomSingleton.Seed = seed;
+        }
+        
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {            
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();       
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
@@ -238,12 +242,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("GenerateExperimentBoostingStandard");
             
-            //TODO move to class level
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
-
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
 
@@ -290,11 +288,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateExperimentBoostingWithDiversity()
         {
             Console.WriteLine("GenerateExperimentBoostingWithDiversity");
-
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
 
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
@@ -347,12 +340,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RandomSingletonTest()
         {
-            //TODO Move to class level
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("Seed: {0}", seed);            
-            RandomSingleton.Seed = seed;
-
             Console.WriteLine(RandomSingleton.Random.Next(1, 5));
             Console.WriteLine(RandomSingleton.Random.Next(1, 5));
             Console.WriteLine(RandomSingleton.Random.Next(1, 5));

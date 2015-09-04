@@ -16,15 +16,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
 {                
     [TestFixture]
     class ReductEnsembleGeneratorTest
-    {               
+    {
+        public ReductEnsembleGeneratorTest()
+        {
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}");
+            RandomSingleton.Seed = seed;
+        }
+        
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
-
-            //TODO Do not use random here. We do not know where to set seed. NUnit first calls all parameter methods and random is a singleton!
-            Random randSeed = new Random();
-            int seed = randSeed.Next(Guid.NewGuid().GetHashCode());            
-            RandomSingleton.Seed = seed;
             
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             
@@ -34,8 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
             weightGenerator.Value = 1.0;            
-            
-            //TODO Epsilon generation according to some distribution
+
             double[] epsilons = new double[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {

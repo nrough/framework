@@ -15,15 +15,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductEnsembleExperiment
-    {                
+    {
+        public ReductEnsembleExperiment()
+        {
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}");
+            RandomSingleton.Seed = seed;
+        }
+        
         [Test, TestCaseSource("GetDataFiles")]
         public void RunExperimentIncremental(KeyValuePair<string, BenchmarkData> kvp)
         {
             Console.WriteLine("Data: {0}", kvp.Key);
-
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
 
             int numberOfPermutations = 500;
             DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
@@ -70,10 +74,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RunExperiment()
         {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
-
             int numberOfPermutations = 10;
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);

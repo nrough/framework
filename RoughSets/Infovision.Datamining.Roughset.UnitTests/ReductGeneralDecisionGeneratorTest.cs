@@ -14,13 +14,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class ReductGeneralDecisionGeneratorTest
     {
-        [Test]
-        public void TryRemoveAttribute()
+        public ReductGeneralDecisionGeneratorTest()
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}");
             RandomSingleton.Seed = seed;
-
+        }
+        
+        [Test]
+        public void TryRemoveAttribute()
+        {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);            
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -68,10 +72,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetDataFiles")]
         public void ExperimentAvgReductLength(KeyValuePair<string, BenchmarkData> fileName)
         {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -142,10 +142,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateRelativeTest()
         {            
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -200,10 +196,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateMajorityTest()
         {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -259,10 +251,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateTest()
         {
-            Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
-            RandomSingleton.Seed = seed;
-
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);

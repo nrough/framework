@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -15,6 +14,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public PermutationTest()
         {
             dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);
+        
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            RandomSingleton.Seed = seed;
         }
 
         [Test]
@@ -296,6 +299,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList = generator.Generate(10);
             this.CheckPermutationCompletness(permutationList, fields, new int[] { });
 
+        }
+
+        [Test]
+        public void PermutationGeneratorEnsemble()
+        {
+            int[] attribute = new int[] {1,2,3,4,5,6,7,8,9};
+            int[][] selectedAttributes = new int[][] {
+                new int[] {1,2,3},
+                new int[] {4,5,6},
+                new int[] {1,2},
+                new int[] {4,5,6}
+            };
+
+            PermutationGeneratorEnsemble permutationEnsemble = new PermutationGeneratorEnsemble(attribute, selectedAttributes);
+            Permutation perm = permutationEnsemble.Generate(1)[0];
+            Console.WriteLine(perm);
         }
     }
 }

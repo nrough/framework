@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
-    public class RandomExt
+    public static class RandomExt
     {
         public static int[] RandomVectorNoRepetition(int n, int min, int max)
         {
@@ -27,6 +27,21 @@ namespace Infovision.Utils
             int[] result = new int[n];
             Array.Copy(tmp, result, n);
             return result;
+        }
+
+        public static int[] Shuffle(this int[] array)
+        {
+            int[] tmp = new int[array.Length];
+            Array.Copy(array, tmp, array.Length);
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                int k = RandomSingleton.Random.Next(0, array.Length);
+                int t = tmp[i];
+                tmp[i] = tmp[k];
+                tmp[k] = t;
+            }
+            return tmp;
         }
     }
 }

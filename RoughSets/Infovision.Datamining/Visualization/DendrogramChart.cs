@@ -96,8 +96,7 @@ namespace Infovision.Datamining.Visualization
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
 
-
-                //calculate leaf node positions 
+                //calculate leaf node positions
                 int[] leafOrder = this.HCluster.ComputeLeafNodes();
                 Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
                 int xAxisOffset = 10;
@@ -121,8 +120,25 @@ namespace Infovision.Datamining.Visualization
                 //draw dendrogramLinkCollection                
                 foreach (DendrogramLink link in this.HCluster.DendrogramLinkCollection)
                 {
-                    DendrogramLinkChartData linkChartData1 = dendrogramChartData[link.Cluster1];
-                    DendrogramLinkChartData linkChartData2 = dendrogramChartData[link.Cluster2];
+                    DendrogramLinkChartData linkChartData1 = null, linkChartData2 = null;
+
+                    if (dendrogramChartData.ContainsKey(link.Cluster1))
+                    {
+                        linkChartData1 = dendrogramChartData[link.Cluster1];
+                    }
+                    else
+                    {
+                        linkChartData1 = null;
+                    }
+
+                    if (dendrogramChartData.ContainsKey(link.Cluster2))
+                    {
+                        linkChartData2 = dendrogramChartData[link.Cluster2];
+                    }
+                    else
+                    {
+                        linkChartData2 = null;
+                    }
 
                     DendrogramLinkChartData newLinkChartData = new DendrogramLinkChartData(link.Id);
                     newLinkChartData.LeftNodeX = linkChartData1.ParentNodeX;

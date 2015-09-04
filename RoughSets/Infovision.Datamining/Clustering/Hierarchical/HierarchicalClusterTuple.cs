@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    internal class HierarchicalClusterTuple// : IComparable, IComparable<HierarchicalClusterTuple>
+    internal class HierarchicalClusterTuple
     {
         private readonly int x;
         private readonly int y;
@@ -48,54 +48,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.sizeY; }
         }
-        
-       
-        /*
-        public int CompareTo(object obj)
-        {
-            if(obj == null) return 1;
-            HierarchicalClusterTuple tuple = obj as HierarchicalClusterTuple;
-            if(tuple == null)
-                throw new ArgumentException("Object is not HierarchicalClusterTuple");
-
-            int valResult = this.Value.CompareTo(tuple.Value);
-            if (valResult != 0)
-                return valResult;                        
-
-            if (this.X < tuple.X)
-                return -1;
-            if (this.X > tuple.X)
-                return 1;
-
-            if (this.Y < tuple.Y)
-                return -1;
-            if (this.Y > tuple.Y)
-                return 1;
-
-            return 0;
-        }
-
-        public int CompareTo(HierarchicalClusterTuple other)
-        {
-            if (other == null) return 1;
-
-            int valResult = this.Value.CompareTo(tuple.Value);
-            if (valResult != 0)
-                return valResult;
-
-            if (this.X < other.X)
-                return -1;
-            if (this.X > other.X)
-                return 1;
-
-            if (this.Y < other.Y)
-                return -1;
-            if (this.Y > other.Y)
-                return 1;
-
-            return 0;
-        }
-        */
 
         #region System.Object Methods
 
@@ -131,23 +83,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     {
         public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
         {
-            return t1.Value.CompareTo(t2.Value);
-
-            /*
-            int valResult = t1.Value.CompareTo(t2.Value);
-            if (valResult != 0)
-                return valResult;            
-            if (t1.X < t2.X)
-                return -1;
-            if (t1.X > t2.X)
-                return 1;
-
-            if (t1.Y < t2.Y)
-                return -1;
-            if (t1.Y > t2.Y)
-                return 1;            
-            return 0;
-            */
+            return t1.Value.CompareTo(t2.Value);            
         }
     }
 
@@ -155,24 +91,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     {
         public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
         {
-            return -1 * t1.Value.CompareTo(t2.Value);
-            /*
-            int valResult = t1.Value.CompareTo(t2.Value);
-            if (valResult != 0)
-                return - valResult;
-
-            
-            if (t1.X < t2.X)
-                return 1;
-            if (t1.X > t2.X)
-                return -1;
-
-            if (t1.Y < t2.Y)
-                return 1;
-            if (t1.Y > t2.Y)
-                return -1;            
-            return 0;
-            */
+            return -t1.Value.CompareTo(t2.Value);
         }
     }
 }

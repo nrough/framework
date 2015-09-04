@@ -88,28 +88,31 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             this.nodes = new Dictionary<int, DendrogramNode>();
             this.clusters = new Dictionary<int, HierarchicalCluster>(this.Instances.Count);
-            for (int i = 0; i < this.Instances.Count; i++)
+
+            int[] instanceKeys = this.Instances.Keys.ToArray();
+
+            for (int i = 0; i < instanceKeys.Length; i++)
             {
                 DendrogramNode singleton = new DendrogramNode
                 {
-                    Id = i
+                    Id = instanceKeys[i]
                 };
 
-                this.nodes.Add(i, singleton);                
-                
-                HierarchicalCluster cluster = new HierarchicalCluster(i);
-                cluster.AddMemberObject(i);
-                clusters.Add(i, cluster);
+                this.nodes.Add(instanceKeys[i], singleton);
 
-                for (int j = i + 1; j < this.Instances.Count; j++)
+                HierarchicalCluster cluster = new HierarchicalCluster(instanceKeys[i]);
+                cluster.AddMemberObject(instanceKeys[i]);
+                clusters.Add(instanceKeys[i], cluster);
+
+                for (int j = i + 1; j < instanceKeys.Length; j++)
                 {
                     if (calculateDistanceMatrix)
-                        this.DistanceMatrix[i, j] = this.Distance(this.Instances[i], this.Instances[j]);
+                        this.DistanceMatrix[instanceKeys[i], instanceKeys[j]] = this.Distance(this.Instances[instanceKeys[i]], this.Instances[instanceKeys[j]]);
 
-                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i, j, this.DistanceMatrix[i, j], 1, 1);                                       
+                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(instanceKeys[i], instanceKeys[j], this.DistanceMatrix[instanceKeys[i], instanceKeys[j]], 1, 1);                                       
                     queue.Enqueue(tuple);
                 }
-            }            
+            }
         }                
 
         /// <summary>
@@ -188,7 +191,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                             double distance = this.GetClusterDistance(i1, i2);
                             HierarchicalClusterTuple newTuple = new HierarchicalClusterTuple(i1, 
                                                                                              i2, 
-                                                                                             distance, 
+                                                                                              distance, 
                                                                                              clusters[i1].MemberObjects.Count, 
                                                                                              clusters[i2].MemberObjects.Count);
                             queue.Enqueue(newTuple);

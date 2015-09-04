@@ -77,7 +77,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     {
         public override int Compare(DendrogramLink left, DendrogramLink right)
         {
-            return left.Distance.CompareTo(right.Distance);
+            int result = left.Distance.CompareTo(right.Distance);
+            if (result != 0)
+            {
+                return result;
+            }
+            else
+            {
+                return System.Math.Abs(left.Id).CompareTo(System.Math.Abs(right.Id));
+            }
         }
     }
 
@@ -85,7 +93,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     {
         public override int Compare(DendrogramLink left, DendrogramLink right)
         {
-            return left.Distance.CompareTo(right.Distance) * -1;
+            int result = left.Distance.CompareTo(right.Distance);
+            if (result != 0)
+            {
+                return -result;
+            }
+            else
+            {
+                return -System.Math.Abs(left.Id).CompareTo(System.Math.Abs(right.Id));
+            }            
         }
     }
 }

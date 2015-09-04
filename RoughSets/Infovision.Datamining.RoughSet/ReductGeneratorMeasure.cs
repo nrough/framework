@@ -195,6 +195,19 @@ namespace Infovision.Datamining.Roughset
         #endregion
     }
 
+    public abstract class ApproximateReductFactory : IReductFactory
+    {
+        public abstract string FactoryKey { get; }
+
+        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            return new PermutationGeneratorReverse(dataStore);
+        }
+
+        public abstract IReductGenerator GetReductGenerator(Args args);
+    }
+
     [Serializable]
     public class ReductGeneratorRelative : ReductGeneratorMeasure
     {
@@ -209,6 +222,21 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
     }
+
+    public class ApproximateReductRelativeFactory : ApproximateReductFactory
+    {
+        public override string FactoryKey
+        {
+            get { return "ApproximateReductRelative"; }
+        }
+
+        public override IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductGeneratorRelative rGen = new ReductGeneratorRelative();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+    }        
 
     [Serializable]
     public class ReductGeneratorMajority : ReductGeneratorMeasure
@@ -225,6 +253,21 @@ namespace Infovision.Datamining.Roughset
         #endregion
     }
 
+    public class ApproximateReductMajorityFactory : ApproximateReductFactory
+    {
+        public override string FactoryKey
+        {
+            get { return "ApproximateReductMajority"; }
+        }
+
+        public override IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductGeneratorMajority rGen = new ReductGeneratorMajority();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+    }
+
     [Serializable]
     public class ReductGeneratorPositive : ReductGeneratorMeasure
     {
@@ -238,5 +281,20 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
+    }
+
+    public class ApproximateReductPositiveFactory : ApproximateReductFactory
+    {
+        public override string FactoryKey
+        {
+            get { return "ApproximateReductPositive"; }
+        }
+
+        public override IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductGeneratorPositive rGen = new ReductGeneratorPositive();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
     }
 }

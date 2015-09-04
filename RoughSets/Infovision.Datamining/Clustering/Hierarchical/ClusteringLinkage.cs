@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         /// <summary>
-        /// calculated error sum-of-squares for instances wrt centroid
+        /// calculated error sum-of-squares for instances ward centroid
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="distanceMatrix"></param>

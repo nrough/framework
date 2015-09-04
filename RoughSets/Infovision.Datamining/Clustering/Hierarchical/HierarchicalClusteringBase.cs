@@ -196,7 +196,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return leaves.ToArray();
         }        
 
-        protected abstract double GetClusterDistance(int[] cluster1, int[] cluster2);
+        public abstract double GetClusterDistance(int[] cluster1, int[] cluster2);
 
         /// <summary>
         /// Traverse tree in level order and perform Action for every tree node (aka Breadth-first search (BFS))
@@ -515,7 +515,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return result;
         }
 
-        //TODO
+        //TODO Cophenetic_correlation
         //http://en.wikipedia.org/wiki/Cophenetic_correlation
         public virtual double CopheneticCorrelation(HierarchicalClusteringBase otherCluster)
         {
@@ -756,7 +756,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return dist1 + dist2 - (2 * lcsDist);
         }
 
-        public virtual Dictionary<Tuple<int, int>, double> GetLeafeDistance()
+        public virtual Dictionary<Tuple<int, int>, double> GetLeafDistance()
         {
             if (this.isLeafDistanceCalculated == false)
                 this.CalculateLeavesDistance();

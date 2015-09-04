@@ -201,7 +201,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return true;
         }        
 
-        protected override double GetClusterDistance(int[] cluster1, int[] cluster2)
+        public override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {
             if (cluster1.Length == 1 && cluster2.Length == 1)
             {

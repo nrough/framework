@@ -8,22 +8,12 @@ using Accord.MachineLearning;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    internal class HierarchicalCluster
-    {       
-        private int index;
-        List<int> objects = new List<int>();
-
-        public HierarchicalCluster(int index)
-        {
-            this.Index = index;
-        }
+    public class HierarchicalCluster
+    {               
+        List<int> objects = new List<int>();        
                 
-        public int Index
-        {
-            get { return this.index; }
-            set { this.index = value; }
-        }
-
+        public int Index {get; set; }
+        
         private List<int> Objects
         {
             get { return this.objects; }
@@ -44,6 +34,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.objects; }
         }
+
+        public HierarchicalCluster(int index)
+        {
+            this.Index = index;
+        }
+
 
         public static HierarchicalCluster MergeClusters(int newClusterIndex, HierarchicalCluster cluster1, HierarchicalCluster cluster2)
         {

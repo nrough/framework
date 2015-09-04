@@ -291,7 +291,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return newNode.Id;
         }
 
-        protected override double GetClusterDistance(int[] cluster1, int[] cluster2)
+        public override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {
             return this.Linkage(cluster1, cluster2, this.DistanceMatrix, Instances.Values.ToArray());
         }

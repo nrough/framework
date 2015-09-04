@@ -14,6 +14,7 @@ namespace Infovision.Datamining.Roughset
 				
 		private WeightBoostingGenerator weightGenerator;
 		private ReductStoreCollection models;
+		private int iterPassed;
 
 		public int MaxReductLength { get; set; }
 		public int MinReductLength { get; set; }
@@ -22,7 +23,8 @@ namespace Infovision.Datamining.Roughset
 		public VoteType VoteType {get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
 		public int MaxIterations { get; set; }
-		
+		public int IterationsPassed { get { return this.iterPassed; } }
+				
 		public ReductEnsembleBoostingGenerator()
 			: base()
 		{
@@ -83,13 +85,14 @@ namespace Infovision.Datamining.Roughset
 		public override void Generate()
 		{									
 			this.ReductPool = this.CreateReductStore();
+			this.ReductPool.AllowDuplicates = true;
 			this.weightGenerator = new WeightBoostingGenerator(this.DataStore);
 			this.models = new ReductStoreCollection();
 
 			double alphaSum = 0.0;
-			int iter = 0;
+			iterPassed = 0;
 			double error = -1.0;
-            double error2 = -1.0;
+			double error2 = -1.0;
 
 			/*
 			IReductStore localReductStore = this.CreateReductStore();
@@ -106,7 +109,7 @@ namespace Infovision.Datamining.Roughset
 
 			do
 			{
-				iter++;
+				iterPassed++;
 				
 				IReductStore localReductStore = this.CreateReductStore();
 				weightGenerator.Generate();
@@ -114,7 +117,7 @@ namespace Infovision.Datamining.Roughset
 				{
 					IReduct reduct = this.GetNextReduct(weightGenerator.Weights, this.MinReductLength, this.MaxReductLength);
 					localReductStore.AddReduct(reduct);
-					Console.WriteLine("{0}", reduct);
+					//Console.WriteLine("{0}", reduct);
 					this.ReductPool.AddReduct(reduct);
 				}
 				
@@ -128,31 +131,31 @@ namespace Infovision.Datamining.Roughset
 				
 				classifier.Classify(this.DataStore);
 
-                //Should we use changed weights as error indicator or 1/n weights
-                ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, weightGenerator.Weights);
-                error = result.WeightUnclassified + result.WeightMisclassified;
+				//Should we use changed weights as error indicator or 1/n weights
+				ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, weightGenerator.Weights);
+				error = result.WeightUnclassified + result.WeightMisclassified;
 
-                ClassificationResult result2 = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);				
-                error2 = result2.WeightUnclassified + result2.WeightMisclassified;
+				ClassificationResult result2 = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);				
+				error2 = result2.WeightUnclassified + result2.WeightMisclassified;
 
-                Console.WriteLine("Iteration {0}: error_modified_w: {1} error_standard_w: {2}", iter, error, error2);
+				//Console.WriteLine("Iteration {0}: error_modified_w: {1} error_standard_w: {2}", iterPassed, error, error2);
 
 				if (error >= this.Threshold)
 				{
-                    Console.WriteLine("ERROR {0} EXCEEDS THRESHOLD {1}", error, this.Threshold);
+					//Console.WriteLine("ERROR {0} EXCEEDS THRESHOLD {1}", error, this.Threshold);
 					//break;
-                    continue;
+					//continue;
+					weightGenerator.Reset();
 				}
 												
 				double alpha = error != 0.0 ? System.Math.Log((1.0 - error) / error) : 10000;
 				localReductStore.Weight = alpha;
+				//localReductStore.Weight = 1.0;
 				this.models.AddStore(localReductStore);
 
 				double sum = 0.0;
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
-				{
-
-					
+				{					
 					if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
 					{						
 						weightGenerator.Weights[i] *= System.Math.Exp(-alpha);
@@ -178,13 +181,13 @@ namespace Infovision.Datamining.Roughset
 				//Normalize object w
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
 					weightGenerator.Weights[i] /= sum;
-				
-				alphaSum += alpha;
+
+				alphaSum += localReductStore.Weight;
 
 				if (error == 0.0)
 					break;
 				
-			} while(iter < this.MaxIterations);
+			} while(iterPassed < this.MaxIterations);
 						
 			// Normalize w for models confidence
 			foreach(IReductStore rs in this.models)
@@ -196,7 +199,7 @@ namespace Infovision.Datamining.Roughset
 			return this.models;
 		}
 
-		private IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		protected virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{            			
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);

@@ -49,5 +49,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string ReductEnsemble = "ReductEnsemble";
         public static readonly string ReductGeneralizedDecision = "ReductGeneralizedDecision";
         public static readonly string ReductEnsembleBoosting = "ReductEnsembleBoosting";
+        public static readonly string ReductEnsembleBoostingWithDendrogram = "ReductEnsembleBoostingWithDendrogram";
+        public static readonly string ReductEnsembleBoostingWithDiversity = "ReductEnsembleBoostingWithDiversity";
     }
 }

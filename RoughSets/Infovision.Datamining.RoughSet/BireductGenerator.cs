@@ -90,6 +90,31 @@ namespace Infovision.Datamining.Roughset
         #endregion
     }
 
+    public class BireductFactory : IReductFactory
+    {
+        public virtual string FactoryKey
+        {
+            get { return ReductFactoryKeyHelper.Bireduct; }
+        }
+
+        public virtual IReductGenerator GetReductGenerator(Args args)
+        {
+            BireductGenerator rGen = new BireductGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+
+        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+
+            if (args.Exist("ApproximationRatio"))
+                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter("ApproximationRatio"));
+
+            return new PermutationGeneratorFieldObject(dataStore);
+        }
+    }
+
     [Serializable]
     public class BireductRelativeGenerator : BireductGenerator
     {
@@ -110,6 +135,31 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
+    }
+
+    public class BireductRelativeFactory : BireductFactory
+    {
+        public override string FactoryKey
+        {
+            get { return "BireductRelative"; }
+        }
+
+        public override IReductGenerator GetReductGenerator(Args args)
+        {
+            BireductRelativeGenerator rGen = new BireductRelativeGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+
+        public override IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+
+            if (args.Exist("ApproximationRatio"))
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter("ApproximationRatio"));
+
+            return new PermutationGeneratorFieldObjectRelative(dataStore);
+        }
     }
 
     [Serializable]
@@ -143,5 +193,20 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
+    }
+
+    public class BireductGammaFactory : BireductFactory
+    {
+        public override string FactoryKey
+        {
+            get { return "GammaBireduct"; }
+        }
+
+        public override IReductGenerator GetReductGenerator(Args args)
+        {
+            BireductGammaGenerator rGen = new BireductGammaGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
     }
 }

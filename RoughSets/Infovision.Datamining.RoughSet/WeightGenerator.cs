@@ -52,6 +52,12 @@ namespace Infovision.Datamining.Roughset
             this.CalcFlag = true;
         }
 
+        public virtual void Reset()
+        {
+            this.CalcFlag = false;
+            this.Generate();
+        }
+
         #endregion
         
     }
@@ -93,7 +99,7 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                throw new InvalidOperationException("sum of weigths cannot be zero.");
+                throw new InvalidOperationException("sum of weights cannot be zero.");
             }
         }
     }

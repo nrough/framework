@@ -223,7 +223,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
 				roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
-				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);				
+				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);				
 
 				for(int i=0; i<roughClassifier.ReductStore.Count; i++)
 				{
@@ -240,7 +240,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				}
 
 				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
-				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);				
+				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);				
 
 				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
@@ -319,7 +319,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			RoughClassifier roughClassifier = new RoughClassifier();
 			roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permList);
 			roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
-			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);			
+			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);
 
 			for(int i=0; i<roughClassifier.ReductStore.Count; i++)
 			{

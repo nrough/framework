@@ -21,6 +21,7 @@ namespace Infovision.Datamining.Roughset
         public abstract int Count { get; }
         public object SyncRoot { get { return syncRoot; } }
         public double Weight { get; set; }
+        public bool AllowDuplicates { get; set; }
         
         #endregion
 
@@ -114,7 +115,7 @@ namespace Infovision.Datamining.Roughset
         public List<IReduct> ReductSet
         {
             get { return this.reducts; }
-        }
+        }        
 
         #endregion
 
@@ -202,12 +203,11 @@ namespace Infovision.Datamining.Roughset
         {
             foreach (IReduct localReduct in reducts)
             {
-                if (DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001))
-                {
-                    if (reduct.Attributes.Superset(localReduct.Attributes))
-                    {
-                        return false;
-                    }
+                if (this.AllowDuplicates == false
+                    && DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
+                    && reduct.Attributes.Superset(localReduct.Attributes))
+                {                    
+                    return false;                    
                 }
             }
             

@@ -299,9 +299,11 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
+
+
         #region Members
 
-        private Dictionary<long, ReductRuleDescriptor> objectReductDescriptorMap;
+        private Dictionary<long, List<ReductRuleDescriptor>> objectReductDescriptorMap;
         private IReductStore reductStore;
         private IReductStoreCollection reductStoreCollection;
 
@@ -399,7 +401,8 @@ namespace Infovision.Datamining.Roughset
                 localReductStoreCollection = reductStoreCollection;
             }
                         
-            this.objectReductDescriptorMap = new Dictionary<long, ReductRuleDescriptor>(dataStore.NumberOfRecords);
+            //this.objectReductDescriptorMap = new Dictionary<long, ReductRuleDescriptor>(dataStore.NumberOfRecords);
+            this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
@@ -418,12 +421,15 @@ namespace Infovision.Datamining.Roughset
             return this.Classify(dataStore, null, 0);
         }
 
-        private ReductRuleDescriptor CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
+        //private ReductRuleDescriptor CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
+        private List<ReductRuleDescriptor> CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
         {
-            ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
+            List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);
 
             foreach (IReductStore rs in reductStoreCollection)
-            {                                
+            {
+                ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
+                reductRuleDescriptor.Weight = rs.Weight;
                 foreach (IReduct reduct in rs)
                 {                                        
                     int[] attributes = reduct.Attributes.ToArray();
@@ -440,61 +446,24 @@ namespace Infovision.Datamining.Roughset
                         decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
 
                     decisionRuleDescriptor.IdentifyDecision();
-                    reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
-
-                    //TODO This is OK if a single model contains only one single reduct
-                    //TODO It is also OK if all reducts in the model share the same object w
-                    //TODO This is not OK, if we have many reduct store collections and/or reducts have different object w
-                    reductRuleDescriptor.Weight = reduct.Weights[record.ObjectIdx];
+                    reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);                                        
                 }
+
+                result.Add(reductRuleDescriptor);
             }
-            return reductRuleDescriptor;
+            return result;
         }        
 
         public double[] GetDiscernibilityVector(DataStore data, double[] weights, IReduct reduct, IdentificationType decisionIdentificationType)
         {
             double[] result = new double[data.NumberOfRecords];
             foreach(long objectId in data.GetObjectIds())
-            {
+            {                
                 int objectIdx = data.ObjectId2ObjectIndex(objectId);
-                ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[objectId];
-                DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
-                
-                long decision = -1;
-                switch (decisionIdentificationType)
-                {
-                    case IdentificationType.Support:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Support.Description());
-                        break;
-
-                    case IdentificationType.Confidence:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Confidence.Description());
-                        break;
-
-                    case IdentificationType.Coverage:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Coverage.Description());
-                        break;
-
-                    case IdentificationType.WeightSupport:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightSupport.Description());
-                        break;
-
-                    case IdentificationType.WeightConfidence:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightConfidence.Description());
-                        break;
-
-                    case IdentificationType.WeightCoverage:
-                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightCoverage.Description());
-                        break;
-
-                    default:
-                        throw new ArgumentException("Unknown value", "identificationType");
-                }
-                
-                if (decision == data.GetDecisionValue(objectIdx))
+                if(this.IsObjectRecognizable(data, objectId, reduct, decisionIdentificationType))
                 {
                     result[objectIdx] = weights[objectIdx];
-                }
+                }                                                
             }
 
             return result;
@@ -522,16 +491,13 @@ namespace Infovision.Datamining.Roughset
         private long VoteObject(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
         {
             Dictionary<long, double> ensebleVotes = new Dictionary<long, double>();
-            
-            foreach (ReductStore rs in this.ReductStoreCollection)
+            List<ReductRuleDescriptor> list = this.objectReductDescriptorMap[record.ObjectId];
+
+            foreach (ReductRuleDescriptor reductDescriptor in list)
             {
                 long result = -1;
                 double maxWeight = 0;
-                Dictionary<long, double> decisionVotes = new Dictionary<long, double>();
-
-                //TODO ReductDescriptor should be created per ReductStoreCollection
-
-                ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[record.ObjectId];
+                Dictionary<long, double> decisionVotes = new Dictionary<long, double>();                
                 foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
                 {
                     long decision = -1;
@@ -625,31 +591,31 @@ namespace Infovision.Datamining.Roughset
                     if (decisionVotes.TryGetValue(decision, out voteWeightSum))
                     {
                         voteWeightSum += voteWeight;
+                        decisionVotes[decision] = voteWeightSum;
                     }
                     else
                     {
                         voteWeightSum = voteWeight;
-                    }
-                    decisionVotes[decision] = voteWeightSum;
+                        decisionVotes.Add(decision, voteWeightSum);
+                    }                    
 
                     if (voteWeightSum > maxWeight)
                     {
                         maxWeight = voteWeightSum;
                         result = decision;
-                    }
+                    }                    
                 }
 
                 double ensembleWeightSum = 0.0;
                 if (ensebleVotes.TryGetValue(result, out ensembleWeightSum))
                 {
-                    ensembleWeightSum += rs.Weight;
+                    ensembleWeightSum += reductDescriptor.Weight;
                     ensebleVotes[result] = ensembleWeightSum;
                 }
                 else
                 {
-                    ensebleVotes.Add(result, rs.Weight);
-                }
-                
+                    ensebleVotes.Add(result, reductDescriptor.Weight);
+                }                
             }
 
             long ensembleResult = -1;
@@ -668,45 +634,71 @@ namespace Infovision.Datamining.Roughset
         }
 
         public bool IsObjectRecognizable(DataStore dataStore, long objectId, IReduct reduct, IdentificationType identificationType)
-        {
+        {            
+            List<ReductRuleDescriptor> list = this.objectReductDescriptorMap[objectId];
+            Dictionary<long, double> votes = new Dictionary<long, double>();
 
-            ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[objectId];
-            DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
-                        
-            long identifiedDecision = -1;
-
-            switch (identificationType)
+            foreach (ReductRuleDescriptor reductDescriptor in list)
             {
-                case IdentificationType.Support:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Support.Description());
-                    break;
+                long identifiedDecision = -1;
+                
+                DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);                
+                switch (identificationType)
+                {
+                    case IdentificationType.Support:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Support.Description());
+                        break;
 
-                case IdentificationType.Confidence:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Confidence.Description());
-                    break;
+                    case IdentificationType.Confidence:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Confidence.Description());
+                        break;
 
-                case IdentificationType.Coverage:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Coverage.Description());
-                    break;
+                    case IdentificationType.Coverage:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Coverage.Description());
+                        break;
 
-                case IdentificationType.WeightSupport:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightSupport.Description());
-                    break;
+                    case IdentificationType.WeightSupport:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightSupport.Description());
+                        break;
 
-                case IdentificationType.WeightConfidence:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightConfidence.Description());
-                    break;
+                    case IdentificationType.WeightConfidence:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightConfidence.Description());
+                        break;
 
-                case IdentificationType.WeightCoverage:
-                    identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightCoverage.Description());
-                    break;
+                    case IdentificationType.WeightCoverage:
+                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightCoverage.Description());
+                        break;
 
-                default:
-                    throw new ArgumentException("Unknown value", "identificationType");
+                    default:
+                        throw new ArgumentException("Unknown value", "identificationType");
+                }
+
+                double voteSum = 0.0;
+                if (votes.TryGetValue(identifiedDecision, out voteSum))
+                {
+                    voteSum += reductDescriptor.Weight;
+                    votes[identifiedDecision] = voteSum;
+                }
+                else
+                {
+                    votes.Add(identifiedDecision, reductDescriptor.Weight);
+                }
+
             }
             
+            double maxValue = Double.MinValue;
+            long result = -1;
+            foreach (var kvp in votes)
+            {
+                if (maxValue > kvp.Value)
+                {
+                    maxValue = kvp.Value;
+                    result = kvp.Key;
+                }
+            }
+
             int objectIdx = dataStore.ObjectId2ObjectIndex(objectId);
-            if (dataStore.GetDecisionValue(objectIdx) == identifiedDecision)
+            if (dataStore.GetDecisionValue(objectIdx) == result)
                 return true;
 
             return false;

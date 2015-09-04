@@ -217,7 +217,7 @@ namespace Infovision.Datamining
                 this.numberOfClassified++;
                 this.weightClassified += weight;
             }
-            else if (prediction != actual && prediction != -1)
+            else if (prediction != -1)
             {
                 this.numberOfMisclassified++;
                 this.weightMisclassfied += weight;

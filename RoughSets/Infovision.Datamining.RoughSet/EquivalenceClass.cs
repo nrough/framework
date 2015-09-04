@@ -308,17 +308,18 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            foreach (long dec in decisionsToRemove)
+            foreach (long decision in decisionsToRemove)
             {
-                this.DecisionSet.RemoveElement(Convert.ToInt32(dec));
-                this.decisionWeigthSums.Remove(dec);
+                this.DecisionSet.RemoveElement(Convert.ToInt32(decision));
+                this.decisionWeigthSums.Remove(decision);
                 
-                if (this.decisionObjectIndexes != null)
+                if (this.decisionObjectIndexes != null
+                    && this.decisionObjectIndexes.ContainsKey(decision))
                 {
-                    foreach (int objectIdx in this.decisionObjectIndexes[dec])
+                    foreach (int objectIdx in this.decisionObjectIndexes[decision])
                         this.instances.Remove(objectIdx);
 
-                    decisionObjectIndexes.Remove(dec);
+                    decisionObjectIndexes.Remove(decision);
                 }
             }
 
@@ -345,12 +346,12 @@ namespace Infovision.Datamining.Roughset
                 this.decisionWeigthSums.Remove(decision);
 
                 if (this.decisionObjectIndexes != null
-                    && this.decisionObjectIndexes.Count > 0)
+                    && this.decisionObjectIndexes.ContainsKey(decision))
                 {
                     foreach (int objectIdx in this.decisionObjectIndexes[decision])
                         this.instances.Remove(objectIdx);
 
-                    decisionObjectIndexes.Remove(decision);
+                    decisionObjectIndexes.Remove(decision);                    
                 }                
             }
 

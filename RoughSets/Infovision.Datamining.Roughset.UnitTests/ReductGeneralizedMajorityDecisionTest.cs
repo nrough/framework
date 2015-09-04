@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 10;
+            int numberOfPermutations = 1000;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.5);
+            parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.9);
 
 
             ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;

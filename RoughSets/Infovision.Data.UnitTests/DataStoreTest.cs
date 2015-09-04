@@ -75,7 +75,7 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void ExternalFieldEncoding()
         {
-            //First record
+            //First instance
             //1 1 1 1 3 1 1 
 
             long internalValue = dataStoreTrain.GetObjectField(0, 1);
@@ -90,7 +90,7 @@ namespace Infovision.Data.UnitTests
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
 
-            //Last record
+            //Last instance
             //3 3 2 3 4 2 1
             
             internalValue = dataStoreTrain.GetObjectField(dataStoreTrainInfo.NumberOfRecords - 1, 1);
@@ -105,7 +105,7 @@ namespace Infovision.Data.UnitTests
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
 
-            //60th record
+            //60th instance
             //2 1 2 3 4 1 0 
 
             internalValue = dataStoreTrain.GetObjectField(60, 1);
@@ -218,5 +218,22 @@ namespace Infovision.Data.UnitTests
             Assert.IsTrue(fieldTypeFlags.HasFlag(FieldTypes.All));
             
         }
+
+        [Test]
+        public void OrderByTest()
+        {
+            int[] orderBy = new int[] { 1, 3, 5 };
+            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(this.dataStoreTrain, orderBy);
+            int[] sortedArray = this.dataStoreTrain.OrderBy(orderBy, comparer);
+            
+            for (int i = 1; i < this.dataStoreTrain.NumberOfRecords; i++)
+            {
+                AttributeValueVector record = this.dataStoreTrain.GetDataVector(sortedArray[i - 1], orderBy);
+                int result = comparer.Compare(sortedArray[i - 1], sortedArray[i]);
+
+                Assert.AreNotEqual(1, result);
+            }
+        }
+
     }
 }

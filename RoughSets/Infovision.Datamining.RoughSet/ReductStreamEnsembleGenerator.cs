@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = len; i >= 0; i--)
             {
                 int attributeId = permutation[i];
-                if (reduct.RemoveAttribute(attributeId))
+                if (reduct.TryRemoveAttribute(attributeId))
                 {
                     if (!this.IsReduct(reduct, localReductPool, false))
                     {

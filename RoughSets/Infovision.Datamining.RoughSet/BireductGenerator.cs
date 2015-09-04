@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Roughset
             {
                 if (permutation[i] > 0)
                 {
-                    bireduct.RemoveAttribute(permutation[i]);
+                    bireduct.TryRemoveAttribute(permutation[i]);
                 }
                 else
                 {

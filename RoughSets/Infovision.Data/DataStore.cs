@@ -54,12 +54,12 @@ namespace Infovision.Data
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
         {
-            data = new Int64[capacity * attributeSize];
+            data = new long[capacity * attributeSize];
             this.capacity = capacity;
             this.capacityFactor = capacityFactor;
             lastIndex = -1;
-            objectId2Index = new Dictionary<Int64, int>(capacity);
-            index2ObjectId = new Dictionary<int, Int64>(capacity);
+            objectId2Index = new Dictionary<long, int>(capacity);
+            index2ObjectId = new Dictionary<int, long>(capacity);
             decisionValue2ObjectIndex = new Dictionary<Int64, List<int>>();
         }
 
@@ -70,12 +70,10 @@ namespace Infovision.Data
         public int[] OrderBy(int[] orderBy, IComparer<int> comparer)
         {
             int[] sortedArray = new int[this.NumberOfRecords];
-            for (int i = 0; i < sortedArray.Length; i++)
-            {
-                sortedArray[i] = i;
-            }
+            for (int i = 0; i < sortedArray.Length; i++)            
+                sortedArray[i] = i;            
 
-            Array.Sort<int>(sortedArray, comparer);
+            Array.Sort(sortedArray, comparer);
             return sortedArray;
         }
 
@@ -101,7 +99,7 @@ namespace Infovision.Data
         private void Resize()
         {
             long newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
-            long[] newStorage = new Int64[newCapacity * this.dataStoreInfo.NumberOfFields];
+            long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
             data = newStorage;
@@ -195,7 +193,7 @@ namespace Infovision.Data
 
         public long[] GetObjectFields(int objectIndex, int[] fieldIds)
         {
-            long[] data = new Int64[fieldIds.Length];
+            long[] data = new long[fieldIds.Length];
             for (int i = 0; i < fieldIds.Length; i++)
             {
                 data[i] = this.GetObjectField(objectIndex, fieldIds[i]);

@@ -8,93 +8,140 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-    public class ReductCrisp : Reduct
-    {
-        #region Construct
-        
-        public ReductCrisp(DataStore dataStore)
-            : base(dataStore, 100)
-        {
-        }
+	public class ReductCrisp : Reduct
+	{
+		#region Construct
+		
+		public ReductCrisp(DataStore dataStore)
+			: base(dataStore, 0)
+		{
+		}
 
-        public ReductCrisp(DataStore dataStore, int approximationDegree)
-            : base(dataStore, 100)
-        {
-        }
+		public ReductCrisp(DataStore dataStore, int approximationDegree)
+			: base(dataStore, 0)
+		{
+		}
 
-        public ReductCrisp(DataStore dataStore, int[] fieldIds, int approximationDegree)
-            : base(dataStore, fieldIds, 100)
-        {
-        }
+		public ReductCrisp(DataStore dataStore, int[] fieldIds, int approximationDegree)
+			: base(dataStore, fieldIds, 0)
+		{
+		}
 
-        public ReductCrisp(ReductCrisp reduct)
-            : base(reduct as Reduct)
-        {
-        }
+		public ReductCrisp(DataStore dataStore, int[] fieldIds, double[] weights, int approximationDegree)
+			: base(dataStore, fieldIds, 0)
+		{
+		}
 
-        #endregion
+		public ReductCrisp(ReductCrisp reduct)
+			: base(reduct as Reduct)
+		{
+			//TODO Casting Error:
+			/*
+			Test 'Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(System.Collections.Generic.Dictionary`2[System.String,System.Object])' failed:
+				System.InvalidCastException : Nie można rzutować obiektu typu 'Infovision.Datamining.Roughset.EquivalenceClassMap' na typ 'Infovision.Datamining.Roughset.EquivalenceClassSortedMap'.
+				w Infovision.Datamining.Roughset.ReductCrisp..ctor(ReductCrisp reduct) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 38
+				w Infovision.Datamining.Roughset.ReductCrisp.Clone() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 105
+				w Infovision.Datamining.Roughset.ReductStore..ctor(ReductStore reductStore) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 121
+				w Infovision.Datamining.Roughset.ReductStore.RemoveDuplicates() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 157
+				w Infovision.Datamining.Roughset.ReductGeneralDecisionGenerator.Generate() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralDecisionGenerator.cs:wiersz 56
+				w Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(Dictionary`2 args) w f:\Projects\Infovision\Infovision.Datamining.Roughset.UnitTests\ReductGeneralDecisionGeneratorTest.cs:wiersz 87
+			*/
 
-        #region Methods
+			//this.EquivalenceClassMap = (EquivalenceClassSortedMap) reduct.EquivalenceClassMap.Clone();
 
-        protected override void InitEquivalenceMap()
-        {
-            this.EquivalenceClassMap = new EquivalenceClassSortedMap(this.DataStore.DataStoreInfo);
-        }
+			//TODO Temporary fix : This will cause EQ map to be recalculated on next call
+			this.EquivalenceClassMap = null;
+		}
 
-        protected override bool CheckRemoveAttribute(int attributeId)
-        {
-            bool ret = base.CheckRemoveAttribute(attributeId);
-            FieldSet newFieldSet = (FieldSet) (this.Attributes - attributeId);
-            Dictionary<AttributeValueVector, PascalSet> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet>();
-                        
-            if (ret)
-            {
-                DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();
-                
-                foreach (EquivalenceClass eq in this.EquivalenceClassMap)
-                {
-                    int[] attributes = eq.DataVector.GetAttributes();
-                    long[] values = eq.DataVector.GetValues();
+		#endregion
 
-                    int[] newAttributes = new int[attributes.Length - 1];
-                    long[] newValues = new long[values.Length - 1];
+		#region Methods
 
-                    int k = 0;
-                    for (int i = 0; i < attributes.Length; i++)
-                    {
-                        if (attributes[i] != attributeId)
-                        {
-                            newAttributes[k] = attributes[i];
-                            newValues[k] = values[i];
-                            k++;
-                        }
-                    }
-                    
-                    AttributeValueVector record = new AttributeValueVector(newAttributes, newValues, false);
+		protected override void InitEquivalenceMap()
+		{
+			this.EquivalenceClassMap = new EquivalenceClassSortedMap(this.DataStore);
+		}
 
-                    PascalSet existingGeneralDecisions = null;
-                    generalDecisionMap.TryGetValue(record, out existingGeneralDecisions);
-                    if (existingGeneralDecisions != null)
-                    {
-                        existingGeneralDecisions = existingGeneralDecisions.Intersection(eq.DecisionSet);
-                    }
-                    else
-                    {
-                        existingGeneralDecisions = eq.DecisionSet;
-                    }
-                    generalDecisionMap[record] = existingGeneralDecisions;
+		/// <summary>
+		/// Checks if an attribute can be removed from super-reduct.
+		/// </summary>
+		/// <param name="attributeId">Attribute Id to remove</param>
+		/// <returns></returns>
+		protected override bool CheckRemoveAttribute(int attributeId)
+		{
+			//checks if attribute exists in current reduct
+			bool ret = base.CheckRemoveAttribute(attributeId);
 
-                    if (existingGeneralDecisions.Count == 0)
-                    {
-                        ret = false;
-                        break;
-                    }
-                }
-            }
+			if (ret == false)
+				return false;
+						
+			//duplicate current attribute set and remove selected attribute
+			FieldSet newFieldSet = (FieldSet) (this.Attributes - attributeId);
+			
+			//new temporary equivalence class map with decision set intersection  (data vector --> generalized decision)
+			Dictionary<AttributeValueVector, PascalSet> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet>();                                                            
+			DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();
+				
+			foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+			{
+				//instance of a record belonging to equivalence class
+				AttributeValueVector instance = eq.Instance.RemoveAttribute(attributeId);
 
-            return ret;
-        }
+				//add EQ class to map and calculate intersection of decisions
+				PascalSet existingGeneralDecisions = null;
+				generalDecisionMap.TryGetValue(instance, out existingGeneralDecisions);
+				if (existingGeneralDecisions != null)
+				{
+					existingGeneralDecisions = existingGeneralDecisions.Intersection(eq.DecisionSet);
+				}
+				else
+				{
+					existingGeneralDecisions = eq.DecisionSet;
+				}
+				generalDecisionMap[instance] = existingGeneralDecisions;
 
-        #endregion
-    }
+				//empty intersection => we cannot remove the attribute
+				if (existingGeneralDecisions.Count == 0)
+				{
+					return false;
+				}
+			}
+
+			return true;            
+		}
+
+		#region ICloneable Members
+		/// <summary>
+		/// Clones the Reduct, performing a deep copy.
+		/// </summary>
+		/// <returns>A new instance of a FieldSet, using a deep copy.</returns>
+		public override object Clone()
+		{
+			return new ReductCrisp(this);
+		}
+		#endregion        
+
+		#region System.Object Methods                
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+				return false;
+		   
+			ReductCrisp reduct = obj as ReductCrisp;
+			if (reduct == null)
+				return false;
+
+			return base.Equals(reduct);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		#endregion
+
+		#endregion        
+	}
 }

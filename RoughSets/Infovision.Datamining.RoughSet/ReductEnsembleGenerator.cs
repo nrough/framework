@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
         private int[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;        
-        private WeightGenerator weightGenerator;        
+        private WeightGenerator weightGenerator;
         private Func<IReduct, double[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;                
@@ -157,7 +157,7 @@ namespace Infovision.Datamining.Roughset
                 for (int i = len; i >= 0; i--)
                 {
                     int attributeId = permutation[i];
-                    if (reduct.RemoveAttribute(attributeId))
+                    if (reduct.TryRemoveAttribute(attributeId))
                     {
                         if (!this.IsReduct(reduct, localReductPool, false))
                         {

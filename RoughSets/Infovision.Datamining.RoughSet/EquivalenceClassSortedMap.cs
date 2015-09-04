@@ -11,8 +11,8 @@ namespace Infovision.Datamining.Roughset
     {        
         #region Constructors
 
-        public EquivalenceClassSortedMap(DataStoreInfo dataStoreInfo)
-            : base(dataStoreInfo)
+        public EquivalenceClassSortedMap(DataStore data)
+            : base(data)
         {   
         }        
 
@@ -22,7 +22,12 @@ namespace Infovision.Datamining.Roughset
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore)
         {
-            int[] orderBy = attributeSet.ToArray();
+            this.InitPartitions();
+            int[] orderByTmp = attributeSet.ToArray();
+            int[] orderBy = new int[orderByTmp.Length + 1];
+            Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
+            orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
+
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
             double weight = 1.0 / dataStore.NumberOfRecords;
@@ -30,8 +35,8 @@ namespace Infovision.Datamining.Roughset
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
-                EquivalenceClass eq = new EquivalenceClass(dataVector);
+                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderByTmp);
+                EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
@@ -48,40 +53,54 @@ namespace Infovision.Datamining.Roughset
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
         {
-            int[] orderBy = attributeSet.ToArray();
-            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
+            this.InitPartitions();            
+            int[] orderByTmp = attributeSet.ToArray();
+            int[] orderBy = new int[orderByTmp.Length + 1];
+            Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
+            orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
+
+            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);            
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
 
-            int i, j;
-            for (i = 0; i < sortedObjIdx.Length; i++)
+            comparer = new DataStoreOrderByComparer(dataStore, orderByTmp);
+
+            int i = 0, j = 0;                        
+            while(i < sortedObjIdx.Length)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
-                EquivalenceClass eq = new EquivalenceClass(dataVector);
-                j = i;
-                while (comparer.Compare(i, j) == 0)
+                AttributeValueVector dataVector = dataStore.GetDataVector(sortedObjIdx[i], orderByTmp);
+                EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
+                long dec = dataStore.GetDecisionValue(sortedObjIdx[i]);
+                eq.AddObject(sortedObjIdx[i], dec, objectWeights[sortedObjIdx[i]]);
+
+                j = i + 1;
+                while (j < sortedObjIdx.Length && comparer.Compare(sortedObjIdx[i], sortedObjIdx[j]) == 0)
                 {
-                    long dec = dataStore.GetDecisionValue(j);
-                    eq.AddObject(j, dec, objectWeights[j]);
+                    dec = dataStore.GetDecisionValue(sortedObjIdx[j]);
+                    eq.AddObject(sortedObjIdx[j], dec, objectWeights[sortedObjIdx[j]]);
                     j++;
                 }
-
+                
                 this.Partitions.Add(dataVector, eq);
-
-                i = j + 1;
+                i = j;
             }
         }
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
-            int[] orderBy = attributeSet.ToArray();
+            this.InitPartitions();
+            int[] orderByTmp = attributeSet.ToArray();
+            int[] orderBy = new int[orderByTmp.Length + 1];
+            Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
+            orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
+
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, objectSet, comparer);
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
-                EquivalenceClass eq = new EquivalenceClass(dataVector);
+                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderByTmp);
+                EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {

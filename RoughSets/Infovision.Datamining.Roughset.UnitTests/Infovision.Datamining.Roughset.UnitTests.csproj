@@ -98,6 +98,7 @@
     <Compile Include="ReductEnsembleExperiment.cs" />
     <Compile Include="ReductEnsembleGeneratorTest.cs" />
     <Compile Include="ReductFactoryTest.cs" />
+    <Compile Include="ReductGeneralDecisionGeneratorTest.cs" />
     <Compile Include="ReductGeneratorComparisonTest.cs" />
     <Compile Include="ReductGeneratorTest.cs" />
     <Compile Include="RNetTest.cs" />

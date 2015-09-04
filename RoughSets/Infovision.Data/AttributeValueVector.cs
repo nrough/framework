@@ -73,6 +73,28 @@ namespace Infovision.Data
             return attributes;
         }
 
+        public AttributeValueVector RemoveAttribute(int attributeId)
+        {
+            int[] attributes = this.GetAttributes();
+            long[] values = this.GetValues();
+
+            int[] newAttributes = new int[attributes.Length - 1];
+            long[] newValues = new long[values.Length - 1];
+
+            int k = 0;
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                if (attributes[i] != attributeId)
+                {
+                    newAttributes[k] = attributes[i];
+                    newValues[k] = values[i];
+                    k++;
+                }
+            }
+
+            return new AttributeValueVector(newAttributes, newValues);
+        }
+
         #region System.Object Methods
 
         public override bool Equals(object obj)

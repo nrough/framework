@@ -13,7 +13,8 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private Dictionary<AttributeValueVector, EquivalenceClass> partitions;
-        private Dictionary<long, int> decisionCount;        
+        private Dictionary<long, int> decisionCount;
+        private DataStore dataStore;
 
         #endregion
 
@@ -21,7 +22,12 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<AttributeValueVector, EquivalenceClass> Partitions
         {
-            get { return partitions; }
+            get 
+            { 
+                if(this.partitions == null)
+                    this.InitPartitions();
+                return partitions;
+            }
             protected set { this.partitions = value;  }
         }
 
@@ -35,31 +41,41 @@ namespace Infovision.Datamining.Roughset
             get { return partitions.Count; }
         }
 
+        public DataStore DataStore
+        {
+            get { return this.dataStore; }
+        }
+
         #endregion
 
         #region Constructors
 
         private EquivalenceClassMap()
-        {
-            this.partitions = new Dictionary<AttributeValueVector, EquivalenceClass>();
+        {            
             this.decisionCount = new Dictionary<long, int>();            
         }
 
-        public EquivalenceClassMap(DataStoreInfo dataStoreInfo)
-        {
-            this.partitions = new Dictionary<AttributeValueVector, EquivalenceClass>();
-            this.InitDecisionCount(dataStoreInfo);
+        public EquivalenceClassMap(DataStore data)
+        {            
+            this.InitDecisionCount(data.DataStoreInfo);
+            this.dataStore = data;
         }
 
-        private EquivalenceClassMap(EquivalenceClassMap roughPartitionMap)
+        private EquivalenceClassMap(EquivalenceClassMap equivalenceClassMap)
         {
-            this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)roughPartitionMap.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>(roughPartitionMap.DecisionCount);            
+            this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)equivalenceClassMap.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
+            this.decisionCount = new Dictionary<long, int>(equivalenceClassMap.DecisionCount);
+            this.dataStore = equivalenceClassMap.DataStore;
         }
 
         #endregion
 
         #region Methods
+
+        protected void InitPartitions()
+        {
+            this.partitions = new Dictionary<AttributeValueVector, EquivalenceClass>();
+        }
 
         protected void InitDecisionCount(DataStoreInfo dataStoreInfo)
         {
@@ -73,6 +89,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore)
         {
+            this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
@@ -82,6 +99,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
         {
+            this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
@@ -91,6 +109,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
+            this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in objectSet)
             {
@@ -108,7 +127,7 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                reductStatistic = new EquivalenceClass(record, dataStore.DataStoreInfo);
+                reductStatistic = new EquivalenceClass(record, dataStore);
                 reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeight);
                 this.partitions[record] = reductStatistic;
             }
@@ -143,7 +162,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    reductStatistic = new EquivalenceClass(record, dataStore.DataStoreInfo);
+                    reductStatistic = new EquivalenceClass(record, dataStore);
                     reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeights[objectIndex]);
                     localPartitions[record] = reductStatistic;
                 }
@@ -161,7 +180,7 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                reductStatstic = new EquivalenceClass(dataVector);
+                reductStatstic = new EquivalenceClass(dataVector, this.DataStore);
                 this.partitions.Add(dataVector, reductStatstic);
             }
 
@@ -176,7 +195,7 @@ namespace Infovision.Datamining.Roughset
                 return count;
             }
             return 0;
-        }
+        }        
 
         #region IEnumerable Members
         /// <summary>

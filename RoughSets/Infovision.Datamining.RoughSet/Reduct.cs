@@ -117,11 +117,12 @@ namespace Infovision.Datamining.Roughset
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
-            this.ApproximationDegree = reduct.approximationDegree;                                 
-            this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
+            this.ApproximationDegree = reduct.approximationDegree;                                             
             this.objectWeights = new double[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
+
+            this.eqClassMap = (EquivalenceClassMap)reduct.EquivalenceClassMap.Clone();
         }
 
         #endregion        
@@ -130,7 +131,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void InitEquivalenceMap()
         {
-            this.eqClassMap = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
+            this.eqClassMap = new EquivalenceClassMap(this.DataStore);
         }
         
         public virtual void BuildEquivalenceMap()
@@ -174,7 +175,7 @@ namespace Infovision.Datamining.Roughset
             return this.attributeSet.ContainsElement(attributeId);
         }
 
-        public virtual bool RemoveAttribute(int attributeId)
+        public virtual bool TryRemoveAttribute(int attributeId)
         {
             if(this.CheckRemoveAttribute(attributeId))
             {

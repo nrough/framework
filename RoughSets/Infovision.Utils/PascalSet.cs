@@ -118,30 +118,30 @@ namespace Infovision.Utils
 
 		#region Methods
 
-        public int GetCardinality()
-        {
-            int[] ints = new int[(this.data.Count >> 5) + 1];
-            this.data.CopyTo(ints, 0);
-            int count = 0;
+		public int GetCardinality()
+		{
+			int[] ints = new int[(this.data.Count >> 5) + 1];
+			this.data.CopyTo(ints, 0);
+			int count = 0;
 
-            // fix for not truncated bits in last integer that may have been set to true with SetAll()
-            ints[ints.Length - 1] &= ~(-1 << (this.data.Count % 32));
+			// fix for not truncated bits in last integer that may have been set to true with SetAll()
+			ints[ints.Length - 1] &= ~(-1 << (this.data.Count % 32));
 
-            for (int i = 0; i < ints.Length; i++)
-            {
-                int c = ints[i];
-                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
-                unchecked
-                {
-                    c = c - ((c >> 1) & 0x55555555);
-                    c = (c & 0x33333333) + ((c >> 2) & 0x33333333);
-                    c = ((c + (c >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
-                }
-                count += c;
-            }
+			for (int i = 0; i < ints.Length; i++)
+			{
+				int c = ints[i];
+				// magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+				unchecked
+				{
+					c = c - ((c >> 1) & 0x55555555);
+					c = (c & 0x33333333) + ((c >> 2) & 0x33333333);
+					c = ((c + (c >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+				}
+				count += c;
+			}
 
-            return count;
-        }
+			return count;
+		}
 
 		/// <summary>
 		/// Determines if two PascalSets are "compatible."  Specifically, it checks to ensure that the PascalSets
@@ -255,7 +255,11 @@ namespace Infovision.Utils
 			if (element >= this.lowerBound && element <= this.upperBound)
 			{
 				int index = element - this.lowerBound;
-				this.data.Set(index, true);
+				if (this.data.Get(index) == false)
+				{
+					cardinality++;
+					this.data.Set(index, true);
+				}
 			}
 			else
 			{
@@ -268,13 +272,17 @@ namespace Infovision.Utils
 			}
 		}
 
-		//Removes integer element to a set. No new object is created
+		//Removes integer element from a set. No new object is created
 		public virtual void RemoveElement(int element)
 		{
 			if (element >= this.lowerBound && element <= this.upperBound)
 			{
 				int index = element - this.lowerBound;
-				this.data.Set(index, false);
+				if (this.data.Get(index) == true)
+				{
+					this.cardinality--;
+					this.data.Set(index, false);
+				}
 			}
 			else
 			{
@@ -735,7 +743,7 @@ namespace Infovision.Utils
 					//for (int i = 0; i < data.Length; i++)
 					//	if (data.Get(i)) elements++;
 					//cardinality = elements;
-                    cardinality = this.GetCardinality();
+					cardinality = this.GetCardinality();
 				}
 
 				return cardinality;

@@ -13,15 +13,10 @@ using Infovision.Datamining.Clustering.Hierarchical;
 using System.IO;
 
 namespace Infovision.Datamining.Roughset.UnitTests
-{            
-    
+{                
     [TestFixture]
     class ReductEnsembleGeneratorTest
-    {
-        //Refactor        
-        //TODO Replace Args by Dictionary<string, object>
-        //TODO Add parameter names as static variables             
-
+    {               
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();

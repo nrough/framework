@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Infovision.Data;
+using Infovision.Utils;
+
+namespace Infovision.Datamining.Roughset
+{
+    public class ReductGeneralDecisionGenerator : ReductGenerator
+    {
+        private WeightGenerator weightGenerator;
+
+        public WeightGenerator WeightGenerator
+        {
+            get
+            {
+                if (this.weightGenerator == null)
+                {
+                    this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                }
+
+                return this.weightGenerator;
+            }
+
+            set
+            {
+                this.weightGenerator = value;
+            }
+        }
+
+        public override void Generate()
+        {
+            ReductStore localReductPool = new ReductStore();            
+            foreach (Permutation permutation in this.Permutations)
+            {
+                int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
+                int[] attributes = new int[cutoff + 1];
+                for(int i = 0; i <= cutoff; i++)
+                    attributes[i] = permutation[i];
+
+                ReductCrisp reduct = (ReductCrisp) this.CreateReductObject(attributes, this.ApproximationDegree, this.GetNextReductId().ToString());
+                
+                Console.WriteLine(reduct);
+
+                foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                    eq.RemoveObjectsWithMinorDecisions();
+
+                
+                for (int i = attributes.Length - 1; i >= 0; i--)
+                {
+                    if (reduct.TryRemoveAttribute(attributes[i]))
+                    {
+                        Console.Write("{0} ", attributes[i]);
+                    }
+                }
+                Console.WriteLine();
+
+
+                localReductPool.DoAddReduct(reduct);
+            }
+
+            localReductPool = localReductPool.RemoveDuplicates();
+            this.ReductPool = localReductPool;
+
+            /*
+            double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
+
+            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
+            for (int i = 0; i < errorVectors.Length; i++)
+            {
+                errors.Add(i, errorVectors[i]);
+            }
+
+            this.hCluster = new HierarchicalClustering(distance, linkage);
+            this.hCluster.Instances = errors;
+            this.hCluster.Compute();
+            */
+        }
+
+        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        {
+            ReductCrisp r = new ReductCrisp(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
+            r.Id = id;
+            return r;
+        }
+
+        protected override IReductStore CreateReductStore()
+        {
+            return new ReductStore();
+        }
+    }
+
+    public class ReductGeneralDecisionFactory : IReductFactory
+    {
+        public virtual string FactoryKey
+        {
+            get { return "ReductGeneralizedDecision"; }
+        }
+
+        public virtual IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductGeneralDecisionGenerator rGen = new ReductGeneralDecisionGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+
+        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            return new PermutationGenerator(dataStore);
+        }
+    }
+}

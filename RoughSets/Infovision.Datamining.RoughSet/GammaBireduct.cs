@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset
             
             FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
             
-            EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
+            EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore);
             localPartition.Calc(newAttributeSet, this.DataStore);
 
             foreach (int objectIdx in this.ObjectSet)
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override bool CheckAddObject(int objectIndex)
         {         
-            EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
+            EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore);
             localPartition.Calc(this.Attributes, this.DataStore);
             
             AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);

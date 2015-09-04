@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 		public AccordDiscretizationFixture()
 		{
-			filename = @"Data\german.data";			
+			filename = @"Instance\german.data";			
 			reductFactoryKey = "ApproximateReductMajority";
 			reductMeasureKey = "ReductMeasureLength";
 
@@ -283,7 +283,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
 			
 			DataTable rawData;
-			using (GenericParserAdapter gpa = new GenericParserAdapter(@"Data\DiscernibilityVectorTest.csv"))
+			using (GenericParserAdapter gpa = new GenericParserAdapter(@"Instance\DiscernibilityVectorTest.csv"))
 			{
 				gpa.ColumnDelimiter = " ".ToCharArray()[0];
 				gpa.FirstRowHasHeader = true;

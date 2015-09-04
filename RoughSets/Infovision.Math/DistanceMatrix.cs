@@ -50,6 +50,12 @@ namespace Infovision.Math
             set { this.matrix[key] = value; }
         }
 
+        public double this[int x, int y]
+        {
+            get { return this.GetDistance(x, y); }
+        }
+
+
         public void Initialize(double[][] points)
         {
             //calculate initial distance matrix

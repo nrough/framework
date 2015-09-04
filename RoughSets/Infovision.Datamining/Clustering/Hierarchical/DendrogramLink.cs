@@ -12,11 +12,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private readonly int cluster1;
         private readonly int cluster2;
         private readonly int level;
+        private readonly double distance;
 
-        public DendrogramLink(int cluster1, int cluster2, int level)
+        public DendrogramLink(int cluster1, int cluster2, double distance, int level)
         {
             this.cluster1 = cluster1;
             this.cluster2 = cluster2;
+            this.distance = distance;
             this.level = level;
         }
 
@@ -33,6 +35,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int Level
         {
             get { return this.level; }
+        }
+
+        public double Distance
+        {
+            get { return this.distance; }
         }
 
         #region System.Object Methods
@@ -56,7 +63,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (obj is DendrogramLink)
             {
                 denLink = (DendrogramLink)obj;
-                return this.Cluster1 == denLink.Cluster1 && this.Cluster2 == denLink.Cluser2 && this.level == denLink.level;
+                return this.Cluster1 == denLink.Cluster1
+                    && this.Cluster2 == denLink.Cluster2;                   
             }
 
             return false;            

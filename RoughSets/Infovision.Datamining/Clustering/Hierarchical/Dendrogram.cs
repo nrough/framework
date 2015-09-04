@@ -22,77 +22,72 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             get { return linkages.Count; }
         }
 
-        public void Add(int cluster1, int cluster2)
+        public void Add(int cluster1, int cluster2, double distance)
         {
-            level++;
-            linkages.Add(new DendrogramLink(cluster1, cluster2, level));
+            linkages.Add(new DendrogramLink(cluster1, cluster2, distance, ++level));
         }
 
         public int[] ComputeLeafNodes()
         {
             int[] order = new int[this.Count + 1];
             int pos = 0;
-            ReorderChildren(ca);
-            WalkChildren(ca, ref order, ref pos, ca.Linkages.Rows - 1);
+            ReorderChildren();
+            WalkChildren(ref order, ref pos, this.Count - 1);
             return order;
         }
 
         private void WalkChildren(ref int[] order, ref int pos, int row)
         {
             int n = this.Count + 1;
-            int node = (int)ca.Linkages[row, 0];
+            int node = this.linkages[row].Cluster1;
 
             if (node >= n)
             {
-                WalkChildren(ca, ref order, ref pos, node - n);
+                WalkChildren(ref order, ref pos, node - n);
             }
 
             if (node < n)
                 order[pos++] = node;
 
-            node = (int)ca.Linkages[row, 1];
+            node = this.linkages[row].Cluster2;
             if (node >= n)
             {
-                WalkChildren(ca, ref order, ref pos, node - n);
+                WalkChildren(ref order, ref pos, node - n);
             }
 
             if (node < n)
                 order[pos++] = node;
         }
 
-        private static void ReorderChildren(ClusterAnalysis ca)
+        private void ReorderChildren()
         {
-            int n = ca.Linkages.Rows + 1;
-            for (int i = 0; i < ca.Linkages.Rows; i++)
-            {
-                int l1 = (int)ca.Linkages[i, 0];
-                int l2 = (int)ca.Linkages[i, 1];
-                if (l1 < n && l2 < n)
+            int n = this.Count + 1;
+            for (int i = 0; i < this.Count; i++)
+            {                
+                if (this.linkages[i].Cluster1 < n && this.linkages[i].Cluster2 < n)
                 {
-                    if (l1 > l2)
+                    if (this.linkages[i].Cluster1 > this.linkages[i].Cluster2)
                     {
-                        Swap(ca, i);
+                        Swap(i);
                     }
                 }
-                else if (l1 < n && l2 >= n)
+                else if (this.linkages[i].Cluster1 < n && this.linkages[i].Cluster2 >= n)
                 {
-                    Swap(ca, i);
+                    Swap(i);
                 }
-                else if (l1 >= n && l2 >= n)
+                else if (this.linkages[i].Cluster1 >= n && this.linkages[i].Cluster2 >= n)
                 {
-                    if (l1 > l2)
+                    if (this.linkages[i].Cluster1 > this.linkages[i].Cluster2)
                     {
-                        Swap(ca, i);
+                        Swap(i);
                     }
                 }
             }
         }
 
-        private static void Swap(ClusterAnalysis ca, int row)
+        private void Swap(int row)
         {
-            double tmp = ca.Linkages[row, 0];
-            ca.Linkages[row, 0] = ca.Linkages[row, 1];
-            ca.Linkages[row, 1] = tmp;
+            linkages[row] = new DendrogramLink(linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance, linkages[row].Level);                        
         }
     }
 }

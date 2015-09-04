@@ -19,6 +19,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private Func<double[], double[], double> distance;
         private Func<int[], int[], DistanceMatrix, double> linkage;
 
+        private Dendrogram dendrogram;
+
         /// <summary>
         ///   Gets or sets the distance function used
         ///   as a distance metric between data points.
@@ -39,6 +41,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected int NextClusterId
         {
             get { return this.nextClusterId; }
+        }
+
+        public Dendrogram Dendrogram
+        {
+            get { return this.dendrogram; }
         }
 
         /// <summary>
@@ -67,6 +74,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             this.Distance = distance;
             this.Linkage = linkage;
+
+            dendrogram = new Dendrogram();
         }
 
         private void Initialize(double[][] points)
@@ -108,11 +117,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 throw new ArgumentNullException("data");           
 
             // Perform initialization of the clusters
-            Initialize(data);
+            this.Initialize(data);
 
             Console.Write(distanceMatrix.ToString());
 
-            CreateClusters();
+            this.CreateClusters();
         }
         
         protected void AddCluster(HierarchicalCluster cluster)
@@ -130,10 +139,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             while (clusters.Count > 1)
             {
-                MatrixKey key = this.GetClustersToMerge();                
-                                
+                MatrixKey key = this.GetClustersToMerge();
+
+                int mergedClusterIdx = this.MergeClusters(key, 0);
+                this.CalculateDistanceMatrix(key.X, key.Y, mergedClusterIdx);
             }
-        }
+        }        
 
         protected virtual MatrixKey GetClustersToMerge()
         {
@@ -153,20 +164,20 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return new MatrixKey(result[0], result[1]);
         }
 
-        protected void MergeClusters(int x, int y)
+        protected int MergeClusters(int x, int y, double distance)
         {
             HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(nextClusterId, clusters[x], clusters[y]);
 
             this.RemoveCluster(x);
             this.RemoveCluster(y);
             this.AddCluster(mergedCluster);
-
-            this.CalculateDistanceMatrix(x, y, mergedCluster.Index);
+            this.dendrogram.Add(x, y, distance);
+            return mergedCluster.Index;
         }
 
-        protected void MergeClusters(MatrixKey key)
+        protected int MergeClusters(MatrixKey key, double distance)
         {
-            this.MergeClusters(key.X, key.Y);                      
+            return this.MergeClusters(key.X, key.Y, distance);                      
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)

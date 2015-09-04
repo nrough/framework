@@ -23,12 +23,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             while (clusters.Count > 1)
             {
-                MatrixKey key = this.GetClustersToMerge();               
-                HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(this.NextClusterId, clusters[key.X], clusters[key.Y]);
-
-                this.RemoveCluster(key.X);
-                this.RemoveCluster(key.Y);
-                this.AddCluster(mergedCluster);               
+                MatrixKey key = this.GetClustersToMerge();
+                this.MergeClusters(key, 0);
             }
         }
 

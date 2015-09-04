@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void ComputeTest()
         {                                    
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             
             Assert.IsTrue(true);

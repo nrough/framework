@@ -108,8 +108,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalCluster.cs" />
-    <Compile Include="Clustering\Hierarchical\DistanceMatrix.cs" />
-    <Compile Include="Clustering\Hierarchical\MatrixIndex.cs" />
+    <Compile Include="Clustering\Hierarchical\ClusteringLinkage.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -117,6 +116,10 @@
     <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>Infovision.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infovision.Math\Infovision.Math.csproj">
+      <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
+      <Name>Infovision.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>

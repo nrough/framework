@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
@@ -13,8 +14,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
         }
 
-        public HierarchicalClusteringSimple(Func<double[], double[], double> distance)
-            : base(distance)
+        public HierarchicalClusteringSimple(Func<double[], double[], double> distance, Func<int[], int[], DistanceMatrix, double> linkage)
+            : base(distance, linkage)
         {
         }
         
@@ -40,21 +41,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             for (int j = 0; j < clusterIds.Length; j++)
             {
                 for (int k = j + 1; k < clusterIds.Length; k++)
-                {
-                    double minObjectDistance = double.MaxValue;
-                    foreach (int objectIdA in clusters[clusterIds[j]].MemberObjects)
-                    {
-                        foreach (int objectIdB in clusters[clusterIds[k]].MemberObjects)
-                        {
-                            double distance = distanceMatrix.GetDistance(objectIdA, objectIdB);
-                            
-                            //TODO to be substituted be linkage delegate
-                            if (distance < minObjectDistance)
-                            {
-                                minObjectDistance = distance;
-                            }
-                        }
-                    }
+                {                    
+                    double minObjectDistance = this.Linkage(clusters[clusterIds[j]].MemberObjects.ToArray(), clusters[clusterIds[k]].MemberObjects.ToArray(), this.distanceMatrix);                                                           
 
                     if (minObjectDistance < minClusterDistance)
                     {

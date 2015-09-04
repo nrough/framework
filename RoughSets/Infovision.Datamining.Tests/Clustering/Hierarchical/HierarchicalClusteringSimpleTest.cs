@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Infovision.Datamining.Clustering.Hierarchical;
 using NUnit.Framework;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
@@ -13,7 +14,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void ComputeTest()
         {
-            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean);
+            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
 
             Assert.IsTrue(true);

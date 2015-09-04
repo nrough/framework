@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Infovision.Utils;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.Math
 {
     public struct MatrixKey
     {

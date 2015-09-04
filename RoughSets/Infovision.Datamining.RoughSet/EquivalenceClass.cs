@@ -40,8 +40,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public int NumberOfDecisions
-        {
-            //get { return decisionObjectIndexes.Keys.Count; } 
+        {            
             get { return this.decisionSet.Count; }
         }
 

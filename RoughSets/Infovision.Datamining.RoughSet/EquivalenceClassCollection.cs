@@ -116,9 +116,7 @@ namespace Infovision.Datamining.Roughset
             DataFieldInfo decisionInfo = dataStoreInfo.GetFieldInfo(dataStoreInfo.DecisionFieldId);
             this.decisionCount = new Dictionary<long, int>(decisionInfo.Values().Count);
             foreach (long decisionValue in decisionInfo.InternalValues())
-            {
                 this.decisionCount.Add(decisionValue, decisionInfo.Histogram.GetBinValue(decisionValue));
-            }
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore)
@@ -127,19 +125,15 @@ namespace Infovision.Datamining.Roughset
             this.attributes = attributeSet.ToArray();
 
             foreach (int objectIndex in dataStore.GetObjectIndexes())
-            {
                 this.UpdateStatistic(this.attributes, dataStore, objectIndex, 1.0 / dataStore.NumberOfRecords);
-            }
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
         {
             this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
-            foreach (int objectIndex in dataStore.GetObjectIndexes())
-            {
+            foreach (int objectIndex in dataStore.GetObjectIndexes()
                 this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
-            }
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
@@ -147,9 +141,7 @@ namespace Infovision.Datamining.Roughset
             this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in objectSet)
-            {
-                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
-            }
+                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);            
         }
 
         private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, double objectWeight)

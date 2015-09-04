@@ -336,13 +336,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Assert.LessOrEqual(dataQuality - gdQuality, eps);
                     
                     if (eps < 0.09999999)
-                    {
                         eps += 0.01;
-                    }
                     else
-                    {
                         eps += 0.1;
-                    }
                 }
             }
         }

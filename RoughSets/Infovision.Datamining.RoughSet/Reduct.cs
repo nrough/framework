@@ -277,10 +277,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (x == null)
             {
-                if (y == null)
-                    return 0;
-                else
-                    return -1;
+                return y == null ? 0 : -1;                    
             }
             else
             {

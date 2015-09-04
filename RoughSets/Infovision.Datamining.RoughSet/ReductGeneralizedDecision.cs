@@ -507,9 +507,7 @@ namespace Infovision.Datamining.Roughset
             {
                 eq.KeepMajorDecisions2(epsilon);
                 if (eq.DecisionSet.Count == 0)
-                {
                     return eqClasses;
-                }
             }
 
             return eqClassCollection;

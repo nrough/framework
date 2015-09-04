@@ -134,8 +134,7 @@ namespace Infovision.Data
 
             for (int i = 0; i < attributes.Length; i++)
             {                
-                if (this.values[i] != p.values[i]
-                    || this.attributes[i] != p.attributes[i])
+                if (this.values[i] != p.values[i] || this.attributes[i] != p.attributes[i])
                     return false;
             }
 

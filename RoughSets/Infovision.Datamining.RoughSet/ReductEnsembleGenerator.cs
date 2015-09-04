@@ -19,6 +19,12 @@ namespace Infovision.Datamining.Roughset
         private double dataSetQuality = 1.0;        
         private WeightGenerator weightGenerator;
         private ReductStore internalStore;
+        private HierarchicalClustering hCluster;
+
+        public HierarchicalClustering Dendrogram
+        {
+            get { return this.hCluster; }
+        }
 
         protected IPermutationGenerator PermutationGenerator
         {
@@ -87,16 +93,20 @@ namespace Infovision.Datamining.Roughset
         public override IReductStoreCollection Generate(Args args)
         {
             internalStore = new ReductStore();
-            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);            
-            return this.CreateReductStoreFromPermutationCollection(permutations, args);           
-        }
+            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);                                    
+            Func<double[], double[], double> distance = SimilarityIndex.ReductSimDelegate(0.5);
+            Func<int[], int[], DistanceMatrix, double> linkage = ClusteringLinkage.Min;
 
-        protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutations, Args args)
-        {                        
+            if (args.Exist("Distance"))
+                distance = (Func<double[], double[], double>) args.GetParameter("Distance");
+
+            if (args.Exist("Linkage"))
+                linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
+            
             int k = -1;            
             foreach (Permutation permutation in permutations)
             {                
-                double localApproxLevel = (double) this.permEpsilon[++k] / (double) 100;
+                double localApproxLevel = this.permEpsilon[++k] / 100.0;
 
                 IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel);
                 
@@ -128,25 +138,31 @@ namespace Infovision.Datamining.Roughset
                 internalStore.DoAddReduct(reduct);                
             }
 
-            double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore);
-            HierarchicalClustering hCluster = new HierarchicalClustering(Distance.Manhattan, ClusteringLinkage.Min);
-            hCluster.Compute(errorVectors);            
+            internalStore = internalStore.RemoveDuplicates();
+
+            double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore, false);
+            hCluster = new HierarchicalClustering(distance, linkage);
+            hCluster.Compute(errorVectors);
+            Console.WriteLine(hCluster.ToString());
             
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();            
             reductStoreCollection.AddStore(internalStore);
 
             return reductStoreCollection;
-        }
+        }        
 
-        private double[][] GetErrorVectorsFromReducts(ReductStore store)
+        private double[][] GetErrorVectorsFromReducts(ReductStore store, bool useErrorValues)
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)
             {
                 errors[i] = new double[this.DataStore.NumberOfRecords];
                 IReduct reduct = store.GetReduct(i);
-
-                Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
+                
+                if (useErrorValues)
+                {
+                    Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
+                }
 
                 foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
                 {
@@ -159,17 +175,25 @@ namespace Infovision.Datamining.Roughset
                         {
                             sum += reduct.Weights[objectIdx];
                         }
+                        
                         if (sum > maxValue + (0.0001 / reduct.ObjectSetInfo.NumberOfRecords))
                         {
                             maxValue = sum;
                             maxDecision = decisionValue;
                         }
                     }
-                                        
+                    
                     foreach (int objectIdx in e.GetObjectIndexes(maxDecision))
                     {
-                        errors[i][objectIdx] = 0;
-                    }
+                        if (useErrorValues)
+                        {
+                            errors[i][objectIdx] = 0;
+                        }
+                        else
+                        {
+                            errors[i][objectIdx] = reduct.Weights[objectIdx]; 
+                        }
+                    }                    
                 }
             }
 
@@ -195,7 +219,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual double GetPartitionQuality(IReduct reduct)
         {
-            //TODO Consider changing to indormation measue
+            //TODO Consider changing to information measue
             //return this.InformationMeasure.Calc(reduct);
 
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);

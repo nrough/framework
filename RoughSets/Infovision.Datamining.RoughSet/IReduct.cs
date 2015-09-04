@@ -3,7 +3,7 @@ using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
 {
-    public interface IReduct : ICloneable
+    public interface IReduct : ICloneable, IComparable
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }

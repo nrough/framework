@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset
 
         #region System.Object Methods
 
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
             foreach (IReduct reduct in this)
@@ -91,25 +91,6 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
-        #region Constructors
-
-        public ReductStore()
-        {
-            this.reductSet = new List<IReduct>();
-        }
-
-        protected ReductStore(ReductStore reductStore)
-            : this()
-        {
-            foreach (IReduct reduct in reductStore)
-            {
-                IReduct reductClone = (IReduct)reduct.Clone();
-                this.AddReduct(reductClone);
-            }
-        }
-
-        #endregion
-
         #region Properties
 
         public override int Count
@@ -123,6 +104,25 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
+
+        #region Constructors
+
+        public ReductStore()
+        {
+            this.reductSet = new List<IReduct>();
+        }
+
+        protected ReductStore(ReductStore reductStore)
+            : this()
+        {
+            foreach (IReduct reduct in reductStore)
+            {
+                IReduct reductClone = (IReduct)reduct.Clone();
+                this.DoAddReduct(reductClone);
+            }
+        }
+
+        #endregion        
 
         #region Methods
        
@@ -152,7 +152,26 @@ namespace Infovision.Datamining.Roughset
             }
             
             return ret;
-        }        
+        }
+        
+        public virtual ReductStore RemoveDuplicates()
+        {
+            ReductStore copy = new ReductStore(this);
+            copy.reductSet.Sort(new ReductNumericalEpsilonComparer());
+
+            ReductStore result = new ReductStore();
+            IReduct last = null;            
+            foreach (IReduct reduct in copy)
+            {
+                if (reduct.CompareTo(last) != 0)
+                {
+                    result.DoAddReduct(reduct);
+                }
+                last = reduct;
+            }
+
+            return result;
+        }
 
         public override IReduct GetReduct(int index)
         {

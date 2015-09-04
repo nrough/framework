@@ -544,6 +544,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return bitmap;
         }
 
-
+        public override string ToString()
+        {
+            return DendrogramLinkCollection.ToString();
+        }
     }
 }

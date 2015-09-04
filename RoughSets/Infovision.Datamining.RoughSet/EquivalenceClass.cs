@@ -74,13 +74,13 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="decisionValue">internal value of object decision attribute</param>
         /// <returns>Collection of objects having specified decision</returns>
-        public IEnumerable<int> GetObjectIndexes(Int64 decisionValue)
+        public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
             HashSet<int> localObjectIndexes;
             if (this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectIndexes))
                 return localObjectIndexes;
             return new HashSet<int>();
-        }
+        }        
 
         public Int64 MostFrequentDecision
         {

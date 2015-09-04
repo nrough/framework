@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Infovision.Utils
 {
     /*
-     public class LogDictionary: IDictionary<String, object>
+    public class LogDictionary: IDictionary<String, object>
     {
         private IDictionary<String, object> _dte;
 
@@ -29,7 +29,7 @@ namespace Infovision.Utils
             return GetEnumerator();
         }
     }
-     */
+    */
     
     [Serializable]
     public class Args

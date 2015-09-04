@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
@@ -211,12 +212,51 @@ namespace Infovision.Datamining.Roughset
         }
         #endregion
 
+        #region IComparable Members
+        
+        public virtual int CompareTo(object reduct)
+        {
+            Reduct r = reduct as Reduct;            
+            return this.CompareTo(r);
+        }
+
+        public virtual int CompareTo(Reduct r)
+        {
+            if (r == null)
+                return 1;
+
+            int retval = this.AttributeSet.Count.CompareTo(r.AttributeSet.Count);
+
+            if (retval != 0)
+            {
+                return retval;
+            }
+
+            for (int i = 0; i < this.AttributeSet.Count; i++)
+            {
+                int xval = Convert.ToInt32(this.AttributeSet.Data.Get(i));
+                int yval = Convert.ToInt32(r.AttributeSet.Data.Get(i));
+                if (xval < yval)
+                {
+                    return -1;
+                }
+                else if (xval > yval)
+                {
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
+
+        #endregion
+
 
         #region System.Object Methods
 
         public override string ToString()
         {
-            return this.attributeSet.ToString();
+            return String.Format("{0} ({1})", this.attributeSet.ToString(), this.ApproximationDegree);
         }
 
         public override int GetHashCode()
@@ -238,5 +278,57 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #endregion
+    }
+
+    public class ReductNumericalEpsilonComparer : IComparer<IReduct>
+    {
+        public int Compare(IReduct x, IReduct y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    int retval = x.AttributeSet.Count.CompareTo(y.AttributeSet.Count);
+
+                    if (retval != 0)
+                    {
+                        return retval;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < x.AttributeSet.Data.Count; i++)
+                        {
+                            int xval = Convert.ToInt32(x.AttributeSet.Data.Get(i));
+                            int yval = Convert.ToInt32(y.AttributeSet.Data.Get(i));
+                            if (xval < yval)
+                            {
+                                return 1;
+                            }
+                            else if (xval > yval)
+                            {
+                                return -1;
+                            }
+                        }
+
+                        return x.ApproximationDegree.CompareTo(y.ApproximationDegree);                        
+                    }
+                }
+            }
+        }
     }
 }

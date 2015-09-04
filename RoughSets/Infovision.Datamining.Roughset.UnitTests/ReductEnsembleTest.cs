@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using NUnit.Framework;
 using Infovision.Data;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using Infovision.Math;
+using Infovision.Datamining.Clustering.Hierarchical;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     class ReductEnsembleTest
     {
+        //Refactor
+        //TODO include algorithm name in Args
+        //TODO Replace Args by Dictionary<string, object>
+        //TODO Add parameter names as static variables            
+        //TODO Make cache keys shorter 
+
         [Test]
         public void Foo()
         {            
@@ -20,7 +29,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             
-            int numberOfPermutations = 20;
+            int numberOfPermutations = 100;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             int[] epsilons = new int[numberOfPermutations];
@@ -34,27 +43,36 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("DataStore", data);
             parms.AddParameter("NumberOfThreads", 1);
             parms.AddParameter("PermutationEpsilon", epsilons);
+            parms.AddParameter("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
+            parms.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
 
-            string generatorName = "ReductEnsemble";
-
-            //Refactor
-            //TODO include algorithm name in Args
-            //TODO Replace Args by Dictionary<string, object>
-            //TODO Add parameter names as static variables            
-            //TODO Make cache keys shorter            
+            string generatorName = "ReductEnsemble";                       
                         
             parms.AddParameter("PermutationCollection", permList);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms);
             IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
 
+            ReductStore reductStore = reductStoreCollection.First() as ReductStore;
+            Assert.IsNotNull(reductStore);            
+
             int j = 0;
-            foreach (IReductStore reductStore in reductStoreCollection)
-                foreach (IReduct reduct in reductStore)
-                {
-                    Console.WriteLine("{0}: {1}~ {2} -> {3}", j, permList[j], epsilons[j], reduct);
-                    j++;
-                }
+            foreach (IReduct reduct in reductStore)
+            {
+                Console.WriteLine("{0,2}: {1} -> {2}", j, permList[j], reduct);
+                j++;
+            }
+
+            ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
+            if (ensembleGenerator != null)
+            {
+                Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
+                dendrogram.Save(@"f:\test.bmp");
+
+                
+            }
+
+
 
         }
 

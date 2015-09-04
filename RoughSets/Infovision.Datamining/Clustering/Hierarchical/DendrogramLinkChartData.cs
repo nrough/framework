@@ -14,59 +14,38 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.NodeId = nodeId;
         }
         
-        public int NodeId { get; private set; }
-        
-        //TODO optimize object size
-        /*
-        public int TopY { get; set; }
-        public int MiddleY { get; set; }
-        public int BottomY { get; set; }
-        public int MiddleY { get; set; }
-        public int LeftX { get; set; }
-        public int RightX { get; set; } 
-        */
+        public int NodeId { get; private set; }                
 
-        public int LeftBottomX { get; set; }
-        public int LeftBottomY { get; set; }
-        public int RightBottomX { get; set; }
-        public int RightBottomY { get; set; }
-        public int LeftTopX { get; set; }
-        public int LeftTopY { get; set; }
-        public int RightTopX { get; set; }
-        public int RightTopY { get; set; }
+        public int LeftNodeX { get; set; }
+        public int LeftNodeY { get; set; }
+
+        public int RightNodeX { get; set; }
+        public int RightNodeY { get; set; }
+        
+        public int ParentNodeY { get; set; }
 
         public int ParentNodeX
         {
             get
             {
-                return (this.LeftTopX + this.RightTopX) / 2;
+                return (this.LeftNodeX + this.RightNodeX) / 2;
             }
-        }
-
-        public int ParentNodeY
-        {
-            get
-            {
-                return this.LeftTopY;
-            }
-        }
+        }        
 
         public void Draw(Graphics g, Pen pen, bool showLabel, Font font)
         {
-            Point a = new Point(this.LeftBottomX, this.LeftBottomY);
-            Point b = new Point(this.LeftTopX, this.LeftTopY);
-            Point c = new Point(this.RightTopX, this.RightTopY);
-            Point d = new Point(this.RightBottomX, this.RightBottomY);
+            Point a = new Point(this.LeftNodeX, this.LeftNodeY);
+            Point b = new Point(this.LeftNodeX, this.ParentNodeY);
+            Point c = new Point(this.RightNodeX, this.ParentNodeY);
+            Point d = new Point(this.RightNodeX, this.RightNodeY);
 
             g.DrawLines(pen, new Point[] { a, b, c, d });
 
             SolidBrush brush = new SolidBrush(pen.Color);
-
             if (showLabel)
             {
                 g.DrawString(this.NodeId.ToString(), font, brush, new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
             }
-
             brush.Dispose();
         }
         
@@ -75,14 +54,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             return String.Format("{0}: ({1},{2}) ({3},{4}) ({5},{6}) ({7},{8})", 
                                  NodeId, 
-                                 LeftBottomX, 
-                                 LeftBottomY, 
-                                 LeftTopX, 
-                                 LeftTopY, 
-                                 RightBottomX, 
-                                 RightBottomY, 
-                                 RightTopX, 
-                                 RightTopY);
+                                 LeftNodeX, 
+                                 LeftNodeY,
+                                 LeftNodeX,
+                                 ParentNodeY,
+                                 RightNodeX,
+                                 ParentNodeY,
+                                 RightNodeX,
+                                 RightNodeY);
         }
 
         public override int GetHashCode()

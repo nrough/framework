@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -365,76 +366,66 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Color background = Color.White;
             Color foreground = Color.Black;            
 
-            int xMajorScalePx = (int) System.Math.Floor((double) dendrogramWidth / this.numberOfInstances);                        
-            int yMajorScalePx = (int) ((double) (dendrogramHeight - 40) / System.Math.Ceiling(this.DendrogramLinkCollection.MaxHeight));            
-
-            int[] leafOrder = this.DendrogramLinkCollection.ComputeLeafNodesFromTree();
-            Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
+            int xMajorScalePx = (int) System.Math.Floor((double)dendrogramWidth / this.numberOfInstances);
+            int yMajorScalePx = (int) System.Math.Floor((double)(dendrogramHeight - 40) / (this.DendrogramLinkCollection.MaxHeight + 1));                        
                                                
             Bitmap bitmap = new Bitmap(width, height);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {                
                 g.Clear(background);
-                Pen pen = new Pen(foreground, 1);
-
-                System.Drawing.Point p1, p2, p3;
-
+                
+                
                 //draw Y axis
-                p1 = new System.Drawing.Point(leftMargin + 10, topMargin + 20);
-                p2 = new System.Drawing.Point(leftMargin + 10, (height - (bottomMargin + 20)));
-                g.DrawLine(pen, p1, p2);
+                Pen yAxisPen = new Pen(foreground, 1);
+                System.Drawing.Point yAxisStart = new System.Drawing.Point(leftMargin + 10, topMargin + 20);
+                System.Drawing.Point yAxisEnd = new System.Drawing.Point(leftMargin + 10, (height - (bottomMargin + 20)));                                                
+                g.DrawLine(yAxisPen, yAxisStart, yAxisEnd);
 
-                //draw Y major scale
-                pen.Width = 1;
-                p1.X = p2.X - 1;
-                p1.Y = p2.Y - yMajorScalePx;
-                p3 = new System.Drawing.Point(p1.X + 2, p1.Y);
-
-                //draw dashed y lines
-
-                System.Drawing.Point dashedBegin, dashedEnd;
-                float[] dashValues = { 5, 3 };
+                //draw Y major scale and dashed grid lines
+                System.Drawing.Point yAxisTickBegin = new System.Drawing.Point(yAxisEnd.X - 1, yAxisEnd.Y);
+                System.Drawing.Point yAxisTickEnd = new System.Drawing.Point(yAxisEnd.X + 1, yAxisTickBegin.Y);                                                                
+                System.Drawing.Point dashedBegin = new System.Drawing.Point(yAxisEnd.X, yAxisEnd.Y);
+                System.Drawing.Point dashedEnd = new System.Drawing.Point(width - (leftMargin + 20), dashedBegin.Y);
+                
                 Pen dahedGridPen = new Pen(Color.Black, 1);
-                dahedGridPen.DashPattern = dashValues;
-                dashedBegin = new System.Drawing.Point(p2.X, p2.Y - yMajorScalePx);
-                dashedEnd = new System.Drawing.Point(width - (leftMargin + 20), p2.Y - yMajorScalePx);                
-
-                while (p1.Y >= topMargin)
+                dahedGridPen.DashStyle = DashStyle.Dot;
+                while (yAxisTickBegin.Y >= yAxisStart.Y)
                 {
-                    g.DrawLine(pen, p1, p3);                    
-                    p1.Y -= yMajorScalePx;
-                    p3.Y = p1.Y;
+                    g.DrawLine(yAxisPen, yAxisTickBegin, yAxisTickEnd);
+                    
+                    yAxisTickBegin.Y -= yMajorScalePx;
+                    yAxisTickEnd.Y = yAxisTickBegin.Y; 
 
                     g.DrawLine(dahedGridPen, dashedBegin, dashedEnd);
+                    
                     dashedBegin.Y -= yMajorScalePx;
-                    dashedEnd.Y -= yMajorScalePx;
+                    dashedEnd.Y = dashedBegin.Y;
                 }
+                yAxisPen.Dispose();
+                dahedGridPen.Dispose();
+                                
                 
-                //draw X axis only labels
-                pen.Width = 2;
-                Font font = new Font("Tahoma", 9);
-                p1.X = p2.X + 10;
-                p1.Y = p2.Y + 3;
-                PointF pointF = new PointF(p1.X - 3, p1.Y);
-                SolidBrush brush = new SolidBrush(foreground);
+                //calculate leaf node positions 
+                int[] leafOrder = this.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+                Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
+                int xAxisOffset = 10;
+                int nodePointX = yAxisEnd.X + xAxisOffset;                
                 for (int i = 0; i < leafOrder.Length; i++)
                 {                                        
                     DendrogramLinkChartData linkChartData = new DendrogramLinkChartData(leafOrder[i]);
-                    linkChartData.LeftBottomX = (int) pointF.X + 3;
-                    linkChartData.LeftBottomY =  (int) pointF.Y - 3;
-                    linkChartData.LeftTopX = linkChartData.LeftBottomX;
-                    linkChartData.LeftTopY = linkChartData.LeftBottomY;
-                    linkChartData.RightBottomX = linkChartData.LeftBottomX;
-                    linkChartData.RightBottomY = linkChartData.LeftBottomY;
-                    linkChartData.RightTopX = linkChartData.LeftBottomX;
-                    linkChartData.RightTopY = linkChartData.LeftBottomY;
-
+                                        
+                    linkChartData.LeftNodeX = nodePointX;
+                    linkChartData.LeftNodeY = yAxisEnd.Y;
+                    linkChartData.RightNodeX = nodePointX;
+                    linkChartData.RightNodeY = yAxisEnd.Y;
+                    linkChartData.ParentNodeY = yAxisEnd.Y;
 
                     dendrogramChartData.Add(leafOrder[i], linkChartData);
 
-                    pointF.X += xMajorScalePx;
-                }                               
+                    nodePointX += xMajorScalePx;
+                }
+                leafOrder = null;
 
                 //draw dendrogram                
                 foreach (DendrogramLink link in this.DendrogramLinkCollection)
@@ -443,44 +434,29 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     DendrogramLinkChartData linkChartData2 = dendrogramChartData[link.Cluster2];
 
                     DendrogramLinkChartData newLinkChartData = new DendrogramLinkChartData(link.Id);
-                    newLinkChartData.LeftBottomX = linkChartData1.ParentNodeX;
-                    newLinkChartData.LeftBottomY = linkChartData1.ParentNodeY;
-                    newLinkChartData.LeftTopX = linkChartData1.ParentNodeX;
+                    newLinkChartData.LeftNodeX = linkChartData1.ParentNodeX;
+                    newLinkChartData.LeftNodeY = linkChartData1.ParentNodeY;
+                    newLinkChartData.RightNodeX = linkChartData2.ParentNodeX;
+                    newLinkChartData.RightNodeY = linkChartData2.ParentNodeY;
 
-                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx) + 1;                    
-                    newLinkChartData.LeftTopY = p1.Y - nodeHeight;
-                    
-                    newLinkChartData.RightBottomX = linkChartData2.ParentNodeX;
-                    newLinkChartData.RightBottomY = linkChartData2.ParentNodeY;
-                    newLinkChartData.RightTopX = linkChartData2.ParentNodeX;
-                    newLinkChartData.RightTopY = newLinkChartData.LeftTopY;
-
-                    
-                    /*
-                    if (link.Cluster1 < this.numberOfInstances)
-                        dendrogramChartData.Remove(link.Cluster1);
-
-                    if(link.Cluster2 < this.numberOfInstances)
-                        dendrogramChartData.Remove(link.Cluster2);
-                    */
+                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx);
+                    newLinkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;                                        
 
                     dendrogramChartData.Add(link.Id, newLinkChartData);
                 }
-                
+
+                Font font = new Font("Tahoma", 9);
+                Pen dendrogramPen = new Pen(foreground, 2);
                 foreach (KeyValuePair<int, DendrogramLinkChartData> kvp in dendrogramChartData)
                 {
-                    kvp.Value.Draw(g, pen, true, font);
+                    kvp.Value.Draw(g, dendrogramPen, true, font);
                 }
-
-
-                g.Flush();
+                dendrogramPen.Dispose();
+                font.Dispose();                
                 
-                Bitmap result = new Bitmap(bitmap);
-
-                pen.Dispose();
-                font.Dispose();
-                brush.Dispose();
-                dahedGridPen.Dispose();
+                                
+                g.Flush();                
+                Bitmap result = new Bitmap(bitmap);                                                                                
             }
 
             return bitmap;

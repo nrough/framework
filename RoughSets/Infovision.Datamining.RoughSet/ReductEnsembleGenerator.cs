@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Roughset
         public HierarchicalClustering Dendrogram
         {
             get { return this.hCluster; }
-        }
+        }        
 
         protected IPermutationGenerator PermutationGenerator
         {
@@ -71,6 +71,11 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
+        public IReductStore ReductPool
+        {
+            get { return this.internalStore; }
+        }
+
         protected WeightGenerator WeightGenerator
         {
             get
@@ -98,6 +103,8 @@ namespace Infovision.Datamining.Roughset
             Func<double[], double[], double> distance = SimilarityIndex.ReductSimDelegate(0.5);
             Func<int[], int[], DistanceMatrix, double> linkage = ClusteringLinkage.Min;
             int numberOfClusters = 5;
+            bool useErrorsAsVectors = true;
+            bool reverseDistanceFunction = false;
 
             if (args.Exist("Distance"))
                 distance = (Func<double[], double[], double>) args.GetParameter("Distance");
@@ -110,6 +117,12 @@ namespace Infovision.Datamining.Roughset
 
             if (numberOfClusters > this.DataStore.NumberOfRecords)
                 numberOfClusters = this.DataStore.NumberOfRecords;
+
+            if (args.Exist("UseErrosAsVectors"))
+                useErrorsAsVectors = (bool) args.GetParameter("UseErrosAsVectors");
+
+            if (args.Exist("ReverseDistanceFunction"))
+                reverseDistanceFunction = (bool)args.GetParameter("ReverseDistanceFunction");
             
             int k = -1;            
             foreach (Permutation permutation in permutations)
@@ -148,55 +161,60 @@ namespace Infovision.Datamining.Roughset
 
             internalStore = internalStore.RemoveDuplicates();
 
-            for (int j = 0; j < internalStore.Count; j++)
-            {
-                IReduct reduct = internalStore.GetReduct(j);
-                Console.WriteLine("{0}: {1}", j, reduct);
-            }            
-
-            double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore, false);
+            //double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore, useErrorsAsVectors);
+            double[][] errorVectors = this.GetWeightVectorsFromReducts(internalStore);
             hCluster = new HierarchicalClustering(distance, linkage);
-            hCluster.Compute(errorVectors);
-            
-            Console.WriteLine(hCluster.ToString());            
+            hCluster.ReverseDistanceFunction = reverseDistanceFunction;
+            hCluster.Compute(errorVectors);                                    
 
             //int[] clusterMembership = hCluster.GetClusterMembership(numberOfClusters);
             Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
-
-            ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);            
-            foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
-            {
-                ParameterValueCollection<int> valueCollection = new ParameterValueCollection<int>(String.Format("{0}", kvp.Key), kvp.Value.ToArray<int>());
-                clusterCollection.Add(valueCollection);
-            }
-
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
-            foreach (object[] ensemble in clusterCollection.Values())
-            {
-                ReductStore tmpReductStore = new ReductStore();
-                for (int i = 0; i < numberOfClusters; i++)
-                {
-                    tmpReductStore.DoAddReduct(internalStore.GetReduct((int) ensemble[i]));    
-                }
-                reductStoreCollection.AddStore(tmpReductStore);
-            }
 
-            //alternative approach, we change the standard way of dendrogam (inverse distance)
-            /*
-            foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
+            if (!reverseDistanceFunction)
             {
-                ReductStore tmpReductStore = new ReductStore();
-                foreach (int r in kvp.Value)
+                ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);
+                foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
                 {
-                    tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
+                    ParameterValueCollection<int> valueCollection = new ParameterValueCollection<int>(String.Format("{0}", kvp.Key), kvp.Value.ToArray<int>());
+                    clusterCollection.Add(valueCollection);
                 }
-                reductStoreCollection.AddStore(tmpReductStore);
+                
+                foreach (object[] ensemble in clusterCollection.Values())
+                {
+                    ReductStore tmpReductStore = new ReductStore();
+                    for (int i = 0; i < numberOfClusters; i++)
+                    {
+                        tmpReductStore.DoAddReduct(internalStore.GetReduct((int)ensemble[i]));
+                    }
+                    reductStoreCollection.AddStore(tmpReductStore);
+                }
             }
-            */
+            else
+            { 
+                //alternative approach, we change the standard way of dendrogam (inverse distance)            
+                foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
+                {
+                    ReductStore tmpReductStore = new ReductStore();
+                    foreach (int r in kvp.Value)
+                    {
+                        tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
+                    }
+                    reductStoreCollection.AddStore(tmpReductStore);
+                }
+            }            
 
             return reductStoreCollection;
         }        
 
+        /// <summary>
+        /// Returns a weight vector array where for each reduct an object weight is stored
+        /// When useErrorValues=true, then we store only weights for objects that were not correctly recognized by a reduct (errors), correctly recognized objects have weight = 0
+        /// When useErrorValues=false then we store only weights for objects that were correctly recognized by a reduct (no errors), not recognized objects have weight = 0
+        /// </summary>
+        /// <param name="store"></param>
+        /// <param name="useErrorValues"></param>
+        /// <returns></returns>
         private double[][] GetErrorVectorsFromReducts(ReductStore store, bool useErrorValues)
         {
             double[][] errors = new double[store.Count][];
@@ -240,6 +258,52 @@ namespace Infovision.Datamining.Roughset
                             errors[i][objectIdx] = reduct.Weights[objectIdx]; 
                         }
                     }                    
+                }
+            }
+
+            return errors;
+        }
+
+        /// <summary>
+        /// Returns a weight vector array, where for each reduct an object weight is stored
+        /// Correctly recognized objects get negative object weight, and not correctly recognized objects get value equal to the object weight
+        /// </summary>
+        /// <param name="store"></param>
+        /// <returns></returns>
+        private double[][] GetWeightVectorsFromReducts(ReductStore store)
+        {
+            double[][] errors = new double[store.Count][];
+            for (int i = 0; i < store.Count; i++)
+            {
+                errors[i] = new double[this.DataStore.NumberOfRecords];
+                IReduct reduct = store.GetReduct(i);
+                
+                Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
+                
+                foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+                {
+                    double maxValue = 0;
+                    long maxDecision = -1;
+                    foreach (long decisionValue in e.DecisionValues)
+                    {
+                        double sum = 0;
+                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                        {
+                            sum += reduct.Weights[objectIdx];
+                        }
+
+                        if (sum > maxValue + (0.0001 / reduct.ObjectSetInfo.NumberOfRecords))
+                        {
+                            maxValue = sum;
+                            maxDecision = decisionValue;
+                        }
+                    }
+
+                    foreach (int objectIdx in e.GetObjectIndexes(maxDecision))
+                    {
+
+                        errors[i][objectIdx] *= -1;                        
+                    }
                 }
             }
 

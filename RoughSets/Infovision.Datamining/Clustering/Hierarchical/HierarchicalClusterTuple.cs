@@ -43,7 +43,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get
             {
-                double result = this.val * 1000000000;
+                //in case of reversed distance function (1/d(x,y)) when d(x,y) is 0.0
+                //we substitte the 1/d with Double.MaxValue, then after mapping to long value with multiplication it becomes negative
+                //the Abs function removes the negative sign
+                //
+                //the above is not correct. Double.MaxValue is far more grater than Int64.MaxValue, the conversion is still producing negative value
+
+                if (this.val > (Double.MaxValue - 2))
+                {
+                    return Int64.MaxValue;
+                }
+
+                double result = System.Math.Abs(this.val * 10000000);
                 return (long)result;
             }
         }
@@ -56,6 +67,23 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int SizeY
         {
             get { return this.sizeY; }
+        }
+
+        public long GetLongValue()
+        {
+            //in case of reversed distance function (1/d(x,y)) when d(x,y) is 0.0
+            //we substitte the 1/d with Double.MaxValue, then after mapping to long value with multiplication it becomes negative
+            //the Abs function removes the negative sign
+            //
+            //the above is not correct. Double.MaxValue is far more grater than Int64.MaxValue, the conversion is still producing negative value
+
+            if (this.val == Double.MaxValue)
+            {
+                return Int64.MaxValue;
+            }
+
+            double result = System.Math.Abs(this.val * 10000000);
+            return (long)result;
         }
 
         #region System.Object Methods

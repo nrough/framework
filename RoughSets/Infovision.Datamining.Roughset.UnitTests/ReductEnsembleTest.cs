@@ -14,7 +14,7 @@ using Infovision.Datamining.Clustering.Hierarchical;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    class ReductEnsembleTest
+    class ReductEnsembleGeneratorTest
     {
         //Refactor
         //TODO include algorithm name in Args
@@ -22,14 +22,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
         //TODO Add parameter names as static variables            
         //TODO Make cache keys shorter 
 
-        [Test]
-        public void Foo()
-        {            
+        public static IEnumerable<Dictionary<string, object>> GetTestArgs()
+        {
+            List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
+
             Random rand = new Random();
             DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            
-            int numberOfPermutations = 100;
+
+            int numberOfPermutations = 40;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             //TODO Epsilon generaton according to some distribution
@@ -38,69 +39,97 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 epsilons[i] = rand.Next(36);
             }
+            
+            
+            Dictionary<string, object> argSet1 = new Dictionary<string, object>();
+            argSet1.Add("DataStore", data);
+            argSet1.Add("NumberOfThreads", 1);
+            argSet1.Add("PermutationEpsilon", epsilons);
+            //argSet1.Add("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
+            //argSet1.Add("Distance", SimilarityIndex.ReductSimDelegate(0.5));
+            argSet1.Add("Distance", (Func<double[], double[], double>)Distance.SquaredEuclidean);
+            argSet1.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
+            argSet1.Add("NumberOfClusters", 3);
+            argSet1.Add("GeneratorName", "ReductEnsemble");
+            //argSet1.Add("UseErrosAsVectors", true);
+            argSet1.Add("ReverseDistanceFunction", true);
+            argSet1.Add("PermutationCollection", permList);
+            argSet1.Add("DendrogramBitmapFile", @"f:\euclidean_reversed.bmp");
 
+            argsList.Add(argSet1);
+
+            Dictionary<string, object> argSet2 = new Dictionary<string, object>(argSet1);
+            argSet2["ReverseDistanceFunction"] = false;
+            argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
+
+            argsList.Add(argSet2);
+
+            return argsList;
+        }
+
+        [Test, TestCaseSource("GetTestArgs")]
+        public void GenerateTest(Dictionary<string, object> args)
+        {            
+            
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("PermutationEpsilon", epsilons);
-            //parms.AddParameter("Distance", SimilarityIndex.TverskyDelegate(0.5, 0.5));            
-            parms.AddParameter("Distance", SimilarityIndex.ReductSimDelegate(0.5));            
-            parms.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
-            parms.AddParameter("NumberOfClusters", 2);
-            parms.AddParameter("GeneratorName", "ReductEnsemble");
+            foreach (KeyValuePair<string, object> kvp in args)
+            {
+                parms.AddParameter(kvp.Key, kvp.Value);
+            }
 
             string generatorName = "ReductEnsemble";                       
-                        
-            parms.AddParameter("PermutationCollection", permList);
-
+                                    
             //TODO Create generator based on parms, not generator name
             //TODO Store args inside generator
             //TODO Generate method without parameters
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms);
+            ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms) as ReductEnsembleGenerator;
             IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
 
-            int j=1;
-            foreach (IReductStore reductStore in reductStoreCollection)
+            Console.WriteLine("All reducts");            
+            for(int j=0; j<reductGenerator.ReductPool.Count; j++)
+            {                
+                Console.WriteLine("{0}: {1}", j, reductGenerator.ReductPool.GetReduct(j));
+            }
+
+            Console.WriteLine("Reduct distances");
+            Console.WriteLine(reductGenerator.Dendrogram.DistanceMatrix);
+
+            Console.WriteLine("Dendrogram");
+            Console.WriteLine(reductGenerator.Dendrogram);
+
+            Console.WriteLine("Reduct groups");
+            Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)parms.GetParameter("NumberOfClusters"));
+            foreach (KeyValuePair<int, List<int>> kvp in membership)
             {
-                Console.WriteLine("Reduct Store: {0}", j++);
-                Console.WriteLine("==================", j++);
-                
-                foreach (IReduct reduct in reductStore)
+                Console.WriteLine("Reduct Group Alias {0}", kvp.Key);
+                Console.WriteLine("==================");
+
+                foreach (int reductId in kvp.Value)
                 {
-                    Console.WriteLine("{0}", reduct);
-                    j++;
+                    Console.WriteLine(reductGenerator.ReductPool.GetReduct(reductId));
                 }
             }
 
+
+            int k=1;
+            foreach (IReductStore reductStore in reductStoreCollection)
+            {
+                Console.WriteLine("Reduct Ensemble: {0}", k++);
+                Console.WriteLine("==================");
+                
+                foreach (IReduct reduct in reductStore)
+                {
+                    Console.WriteLine("{0}", reduct);                    
+                }
+            }
             
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
                 Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
-                dendrogram.Save(@"f:\test.bmp");                
-            }
-
-
-
+                dendrogram.Save((string) args["DendrogramBitmapFile"]);                
+            }            
         }
-
-        [Test]
-        public void TestTinyDouble()
-        {
-            double a = 1 / 1234;
-            double b = 1.0 / 1234;
-            double c = 1.0 / (double)1234;
-            double d = (double)1 / (double)1234;
-            double e = 1 / 1234.0;
-            double f = 1 - 0.001;
-
-
-            Console.WriteLine(a);
-            Console.WriteLine(b);
-            Console.WriteLine(c);
-            Console.WriteLine(d);
-            Console.WriteLine(e);
-            Console.WriteLine(f);
-        }
+                
     }
 }

@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private Func<int[], int[], DistanceMatrix, double> linkage;
         private DendrogramLinkCollection dendrogram;
 
-        int numberOfInstances;    
+        int numberOfInstances;            
 
         /// <summary>
         ///   Gets or sets the distance function used
@@ -58,6 +58,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int NumberOfInstances
         {
             get { return this.numberOfInstances; }
+        }
+
+        public DistanceMatrix DistanceMatrix
+        {
+            get { return this.distanceMatrix; }
+        }
+
+        public bool ReverseDistanceFunction
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -142,11 +153,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 for (int j = i + 1; j < points.Length; j++)
                 {
                     if (calculateDistanceMatrix)
-                    {                        
-                        distanceMatrix[i, j] = this.Distance(points[i], points[j]);
+                    {                                                
+                        double distance = this.Distance(points[i], points[j]);                        
+                        if (this.ReverseDistanceFunction)
+                        {
+                            distance = System.Math.Exp(-distance);
+                        }
+
+                        distanceMatrix[i, j] = distance;
                     }
                     HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i, j, distanceMatrix[i, j], 1, 1);
-                    queue.Enqueue(tuple.LongValue, tuple);
+                    //queue.Enqueue(tuple.LongValue, tuple);
+                    queue.Enqueue(tuple.GetLongValue(), tuple);
                 }
             }
 
@@ -167,6 +185,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     for (int j = i + 1; j < points.Length; j++)
                     {                                                
                         double distance = this.Distance(points[i], points[j]);
+
+                        if (this.ReverseDistanceFunction)
+                        {
+                            distance = System.Math.Exp(-distance);
+                        }
+
                         distanceMatrix[i,j] = distance;                                                           
                         HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i,j,distance,1,1);
                         queue.Enqueue(tuple.LongValue, tuple);
@@ -346,11 +370,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return this.Linkage(cluster1, cluster2, this.distanceMatrix);
         }
 
+        /*
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)
         {
             CalculateDistanceMatrix(mergedCluster1.Index, mergedCluster2.Index, newCluster.Index);
         }
+        */
 
+        /*
         private void CalculateDistanceMatrix(int mergedCluster1, int mergedCluster2, int newCluster)
         {            
             DistanceMatrix newMatrix = new DistanceMatrix(distanceMatrix.Distance);
@@ -417,7 +444,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
 
             distanceMatrix = newMatrix;
-        }        
+        }
+        */
 
         protected void Cleanup()
         {
@@ -457,6 +485,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return this.DendrogramLinkCollection.GetClusterMembership(threshold);
         }
 
+        //TODO if largest distance is 1 then scale by 10
         public Bitmap GetDendrogramAsBitmap(int width, int height)
         {
             int topMargin = 1;

@@ -24,37 +24,6 @@ namespace Infovision.Math
         private Func<double[], double[], double> distance;
         private int numberOfInstances;
 
-        public DistanceMatrix()
-        {            
-            matrix = new Dictionary<MatrixKey, double>();            
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
-        }
-        
-        public DistanceMatrix(Func<double[], double[], double> distance)
-        {
-            this.Distance = distance;
-            matrix = new Dictionary<MatrixKey, double>();
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
-        }
-
-        public DistanceMatrix(int size, Func<double[], double[], double> distance)            
-        {
-            this.Distance = distance;
-            matrix = new Dictionary<MatrixKey, double>(size);
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
-        }
-                
-        /// <summary>
-        ///   Gets or sets the distance function used
-        ///   as a distance metric between data points.
-        /// </summary>
-        /// 
-        public Func<double[], double[], double> Distance
-        {
-            get { return this.distance; }
-            set { this.distance = value; }
-        }
-
         public ReadOnlyDictionary<MatrixKey, double> ReadOnlyMatrix
         {
             get { return this.readOnlyMatrix; }
@@ -89,6 +58,43 @@ namespace Infovision.Math
             set { this.numberOfInstances = value; }
         }
 
+        public bool ReverseDistanceFunction
+        {
+            get;
+            set;
+        }
+
+
+        public DistanceMatrix()
+        {            
+            matrix = new Dictionary<MatrixKey, double>();            
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+        }
+        
+        public DistanceMatrix(Func<double[], double[], double> distance)
+        {
+            this.Distance = distance;
+            matrix = new Dictionary<MatrixKey, double>();
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+        }
+
+        public DistanceMatrix(int size, Func<double[], double[], double> distance)            
+        {
+            this.Distance = distance;
+            matrix = new Dictionary<MatrixKey, double>(size);
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+        }
+                
+        /// <summary>
+        ///   Gets or sets the distance function used
+        ///   as a distance metric between data points.
+        /// </summary>
+        /// 
+        public Func<double[], double[], double> Distance
+        {
+            get { return this.distance; }
+            set { this.distance = value; }
+        }       
 
         public void Initialize(double[][] points)
         {
@@ -104,6 +110,11 @@ namespace Infovision.Math
                 {
                     MatrixKey key = new MatrixKey(i, j);
                     double distance = this.Distance(points[i], points[j]);
+                    if (this.ReverseDistanceFunction)
+                    {
+                        distance = System.Math.Exp(-distance);
+                    }
+
                     matrix.Add(key, distance);                                        
                 }
             }            

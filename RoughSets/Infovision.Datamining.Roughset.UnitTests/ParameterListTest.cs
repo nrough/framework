@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parmNFold = new ParameterValueList<Int32>("NumberOfFolds", 1);
             parmTestNumber = new ParameterNumericRange<Int32>("TestNumber", 1, 10, 1);
             parmEpsilon = new ParameterNumericRange<Int32>("ApproximationDegree", 0, 99, 1);
-            parmReductType = new ParameterValueList<String>("ReductType", new String[] {"ApproximateReductPositive", 
+            parmReductType = new ParameterValueList<String>("ReductType", new string[] {"ApproximateReductPositive", 
                                                                                         "ApproximateReductMajority", 
                                                                                         "ApproximateReductRelative",
                                                                                         "Bireduct",
@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                                                 parmEpsilon,
                                                                                 parmReductType});
 
-            Int32 counter = 0;
+            int counter = 0;
             ParameterVectorEnumerator i_parm = (ParameterVectorEnumerator)parameterList.ParmValueEnumerator;
             while (i_parm.MoveNext())
             {
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ParameterExclusion exclusion1 = new ParameterExclusion();
             exclusion1.AddExclusion("ReductType", "ApproximateReductPositive");
 
-            ParameterExclusion exclusion2 = new ParameterExclusion(new String[] { "ReductType", "TestNumber" }, new Object[] { "ApproximateReductMajority", 10 });
+            ParameterExclusion exclusion2 = new ParameterExclusion(new string[] { "ReductType", "TestNumber" }, new Object[] { "ApproximateReductMajority", 10 });
             
             parameterList.AddExclusion(exclusion1);
             parameterList.AddExclusion(exclusion2);

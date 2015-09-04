@@ -79,12 +79,12 @@ namespace Infovision.MRI
             return maxPixelValue;    
         }
 
-        public static double GetPixelAsDouble(itk.simple.Image image, VectorUInt32 position)
+        public static double GetPixelAsDouble(itk.simple.Image image, VectorUint position)
         {
             return Convert.ToDouble(SimpleITKHelper.GetPixel(image, position));
         } 
 
-        public static byte[] GetPixelAsBytes(itk.simple.Image image, VectorUInt32 position)
+        public static byte[] GetPixelAsBytes(itk.simple.Image image, VectorUint position)
         {
             if (image.GetPixelIDValue() == PixelIDValueEnum.sitkUInt8.swigValue)
             {
@@ -229,7 +229,7 @@ namespace Infovision.MRI
             throw new System.NotImplementedException(message.ToString());
         } 
 
-        public static object GetPixel(itk.simple.Image image, VectorUInt32 position)
+        public static object GetPixel(itk.simple.Image image, VectorUint position)
         {
             if (image.GetPixelIDValue() == PixelIDValueEnum.sitkUInt8.swigValue)
             {
@@ -395,8 +395,8 @@ namespace Infovision.MRI
             }
 
             itk.simple.Image slice = SimpleITK.Extract(image,
-                                            new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
-                                            new VectorInt32(new Int32[] { 0, 0, sliceIdx }),
+                                            new VectorUInt32(new Uint[] { image.GetWidth(), image.GetHeight(), 0 }),
+                                            new VectorInt32(new int[] { 0, 0, sliceIdx }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             return slice;
@@ -570,7 +570,7 @@ namespace Infovision.MRI
             ImportImageFilter importImageFilter = new ImportImageFilter();
             importImageFilter.SetSize(new VectorUInt32(new uint[] { width, height, depth }));
 
-            VectorDouble direction = (depth > 0)
+            Vectordouble direction = (depth > 0)
                 
                 ? new VectorDouble(new double[] {1, 0, 0, 
                                                  0, 1, 0, 
@@ -581,13 +581,13 @@ namespace Infovision.MRI
 
             importImageFilter.SetDirection(direction);
 
-            VectorDouble origin = (depth) > 0
+            Vectordouble origin = (depth) > 0
                 ? new VectorDouble(new double[] { 0, 0, 0 })
                 : new VectorDouble(new double[] { 0, 0 });
 
             importImageFilter.SetOrigin(origin);
 
-            VectorDouble spacing = (depth > 0)
+            Vectordouble spacing = (depth > 0)
                 ? new VectorDouble(new double[] { 1, 1, 1 })
                 : new VectorDouble(new double[] { 1, 1 });
 
@@ -629,7 +629,7 @@ namespace Infovision.MRI
             return importImageFilter.Execute();
         }
 
-        public static itk.simple.Image ReadImage(String fileName)
+        public static itk.simple.Image ReadImage(string fileName)
         {
             ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
@@ -700,10 +700,10 @@ namespace Infovision.MRI
             var @switch = new Dictionary<Type, Action> {
                 { typeof(sbyte), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkInt8 },
                 { typeof(short), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkInt16 },
-                { typeof(int), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkInt32 },
+                { typeof(int), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkint },
                 { typeof(byte), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkUInt8 },
                 { typeof(ushort), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkUInt16 },
-                { typeof(uint), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkUInt32 },
+                { typeof(uint), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkUint },
                 { typeof(float), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkFloat32 },
                 { typeof(double), () => pixelIdValue = itk.simple.PixelIDValueEnum.sitkFloat64 }
             };
@@ -717,7 +717,7 @@ namespace Infovision.MRI
         {
             itk.simple.Image itkImage = new itk.simple.Image(width, height, depth, SimpleITKHelper.Type2PixelID(pixelType));
 
-            VectorDouble direction = (depth > 0)
+            Vectordouble direction = (depth > 0)
 
                 ? new VectorDouble(new double[] {1, 0, 0, 
                                                  0, 1, 0, 
@@ -728,13 +728,13 @@ namespace Infovision.MRI
 
             itkImage.SetDirection(direction);
 
-            VectorDouble origin = (depth) > 0
+            Vectordouble origin = (depth) > 0
                 ? new VectorDouble(new double[] { 0, 0, 0 })
                 : new VectorDouble(new double[] { 0, 0 });
 
             itkImage.SetOrigin(origin);
 
-            VectorDouble spacing = (depth > 0)
+            Vectordouble spacing = (depth > 0)
                 ? new VectorDouble(new double[] { 1, 1, 1 })
                 : new VectorDouble(new double[] { 1, 1 });
 

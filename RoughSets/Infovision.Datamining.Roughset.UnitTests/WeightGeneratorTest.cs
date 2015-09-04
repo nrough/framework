@@ -12,20 +12,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public WeightGeneratorTest()
         {
-            string fileName = @"playgolf.train";
+            string fileName = @"Data\playgolf.train";
             dataStore = DataStore.Load(fileName, FileFormat.Rses1);
         }
 
         [Test]
         public void BalancedAccuracy()
         {
-            string localFileName = @"dna_modified.trn";
+            string localFileName = @"Data\dna_modified.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(localDataStore, "ApproximateReductRelative", 20, 10);
 
-            string localFileNameTest = @"dna_modified.tst";
+            string localFileNameTest = @"Data\dna_modified.tst";
             DataStore dataStoreTest = DataStore.Load(localFileNameTest, FileFormat.Rses1);
 
             classifier.Classify(dataStoreTest);
@@ -43,13 +43,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             double total = 0;
             double aprioriSum = 0;
-            foreach (Int64 decision in dataStoreTest.DataStoreInfo.GetDecisionValues())
+            foreach (long decision in dataStoreTest.DataStoreInfo.GetDecisionValues())
             {
                 aprioriSum += classificationResult.DecisionApriori(decision);
                 total += classificationResult.DecisionTotal(decision);
             }
 
-            Assert.AreEqual((double)1, aprioriSum);
+            Assert.AreEqual(1.0, aprioriSum);
             Assert.AreEqual(dataStoreTest.NumberOfRecords, total);
             Assert.LessOrEqual(classificationResult.BalancedAccuracy, 1);
             Assert.GreaterOrEqual(classificationResult.BalancedAccuracy, 0);
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CompareMajorityWeightVsMajority()
         {
-            string localFileName = @"dna.train";
+            string localFileName = @"Data\dna.train";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorMajority(localDataStore);
@@ -91,7 +91,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CompareRelativeWeightVsRelative()
         {
-            string localFileName = @"optdigits.trn";
+            string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorRelative(localDataStore);
@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductRelative2()
         {
-            string localFileName = @"optdigits.trn";
+            string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             RoughClassifier roughClassifier = new RoughClassifier();
@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductMajority2()
         {
-            string localFileName = @"optdigits.trn";
+            string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
             
             RoughClassifier roughClassifier = new RoughClassifier();
@@ -185,11 +185,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationCollection permutationList = new PermutationCollection();
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 2, 1 }));
-            permutationList.Add(new Permutation(new Int32[] { 4, 3, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 4, 2, 3, 1 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
+            permutationList.Add(new Permutation(new int[] { 4, 3, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 4, 2, 3, 1 }));
 
             roughClassifier.Train(dataStore, "ApproximateReductRelative", 0, permutationList);
 
@@ -215,11 +215,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationCollection permutationList = new PermutationCollection();
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 2, 1 }));
-            permutationList.Add(new Permutation(new Int32[] { 4, 3, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
-            permutationList.Add(new Permutation(new Int32[] { 4, 2, 3, 1 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
+            permutationList.Add(new Permutation(new int[] { 4, 3, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
+            permutationList.Add(new Permutation(new int[] { 4, 2, 3, 1 }));
             
             roughClassifier.Train(dataStore, "ApproximateReductMajority", 0, permutationList);
 
@@ -314,7 +314,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public void CompareReductResult(string reductGeneratorKey1, string reductGeneratorKey2)
         {
-            string localFileName = @"dna.train";
+            string localFileName = @"Data\dna.train";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
             
             Args args = new Args();

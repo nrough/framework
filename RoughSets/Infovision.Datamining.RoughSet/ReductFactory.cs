@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IFactoryProduct
     {
-        String FactoryKey { get; }
+        string FactoryKey { get; }
     }
     
     public interface IReductFactory : IFactoryProduct
@@ -138,14 +138,14 @@ namespace Infovision.Datamining.Roughset
 
         public static string[] GetReductFactoryKeys()
         {
-            string [] keys = new String[ReductFactory.Instance.registeredReductFactories.Keys.Count];
+            string [] keys = new string[ReductFactory.Instance.registeredReductFactories.Keys.Count];
             ReductFactory.Instance.registeredReductFactories.Keys.CopyTo(keys, 0);
             return keys;
         }
 
         public static string[] GetReductMeasureKeys()
         {
-            String[] keys = new String[ReductFactory.Instance.registeredReductMeasures.Keys.Count];
+            string[] keys = new string[ReductFactory.Instance.registeredReductMeasures.Keys.Count];
             ReductFactory.Instance.registeredReductMeasures.Keys.CopyTo(keys, 0);
             return keys;
         }
@@ -223,7 +223,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         //TODO use registered classes
-        public static Comparer<IReduct> GetReductComparer(String measureKey)
+        public static Comparer<IReduct> GetReductComparer(string measureKey)
         {
             Comparer<IReduct> comparer;
 
@@ -404,7 +404,7 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("ApproximationRatio"))
             {
                 int approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                double selectionRatio = (double)approximationRatio / (double)100;
+                double selectionRatio = approximationRatio / 100.0;
 
                 return new PermutationGeneratorFieldObject(dataStore, selectionRatio);
             }
@@ -433,7 +433,7 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("ApproximationRatio"))
             {
                 int approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                double selectionRatio = (double)approximationRatio / (double)100;
+                double selectionRatio = approximationRatio / 100.0;
 
                 return new PermutationGeneratorFieldObjectRelative(dataStore, selectionRatio);
             }

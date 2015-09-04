@@ -16,7 +16,7 @@ namespace Infovision.MRI
         Int32 = 3,
         UInt8 = 4,
         UInt16 = 5,
-        UInt32 = 6,
+        Uint = 6,
         Float = 7,
         Double = 8
     }

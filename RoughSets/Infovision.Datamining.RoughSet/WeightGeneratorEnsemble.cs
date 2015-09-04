@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 double maxValue = 0;
-                Int64 maxDecision = -1;
+                long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     double sum = 0;
@@ -101,14 +101,12 @@ namespace Infovision.Datamining.Roughset
         #region Methods
 
         protected override double CalcObjectWeight(int objectIdx)
-        {
-            double result;
+        {            
+            double result = 1.0
+                    / (this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(objectIdx))
+                                                * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
 
-            result = (double)1
-                    / ((double)this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(objectIdx))
-                                                * (double)this.DataStore.DataStoreInfo.NumberOfDecisionValues);
-
-            return this.NumberOfReducts > 0 ? result * (1 - (this.DiscernibilityMatrix[objectIdx] / this.NumberOfReducts)) : result;
+            return this.NumberOfReducts > 0 ? result * (1.0 - (this.DiscernibilityMatrix[objectIdx] / this.NumberOfReducts)) : result;
         }
 
         #endregion

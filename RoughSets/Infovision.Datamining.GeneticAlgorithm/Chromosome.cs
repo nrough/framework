@@ -5,7 +5,7 @@ namespace Infovision.Datamining.Genetic
     public class Chromosome
     {
         private Object[] chromosome;
-        private Double fitness;
+        private double fitness;
 
         public Chromosome(Object [] values)
         {
@@ -14,18 +14,18 @@ namespace Infovision.Datamining.Genetic
             fitness = 0;
         }
 
-        public Int32 Length
+        public int Length
         {
             get { return chromosome.Length; }
         }
 
-        public Double Fitness
+        public double Fitness
         {
             get { return fitness;}
             set { fitness = value; }
         }
         
-        public Object this[Int32 index]
+        public Object this[int index]
         {
             get { return chromosome[index]; }
         }

@@ -8,7 +8,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Properties 
 
-        public abstract String FactoryKey { get; }
+        public abstract string FactoryKey { get; }
         
         public virtual SortDirection SortDirection
         {
@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public abstract Double Calc(IReduct reduct);
+        public abstract double Calc(IReduct reduct);
 
         #endregion
     }
@@ -43,12 +43,12 @@ namespace Infovision.Datamining.Roughset
         
         #region Methods
 
-        public override Double Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return (Double)reduct.Attributes.Count;
+            return (double)reduct.Attributes.Count;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "Length";
         }
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Properties
 
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "ReductMeasureNumberOfPartitions"; }
         }
@@ -75,12 +75,12 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override Double Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return (Double)reduct.EquivalenceClassMap.Count;
+            return (double)reduct.EquivalenceClassMap.Count;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "Partitions";
         }
@@ -107,12 +107,12 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override Double Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return (Double)reduct.ObjectSetInfo.NumberOfRecords / (Double)reduct.DataStore.NumberOfRecords;
+            return (double)reduct.ObjectSetInfo.NumberOfRecords / (double)reduct.DataStore.NumberOfRecords;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "SizeOfX";
         }
@@ -139,19 +139,19 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override Double Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            Double result = 0;
+            double result = 0;
             foreach (int objectIdx in reduct.ObjectSet)
             {
-                Int64 decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
-                result += (Double)reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue) / (Double)reduct.ObjectSetInfo.NumberOfRecords;
+                long decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
+                result += (double)reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue) / (double)reduct.ObjectSetInfo.NumberOfRecords;
             }
 
             return result;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "BireductRelative";
         }

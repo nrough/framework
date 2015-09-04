@@ -9,10 +9,12 @@ namespace Infovision.Datamining.Roughset
     public class EquivalenceClass : ICloneable
     {
         #region Globals
-        
-        private Dictionary<Int64, int> decisionCount;
-        private HashSet<int> objectIndexes;
-        private Dictionary<Int64, HashSet<int>> decisionObjectIndexes;
+                
+        private Dictionary<int, double> instances;
+        private Dictionary<long, HashSet<int>> decisionObjectIndexes;
+        private bool calcStats;
+        private long majorDecision = -1;        
+        //TODO add equivalence class description as Attributes and their values
 
         #endregion
 
@@ -20,16 +22,14 @@ namespace Infovision.Datamining.Roughset
 
         public EquivalenceClass()
         {
-            this.decisionCount = new Dictionary<Int64, int>();
-            this.objectIndexes = new HashSet<int>();
-            this.decisionObjectIndexes = new Dictionary<Int64, HashSet<int>>();
+            this.instances = new Dictionary<int, double>();
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>();            
         }
 
         public EquivalenceClass(int numberOfDecisions)
         {
-            this.decisionCount = new Dictionary<Int64, int>(numberOfDecisions);
-            this.objectIndexes = new HashSet<int>();
-            this.decisionObjectIndexes = new Dictionary<Int64, HashSet<int>>(numberOfDecisions);
+            this.instances = new Dictionary<int, double>();
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);
         }
 
         public EquivalenceClass(DataStoreInfo dataStoreInfo)
@@ -39,12 +39,11 @@ namespace Infovision.Datamining.Roughset
 
         public EquivalenceClass(EquivalenceClass equivalenceClassInfo)
         {
-            this.decisionCount = new Dictionary<Int64, int>(equivalenceClassInfo.DecisionCount);
-            this.objectIndexes = new HashSet<int>(equivalenceClassInfo.objectIndexes);
+            this.instances = new Dictionary<int, double>(equivalenceClassInfo.instances);
             
             //copy elements
-            this.decisionObjectIndexes = new Dictionary<Int64, HashSet<int>>(equivalenceClassInfo.decisionObjectIndexes.Count);
-            foreach (KeyValuePair<Int64, HashSet<int>> kvp in equivalenceClassInfo.decisionObjectIndexes)
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(equivalenceClassInfo.decisionObjectIndexes.Count);
+            foreach (KeyValuePair<long, HashSet<int>> kvp in equivalenceClassInfo.decisionObjectIndexes)
             {
                 this.decisionObjectIndexes.Add(kvp.Key, new HashSet<int>(kvp.Value));
             }
@@ -56,17 +55,17 @@ namespace Infovision.Datamining.Roughset
 
         public int NumberOfObjects
         {
-            get { return this.objectIndexes.Count; }
+            get { return this.instances.Count; }
         }
 
         public int NumberOfDecisions
         {
-            get { return this.decisionCount.Keys.Count; }
+            get { return this.decisionObjectIndexes.Keys.Count; }
         }
 
         public IEnumerable<int> ObjectIndexes
         {
-            get { return this.objectIndexes; }
+            get { return this.instances.Keys; }
         }
 
         /// <summary>
@@ -80,120 +79,98 @@ namespace Infovision.Datamining.Roughset
             if (this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectIndexes))
                 return localObjectIndexes;
             return new HashSet<int>();
-        }        
+        }
 
-        public Int64 MostFrequentDecision
+        public long MajorDecision
         {
             get 
             {
-                int maxCount = 0;
-                Int64 decision = -1;
-                foreach (KeyValuePair<Int64, int> decCount in decisionCount)
+                if (!this.calcStats)
                 {
-                    if (maxCount < decCount.Value)
-                    {
-                        decision = decCount.Key;
-                        maxCount = decCount.Value;
-                    }
+                    this.CalcMajorDecision();
                 }
-                return decision;
-            }
-        }
 
-        public int MostFrequentDecisionCount
-        {
-            get
+                return this.majorDecision;                                
+            }
+
+            private set
             {
-                Int64 decision = this.MostFrequentDecision;
-                int maxCount = 0;
-                if (decisionCount.TryGetValue(decision, out maxCount))
-                {
-                    return maxCount;
-                }
-                return 0;
+                this.majorDecision = value;
             }
-        }
+        }                
 
-        private Dictionary<Int64, int> DecisionCount
+        public IEnumerable<long> DecisionValues
         {
-            get { return this.decisionCount; }
-        }
-
-        public IEnumerable<Int64> DecisionValues
-        {
-            get { return this.decisionCount.Keys; }
+            get { return this.decisionObjectIndexes.Keys; }
         }
 
         #endregion
 
         #region Methods
 
-        private bool AddObject(int objectIndex, Int64 decisionValue)
+        private void CalcMajorDecision()
         {
-            if (this.objectIndexes.Add(objectIndex))
+            long tmpMajorDecision = -1;
+            double maxWeightSum = Double.MinValue;
+            foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
             {
-                int value = 0;
-                this.decisionCount[decisionValue] = decisionCount.TryGetValue(decisionValue, out value) ? ++value : 1;
-
-                HashSet<int> localObjectSet = null;
-                if (!this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectSet))
+                double sum = 0;
+                foreach(int idx in kvp.Value)
+                    sum += instances[idx];
+                if (sum > maxWeightSum)
                 {
-                    localObjectSet = new HashSet<int>();
-                    this.decisionObjectIndexes[decisionValue] = localObjectSet;
+                    tmpMajorDecision = kvp.Key;
+                    maxWeightSum = sum;
                 }
-                localObjectSet.Add(objectIndex);
-
-                return true;
             }
 
-            return false;
+            this.MajorDecision = tmpMajorDecision;
+            this.calcStats = true;                        
         }
 
-        public virtual bool AddObject(int objectIndex, DataStore dataStore)
+        public void AddObject(int objectIndex, long decisionValue, double weight)
         {
-            return this.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex));
-        }
-
-        private void RemoveObject(int objectIndex, Int64 decisionValue)
-        {
-            if (this.objectIndexes.Contains(objectIndex))
+            this.instances.Add(objectIndex, weight);
+                            
+            HashSet<int> localObjectSet = null;
+            if (!this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectSet))
             {
-                int value = 0;
-                if (decisionCount.TryGetValue(decisionValue, out value))
+                localObjectSet = new HashSet<int>();
+                this.decisionObjectIndexes[decisionValue] = localObjectSet;
+            }
+            localObjectSet.Add(objectIndex);
+            this.calcStats = false;           
+        }        
+
+        public void RemoveObject(int objectIndex)
+        {
+            if (this.instances.ContainsKey(objectIndex))
+            {
+                foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
                 {
-                    if (value > 0)
+                    if (kvp.Value.Contains(objectIndex))
                     {
-                        this.decisionCount[decisionValue] = value - 1;                      
+                        kvp.Value.Remove(objectIndex);
+                        break;
                     }
                 }
 
-                HashSet<int> localObjectSet = null;
-                if (this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectSet))
-                {
-                    localObjectSet.Remove(objectIndex);
-                }
-
-                this.objectIndexes.Remove(objectIndex);
+                this.instances.Remove(objectIndex);                                
             }
-        }
-        
-        public virtual void RemoveObject(int objectIndex, DataStore dataStore)
-        {
-            Int64 decisionValue = dataStore.GetDecisionValue(objectIndex);
-            this.RemoveObject(objectIndex, decisionValue);
-        }
+            this.calcStats = false;
+        }                
 
-        public int NumberOfObjectsWithDecision(Int64 decisionValue)
+        public int NumberOfObjectsWithDecision(long decisionValue)
         {
-            int count = 0;
-            if (this.decisionCount.TryGetValue(decisionValue, out count))
+            HashSet<int> indices;
+            if (this.decisionObjectIndexes.TryGetValue(decisionValue, out indices))
             {
-                return count;
+                return indices.Count;
             }
             return 0;
         }
 
-        public double DecisionProbability(Int64 decisionValue)
+        public double DecisionProbability(long decisionValue)
         {
             return (double)this.NumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfObjects;
         }
@@ -218,7 +195,7 @@ namespace Infovision.Datamining.Roughset
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.AppendFormat("Number of decisions: {0}", this.NumberOfDecisions);
             stringBuilder.Append(Environment.NewLine);
-            stringBuilder.AppendFormat("Most frequent decision: {0}", this.MostFrequentDecision);
+            stringBuilder.AppendFormat("Most frequent decision: {0}", this.MajorDecision);
             stringBuilder.Append(Environment.NewLine);
 
             return stringBuilder.ToString();

@@ -51,7 +51,7 @@ namespace Infovision.Test
             this.testLoop = 0;
             this.logBuffer = new StringBuilder();
 
-            //String sAppPath = AppDomain.CurrentDomain.BaseDirectory;
+            //string sAppPath = AppDomain.CurrentDomain.BaseDirectory;
             //stateFileName = sAppPath.Substring(0, sAppPath.LastIndexOf(@"\") + 1) + stateFileName;
 
             this.restore = false;
@@ -302,7 +302,7 @@ namespace Infovision.Test
         /// <summary>
         /// Restores the state of the instance (thus allowing you to resume calculations)
         /// </summary>
-        public bool RestoreState(String fileName)
+        public bool RestoreState(string fileName)
         {
             bool bSuccess = false;
             try
@@ -331,7 +331,7 @@ namespace Infovision.Test
         /// <summary>
         /// Save the state of the class
         /// </summary>
-        public bool SaveState(String fileName)
+        public bool SaveState(string fileName)
         {
             bool bSuccess = false;
             try

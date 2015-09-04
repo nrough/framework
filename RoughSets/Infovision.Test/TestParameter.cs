@@ -578,7 +578,7 @@ namespace Infovision.Test
 
         #region Constructors
 
-        public ParameterObject(String name, T value)
+        public ParameterObject(string name, T value)
         {
             this.value = (T)value.Clone();
             this.Name = name;
@@ -596,7 +596,7 @@ namespace Infovision.Test
 
         #region Properties
 
-        public override Int32 Count
+        public override int Count
         {
             get { return 1; }
         }
@@ -702,7 +702,7 @@ namespace Infovision.Test
         public ParameterObjectList(string name, T[] values)
         {
             this.values = new T[values.Length];
-            for(Int32 i = 0; i<values.Length; i++)
+            for(int i = 0; i<values.Length; i++)
             {
                 this.values[i] = (T) values[i].Clone();
             }
@@ -729,7 +729,7 @@ namespace Infovision.Test
         {
             this.values = new T[parameterObjectList.Count];
             this.Name = parameterObjectList.Name;
-            Int32 i = 0;
+            int i = 0;
             foreach (T value in parameterObjectList)
             {
                 this.values[i++] = (T) value.Clone();
@@ -840,7 +840,7 @@ namespace Infovision.Test
 
         #region Constructors
 
-        public ParameterObjectReference(String name, T value)
+        public ParameterObjectReference(string name, T value)
         {
             this.value = (T)value;
             this.Name = name;
@@ -858,7 +858,7 @@ namespace Infovision.Test
 
         #region Properties
 
-        public override Int32 Count
+        public override int Count
         {
             get { return 1; }
         }

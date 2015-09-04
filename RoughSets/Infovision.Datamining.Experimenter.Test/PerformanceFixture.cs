@@ -11,8 +11,7 @@ namespace Infovision.Datamining.Experimenter.Test
     [TestFixture]
     class PerformanceFixture
     {
-        [Test]
-        [Ignore("Infinite long running test")]
+        [Test]        
         public void LongRunningLoop()
         {
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { 
@@ -27,9 +26,14 @@ namespace Infovision.Datamining.Experimenter.Test
                 new ParameterNumericRange<double>("9", 1, 0, -0.1),
                 new ParameterNumericRange<short>("10", 0, 10, 1)});
 
+            int i = 0;
             foreach (object[] p in parmList.Values())
             {
-                System.Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}", p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]);
+                //System.Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}", p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]);
+                
+                i++;
+                if (i > 10000)
+                    break;
             }
         }
     }

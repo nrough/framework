@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public PermutationTest()
         {
-            dataStore = DataStore.Load(@"monks-1.train", FileFormat.Rses1);
+            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);
         }
 
         [Test]
@@ -124,8 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test]
-        [Ignore]
+        [Test]        
         public void FieldSelecitonRatio()
         {
             this.CalcAndPrintRatio(10, 10, 0);
@@ -247,9 +246,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             int[] array = new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3 }; 
             List<int> list = new List<Int32>(array);
-            Int32 sumArray = 24;
+            int sumArray = 24;
 
-            for (Int32 k = 0; k < array.Length; k++)
+            for (int k = 0; k < array.Length; k++)
             {
                 int number = RandomSingleton.Random.Next(sumArray) + 1;
                 Assert.LessOrEqual(number, sumArray);

@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
 
                 if (fieldList.Count > 0 && objectList.Count > 0)
                 {
-                    if (this.fieldSelectionRatio >= (double)1
+                    if (this.fieldSelectionRatio >= 1.0
                         || RandomSingleton.Random.NextDouble() < this.fieldSelectionRatio)
                     {
                         element = this.GetAndRemoveListElement<int>(fieldList);

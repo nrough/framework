@@ -5,6 +5,6 @@ namespace Infovision.Datamining.Roughset
     public interface IReductMeasure : IFactoryProduct
     {
         SortDirection SortDirection { get; }
-        Double Calc(IReduct reduct);
+        double Calc(IReduct reduct);
     }
 }

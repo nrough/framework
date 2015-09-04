@@ -101,7 +101,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public static PermutationCollection LoadFromJson(String jsonText)
+        public static PermutationCollection LoadFromJson(string jsonText)
         {
             PermutationCollection permutationList = new PermutationCollection();
             JObject json = JObject.Parse(jsonText);
@@ -109,14 +109,14 @@ namespace Infovision.Datamining.Roughset
             return permutationList;
         }
 
-        public static String GetJson(PermutationCollection permutationList)
+        public static string GetJson(PermutationCollection permutationList)
         {
             return permutationList.ToString();
         }
 
         public static PermutationCollection LoadFromJsonFile(string fileName)
         {
-            String jsonText = String.Empty;
+            string jsonText = String.Empty;
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (StreamReader streamReader = new StreamReader(fileStream))

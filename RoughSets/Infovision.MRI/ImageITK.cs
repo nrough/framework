@@ -11,7 +11,7 @@ namespace Infovision.MRI
     public class ImageITK : ImageBase
     {
         [NonSerialized] private itk.simple.Image image;
-        [NonSerialized] private VectorUInt32 positionVector;
+        [NonSerialized] private VectorUint positionVector;
 
         public ImageITK()
         {
@@ -436,7 +436,7 @@ namespace Infovision.MRI
             ImportImageFilter importImageFilter = new ImportImageFilter();
             importImageFilter.SetSize(new VectorUInt32(new uint[] { width, height, depth }));
 
-            VectorDouble direction = (depth > 0)
+            Vectordouble direction = (depth > 0)
 
                 ? new VectorDouble(new double[] {1, 0, 0, 
                                                  0, 1, 0, 
@@ -447,13 +447,13 @@ namespace Infovision.MRI
 
             importImageFilter.SetDirection(direction);
 
-            VectorDouble origin = (depth) > 0
+            Vectordouble origin = (depth) > 0
                 ? new VectorDouble(new double[] { 0, 0, 0 })
                 : new VectorDouble(new double[] { 0, 0 });
 
             importImageFilter.SetOrigin(origin);
 
-            VectorDouble spacing = (depth > 0)
+            Vectordouble spacing = (depth > 0)
                 ? new VectorDouble(new double[] { 1, 1, 1 })
                 : new VectorDouble(new double[] { 1, 1 });
 
@@ -523,8 +523,8 @@ namespace Infovision.MRI
             }
 
             itk.simple.Image slice = SimpleITK.Extract(this.ItkImage,
-                                            new VectorUInt32(new UInt32[] { this.ItkImage.GetWidth(), this.ItkImage.GetHeight(), 0 }),
-                                            new VectorInt32(new Int32[] { 0, 0, z }),
+                                            new VectorUInt32(new Uint[] { this.ItkImage.GetWidth(), this.ItkImage.GetHeight(), 0 }),
+                                            new VectorInt32(new int[] { 0, 0, z }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             return new ImageITK(slice);    

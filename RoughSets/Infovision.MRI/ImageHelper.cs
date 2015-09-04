@@ -11,13 +11,13 @@ namespace Infovision.MRI
         {
             switch (pixelType)
             {
-                case PixelType.Double :  return (double) double.MaxValue;
+                case PixelType.double :  return (double) double.MaxValue;
                 case PixelType.Int16 :   return (double) short.MaxValue;
                 case PixelType.UInt8 :   return (double) byte.MaxValue;
                 case PixelType.UInt16 :  return (double) ushort.MaxValue;
-                case PixelType.UInt32 :  return (double) uint.MaxValue;
+                case PixelType.Uint :  return (double) uint.MaxValue;
                 case PixelType.Int8 :    return (double) sbyte.MaxValue;
-                case PixelType.Int32 :   return (double) int.MaxValue;
+                case PixelType.int :   return (double) int.MaxValue;
                 case PixelType.Float :   return (double) float.MaxValue;
                 
                 default:

@@ -8,11 +8,11 @@ namespace Infovision.Data
     public class ObjectSet : PascalSet, IObjectSetInfo
     {
         DataStore dataStore = null;
-        Dictionary<Int64, Int32> decisionCount = new Dictionary<Int64, Int32>();
+        Dictionary<long, int> decisionCount = new Dictionary<long, int>();
         
         #region Contructors
 
-        public ObjectSet(DataStore dataStore, Int32[] initialData)
+        public ObjectSet(DataStore dataStore, int[] initialData)
             : base(0, dataStore.NumberOfRecords-1, initialData)
         {
             this.dataStore = dataStore;
@@ -20,7 +20,7 @@ namespace Infovision.Data
         }
 
         public ObjectSet(DataStore dataStore)
-            : this(dataStore, new Int32[] { }) 
+            : this(dataStore, new int[] { }) 
         {
         }
 
@@ -38,17 +38,17 @@ namespace Infovision.Data
             get { return this.dataStore; }
         }
 
-        public Int32 NumberOfRecords
+        public int NumberOfRecords
         {
             get { return this.Count; }
         }
 
-        public Int32 NumberOfDecisionValues
+        public int NumberOfDecisionValues
         {
             get { return decisionCount.Keys.Count; }
         }
 
-        public String CacheKey
+        public string CacheKey
         {
             get { return this.ToString(); }
         }
@@ -57,40 +57,40 @@ namespace Infovision.Data
 
         #region Methods
 
-        public ICollection<Int64> GetDecisionValues()
+        public ICollection<long> GetDecisionValues()
         {
             return this.decisionCount.Keys;
         }
 
-        private void InitDecisionCount(Int32[] data)
+        private void InitDecisionCount(int[] data)
         {
-            this.decisionCount = new Dictionary<Int64, Int32>();
-            for (Int32 i = 0; i < data.Length; i++)
+            this.decisionCount = new Dictionary<long, int>();
+            for (int i = 0; i < data.Length; i++)
             {
-                Int64 decisionValue = this.dataStore.GetDecisionValue(data[i]);
-                Int32 count = 0;
+                long decisionValue = this.dataStore.GetDecisionValue(data[i]);
+                int count = 0;
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
             }
         }
 
-        public override void AddElement(Int32 element)
+        public override void AddElement(int element)
         {
             if (!this.ContainsElement(element))
             {
-                Int64 decisionValue = this.dataStore.GetDecisionValue(element);
-                Int32 count = 0;
+                long decisionValue = this.dataStore.GetDecisionValue(element);
+                int count = 0;
                 decisionCount[decisionValue] = decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
             }
 
             base.AddElement(element);
         }
 
-        public override void RemoveElement(Int32 element)
+        public override void RemoveElement(int element)
         {
             if (this.ContainsElement(element))
             {
-                Int64 decisionValue = this.dataStore.GetDecisionValue(element);
-                Int32 count = 0;
+                long decisionValue = this.dataStore.GetDecisionValue(element);
+                int count = 0;
                 decisionCount[decisionValue] = decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;
             }
             
@@ -102,19 +102,19 @@ namespace Infovision.Data
             return new ObjectSet(dataStore);
         }
 
-        public Double PriorDecisionProbability(Int64 decisionValue)
+        public double PriorDecisionProbability(long decisionValue)
         {
-            Int32 count = 0;
+            int count = 0;
             if (this.decisionCount.TryGetValue(decisionValue, out count))
             {
-                return (this.NumberOfRecords > 0) ? (Double)count / (Double)this.NumberOfRecords : 0;
+                return (this.NumberOfRecords > 0) ? (double)count / (double)this.NumberOfRecords : 0;
             }
             return 0;
         }
 
-        public Int32 NumberOfObjectsWithDecision(Int64 decisionValue)
+        public int NumberOfObjectsWithDecision(long decisionValue)
         {
-            Int32 count = 0;
+            int count = 0;
             if (this.decisionCount.TryGetValue(decisionValue, out count))
             {
                 return count;
@@ -127,7 +127,7 @@ namespace Infovision.Data
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder(this.Data.Length * 3);
-            for (Int32 i = 0; i < this.Data.Length; i++)
+            for (int i = 0; i < this.Data.Length; i++)
             {
                 if (this.Data.Get(i))
                 {

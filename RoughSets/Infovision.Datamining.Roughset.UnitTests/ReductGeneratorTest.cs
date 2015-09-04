@@ -19,8 +19,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public ReductGeneratorTest()
         {
-            string trainFileName = @"dna.train";
-            string testFileName = @"dna.test";
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -45,16 +45,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
         [Test]
-        public void TestGolf([Values("GammaBireduct", "Bireduct", "BireductRelative")] String reductType)
+        public void TestGolf([Values("GammaBireduct", "Bireduct", "BireductRelative")] string reductType)
         {
-            Boolean showInfo = false;
+            bool showInfo = false;
             
             if (showInfo)
             {
                 Console.WriteLine(reductType);
             }
 
-            DataStore localDataStore = DataStore.Load(@"playgolf.train", FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
 
             localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
@@ -78,7 +78,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 for (int j = 0; j < 100; j++)
                 {
-                    Boolean first = true;
+                    bool first = true;
                     if (showInfo)
                     {
                         foreach (int permElement in permutations[j].ToArray())
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         }
 
                         EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore.DataStoreInfo);
-                        partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet);
+                        partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                         foreach (EquivalenceClass stats in partitionMap)
                         {
@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void TestBireductGolf_2()
         {
-            DataStore localDataStore = DataStore.Load(@"playgolf.train", FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationCollection permutationList = new PermutationCollection();
@@ -138,7 +138,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (IReduct reduct in roughClassifier.ReductStore)
             {
                 EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore.DataStoreInfo);
-                partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet);
+                partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                 foreach (EquivalenceClass stats in partitionMap)
                 {
@@ -147,8 +147,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test]
-        [Ignore]
+        [Test]        
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -156,7 +155,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGeneratorMulti.ApproximationDegree = (double)epsilon / (double)100;
+                reductGeneratorMulti.ApproximationDegree = (double)epsilon / 100.0;
                 IReductStore reductStore = reductGeneratorMulti.Generate(parms).First();
             }
 
@@ -165,8 +164,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Multi-thread timing is {0}", stop - start);
         }
 
-        [Test]
-        [Ignore]
+        [Test]        
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -174,7 +172,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGenerator.ApproximationDegree = (double)epsilon / (double)100;
+                reductGenerator.ApproximationDegree = (double)epsilon / 100.0;
                 IReductStore reductStore = reductGenerator.Generate(parms).First();
             }
 
@@ -183,8 +181,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Single-thread timing is {0}", stop - start);
         }
 
-        [Test]
-        [Ignore]
+        [Test]        
         public void ThreadPoolTest()
         {
             PascalSet[] resource = new PascalSet[10000];
@@ -222,7 +219,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
 
-            for (Int32 numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
+            for (int numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
             {
                 Console.WriteLine("{0}: {1}", numberOfThreads, results[numberOfThreads] / 100);
             }
@@ -230,7 +227,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private class WorkerTaskInfo
         {
-            public WorkerTaskInfo(Int32 threadIndex, int numberOfThreads, PascalSet[] array, ManualResetEvent resetEvent)
+            public WorkerTaskInfo(int threadIndex, int numberOfThreads, PascalSet[] array, ManualResetEvent resetEvent)
             {
                 this.ThreadIndex = threadIndex;
                 this.NumberOfThreads = numberOfThreads;

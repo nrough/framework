@@ -8,7 +8,7 @@ namespace Infovision.TestAssembly
 {
     public class TestReductFactory : Infovision.Datamining.Roughset.IReductFactory
     {
-        public String FactoryKey
+        public string FactoryKey
         {
             get { return "TestReduct"; }
         }
@@ -33,7 +33,7 @@ namespace Infovision.TestAssembly
 
     public class TestReductGenerator : Infovision.Datamining.Roughset.IReductGenerator
     {
-        private Double approximationLevel = 0;
+        private double approximationLevel = 0;
         
         public TestReductGenerator()
         {
@@ -43,7 +43,7 @@ namespace Infovision.TestAssembly
         {
         }
 
-        public Double ApproximationDegree
+        public double ApproximationDegree
         {
             get { return this.approximationLevel; }
             set { this.approximationLevel = value; }

@@ -89,9 +89,9 @@ namespace Infovision.MRI
 
 			ExtractImageFilter extractImage = new ExtractImageFilter();
 			extractImage.SetDirectionCollapseToStrategy(ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
-			VectorUInt32 sliceSize = new VectorUInt32(new uint[] { width, height, 0 });
+			VectorUint sliceSize = new VectorUInt32(new uint[] { width, height, 0 });
 			extractImage.SetSize(sliceSize);
-			VectorInt32 sliceIndex = new VectorInt32(new int[] { 0, 0, 0 });
+			Vectorint sliceIndex = new VectorInt32(new int[] { 0, 0, 0 });
 
 			ShiftScaleImageFilter scaleImageFilter = new ShiftScaleImageFilter();
 			AddImageFilter addImageFilter = new AddImageFilter();

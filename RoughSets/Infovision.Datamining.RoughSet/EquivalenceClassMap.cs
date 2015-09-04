@@ -71,8 +71,8 @@ namespace Infovision.Datamining.Roughset
         protected void InitDecisionCount(DataStoreInfo dataStoreInfo)
         {
             DataFieldInfo decisionInfo = dataStoreInfo.GetFieldInfo(dataStoreInfo.DecisionFieldId);
-            this.decisionCount = new Dictionary<Int64, int>(decisionInfo.Values().Count);
-            foreach (Int64 decisionValue in decisionInfo.InternalValues())
+            this.decisionCount = new Dictionary<long, int>(decisionInfo.Values().Count);
+            foreach (long decisionValue in decisionInfo.InternalValues())
             {
                 this.decisionCount.Add(decisionValue, decisionInfo.Histogram.GetBinValue(decisionValue));
             }
@@ -84,36 +84,56 @@ namespace Infovision.Datamining.Roughset
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
-                this.UpdateStatistic(attributeArray, dataStore, objectIndex);
+                this.UpdateStatistic(attributeArray, dataStore, objectIndex, 1.0 / dataStore.NumberOfRecords);
             }
         }
 
-        public void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet)
+        public void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
+        {
+            int[] attributeArray = attributeSet.ToArray();
+            foreach (int objectIndex in dataStore.GetObjectIndexes())
+            {
+                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
+            }
+        }
+
+        public void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
             int[] attributeArray = attributeSet.ToArray();
             foreach (int objectIndex in objectSet)
             {
-                this.UpdateStatistic(attributeArray, dataStore, objectIndex);
+                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
             }
         }
 
-        private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex)
+        private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, double objectWeight)
         {
             DataVector record = dataStore.GetDataVector(objectIndex, attributeArray);
             EquivalenceClass reductStatistic = null;
             if (this.partitions.TryGetValue(record, out reductStatistic))
             {
-                reductStatistic.AddObject(objectIndex, dataStore);
+                reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeight);
             }
             else
             {
                 reductStatistic = new EquivalenceClass(dataStore.DataStoreInfo);
-                reductStatistic.AddObject(objectIndex, dataStore);
+                reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeight);
                 this.partitions[record] = reductStatistic;
             }
-        }        
+        }
 
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet)
+        {
+            double[] weights = new double[dataStore.NumberOfRecords];
+            for (int i = 0; i < weights.Length; i++)
+            {
+                weights[i] = 1.0 / dataStore.NumberOfRecords;
+            }
+
+            return EquivalenceClassMap.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
+        }
+        
+        public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
             Dictionary<DataVector, EquivalenceClass> localPartitions = new Dictionary<DataVector, EquivalenceClass>();
             int[] attributeArray = attributeSet.ToArray();
@@ -124,7 +144,7 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass reductStatistic = null;
                 if (localPartitions.TryGetValue(record, out reductStatistic))
                 {
-                    reductStatistic.AddObject(objectIndex, dataStore);
+                    reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeights[objectIndex]);
 
                     if (reductStatistic.NumberOfDecisions > 1)
                         return false;
@@ -132,7 +152,7 @@ namespace Infovision.Datamining.Roughset
                 else
                 {
                     reductStatistic = new EquivalenceClass(dataStore.DataStoreInfo);
-                    reductStatistic.AddObject(objectIndex, dataStore);
+                    reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeights[objectIndex]);
                     localPartitions[record] = reductStatistic;
                 }
             }
@@ -156,7 +176,7 @@ namespace Infovision.Datamining.Roughset
             return reductStatstic;
         }
 
-        public int GetDecisionValueCount(Int64 decisionValue)
+        public int GetDecisionValueCount(long decisionValue)
         {
             int count = 0;
             if(this.decisionCount.TryGetValue(decisionValue, out count))

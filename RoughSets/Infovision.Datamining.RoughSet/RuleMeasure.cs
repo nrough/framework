@@ -4,7 +4,7 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IRuleMeasure
     {
-        double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo);        
+        double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo);        
         string Description();
     }
 
@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureSupport : IRuleMeasure
     {
         //P(X,E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             if (reduct.ObjectSetInfo.NumberOfRecords > 0)
             {
@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureWeightSupport : IRuleMeasure
     {
         //Pw(X,E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double weightSum = 0;
             foreach (int objectIndex in equivalenceClassInfo.GetObjectIndexes(decisionValue))
@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureConfidence : IRuleMeasure
     {
         // P(X|E) = P(X,E)/P(E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClass)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClass)
         {
             if (equivalenceClass.NumberOfObjects > 0)
             {
@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureWeightConfidence : IRuleMeasure
     {
         // Pw(X|E) = Pw(X,E)/Pw(E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double weightSum_EX = 0;
             foreach (int objectIndex in equivalenceClassInfo.GetObjectIndexes(decisionValue))
@@ -99,7 +99,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureCoverage : IRuleMeasure
     {
         //P(E|X) = P(X,E)/P(X)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0)
             {
@@ -120,7 +120,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureWeightCoverage : IRuleMeasure
     {
         //Pw(E|X) = Pw(X,E)/Pw(X)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double weightSum_XE = 0;
             foreach (int objectIndex in equivalenceClassInfo.GetObjectIndexes(decisionValue))
@@ -147,7 +147,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureRatio : IRuleMeasure
     {
         //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double result = 0;
             if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureWeightRatio : IRuleMeasure
     {
         //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double weightSum_XE = 0;
             foreach (int objectIndex in equivalenceClassInfo.GetObjectIndexes(decisionValue))
@@ -206,7 +206,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureStrenght : IRuleMeasure
     {
         //P(E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             if (reduct.ObjectSetInfo.NumberOfRecords > 0)
             {
@@ -225,7 +225,7 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureWeightStrenght : IRuleMeasure
     {
         //Pw(E)
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double weightSum_E = 0;
             foreach (int objectIndex in equivalenceClassInfo.ObjectIndexes)
@@ -245,12 +245,12 @@ namespace Infovision.Datamining.Roughset
     public class RuleMeasureConfidenceRelative : IRuleMeasure
     {
         //P*(X|E) = (|X & E|/|X|) / (sum_{i} |X_{i} & E| / |X_{i}| )
-        public virtual double Calc(Int64 decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
+        public virtual double Calc(long decisionValue, IReduct reduct, EquivalenceClass equivalenceClassInfo)
         {
             double sum = 0;
             ;
 
-            foreach (Int64 decision in reduct.ObjectSetInfo.GetDecisionValues())
+            foreach (long decision in reduct.ObjectSetInfo.GetDecisionValues())
             {
                 if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision) > 0)
                 {

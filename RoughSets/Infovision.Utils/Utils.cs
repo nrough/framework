@@ -119,7 +119,7 @@ namespace Infovision.Utils
         //cover any lesser value
         private class _Value
         {
-            //cached comparisons for tye to use
+            //cached comparisons for tye to use            
             private static readonly Type _UInt32 = typeof(long);
             private static readonly Type _UInt64 = typeof(ulong);
 
@@ -165,10 +165,10 @@ namespace Infovision.Utils
             return coreCount;
         }
 
-        public static Type String2Type(String value)
+        public static Type String2Type(string value)
         {
-            Int32 intResult;
-            Double decimalResult;
+            int intResult;
+            double decimalResult;
 
             if (Int32.TryParse(value, out intResult))
             {
@@ -176,22 +176,22 @@ namespace Infovision.Utils
             }
             else if (Double.TryParse(value, out decimalResult))
             {
-                return typeof(Double);
+                return typeof(double);
             }
 
             return typeof(String);
         }        
 
-        public static String IntArray2Ranges(Int64[] array, String rangeSeparator = "..", String elementSeparator = " ")
+        public static string IntArray2Ranges(Int64[] array, string rangeSeparator = "..", string elementSeparator = " ")
         {
             List<KeyValuePair<Int64, Int64>> ranges = new List<KeyValuePair<Int64, Int64>>();
             StringBuilder stringBuilder = new StringBuilder();
             ;
 
-            Int32 i = 0;
+            int i = 0;
             while (i < array.Length)
             {
-                Int32 j = i;
+                int j = i;
                 while (j + 1 < array.Length && array[j + 1] == array[j] + 1)
                 {
                     j++;
@@ -201,7 +201,7 @@ namespace Infovision.Utils
                 i = j + 1;
             }
 
-            Boolean first = true;
+            bool first = true;
             foreach (KeyValuePair<Int64, Int64> kvp in ranges)
             {
                 if (!first)
@@ -224,7 +224,7 @@ namespace Infovision.Utils
             return stringBuilder.ToString();
         }
 
-        public static String IntArray2Ranges(int[] array, string rangeSeparator = "..", string elementSeparator = " ")
+        public static string IntArray2Ranges(int[] array, string rangeSeparator = "..", string elementSeparator = " ")
         {
             Int64[] longArray = Array.ConvertAll<int, Int64>(array, delegate(int i) { return (Int64)i; });
             return IntArray2Ranges(longArray, rangeSeparator, elementSeparator);

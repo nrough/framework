@@ -43,7 +43,7 @@ namespace Infovision.Data
 
         #region Properties
 
-        public Int64 this[int index]
+        public long this[int index]
         {
             get { return data[index]; }
         }
@@ -86,7 +86,7 @@ namespace Infovision.Data
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (Int64 element in data)
+            foreach (long element in data)
             {
                 stringBuilder.Append(element).Append(' ');
             }

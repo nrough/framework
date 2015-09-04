@@ -1,9 +1,11 @@
 ﻿
+using System;
 using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
+    [Serializable]
     public abstract class WeightGenerator
     {
         private DataStore dataStore = null;
@@ -53,6 +55,7 @@ namespace Infovision.Datamining.Roughset
         
     }
 
+    [Serializable]
     public class WeightGeneratorRandom : WeightGenerator
     {
         public WeightGeneratorRandom(DataStore dataStore)
@@ -80,6 +83,7 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
+    [Serializable]
     public class WeightGeneratorMajority : WeightGenerator
     {
         public WeightGeneratorMajority(DataStore dataStore)
@@ -93,11 +97,12 @@ namespace Infovision.Datamining.Roughset
 
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                this.Weights[i] = (double)1 / (double)this.DataStore.NumberOfRecords;
+                this.Weights[i] = 1.0 / (double)this.DataStore.NumberOfRecords;
             }
         }
     }
 
+    [Serializable]
     public class WeightGeneratorRelative : WeightGenerator
     {
         public WeightGeneratorRelative(DataStore dataStore)
@@ -112,7 +117,7 @@ namespace Infovision.Datamining.Roughset
             double weight = 0;
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                weight = (double)1
+                weight = 1.0
                     / ((double)this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
                                                 * (double)this.DataStore.DataStoreInfo.NumberOfDecisionValues);
 

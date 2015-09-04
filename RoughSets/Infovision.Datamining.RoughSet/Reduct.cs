@@ -14,11 +14,8 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassMap eqClassMap;
-        private double approximationDegree;
-        
-        protected double[] objectWeights;
-        
-        //TODO private List<int> attributeOrder;
+        private double approximationDegree;        
+        private double[] objectWeights;        
 
         #endregion
 
@@ -28,10 +25,11 @@ namespace Infovision.Datamining.Roughset
         {
             get { return this.dataStore; }
         }
-
-        public virtual double[] Weights
+                 
+        public double[] Weights
         {
             get { return this.objectWeights; }
+            protected set { this.objectWeights = value; }
         }
 
         public FieldSet Attributes
@@ -57,8 +55,20 @@ namespace Infovision.Datamining.Roughset
 
         public EquivalenceClassMap EquivalenceClassMap
         {
-            get { return this.eqClassMap; }
+            get 
+            {
+                if (this.eqClassMap == null)
+                    this.BuildEquivalenceMap();
+
+                return this.eqClassMap; 
+            }
             protected set { this.eqClassMap = value; }
+        }
+
+        public bool UseGlobalCache
+        {
+            get;
+            set;
         }
 
         protected string ReductPartitionCacheKey
@@ -67,7 +77,7 @@ namespace Infovision.Datamining.Roughset
             {
                 StringBuilder stringBuilder = new StringBuilder();
 
-                stringBuilder.Append("m=Partition");
+                stringBuilder.Append("m=Prt"); //Prt aka Partition
                 stringBuilder.Append("|a=").Append(this.attributeSet.CacheKey);
                 stringBuilder.Append("|d=").Append(this.dataStore.Name);
 
@@ -84,46 +94,30 @@ namespace Infovision.Datamining.Roughset
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
             this.approximationDegree = approximationDegree;
-            //this.attributeOrder = new List<int>(fieldIds);
-            this.BuildEquivalenceMap(true);
-            this.objectWeights = new double[dataStore.NumberOfRecords];
-            
-            for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = (double)1 / (double)this.DataStore.NumberOfRecords;
-        }
 
-        /*
-        public Reduct(DataStore dataStore, int[] fieldIds)
-            : this(dataStore, fieldIds, 1.0)
-        {
-        }
-        */
+            this.objectWeights = new double[this.dataStore.NumberOfRecords];
+            for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;                                           
+        }       
 
         public Reduct(DataStore dataStore, double approximationDegree)
             : this(dataStore, new int[] { }, approximationDegree)
-        {
-            //set size to number of fields minus one (decision attribute)
-            //this.attributeOrder = new List<int>(dataStore.DataStoreInfo.NumberOfFields - 1);
+        {            
         }
 
         public Reduct(DataStore dataStore)
             : this(dataStore, new int[] { }, 0)
-        {
-            //set size to number of fields minus one (decision attribute)
-            //this.attributeOrder = new List<int>(dataStore.DataStoreInfo.NumberOfFields - 1);
+        {            
         }
 
         public Reduct(Reduct reduct)
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
-            this.ApproximationDegree = reduct.approximationDegree;
-            
-            //this.attributeOrder = new List<int>(reduct.attributeOrder);
-            
+            this.ApproximationDegree = reduct.approximationDegree;                                 
             this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
             this.objectWeights = new double[dataStore.NumberOfRecords];
-            Buffer.BlockCopy(reduct.Weights, 0, this.objectWeights, 0, reduct.DataStore.NumberOfRecords * sizeof(double));            
+            Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);            
         }
 
         #endregion        
@@ -132,25 +126,24 @@ namespace Infovision.Datamining.Roughset
 
         protected void InitEquivalenceMap()
         {
-            eqClassMap = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
+            this.eqClassMap = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
         }
         
-        public virtual void BuildEquivalenceMap(bool useCache = true)
+        public virtual void BuildEquivalenceMap()
         {
-
-            if (useCache == false)
+            if (!this.UseGlobalCache)
             {
                 this.InitEquivalenceMap();
-                eqClassMap.Calc(this.attributeSet, this.dataStore);
+                this.eqClassMap.Calc(this.attributeSet, this.dataStore, this.objectWeights);
                 return;
             }
 
             string partitionKey = this.ReductPartitionCacheKey;
-            eqClassMap = ReductCache.Instance.Get(partitionKey) as EquivalenceClassMap;
+            this.eqClassMap = ReductCache.Instance.Get(partitionKey) as EquivalenceClassMap;
             if (eqClassMap == null)
             {
                 this.InitEquivalenceMap();
-                eqClassMap.Calc(this.attributeSet, this.dataStore);
+                this.eqClassMap.Calc(this.attributeSet, this.dataStore, this.objectWeights);
                 ReductCache.Instance.Set(partitionKey, eqClassMap);
             }
         }
@@ -165,7 +158,7 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckAddAttribute(attributeId))
             {
                 this.attributeSet.AddElement(attributeId);
-                this.BuildEquivalenceMap(true);
+                this.BuildEquivalenceMap();
                 return true;
             }
 
@@ -177,14 +170,12 @@ namespace Infovision.Datamining.Roughset
             return this.attributeSet.ContainsElement(attributeId);
         }
 
-        //TODO removeAt
         public virtual bool RemoveAttribute(int attributeId)
         {
             if(this.CheckRemoveAttribute(attributeId))
             {
                 this.attributeSet.RemoveElement(attributeId);
-                //this.attributeOrder.Remove(attributeId);
-                this.BuildEquivalenceMap(true);
+                this.BuildEquivalenceMap();
                 return true;
             }
 

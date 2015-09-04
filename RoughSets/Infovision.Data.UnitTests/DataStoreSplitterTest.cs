@@ -12,7 +12,7 @@ namespace Infovision.Data.UnitTests
         [SetUp]
         public void Init()
         {
-            String fileName = @"chess.dta";
+            string fileName = @"chess.dta";
             dataStore = DataStore.Load(fileName, FileFormat.Rses1);
         }
 
@@ -22,9 +22,9 @@ namespace Infovision.Data.UnitTests
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
 
-            for (Int32 i = 0; i <= 100; i += 10)
+            for (int i = 0; i <= 100; i += 10)
             {
-                DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (Double)i/(Double)100);
+                DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (double)i/(double)100);
                 dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
 
                 Assert.AreEqual(dataStore.DataStoreInfo.NumberOfRecords, dataStore1.DataStoreInfo.NumberOfRecords + dataStore2.DataStoreInfo.NumberOfRecords);
@@ -34,13 +34,13 @@ namespace Infovision.Data.UnitTests
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore1.DataStoreInfo.DecisionFieldId);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore2.DataStoreInfo.DecisionFieldId);
 
-                foreach (Int32 fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
                     Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
                     Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
                 }
 
-                foreach (Int64 objectId in dataStore.GetObjectIds())
+                foreach (long objectId in dataStore.GetObjectIds())
                 {
                     Assert.AreNotEqual(0, objectId);
 
@@ -67,7 +67,7 @@ namespace Infovision.Data.UnitTests
 
             DataStoreSplitter dataStoreSplitter = new DataStoreSplitter(dataStore, 10);
 
-            for (Int32 i = 1; i <= 10; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 dataStoreSplitter.ActiveFold = i;
                 dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
@@ -79,13 +79,13 @@ namespace Infovision.Data.UnitTests
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore1.DataStoreInfo.DecisionFieldId);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore2.DataStoreInfo.DecisionFieldId);
 
-                foreach (Int32 fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
                     Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
                     Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
                 }
 
-                foreach (Int64 objectId in dataStore.GetObjectIds())
+                foreach (long objectId in dataStore.GetObjectIds())
                 {
                     Assert.AreNotEqual(0, objectId);
 
@@ -121,30 +121,30 @@ namespace Infovision.Data.UnitTests
         {
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
-            Int32 elementSum;
-            Int32 elementSum1;
-            Int32 elementSum2;
+            int elementSum;
+            int elementSum1;
+            int elementSum2;
 
             DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, 0.75);
             dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
 
-            foreach (Int32 fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+            foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
             {
                 elementSum = 0;
                 elementSum1 = 0;
                 elementSum2 = 0;
 
-                foreach (Int64 internalValue in dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach (long internalValue in dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     elementSum += dataStore.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
-                foreach(Int64 internalValue in dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach(long internalValue in dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     elementSum1 += dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
-                foreach (Int64 internalValue in dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach (long internalValue in dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     elementSum2 += dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }

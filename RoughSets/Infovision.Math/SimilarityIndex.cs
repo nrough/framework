@@ -181,22 +181,20 @@ namespace Infovision.Math
             int a = 0; //0
             int b = 0; //1
             int c = 0; //2
-            int d = 0; //3
-
-            double tineDouble = 0.0000000001;
+            int d = 0; //3            
 
             for (int i = 0; i < vec1.Length; i++)
             {
-                if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tineDouble)
-                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tineDouble))
+                if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble)
+                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
                 {
                     d++;
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tineDouble))
+                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble))
                 {
                     b++;
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tineDouble))
+                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
                 {
                     a++;
                 }
@@ -221,22 +219,20 @@ namespace Infovision.Math
             double a = 0; //0  //number od 
             double b = 0; //1
             double c = 0; //2
-            double d = 0; //3
-
-            double tineDouble = 0.0000000001;
+            double d = 0; //3            
 
             for (int i = 0; i < vec1.Length; i++)
             {
-                 if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tineDouble)
-                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tineDouble))
+                if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble)
+                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
                 {
                     d += weights[i];
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tineDouble))
+                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble))
                 {
                     b += weights[i];
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tineDouble))
+                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
                 {
                     a += weights[i];
                 }

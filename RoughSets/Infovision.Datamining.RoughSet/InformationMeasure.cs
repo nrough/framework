@@ -74,12 +74,12 @@ namespace Infovision.Datamining.Roughset
             return reduct.ObjectSetInfo.NumberOfRecords != 0 ? (double)result / (double)reduct.ObjectSetInfo.NumberOfRecords : 0;
         }
 
-        public override String Description()
+        public override string Description()
         {
             return "Positive";
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "Positive";
         }
@@ -101,7 +101,7 @@ namespace Infovision.Datamining.Roughset
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 maxDecisionProbability = -1;
-                foreach (Int64 decisionValue in e.DecisionValues)
+                foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.DecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
 
@@ -144,7 +144,7 @@ namespace Infovision.Datamining.Roughset
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 maxDecisionProbability = -1;
-                foreach (Int64 decisionValue in e.DecisionValues)
+                foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.DecisionProbability(decisionValue);
 

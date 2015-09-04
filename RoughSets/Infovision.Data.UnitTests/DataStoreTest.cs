@@ -16,8 +16,8 @@ namespace Infovision.Data.UnitTests
 
         public DataStoreTest()
         {
-            String trainFileName = @"monks-1.train";
-            String testFileName = @"monks-1.test";
+            string trainFileName = @"monks-1.train";
+            string testFileName = @"monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -78,7 +78,7 @@ namespace Infovision.Data.UnitTests
             //First record
             //1 1 1 1 3 1 1 
 
-            Int64 internalValue = dataStoreTrain.GetObjectField(0, 1);
+            long internalValue = dataStoreTrain.GetObjectField(0, 1);
             Object externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
 
@@ -124,13 +124,13 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void TrainDataFieldEncoding()
         {
-            for (Int32 i = 0; i < dataStoreTrainInfo.NumberOfRecords; i++)
+            for (int i = 0; i < dataStoreTrainInfo.NumberOfRecords; i++)
             {
                 DataRecordInternal dataRecord = dataStoreTrain.GetRecordByIndex(i);
 
-                foreach (Int32 fieldId in dataRecord.GetFields())
+                foreach (int fieldId in dataRecord.GetFields())
                 {
-                    Int64 internalValue = dataStoreTrain.GetObjectField(i, fieldId);
+                    long internalValue = dataStoreTrain.GetObjectField(i, fieldId);
                     Object externalValue = dataStoreTrainInfo.GetFieldInfo(fieldId).Internal2External(internalValue);
                     Object externalValueFromRecord = dataStoreTrainInfo.GetFieldInfo(fieldId).Internal2External(dataRecord[fieldId]);
                     Assert.AreEqual((int)externalValueFromRecord, (int)externalValue);                    
@@ -141,13 +141,13 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void TestDataFieldEncoding()
         {
-            for (Int32 i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
+            for (int i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
             {
                 DataRecordInternal dataRecord = dataStoreTest.GetRecordByIndex(i);
 
-                foreach (Int32 fieldId in dataRecord.GetFields())
+                foreach (int fieldId in dataRecord.GetFields())
                 {
-                    Int64 internalValue = dataStoreTest.GetObjectField(i, fieldId);
+                    long internalValue = dataStoreTest.GetObjectField(i, fieldId);
                     Object externalValue = dataStoreTestInfo.GetFieldInfo(fieldId).Internal2External(internalValue);
                     Object externalValueFromRecord = dataStoreTestInfo.GetFieldInfo(fieldId).Internal2External(dataRecord[fieldId]);
                     Assert.AreEqual((int)externalValueFromRecord, (int)externalValue);
@@ -162,9 +162,9 @@ namespace Infovision.Data.UnitTests
         public void DataRecordInternal()
         {
             Dictionary<DataRecordInternal, Int32> dict = new Dictionary<DataRecordInternal, Int32>();
-            Int32 count = 0;
+            int count = 0;
 
-            for (Int32 i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
+            for (int i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
             {
                 DataRecordInternal dataRecord1 = dataStoreTest.GetRecordByIndex(i);
                 DataRecordInternal dataRecord2 = dataStoreTest.GetRecordByIndex(i);
@@ -180,7 +180,7 @@ namespace Infovision.Data.UnitTests
                 Assert.AreEqual(1, kvp.Value);
                 DataRecordInternal record = kvp.Key;
                 
-                foreach(Int32 fieldId in record.GetFields())
+                foreach(int fieldId in record.GetFields())
                 {
                     Assert.AreEqual(dataStoreTest.GetObjectField((int)record.ObjectId - 1, fieldId), record[fieldId]);
                 }
@@ -190,22 +190,22 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void DataStoreInfoTest()
         {
-            foreach (Int32 fieldId in dataStoreTestInfo.GetFieldIds(FieldTypes.All))
+            foreach (int fieldId in dataStoreTestInfo.GetFieldIds(FieldTypes.All))
             {
-                foreach (Int64 internalValue in dataStoreTestInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach (long internalValue in dataStoreTestInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     Object externalValue = dataStoreTestInfo.GetFieldInfo(fieldId).Internal2External(internalValue);
-                    Int64 trainInternalValue = dataStoreTrainInfo.GetFieldInfo(fieldId).External2Internal(externalValue);
+                    long trainInternalValue = dataStoreTrainInfo.GetFieldInfo(fieldId).External2Internal(externalValue);
                     Assert.AreEqual(internalValue, trainInternalValue);
                 }
             }
 
-            foreach (Int32 fieldId in dataStoreTrainInfo.GetFieldIds(FieldTypes.All))
+            foreach (int fieldId in dataStoreTrainInfo.GetFieldIds(FieldTypes.All))
             {
-                foreach (Int64 internalValue in dataStoreTrainInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach (long internalValue in dataStoreTrainInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     Object externalValue = dataStoreTrainInfo.GetFieldInfo(fieldId).Internal2External(internalValue);
-                    Int64 testInternalValue = dataStoreTestInfo.GetFieldInfo(fieldId).External2Internal(externalValue);
+                    long testInternalValue = dataStoreTestInfo.GetFieldInfo(fieldId).External2Internal(externalValue);
                     Assert.AreEqual(internalValue, testInternalValue);
                 }
             }

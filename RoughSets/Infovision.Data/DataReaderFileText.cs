@@ -206,7 +206,7 @@ namespace Infovision.Data
                         {
                             fieldId[col] = col + 1;
 
-                            Int64 internalValue;
+                            long internalValue;
                             if (referenceDataStoreInfo != null)
                             {
                                 internalValue = referenceDataStoreInfo.AddFieldValue(fieldId[col], typedFieldValues[col]);

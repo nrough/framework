@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
-            int numberOfPermutations = 20;
+            int numberOfPermutations = 5;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             //TODO Epsilon generation according to some distribution
@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet2["ReverseDistanceFunction"] = false;
             argSet2["DendrogramBitmapFile"] = @"f:\euclidean_standard.bmp";
 
-            //argsList.Add(argSet2);
+            argsList.Add(argSet2);
 
             return argsList;
         }
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
-            int numberOfPermutations = 1;
+            int numberOfPermutations = 10;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             //TODO Epsilon generation according to some distribution
@@ -197,29 +197,33 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 parms.AddParameter(kvp.Key, kvp.Value);
             }
-            
+            DataStore data = (DataStore)parms.GetParameter("DataStore");
+            double epsilon = 0.0000001;
+                       
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             reductGenerator.Generate(parms);
-
+            
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
-            Reduct reduct = reductPool.GetReduct(0) as Reduct;
             double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
 
-            DataStore data = (DataStore) parms.GetParameter("DataStore");
-            for (int i = 0; i < data.NumberOfRecords; i++)
+            for (int r = 0; r < reductPool.Count; r++)            
             {
-                
-                DataVector objectData = data.GetDataVector(i, reduct.Attributes);
-                EquivalenceClass eqClass = reduct.EquivalenceClassMap.GetEquivalenceClass(objectData);
-                if (data.GetDecisionValue(i) == eqClass.MostFrequentDecision)
+                ReductWeights red = reductPool.GetReduct(r) as ReductWeights;
+                for (int i = 0; i < data.NumberOfRecords; i++)
                 {
-                    Assert.IsTrue(Infovision.Math.DoubleEpsilonComparer.NearlyEqual(-0.005, errorWeights[0][i], 0.0000001));
+                    DataVector objectData = data.GetDataVector(i, red.Attributes);
+                    EquivalenceClass eqClass = red.EquivalenceClassMap.GetEquivalenceClass(objectData);
+                    
+                    if (data.GetDecisionValue(i) == eqClass.MajorDecision)
+                    {
+                        Assert.IsTrue(Infovision.Math.DoubleEpsilonComparer.NearlyEqual(-0.0005, errorWeights[r][i], epsilon));
+                    }
+                    else
+                    {
+                        Assert.IsTrue(Infovision.Math.DoubleEpsilonComparer.NearlyEqual(0.0005, errorWeights[r][i], epsilon));
+                    }
                 }
-                else
-                {
-                    Assert.AreEqual(0.005, errorWeights[0][i]);
-                }
-            }                                    
+            }
         }
                 
     }

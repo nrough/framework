@@ -6,7 +6,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public ReductStoreWorkerTaskInfo(Int32 threadIndex, Int32 numberOfThreads, IReduct reduct)
+        public ReductStoreWorkerTaskInfo(int threadIndex, int numberOfThreads, IReduct reduct)
         {
             this.Reduct = reduct;
             this.ThreadIndex = threadIndex;
@@ -17,8 +17,8 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        public Int32 ThreadIndex { get; set; }
-        public Int32 NumberOfThreads { get; set; }
+        public int ThreadIndex { get; set; }
+        public int NumberOfThreads { get; set; }
         public IReduct Reduct { get; set; }
 
         #endregion

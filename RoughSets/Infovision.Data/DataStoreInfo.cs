@@ -150,12 +150,12 @@ namespace Infovision.Data
             return fields[fieldId];
         }
 
-        public Int64 AddFieldValue(int fieldId, object externalValue)
+        public long AddFieldValue(int fieldId, object externalValue)
         {
             return this.GetFieldInfo(fieldId).Add(externalValue);
         }
 
-        public void AddFieldInternalValue(int fieldId, Int64 internalValue, object externalValue)
+        public void AddFieldInternalValue(int fieldId, long internalValue, object externalValue)
         {
             DataFieldInfo attributeInfo = this.GetFieldInfo(fieldId);
             attributeInfo.AddInternal(internalValue, externalValue);
@@ -186,12 +186,12 @@ namespace Infovision.Data
                 maxFieldId = fieldId;
         }
 
-        public double PriorDecisionProbability(Int64 decisionValue)
+        public double PriorDecisionProbability(long decisionValue)
         {
             return (double) this.NumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfRecords;
         }
 
-        public int NumberOfObjectsWithDecision(Int64 decisionValue)
+        public int NumberOfObjectsWithDecision(long decisionValue)
         {
             DataFieldInfo decisionInfo;
             if (fields.TryGetValue(this.DecisionFieldId, out decisionInfo))
@@ -224,7 +224,7 @@ namespace Infovision.Data
                 stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}", "Value", "Internal", "Count");
                 stringBuilder.Append(Environment.NewLine);
                 Histogram histogram = fieldInfo.Histogram;
-                foreach (Int64 internalValue in fieldInfo.InternalValues())
+                foreach (long internalValue in fieldInfo.InternalValues())
                 {
                     stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}",
                                                     fieldInfo.Internal2External(internalValue),

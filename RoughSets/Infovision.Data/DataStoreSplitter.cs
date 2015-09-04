@@ -113,12 +113,12 @@ namespace Infovision.Data
             this.splitRatio = splitRatio;
         }
 
-        public Double SplitRatio
+        public double SplitRatio
         {
             get { return this.splitRatio; }
         }
 
-        protected override Int32 RandomSplit()
+        protected override int RandomSplit()
         {
             return (this.splitRatio > RandomSingleton.Random.NextDouble()) ? 2 : 1;
         }

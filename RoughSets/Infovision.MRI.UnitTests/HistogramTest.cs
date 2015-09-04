@@ -22,7 +22,7 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void HistogramDistance()
         {
-            IImage trainImage = ImageITK.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
+            IImage trainImage = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
 
@@ -50,18 +50,18 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void HistogramChart()
         {
-            Int32 sliceId = 89;
+            int sliceId = 89;
             itk.simple.Image image = SimpleITK.ReadImage(@"t1_icbm_normal_1mm_pn3_rf20.img");
             itk.simple.Image slice = SimpleITK.Extract(image,
-                                            new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
-                                            new VectorInt32(new Int32[] { 0, 0, sliceId }),
+                                            new VectorUInt32(new uint[] { image.GetWidth(), image.GetHeight(), 0 }),
+                                            new VectorInt32(new int[] { 0, 0, sliceId }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
-            VectorUInt32 vector = new VectorUInt32(new UInt32[] { 0, 0 });
+            VectorUInt32 vector = new VectorUInt32(new uint[] { 0, 0 });
             Infovision.Utils.Histogram histogram = new Infovision.Utils.Histogram();
-            for (UInt32 x = 0; x < slice.GetWidth(); x++)
+            for (uint x = 0; x < slice.GetWidth(); x++)
             {
-                for (UInt32 y = 0; y < slice.GetHeight(); y++)
+                for (uint y = 0; y < slice.GetHeight(); y++)
                 {
                     vector[0] = x;
                     vector[1] = y;
@@ -73,10 +73,10 @@ namespace Infovision.MRI.UnitTests
             //populate dataset with some demo label..
             DataSet dataSet = new DataSet();
             DataTable dt = new DataTable();
-            dt.Columns.Add("Magnitude", typeof(Int64));
+            dt.Columns.Add("Magnitude", typeof(long));
             dt.Columns.Add("Counter", typeof(int));
 
-            for (Int64 i = 0; i < histogram.MaxElement; i++)
+            for (long i = 0; i < histogram.MaxElement; i++)
             {
                 DataRow dataRow = dt.NewRow();
                 dataRow[0] = i;
@@ -125,12 +125,12 @@ namespace Infovision.MRI.UnitTests
             chart.DataBind();
 
             //save result...
-            String histogramFileName = @"histogram.png";
+            string histogramFileName = @"histogram.png";
             chart.SaveImage(histogramFileName, ChartImageFormat.Png);
 
             Assert.IsTrue(File.Exists(histogramFileName));
 
-            String imageJExecutable = @"C:\Program Files (x86)\ImageJ\ImageJ.exe";
+            string imageJExecutable = @"C:\Program Files (x86)\ImageJ\ImageJ.exe";
 
             if (File.Exists(imageJExecutable))
             {
@@ -144,11 +144,11 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void HistogramChartMath()
         {
-            Int32 sliceId = 89;
+            int sliceId = 89;
             itk.simple.Image image = SimpleITK.ReadImage(@"t1_icbm_normal_1mm_pn3_rf20.img");
             itk.simple.Image slice = SimpleITK.Extract(image,
-                                            new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
-                                            new VectorInt32(new Int32[] { 0, 0, sliceId }),
+                                            new VectorUInt32(new uint[] { image.GetWidth(), image.GetHeight(), 0 }),
+                                            new VectorInt32(new int[] { 0, 0, sliceId }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageHistogram histogramChart = new ImageHistogram();
@@ -157,10 +157,10 @@ namespace Infovision.MRI.UnitTests
             Chart chart = histogramChart.GetChart();
 
             //save result...
-            String histogramFileName = @"histogram.png";
+            string histogramFileName = @"histogram.png";
             chart.SaveImage(histogramFileName, ChartImageFormat.Png);
 
-            String imageJExecutable = @"C:\Program Files (x86)\ImageJ\ImageJ.exe";
+            string imageJExecutable = @"C:\Program Files (x86)\ImageJ\ImageJ.exe";
             if (File.Exists(imageJExecutable))
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -173,12 +173,12 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void HistogramMathTest()
         {
-            itk.simple.Image trainImage = SimpleITKHelper.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
+            itk.simple.Image trainImage = SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             Assert.NotNull(trainImage);
 
             itk.simple.Image slice = SimpleITK.Extract(trainImage,
-                                            new VectorUInt32(new UInt32[] { trainImage.GetWidth(), trainImage.GetHeight(), 0 }),
-                                            new VectorInt32(new Int32[] { 0, 0, (int)89 }),
+                                            new VectorUInt32(new uint[] { trainImage.GetWidth(), trainImage.GetHeight(), 0 }),
+                                            new VectorInt32(new int[] { 0, 0, 89 }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             Assert.NotNull(slice);
@@ -206,7 +206,7 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void ImageHistogramClassifierSingleModalityTest()
         {
-            string fileName = @"pd_icbm_normal_1mm_pn3_rf20.rawb";
+            string fileName = @"Data\pd_icbm_normal_1mm_pn3_rf20.rawb";
             IImage trainImage = ImageITK.ReadImageRAW(fileName, 181, 217, 181, PixelIDValueEnum.sitkUInt8);
 
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
@@ -249,7 +249,7 @@ namespace Infovision.MRI.UnitTests
         {
             int trainSliceId = 89;
 
-            string fileName = @"t2_icbm_normal_1mm_pn3_rf20.rawb";
+            string fileName = @"Data\t2_icbm_normal_1mm_pn3_rf20.rawb";
             IImage trainImage = ImageITK.ReadImageRAW(fileName, width, height, depth, PixelIDValueEnum.sitkUInt8);
 
             IImage image = ImageITK.ReadImageRAW(fileName, width, height, depth, PixelIDValueEnum.sitkUInt8);
@@ -286,7 +286,7 @@ namespace Infovision.MRI.UnitTests
         public void ImageHistogramClusterSave()
         {
             int trainSliceId = 69;
-            string fileName = @"t1_icbm_normal_1mm_pn3_rf20.rawb";
+            string fileName = @"Data\t1_icbm_normal_1mm_pn3_rf20.rawb";
             string saveFileName = @"histclustertest.bin";
 
             IImage image = ImageITK.ReadImageRAW(fileName, width, height, depth, PixelIDValueEnum.sitkUInt8);
@@ -309,7 +309,7 @@ namespace Infovision.MRI.UnitTests
         [Test, ExpectedException("System.InvalidOperationException")]
         public void ImageHistogramNoTrain()
         {
-            string fileName = @"t2_icbm_normal_1mm_pn3_rf20.rawb";
+            string fileName = @"Data\t2_icbm_normal_1mm_pn3_rf20.rawb";
             IImage image = ImageITK.ReadImageRAW(fileName, width, height, depth, PixelIDValueEnum.sitkUInt8);
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
             //histCluster.Train(trainImage, trainSliceId);
@@ -321,7 +321,7 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void TwoNearestHistogramNeighbours()
         {
-            IImage trainImage = ImageITK.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
+            IImage trainImage = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
 
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
 

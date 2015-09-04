@@ -18,10 +18,10 @@ namespace Infovision.MRI.UnitTests
             uint imageHeight = 217;
             uint imageDepth = 181;
 
-            IImage imageT1 = ImageITK.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
-            IImage imageT2 = ImageITK.ReadImageRAW(@"t2_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
-            IImage imagePD = ImageITK.ReadImageRAW(@"pd_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
-            IImage imagePH = ImageITK.ReadImageRAW(@"ph_icbm_1mm_normal_crisp.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imageT1 = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imageT2 = ImageITK.ReadImageRAW(@"Data\t2_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imagePD = ImageITK.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imagePH = ImageITK.ReadImageRAW(@"Data\ph_icbm_1mm_normal_crisp.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
 
             ImageFeatureGroupExtractor featureExtractor = new ImageFeatureGroupExtractor();
 
@@ -63,7 +63,7 @@ namespace Infovision.MRI.UnitTests
         }
 
         [Test]
-        [Ignore("Not used")]
+        //[Ignore("Long runing")]
         public void FeatureExtractor()
         {
             uint imageWidth = 181;
@@ -71,9 +71,9 @@ namespace Infovision.MRI.UnitTests
             uint imageDepth = 181;
             int trainingSliceId = 89;
 
-            IImage imageT1 = ImageITK.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
-            IImage imageT2 = ImageITK.ReadImageRAW(@"t2_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
-            IImage imagePD = ImageITK.ReadImageRAW(@"pd_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imageT1 = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imageT2 = ImageITK.ReadImageRAW(@"Data\t2_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
+            IImage imagePD = ImageITK.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", imageWidth, imageHeight, imageDepth, PixelIDValueEnum.sitkUInt8);
 
             ImageFeatureExtractor featureExtractor = new ImageFeatureExtractor();
 

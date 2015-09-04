@@ -10,11 +10,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ConstructorTest()
         {
-            Matrix<Reduct, Int32, Int32> matrix = new Matrix<Reduct, Int32, Int32>();
+            Matrix<Reduct, int, int> matrix = new Matrix<Reduct, int, int>();
             Assert.IsNotNull(matrix);
         }
 
-        protected void AddElements(Matrix<Int32, Int32, Int32> matrix)
+        protected void AddElements(Matrix<int, int, int> matrix)
         {
             matrix.AddElement(1, 1, 1);
             matrix.AddElement(1, 2, 1);
@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void AddElementTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             
             this.AddElements(matrix);
 
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RemoveElementTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.NumberOfCols);
@@ -83,7 +83,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RemoveColumnTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.NumberOfCols);
@@ -108,7 +108,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RemoveRowTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.NumberOfCols);
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MakeMatrixEmptyTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.NumberOfCols);
@@ -152,7 +152,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GetValueTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(1, matrix.GetValue(1, 1));
@@ -169,7 +169,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void SetValueTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(1, matrix.GetValue(1, 1));
@@ -180,7 +180,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void SetNotExistingValueTest()
         {
-            Matrix<Int32, Int32, Int32> matrix = new Matrix<Int32, Int32, Int32>();
+            Matrix<int, int, int> matrix = new Matrix<int, int, int>();
             this.AddElements(matrix);
 
             matrix.SetValue(1, 4, 2);
@@ -196,7 +196,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void SumColumnTest()
         {
-            MatrixInt<Int32, Int32> matrix = new MatrixInt<Int32, Int32>();
+            MatrixInt<int, int> matrix = new MatrixInt<int, int>();
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.SumColumn(1));
@@ -209,7 +209,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void SumRowTest()
         {
-            MatrixInt<Int32, Int32> matrix = new MatrixInt<Int32, Int32>();
+            MatrixInt<int, int> matrix = new MatrixInt<int, int>();
             this.AddElements(matrix);
             Assert.AreEqual(3, matrix.SumRow(1));
             matrix.SetValue(1, 1, 5);

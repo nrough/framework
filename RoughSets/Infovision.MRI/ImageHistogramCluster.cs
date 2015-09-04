@@ -221,7 +221,7 @@ namespace Infovision.MRI
                 image.GetData<double>().CopyTo(pixelBuffer, 0);
             }
 
-            int numberOfBuckets = (int)Math.Ceiling((SimpleITKHelper.MaxPixelValue(image.PixelType) + (double)1) / (double)this.HistogramBucketSize);
+            int numberOfBuckets = (int)Math.Ceiling((SimpleITKHelper.MaxPixelValue(image.PixelType) + 1.0) / this.HistogramBucketSize);
             histogram = new Histogram(pixelBuffer, numberOfBuckets);
 
             this.CreateCandidateSet();
@@ -523,7 +523,7 @@ namespace Infovision.MRI
             return clusters.ElementAt<int>(0);
         }
 
-        public static ImageHistogramCluster Load(String fileName)
+        public static ImageHistogramCluster Load(string fileName)
         {
             ImageHistogramCluster histogramCluster;
 
@@ -541,7 +541,7 @@ namespace Infovision.MRI
         /// <summary>
         /// Save the state of the class
         /// </summary>
-        public bool Save(String fileName)
+        public bool Save(string fileName)
         {
             bool bSuccess = false;
             try

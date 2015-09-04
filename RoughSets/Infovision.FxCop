@@ -102,12 +102,12 @@
         <Types>
          <Type Name="Bireduct">
           <Members>
-           <Member Name="#.ctor(Infovision.Data.DataStore,System.Int32[],System.Int32[])">
+           <Member Name="#.ctor(Infovision.Data.DataStore,System.int[],System.int[])">
             <Messages>
              <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
               <Issue>
                <Item>'Bireduct.Bireduct(DataStore, int[], int[])'</Item>
-               <Item>&#xD;&#xA;&#xD;&#xA;Bireduct..ctor(DataStore, Int32[], Int32[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
+               <Item>&#xD;&#xA;&#xD;&#xA;Bireduct..ctor(DataStore, int[], int[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
               </Issue>
              </Message>
             </Messages>
@@ -191,12 +191,12 @@
          </Type>
          <Type Name="Reduct">
           <Members>
-           <Member Name="#.ctor(Infovision.Data.DataStore,System.Int32[])">
+           <Member Name="#.ctor(Infovision.Data.DataStore,System.int[])">
             <Messages>
              <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
               <Issue>
                <Item>'Reduct.Reduct(DataStore, int[])'</Item>
-               <Item>&#xD;&#xA;&#xD;&#xA;Reduct..ctor(DataStore, Int32[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
+               <Item>&#xD;&#xA;&#xD;&#xA;Reduct..ctor(DataStore, int[])&#xD;&#xA;Reduct.BuildEquivalenceMap():Void</Item>
               </Issue>
              </Message>
             </Messages>
@@ -529,7 +529,7 @@
          </Type>
          <Type Name="InfovisionHelper">
           <Members>
-           <Member Name="#IntArray2Ranges(System.Int32[],System.String,System.String)">
+           <Member Name="#IntArray2Ranges(System.int[],System.String,System.String)">
             <Messages>
              <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Created="2012-07-28 09:44:46Z">
               <Issue>

@@ -161,13 +161,11 @@ namespace Infovision.Datamining.Roughset
 
             internalStore = internalStore.RemoveDuplicates();
 
-            //double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore, useErrorsAsVectors);
             double[][] errorVectors = this.GetWeightVectorsFromReducts(internalStore);
             hCluster = new HierarchicalClustering(distance, linkage);
             hCluster.ReverseDistanceFunction = reverseDistanceFunction;
             hCluster.Compute(errorVectors);                                    
-
-            //int[] clusterMembership = hCluster.GetClusterMembership(numberOfClusters);
+            
             Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
 
@@ -229,25 +227,8 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
-                {
-                    double maxValue = 0;
-                    long maxDecision = -1;
-                    foreach (long decisionValue in e.DecisionValues)
-                    {
-                        double sum = 0;
-                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        {
-                            sum += reduct.Weights[objectIdx];
-                        }
-                        
-                        if (sum > maxValue + (0.0001 / reduct.ObjectSetInfo.NumberOfRecords))
-                        {
-                            maxValue = sum;
-                            maxDecision = decisionValue;
-                        }
-                    }
-                    
-                    foreach (int objectIdx in e.GetObjectIndexes(maxDecision))
+                {                                        
+                    foreach (int objectIdx in e.GetObjectIndexes(e.MajorDecision))
                     {
                         if (useErrorValues)
                         {
@@ -281,27 +262,9 @@ namespace Infovision.Datamining.Roughset
                 Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
                 
                 foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
-                {
-                    double maxValue = 0;
-                    long maxDecision = -1;
-                    foreach (long decisionValue in e.DecisionValues)
+                {                    
+                    foreach ( int objectIdx in e.GetObjectIndexes(e.MajorDecision))
                     {
-                        double sum = 0;
-                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        {
-                            sum += reduct.Weights[objectIdx];
-                        }
-
-                        if (sum > maxValue + (0.0001 / reduct.ObjectSetInfo.NumberOfRecords))
-                        {
-                            maxValue = sum;
-                            maxDecision = decisionValue;
-                        }
-                    }
-
-                    foreach (int objectIdx in e.GetObjectIndexes(maxDecision))
-                    {
-
                         errors[i][objectIdx] *= -1;                        
                     }
                 }
@@ -335,7 +298,7 @@ namespace Infovision.Datamining.Roughset
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
             double result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
-            {
+            {                                               
                 double maxValue = 0;
                 long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
@@ -370,8 +333,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
-        {
-            //return new Reduct(this.DataStore, fieldIds);
+        {            
             return new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);            
         }
 

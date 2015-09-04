@@ -51,8 +51,8 @@ namespace Infovision.RunTest.UnitTests
 
         public TestRoughMeasure()
         {
-            trainFilename = @"d:\temp\playgolf.train";
-            testFilename = @"d:\temp\playgolf.train";
+            trainFilename = @"Data\playgolf.train";
+            testFilename = @"Data\playgolf.train";
             numberOfReducts = 10;
             numberOfPermutations = 10;
             numberOfTests = 10;
@@ -175,7 +175,7 @@ namespace Infovision.RunTest.UnitTests
             ParameterValueVector currentParamVector = testRunner.CurrentParameterVector;
 
             string lastLine = GetLastFileRecord(resultFilename);
-            String[] fields = lastLine.Split(new Char[] { ' ', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] fields = lastLine.Split(new Char[] { ' ', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
             testRunner = new TestRunner(resultFilename, null, autoSaveFilename);
             testRunner.OpenLog(resultFilename);

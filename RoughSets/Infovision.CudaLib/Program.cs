@@ -11,7 +11,7 @@ namespace Infovision.CudaLib
         static void Main(string[] args)
         {
             var rand = new Random();
-            System.Int32[] array = new System.Int32[2000000];
+            System.int[] array = new System.int[2000000];
             for (int i = 0; i < array.Length; i++)
             {
                 array[i] = rand.Next(1000);

@@ -6,7 +6,7 @@ namespace Infovision.Utils
     [Serializable]
     public class Range
     {
-        public Range(Double lowerBound, Double upperBound)
+        public Range(double lowerBound, double upperBound)
         {
             this.LowerBound = lowerBound;
             this.UpperBound = upperBound;
@@ -14,19 +14,19 @@ namespace Infovision.Utils
 
         #region Properties
 
-        public Double LowerBound
+        public double LowerBound
         {
             get;
             private set;
         }
 
-        public Double UpperBound
+        public double UpperBound
         {
             get;
             private set;
         }
 
-        public Double Length
+        public double Length
         {
             get { return this.UpperBound - this.LowerBound; }
         }
@@ -35,7 +35,7 @@ namespace Infovision.Utils
 
         #region System.Object
 
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("[");

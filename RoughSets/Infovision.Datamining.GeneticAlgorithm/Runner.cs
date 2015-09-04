@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Genetic
             }
         }
         
-        public Int32 ChromosomeSize
+        public int ChromosomeSize
         {
             get { return population[0].Length; }
         }

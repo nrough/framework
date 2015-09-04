@@ -272,13 +272,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 return new int[0];
 
             int size = System.Math.Min(this.numOfInstances, System.Math.Max(numberOfClusters, 0));
-            int[] result = new int[size];
-
-            if (size == 1)
-            {
-                result[0] = 0;
-            }
-
+            int[] result = new int[size];            
             int level = 0;
             for (int i = this.linkages.Length - 1; i >= 0; i--)
             {

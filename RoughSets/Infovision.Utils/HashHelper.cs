@@ -33,11 +33,11 @@ namespace Infovision.Utils
 
         public static int GetHashCode(BitArray array)
         {
-            UInt32 hash = 17;
+            uint hash = 17;
             int bitsRemaining = array.Length;
             foreach (int value in array.GetInternalValues())
             {
-                UInt32 cleanValue = (UInt32)value;
+                uint cleanValue = (uint)value;
                 if (bitsRemaining < 32)
                 {
                     //clear any bits that are beyond the end of the array

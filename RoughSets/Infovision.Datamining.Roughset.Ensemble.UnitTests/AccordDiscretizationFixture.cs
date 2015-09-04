@@ -265,7 +265,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				//TODO Most frequent decision is ok for normal approximate reducts
 				//TODO for weighted approximate reduct we should choose decision with highest object weight sum?
 
-				foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MostFrequentDecision))
+				foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MajorDecision))
 				{
 					dicernVector[objectIdx] = weightVector[objectIdx];
 				}
@@ -335,14 +335,14 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
 				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 				{
-					Int64 objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);
+					long objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);
 					Console.Write("({0} {1}) ", objectId, discernVerctor[j]);
 
-					Int64 decisionValue = localDataStoreTrain.GetDecisionValue(j);
+					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					EquivalenceClassMap eqMap = reduct.EquivalenceClassMap;
 					DataVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
-					Int64 mostFrequentDecisionValue = eqClass.MostFrequentDecision;
+					long mostFrequentDecisionValue = eqClass.MajorDecision;
 
 					
                     if (decisionValue == mostFrequentDecisionValue)

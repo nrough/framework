@@ -40,7 +40,7 @@ namespace Infovision.Utils
             return element.val.CompareTo(this.val) == 0;
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             return this.val.GetHashCode();
         }
@@ -73,12 +73,12 @@ namespace Infovision.Utils
             protected set { this.rowElement = value; }
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             return rowElement.GetHashCode() ^ columnElement.GetHashCode();
         }
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
  	         if (obj == null)
                 return false;
@@ -109,7 +109,7 @@ namespace Infovision.Utils
             cols = new Dictionary<C, Dictionary<R, V>>();
         }
 
-        public Matrix(Int32 numberOfRows, Int32 numberOfCols)
+        public Matrix(int numberOfRows, int numberOfCols)
         {
             rows = new Dictionary<R, Dictionary<C, V>>(numberOfRows);
             cols = new Dictionary<C, Dictionary<R, V>>(numberOfCols);
@@ -117,12 +117,12 @@ namespace Infovision.Utils
         #endregion
 
         #region Properties
-        public Int32 NumberOfRows
+        public int NumberOfRows
         {
             get { return rows.Count; }
         }
 
-        public Int32 NumberOfCols
+        public int NumberOfCols
         {
             get { return cols.Count; }
         }
@@ -191,7 +191,7 @@ namespace Infovision.Utils
             }
         }
 
-        public Boolean ContainsElement(R rowElement, C colElement)
+        public bool ContainsElement(R rowElement, C colElement)
         {
             if (rows.ContainsKey(rowElement))
             {
@@ -318,12 +318,12 @@ namespace Infovision.Utils
         { 
         }
 
-        public Int32 SumColumn(C colElement)
+        public int SumColumn(C colElement)
         {
             return this.GetColValues(colElement).Sum();    
         }
 
-        public Int32 SumRow(R rowElement)
+        public int SumRow(R rowElement)
         {
             return this.GetRowValues(rowElement).Sum();
         }

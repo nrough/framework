@@ -33,10 +33,10 @@ namespace Infovision.Datamining
         [Serializable]
         private class ConfusionMatrixKey
         {
-            public Int64 Predicted { get; set; }
-            public Int64 Actual { get; set; }
+            public long Predicted { get; set; }
+            public long Actual { get; set; }
 
-            public ConfusionMatrixKey(Int64 predicted, Int64 actual)
+            public ConfusionMatrixKey(long predicted, long actual)
             {
                 this.Predicted = predicted;
                 this.Actual = actual;
@@ -91,7 +91,7 @@ namespace Infovision.Datamining
         {
             classificationMap = new Dictionary<Int64, Int64>(dataStore.DataStoreInfo.NumberOfRecords);
             decisionActualCount = new Dictionary<Int64, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
-            foreach (Int64 decisionValue in dataStore.DataStoreInfo.GetDecisionValues())
+            foreach (long decisionValue in dataStore.DataStoreInfo.GetDecisionValues())
             {
                 decisionActualCount[decisionValue] = 0;
             }
@@ -182,12 +182,12 @@ namespace Infovision.Datamining
 
         #region Methods
 
-        public virtual void AddResult(Int64 objectId, Int64 prediction)
+        public virtual void AddResult(long objectId, long prediction)
         {
             classificationMap[objectId] = prediction;
         }
         
-        public virtual void AddResult(Int64 objectId, Int64 prediction, Int64 actual)
+        public virtual void AddResult(long objectId, long prediction, long actual)
         {
             this.AddResult(objectId, prediction);
             this.AddConfusionMatrix(prediction, actual);
@@ -206,7 +206,7 @@ namespace Infovision.Datamining
             }
         }
 
-        protected void AddConfusionMatrix(Int64 prediction, Int64 actual)
+        protected void AddConfusionMatrix(long prediction, long actual)
         {
             ConfusionMatrixKey key = new ConfusionMatrixKey(prediction, actual);
             if (confusionMatrix.ContainsKey(key))
@@ -221,12 +221,12 @@ namespace Infovision.Datamining
             decisionActualCount[actual] = decisionActualCount.ContainsKey(actual) ? decisionActualCount[actual] + 1: 1;
         }
 
-        public Int64 GetResult(Int64 objectId)
+        public long GetResult(long objectId)
         {
             return classificationMap[objectId];
         }
 
-        public int GetDecisionCount(Int64 decisionValue)
+        public int GetDecisionCount(long decisionValue)
         {
             int count = 0;
             if (this.decisionActualCount.TryGetValue(decisionValue, out count))
@@ -236,7 +236,7 @@ namespace Infovision.Datamining
             return 0;
         }
 
-        public int GetConfusionMatrix(Int64 prediction, Int64 actual)
+        public int GetConfusionMatrix(long prediction, long actual)
         {
             int counter = 0;
             ConfusionMatrixKey key = new ConfusionMatrixKey(prediction, actual);
@@ -247,7 +247,7 @@ namespace Infovision.Datamining
             return 0;
         }
 
-        public int GetConfusionTable(Int64 decisionValue, ConfusionMatrixElement confusionTableElement)
+        public int GetConfusionTable(long decisionValue, ConfusionMatrixElement confusionTableElement)
         {
             int result = 0;
             switch(confusionTableElement)
@@ -297,12 +297,12 @@ namespace Infovision.Datamining
             return result;
         }
 
-        public double DecisionApriori(Int64 decisionValue)
+        public double DecisionApriori(long decisionValue)
         {
             return (double) this.DecisionTotal(decisionValue) / (double) this.Count;
         }
 
-        public int DecisionTotal(Int64 decisionValue)
+        public int DecisionTotal(long decisionValue)
         {
             int total = 0;
             foreach (KeyValuePair<ConfusionMatrixKey, int> kvp in confusionMatrix)

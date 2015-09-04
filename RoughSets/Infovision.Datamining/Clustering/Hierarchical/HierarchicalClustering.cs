@@ -485,7 +485,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return this.DendrogramLinkCollection.GetClusterMembership(threshold);
         }
 
-        //TODO if largest distance is 1 then scale by 10
+        
         public Bitmap GetDendrogramAsBitmap(int width, int height)
         {
             int topMargin = 1;
@@ -500,14 +500,25 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Color foreground = Color.Black;            
 
             int xMajorScalePx = (int) System.Math.Floor((double)dendrogramWidth / this.numberOfInstances);
-            int yMajorScalePx = (int) System.Math.Floor((double)(dendrogramHeight - 40) / (this.DendrogramLinkCollection.MaxHeight + 1));                        
+            //TODO scale if MaxHeight < 1
+            double maxHeight = this.DendrogramLinkCollection.MaxHeight;
+            double heightScale = 1;
+            if (maxHeight < 1)
+            {
+                while (maxHeight < 1)
+                {
+                    maxHeight *= 10;
+                    heightScale *= 10;
+                }
+            }
+
+            int yMajorScalePx = (int)System.Math.Floor((double)(dendrogramHeight - 40) / (maxHeight + 1));                        
                                                
             Bitmap bitmap = new Bitmap(width, height);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {                
-                g.Clear(background);
-                
+                g.Clear(background);                
                 
                 //draw Y axis
                 Pen yAxisPen = new Pen(foreground, 1);
@@ -572,7 +583,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     newLinkChartData.RightNodeX = linkChartData2.ParentNodeX;
                     newLinkChartData.RightNodeY = linkChartData2.ParentNodeY;
 
-                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx);
+                    int nodeHeight = (int) (link.Distance * heightScale * yMajorScalePx);
                     newLinkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;                                        
 
                     dendrogramChartData.Add(link.Id, newLinkChartData);

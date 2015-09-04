@@ -19,8 +19,7 @@ namespace Infovision.Datamining.Roughset
         public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double approxDegree)
             : base(dataStore, fieldIds, approxDegree)
         {
-            objectSet = new ObjectSet(dataStore, objectIndexes);
-            this.BuildEquivalenceMap(true);
+            objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
         public Bireduct(DataStore dataStore, int[] fieldIds, double approxDegree)
@@ -56,12 +55,12 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override void BuildEquivalenceMap(bool useCache = true)
+        public override void BuildEquivalenceMap()
         {
             if (this.objectSet != null)
             {
                 this.InitEquivalenceMap();
-                this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.objectSet);
+                this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.objectSet, this.Weights);
             }
         }
 
@@ -83,11 +82,11 @@ namespace Infovision.Datamining.Roughset
 
             if (reductStatistics.NumberOfDecisions <= 1)
             {
-                Int64 decisionValue = this.DataStore.GetDecisionValue(objectIndex);
+                long decisionValue = this.DataStore.GetDecisionValue(objectIndex);
 
                 if (reductStatistics.NumberOfDecisions == 0
-                    || reductStatistics.MostFrequentDecision == decisionValue)
-                {
+                    || reductStatistics.MajorDecision == decisionValue)
+                {                                        
                     return true;
                 }
             }
@@ -98,10 +97,16 @@ namespace Infovision.Datamining.Roughset
         public virtual bool AddObject(int objectIdx)
         {
             if (this.CheckAddObject(objectIdx))
-            {
-                objectSet.AddElement(objectIdx);
+            {                
                 DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
-                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, this.DataStore);
+
+                // important fist add to eqClass map, than to objectSet, otherwise 
+                // calling this.EquivalenceClassMap will invoke calculating eqClassMap based on existing objectSet
+                // than, what AddObject is called we will get duplicates of object id inside eqClass
+                
+                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, this.DataStore.GetDecisionValue(objectIdx), 1.0 / this.DataStore.NumberOfRecords);
+                objectSet.AddElement(objectIdx);
+
                 return true;
             }
 
@@ -124,7 +129,7 @@ namespace Infovision.Datamining.Roughset
             {
                 objectSet.RemoveElement(objectIdx);
                 DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
-                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).RemoveObject(objectIdx, this.DataStore);
+                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
                 return true;
             }
 
@@ -143,7 +148,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < attr.Length; i++)
             {
                 DataFieldInfo dataField = this.DataStore.DataStoreInfo.GetFieldInfo(attr[i]);
-                String attrName = !String.IsNullOrEmpty(dataField.NameAlias)
+                string attrName = !String.IsNullOrEmpty(dataField.NameAlias)
                                 ? dataField.NameAlias
                                 : !String.IsNullOrEmpty(dataField.Name)
                                 ? dataField.Name

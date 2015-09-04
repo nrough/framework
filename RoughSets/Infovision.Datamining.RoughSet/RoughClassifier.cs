@@ -112,7 +112,7 @@ namespace Infovision.Datamining.Roughset
 
             #region Methods
 
-            public void AddDescription(Int64 decision, IReduct reduct, EquivalenceClass reductStatistic)
+            public void AddDescription(long decision, IReduct reduct, EquivalenceClass reductStatistic)
             {
                 
                 decisionSupport.Add(decision, support.Calc(decision, reduct, reductStatistic));
@@ -141,9 +141,9 @@ namespace Infovision.Datamining.Roughset
                 identifiedDecision.Add(weightCoverage.Description(), FindMaxValue(decisionWeightCoverage));
             }
 
-            private static Int64 FindMaxValue(Dictionary<Int64, double> dictionary)
+            private static long FindMaxValue(Dictionary<Int64, double> dictionary)
             {
-                Int64 decision = -1;
+                long decision = -1;
                 double maxValue = -1;
 
                 foreach (KeyValuePair<Int64, double> kvp in dictionary)
@@ -157,12 +157,12 @@ namespace Infovision.Datamining.Roughset
                 return decision;
             }
 
-            public Int64 GetIdentifiedDecision(string measureKey)
+            public long GetIdentifiedDecision(string measureKey)
             {
                 return identifiedDecision[measureKey];
             }            
 
-            public double GetSupport(Int64 decisionValue)
+            public double GetSupport(long decisionValue)
             {
                 double result = 0;
                 if(decisionSupport.TryGetValue(decisionValue, out result))
@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetCoverage(Int64 decisionValue)
+            public double GetCoverage(long decisionValue)
             {
                 double result = 0;
                 if (decisionCoverage.TryGetValue(decisionValue, out result))
@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetConfidence(Int64 decisionValue)
+            public double GetConfidence(long decisionValue)
             {
                 double result = 0;
                 if (decisionConfidence.TryGetValue(decisionValue, out result))
@@ -192,7 +192,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetRatio(Int64 decisionValue)
+            public double GetRatio(long decisionValue)
             {
                 double result = 0;
                 if (decisionRatio.TryGetValue(decisionValue, out result))
@@ -202,7 +202,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetStrenght(Int64 decisionValue)
+            public double GetStrenght(long decisionValue)
             {
                 double result = 0;
                 if (decisionStrenght.TryGetValue(decisionValue, out result))
@@ -212,7 +212,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetWeightSupport(Int64 decisionValue)
+            public double GetWeightSupport(long decisionValue)
             {
                 double result = 0;
                 if (decisionWeightSupport.TryGetValue(decisionValue, out result))
@@ -222,7 +222,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetWeightCoverage(Int64 decisionValue)
+            public double GetWeightCoverage(long decisionValue)
             {
                 double result = 0;
                 if (decisionWeightCoverage.TryGetValue(decisionValue, out result))
@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetWeightConfidence(Int64 decisionValue)
+            public double GetWeightConfidence(long decisionValue)
             {
                 double result = 0;
                 if (decisionWeightConfidence.TryGetValue(decisionValue, out result))
@@ -242,7 +242,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetWeightRatio(Int64 decisionValue)
+            public double GetWeightRatio(long decisionValue)
             {
                 double result = 0;
                 if (decisionWeightRatio.TryGetValue(decisionValue, out result))
@@ -252,7 +252,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetWeightStrenght(Int64 decisionValue)
+            public double GetWeightStrenght(long decisionValue)
             {
                 double result = 0;
                 if (decisionWeightStrenght.TryGetValue(decisionValue, out result))
@@ -262,7 +262,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
             }
 
-            public double GetConfidenceRelative(Int64 decisionValue)
+            public double GetConfidenceRelative(long decisionValue)
             {
                 double result = 0;
                 if (decisionConfidenceRelative.TryGetValue(decisionValue, out result))
@@ -378,7 +378,7 @@ namespace Infovision.Datamining.Roughset
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
-            reductGenerator.ApproximationDegree = (double)approximationRatio / (double)100;
+            reductGenerator.ApproximationDegree = approximationRatio / 100.0;
             this.reductStore = reductGenerator.Generate(args).First();
         }
 
@@ -440,7 +440,7 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass reductStatistic = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
                 DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
-                foreach (Int64 decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
                 {
                     decisionRuleDescriptor.AddDescription(decisionValue, reduct, reductStatistic);   
                 }
@@ -455,13 +455,13 @@ namespace Infovision.Datamining.Roughset
         public double[] GetDiscernibilityVector(DataStore data, double[] weights, IReduct reduct, IdentificationType decisionIdentificationType)
         {
             double[] result = new double[data.NumberOfRecords];
-            foreach(Int64 objectId in data.GetObjectIds())
+            foreach(long objectId in data.GetObjectIds())
             {
                 int objectIdx = data.ObjectId2ObjectIndex(objectId);
                 ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[objectId];
                 DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
                 
-                Int64 decision = -1;
+                long decision = -1;
                 switch (decisionIdentificationType)
                 {
                     case IdentificationType.Support:
@@ -517,16 +517,16 @@ namespace Infovision.Datamining.Roughset
             return classificationResult;
         }
 
-        private Int64 VoteObject(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
+        private long VoteObject(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
         {
-            Int64 result = -1;
+            long result = -1;
             double maxWeight = 0;
             Dictionary<Int64, double> decisionVotes = new Dictionary<Int64, double>();
 
             ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[record.ObjectId];
             foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
             {                
-                Int64 decision = -1;
+                long decision = -1;
 
                 switch (identificationType)
                 {
@@ -634,13 +634,13 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public bool IsObjectRecognizable(DataStore dataStore, Int64 objectId, IReduct reduct, IdentificationType identificationType)
+        public bool IsObjectRecognizable(DataStore dataStore, long objectId, IReduct reduct, IdentificationType identificationType)
         {
 
             ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[objectId];
             DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
                         
-            Int64 identifiedDecision = -1;
+            long identifiedDecision = -1;
 
             switch (identificationType)
             {

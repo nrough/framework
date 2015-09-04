@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public ReductClassifierTest()
         {
-            String trainFileName = @"playgolf.train";
+            string trainFileName = @"Data\playgolf.train";
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
         }
 

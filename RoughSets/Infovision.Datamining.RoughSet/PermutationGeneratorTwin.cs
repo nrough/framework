@@ -8,7 +8,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public PermutationGeneratorTwin(Int32[] elements)
+        public PermutationGeneratorTwin(int[] elements)
             : base(elements)
         {
         }
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = this.elements.Length * 2 - 1; i > 0; i--)
             {
                 int k = RandomSingleton.Random.Next() % (i + 1);
-                Int32 element = localElements[k];
+                int element = localElements[k];
                 localElements[k] = localElements[i];
                 localElements[i] = element;
             }

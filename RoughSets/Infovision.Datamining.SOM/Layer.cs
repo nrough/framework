@@ -6,16 +6,16 @@ namespace Infovision.Datamining.NeuralNets
     {
         #region Globals
         
-        protected Int32 numberOfInputs = 0;
-        protected Int32 numberOfNeurons = 0;
+        protected int numberOfInputs = 0;
+        protected int numberOfNeurons = 0;
         protected Neuron[] neurons = null;
-        protected Double[] output = null;
+        protected double[] output = null;
 
         #endregion
 
         #region Constructors
         
-        protected Layer( Int32 numberOfNeurons, Int32 numberOfInputs)
+        protected Layer( int numberOfNeurons, int numberOfInputs)
         {
             this.numberOfInputs = Math.Max( 1, numberOfInputs );
             this.numberOfNeurons = Math.Max( 1, numberOfNeurons );
@@ -26,12 +26,12 @@ namespace Infovision.Datamining.NeuralNets
 
         #region Properties
         
-        public Int32 NumberOfInputs
+        public int NumberOfInputs
         {
             get { return this.numberOfInputs; }
         }
 
-        public Int32 NumberOfNeurons
+        public int NumberOfNeurons
         {
             get { return this.numberOfNeurons; }
         }
@@ -45,22 +45,22 @@ namespace Infovision.Datamining.NeuralNets
 
         #region Methods
 
-        public Double[] GetOutput()
+        public double[] GetOutput()
         {
             return this.output;
         }
 
-        public Double GetOutput(Int32 index)
+        public double GetOutput(int index)
         {
             return this.output[index];
         }
          
         #endregion
         
-        public virtual Double[] Calc( Double[] input )
+        public virtual double[] Calc( double[] input )
         {
-            Double[] output = new Double[this.numberOfNeurons];
-            for ( Int32 i = 0; i < this.numberOfNeurons; i++ )
+            double[] output = new double[this.numberOfNeurons];
+            for ( int i = 0; i < this.numberOfNeurons; i++ )
             {
                 output[i] = this.neurons[i].Calc( input );
             }

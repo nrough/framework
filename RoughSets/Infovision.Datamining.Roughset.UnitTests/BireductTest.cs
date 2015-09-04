@@ -18,8 +18,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public BireductTest()
         {
-            String trainFileName = @"monks-1.train";
-            String testFileName = @"monks-1.test";
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -45,9 +45,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CheckBireductUnique("BireductRelative");
         }
 
-        private void CheckBireductUnique(String reductGeneratorKey)
+        private void CheckBireductUnique(string reductGeneratorKey)
         {
-            Args parms = new Args(new String[] { "FactoryKey", "DataStore", "NumberOfPermutations" },
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore", "NumberOfPermutations" },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
             
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
@@ -85,8 +85,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             double u = sumWeights / dataStoreTrainInfo.NumberOfRecords;
 
             //Assert.AreEqual(r, u);
-            Assert.GreaterOrEqual(r, u - (0.00001 / (double)dataStoreTrain.DataStoreInfo.NumberOfRecords));
-            Assert.LessOrEqual(r, u + (0.00001 / (double)dataStoreTrain.DataStoreInfo.NumberOfRecords));            
+            Assert.GreaterOrEqual(r, u - (0.00001 / dataStoreTrain.DataStoreInfo.NumberOfRecords));
+            Assert.LessOrEqual(r, u + (0.00001 / dataStoreTrain.DataStoreInfo.NumberOfRecords));            
 
         }
 
@@ -108,7 +108,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.Classify("BireductRelative");
         }
 
-        private void Classify(String reductGeneratorKey)
+        private void Classify(string reductGeneratorKey)
         {
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(dataStoreTrain, reductGeneratorKey, 50, 10);

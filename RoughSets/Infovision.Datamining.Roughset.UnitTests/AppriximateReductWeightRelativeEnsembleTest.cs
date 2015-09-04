@@ -16,8 +16,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public AppriximateReductWeightRelativeEnsembleTest()
         {
-            string trainFileName = @"monks-1.train";
-            string testFileName = @"monks-1.test";
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights, 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeightsEnsemble", parms);
             PermutationCollection permutationList = permGen.Generate(10);
             parms.AddParameter("PermutationCollection", permutationList);

@@ -7,7 +7,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Methods
 
-        protected override Boolean CanAddReduct(IReduct reduct)
+        protected override bool CanAddReduct(IReduct reduct)
         {
             foreach (IReduct localReduct in this.ReductSet)
             {

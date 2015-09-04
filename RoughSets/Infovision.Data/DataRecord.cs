@@ -10,7 +10,7 @@ namespace Infovision.Data
     {
         #region Globals
 
-        private Int64 objectId;
+        private long objectId;
         private Dictionary<int, Int64> fields;
 
         #endregion
@@ -54,7 +54,7 @@ namespace Infovision.Data
 
         #region Properties
 
-        public Int64 this[int fieldId]
+        public long this[int fieldId]
         {
             get { return fields[fieldId]; }
             set { fields[fieldId] = value; }
@@ -65,7 +65,7 @@ namespace Infovision.Data
             get { return fields.Count; }
         }
 
-        public Int64 ObjectId
+        public long ObjectId
         {
             get { return objectId; }
             set { objectId = value; }

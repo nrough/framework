@@ -9,7 +9,7 @@ namespace Infovision.Utils
         #region Globals
 
         private Dictionary<Int64, Int32> histogramData;
-        private Int64 minElement, maxElement;
+        private long minElement, maxElement;
 
         #endregion
 
@@ -26,16 +26,16 @@ namespace Infovision.Utils
 
         #region Methods
 
-        public void IncreaseCount(Int64 item)
+        public void IncreaseCount(long item)
         {
-            Int32 value;
+            int value;
             histogramData[item] = histogramData.TryGetValue(item, out value) ? ++value : 1;
             this.SetMinMaxElement(item);
         }
 
-        public Int32 GetBinValue(Int64 item)
+        public int GetBinValue(long item)
         {
-            Int32 value;
+            int value;
             if (histogramData.TryGetValue(item, out value))
             {
                 return value;
@@ -43,7 +43,7 @@ namespace Infovision.Utils
             return 0;
         }
 
-        private void SetMinMaxElement(Int64 item)
+        private void SetMinMaxElement(long item)
         {
             if (item < minElement)
                 minElement = item;
@@ -54,15 +54,15 @@ namespace Infovision.Utils
 
         #region Properties
 
-        public Int64 MinElement
+        public long MinElement
         {
             get { return minElement; }
         }
-        public Int64 MaxElement
+        public long MaxElement
         {
             get { return maxElement; }
         }
-        public Int64 Elements
+        public long Elements
         {
             get { return histogramData.Count; }
         }

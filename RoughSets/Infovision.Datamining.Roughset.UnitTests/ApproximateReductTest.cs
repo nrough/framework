@@ -15,8 +15,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public ApproximateReductTest()
         {
-            string trainFileName = @"monks-1.train";
-            string testFileName = @"monks-1.test";
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductStatisticsTest()
         {
             ReductStore reductStore = new ReductStore();
-            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2 }, 0);
+            Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0);
             reductStore.AddReduct(reduct);
             
             foreach (Reduct localReduct in reductStore)
@@ -40,8 +40,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(9, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MostFrequentDecision);
-                Assert.AreEqual(9, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MajorDecision);
+                Assert.AreEqual(9, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(9, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -50,8 +50,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MostFrequentDecision);
-                Assert.AreEqual(15, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MajorDecision);
+                Assert.AreEqual(15, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(2, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(15, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -60,8 +60,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(19, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MostFrequentDecision);
-                Assert.AreEqual(16, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MajorDecision);
+                Assert.AreEqual(16, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(3, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(16, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -70,8 +70,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(16, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MostFrequentDecision);
-                Assert.AreEqual(14, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MajorDecision);
+                Assert.AreEqual(14, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(2, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(14, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -80,8 +80,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(15, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MostFrequentDecision);
-                Assert.AreEqual(15, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MajorDecision);
+                Assert.AreEqual(15, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(15, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -90,8 +90,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(11, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MostFrequentDecision);
-                Assert.AreEqual(6, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MajorDecision);
+                Assert.AreEqual(6, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(5, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(6, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -100,8 +100,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MostFrequentDecision);
-                Assert.AreEqual(6, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.MajorDecision);
+                Assert.AreEqual(6, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(4, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(6, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -110,8 +110,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                //Assert.AreEqual(2, reductStat.MostFrequentDecision);
-                Assert.AreEqual(5, reductStat.MostFrequentDecisionCount);
+                //Assert.AreEqual(2, reductStat.MajorDecision);
+                Assert.AreEqual(5, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(5, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(5, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -120,8 +120,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MostFrequentDecision);
-                Assert.AreEqual(17, reductStat.MostFrequentDecisionCount);
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.MajorDecision);
+                Assert.AreEqual(17, reductStat.NumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(17, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.NumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FullAttributeSetReductStatisticsTest()
         {
             ReductStore reductStore = new ReductStore();
-            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3, 4, 5, 6 }, 0);
+            Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2, 3, 4, 5, 6 }, 0);
             reductStore.AddReduct(reduct);
 
             foreach (Reduct localReduct in reductStore)
@@ -174,9 +174,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             ReductStore reductStore = new ReductStore();
 
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2 }, 0));
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 5, 6 }, 0));
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3 }, 0));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 5, 6 }, 0));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 2, 3 }, 0));
 
             //IReductStore filteredReductStore = reductStore.FilterReducts(1, new ReductMeasureNumberOfPartitions());
             IReductStore filteredReductStore = reductStore.FilterReducts(1, new ReductRuleNumberComparer());
@@ -188,7 +188,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureRelativeTest()
         {
-            DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
             Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
@@ -201,33 +201,33 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureMajorityTest()
         {
-            DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
             Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
-            Double result = roughMeasure.Calc(reduct);
+            double result = roughMeasure.Calc(reduct);
 
-            Assert.GreaterOrEqual(result, (Double)1.0 - (0.00001 / (Double)localDataStore.DataStoreInfo.NumberOfRecords));
-            Assert.LessOrEqual(result, (Double)1.0 + (0.00001 / (Double)localDataStore.DataStoreInfo.NumberOfRecords));
+            Assert.GreaterOrEqual(result, (double)1.0 - (0.00001 / (double)localDataStore.DataStoreInfo.NumberOfRecords));
+            Assert.LessOrEqual(result, (double)1.0 + (0.00001 / (double)localDataStore.DataStoreInfo.NumberOfRecords));
         }
 
         [Test]
         public void MeasurePositiveTest()
         {
-            DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
             Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
-            Double result = roughMeasure.Calc(reduct);
+            double result = roughMeasure.Calc(reduct);
 
-            Assert.GreaterOrEqual(result, (Double)1.0 - (0.00001 / (Double)localDataStore.DataStoreInfo.NumberOfRecords));
-            Assert.LessOrEqual(result, (Double)1.0 + (0.00001 / (Double)localDataStore.DataStoreInfo.NumberOfRecords));
+            Assert.GreaterOrEqual(result, (double)1.0 - (0.00001 / (double)localDataStore.DataStoreInfo.NumberOfRecords));
+            Assert.LessOrEqual(result, (double)1.0 + (0.00001 / (double)localDataStore.DataStoreInfo.NumberOfRecords));
         }
 
         [Test]
         public void EquivalenceClassMapTest()
         {
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
@@ -235,9 +235,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
 
-            for (Int32 epsilon = 0; epsilon < 100; epsilon+= 11)
+            for (int epsilon = 0; epsilon < 100; epsilon+= 11)
             {
-                reductGenerator.ApproximationDegree = (double)epsilon/(double)100;
+                reductGenerator.ApproximationDegree = epsilon / 100.0;
 
                 IReductStore reductStore = reductGenerator.Generate(parms).First();
 
@@ -248,19 +248,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     Assert.AreEqual(partitionMap.Count, reduct.EquivalenceClassMap.Count);
 
-                    Int32 objectCount = 0;
+                    int objectCount = 0;
                     foreach (DataVector dataVector in partitionMap.Partitions.Keys)
                     {
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).DecisionValues);
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfDecisions);
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjects);
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MostFrequentDecision, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).MostFrequentDecision);
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MostFrequentDecisionCount, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).MostFrequentDecisionCount);
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MajorDecision, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).MajorDecision, "Major Decision");
+                        EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
+                        EquivalenceClass reductEqClass = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
+                        Assert.AreEqual(partitionEqClass.NumberOfObjectsWithDecision(partitionEqClass.MajorDecision),
+                                        reductEqClass.NumberOfObjectsWithDecision(reductEqClass.MajorDecision), "Number of objects with major decision");
 
-                        foreach (Int64 decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
+                        foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {
                             Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjectsWithDecision(decisionValue),
-                                            reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjectsWithDecision(decisionValue));
+                                            reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjectsWithDecision(decisionValue), "Numer of objects with decision");
                         }
 
                         objectCount += reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjects;
@@ -274,7 +277,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductPositiveTest()
         {
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductPositive", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
@@ -298,7 +301,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajority", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
@@ -309,9 +312,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                Double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
-                Assert.GreaterOrEqual((Double)1 / (Double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
-                Assert.LessOrEqual((Double)(-1) / (Double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
+                Assert.GreaterOrEqual((double)1 / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                Assert.LessOrEqual((double)(-1) / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
             }
         }
 
@@ -319,9 +322,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductRelativeTest()
         {
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
-            Double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
+            double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
@@ -332,9 +335,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                Double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
-                Assert.GreaterOrEqual((Double)1/(Double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
-                Assert.LessOrEqual((Double)(-1)/(Double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
+                Assert.GreaterOrEqual((double)1/(double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                Assert.LessOrEqual((double)(-1)/(double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
             }
         }
     }

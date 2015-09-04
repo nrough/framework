@@ -11,9 +11,9 @@ namespace Infovision.Data
         #region Globals
 
         private string name;
-        private Int64 nextObjectId = 1;
+        private long nextObjectId = 1;
         private Int64[] data;
-        private Int64 capacity;
+        private long capacity;
         private int lastIndex;
         private double capacityFactor;
         private Dictionary<Int64, int> objectId2Index;
@@ -76,14 +76,14 @@ namespace Infovision.Data
 
         private void Resize()
         {
-            Int64 newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
+            long newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
             Int64[] newStorage = new Int64[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
             data = newStorage;
         }
 
-        public Int64 Insert(DataRecordInternal record)
+        public long Insert(DataRecordInternal record)
         {
             if (record.ObjectId == 0)
             {                
@@ -103,12 +103,12 @@ namespace Infovision.Data
             
             foreach (int fieldId in record.GetFields())
             {
-                Int64 value = record[fieldId];
+                long value = record[fieldId];
                 data[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
                 this.dataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
             }
 
-            Int64 decisionValue = record[this.DataStoreInfo.DecisionFieldId];            
+            long decisionValue = record[this.DataStoreInfo.DecisionFieldId];            
             List<int> objectList = null;
             if (!decisionValue2ObjectIndex.TryGetValue(decisionValue, out objectList))
             {
@@ -121,7 +121,7 @@ namespace Infovision.Data
             objectId2Index.Add(record.ObjectId, lastIndex);
         }
 
-        public DataRecordInternal GetRecordByObjectId(Int64 objectId)
+        public DataRecordInternal GetRecordByObjectId(long objectId)
         {
             int objectIndex = -1;
             if (!objectId2Index.TryGetValue(objectId, out objectIndex))
@@ -152,7 +152,7 @@ namespace Infovision.Data
             return ret;
         }
 
-        public bool Exists(Int64 objectId)
+        public bool Exists(long objectId)
         {
             if (objectId2Index.ContainsKey(objectId))
                 return true;
@@ -191,7 +191,7 @@ namespace Infovision.Data
             return data;
         }
 
-        public Int64 GetObjectField(int objectIndex, int fieldId)
+        public long GetObjectField(int objectIndex, int fieldId)
         {
             if(fieldId < this.DataStoreInfo.MinFieldId || fieldId > this.DataStoreInfo.MaxFieldId)
                 throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
@@ -214,7 +214,7 @@ namespace Infovision.Data
             return index2ObjectId.Keys.ToArray<int>();
         }
 
-        public int[] GetObjectIndexes(Int64 decisionValue)
+        public int[] GetObjectIndexes(long decisionValue)
         {
             List<int> result = null;
             if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
@@ -225,14 +225,14 @@ namespace Infovision.Data
             return this.decisionValue2ObjectIndex[decisionValue].ToArray();
         }
 
-        public Int64 GetDecisionValue(int objectIndex)
+        public long GetDecisionValue(int objectIndex)
         {
             return this.GetObjectField(objectIndex, this.DataStoreInfo.DecisionFieldId);
         }
 
-        public Int64 ObjectIndex2ObjectId(int objectIndex)
+        public long ObjectIndex2ObjectId(int objectIndex)
         {
-            Int64 objectId;
+            long objectId;
             if (index2ObjectId.TryGetValue(objectIndex, out objectId))
             {
                 return objectId;
@@ -240,7 +240,7 @@ namespace Infovision.Data
             return 0;
         }
 
-        public int ObjectId2ObjectIndex(Int64 objectId)
+        public int ObjectId2ObjectIndex(long objectId)
         {
             int objectIndex;
             if (objectId2Index.TryGetValue(objectId, out objectIndex))
@@ -250,7 +250,7 @@ namespace Infovision.Data
             return -1;
         }
 
-        public double PriorDecisionProbability(Int64 decisionValue)
+        public double PriorDecisionProbability(long decisionValue)
         {
             return this.DataStoreInfo.PriorDecisionProbability(decisionValue);
         }

@@ -24,8 +24,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public ReductDiscernibilityMatrixTest()
         {
-            string trainFileName = @"dna_modified.trn";
-            string testFileName = @"dna_modified.tst";
+            string trainFileName = @"Data\dna_modified.trn";
+            string testFileName = @"Data\dna_modified.tst";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureRelative()
         {
-            Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
+            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeights", parms);
             PermutationCollection permutationList = permGen.Generate(10);
             parms.AddParameter("PermutationCollection", permutationList);
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     resultFile.WriteLine();
                     
-                    foreach (Int64 objectId in dataStoreTrain.GetObjectIds())
+                    foreach (long objectId in dataStoreTrain.GetObjectIds())
                     {
                         resultFile.Write("{0,5}:", objectId);
                         foreach (IReduct red in reductStore)

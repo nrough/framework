@@ -26,12 +26,12 @@ namespace Infovision.Datamining.NeuralNets.UnitTests
             // network's input
             double[] input = new double[3];
 
-            Boolean needToStop = false;
+            bool needToStop = false;
 
             trainer.LearningRadius = 1;
             trainer.LearningRate = 2;
             
-            Int32 i = 0;
+            int i = 0;
 
             // loop
             while ( !needToStop )
@@ -68,22 +68,22 @@ namespace Infovision.Datamining.NeuralNets.UnitTests
 
             AForge.Neuro.Learning.SOMLearning somLearning = new AForge.Neuro.Learning.SOMLearning(network);
 
-            Double [][] inputVectors = new Double[][] 
+            double [][] inputVectors = new double[][] 
                                         {
-                                            new Double[] {100, 100, 100},
-                                            new Double[] {250, 0, 250},
-                                            new Double[] {100, 100, 0},
-                                            new Double[] {10, 10, 10},
-                                            new Double[] {10, 10, 0}
+                                            new double[] {100, 100, 100},
+                                            new double[] {250, 0, 250},
+                                            new double[] {100, 100, 0},
+                                            new double[] {10, 10, 10},
+                                            new double[] {10, 10, 0}
                                         };
 
-            Double error = somLearning.RunEpoch(inputVectors);
+            double error = somLearning.RunEpoch(inputVectors);
             Console.WriteLine("Error {0}", error);
 
-            network.Compute(new Double[] { 100, 100, 100 });
+            network.Compute(new double[] { 100, 100, 100 });
             Console.WriteLine("Output {0}", network.GetWinner());
 
-            network.Compute(new Double[] { 10, 10, 10 });
+            network.Compute(new double[] { 10, 10, 10 });
             Console.WriteLine("Output {0}", network.GetWinner());
         }
 

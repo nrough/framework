@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Roughset
             PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             IReductStore reductStore = this.CreateReductStore(args);
             foreach (Permutation permutation in permutationList)
-            {
+            {               
                 Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation, reductStore);
                 reductStore.AddReduct(bireduct);
             }

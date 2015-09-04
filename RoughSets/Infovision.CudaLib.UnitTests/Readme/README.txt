@@ -156,7 +156,7 @@ V1.4 - 11-07-11
 	Add: Ability to pass GThread between device functions.
 	Add: Max and Min support to Math and GMath.
 	Fix: Math.Abs translation.
-	Fix: Int64 and UInt64 not translated correctly.
+	Fix: long and Ulong not translated correctly.
 	Fix: Catch kernels without any members in TryVerifyChecksums and VerifyChecksums.
 	Add: Enum support (not flags).
 	Fix: 32-bit and 64-bit cross compiler options.
@@ -194,7 +194,7 @@ V1.1 - 23-05-11
 	Add	: CUBLAS Wrapper (Alpha)
 	Add	: CUFFT Wrapper
 	Change	: CudafyByExample and CudafyExamples updated to use CudafyTranslator.
-	Add	: Char (Unicode) + String copy to/from device support
+	Add	: Char (Unicode) + string copy to/from device support
 	Add	: Multiple kernel module support
 	Add	: Casting between 1D, 2D and 3D arrays
 	Add	: Foreach support

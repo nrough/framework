@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Application", "..\..\Users\Sebastian\Documents\Visual Studio 2012\Projects\Infovision\Infovision.Application.csproj", "{9B0EACA6-EAD5-4EFB-8569-BF9DC6A37E75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Application", "Infovision\Infovision.Application.csproj", "{9B0EACA6-EAD5-4EFB-8569-BF9DC6A37E75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Configuration", "Configuration\Infovision.Configuration.csproj", "{FB06CF74-AACD-4AE0-B799-F87F6E774034}"
 EndProject
@@ -236,9 +236,9 @@ Global
 		SccProjectUniqueName21 = Infovision.Utils\\Infovision.Utils.csproj
 		SccProjectName21 = Infovision.Utils
 		SccLocalPath21 = Infovision.Utils
-		SccProjectUniqueName22 = ..\\..\\Users\\Sebastian\\Documents\\Visual\u0020Studio\u00202012\\Projects\\Infovision\\Infovision.Application.csproj
+		SccProjectUniqueName22 = Infovision\\Infovision.Application.csproj
 		SccProjectName22 = Infovision
-		SccLocalPath22 = ..\\..\\Users\\Sebastian\\Documents\\Visual\u0020Studio\u00202012\\Projects\\Infovision
+		SccLocalPath22 = Infovision
 		SccProjectUniqueName23 = Infovision.Datamining.Experimenter\\Infovision.Datamining.Experimenter.csproj
 		SccProjectName23 = Infovision.Datamining.Experimenter
 		SccLocalPath23 = Infovision.Datamining.Experimenter

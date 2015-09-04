@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset
             return new ReductStore();
 
             /*
-            Int32 numberOfThreads = args.Exist("NumberOfThreads") ? (int)args.GetParameter("NumberOfThreads") : 1;
+            int numberOfThreads = args.Exist("NumberOfThreads") ? (int)args.GetParameter("NumberOfThreads") : 1;
             if (numberOfThreads > 1)
             {
                 return new ReductStoreMulti(numberOfThreads);

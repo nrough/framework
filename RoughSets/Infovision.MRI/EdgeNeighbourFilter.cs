@@ -90,8 +90,8 @@ namespace Infovision.MRI
 			uint depth = isImage3D ? referenceImage.Depth : 1;
 			byte[] pixels = new byte[(int)width * (int)height];
 
-			VectorUInt32 inSize = new VectorUInt32(new uint[] { width, height, 0 });
-			VectorUInt32 position = new VectorUInt32(new uint[] { 0, 0 });
+			VectorUint inSize = new VectorUInt32(new uint[] { width, height, 0 });
+			VectorUint position = new VectorUInt32(new uint[] { 0, 0 });
 			VectorOfImage imageSeries = new VectorOfImage((int)depth);
 
 			ImageITK referenceImageITK = ImageITK.GetImageITK(referenceImage);

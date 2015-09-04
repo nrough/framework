@@ -118,15 +118,15 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">An variable number of integers.</param>
 		/// <returns>A new PascalSet, which is the union of the <b>this</b> PascalSet and the passed-in integers.</returns>
-		public virtual PascalSet Union(params Int32[] list)
+		public virtual PascalSet Union(params int[] list)
 		{
 			// create a deep copy of this
 			PascalSet result = (PascalSet)Clone();
 
 			// For each integer passed in, if it's within the bounds add it to the results's BitArray.
-			for (Int32 i = 0; i < list.LongLength; i++)
+			for (int i = 0; i < list.LongLength; i++)
 			{
-				Int32 val = list[i];
+				int val = list[i];
 				if (val >= this.lowerBound && val <= this.upperBound)
 				{
 					int index = val - this.lowerBound;
@@ -153,7 +153,7 @@ namespace Infovision.Utils
 		/// <returns>A new PascalSet, which is the union of the <b>this</b> PascalSet and the passed-in characters.</returns>
 		public virtual PascalSet Union(params Char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return Union(intForm);
 		}
@@ -188,29 +188,29 @@ namespace Infovision.Utils
 		}
 
 		// Overloaded + operator for union with one integer element
-		public static PascalSet operator +(PascalSet pascalSet, Int32 element)
+		public static PascalSet operator +(PascalSet pascalSet, int element)
 		{
-			return pascalSet.Union(new Int32[] { element });
+			return pascalSet.Union(new int[] { element });
 		}
 
-		public PascalSet Add(Int32 element)
+		public PascalSet Add(int element)
 		{
-			return this.Union(new Int32[] { element });
+			return this.Union(new int[] { element });
 		}
 
 		// Overloaded + operator for union with one character element
 		public static PascalSet operator +(PascalSet pascalSet, Char element)
 		{
-			return pascalSet.Union(new Int32[] { (int)element });
+			return pascalSet.Union(new int[] { (int)element });
 		}
 
 		public PascalSet Add(Char element)
 		{
-			return this.Union(new Int32[] { (int)element });
+			return this.Union(new int[] { (int)element });
 		}
 
 		//Adds integer element to a set. No new object is created
-		public virtual void AddElement(Int32 element)
+		public virtual void AddElement(int element)
 		{
 			if (element >= this.lowerBound && element <= this.upperBound)
 			{
@@ -229,7 +229,7 @@ namespace Infovision.Utils
 		}
 
 		//Removes integer element to a set. No new object is created
-		public virtual void RemoveElement(Int32 element)
+		public virtual void RemoveElement(int element)
 		{
 			if (element >= this.lowerBound && element <= this.upperBound)
 			{
@@ -255,14 +255,14 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">An variable number of integers.</param>
 		/// <returns>A new PascalSet, which is the intersection of the <b>this</b> PascalSet and the passed-in integers.</returns>
-		public virtual PascalSet Intersection(params Int32[] list)
+		public virtual PascalSet Intersection(params int[] list)
 		{
 			PascalSet result = new PascalSet(this.lowerBound, this.upperBound);
 
 			for (int i = 0; i < list.Length; i++)
 			{
 				// only add the element to result if its in this.data
-				Int32 val = list[i];
+				int val = list[i];
 				if (val >= this.lowerBound && val <= this.upperBound)
 				{
 					int index = val - this.lowerBound;
@@ -283,7 +283,7 @@ namespace Infovision.Utils
 		/// <returns>A new PascalSet, which is the intersection of the <b>this</b> PascalSet and the passed-in characters.</returns>
 		public virtual PascalSet Intersection(params char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return Intersection(intForm);
 		}
@@ -324,7 +324,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">An variable number of integers.</param>
 		/// <returns>A new PascalSet, which is the set difference of the <b>this</b> PascalSet and the passed-in integers.</returns>
-		public virtual PascalSet Difference(params Int32[] list)
+		public virtual PascalSet Difference(params int[] list)
 		{
 			PascalSet result = new PascalSet(this.lowerBound, this.upperBound, list);
 			return Difference(result);
@@ -337,7 +337,7 @@ namespace Infovision.Utils
 		/// <returns>A new PascalSet, which is the set difference of the <b>this</b> PascalSet and the passed-in characters.</returns>
 		public virtual PascalSet Difference(params char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return Difference(intForm);
 		}
@@ -372,25 +372,25 @@ namespace Infovision.Utils
 		}
 
 		// Overloaded - operator for set difference - substraction of one integer element
-		public static PascalSet operator -(PascalSet pascalSet, Int32 element)
+		public static PascalSet operator -(PascalSet pascalSet, int element)
 		{
-			return pascalSet.Difference(new Int32[] { element });
+			return pascalSet.Difference(new int[] { element });
 		}
 
-		public PascalSet Subtract(Int32 element)
+		public PascalSet Subtract(int element)
 		{
-			return this.Difference(new Int32[] { element });
+			return this.Difference(new int[] { element });
 		}
 		
 		// Overloaded - operator for set difference - substraction of one character element
 		public static PascalSet operator -(PascalSet pascalSet, char element)
 		{
-			return pascalSet.Difference(new Int32[] { (int)element });
+			return pascalSet.Difference(new int[] { (int)element });
 		}
 
 		public PascalSet Subtract(char element)
 		{
-			return this.Difference(new Int32[] { (int)element });
+			return this.Difference(new int[] { (int)element });
 		}
 		#endregion
 
@@ -413,7 +413,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="element">The integer to check if it exists in the set.</param>
 		/// <returns><b>True</b> is <b>element</b> is in the set, <b>False</b> otherwise</returns>
-		public virtual bool ContainsElement(Int32 element)
+		public virtual bool ContainsElement(int element)
 		{
 			if (element < this.lowerBound || element > this.upperBound)
 				return false;
@@ -440,7 +440,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">A variable number of integers.</param>
 		/// <returns><b>True</b> if <b>this</b> is a subset of the passed-in integers; <b>False</b> otherwise.</returns>
-		public virtual bool Subset(params Int32[] list)
+		public virtual bool Subset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
 			return Subset(temp);
@@ -453,7 +453,7 @@ namespace Infovision.Utils
 		/// <returns><b>True</b> if <b>this</b> is a subset of the passed-in characters; <b>False</b> otherwise.</returns>
 		public virtual bool Subset(params char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return Subset(intForm);
 		}
@@ -495,7 +495,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">A variable number of integers.</param>
 		/// <returns><b>True</b> if <b>this</b> is a proper subset of the passed-in integers; <b>False</b> otherwise.</returns>
-		public virtual bool ProperSubset(params Int32[] list)
+		public virtual bool ProperSubset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
 			return ProperSubset(temp);
@@ -533,7 +533,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">A variable number of integers.</param>
 		/// <returns><b>True</b> if <b>this</b> is a superset of the passed-in integers; <b>False</b> otherwise.</returns>
-		public virtual bool Superset(params Int32[] list)
+		public virtual bool Superset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
 			return Superset(temp);
@@ -546,7 +546,7 @@ namespace Infovision.Utils
 		/// <returns><b>True</b> if <b>this</b> is a superset of the passed-in characters; <b>False</b> otherwise.</returns>
 		public virtual bool Superset(params char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return Superset(intForm);
 		}
@@ -569,7 +569,7 @@ namespace Infovision.Utils
 		/// </summary>
 		/// <param name="list">A variable number of integers.</param>
 		/// <returns><b>True</b> if <b>this</b> is a proper superset of the passed-in integers; <b>False</b> otherwise.</returns>
-		public virtual bool ProperSuperset(params Int32[] list)
+		public virtual bool ProperSuperset(params int[] list)
 		{
 			PascalSet temp = new PascalSet(this.lowerBound, this.upperBound, list);
 			return ProperSuperset(temp);
@@ -582,7 +582,7 @@ namespace Infovision.Utils
 		/// <returns><b>True</b> if <b>this</b> is a proper superset of the passed-in characters; <b>False</b> otherwise.</returns>
 		public virtual bool ProperSuperset(params char[] list)
 		{
-			Int32[] intForm = new Int32[list.Length];
+			int[] intForm = new int[list.Length];
 			Array.Copy(list, intForm, list.Length);
 			return ProperSuperset(intForm);
 		}
@@ -706,7 +706,7 @@ namespace Infovision.Utils
 		}
 
 		// Provide the strongly typed member for ICollection.
-		public void CopyTo(Int32[] array, int index)
+		public void CopyTo(int[] array, int index)
 		{
 			this.ToArray().CopyTo(array, index);
 		}
@@ -753,16 +753,16 @@ namespace Infovision.Utils
 
 		public override string ToString()
 		{
-			StringBuilder stringBuilder = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < this.data.Length; i++)
 			{
 				if (this.data.Get(i))
 				{
-					stringBuilder.Digits(i + this.lowerBound).Append(' ');  
+					sb.Digits(i + this.lowerBound).Append(' ');  
 				}
 			}
 
-			return stringBuilder.ToString();
+			return sb.ToString();
 		}
 
 		public override int GetHashCode()

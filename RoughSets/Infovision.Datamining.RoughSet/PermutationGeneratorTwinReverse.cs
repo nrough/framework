@@ -8,7 +8,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public PermutationGeneratorTwinReverse(Int32[] elements)
+        public PermutationGeneratorTwinReverse(int[] elements)
             : base(elements)
         {
         }

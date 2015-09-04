@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
         public ReductWeights(DataStore dataStore, int[] fieldIds, double[] objectWeights, double approximationDegree)
             : base(dataStore, fieldIds, approximationDegree)
         {
-            this.objectWeights = objectWeights;
+            this.Weights = objectWeights;
         }
 
         public ReductWeights(DataStore dataStore, int[] fieldIds, double approximationDegree)
@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public ReductWeights(ReductWeights reduct)
-            : base((Reduct)reduct)
+            : base(reduct)
         {
         }
 
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
             if (reduct == null)
                 return false;
 
-            for (int i = 0; i < this.objectWeights.Length; i++)
+            for (int i = 0; i < this.Weights.Length; i++)
                 if (reduct.Weights[i] != this.Weights[i])
                     return false;
 

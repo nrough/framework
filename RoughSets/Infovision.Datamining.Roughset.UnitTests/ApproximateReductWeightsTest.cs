@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -11,7 +12,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
     {
         DataStore dataStoreTrain = null;
         DataStore dataStoreTest = null;
-
         DataStoreInfo dataStoreTrainInfo = null;
 
         public ApproximateReductWeightsTest()
@@ -23,6 +23,33 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+        }
+
+        public Dictionary<string, BenchmarkData> GetDataFiles()
+        {
+            return BenchmarkDataHelper.GetDataFiles();
+        }
+
+        [Test, TestCaseSource("GetDataFiles")]
+        public void GenerateZeroEpsilonTest(KeyValuePair<string, BenchmarkData> fileName)
+        {            
+            DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
+            
+            Args parms = new Args();
+            parms.AddParameter("DataStore", data);
+            parms.AddParameter("NumberOfThreads", 1);
+            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
+            parms.AddParameter("NumberOfPermutations", 100);
+            
+            ReductGeneratorWeightsMajority reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
+            reductGenerator.Generate();
+
+            string fn = String.Format("F:\\Temp\\{0}_ApproximateReductWeightsTest_GenerateZeroEpsilonTest.txt", fileName.Key);
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fn))
+            {
+                foreach (IReduct reduct in reductGenerator.ReductPool)
+                    file.WriteLine(String.Format("{0} {1}", reduct, reduct.Attributes.Count));
+            }
         }
         
         [Test]

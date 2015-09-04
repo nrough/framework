@@ -128,7 +128,7 @@ namespace Infovision.Datamining.Roughset
 				//instance of a record belonging to equivalence class
 				AttributeValueVector instance = eq.Instance.RemoveAttribute(attributeId);
 				foreach (int removedAttribute in this.removedAttributes)
-					instance = instance.RemoveAttribute(removedAttribute);				
+					instance = instance.RemoveAttribute(removedAttribute);
 
 				//add EQ class to map and calculate intersection of decisions
 				PascalSet existingGeneralDecisions = null;

@@ -59,33 +59,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }            
         }
 
-        public Dictionary<string, string> GetDataFiles()
+        public Dictionary<string, BenchmarkData> GetDataFiles()
         {
-            Dictionary<string, string> dataFiles = new Dictionary<string, string>();
-
-            dataFiles.Add("opt", @"Data\optdigits.trn");
-            dataFiles.Add("dna", @"Data\dna_modified.trn");
-            dataFiles.Add("letter", @"Data\letter.trn");
-            dataFiles.Add("monks-1", @"Data\monks-1.train");
-            dataFiles.Add("monks-2", @"Data\monks-2.train");
-            dataFiles.Add("monks-3", @"Data\monks-3.train");
-            dataFiles.Add("zoo", @"Data\zoo.dta");
-            dataFiles.Add("spect", @"Data\SPECT.train");
-            dataFiles.Add("semeion", @"Data\semeion.data");
-            dataFiles.Add("pen", @"Data\pendigits.trn");
-
-            return dataFiles;
+            return BenchmarkDataHelper.GetDataFiles();
         }
         
         
         [Test, TestCaseSource("GetDataFiles")]
-        public void ExperimentAvgReductLength(KeyValuePair<string, string> fileName)
+        public void ExperimentAvgReductLength(KeyValuePair<string, BenchmarkData> fileName)
         {
             Random randSeed = new Random();
             int seed = randSeed.Next(Int32.MaxValue);
             RandomSingleton.Seed = seed;
 
-            DataStore data = DataStore.Load(fileName.Value, FileFormat.Rses1);            
+            DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 1000;

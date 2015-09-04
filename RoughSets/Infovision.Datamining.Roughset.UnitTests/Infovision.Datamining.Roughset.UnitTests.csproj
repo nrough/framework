@@ -86,6 +86,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BenchmarkDataHelper.cs" />
     <Compile Include="BireductTest.cs" />
     <Compile Include="ApproximateReductWeightsTest.cs" />
     <Compile Include="EquivalenceClassSortedMapTest.cs" />

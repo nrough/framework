@@ -12,8 +12,8 @@ namespace Infovision.Datamining.Roughset
         private IReductStore reductPool;
         private IPermutationGenerator permutationGenerator;
         private PermutationCollection permutationList;
-        private DataStore dataStore = null;
-        private double epsilon = 0.0;
+        private DataStore dataStore;
+        private double epsilon;
         private int[][] fieldGroups;
         private int reductIdSequence;
         private bool useCache;
@@ -135,6 +135,7 @@ namespace Infovision.Datamining.Roughset
         public virtual void SetDefaultParameters()
         {
             this.useCache = false;
+            this.epsilon = 0.0;
         }
 
         public virtual void initFromDataStore(DataStore data)

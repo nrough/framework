@@ -100,6 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BenchmarkData.cs" />
     <Compile Include="DataStoreHelper.cs" />
     <Compile Include="DataStoreOrderByComparer.cs" />
     <Compile Include="FieldTypes.cs" />

@@ -5,7 +5,7 @@ namespace Infovision.Datamining.Roughset
 {
     public class ReductStoreMulti : ReductStore
     {
-        #region Globals
+        #region Members
 
         private int numberOfThreads;
         private ManualResetEvent[] resetEvents;

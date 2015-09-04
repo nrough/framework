@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Data
 {
+    [Serializable]
     public class DataStoreOrderByComparer : Comparer<int>
     {
         private DataStore dataStore;

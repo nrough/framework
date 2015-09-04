@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class Reduct : IReduct
     {
-        #region Globals
+        #region Members
 
         private int approximationDegree;        
         private double[] objectWeights;
@@ -121,14 +121,14 @@ namespace Infovision.Datamining.Roughset
             this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
             this.objectWeights = new double[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
-            Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);            
+            Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
         }
 
         #endregion        
 
         #region Methods
 
-        protected void InitEquivalenceMap()
+        protected virtual void InitEquivalenceMap()
         {
             this.eqClassMap = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
         }

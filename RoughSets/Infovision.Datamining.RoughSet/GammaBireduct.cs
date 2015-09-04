@@ -47,7 +47,7 @@ namespace Infovision.Datamining.Roughset
 
             foreach (int objectIdx in this.ObjectSet)
             {
-                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, newAttributeSet);
+                AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, newAttributeSet);
                 EquivalenceClass reductStat = localPartition.GetEquivalenceClass(dataVector);
 
                 if (reductStat.NumberOfDecisions > 1)
@@ -64,7 +64,7 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
             localPartition.Calc(this.Attributes, this.DataStore);
             
-            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
+            AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = localPartition.GetEquivalenceClass(dataVector);
 
             if (reductStatistics.NumberOfDecisions > 1)

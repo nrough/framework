@@ -19,10 +19,10 @@ namespace Infovision.Datamining.Roughset
         
         EquivalenceClassMap EquivalenceClassMap { get; }
 
-        bool AddAttribute(int attributeId);               
-        bool RemoveAttribute(int attributeId);
+        bool AddAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);
         bool ContainsObject(int objectIndex);
+        bool RemoveAttribute(int attributeId);
 
         //TODO We want to display Reducts statistics
         //Cardinality

@@ -183,14 +183,14 @@ namespace Infovision.Data
             return false;
         }
 
-        public DataVector GetDataVector(int objectIndex, int[] fieldIds)
+        public AttributeValueVector GetDataVector(int objectIndex, int[] fieldIds)
         {
-            return new DataVector(this.GetObjectFields(objectIndex, fieldIds), false);
+            return new AttributeValueVector(fieldIds, this.GetObjectFields(objectIndex, fieldIds), false);
         }
 
-        public DataVector GetDataVector(int objectIndex, FieldSet fieldSet)
+        public AttributeValueVector GetDataVector(int objectIndex, FieldSet fieldSet)
         {
-            return new DataVector(this.GetObjectFields(objectIndex, fieldSet), false);
+            return new AttributeValueVector(fieldSet.ToArray(), this.GetObjectFields(objectIndex, fieldSet), false);
         }
 
         public long[] GetObjectFields(int objectIndex, int[] fieldIds)

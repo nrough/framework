@@ -7,35 +7,22 @@ using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
 {
-    public class EquivalenceClassSortedMap
+    public class EquivalenceClassSortedMap : EquivalenceClassMap
     {        
-        #region Members                
-
-        private Dictionary<DataVector, EquivalenceClass> partitions;
-        private Dictionary<long, int> decisionCount;        
-
-        #endregion
-        
         #region Constructors
 
-        private EquivalenceClassSortedMap()
-        {
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>();            
-        }
-
         public EquivalenceClassSortedMap(DataStoreInfo dataStoreInfo)
-        {            
+            : base(dataStoreInfo)
+        {   
         }        
 
         #endregion
 
         #region Methods
 
-        public void Calc(FieldSet attributeSet, DataStore dataStore)
+        public override void Calc(FieldSet attributeSet, DataStore dataStore)
         {
             int[] orderBy = attributeSet.ToArray();
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
             double weight = 1.0 / dataStore.NumberOfRecords;
@@ -43,7 +30,8 @@ namespace Infovision.Datamining.Roughset
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                EquivalenceClass eq = new EquivalenceClass();
+                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
+                EquivalenceClass eq = new EquivalenceClass(dataVector);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
@@ -52,23 +40,23 @@ namespace Infovision.Datamining.Roughset
                     j++;
                 }
 
-                this.partitions.Add(dataStore.GetDataVector(i, orderBy), eq);
+                this.Partitions.Add(dataVector, eq);
 
                 i = j + 1;
             }
         }
 
-        public void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
+        public override void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
         {
             int[] orderBy = attributeSet.ToArray();
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                EquivalenceClass eq = new EquivalenceClass();
+                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
+                EquivalenceClass eq = new EquivalenceClass(dataVector);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
@@ -77,23 +65,23 @@ namespace Infovision.Datamining.Roughset
                     j++;
                 }
 
-                this.partitions.Add(dataStore.GetDataVector(i, orderBy), eq);
+                this.Partitions.Add(dataVector, eq);
 
                 i = j + 1;
             }
         }
 
-        public void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
+        public override void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
             int[] orderBy = attributeSet.ToArray();
-            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, objectSet, comparer);
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                EquivalenceClass eq = new EquivalenceClass();
+                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderBy);
+                EquivalenceClass eq = new EquivalenceClass(dataVector);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
@@ -102,7 +90,7 @@ namespace Infovision.Datamining.Roughset
                     j++;
                 }
 
-                this.partitions.Add(dataStore.GetDataVector(i, orderBy), eq);
+                this.Partitions.Add(dataVector, eq);
 
                 i = j + 1;
             }

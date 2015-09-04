@@ -313,10 +313,10 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			//21 = a20
 			//d not exist (only conditional attributes)
 			//Permutation permutation = new Permutation(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
-            PermutationCollection permList;
+			PermutationCollection permList;
 
-            //permList = new PermutationCollection(permutation);
-            permList = this.permutationList;
+			//permList = new PermutationCollection(permutation);
+			permList = this.permutationList;
 
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			
 			RoughClassifier roughClassifier = new RoughClassifier();
@@ -340,22 +340,22 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					EquivalenceClassMap eqMap = reduct.EquivalenceClassMap;
-					DataVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
+					AttributeValueVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
 					long mostFrequentDecisionValue = eqClass.MajorDecision;
 
 					
-                    if (decisionValue == mostFrequentDecisionValue)
+					if (decisionValue == mostFrequentDecisionValue)
 					{
-                        if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
-                            Assert.Greater(discernVerctor[j], 0);                                                   
+						if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
+							Assert.Greater(discernVerctor[j], 0);                                                   
 					}
 					else
 					{
-                        if (eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
-                            Assert.AreEqual(0, discernVerctor[j]);
+						if (eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
+							Assert.AreEqual(0, discernVerctor[j]);
 					}
-                    
+					
 				}
 				Console.Write(Environment.NewLine);
 			}

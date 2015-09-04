@@ -162,6 +162,11 @@ namespace Infovision.Data
             return fields[fieldId];
         }
 
+        public DataFieldInfo GetDecisionFieldInfo()
+        {
+            return this.DecisionInfo;
+        }
+
         public long AddFieldValue(int fieldId, object externalValue)
         {
             return this.GetFieldInfo(fieldId).Add(externalValue);

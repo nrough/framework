@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CheckAddObject(int objectIndex)
         {
-            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
+            AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = this.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
             if (reductStatistics.NumberOfDecisions <= 1)
@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.CheckAddObject(objectIdx))
             {                
-                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
+                AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
 
                 // important fist add to eqClass map, than to objectSet, otherwise 
                 // calling this.EquivalenceClassMap will invoke calculating eqClassMap based on existing objectSet
@@ -128,7 +128,7 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckRemoveObject(objectIdx))
             {
                 objectSet.RemoveElement(objectIdx);
-                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
+                AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
                 this.EquivalenceClassMap.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
                 return true;
             }

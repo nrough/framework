@@ -12,6 +12,7 @@ namespace Infovision.Utils
 		// Private member variables
 		private int lowerBound, upperBound;
 		private BitArray data;
+		private int cardinality;
 
 		#region Constructors
 		/// <summary>
@@ -21,6 +22,9 @@ namespace Infovision.Utils
 		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer value.</param>
 		public PascalSet(int lowerBound, int upperBound)
 		{
+			//cardinality is not yet calculated
+			cardinality = -1;
+			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
 				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
@@ -41,6 +45,9 @@ namespace Infovision.Utils
 		/// <param name="initialData">An integer array that is used as the initial values of the array.</param>
 		public PascalSet(int lowerBound, int upperBound, int[] initialData)
 		{
+			//cardinality is not yet calculated
+			cardinality = -1;
+			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
 				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
@@ -51,7 +58,7 @@ namespace Infovision.Utils
 			// Create the BitArray
 			int size = upperBound - lowerBound + 1;
 			data = new BitArray(size);
-
+			
 			// Populuate the BitArray with the passed-in initialData array.
 			for (int i = 0; i < initialData.LongLength; i++)
 			{
@@ -60,6 +67,7 @@ namespace Infovision.Utils
 				{
 					int index = val - this.lowerBound;
 					data.Set(index, true);
+					cardinality++;
 				}
 				else
 					throw new ArgumentException("Attempting to add an element with value " 
@@ -69,10 +77,16 @@ namespace Infovision.Utils
 												+ " and "
 												+ this.upperBound.ToString(CultureInfo.InvariantCulture));
 			}
+
+			if (cardinality > -1)
+				cardinality++;
 		}
 
 		public PascalSet(int lowerBound, int upperBound, BitArray data)
 		{
+			//cardinality is not yet calculated
+			cardinality = -1;
+			
 			// make sure lowerbound is less than or equal to upperbound
 			if (lowerBound > upperBound)
 				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
@@ -103,6 +117,32 @@ namespace Infovision.Utils
 		#endregion
 
 		#region Methods
+
+        public int GetCardinality()
+        {
+            int[] ints = new int[(this.data.Count >> 5) + 1];
+            this.data.CopyTo(ints, 0);
+            int count = 0;
+
+            // fix for not truncated bits in last integer that may have been set to true with SetAll()
+            ints[ints.Length - 1] &= ~(-1 << (this.data.Count % 32));
+
+            for (int i = 0; i < ints.Length; i++)
+            {
+                int c = ints[i];
+                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+                unchecked
+                {
+                    c = c - ((c >> 1) & 0x55555555);
+                    c = (c & 0x33333333) + ((c >> 2) & 0x33333333);
+                    c = ((c + (c >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                }
+                count += c;
+            }
+
+            return count;
+        }
+
 		/// <summary>
 		/// Determines if two PascalSets are "compatible."  Specifically, it checks to ensure that the PascalSets
 		/// share the same lower and upper bounds.
@@ -689,11 +729,16 @@ namespace Infovision.Utils
 		{
 			get
 			{
-				int elements = 0;
-				for (int i = 0; i < data.Length; i++)
-					if (data.Get(i)) elements++;
+				if (cardinality == -1)
+				{
+					//int elements = 0;
+					//for (int i = 0; i < data.Length; i++)
+					//	if (data.Get(i)) elements++;
+					//cardinality = elements;
+                    cardinality = this.GetCardinality();
+				}
 
-				return elements;
+				return cardinality;
 			}
 		}
 

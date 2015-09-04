@@ -436,14 +436,14 @@ namespace Infovision.Datamining.Roughset
 
             foreach (IReduct reduct in reductStore)
             {
-                int[] attributeArray = reduct.Attributes.ToArray();
-                Int64[] dataVectorArray = new Int64[attributeArray.Length];
-                for (int i = 0; i < attributeArray.Length; i++)
+                int[] attributes = reduct.Attributes.ToArray();
+                long[] values = new long[attributes.Length];
+                for (int i = 0; i < attributes.Length; i++)
                 {
-                    dataVectorArray[i] = record[attributeArray[i]];
+                    values[i] = record[attributes[i]];
                 }
 
-                DataVector dataVector = new DataVector(dataVectorArray, false);
+                AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
                 EquivalenceClass reductStatistic = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
                 DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
@@ -528,7 +528,7 @@ namespace Infovision.Datamining.Roughset
         {
             long result = -1;
             double maxWeight = 0;
-            Dictionary<Int64, double> decisionVotes = new Dictionary<Int64, double>();
+            Dictionary<long, double> decisionVotes = new Dictionary<long, double>();
 
             ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[record.ObjectId];
             foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)

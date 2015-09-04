@@ -8,48 +8,11 @@ namespace Infovision.Data
     [Serializable]
     public class DataRecordInternal
     {
-        #region Globals
+        #region Members
 
         private long objectId;
-        private Dictionary<int, Int64> fields;
+        private Dictionary<int, long> fields;
 
-        #endregion
-
-        #region Constructors
-
-        public DataRecordInternal()
-        {
-            this.Init();
-        }
-
-        public DataRecordInternal(int capacity)
-        {
-            this.Init(capacity);
-        }
-
-        public DataRecordInternal(int[] fieldIds, Int64[] fieldValues)
-            : this(fieldIds.Length)
-        {
-            if (fieldIds.Length != fieldValues.Length)
-                throw new System.ArgumentException("Field and value lists must have the same length");
-
-            for (int i = 0; i < fieldIds.Length; i++)
-            {
-                fields.Add(fieldIds[i], fieldValues[i]);
-            }
-        }
-
-        protected void Init(int capacity)
-        {
-            objectId = 0;
-            fields = new Dictionary<int, Int64>(capacity);
-        }
-
-        protected void Init()
-        {
-            objectId = 0;
-            fields = new Dictionary<int, Int64>();
-        }
         #endregion
 
         #region Properties
@@ -73,9 +36,47 @@ namespace Infovision.Data
 
         #endregion
 
+        #region Constructors
+
+        public DataRecordInternal()
+        {
+            this.Init();
+        }
+
+        public DataRecordInternal(int capacity)
+        {
+            this.Init(capacity);
+        }
+
+        public DataRecordInternal(int[] fieldIds, long[] fieldValues)
+            : this(fieldIds.Length)
+        {
+            if (fieldIds.Length != fieldValues.Length)
+                throw new System.ArgumentException("Field and value lists must have the same length");
+
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                fields.Add(fieldIds[i], fieldValues[i]);
+            }
+        }
+
+        #endregion
+
         #region Methods        
 
-        private Dictionary<int, Int64> GetFieldDictionary()
+        protected void Init(int capacity)
+        {
+            objectId = 0;
+            fields = new Dictionary<int, long>(capacity);
+        }
+
+        protected void Init()
+        {
+            objectId = 0;
+            fields = new Dictionary<int, long>();
+        }
+
+        private Dictionary<int, long> GetFieldDictionary()
         {
             return this.fields;
         }
@@ -85,7 +86,7 @@ namespace Infovision.Data
             return fields.Keys;
         }
 
-        public IEnumerable<Int64> GetValues()
+        public IEnumerable<long> GetValues()
         {
             return fields.Values;
         }

@@ -17,6 +17,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int ParentNodeY { get; set; }
         public Color LeftColor { get; set; }
         public Color RightColor { get; set; }
+        public double Height { get; set; }
+        public bool IsLeaf { get; set; }
 
         public int ParentNodeX
         {
@@ -59,10 +61,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             pen.Color = origColor;            
             if (showLabel)
             {
-                g.DrawString(this.NodeId.ToString(), 
-                             font, 
-                             brush, 
-                             new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
+                /*
+                if (!this.IsLeaf)
+                {
+                    g.DrawString(String.Format("{0} ({1:0.000})", this.NodeId.ToString(), this.Height),
+                                 font,
+                                 brush,
+                                 new PointF(this.ParentNodeX - (font.Size * (this.NodeId.ToString().Length + 7) / 2), this.ParentNodeY + 4));
+                }
+                else
+                {
+                */
+                    g.DrawString(String.Format("{0}", this.NodeId.ToString()),
+                                 font,
+                                 brush,
+                                 new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
+                //}
             }            
         }
         

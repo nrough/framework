@@ -132,18 +132,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Root = this.FindNode(this.nodes.Keys.Min());
             
             this.Cleanup();            
-        }        
-        
-        protected void AddCluster(HierarchicalCluster cluster)
-        {
-            this.clusters.Add(cluster.Index, cluster);
-            this.GetNextNodeId();
-        }
-
-        protected void RemoveCluster(int key)
-        {
-            this.clusters.Remove(key);
-        }
+        }               
 
         protected int GetClusterSize(int clusterIdx)
         {
@@ -158,12 +147,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected bool HasMoreClustersToMerge()
         {
             return this.clusters.Count > 1;
-        }
-
-        protected HierarchicalCluster GetCluster(int clusterIdx)
-        {
-            return this.clusters[clusterIdx];
-        }
+        }        
 
         protected virtual void CreateClusters()
         {                                    

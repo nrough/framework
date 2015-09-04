@@ -56,15 +56,15 @@ namespace Infovision.Datamining.Roughset
             ReductWeights reduct = obj as ReductWeights;
             if (reduct == null)
                 return false;
-
+            
+            if (base.Equals(obj) == false)
+                return false;
+            
             for (int i = 0; i < this.Weights.Length; i++)
                 if (reduct.Weights[i] != this.Weights[i])
                     return false;
 
-            return base.Equals(obj);
-
-
-            //TODO weights should also be checked   
+            return true;            
         }
 
         public override int GetHashCode()

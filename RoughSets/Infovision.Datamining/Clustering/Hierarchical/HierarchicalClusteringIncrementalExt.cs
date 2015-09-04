@@ -8,10 +8,8 @@ using Infovision.Math;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    public class HierarchicalClusteringIncrementalExt : HierarchicalClusteringIncremental
+    public class HierarchicalClusteringIncrementalExt : HierarchicalClusteringSIHC
     {
-        private double currentAvgNodeDistance = 0.0;
-
         public HierarchicalClusteringIncrementalExt()
             : base()
         {                        
@@ -23,46 +21,89 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {         
         }
 
+        /*
         public override bool AddToCluster(int id, double[] instance)
         {
-
             if (this.NumberOfInstances < this.MinimumNumberOfInstances
                 || (this.NumberOfInstances >= this.MinimumNumberOfInstances
                     && this.NumberOfInstances <= 1))
             {
                 return base.AddToCluster(id, instance);                
+            }                        
+
+            HierarchicalClustering newClustering = new HierarchicalClustering(this.Distance, this.Linkage);
+            newClustering.DistanceMatrix = new DistanceMatrix(this.DistanceMatrix);
+            newClustering.Instances = new Dictionary<int, double[]>(this.Instances);
+
+            //Add new instances to new clustering
+            foreach (KeyValuePair<int, double[]> kvp in newClustering.Instances)
+                newClustering.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), newClustering.Distance(kvp.Value, instance));
+            newClustering.AddInstance(id, instance);
+            
+            newClustering.Compute();            
+
+            double correlation = newClustering.GetDendrogramCorrelation(this);
+
+            //Add new instance
+            foreach (KeyValuePair<int, double[]> kvp in this.Instances)
+                this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
+            this.AddInstance(id, instance);
+                        
+            //TODO remove this line
+            Console.WriteLine("{0} {1}", id, correlation);
+            
+            this.Root = newClustering.Root;
+            this.NextClusterId = newClustering.NextClusterId;
+            this.Nodes = newClustering.Nodes;
+            return true;             
+        }
+        */
+
+        //version complete vs. incremental
+        public override bool AddToCluster(int id, double[] instance)
+        {
+            if (this.NumberOfInstances < this.MinimumNumberOfInstances
+                || (this.NumberOfInstances >= this.MinimumNumberOfInstances
+                    && this.NumberOfInstances <= 1))
+            {
+                return base.AddToCluster(id, instance);
             }
+
+            HierarchicalClustering newClustering = new HierarchicalClustering(this.Distance, this.Linkage);
+            newClustering.DistanceMatrix = new DistanceMatrix(this.DistanceMatrix);
+            newClustering.Instances = new Dictionary<int, double[]>(this.Instances);
+
+            //Add new instances to new clustering
+            foreach (KeyValuePair<int, double[]> kvp in newClustering.Instances)
+                newClustering.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), newClustering.Distance(kvp.Value, instance));
+            newClustering.AddInstance(id, instance);
+
+            newClustering.Compute();
+
+            HierarchicalClusteringIncremental incrementalClustering = new HierarchicalClusteringIncremental(this.Distance, this.Linkage);
+            incrementalClustering.DistanceMatrix = new DistanceMatrix(this.DistanceMatrix);
+            incrementalClustering.Instances = new Dictionary<int, double[]>(this.Instances);
+            incrementalClustering.Root = this.Root;
+            incrementalClustering.NextClusterId = this.NextClusterId;
+            incrementalClustering.Nodes = this.Nodes;            
+            incrementalClustering.AddToCluster(id, instance);
+
+
+            //double correlation = newClustering.GetDendrogramCorrelation(incrementalClustering);
+            double correlation = newClustering.BakersGammaIndex(incrementalClustering);
 
             //Add new instance
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
             this.AddInstance(id, instance);
 
-            HierarchicalClustering initialClustering = new HierarchicalClustering(this.Distance, this.Linkage);
-            initialClustering.DistanceMatrix = this.DistanceMatrix;
-            initialClustering.Instances = this.Instances;
-            initialClustering.Compute();
+            //TODO remove this line
+            Console.WriteLine("{0} {1}", id, correlation);
 
-            double newAvgNodeDistance = initialClustering.GetAvgNodeLevelDistance();
-
-            //TODO remove this line            
-            Console.WriteLine("{0} {1}", id, newAvgNodeDistance);
-
-            //TODO commented out for test purposes
-            //dendrogram has been significantly changed
-            //if (newAvgNodeDistance > currentAvgNodeDistance)
-            {
-                this.Root = initialClustering.Root;
-                this.NextClusterId = initialClustering.NextClusterId;
-                this.Nodes = initialClustering.Nodes;
-                return true;
-            }
-            
-            //remove instance
-            this.RemoveInstance(id);
-            foreach (KeyValuePair<int, double[]> kvp in this.Instances)
-                this.DistanceMatrix.Remove(new MatrixKey(kvp.Key, id));
-            return false;
+            this.Root = newClustering.Root;
+            this.NextClusterId = newClustering.NextClusterId;
+            this.Nodes = newClustering.Nodes;
+            return true;
         }
     }
 }

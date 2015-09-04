@@ -9,34 +9,33 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringIncremental : HierarchicalClusteringBase
-    {        
+    {
         private Dictionary<int, DendrogramNode> nodes;
         public int MinimumNumberOfInstances { get; set; }
-
-        //TODO
+        
         public Dictionary<int, DendrogramNode> Nodes
         {
             get { return this.nodes; }
             set { this.nodes = value; }
         }
-        
+
         public HierarchicalClusteringIncremental()
             : base()
-        {         
+        {
         }
 
         public HierarchicalClusteringIncremental(Func<double[], double[], double> distance,
                                                  Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(distance, linkage)
-        {         
+        {
         }
 
         protected override void Init()
-        {            
+        {
             nodes = new Dictionary<int, DendrogramNode>();
             this.MinimumNumberOfInstances = 3;
 
-            base.Init();            
+            base.Init();
         }
 
         protected override void OnDistanceChanged(EventArgs e)
@@ -58,23 +57,35 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// <param name="data">The data where to compute the algorithm.</param>        
         public override void Compute()
         {
-            throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");
-            /*
-            foreach(KeyValuePair<int, double[]> kvp in this.Instances)            
-            {
-                this.AddToCluster(kvp.Key, kvp.Value);
-            }
-            */
+            throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");            
         }
 
-        public virtual bool AddToCluster(int id, double[] instance)
-        {            
+        public override bool AddToCluster(int id, double[] instance)
+        {
+            bool ret = base.AddToCluster(id, instance);
+
+            if (ret == false)
+                return false;
+
+            double distance = 0.0;
+            double minDistance = Double.MaxValue;
+            int minLeafKey = -1;
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
-                this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
+            {
+                distance = this.Distance(kvp.Value, instance);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    minLeafKey = kvp.Key;
+                }
+                this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), distance);
+            }
             this.AddInstance(id, instance);
 
+            //when we reach the minimum number of instances, we create dendrogram using all added instances
             if (this.NumberOfInstances >= this.MinimumNumberOfInstances)
             {
+                //this will be executed only once at the beginning
                 if (this.Root == null)
                 {
                     if (this.NumberOfInstances > 1)
@@ -82,15 +93,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         HierarchicalClustering initialClustering = new HierarchicalClustering(this.Distance, this.Linkage);
                         initialClustering.DistanceMatrix = this.DistanceMatrix;
                         initialClustering.Instances = this.Instances;
-                        initialClustering.Compute();                        
-                        
+                        initialClustering.Compute();
+
                         this.Root = initialClustering.Root;
                         this.NextClusterId = initialClustering.NextClusterId;
                         this.Nodes = initialClustering.Nodes;
-                                                
+
                         return true;
                     }
-                    else
+                    else //in case of only one instance create root node. The leaf is added later to this root
                     {
                         this.Root = new DendrogramNode(this.NextClusterId);
                         this.AddDendrogramNode(this.Root);
@@ -102,11 +113,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 return true;
             }
-            
-            
+
             //special case no nodes except root node
             if (this.NumberOfInstances - 1 == 0)
             {
+                //add instance to previously created root node
                 DendrogramNode newNode = new DendrogramNode
                 {
                     Id = id
@@ -114,7 +125,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                 newNode.Parent = this.Root;
                 this.Root.LeftNode = newNode;
-                
+
                 nodes.Add(newNode.Id, newNode);
                 return true;
             }
@@ -126,111 +137,69 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     Id = id
                 };
 
-                newNode.Parent = this.Root;                
+                newNode.Parent = this.Root;
                 this.Root.RightNode = newNode;
-                double distance = this.Distance(instance, this.GetInstance(this.Root.LeftNode.Id));
-                
+                distance = this.Distance(instance, this.GetInstance(this.Root.LeftNode.Id));
+
                 this.Root.Height = distance;
                 this.Root.LeftLength = distance;
                 this.Root.RightLength = distance;
-                
+
                 nodes.Add(id, newNode);
 
                 return true;
             }
-            
-            this.SIHC(id, this.Root);
 
-            return true;
-        }
+            //TODO insert new leaf next to other closest leaf (create new parent, add leaves as their children)
 
-        protected void SIHC(int newInstanceId, DendrogramNode node)
-        {
-            int[] cluster1 = this.GetLeaves(node);
-            int[] cluster0 = new int[] { newInstanceId };
-            double d = this.GetClusterDistance(cluster0, cluster1);
-
-            if (node.Height <= d)
+            DendrogramNode siblingLeaf = null;
+            if (this.Nodes.TryGetValue(minLeafKey, out siblingLeaf))
             {
-                DendrogramNode singleton = new DendrogramNode
-                {
-                    Id = newInstanceId
-                };
-
-                nodes.Add(singleton.Id, singleton);
+                //find sibling parent
+                DendrogramNode parentNode = siblingLeaf.Parent;
 
                 DendrogramNode newParentNode = new DendrogramNode
                 {
                     Id = this.NextClusterId,
-                    LeftNode = singleton,                    
-                    RightNode = node,                    
-                    Height = d,
-                    Parent = node.Parent,
-                    LeftLength = d,
-                    RightLength = d - node.Height 
+                    Parent = siblingLeaf.Parent,
+                    Height = minDistance,
+                    LeftNode = siblingLeaf,
+                    LeftLength = minDistance,
+                    RightNode = null,
+                    RightLength = minDistance
                 };
 
-                //update child reference on current node parent
-                if (node.Parent != null)
+                //update parent references
+                if (parentNode.LeftNode.Id == siblingLeaf.Id)
+                    parentNode.LeftNode = newParentNode;
+                else
+                    parentNode.RightNode = newParentNode;
+
+                //attach to new parent
+                siblingLeaf.Parent = newParentNode;
+
+                //create new leaf node
+                DendrogramNode newLeafNode = new DendrogramNode
                 {
-                    if (node.Parent.LeftNode == node)
-                    {
-                        node.Parent.LeftNode = newParentNode;                        
-                        node.Parent.LeftLength = node.Parent.Height - newParentNode.Height;
-                    }
-                    else
-                    {
-                        node.Parent.RightNode = newParentNode;                        
-                        node.Parent.RightLength = node.Parent.Height - newParentNode.Height;
-                    }
-                }
+                    Id = id,
+                    Parent = newParentNode,
+                    Height = 0.0,
+                    LeftNode = null,
+                    LeftLength = 0.0,
+                    RightNode = null,
+                    RightLength = 0.0
+                };
 
-                //set parent on new leaf node
-                singleton.Parent = newParentNode;
-                
-                //update root
-                if (node.Parent == null)
-                    this.Root = newParentNode;
-
-                //update parent on current node
-                node.Parent = newParentNode;
-                
-
-                nodes.Add(newParentNode.Id, newParentNode);
-
-                this.GetNextNodeId();
+                //attach to parent
+                newParentNode.RightNode = newLeafNode;
             }
             else
-            {                
-                int[] leftCluster = this.GetLeaves(node.LeftNode);
-                int[] rightCluster = this.GetLeaves(node.RightNode);
-
-                double leftDistance = this.GetClusterDistance(leftCluster, cluster0);
-                double rightDistance = this.GetClusterDistance(rightCluster, cluster0);
-
-
-                if (leftDistance < rightDistance)
-                {                 
-                    int[] mergedCluster = new int[leftCluster.Length + 1];
-                    Array.Copy(leftCluster, mergedCluster, leftCluster.Length);
-                    mergedCluster[leftCluster.Length] = newInstanceId;
-                    double newDistance = this.GetClusterDistance(mergedCluster, rightCluster);
-                    node.Height = newDistance;
-
-                    this.SIHC(newInstanceId, node.LeftNode);
-                }
-                else
-                {             
-                    int[] mergedCluster = new int[rightCluster.Length + 1];
-                    Array.Copy(rightCluster, mergedCluster, rightCluster.Length);
-                    mergedCluster[rightCluster.Length] = newInstanceId;
-                    double newDistance = this.GetClusterDistance(mergedCluster, leftCluster);
-                    node.Height = newDistance;
-
-                    this.SIHC(newInstanceId, node.RightNode);
-                }
+            {
+                throw new InvalidOperationException(String.Format("Cannot find leaf node with Id {0}", minLeafKey));
             }
-        }
+                                    
+            return true;
+        }        
 
         protected override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {

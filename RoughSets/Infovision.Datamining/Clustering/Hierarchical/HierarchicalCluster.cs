@@ -8,7 +8,7 @@ using Accord.MachineLearning;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    public class HierarchicalCluster
+    internal class HierarchicalCluster
     {       
         private int index;
         List<int> objects = new List<int>();

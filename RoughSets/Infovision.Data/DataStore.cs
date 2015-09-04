@@ -60,7 +60,7 @@ namespace Infovision.Data
             lastIndex = -1;
             objectId2Index = new Dictionary<long, int>(capacity);
             index2ObjectId = new Dictionary<int, long>(capacity);
-            decisionValue2ObjectIndex = new Dictionary<Int64, List<int>>();
+            decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
         }
 
         #endregion
@@ -158,7 +158,7 @@ namespace Infovision.Data
         public DataRecordInternal GetRecordByIndex(int objectIndex)
         {
             int[] fieldId = new int[this.dataStoreInfo.NumberOfFields];
-            Int64[] fieldValue = new Int64[this.dataStoreInfo.NumberOfFields];
+            long[] fieldValue = new Int64[this.dataStoreInfo.NumberOfFields];
 
             if (objectIndex < 0 || objectIndex > this.dataStoreInfo.NumberOfRecords)
                 throw new ArgumentOutOfRangeException("objectIndex", "Index out of range.");

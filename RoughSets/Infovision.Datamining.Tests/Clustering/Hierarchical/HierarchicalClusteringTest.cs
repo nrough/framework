@@ -93,6 +93,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.AreEqual(7, hClustering.GetLeafDistance(5, 7));            
         }
 
+        /*
         [Test]
         public void AvgNodeLevelDistanceTest()
         {
@@ -102,7 +103,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             Assert.AreEqual(238.0 / 45, hClustering.AvgNodeLevelDistance);
         }
-
+        */
 
         [Test, TestCaseSource("DistancesAndLinkages")]
         public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int> t)
@@ -238,8 +239,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
 
-            Dictionary<int, int> membership = hClustering.GetClusterMembership(4);
-            Dictionary<int, int> membership2 = hClustering.GetClusterMembership(3.6);
+            Dictionary<int, int> membership = hClustering.CutTree(4);
+            Dictionary<int, int> membership2 = hClustering.CutTree(3.6);
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             dc.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Green, Color.Yellow });

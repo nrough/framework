@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
 
         private bool isStatCalculated; //flags if statistics have been calculated
         private Dictionary<long, HashSet<int>> decisionObjectIndexes; //decision value --> set of objects with decision
-        private List<KeyValuePair<long, double>> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
+        private Dictionary<long, double> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
         private long majorDecision; //decision within EQ class with greatest object weight sum
         private double majorDecisionWeightSum; //sum of weights for a major decision
         private double totalWeightSum;
@@ -127,7 +127,7 @@ namespace Infovision.Datamining.Roughset
 
             long tmpMajorDecision = -1;
             double maxWeightSum = Double.MinValue;
-            this.decisionWeigthSums = new List<KeyValuePair<long, double>>(this.decisionObjectIndexes.Count);
+            this.decisionWeigthSums = new Dictionary<long, double>(this.decisionObjectIndexes.Count);
             this.totalWeightSum = 0.0;
             int[] values = new int[this.decisionObjectIndexes.Count];
 
@@ -152,15 +152,13 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 this.totalWeightSum += sum;
-                this.decisionWeigthSums.Add(new KeyValuePair<long, double>(kvp.Key, sum));
+                this.decisionWeigthSums.Add(kvp.Key, sum);
                 values[i++] = Convert.ToInt32(kvp.Key);                
             }
 
             decisionSet = new PascalSet(Convert.ToInt32(this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MinValue), 
                                         Convert.ToInt32(this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MaxValue), 
                                         values);
-
-            this.decisionWeigthSums.Sort((firstPair, nextPair) => -firstPair.Value.CompareTo(nextPair.Value));            
 
             this.majorDecision = tmpMajorDecision;
             this.majorDecisionWeightSum = maxWeightSum;
@@ -236,6 +234,19 @@ namespace Infovision.Datamining.Roughset
             }
 
             this.CalcStatistics();            
+        }
+
+        public double GetWeight()
+        {
+            return this.totalWeightSum;
+        }
+
+        public double GetWeight(long decision)
+        {
+            double ret = 0.0;
+            if (this.decisionWeigthSums.TryGetValue(decision, out ret))
+                return ret;
+            return 0.0;
         }
 
         #region ICloneable Members

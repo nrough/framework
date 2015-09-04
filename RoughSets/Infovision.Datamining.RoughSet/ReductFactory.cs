@@ -232,9 +232,10 @@ namespace Infovision.Datamining.Roughset
 
             switch(measureKey)
             {
-                case "ReductMeasureLength":
-                    comparer = new ReductLenghtComparer();
-                    break;
+                //default case
+                //case "ReductMeasureLength":
+                //    comparer = new ReductLenghtComparer();
+                //    break;
 
                 case "ReductMeasureNumberOfPartitions":
                     comparer = new ReductRuleNumberComparer();

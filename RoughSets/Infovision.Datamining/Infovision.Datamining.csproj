@@ -109,6 +109,7 @@
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringBase.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSIHC.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncremental.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />

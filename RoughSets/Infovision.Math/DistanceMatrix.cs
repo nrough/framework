@@ -79,7 +79,7 @@ namespace Infovision.Math
         public DistanceMatrix()
         {            
             matrix = new Dictionary<MatrixKey, double>();            
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
         }
         
         public DistanceMatrix(Func<double[], double[], double> distance)
@@ -94,7 +94,15 @@ namespace Infovision.Math
             this.Distance = distance;
             matrix = new Dictionary<MatrixKey, double>(size);
             readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
-        }                             
+        }
+
+        public DistanceMatrix(DistanceMatrix distanceMatrix)
+        {
+            this.matrix = new Dictionary<MatrixKey, double>(distanceMatrix.matrix);
+            this.readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(this.matrix);
+            this.distance = distanceMatrix.Distance;
+            this.ReverseDistanceFunction = distanceMatrix.ReverseDistanceFunction;            
+        }
 
         public void Initialize(double[][] points)
         {

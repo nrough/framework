@@ -187,14 +187,14 @@ namespace Infovision.Datamining.Roughset
                 if (reduct.Attributes.GetCardinality() > 0)
                 {
                     double[] errorvector = this.recognition(reduct, this.WeightGenerator.Weights);
-
+                                        
                     if (this.hCluster.AddToCluster(Convert.ToInt32(reduct.Id), errorvector))
                     {
                         this.ReductPool.AddReduct(reduct);
                                                 
                         //TODO Remove this
                         DendrogramChart chart = new DendrogramChart(this.hCluster, 1920, 1200);
-                        chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange, Color.Brown, Color.Beige});
+                        //chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange, Color.Brown, Color.Beige});
                         Bitmap chartBitmap = chart.GetAsBitmap();
                         if (reduct.Id.Length == 1)
                             chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_00{1}.bmp", this.DataStore.Name, reduct.Id));

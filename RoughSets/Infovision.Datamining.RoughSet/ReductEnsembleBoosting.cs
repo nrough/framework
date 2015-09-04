@@ -83,14 +83,10 @@ namespace Infovision.Datamining.Roughset
 				this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
 				this.WeightGenerator.Generate();
 
-				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
-				//this.MaxReductLength = numOfAttr;
+				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);				
+				
 				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
-				this.MinReductLength = 1;
-
-				//ReductCrisp crispReduct = this.GetNextReduct(this.WeightGenerator.Weights, numOfAttr, numOfAttr) as ReductCrisp;
-				//crispReduct.Reduce();
-				//this.MaxReductLength = crispReduct.Attributes.Count;
+				this.MinReductLength = 1;				
 
 				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights, 0, 0);
 				double M = new InformationMeasureWeights().Calc(emptyReduct);
@@ -317,12 +313,12 @@ namespace Infovision.Datamining.Roughset
 			return reduct;
 		}
 
-		protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
-		{
-			ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
-			r.Id = id;
-			return r;
-		}
+		//protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+		//{
+		//	ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
+		//	r.Id = id;
+		//	return r;
+		//}
 
 		#region Delegate implementations
 		

@@ -51,15 +51,16 @@ namespace ApproxReductBoostingCV
             ParameterCollection parmList = new ParameterCollection(
                 new IParameter[] {
                     //new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
-                    ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),                    
+                    //ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
+                    ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 50),
                     new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
                     ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", ReductFactoryKeyHelper.ReductEnsembleBoosting,
                                                                                                  ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity),
                     ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
                     ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
-                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
-                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
+                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
                 }
             );
 
@@ -145,8 +146,8 @@ namespace ApproxReductBoostingCV
 
                     ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);//as ReductEnsembleBoostingGenerator;
 
-                    ReductCrisp reduct = (ReductCrisp)reductGenerator.GetNextReduct(weightGenerator.Weights, numOfAttr, numOfAttr);
-                    reductGenerator.MaxReductLength = reduct.Attributes.Count;
+                    //ReductCrisp reduct = (ReductCrisp)reductGenerator.GetNextReduct(weightGenerator.Weights, numOfAttr, numOfAttr);
+                    //reductGenerator.MaxReductLength = reduct.Attributes.Count;
 
                     reductGenerator.Generate();
 

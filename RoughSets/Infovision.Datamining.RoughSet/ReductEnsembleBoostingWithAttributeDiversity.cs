@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset
 
 		public override void InitFromArgs(Args args)
 		{
-			base.InitFromArgs(args);			
+			base.InitFromArgs(args);
 		}
 
 		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)

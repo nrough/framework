@@ -12,9 +12,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClustering
     {                
-        private DistanceMatrix distanceMatrix;                
-        //TODO make private
-        protected Dictionary<int, HierarchicalCluster> clusters;
+        private DistanceMatrix distanceMatrix;                        
+        private Dictionary<int, HierarchicalCluster> clusters;
         
         private int nextClusterId = 0;
         
@@ -55,14 +54,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>        
         public HierarchicalClustering()
-            : this(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min) { }
+            : this(Infovision.Math.Distance.SquaredEuclidean, ClusteringLinkage.Min) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         ///         
         /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Accord.Math.Distance.SquareEuclidean(double[], double[])"/> distance.</param>
+        /// use the <see cref="Infovision.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Min(int[], int[], DistanceMatrix)"/> linkage.</param>
         /// 
@@ -76,7 +75,31 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 throw new ArgumentNullException("linkage");
 
             this.Distance = distance;
-            this.Linkage = linkage;                        
+            this.Linkage = linkage;
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the HierarchicalClustering algorithm
+        /// </summary>
+        ///         
+        /// <param name="distanceMatrix">The distance matrix to use. </param>
+        /// <param name="linkage">The linkage function to use. Default is to
+        /// use the <see cref="ClusteringLinkage.Min(int[], int[], DistanceMatrix)"/> linkage.</param>
+        /// 
+        public HierarchicalClustering(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double> linkage)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException("matrix");
+            
+            if (linkage == null)
+                throw new ArgumentNullException("linkage");
+
+            this.Distance = matrix.Distance;
+            this.Linkage = linkage;
+
+            this.distanceMatrix = new DistanceMatrix();
+            foreach (KeyValuePair<MatrixKey, double> kvp in matrix)
+                this.distanceMatrix.Add(new MatrixKey(kvp.Key.X, kvp.Key.Y), kvp.Value);
         }
 
         private void Initialize(double[][] points)
@@ -94,8 +117,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         
         private void InitDistanceMatrix(double[][] points)
         {
-            distanceMatrix = new DistanceMatrix(this.Distance);
-            distanceMatrix.Initialize(points);
+            if (distanceMatrix == null)
+            {
+                distanceMatrix = new DistanceMatrix(this.Distance);
+                distanceMatrix.Initialize(points);
+            }
         }
 
         private void InitClusters(double[][] points)
@@ -127,7 +153,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             // Perform initialization of the clusters
             this.Initialize(data);
 
-            Console.Write(distanceMatrix.ToString());
+            //Console.Write(distanceMatrix.ToString());
 
             this.CreateClusters();
 
@@ -161,7 +187,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
         }        
 
-        protected virtual DendrogramLink GetClustersToMerge()
+        protected DendrogramLink GetClustersToMerge()
         {
             int[] result = new int[2] { -1, -1 };
             double minDistance = Double.MaxValue;
@@ -179,6 +205,34 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return new DendrogramLink(this.nextClusterId, result[0], result[1], minDistance);
         }
 
+        protected DendrogramLink GetClustersToMergeSimple()
+        {
+            int[] key = new int[2] { -1, -1 };
+
+            //TODO ToArray() is expensive
+            //TODO clusters need to be private in parent class
+            int[] clusterIds = clusters.Keys.ToArray();
+            double minClusterDistance = double.MaxValue;
+
+            for (int j = 0; j < clusterIds.Length; j++)
+            {
+                for (int k = j + 1; k < clusterIds.Length; k++)
+                {
+                    double minObjectDistance = this.GetClusterDistance(clusterIds[j], clusterIds[k]);
+
+                    if (minObjectDistance < minClusterDistance)
+                    {
+                        minClusterDistance = minObjectDistance;
+
+                        key[0] = clusterIds[j];
+                        key[1] = clusterIds[k];
+                    }
+                }
+            }
+
+            return new DendrogramLink(this.NextClusterId, key[0], key[1], minClusterDistance);
+        }
+
         protected int MergeClusters(int x, int y, double distance)
         {
             HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(nextClusterId, clusters[x], clusters[y]);
@@ -188,7 +242,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.AddCluster(mergedCluster);
             this.dendrogram.Add(x, y, distance, mergedCluster.Index, clusters.Count <= 1);
 
-            Console.WriteLine("{0} merged with {1} to {2} {3}", x, y, mergedCluster.Index, distance); 
+            //Console.WriteLine("{0} merged with {1} to {2} {3}", x, y, mergedCluster.Index, distance); 
 
             return mergedCluster.Index;
         }
@@ -276,11 +330,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 {
                     newMatrix.Add(kvp.Key, kvp.Value);
                 }
-
             }
 
             distanceMatrix = newMatrix;
-        }
+        }        
 
         protected void Cleanup()
         {

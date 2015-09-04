@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
@@ -33,10 +34,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         public void ComputeTest()
         {                                    
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
-            
+            hClustering.Compute(HierarchicalClusteringTest.GetData());            
             Assert.IsTrue(true);
-
         }
 
         [Test]
@@ -45,14 +44,50 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodes();
-
+            Assert.IsTrue(true);
             foreach (int i in leaves)
             {
                 Console.Write("{0} ", i);
             }
-            Console.WriteLine();
+            Console.WriteLine();            
+        }
 
+        [Test]
+        public void ComputeLeafNodesFromTreeTest()
+        {
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
             Assert.IsTrue(true);
+            foreach (int i in leaves)
+            {
+                Console.Write("{0} ", i);
+            }
+            Console.WriteLine();            
+        }
+
+        [Test]
+        public void ComputeWithExternalDistanceMatrix()
+        {            
+            DistanceMatrix matrix = new DistanceMatrix();            
+            double[][] data = HierarchicalClusteringTest.GetData();
+            for (int i = 0; i < data.Length; i++)
+            {
+                for (int j = i + 1; j < data.Length; j++)
+                {
+                    double distance = Infovision.Math.Distance.Euclidean(data[i], data[j]);
+                    matrix.Add(new MatrixKey(i, j), distance);
+                }
+            }
+            HierarchicalClustering hClustering = new HierarchicalClustering(matrix, ClusteringLinkage.Min);
+            hClustering.Compute(HierarchicalClusteringTest.GetData());
+            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+            Assert.IsTrue(true);
+            foreach (int i in leaves)
+            {
+                Console.Write("{0} ", i);
+            }
+            Console.WriteLine();            
         }
     }
 }

@@ -230,15 +230,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             StringBuilder sb = new StringBuilder();
 
             if(cuts.Length > 0)
-                sb.AppendLine(String.Format("{0} {1} {2}", 0, "-Inf", cuts[0]));
+                sb.AppendLine(String.Format("{0}: {1} {2}", 0, "-Inf", cuts[0]));
 
             for (int i = 1; i < cuts.Length; i++)
             {
-                sb.AppendLine(String.Format("{0} {1} {2}", i, cuts[i - 1], cuts[i]));                
+                sb.AppendLine(String.Format("{0}: {1} {2}", i, cuts[i - 1], cuts[i]));                
             }
 
             if (cuts.Length > 0)
-                sb.AppendLine(String.Format("{0} {1} {2}", cuts.Length, cuts[cuts.Length-1], "+Inf"));
+                sb.AppendLine(String.Format("{0}: {1} {2}", cuts.Length, cuts[cuts.Length-1], "+Inf"));
 
             return sb.ToString();
         }

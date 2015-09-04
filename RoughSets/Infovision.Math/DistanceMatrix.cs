@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,12 +17,18 @@ namespace Infovision.Math
     }
 
     [Serializable]
-    public class DistanceMatrix : IDistanceMatrix
+    public class DistanceMatrix : IDistanceMatrix, IEnumerable<KeyValuePair<MatrixKey, double>>
     {
         private Dictionary<MatrixKey, double> matrix;
         private ReadOnlyDictionary<MatrixKey, double> readOnlyMatrix;
         private Func<double[], double[], double> distance;
 
+        public DistanceMatrix()
+        {            
+            matrix = new Dictionary<MatrixKey, double>();
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
+        }
+        
         public DistanceMatrix(Func<double[], double[], double> distance)
         {
             this.Distance = distance;
@@ -118,15 +125,39 @@ namespace Infovision.Math
         }
 
         public void Add(MatrixKey key, double distance)
-        {
-            
-
+        {            
             matrix.Add(key, distance);
         }
 
         public bool ContainsKey(MatrixKey key)
         {
             return matrix.ContainsKey(key);
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        public IEnumerator<KeyValuePair<MatrixKey, double>> GetEnumerator()
+        {
+            return this.ReadOnlyMatrix.GetEnumerator();
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.ReadOnlyMatrix.GetEnumerator();
         }
     }
 }

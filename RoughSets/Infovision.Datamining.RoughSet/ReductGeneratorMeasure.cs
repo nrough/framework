@@ -132,7 +132,7 @@ namespace Infovision.Datamining.Roughset
             return permutationList;
         }
 
-        protected virtual IReductStore CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
+        protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
         {
             bool useCache = false;
             if (args.Exist("USECACHE"))
@@ -145,10 +145,13 @@ namespace Infovision.Datamining.Roughset
                 reductStore.AddReduct(reduct);
             }
 
-            return reductStore;
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(reductStore);
+            return reductStoreCollection;                        
         }
 
-        public override IReductStore Generate(Args args)
+        //public override IReductStore Generate(Args args)
+        public override IReductStoreCollection Generate(Args args)
         {
             PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
             return this.CreateReductStoreFromPermutationCollection(permutationList, args);
@@ -171,8 +174,6 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void Reach(IReduct reduct, Permutation permutation, IReductStore reductStore, bool useCache)
         {
-            DataStoreInfo info = this.DataStore.DataStoreInfo;
-
             for (int i = 0; i < permutation.Length; i++)
             {
                 reduct.AddAttribute(permutation[i]);

@@ -48,12 +48,13 @@ namespace Infovision.Datamining.Roughset
             return base.CreateReductObject(fieldIds);
         }
 
-        public override IReductStore Generate(Args args)
+        //public override IReductStore Generate(Args args)
+        public override IReductStoreCollection Generate(Args args)
         {
             //numberOfAttributes = (int)((double)DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * this.ApproximationLevel);
 
-            PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
-            return this.CreateReductStoreFromPermutationCollection(permutationList, args);
+            PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);            
+            return this.CreateReductStoreFromPermutationCollection(permutationList, args);                        
         }
 
         protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache)
@@ -72,7 +73,7 @@ namespace Infovision.Datamining.Roughset
             return base.CalculateReduct(permutation, reductStore, useCache);
         }
 
-        protected override IReductStore CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
+        protected override IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
         {
             bool useCache = false;
             if (args.Exist("USECACHE"))
@@ -94,7 +95,10 @@ namespace Infovision.Datamining.Roughset
                 permutationReductStore.Add(localReductStore);
             }
 
-            return reductStore;
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(reductStore);
+
+            return reductStoreCollection;
         }
 
         #endregion

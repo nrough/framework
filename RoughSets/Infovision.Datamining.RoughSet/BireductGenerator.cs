@@ -58,7 +58,8 @@ namespace Infovision.Datamining.Roughset
             return permutationList;
         }
 
-        public override IReductStore Generate(Args args)
+        //public override IReductStore Generate(Args args)
+        public override IReductStoreCollection Generate(Args args)
         {
             PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             IReductStore reductStore = this.CreateReductStore(args);
@@ -67,8 +68,12 @@ namespace Infovision.Datamining.Roughset
                 Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation, reductStore);
                 reductStore.AddReduct(bireduct);
             }
+            
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(reductStore);
+            return reductStoreCollection;
 
-            return reductStore;
+            //return reductStore;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds)

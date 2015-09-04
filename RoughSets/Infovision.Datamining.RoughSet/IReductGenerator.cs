@@ -4,7 +4,8 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IReductGenerator
     {
-        IReductStore Generate(Args args);
+        //IReductStore Generate(Args args);
+        IReductStoreCollection Generate(Args args);
         double ApproximationLevel { get; set; }
     }
 }

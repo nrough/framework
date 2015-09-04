@@ -74,7 +74,8 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
         
-        public abstract IReductStore Generate(Args args);
+        //public abstract IReductStore Generate(Args args);
+        public abstract IReductStoreCollection Generate(Args args);
         protected abstract IReductStore CreateReductStore(Args args);
         protected abstract IReduct CreateReductObject(int[] fieldIds);
 

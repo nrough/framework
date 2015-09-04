@@ -49,9 +49,11 @@ namespace Infovision.TestAssembly
             set { this.approximationLevel = value; }
         }
 
-        public IReductStore Generate(Args args)
+        public IReductStoreCollection Generate(Args args)
         {
-            return new ReductStore();
+            IReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(new ReductStore());
+            return reductStoreCollection;            
         }
     }
 }

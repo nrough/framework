@@ -9,6 +9,8 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IReductStoreCollection : IEnumerable<IReductStore>
     {
+        void AddStore(IReductStore reductStore);
+        IReductStore First();
     }
 
     public class ReductStoreCollection : IReductStoreCollection
@@ -23,6 +25,11 @@ namespace Infovision.Datamining.Roughset
         public void AddStore(IReductStore reductStore)
         {
             stores.Add(reductStore);
+        }
+
+        public IReductStore First()
+        {
+            return stores.First();
         }
 
         public IEnumerator<IReductStore> GetEnumerator()

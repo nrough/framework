@@ -72,9 +72,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", args);
             PermutationCollection permutationList = permGen.Generate(20);
             args.AddParameter("PermutationCollection", permutationList);
-            
-            IReductStore redStore = redGenStd.Generate(args);
-            IReductStore redStoreW = redGenWgh.Generate(args);
+
+            IReductStore redStore = redGenStd.Generate(args).First();
+            IReductStore redStoreW = redGenWgh.Generate(args).First();
 
             int i = 0;
             foreach (IReduct reduct in redStore)
@@ -106,8 +106,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutationList = permGen.Generate(100);
             args.AddParameter("PermutationCollection", permutationList);
 
-            IReductStore redStore = redGenStd.Generate(args);
-            IReductStore redStoreW = redGenWgh.Generate(args);
+            IReductStore redStore = redGenStd.Generate(args).First();
+            IReductStore redStoreW = redGenWgh.Generate(args).First();
 
             int i = 0;
             foreach (IReduct reduct in redStore)
@@ -326,10 +326,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.AddParameter("ApproximationRatio", 10);
             
             IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(reductGeneratorKey1, args);
-            IReductStore reductStore1 = reductGenerator1.Generate(args);
+            IReductStore reductStore1 = reductGenerator1.Generate(args).First();
             
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(reductGeneratorKey2, args);
-            IReductStore reductStore2 = reductGenerator2.Generate(args);
+            IReductStore reductStore2 = reductGenerator2.Generate(args).First();
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 

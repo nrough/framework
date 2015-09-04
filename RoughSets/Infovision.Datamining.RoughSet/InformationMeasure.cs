@@ -183,51 +183,23 @@ namespace Infovision.Datamining.Roughset
             double result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
-                double maxValue = 0;
-                Int64 maxDecision = -1;
-                foreach (Int64 decisionValue in e.DecisionValues)
+                double maxValue = Double.MinValue;
+                long maxDecision = -1;
+                foreach (long decisionValue in e.DecisionValues)
                 {
                     double sum = 0;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
                     {
                         sum += reduct.Weights[objectIdx];
                     }
-                    if (sum > (maxValue + + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)) )
+                    
+                    if (sum > (maxValue + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)) )
                     {
                         maxValue = sum;
                         maxDecision = decisionValue;
                     }
-                }
-                                
-                /*
-                Dictionary<Int64, double> decisionWeightSum = new Dictionary<Int64, double>(reduct.ObjectSetInfo.NumberOfDecisionValues);              
-                
-                foreach (int objectIdx in e.ObjectIndexes)
-                {
-                    double sum = 0;
-                    Int64 decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
-                    if (decisionWeightSum.TryGetValue(decisionValue, out sum))
-                    {
-                        sum += reduct.GetObjectWeight(objectIdx);
-                    }
-                    else
-                    {
-                        sum = reduct.GetObjectWeight(objectIdx);
-                    }
-
-                    decisionWeightSum[decisionValue] = sum;
-                }
-
-                double maxValue = 0;
-                foreach (KeyValuePair<Int64, double> kvp in decisionWeightSum)
-                {
-                    if (kvp.Value > (maxValue + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)) )
-                    {
-                        maxValue = kvp.Value;
-                    }
-                }
-                */
-
+                } 
+                                                
                 result += maxValue;
             }
 

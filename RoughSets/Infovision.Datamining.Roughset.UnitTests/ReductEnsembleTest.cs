@@ -15,20 +15,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
     {
         [Test]
         public void Foo()
-        {
-            
+        {            
             Random rand = new Random();
             DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             
-            int numberOfPermutations = 10;            
-            PermutationCollection permList = permGenerator.Generate(10);
+            int numberOfPermutations = 20;
+            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             int[] epsilons = new int[numberOfPermutations];
 
             for (int i = 0; i < numberOfPermutations; i++)
             {
-                epsilons[i] = rand.Next(100);
+                epsilons[i] = rand.Next(36);
             }
 
             Args parms = new Args();
@@ -41,24 +40,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Refactor
             //TODO include algorithm name in Args
             //TODO Replace Args by Dictionary<string, object>
-            //TODO Add parameter names as static variables
-            //TODO Reduct should be struct not class (has code should be constant?)
-            //TODO Make cache keys shorter
-            //TODO ReductGenerator.Generator should return collection od reduct stores, usualy 1 element collection but in case of ensembles we will have more
-
-
-
-            
-
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(generatorName, parms);
-            parms.AddParameter("PermutationCollection", permGen.Generate(100));
+            //TODO Add parameter names as static variables            
+            //TODO Make cache keys shorter            
+                        
+            parms.AddParameter("PermutationCollection", permList);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(generatorName, parms);
-            
+            IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
 
-            IReductStore reductStore = reductGenerator.Generate(parms);
+            int j = 0;
+            foreach (IReductStore reductStore in reductStoreCollection)
+                foreach (IReduct reduct in reductStore)
+                {
+                    Console.WriteLine("{0}: {1}~ {2} -> {3}", j, permList[j], epsilons[j], reduct);
+                    j++;
+                }
 
-            
         }
     }
 }

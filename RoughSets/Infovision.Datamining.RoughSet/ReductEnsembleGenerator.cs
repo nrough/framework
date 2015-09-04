@@ -12,6 +12,9 @@ namespace Infovision.Datamining.Roughset
     {                        
         private int[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
+        private double dataSetQuality = 1.0;        
+        private WeightGenerator weightGenerator;
+        private ReductStore internalStore;
 
         protected IPermutationGenerator PermutationGenerator
         {
@@ -30,43 +33,158 @@ namespace Infovision.Datamining.Roughset
 
                 return this.permutationGenerator;
             }
-        }        
+        }
+
+        protected bool IsQualityCalculated
+        {
+            get; set;
+        }
+
+        protected double DataSetQuality
+        {
+            get
+            {
+                if (!this.IsQualityCalculated)
+                {
+                    this.CalcDataSetQuality();
+                    this.IsQualityCalculated = true;
+                }
+
+                return this.dataSetQuality;
+            }
+
+            set
+            {
+                this.dataSetQuality = value;
+                this.IsQualityCalculated = true;
+            }
+        }
+
+        protected WeightGenerator WeightGenerator
+        {
+            get
+            {
+                if (this.weightGenerator == null)
+                {
+                    this.weightGenerator = new WeightGeneratorMajority(this.DataStore);
+                }
+
+                return this.weightGenerator;
+            }
+        }
         
         public ReductEnsembleGenerator(DataStore data, int[] epsilon)
             : base(data)
         {
             permEpsilon = new int[epsilon.Length];
-            Array.Copy(epsilon, permEpsilon, epsilon.Length);
+            Array.Copy(epsilon, permEpsilon, epsilon.Length);            
         }
 
-        public override IReductStore Generate(Args args)
+        //public override IReductStore Generate(Args args)
+        public override IReductStoreCollection Generate(Args args)
         {
-            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);
-            return this.CreateReductStoreFromPermutationCollection(permutations, args);                        
+            internalStore = new ReductStore();
+            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);            
+            return this.CreateReductStoreFromPermutationCollection(permutations, args);           
         }
 
-        protected virtual IReductStore CreateReductStoreFromPermutationCollection(PermutationCollection permutations, Args args)
-        {
-            bool useCache = false;
-            if (args.Exist("USECACHE"))
-                useCache = true;
-
-            IReductStore reductStore = this.CreateReductStore(args);
-            int i = -1;
-            int epsilon;
+        protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutations, Args args)
+        {                        
+            int k = -1;            
             foreach (Permutation permutation in permutations)
             {                
-                this.permEpsilon[++i];
-                
-                
-                throw new NotImplementedException();
-                //Reach & Reduce & Add to Store in standard version
+                double localApproxLevel = (double) this.permEpsilon[++k] / (double) 100;
 
-                //IReduct reduct = this.CalculateReduct(permutation, reductStore, useCache);
-                //reductStore.AddReduct(reduct);
+                IReduct reduct = this.CreateReductObject(new int[] { });
+                
+                //Reach
+                for (int i = 0; i < permutation.Length; i++)
+                {
+                    reduct.AddAttribute(permutation[i]);
+
+                    if (this.IsReduct(reduct, internalStore, false, localApproxLevel, false))
+                    {
+                        break;
+                    }
+                }
+
+                //Reduce
+                int len = permutation.Length - 1;
+                for (int i = len; i >= 0; i--)
+                {
+                    int attributeId = permutation[i];
+                    if (reduct.RemoveAttribute(attributeId))
+                    {
+                        if (!this.IsReduct(reduct, internalStore, false, localApproxLevel, false))
+                        {
+                            reduct.AddAttribute(attributeId);
+                        }
+                    }
+                }
+             
+                internalStore.DoAddReduct(reduct);                
             }
 
-            return reductStore;
+            //TODO Split onto individual reduct stores
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            //ReductStore reductStore = new ReductStore();
+            reductStoreCollection.AddStore(internalStore);
+
+            return reductStoreCollection;
+        }
+
+        protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache, double approximationLevel, bool checkExistingReducts)
+        {
+
+            if (checkExistingReducts && reductStore.IsSuperSet(reduct))
+            {                
+                return true;
+            }
+                        
+            double partitionQuality = this.GetPartitionQuality(reduct);
+            double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
+            if (partitionQuality >= ((((double)1 - approximationLevel) * this.DataSetQuality) - tinyDouble))
+            {                
+                return true;
+            }
+            
+            return false;
+        }
+
+        protected virtual double GetPartitionQuality(IReduct reduct)
+        {
+            //TODO 
+            //return this.InformationMeasure.Calc(reduct);
+
+            double result = 0;
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+            {
+                double maxValue = 0;
+                long maxDecision = -1;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    double sum = 0;
+                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                    {
+                        sum += reduct.Weights[objectIdx];
+                    }
+                    if (sum > (maxValue + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)))
+                    {
+                        maxValue = sum;
+                        maxDecision = decisionValue;
+                    }
+                }
+
+                result += maxValue;
+            }
+
+            return result;
+        }
+
+        protected virtual void CalcDataSetQuality()
+        {
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 
         protected override IReductStore CreateReductStore(Args args)
@@ -76,7 +194,8 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds)
         {
-            return new Reduct(this.DataStore, fieldIds);
+            //return new Reduct(this.DataStore, fieldIds);
+            return new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights);            
         }
 
         protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)

@@ -86,8 +86,67 @@ namespace Infovision.Datamining.Roughset
 			{ 
 				this.InitEquivalenceMap();
 				this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.Weights);
+				
 				this.isEqMapCreated = true;
 			}
+		}
+
+		/// <summary>
+		/// Method tries to remove attributes from current reduct. Attributes are removed in order passed in attributeOrder array.
+		/// </summary>
+		/// <param name="attributeOrder">Attributes to be tried to be removed in given order.</param>
+		public virtual void Reduce(int[] attributeOrder)
+		{
+			foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+				eq.RemoveObjectsWithMinorDecisions();
+			
+			bool isReduced = false;
+			for (int i = attributeOrder.Length - 1; i >= 0; i--)
+			{
+				this.TryRemoveAttribute(attributeOrder[i]);
+				isReduced = true;
+			}
+
+			if (isReduced)
+			{
+				this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.Weights);
+
+				/*
+				EquivalenceClassSortedMap newEqMap = new EquivalenceClassSortedMap(this.DataStore);
+				foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+				{                    
+					AttributeValueVector instance = eq.Instance;
+					foreach (int removedAttribute in this.removedAttributes)
+						instance = instance.RemoveAttribute(removedAttribute);
+
+					EquivalenceClass existingEqClass = newEqMap.GetEquivalenceClass(instance);
+
+					if (existingEqClass == null)
+					{
+						existingEqClass = new EquivalenceClass(instance, this.DataStore);
+						newEqMap.Partitions.Add(instance, existingEqClass);
+					}
+
+					existingEqClass.Merge(eq);					
+				}
+
+				this.EquivalenceClassMap = newEqMap;
+				*/
+
+				this.removedAttributes = new HashSet<int>();
+			}
+		}
+
+		
+		/// <summary>
+		/// Method tries to remove attributes from current reduct
+		/// </summary>
+		/// <remarks>
+		/// this method always reduce attributes in increasing order, consider using Reduce(int[] attributes)
+		/// </remarks>
+		public virtual void Reduce()
+		{
+			this.Reduce(this.Attributes.ToArray());
 		}
 
 		public override bool TryRemoveAttribute(int attributeId)
@@ -96,7 +155,7 @@ namespace Infovision.Datamining.Roughset
 			if (this.CheckRemoveAttribute(attributeId))
 			{
 				this.Attributes.RemoveElement(attributeId);
-				this.removedAttributes.Add(attributeId);                
+				this.removedAttributes.Add(attributeId);								
 				return true;
 			}
 

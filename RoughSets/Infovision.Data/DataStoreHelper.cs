@@ -81,6 +81,9 @@ namespace Infovision.Data
 
                 DataRecordInternal dataStoreRecord = new DataRecordInternal(fieldIds, vector);
                 dataStoreRecord.ObjectId = vector[idIdx];
+                
+                //TODO Check this idIdx is this record index in DataStore?
+                dataStoreRecord.ObjectIdx = idIdx;
 
                 result.Insert(dataStoreRecord);
             }

@@ -80,12 +80,12 @@ namespace Infovision.Datamining
         private int numberOfMisclassified = 0;
         private int numberOfUnclassified = 0;
         
-        private double classifiedSumOfWeights = 0.0;
-        private double misclassifiedSumOfWeights = 0.0;
-        private double unclassifiedSumOfWeigths = 0.0;
+        private double weightClassified = 0.0;
+        private double weightMisclassfied = 0.0;
+        private double weightUnclassified = 0.0;
 
         //TODO use classificationInfo instead
-        private double qualityRatio = 0;
+        private double qualityRatio = 0.0;
 
         #endregion        
 
@@ -103,9 +103,9 @@ namespace Infovision.Datamining
         {
             get
             {
-                double weightSum = this.misclassifiedSumOfWeights + this.unclassifiedSumOfWeigths + this.classifiedSumOfWeights;
+                double weightSum = this.weightMisclassfied + this.weightUnclassified + this.weightClassified;
                 if (weightSum != 0.0)
-                    return (this.misclassifiedSumOfWeights + this.unclassifiedSumOfWeigths) / weightSum;
+                    return (this.weightMisclassfied + this.weightUnclassified) / weightSum;
                 else
                     return 1.0;
             }
@@ -158,24 +158,24 @@ namespace Infovision.Datamining
             }
         }
 
-        public int NumberOfClassified
+        public int Classified
         {
             get { return numberOfClassified; }
         }
 
-        public int NumberOfMisclassified
+        public int Misclassified
         {
             get { return numberOfMisclassified; }
         }
 
-        public int NumberOfUnclassifed
+        public int Unclassified
         {
             get { return numberOfUnclassified; }
         }
 
-        public double ClassifiedSumOfWeights { get { return classifiedSumOfWeights; } }
-        public double MisclassifiedSumOfWeights { get { return misclassifiedSumOfWeights; } }
-        public double UnclassifiedSumOfWeigths { get { return unclassifiedSumOfWeigths; } }        
+        public double WeightClassified { get { return weightClassified; } }
+        public double WeightMisclassified { get { return weightMisclassfied; } }
+        public double WeightUnclassified { get { return weightUnclassified; } }        
 
         //TODO use classification info instead
         public double QualityRatio
@@ -201,33 +201,31 @@ namespace Infovision.Datamining
         #endregion
 
         #region Methods
-
-        //TODO add object weight
-        public virtual void AddResult(long objectId, long prediction)
+        
+        public virtual void AddResult(long objectId, long prediction, double weight = 1.0)
         {
-            classificationMap[objectId] = prediction;            
+            classificationMap[objectId] = prediction;
         }
 
-        //TODO add object weight
         public virtual void AddResult(long objectId, long prediction, long actual, double weight = 1.0)
         {
-            this.AddResult(objectId, prediction);
+            this.AddResult(objectId, prediction, weight);
             this.AddConfusionMatrix(prediction, actual);
             
             if (prediction == actual)
             {
                 this.numberOfClassified++;
-                this.classifiedSumOfWeights += weight;
+                this.weightClassified += weight;
             }
             else if (prediction != actual && prediction != -1)
             {
                 this.numberOfMisclassified++;
-                this.misclassifiedSumOfWeights += weight;
+                this.weightMisclassfied += weight;
             }
             else
             {
                 this.numberOfUnclassified++;
-                this.unclassifiedSumOfWeigths += weight;
+                this.weightUnclassified += weight;
             }
         }
 
@@ -344,12 +342,20 @@ namespace Infovision.Datamining
         public string ResultHeader()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("NumberOfClassified");
+            stringBuilder.Append("Classified");
             stringBuilder.Append('\t');
-            stringBuilder.Append("NumberOfMisclassified");
+            stringBuilder.Append("Misclassified");
             stringBuilder.Append('\t');
-            stringBuilder.Append("NumberOfUnclassified");
+            stringBuilder.Append("Unclassified");
             stringBuilder.Append('\t');
+
+            stringBuilder.Append("WeightClassified");
+            stringBuilder.Append('\t');
+            stringBuilder.Append("WeightMisclassified");
+            stringBuilder.Append('\t');
+            stringBuilder.Append("WeightUnclassified");
+            stringBuilder.Append('\t');
+
             stringBuilder.Append("Accuracy");
             stringBuilder.Append('\t');
             stringBuilder.Append("BalancedAccuracy");
@@ -367,12 +373,20 @@ namespace Infovision.Datamining
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Digits(this.numberOfClassified);
+            stringBuilder.Digits(this.Classified);
             stringBuilder.Append('\t');
-            stringBuilder.Digits(this.numberOfMisclassified);
+            stringBuilder.Digits(this.Misclassified);
             stringBuilder.Append('\t');
-            stringBuilder.Digits(this.numberOfUnclassified);
+            stringBuilder.Digits(this.Unclassified);
             stringBuilder.Append('\t');
+
+            stringBuilder.Append(this.WeightClassified);
+            stringBuilder.Append('\t');
+            stringBuilder.Append(this.WeightMisclassified);
+            stringBuilder.Append('\t');
+            stringBuilder.Append(this.WeightUnclassified);
+            stringBuilder.Append('\t');
+
             stringBuilder.AppendFormat("{0:0.0000}", this.Accuracy);
             stringBuilder.Append('\t');
             stringBuilder.AppendFormat("{0:0.0000}", this.BalancedAccuracy);

@@ -171,6 +171,8 @@ namespace Infovision.Data
 
             DataRecordInternal ret = new DataRecordInternal(fieldId, fieldValue);
             ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
+            ret.ObjectIdx = objectIndex;
+
             return ret;
         }
 

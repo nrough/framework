@@ -80,7 +80,7 @@ namespace Infovision.TestAssembly
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
 
-        public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
             reductStoreCollection.AddStore(this.ReductPool);

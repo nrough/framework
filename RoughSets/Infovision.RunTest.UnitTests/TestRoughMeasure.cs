@@ -206,24 +206,22 @@ namespace Infovision.RunTest.UnitTests
             testRunner.SaveResults(autoSaveFilename);
             testRunner.CloseLog();
 
-            IReductStore reductStore = test.ReductStore;
+            IReductStoreCollection reductStoreCollection = test.ReductStoreCollection;
 
             testRunner = new TestRunner(resultFilename, null, autoSaveFilename);
 
             RoughMeasureTest localTest = testRunner.TestObject as RoughMeasureTest;
             Assert.NotNull(localTest);
-            IReductStore reductStore2 = localTest.ReductStore;
-            Assert.AreEqual(reductStore.Count, reductStore2.Count);
+            IReductStoreCollection reductStoreCollection2 = localTest.ReductStoreCollection;
+            Assert.AreEqual(reductStoreCollection.Count, reductStoreCollection2.Count);
 
-            foreach (IReduct r in reductStore)
-            {
-                Assert.AreEqual(true, reductStore2.Exist(r));
-            }
+            foreach(IReductStore rs in reductStoreCollection)
+                foreach (IReduct r in rs)
+                    Assert.AreEqual(true, rs.Exist(r));
 
-            foreach (IReduct r in reductStore2)
-            {
-                Assert.AreEqual(true, reductStore.Exist(r));
-            }
+            foreach (IReductStore rs in reductStoreCollection2)
+                foreach (IReduct r in rs)
+                    Assert.AreEqual(true, rs.Exist(r));
         }
     }
 }

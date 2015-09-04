@@ -108,7 +108,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Generate();
-            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductGroups(numberOfClusters);
+            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(numberOfClusters);
 
             numberOfClusters = System.Math.Min(numberOfClusters, reductGenerator.ReductPool.Count());
 

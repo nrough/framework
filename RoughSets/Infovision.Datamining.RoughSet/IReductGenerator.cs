@@ -8,7 +8,7 @@ namespace Infovision.Datamining.Roughset
         void InitFromArgs(Args args);
         void Generate();
         IReductStore ReductPool { get; }        
-        IReductStoreCollection GetReductGroups(int numberOfEnsembles);
+        IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles);
         IReduct CreateReduct(Permutation permutation);
     }
 }

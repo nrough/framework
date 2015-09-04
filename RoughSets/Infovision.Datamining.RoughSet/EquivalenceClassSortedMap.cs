@@ -53,13 +53,18 @@ namespace Infovision.Datamining.Roughset
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
         {
+            if (attributeSet.Count == 0)
+            {
+                int z = 0;
+            }
+            
             this.InitPartitions();            
             int[] orderByTmp = attributeSet.ToArray();
             int[] orderBy = new int[orderByTmp.Length + 1];
             Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
             orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
 
-            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);            
+            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
 
             comparer = new DataStoreOrderByComparer(dataStore, orderByTmp);

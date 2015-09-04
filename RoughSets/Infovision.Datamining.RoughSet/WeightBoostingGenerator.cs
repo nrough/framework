@@ -22,12 +22,12 @@ namespace Infovision.Datamining.Roughset
             if (this.isFirst)
             {
                 for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                    this.Weights[i] = 1.0 / this.DataStore.NumberOfRecords;
+                    this.w[i] = 1.0 / this.DataStore.NumberOfRecords;
                 this.isFirst = false;
             }
             else
             {
-                //TODO Each next Generate() call needs to adjust weights to current ensemble
+                //TODO Each next Generate() call needs to adjust w to current ensemble
             }            
         }
     }

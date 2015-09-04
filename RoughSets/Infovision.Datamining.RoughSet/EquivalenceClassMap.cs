@@ -13,8 +13,7 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private Dictionary<AttributeValueVector, EquivalenceClass> partitions;
-        private Dictionary<long, int> decisionCount;
-        private DataStore dataStore;
+        private Dictionary<long, int> decisionCount;        
 
         #endregion
 
@@ -39,34 +38,23 @@ namespace Infovision.Datamining.Roughset
         public int NumberOfPartitions
         {
             get { return partitions.Count; }
-        }
-
-        public DataStore DataStore
-        {
-            get { return this.dataStore; }
-        }
+        }        
 
         #endregion
 
-        #region Constructors
-
-        private EquivalenceClassMap()
-        {            
-            this.decisionCount = new Dictionary<long, int>();            
-        }
+        #region Constructors        
 
         public EquivalenceClassMap(DataStore data)
         {            
             this.InitDecisionCount(data.DataStoreInfo);
-            this.dataStore = data;
+            //this.dataStore = data;
         }
 
         private EquivalenceClassMap(EquivalenceClassMap equivalenceClassMap)
         {
             this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)equivalenceClassMap.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>(equivalenceClassMap.DecisionCount);
-            this.dataStore = equivalenceClassMap.DataStore;
-        }
+            this.decisionCount = new Dictionary<long, int>(equivalenceClassMap.DecisionCount);            
+        }        
 
         #endregion
 
@@ -178,13 +166,8 @@ namespace Infovision.Datamining.Roughset
             {
                 return reductStatstic;
             }
-            else
-            {
-                reductStatstic = new EquivalenceClass(dataVector, this.DataStore);
-                this.partitions.Add(dataVector, reductStatstic);
-            }
 
-            return reductStatstic;
+            return null; //TODO create special object return new EquivalenceClassNull();
         }
 
         public int GetDecisionValueCount(long decisionValue)

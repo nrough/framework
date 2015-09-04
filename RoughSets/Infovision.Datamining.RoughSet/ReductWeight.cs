@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset
 
         public override int GetHashCode()
         {
-            //TODO weights should also be checked what is optimal way of calculating hash, and not scanning the whole array of weights
+            //TODO w should also be checked what is optimal way of calculating hash, and not scanning the whole array of w
 
             return HashHelper.GetHashCode(HashHelper.GetHashCode(this.Attributes.Data), HashHelper.GetHashCode(this.Weights));
         }

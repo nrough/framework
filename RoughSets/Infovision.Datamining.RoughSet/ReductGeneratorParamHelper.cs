@@ -23,7 +23,14 @@ namespace Infovision.Datamining.Roughset
         public static readonly string DendrogramBitmapFile = "DendrogramBitmapFile";        
         public static readonly string NumberOfReducts = "NumberOfReducts";
         public static readonly string ReductSize = "ReductSize";
-        public static readonly string MinimumNumberOfInstances ="MinimumNumberOfInstances";                                                                                        
+        public static readonly string MinimumNumberOfInstances ="MinimumNumberOfInstances";
+        public static readonly string IdentificationType = "IdentificationType";
+        public static readonly string VoteType = "VoteType";
+        public static readonly string MaxReductLength = "MaxReductLength";
+        public static readonly string Threshold = "Threshold";
+        public static readonly string NumberOfReductsInWeakClassifier = "NumberOfReductsInWeakClassifier";
+        public static readonly string MaxIterations = "MaxIterations";
+                                                                                    
     }
 
     //TODO Keys should be returned from Generator classes as static fields
@@ -40,5 +47,6 @@ namespace Infovision.Datamining.Roughset
         public static readonly string ReductEnsembleStream = "ReductEnsembleStream";
         public static readonly string ReductEnsemble = "ReductEnsemble";
         public static readonly string ReductGeneralizedDecision = "ReductGeneralizedDecision";
+        public static readonly string ReductEnsembleBoosting = "ReductEnsembleBoosting";
     }
 }

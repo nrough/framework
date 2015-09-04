@@ -129,7 +129,7 @@ namespace Infovision.Datamining.Roughset
             return new ReductStore();
         }
 
-        public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue)
         {
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
             reductStoreCollection.AddStore(this.ReductPool);
@@ -180,12 +180,7 @@ namespace Infovision.Datamining.Roughset
             {
                 int numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
                 this.permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
-            }
-
-            if (this.permutationList == null)
-            {
-                throw new NullReferenceException("PermutationCollection is null");
-            }
+            }            
             
             if (args.Exist("USECACHE"))
                 this.useCache = true;

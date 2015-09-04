@@ -118,7 +118,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 int poolSize = reductGenerator.ReductPool.Count();
                 for (int clusterNo = 1; clusterNo <= poolSize; clusterNo += 2)
                 {
-                    IReductStoreCollection reductStoreCollection = reductGenerator.GetReductGroups(clusterNo);
+                    IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(clusterNo);
 
                     ParameterCollection clusterCollection = new ParameterCollection(clusterNo, 0);
                     int counter = 0;
@@ -164,9 +164,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             BalancedAccuracy = classificationResult.BalancedAccuracy,
                             Coverage = classificationResult.Coverage,
                             Confidence = classificationResult.Confidence,
-                            NumberOfClassified = classificationResult.NumberOfClassified,
-                            NumberOfMisclassified = classificationResult.NumberOfMisclassified,
-                            NumberOfUnclassifed = classificationResult.NumberOfUnclassifed,
+                            NumberOfClassified = classificationResult.Classified,
+                            NumberOfMisclassified = classificationResult.Misclassified,
+                            NumberOfUnclassifed = classificationResult.Unclassified,
 
                             IdentificationType = identificationType,
                             VoteType = voteType
@@ -205,9 +205,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             BalancedAccuracy = classificationResult2.BalancedAccuracy,
                             Coverage = classificationResult2.Coverage,
                             Confidence = classificationResult2.Confidence,
-                            NumberOfClassified = classificationResult2.NumberOfClassified,
-                            NumberOfMisclassified = classificationResult2.NumberOfMisclassified,
-                            NumberOfUnclassifed = classificationResult2.NumberOfUnclassifed,
+                            NumberOfClassified = classificationResult2.Classified,
+                            NumberOfMisclassified = classificationResult2.Misclassified,
+                            NumberOfUnclassifed = classificationResult2.Unclassified,
 
                             IdentificationType = identificationType,
                             VoteType = voteType
@@ -280,9 +280,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append("BalancedAccuracy").Append(separator)
                     .Append("Coverage").Append(separator)
                     .Append("Confidence").Append(separator)
-                    .Append("NumberOfClassified").Append(separator)
-                    .Append("NumberOfMisclassified").Append(separator)
-                    .Append("NumberOfUnclassifed").Append(separator)
+                    .Append("Classified").Append(separator)
+                    .Append("Misclassified").Append(separator)
+                    .Append("Unclassified").Append(separator)
                     .Append("IdentificationType").Append(separator)
                     .Append("VoteType").Append(separator);
 

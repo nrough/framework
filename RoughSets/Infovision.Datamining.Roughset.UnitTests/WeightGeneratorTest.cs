@@ -36,9 +36,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Count);
 
-            Assert.AreEqual(classificationResult.Count, classificationResult.NumberOfClassified
-                                                 + classificationResult.NumberOfMisclassified
-                                                 + classificationResult.NumberOfUnclassifed);
+            Assert.AreEqual(classificationResult.Count, classificationResult.Classified
+                                                 + classificationResult.Misclassified
+                                                 + classificationResult.Unclassified);
 
             
             double total = 0;

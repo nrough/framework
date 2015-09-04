@@ -106,7 +106,7 @@
     <Compile Include="FieldTypes.cs" />
     <Compile Include="DataReaderFile.cs" />
     <Compile Include="DataStoreInfo.cs" />
-    <Compile Include="DataRecord.cs" />
+    <Compile Include="DataRecordInternal.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="DataReaderFileText.cs" />
     <Compile Include="DataFieldInfo.cs" />

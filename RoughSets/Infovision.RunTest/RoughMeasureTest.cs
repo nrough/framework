@@ -12,7 +12,7 @@ namespace Infovision.RunTest
     [Serializable]
     public class RoughMeasureTest : ITestRunable, IEnumerator
     {
-        #region Globals
+        #region Members
 
         private ParameterCollection parameterList;
         private string[] parmNames;
@@ -52,7 +52,8 @@ namespace Infovision.RunTest
 
         private DataStore localDataStoreTest = null;
         private DataStore localDataStoreTrain = null;
-        private IReductStore localReductStore = null;
+        //private IReductStore localReductStore = null;
+        private IReductStoreCollection localReductStoreCollection = null;
 
         #endregion
 
@@ -85,9 +86,9 @@ namespace Infovision.RunTest
             get { return this.dataStoreTrain; }
         }
 
-        public IReductStore ReductStore
+        public IReductStoreCollection ReductStoreCollection
         {
-            get { return this.localReductStore; }
+            get { return this.localReductStoreCollection; }
         }
 
         #endregion
@@ -148,9 +149,9 @@ namespace Infovision.RunTest
         {
             //TODO if epsilon does not change but reductType changes, in case of bireducts we can use the same permutation for Bireduct and Gammabireduct            
             if (this.lastTestNumber != this.testNumber
-                || ((this.reductFactoryKey == "Bireduct" 
-                    || this.reductFactoryKey == "GammaBireduct" 
-                    || this.reductFactoryKey == "BireductRelative")
+                || ((this.reductFactoryKey == ReductFactoryKeyHelper.Bireduct
+                    || this.reductFactoryKey == ReductFactoryKeyHelper.GammaBireduct 
+                    || this.reductFactoryKey == ReductFactoryKeyHelper.BireductRelative)
                         && (this.lastEpsilon != this.epsilon 
                             || this.lastFoldNumber != this.foldNumber))
                 || this.lastNumberOfPermutations != this.numberOfPermutations)
@@ -241,11 +242,10 @@ namespace Infovision.RunTest
 
             if (this.CheckReclassify())
             {
-                localReductStore = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+                roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
             }
 
-            result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
-            result.QualityRatio = localReductStore.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+            result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);            
 
             this.SaveLast();
         }

@@ -222,9 +222,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				RoughClassifier roughClassifier = new RoughClassifier();
 				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
-				IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
-				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
-				classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+				roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);				
 
 				for(int i=0; i<roughClassifier.ReductStore.Count; i++)
 				{
@@ -240,9 +239,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					Console.Write(Environment.NewLine);
 				}
 
-				IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
-				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
-				classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));							
+				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);				
 
 				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
@@ -320,10 +318,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			
 			RoughClassifier roughClassifier = new RoughClassifier();
 			roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permList);
-
-			IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
-			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
-			classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+			roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);			
 
 			for(int i=0; i<roughClassifier.ReductStore.Count; i++)
 			{

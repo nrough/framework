@@ -19,12 +19,23 @@ namespace Infovision.Datamining.Roughset
         #region Properties
 
         public abstract int Count { get; }
-
-        public object SyncRoot
-        {
-            get { return syncRoot; }
-        }
+        public object SyncRoot { get { return syncRoot; } }
+        public double Weight { get; set; }
         
+        #endregion
+
+        #region Constructors        
+
+        public ReductStoreBase()
+        {
+            this.Weight = 1.0;
+        }
+
+        protected ReductStoreBase(ReductStoreBase reductStore)
+        {
+            this.Weight = reductStore.Weight;
+        }
+
         #endregion
 
         #region Methods
@@ -86,12 +97,10 @@ namespace Infovision.Datamining.Roughset
 
     [Serializable]
     public class ReductStore : ReductStoreBase
-    {
-        //TODO Add Reduct Weight (Weak classifier weight)
-        
+    {                
         #region Members
 
-        private List<IReduct> reductSet;
+        private List<IReduct> reducts;
 
         #endregion
 
@@ -99,12 +108,12 @@ namespace Infovision.Datamining.Roughset
 
         public override int Count
         {
-            get { return reductSet.Count; }
+            get { return reducts.Count; }
         }
 
         public List<IReduct> ReductSet
         {
-            get { return this.reductSet; }
+            get { return this.reducts; }
         }
 
         #endregion
@@ -112,18 +121,20 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         public ReductStore()
+            : base()
         {
-            this.reductSet = new List<IReduct>();
+            this.reducts = new List<IReduct>();
         }
 
         protected ReductStore(ReductStore reductStore)
-            : this()
+            : base(reductStore as ReductStoreBase)
         {
+            this.reducts = new List<IReduct>();
             foreach (IReduct reduct in reductStore)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
                 this.DoAddReduct(reductClone);
-            }
+            }            
         }
 
         #endregion        
@@ -140,7 +151,7 @@ namespace Infovision.Datamining.Roughset
             bool ret = false;
             lock (this.SyncRoot)
             {
-                foreach (IReduct localReduct in reductSet)
+                foreach (IReduct localReduct in reducts)
                 {
                     if (localReduct.Epsilon <= reduct.Epsilon)
                     {
@@ -158,7 +169,7 @@ namespace Infovision.Datamining.Roughset
         public virtual ReductStore RemoveDuplicates()
         {
             ReductStore copy = new ReductStore(this);
-            copy.reductSet.Sort(new ReductNumericalEpsilonComparer());
+            copy.reducts.Sort(new ReductNumericalEpsilonComparer());
 
             ReductStore result = new ReductStore();
             IReduct last = null;            
@@ -176,7 +187,7 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct GetReduct(int index)
         {
-            return this.reductSet[index];
+            return this.reducts[index];
         }
 
         public override void AddReduct(IReduct reduct)
@@ -189,7 +200,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CanAddReduct(IReduct reduct)
         {
-            foreach (IReduct localReduct in reductSet)
+            foreach (IReduct localReduct in reducts)
             {
                 if (DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001))
                 {
@@ -205,7 +216,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void DoAddReduct(IReduct reduct)
         {
-            reductSet.Add(reduct);
+            reducts.Add(reduct);
         }
 
         public IReductStore FilterReducts(int numberOfReducts, IReductMeasure reductMeasure)
@@ -215,8 +226,8 @@ namespace Infovision.Datamining.Roughset
                 return new ReductStore(this);
             }
             
-            Dictionary<IReduct, double> reductOrderMap = new Dictionary<IReduct, double>(reductSet.Count);
-            foreach (IReduct reduct in reductSet)
+            Dictionary<IReduct, double> reductOrderMap = new Dictionary<IReduct, double>(reducts.Count);
+            foreach (IReduct reduct in reducts)
             {
                 reductOrderMap[reduct] = reductMeasure.Calc(reduct);
             }
@@ -262,11 +273,11 @@ namespace Infovision.Datamining.Roughset
                 return new ReductStore(this);
             }
 
-            reductSet.Sort(comparer);
+            reducts.Sort(comparer);
 
             ReductStore result = new ReductStore();
             int i = 0;
-            foreach (IReduct reduct in reductSet)
+            foreach (IReduct reduct in reducts)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
 
@@ -288,7 +299,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
 
             double measureSum = 0;
-            foreach (IReduct reduct in reductSet)
+            foreach (IReduct reduct in reducts)
             {
                 measureSum += reductMeasure.Calc(reduct);
             }
@@ -304,7 +315,7 @@ namespace Infovision.Datamining.Roughset
         
         public override bool Exist(IReduct reduct)
         {
-            return reductSet.Exists(r => r.Equals(reduct));
+            return reducts.Exists(r => r.Equals(reduct));
         }
 
         #region IEnumerable Members
@@ -314,7 +325,7 @@ namespace Infovision.Datamining.Roughset
         /// <returns>An IEnumerator instance.</returns>
         public override IEnumerator<IReduct> GetEnumerator()
         {
-            return reductSet.GetEnumerator();
+            return reducts.GetEnumerator();
         }
 
         #endregion        

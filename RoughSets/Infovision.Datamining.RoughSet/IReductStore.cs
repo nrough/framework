@@ -5,6 +5,7 @@ namespace Infovision.Datamining.Roughset
     public interface IReductStore : IEnumerable<IReduct>
     {
         int Count { get; }
+        double Weight { get; set; }
 
         void AddReduct(IReduct reduct);
         IReduct GetReduct(int index);

@@ -465,9 +465,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                                         IdentificationType.Confidence,
                                                                         VoteType.MajorDecision);
 
-            Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.NumberOfClassified
-                                                            + classificationResult.NumberOfMisclassified
-                                                            + classificationResult.NumberOfUnclassifed);
+            Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Classified
+                                                            + classificationResult.Misclassified
+                                                            + classificationResult.Unclassified);
         }
     }
 }

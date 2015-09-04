@@ -9,12 +9,12 @@ namespace Infovision.Datamining.Roughset
     public abstract class WeightGenerator
     {
         private DataStore dataStore = null;
-        private double[] weights;
+        protected double[] w;
         
         protected WeightGenerator(DataStore dataStore)
         {
             this.dataStore = dataStore;
-            this.weights = new double[dataStore.NumberOfRecords];
+            this.w = new double[dataStore.NumberOfRecords];
             this.CalcFlag = false;
         }
 
@@ -31,10 +31,10 @@ namespace Infovision.Datamining.Roughset
             {
                 if (!this.CalcFlag)
                     this.Generate();
-                return this.weights; 
+                return this.w; 
             }
             
-            set { this.weights = value; }
+            set { this.w = value; }
         }
 
         protected bool CalcFlag

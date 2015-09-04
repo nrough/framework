@@ -7,7 +7,7 @@ namespace Infovision.Datamining.Roughset
 {
     public class ReductStoreWeights : ReductStore
     {
-        //TODO beeing super set is OK, but weights must be different
+        //TODO beeing super set is OK, but w must be different
         protected override bool CanAddReduct(IReduct reduct)
         {
             if (this.IsSuperSet(reduct))

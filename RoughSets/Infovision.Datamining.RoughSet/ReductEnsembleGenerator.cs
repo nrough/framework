@@ -127,7 +127,6 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("ReconWeights"))
                 this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
-
         }        
        
         public override void Generate()
@@ -190,7 +189,7 @@ namespace Infovision.Datamining.Roughset
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
 
-        public override IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {            
             Dictionary<int, List<int>> clusterMembership = this.hCluster.GetClusterMembershipAsDict(numberOfEnsembles);
             ReductStoreCollection result = new ReductStoreCollection();

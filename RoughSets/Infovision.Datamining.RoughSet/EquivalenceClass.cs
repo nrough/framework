@@ -15,17 +15,14 @@ namespace Infovision.Datamining.Roughset
 
         private AttributeValueVector dataVector; //attributes and values for which EQ class was created
         private Dictionary<int, double> instances;  //objectId --> object weight
-
         private bool isStatCalculated; //flags if statistics have been calculated
         private Dictionary<long, HashSet<int>> decisionObjectIndexes; //decision value --> set of objects with decision
         private Dictionary<long, double> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
         private long majorDecision; //decision within EQ class with greatest object weight sum
-        private double majorDecisionWeightSum; //sum of weights for a major decision
+        private double majorDecisionWeightSum; //sum of w for a major decision
         private double totalWeightSum;
         private PascalSet decisionSet;  //pascal set containing all decisions within EQ class
-        private DataStore dataStore;
-        
-        //TODO add equivalence class description as Attributes and their values
+        private DataStore dataStore;                
 
         #endregion
 
@@ -88,25 +85,28 @@ namespace Infovision.Datamining.Roughset
 
             this.instances = new Dictionary<int, double>();
             int numberOfDecisions = data.DataStoreInfo.GetDecisionFieldInfo().InternalValues().Count;
-            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);
-            
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);            
         }
 
         private EquivalenceClass(EquivalenceClass eqClass)
-        {
+        {            
+            this.dataVector = new AttributeValueVector(eqClass.dataVector.GetAttributes(), eqClass.dataVector.GetValues(), true);
             this.instances = new Dictionary<int, double>(eqClass.instances);
-            //copy elements
+            this.isStatCalculated = eqClass.isStatCalculated;            
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(eqClass.decisionObjectIndexes.Count);            
-            foreach (KeyValuePair<long, HashSet<int>> kvp in eqClass.decisionObjectIndexes)
-            {
+            foreach (var kvp in eqClass.decisionObjectIndexes)
                 this.decisionObjectIndexes.Add(kvp.Key, new HashSet<int>(kvp.Value));
-            }
+            this.decisionWeigthSums = new Dictionary<long, double>(eqClass.decisionWeigthSums);
+            this.majorDecision = eqClass.majorDecision;
+            this.majorDecisionWeightSum = eqClass.majorDecisionWeightSum;
+            this.totalWeightSum = eqClass.totalWeightSum;
+            this.decisionSet = new PascalSet(eqClass.decisionSet.LowerBound, eqClass.decisionSet.UpperBound, eqClass.decisionSet.Data);
             this.dataStore = eqClass.dataStore;
         }
 
         #endregion
 
-        #region Methods
+        #region Methods        
 
         /// <summary>
         /// Returns IEnumerable collection of object indexes having specified decision value
@@ -242,7 +242,15 @@ namespace Infovision.Datamining.Roughset
         }
 
         public double GetWeight(long decision)
-        {
+        {            
+            if (!this.isStatCalculated)
+                this.CalcStatistics();
+
+            if (this.decisionWeigthSums == null)
+            {
+                int i = 0;
+            }
+            
             double ret = 0.0;
             if (this.decisionWeigthSums.TryGetValue(decision, out ret))
                 return ret;

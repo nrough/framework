@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Roughset
         public virtual void BuildEquivalenceMap()
         {
             if (!this.UseGlobalCache)
-            {
+            {               
                 this.InitEquivalenceMap();
                 this.eqClassMap.Calc(this.attributeSet, this.dataStore, this.objectWeights);
                 return;

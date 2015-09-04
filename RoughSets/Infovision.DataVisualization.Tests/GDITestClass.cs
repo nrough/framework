@@ -16,10 +16,30 @@ namespace Infovision.DataVisualization.Tests
         {
             int width = 640;
             int height = 380;
-            System.Drawing.Imaging.PixelFormat pixelFormat = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+            string outputFileName = "F:\\test.bmp";
 
-            Bitmap bitmap = new Bitmap(width, height, pixelFormat);
-            Graphics g = Graphics.FromImage(bitmap);            
+            Random random = new Random();
+            
+            int x1 = width % random.Next(width - 1);
+            int y1 = height % random.Next(height - 1);
+            int x2 = width % random.Next(width - 1);
+            int y2 = height % random.Next(height - 1);
+
+            Bitmap bitmap = new Bitmap(width, height);
+            
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                SolidBrush brush = new SolidBrush(Color.Black);
+                Pen pen = new Pen(brush);
+                Point p1 = new Point(x1, y1);
+                Point p2 = new Point(x2, y2);
+                
+                g.Clear(Color.White);
+                g.DrawLine(pen, p1, p2);
+                g.Flush();
+
+                bitmap.Save(outputFileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            }            
         }
     }
 }

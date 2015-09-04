@@ -11,17 +11,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClustering
-    {        
+    {                
         protected DistanceMatrix distanceMatrix;
+        
+        //TODO make this private
         protected Dictionary<int, HierarchicalCluster> clusters;
         
         private int nextClusterId = 0;
         
         private Func<double[], double[], double> distance;
         private Func<int[], int[], DistanceMatrix, double> linkage;
-
-        private DendrogramLinkCollection dendrogram;       
-        private int numOfInstances;
+        private DendrogramLinkCollection dendrogram;                       
 
         /// <summary>
         ///   Gets or sets the distance function used
@@ -75,17 +75,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 throw new ArgumentNullException("linkage");
 
             this.Distance = distance;
-            this.Linkage = linkage;
-
-            dendrogram = new DendrogramLinkCollection();
+            this.Linkage = linkage;                        
         }
 
         private void Initialize(double[][] points)
         {
             if (points == null)
-                throw new ArgumentNullException("points");
+                throw new ArgumentNullException("points");            
 
-            numOfInstances = points.Length;            
+            dendrogram = new DendrogramLinkCollection(points.Length);
 
             this.InitDistanceMatrix(points);
             this.InitClusters(points);            
@@ -142,103 +140,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             clusters.Remove(key);
         }
 
-        protected virtual void CreateClusters()
+        protected bool HasMoreClustersToMerge()
         {
-            Dictionary<int, DendrogramNode> nodeDictionary = new Dictionary<int,DendrogramNode>();
-            
-            while (clusters.Count > 1)
+            return clusters.Count > 1;
+        }
+
+        protected virtual void CreateClusters()
+        {                        
+            while (this.HasMoreClustersToMerge())
             {
                 DendrogramLink link = this.GetClustersToMerge();
                 int mergedClusterIdx = this.MergeClusters(link);
-
-                if (link.Cluster1 < this.numOfInstances && link.Cluster2 < this.numOfInstances)
-                {
-                    DendrogramNode newNode = new DendrogramNode
-                    {
-                        NodeId = mergedClusterIdx,
-                        Parent = null,
-                        LeftNode = null,
-                        LeftInstance = link.Cluster1 < link.Cluster2
-                                     ? link.Cluster1
-                                     : link.Cluster2,
-                        LeftDistance = 0,
-                        RightNode = null,
-                        RightInstance = link.Cluster1 < link.Cluster2
-                                     ? link.Cluster2
-                                     : link.Cluster1,
-                        RightDistance = 0
-                    };
-
-                    nodeDictionary.Add(mergedClusterIdx, newNode);
-                }
-                else if (link.Cluster1 < this.numOfInstances && link.Cluster2 >= this.numOfInstances)
-                {                    
-                    DendrogramNode rightNode = nodeDictionary[link.Cluster2];
-                    DendrogramNode newNode = new DendrogramNode
-                    {
-                        NodeId = mergedClusterIdx,
-                        Parent = null,
-                        
-                        LeftNode = null,
-                        LeftInstance = link.Cluster1,
-                        LeftDistance = 0,
-                        
-                        RightNode = rightNode,
-                        RightInstance = link.Cluster2,
-                        RightDistance = 0
-                    };
-
-                    rightNode.Parent = newNode;
-
-                    nodeDictionary.Add(mergedClusterIdx, newNode);
-                }
-                else if (link.Cluster1 >= this.numOfInstances && link.Cluster2 < this.numOfInstances)
-                {
-                    DendrogramNode leftNode = nodeDictionary[link.Cluster1];
-                    DendrogramNode newNode = new DendrogramNode
-                    {
-                        NodeId = mergedClusterIdx,
-                        Parent = null,
-
-                        LeftNode = leftNode,
-                        LeftInstance = link.Cluster1,
-                        LeftDistance = 0,
-
-                        RightNode = null,
-                        RightInstance = link.Cluster2,
-                        RightDistance = 0
-                    };
-
-                    leftNode.Parent = newNode;
-
-                    nodeDictionary.Add(mergedClusterIdx, newNode);
-                }
-                else //both clusters are previously merged clusters
-                {
-                    DendrogramNode leftNode = nodeDictionary[link.Cluster1];
-                    DendrogramNode rightNode = nodeDictionary[link.Cluster2];
-
-                    DendrogramNode newNode = new DendrogramNode
-                    {
-                        NodeId = mergedClusterIdx,
-                        Parent = null,
-
-                        LeftNode = leftNode,
-                        LeftInstance = link.Cluster1,
-                        LeftDistance = 0,
-
-                        RightNode = rightNode,
-                        RightInstance = link.Cluster2,
-                        RightDistance = 0
-                    };
-
-                    leftNode.Parent = newNode;
-                    rightNode.Parent = newNode;
-
-                    nodeDictionary.Add(mergedClusterIdx, newNode);
-                }
-
-
+                
                 this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);
             }
         }        
@@ -268,7 +181,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.RemoveCluster(x);
             this.RemoveCluster(y);
             this.AddCluster(mergedCluster);
-            this.dendrogram.Add(x, y, distance);
+            this.dendrogram.Add(x, y, distance, mergedCluster.Index, clusters.Count <= 1);            
             return mergedCluster.Index;
         }
 
@@ -279,7 +192,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         protected int MergeClusters(DendrogramLink link)
         {
-            return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);
+            return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);            
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)

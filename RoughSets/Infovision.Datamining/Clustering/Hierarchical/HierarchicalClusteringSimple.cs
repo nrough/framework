@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         
         protected override void CreateClusters()
         {                        
-            while (clusters.Count > 1)
+            while (this.HasMoreClustersToMerge())
             {
                 DendrogramLink link = this.GetClustersToMerge();
                 this.MergeClusters(link);

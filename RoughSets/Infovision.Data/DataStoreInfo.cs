@@ -218,7 +218,7 @@ namespace Infovision.Data
                 stringBuilder.AppendFormat("Attribute {0} is {1} and has {2} distinct values",
                                            fieldInfo.Name,
                                            fieldInfo.FieldValueType,
-                                           fieldInfo.Histogram.Elements);
+                                           fieldInfo.Values().Count); //fieldInfo.Histogram.Elements);
                 stringBuilder.Append(Environment.NewLine);
 
                 stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}", "Value", "Internal", "Count");

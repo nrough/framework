@@ -351,7 +351,7 @@ namespace Infovision.RunTest
         private void ShowInternalData(DataStore dataStore)
         {
             Console.WriteLine(String.Format("Dataset: {0}", dataStore.Name));
-            Console.WriteLine(dataStore.ToStringInternal());
+            Console.WriteLine(dataStore.ToStringInternal(" "));
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace Infovision.RunTest
         private void ShowData(DataStore dataStore)
         {
             Console.WriteLine(String.Format("Dataset: {0}", dataStore.Name));
-            Console.WriteLine(dataStore.ToStringExternal());
+            Console.WriteLine(dataStore.ToStringExternal(" "));
         }
 
         private void ShowAttributeInfo(DataStoreInfo dataStoreInfo)

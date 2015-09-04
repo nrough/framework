@@ -255,17 +255,19 @@ namespace Infovision.Data
             return this.DataStoreInfo.PriorDecisionProbability(decisionValue);
         }
 
-        public string ToStringInternal()
+        public string ToStringInternal(string separator)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
+            stringBuilder.Append(this.ToStringHeader(separator));
+            
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
-                stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
                 foreach (int fieldId in record.GetFields())
                 {
-                    stringBuilder.AppendFormat("{0} ", record[fieldId]);
+                    stringBuilder.AppendFormat("{0}{1}", record[fieldId], separator);
                 }
                 stringBuilder.Append(Environment.NewLine);
             }
@@ -273,20 +275,35 @@ namespace Infovision.Data
             return stringBuilder.ToString();
         }
 
-        public string ToStringExternal()
+        public string ToStringExternal(string separator)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            
+            stringBuilder.Append(this.ToStringHeader(separator));
 
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
-                stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
                 foreach (int fieldId in record.GetFields())
                 {
                     DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
-                    stringBuilder.AppendFormat("{0} ", attr.Internal2External(record[fieldId]));
+                    object externalVal = attr.Internal2External(record[fieldId]);
+                    string externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
+                    stringBuilder.AppendFormat("{0}{1}", externalValStr, separator);
                 }
                 stringBuilder.Append(Environment.NewLine);                
+            }
+            stringBuilder.Append(Environment.NewLine);
+            return stringBuilder.ToString();
+        }
+
+        public string ToStringHeader(string separator)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+            {
+                stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
             }
             stringBuilder.Append(Environment.NewLine);
             return stringBuilder.ToString();
@@ -318,6 +335,16 @@ namespace Infovision.Data
         public static DataStore Load(string fileName, FileFormat fileFormat)
         {
             return DataStore.Load(fileName, fileFormat, null);
+        }
+
+        public void WriteToCSVFile(string filePath, string separator)
+        {            
+            System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
+        }
+
+        public void WriteToCSVFileExt(string filePath, string separator)
+        {
+            System.IO.File.WriteAllText(filePath, this.ToStringExternal(separator));
         }
 
         #region System.Object Methods

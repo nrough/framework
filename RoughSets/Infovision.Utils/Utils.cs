@@ -467,5 +467,28 @@ namespace Infovision.Utils
 
             System.IO.File.WriteAllText(filePath, sb.ToString());
         }
+
+        /// <summary>
+        ///   Returns a subtable extracted from the current table.
+        /// </summary>
+        /// 
+        /// <param name="source">The table to return the subtable from.</param>
+        /// <param name="indexes">Array of indices.</param>
+        /// 
+        public static DataTable Subtable(this DataTable source, int[] indexes)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+            if (indexes == null)
+                throw new ArgumentNullException("indexes");
+
+            DataTable destination = source.Clone();
+            foreach (int i in indexes)
+            {
+                DataRow row = source.Rows[i];
+                destination.ImportRow(row);
+            }
+            return destination;
+        }            
     }
 }

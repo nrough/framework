@@ -10,7 +10,7 @@ namespace Infovision.Datamining.Roughset
     {
         private DataStore dataStore = null;
         private double[] weights;
-
+        
         protected WeightGenerator(DataStore dataStore)
         {
             this.dataStore = dataStore;

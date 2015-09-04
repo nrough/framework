@@ -73,8 +73,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutationList = permGen.Generate(20);
             args.AddParameter("PermutationCollection", permutationList);
 
-            IReductStore redStore = redGenStd.Generate(args).First();
-            IReductStore redStoreW = redGenWgh.Generate(args).First();
+            redGenStd.Generate();
+            IReductStore redStore = redGenStd.ReductPool;
+
+            redGenWgh.Generate();
+            IReductStore redStoreW = redGenWgh.ReductPool;
 
             int i = 0;
             foreach (IReduct reduct in redStore)
@@ -106,8 +109,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutationList = permGen.Generate(100);
             args.AddParameter("PermutationCollection", permutationList);
 
-            IReductStore redStore = redGenStd.Generate(args).First();
-            IReductStore redStoreW = redGenWgh.Generate(args).First();
+            redGenStd.Generate();
+            redGenWgh.Generate();
+
+            IReductStore redStore = redGenStd.ReductPool;
+            IReductStore redStoreW = redGenWgh.ReductPool;
 
             int i = 0;
             foreach (IReduct reduct in redStore)
@@ -325,7 +331,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.AddParameter("FactoryKey", reductGeneratorKey1);
             
             IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(args);
-            IReductStore reductStore1 = reductGenerator1.Generate(args).First();
+            reductGenerator1.Generate();
+            IReductStore reductStore1 = reductGenerator1.ReductPool;
 
             Args args2 = new Args();
             args2.AddParameter("DataStore", localDataStore);
@@ -334,7 +341,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args2.AddParameter("FactoryKey", reductGeneratorKey2);
             
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
-            IReductStore reductStore2 = reductGenerator2.Generate(args2).First();
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.ReductPool;
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 

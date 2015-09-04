@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset
             if (!args.Exist("FactoryKey"))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
             string factoryKey = (string) args.GetParameter("FactoryKey");
-            return ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);            
+            return ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);
         }
 
         public static IPermutationGenerator GetPermutationGenerator(string factoryKey, Args args)
@@ -295,7 +295,10 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorMajority(dataStore);
+            ReductGeneratorMajority rGen = new ReductGeneratorMajority(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
+
         }
     }
 
@@ -309,7 +312,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorWeightsMajority(dataStore);
+            ReductGeneratorWeightsMajority rGen = new ReductGeneratorWeightsMajority(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
     }    
 
@@ -323,7 +328,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorRelative(dataStore); 
+            ReductGeneratorRelative rGen = new ReductGeneratorRelative(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
     }
 
@@ -337,7 +344,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorWeightsRelative(dataStore);
+            ReductGeneratorWeightsRelative rGen = new ReductGeneratorWeightsRelative(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
     }    
 
@@ -351,7 +360,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new ReductGeneratorPositive(dataStore);
+            ReductGeneratorPositive rGen = new ReductGeneratorPositive(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
     }
 
@@ -394,7 +405,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new BireductRelativeGenerator(dataStore);
+            BireductRelativeGenerator rGen = new BireductRelativeGenerator(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
 
         public override IPermutationGenerator GetPermutationGenerator(Args args)
@@ -423,7 +436,9 @@ namespace Infovision.Datamining.Roughset
         public override IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return new BireductGammaGenerator(dataStore);
+            BireductGammaGenerator rGen = new BireductGammaGenerator(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
     }   
 

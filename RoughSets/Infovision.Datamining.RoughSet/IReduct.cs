@@ -13,6 +13,7 @@ namespace Infovision.Datamining.Roughset
         ObjectSet ObjectSet { get; }
         double[] Weights { get; }
         double ApproximationDegree { get; }
+        string Id { get; }
         
         EquivalenceClassMap EquivalenceClassMap { get; }
 

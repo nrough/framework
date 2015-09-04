@@ -72,9 +72,9 @@ namespace Infovision.Datamining
 
         #region Globals
 
-        private Dictionary<Int64, Int64> classificationMap;
+        private Dictionary<long, long> classificationMap;
         private Dictionary<ConfusionMatrixKey, int> confusionMatrix = new Dictionary<ConfusionMatrixKey, int>();
-        private Dictionary<Int64, int> decisionActualCount;
+        private Dictionary<long, int> decisionActualCount;
         
         private int numberOfClassified = 0;
         private int numberOfMisclassified = 0;
@@ -123,7 +123,7 @@ namespace Infovision.Datamining
             {
                 double sum = 0;
                 int numberOfDecisions = 0;
-                foreach (KeyValuePair<Int64, int> kvp in this.decisionActualCount)
+                foreach (KeyValuePair<long, int> kvp in this.decisionActualCount)
                 {
                     if (kvp.Value > 0)
                     {
@@ -132,7 +132,7 @@ namespace Infovision.Datamining
                     }
                 }
 
-                return sum / (double) numberOfDecisions;
+                return sum / numberOfDecisions;
             }
         }
 

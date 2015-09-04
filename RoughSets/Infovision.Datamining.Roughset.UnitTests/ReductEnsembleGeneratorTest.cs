@@ -93,7 +93,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //TODO Store args inside generator
             //TODO Generate method without parameters
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
-            IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
+            reductGenerator.Generate();
+            IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;
 
             DataStore data = (DataStore) parms.GetParameter("DataStore");
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;

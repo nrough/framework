@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        protected virtual IPermutationGenerator PermutationGenerator
+        protected override IPermutationGenerator PermutationGenerator
         {
             get { return new PermutationGeneratorFieldObject(this.DataStore, this.ApproximationDegree); }
         }
@@ -27,11 +27,13 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReductStore CreateReductStore(Args args)
+        //protected override IReductStore CreateReductStore(Args args)
+        protected override IReductStore CreateReductStore()
         {
             return new BireductStore();
         }
 
+        /*
         protected PermutationCollection FindOrCreatePermutationList(Args args)
         {
             PermutationCollection permutationList = null;
@@ -57,30 +59,38 @@ namespace Infovision.Datamining.Roughset
 
             return permutationList;
         }
-        
-        public override IReductStoreCollection Generate(Args args)
+        */
+
+        //public override IReductStoreCollection Generate(Args args)
+        public override void Generate()
         {
-            PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
-            IReductStore reductStore = this.CreateReductStore(args);
-            foreach (Permutation permutation in permutationList)
+            //PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
+            IReductStore reductStore = this.CreateReductStore();
+            
+            //foreach (Permutation permutation in permutationList)
+            foreach (Permutation permutation in this.Permutations)
             {               
                 Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation, reductStore);
                 reductStore.AddReduct(bireduct);
             }
+
+            this.ReductPool = reductStore;
             
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
             reductStoreCollection.AddStore(reductStore);
-            return reductStoreCollection;        
+            this.ReductStoreCollection = reductStoreCollection;        
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
         {
-            return new Bireduct(this.DataStore, fieldIds, approxDegree);
+            Bireduct r = new Bireduct(this.DataStore, fieldIds, approxDegree);
+            r.Id = id;
+            return r;
         }
 
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0) as Bireduct;
+            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, this.GetNextReductId().ToString()) as Bireduct;
             this.Reach(bireduct, permutation, reductStore);
             return bireduct;
         }
@@ -139,14 +149,19 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
         {
-            return new GammaBireduct(this.DataStore, approxDegree);
+            
+            BireductGamma r = new BireductGamma(this.DataStore, approxDegree);
+            r.Id = id;
+            return r;
         }
 
         protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
-            GammaBireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), this.ApproximationDegree) as GammaBireduct;
+            BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
+                                                             this.ApproximationDegree, 
+                                                             this.GetNextReductId().ToString()) as BireductGamma;
             Reach(bireduct, permutation, reductStore);
             return bireduct;
         }

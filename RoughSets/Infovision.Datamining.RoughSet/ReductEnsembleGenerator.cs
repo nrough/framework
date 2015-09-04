@@ -19,7 +19,6 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;        
         private WeightGenerator weightGenerator;
-        private ReductStore internalStore;
         private HierarchicalClustering hCluster;
         private Func<IReduct, double[], double[]> reconWeights;
         private Func<int[], int[], DistanceMatrix, double> linkage;
@@ -31,7 +30,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.hCluster; }
         }        
 
-        protected IPermutationGenerator PermutationGenerator
+        protected override IPermutationGenerator PermutationGenerator
         {
             get
             {
@@ -75,18 +74,13 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public IReductStore ReductPool
-        {
-            get { return this.internalStore; }
-        }
-
         public WeightGenerator WeightGenerator
         {
             get
             {
                 if (this.weightGenerator == null)
                 {
-                    this.weightGenerator = new WeightGeneratorMajority(this.DataStore);
+                    this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
                 }
 
                 return this.weightGenerator;
@@ -108,43 +102,50 @@ namespace Infovision.Datamining.Roughset
             this.distance = Similarity.Euclidean;
             this.numberOfClusters = 5;
         }
-        
-        public override IReductStoreCollection Generate(Args args)
-        {
-            internalStore = new ReductStore();
-            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);                                                
 
+        public override void InitFromArgs(Args args)
+        {
+            base.InitFromArgs(args);
+            
             if (args.Exist("Distance"))
                 this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
+                this.linkage = (Func<int[], int[], DistanceMatrix, double>)args.GetParameter("Linkage");
 
             if (args.Exist("NumberOfClusters"))
-                this.numberOfClusters = (int) args.GetParameter("NumberOfClusters");
+                this.numberOfClusters = (int)args.GetParameter("NumberOfClusters");
 
             if (this.numberOfClusters > this.DataStore.NumberOfRecords)
-                this.numberOfClusters = this.DataStore.NumberOfRecords;            
+                this.numberOfClusters = this.DataStore.NumberOfRecords;
 
             if (args.Exist("WeightGenerator"))
                 this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
 
             if (args.Exist("ReconWeights"))
                 this.reconWeights = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
-            
+
+
+        }
+        
+        //public override IReductStoreCollection Generate(Args args)
+        public override void Generate()
+        {
+            ReductStore localReductPool = new ReductStore();
+
             int k = -1;            
-            foreach (Permutation permutation in permutations)
+            foreach (Permutation permutation in this.Permutations)
             {                
                 double localApproxLevel = this.permEpsilon[++k] / 100.0;
 
-                IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel);
+                IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel, this.GetNextReductId().ToString());
                 
                 //Reach
                 for (int i = 0; i < permutation.Length; i++)
                 {
                     reduct.AddAttribute(permutation[i]);
 
-                    if (this.IsReduct(reduct, internalStore, false))
+                    if (this.IsReduct(reduct, localReductPool, false))
                     {
                         break;
                     }
@@ -157,33 +158,35 @@ namespace Infovision.Datamining.Roughset
                     int attributeId = permutation[i];
                     if (reduct.RemoveAttribute(attributeId))
                     {
-                        if (!this.IsReduct(reduct, internalStore, false))
+                        if (!this.IsReduct(reduct, localReductPool, false))
                         {
                             reduct.AddAttribute(attributeId);
                         }
                     }
                 }
-             
-                internalStore.DoAddReduct(reduct);                
+
+                localReductPool.DoAddReduct(reduct);                
             }
 
-            internalStore = internalStore.RemoveDuplicates();
+            localReductPool = localReductPool.RemoveDuplicates();
+            this.ReductPool = localReductPool;
 
-            double[][] errorVectors = this.GetWeightVectorsFromReducts(internalStore);
+            double[][] errorVectors = this.GetWeightVectorsFromReducts(this.ReductPool);
             hCluster = new HierarchicalClustering(distance, linkage);            
             hCluster.Compute(errorVectors);                                    
             
             Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            this.ReductStoreCollection = new ReductStoreCollection();
 
             foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
             {
                 ReductStore tmpReductStore = new ReductStore();
                 foreach (int r in kvp.Value)
                 {
-                    tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
+                    tmpReductStore.DoAddReduct(this.ReductPool.GetReduct(r));
                 }
-                reductStoreCollection.AddStore(tmpReductStore);
+
+                this.ReductStoreCollection.AddStore(tmpReductStore);
             }
 
             /*
@@ -219,8 +222,6 @@ namespace Infovision.Datamining.Roughset
                 }
             }
             */
-
-            return reductStoreCollection;
         }                   
 
         /// <summary>
@@ -228,7 +229,7 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
-        public double[][] GetWeightVectorsFromReducts(ReductStore store)
+        public double[][] GetWeightVectorsFromReducts(IReductStore store)
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)                           
@@ -282,20 +283,24 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0);
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 
-        protected override IReductStore CreateReductStore(Args args)
+        //protected override IReductStore CreateReductStore(Args args)
+        protected override IReductStore CreateReductStore()
         {
             return new ReductStore();
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
-        {            
-            return new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);            
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
+        {
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
+            r.Id = id;
+            return r;
         }
 
+        /*
         protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)
         {
             PermutationCollection permutationList = null;
@@ -321,6 +326,7 @@ namespace Infovision.Datamining.Roughset
 
             return permutationList;
         }
+        */
     }
 
     public class ReductEnsambleFactory : IReductFactory

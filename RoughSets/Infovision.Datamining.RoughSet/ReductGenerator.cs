@@ -9,14 +9,60 @@ namespace Infovision.Datamining.Roughset
     {
         #region Globals
 
+        private IReductStoreCollection reductStoreCollection;
+        private IReductStore reductPool;
+        private IPermutationGenerator permutationGenerator;
+        private PermutationCollection permutationList;
         private DataStore dataStore = null;
         private double approximationLevel = 0;
         private int[][] fieldGroups;
+        private int reductIdSequence;
+        private bool useCache;
+
         protected object syncRoot = new object();
 
         #endregion
         
         #region Properties
+
+        public IReductStoreCollection ReductStoreCollection
+        {
+            get
+            {
+                return this.reductStoreCollection;
+            }
+
+            protected set
+            {
+                this.reductStoreCollection = value;
+            }
+        }
+
+        public IReductStore ReductPool
+        {
+            get
+            {
+                return this.reductPool;
+            }
+
+            protected set
+            {
+                this.reductPool = value;
+            }
+        }
+
+        public bool UseCache
+        {
+            get
+            {
+                return this.useCache;
+            }
+        }
+
+        public PermutationCollection Permutations
+        {
+            get { return this.permutationList; }
+        }
 
         public DataStore DataStore
         {
@@ -47,7 +93,26 @@ namespace Infovision.Datamining.Roughset
                     Buffer.BlockCopy(value[i], 0, this.fieldGroups[i], 0, value[i].Length * sizeof(int));
                 }   
             }
-        }        
+        }
+
+        protected virtual IPermutationGenerator PermutationGenerator
+        {
+            get
+            {
+                if (permutationGenerator == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (permutationGenerator == null)
+                        {
+                            permutationGenerator = new PermutatioGeneratorFieldGroup(this.FieldGroups);
+                        }
+                    }
+                }
+
+                return this.permutationGenerator;
+            }
+        }
 
         #endregion
 
@@ -75,9 +140,45 @@ namespace Infovision.Datamining.Roughset
         #region Methods
         
         //public abstract IReductStore Generate(Args args);
-        public abstract IReductStoreCollection Generate(Args args);
-        protected abstract IReductStore CreateReductStore(Args args);
-        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree);
+        //public abstract IReductStoreCollection Generate(Args args);
+        //protected abstract IReductStore CreateReductStore(Args args);
+
+        public abstract void Generate();
+        protected abstract IReductStore CreateReductStore();
+        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree, string id);
+
+        protected int GetNextReductId()
+        {
+            reductIdSequence++;
+            return reductIdSequence;
+        }
+
+        public virtual void InitFromArgs(Args args)
+        {
+            if (args.Exist("PermutationCollection"))
+            {
+                this.permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
+            }
+            else if (args.Exist("NumberOfReducts"))
+            {
+                int numberOfReducts = (int)args.GetParameter("NumberOfReducts");
+                this.permutationList = this.PermutationGenerator.Generate(numberOfReducts);
+            }
+            else if (args.Exist("NumberOfPermutations"))
+            {
+                int numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
+                this.permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
+            }
+
+            if (this.permutationList == null)
+            {
+                throw new NullReferenceException("PermutationCollection is null");
+            }
+
+            this.useCache = false;
+            if (args.Exist("USECACHE"))
+                this.useCache = true;
+        }
 
         #endregion
     }

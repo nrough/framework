@@ -51,7 +51,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
             
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
-            IReductStore reductStore = bireductGenerator.Generate(parms).First();
+            bireductGenerator.Generate();
+            IReductStore reductStore = bireductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)
             {

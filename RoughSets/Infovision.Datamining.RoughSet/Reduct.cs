@@ -11,15 +11,18 @@ namespace Infovision.Datamining.Roughset
     {
         #region Globals
 
+        private double approximationDegree;        
+        private double[] objectWeights;
+
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassMap eqClassMap;
-        private double approximationDegree;        
-        private double[] objectWeights;        
 
         #endregion
 
         #region Properties
+
+        public string Id { get; set; }
 
         public DataStore DataStore
         {
@@ -117,6 +120,7 @@ namespace Infovision.Datamining.Roughset
             this.ApproximationDegree = reduct.approximationDegree;                                 
             this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
             this.objectWeights = new double[dataStore.NumberOfRecords];
+            this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);            
         }
 
@@ -247,7 +251,7 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return String.Format("{0} ({1})", this.attributeSet.ToString(), this.ApproximationDegree);
+            return String.Format("[{0}] {1} ({2})", this.Id, this.attributeSet.ToString(), this.ApproximationDegree);
         }
 
         public override int GetHashCode()

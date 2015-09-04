@@ -4,26 +4,26 @@ using Infovision.Data;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class GammaBireduct : Bireduct
+    public class BireductGamma : Bireduct
     {
         #region Constructors
 
-        public GammaBireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double approxDegree)
+        public BireductGamma(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double approxDegree)
             : base(dataStore, fieldIds, objectIndexes, approxDegree)
         {
         }
 
-        public GammaBireduct(DataStore dataStore, int[] fieldIds, double approxDegree)
+        public BireductGamma(DataStore dataStore, int[] fieldIds, double approxDegree)
             : this(dataStore, fieldIds, new int[] { }, approxDegree)
         {
         }
 
-        public GammaBireduct(DataStore dataStore, double approxDegree)
+        public BireductGamma(DataStore dataStore, double approxDegree)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, approxDegree)
         {
         }
 
-        public GammaBireduct(GammaBireduct gammaBireduct)
+        public BireductGamma(BireductGamma gammaBireduct)
             : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(), gammaBireduct.ApproximationDegree)
         {
 
@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset
             if (obj == null)
                 return false;
 
-            GammaBireduct gammaBireduct = obj as GammaBireduct;
+            BireductGamma gammaBireduct = obj as BireductGamma;
             if (gammaBireduct == null)
                 return false;
 
@@ -104,7 +104,7 @@ namespace Infovision.Datamining.Roughset
         /// <returns>A new instance of a GammaBireduct, using a deep copy.</returns>
         public override object Clone()
         {
-            return new GammaBireduct(this);
+            return new BireductGamma(this);
         }
         #endregion
     }

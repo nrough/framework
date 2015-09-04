@@ -374,12 +374,14 @@ namespace Infovision.Datamining.Roughset
             args.AddParameter("NumberOfThreads", 32);
             args.AddParameter("PermutationCollection", permutations);
             args.AddParameter("FactoryKey", reductFactoryKey);
-            //args.AddParameter("USECACHE", null);
+            //args.AddParameter("USECACHE", true);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
             reductGenerator.ApproximationDegree = approximationRatio / 100.0;
-            this.reductStore = reductGenerator.Generate(args).First();
+            //this.reductStore = reductGenerator.Generate(args).First();
+            reductGenerator.Generate();
+            this.reductStore = reductGenerator.ReductPool;
         }
 
         public void Train(DataStore trainingData, string reductFactoryKey, int approximationRatio, int numberOfPermutations)

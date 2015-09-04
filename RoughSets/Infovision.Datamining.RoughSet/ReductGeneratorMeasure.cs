@@ -10,8 +10,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Globals
 
-        private IInformationMeasure informationMeasure;
-        private IPermutationGenerator permutationGenerator;
+        private IInformationMeasure informationMeasure;        
         private double dataSetQuality = 1.0;
         private bool isQualityCalculated = false;
 
@@ -27,25 +26,6 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #region Properties
-
-        protected IPermutationGenerator PermutationGenerator
-        {            
-            get
-            {
-                if (permutationGenerator == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (permutationGenerator == null)
-                        {
-                            permutationGenerator = new PermutatioGeneratorFieldGroup(this.FieldGroups);
-                        }
-                    }
-                }
-
-                return this.permutationGenerator;
-            }
-        }
 
         protected bool IsQualityCalculated
         {
@@ -82,8 +62,9 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #region Methods
-
-        protected override IReductStore CreateReductStore(Args args)
+        
+        //protected override IReductStore CreateReductStore(Args args)
+        protected override IReductStore CreateReductStore()
         {
             return new ReductStore();
 
@@ -102,10 +83,11 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, this.GetNextReductId().ToString());
             this.DataSetQuality = this.informationMeasure.Calc(reduct);
         }
 
+        /*
         protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)
         {
             PermutationCollection permutationList = null;
@@ -131,39 +113,52 @@ namespace Infovision.Datamining.Roughset
 
             return permutationList;
         }
+        */
 
-        protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
+        //protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
+        protected virtual IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
         {
+            /*
             bool useCache = false;
             if (args.Exist("USECACHE"))
                 useCache = true;
+            */
 
-            IReductStore reductStore = this.CreateReductStore(args);
+            //IReductStore reductStore = this.CreateReductStore(args);
+            
+            IReductStore reductStore = this.CreateReductStore();
             foreach (Permutation permutation in permutationList)
             {
-                IReduct reduct = this.CalculateReduct(permutation, reductStore, useCache, this.ApproximationDegree);
+                IReduct reduct = this.CalculateReduct(permutation, reductStore, this.UseCache, this.ApproximationDegree);
                 reductStore.AddReduct(reduct);
             }
 
+            this.ReductPool = reductStore;
+            
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
             reductStoreCollection.AddStore(reductStore);
             return reductStoreCollection;                        
         }
         
-        public override IReductStoreCollection Generate(Args args)
+        //public override IReductStoreCollection Generate(Args args)
+        public override void Generate()
         {
-            PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
-            return this.CreateReductStoreFromPermutationCollection(permutationList, args);
+            //PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
+            this.ReductStoreCollection = this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
         {
-            return new Reduct(this.DataStore, fieldIds, approxDegree);
+            Reduct r = new Reduct(this.DataStore, fieldIds, approxDegree);
+            r.Id = id;
+            return r;
         }
 
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double approxDegree)
         {
-            IReduct reduct = this.CreateReductObject(new int[] { }, approxDegree);
+            IReduct reduct = this.CreateReductObject(new int[] { }, 
+                                                     approxDegree,
+                                                     this.GetNextReductId().ToString());
 
             this.Reach(reduct, permutation, reductStore, useCache);
             this.Reduce(reduct, permutation, reductStore, useCache);

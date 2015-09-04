@@ -232,7 +232,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 reductGenerator.ApproximationDegree = epsilon / 100.0;
 
-                IReductStore reductStore = reductGenerator.Generate(parms).First();
+                reductGenerator.Generate();
+                IReductStore reductStore = reductGenerator.ReductPool;
 
                 foreach (ReductWeights reduct in reductStore)
                 {
@@ -281,7 +282,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            IReductStore reductStore = reductGenerator.Generate(parms).First();
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)
             {
@@ -305,7 +307,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("FactoryKey", "ApproximateReductRelativeWeights");
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            IReductStore reductStore = reductGenerator.Generate(parms).First();
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)
             {

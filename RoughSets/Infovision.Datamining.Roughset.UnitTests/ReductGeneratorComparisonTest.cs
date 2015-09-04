@@ -34,9 +34,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             numberOfPermutations = 20;
             data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1);
+            testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
             minEpsilon = 5;
-            maxEpsilon = 15;
+            maxEpsilon = 25;
             
             rand = new Random();
             permGenerator = new PermutationGenerator(data);
@@ -59,7 +59,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add("PermutationEpsilon", epsilons);
             argSet.Add("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
             argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
-            argSet.Add("NumberOfClusters", 3);
+            argSet.Add("NumberOfClusters", 5);
             argSet.Add("FactoryKey", "ReductEnsemble");
             argSet.Add("PermutationCollection", permList);
             argSet.Add("WeightGenerator", weightGenerator);
@@ -81,8 +81,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 parms.AddParameter(kvp.Key, kvp.Value);           
             
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            IReductStoreCollection reductStoreCollection = reductGenerator.Generate(parms);
+            reductGenerator.Generate();
+            IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;
 
+            Console.WriteLine("------------------------ Reduct Groups ------------------------");
+            
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 RoughClassifier rc = new RoughClassifier();
@@ -116,7 +119,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 RoughClassifier rc = new RoughClassifier();
                 rc.ReductStore = tmpReductStore;
                 rc.Classify(testData);
-                ClassificationResult classificationResult = rc.Vote(testData, IdentificationType.Confidence, VoteType.MajorDecision);
+                ClassificationResult classificationResult = rc.Vote(testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence);
 
                 PrintResult(tmpReductStore, classificationResult);
                 

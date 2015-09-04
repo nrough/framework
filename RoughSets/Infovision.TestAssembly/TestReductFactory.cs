@@ -16,7 +16,9 @@ namespace Infovision.TestAssembly
         public IReductGenerator GetReductGenerator(Args args)
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            return (IReductGenerator)new TestReductGenerator(dataStore);
+            TestReductGenerator rGen = new TestReductGenerator(dataStore);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
 
         public IPermutationGenerator GetPermutationGenerator(Args args)
@@ -33,7 +35,42 @@ namespace Infovision.TestAssembly
 
     public class TestReductGenerator : Infovision.Datamining.Roughset.IReductGenerator
     {
+        private IReductStoreCollection reductStoreCollection;
+        private IReductStore reductPool;
         private double approximationLevel = 0;
+
+        public IReductStoreCollection ReductStoreCollection
+        {
+            get
+            {
+                return this.reductStoreCollection;
+            }
+
+            protected set
+            {
+                this.reductStoreCollection = value;
+            }
+        }
+
+        public IReductStore ReductPool
+        {
+            get
+            {
+                return this.reductPool;
+            }
+
+            protected set
+            {
+                this.reductPool = value;
+            }
+        }
+
+        public double ApproximationDegree
+        {
+            get { return this.approximationLevel; }
+            set { this.approximationLevel = value; }
+        }
+
         
         public TestReductGenerator()
         {
@@ -43,17 +80,16 @@ namespace Infovision.TestAssembly
         {
         }
 
-        public double ApproximationDegree
+        public virtual void InitFromArgs(Args args)
         {
-            get { return this.approximationLevel; }
-            set { this.approximationLevel = value; }
+
         }
 
-        public IReductStoreCollection Generate(Args args)
+        public virtual void Generate()
         {
-            IReductStoreCollection reductStoreCollection = new ReductStoreCollection();
-            reductStoreCollection.AddStore(new ReductStore());
-            return reductStoreCollection;            
+            this.ReductPool = new ReductStore();
+            this.ReductStoreCollection = new ReductStoreCollection();
+            this.ReductStoreCollection.AddStore(this.ReductPool);
         }
     }
 }

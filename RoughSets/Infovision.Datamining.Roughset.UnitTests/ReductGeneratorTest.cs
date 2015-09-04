@@ -156,7 +156,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGeneratorMulti.ApproximationDegree = (double)epsilon / 100.0;
-                IReductStore reductStore = reductGeneratorMulti.Generate(parms).First();
+                reductGeneratorMulti.Generate();
+                IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
 
             int stop = Environment.TickCount;
@@ -173,7 +174,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGenerator.ApproximationDegree = (double)epsilon / 100.0;
-                IReductStore reductStore = reductGenerator.Generate(parms).First();
+                reductGenerator.Generate();
+                IReductStore reductStore = reductGenerator.ReductPool;
             }
 
             int stop = Environment.TickCount;

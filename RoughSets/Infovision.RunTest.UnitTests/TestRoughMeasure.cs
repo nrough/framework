@@ -20,7 +20,7 @@ namespace Infovision.RunTest.UnitTests
         private string autoSaveFilename;
 
         private Program program;
-        private ParameterList parameterList;
+        private ParameterCollection parameterList;
         private RoughMeasureTest test;
 
         const int PARM_POS_TRAIN_NAME = 0;

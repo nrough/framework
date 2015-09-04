@@ -19,7 +19,7 @@ namespace Infovision.Test
 
         #region Constructors
 
-        public ParameterVectorEnumerator(ParameterList parameterList)
+        public ParameterVectorEnumerator(ParameterCollection parameterList)
         {
 
             this.InitValueVector(parameterList);
@@ -42,7 +42,7 @@ namespace Infovision.Test
 
         #region Methods
 
-        private void InitValueVector(ParameterList parameterList)
+        private void InitValueVector(ParameterCollection parameterList)
         {
             this.valueVectorList = new List<ParameterValueVector>();
 

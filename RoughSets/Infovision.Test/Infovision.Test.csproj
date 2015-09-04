@@ -84,7 +84,7 @@
   <ItemGroup>
     <Compile Include="ParameterValueEnumerator.cs" />
     <Compile Include="ParameterValueVector.cs" />
-    <Compile Include="ParameterList.cs" />
+    <Compile Include="ParameterCollection.cs" />
     <Compile Include="TestParameter.cs" />
     <Compile Include="ParameterExclusion.cs" />
     <Compile Include="TestRunner.cs" />

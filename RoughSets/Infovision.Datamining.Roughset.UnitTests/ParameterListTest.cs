@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void InclusionTest()
         {
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmNumberOfPermutations,
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmNumberOfPermutations,
                                                                                 parmNumberOfReducts,
                                                                                 parmNFold,
                                                                                 parmTestNumber,
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ExclusionTest()
         {
-            ParameterList parameterList = new ParameterList();
+            ParameterCollection parameterList = new ParameterCollection();
             
             parameterList.Add(parmNumberOfPermutations);
             parameterList.Add(parmNumberOfReducts);

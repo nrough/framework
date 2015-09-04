@@ -11,7 +11,7 @@ namespace Infovision.MRI
     {
 
         private Dictionary<string, IImageFeature> generators = new Dictionary<string, IImageFeature>();
-        private Dictionary<string, ParameterList> generatorsParms = new Dictionary<string, ParameterList>();
+        private Dictionary<string, ParameterCollection> generatorsParms = new Dictionary<string, ParameterCollection>();
 
         public ImageFeatureGroupExtractor()
         {
@@ -74,7 +74,7 @@ namespace Infovision.MRI
             uint[] position = new uint[3];
 
             IImageFeature generator;
-            ParameterList generatorParameterList;
+            ParameterCollection generatorParameterList;
             ParameterVectorEnumerator i_parm;
             string generatorName;
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
@@ -130,7 +130,7 @@ namespace Infovision.MRI
             }
         }
 
-        public void AddFeatureGenerator(string name, IImageFeature generator, ParameterList parameterList)
+        public void AddFeatureGenerator(string name, IImageFeature generator, ParameterCollection parameterList)
         {
             generators.Add(name, generator);
             generatorsParms.Add(name, parameterList);

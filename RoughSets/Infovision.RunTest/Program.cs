@@ -8,7 +8,7 @@ namespace Infovision.RunTest
 {
     public class Program
     {   
-        public ParameterList RoughMeasureWeightsTestParmList(string trainFileName,
+        public ParameterCollection RoughMeasureWeightsTestParmList(string trainFileName,
                                         string testFileName,
                                         int numberOfReducts,
                                         int numberOfPermutations,
@@ -59,7 +59,7 @@ namespace Infovision.RunTest
                                                                                                     VoteType.MajorDecision,
                                                                                                     VoteType.WeightStrength});
  
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,//0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,//0
                                                                                    parmDataStoreTest,//1
                                                                                    parmNumberOfReducts,//2
                                                                                    parmNumberOfPermutations,//3
@@ -74,7 +74,7 @@ namespace Infovision.RunTest
             
             
             /*
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,//0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,//0
                                                                                    parmDataStoreTest,//1
                                                                                    parmNumberOfReducts,//2
                                                                                    parmNumberOfPermutations,//3
@@ -156,7 +156,7 @@ namespace Infovision.RunTest
         }
         
         
-        public ParameterList RoughMeasureTestParmList(string trainFileName,
+        public ParameterCollection RoughMeasureTestParmList(string trainFileName,
                                         string testFileName, 
                                         int numberOfReducts,
                                         int numberOfPermutations,
@@ -200,7 +200,7 @@ namespace Infovision.RunTest
             ITestParameter parmVote = new ParameterValueList<VoteType>("VoteType", Utils.EnumHelper.GetValues<VoteType>());
             
             /*
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,//0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,//0
                                                                                    parmDataStoreTest,//1
                                                                                    parmNumberOfReducts,//2
                                                                                    parmNumberOfPermutations,//3
@@ -214,7 +214,7 @@ namespace Infovision.RunTest
                                                                                    parmVote});//11
             */
 
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,//0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,//0
                                                                                    parmDataStoreTest,//1
                                                                                    parmNumberOfReducts,//2
                                                                                    parmNumberOfPermutations,//3
@@ -268,7 +268,7 @@ namespace Infovision.RunTest
             return parameterList;
         }
 
-        public ParameterList RelativeTestParmList(string trainFileName,
+        public ParameterCollection RelativeTestParmList(string trainFileName,
                                         string testFileName,
                                         int numberOfReducts,
                                         int numberOfPermutations,
@@ -313,7 +313,7 @@ namespace Infovision.RunTest
                                                                                         VoteType.Coverage });
 
             /*
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,       // 0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,       // 0
                                                                                    parmDataStoreTest,           // 1
                                                                                    parmNumberOfReducts,         // 2
                                                                                    parmNumberOfPermutations,    // 3
@@ -327,7 +327,7 @@ namespace Infovision.RunTest
                                                                                    parmVote});                  //11
             */
 
-            ParameterList parameterList = new ParameterList(new ITestParameter[] { parmDataStoreTraining,       // 0
+            ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,       // 0
                                                                                    parmDataStoreTest,           // 1
                                                                                    parmNumberOfReducts,         // 2
                                                                                    parmNumberOfPermutations,    // 3
@@ -437,7 +437,7 @@ namespace Infovision.RunTest
                 throw new InvalidOperationException(ex.Message);
             }
 
-            ParameterList parameterList = program.RoughMeasureWeightsTestParmList(trainFilename,
+            ParameterCollection parameterList = program.RoughMeasureWeightsTestParmList(trainFilename,
                                                                        testFilename,
                                                                        numberOfReducts,
                                                                        numberOfPermutations,

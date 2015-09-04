@@ -7,7 +7,7 @@ using Infovision.Utils;
 namespace Infovision.Test
 {
     [Serializable]
-    public class ParameterList
+    public class ParameterCollection
         : IEnumerable<ITestParameter>
     {
         #region Globals
@@ -23,11 +23,11 @@ namespace Infovision.Test
 
         #region Constructors
 
-        public ParameterList()
+        public ParameterCollection()
         {
         }
 
-        public ParameterList(ITestParameter[] parameters)
+        public ParameterCollection(ITestParameter[] parameters)
         {
             parameterList = new List<ITestParameter>(parameters);
             for (int i = 0; i < parameters.Length; i++)
@@ -37,7 +37,7 @@ namespace Infovision.Test
             }
         }
 
-        public ParameterList(ITestParameter[] parameters, ParameterExclusion[] exludedParams)
+        public ParameterCollection(ITestParameter[] parameters, ParameterExclusion[] exludedParams)
             : this(parameters)
         {
             this.excludedParameters = new List<ParameterExclusion>(exludedParams);

@@ -45,17 +45,7 @@ namespace Infovision.Math
                 if (a[i] != b[i])
                     sum++;
             return sum;
-        }
-
-        public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
-        {                                 
-            return 0;
-        }
-
-        public static double TverskySymetric(double[] prototype, double[] variant, double alpha, double beta)
-        {                    
-            return 0;
-        }
+        }        
 
         public static double Jacard(double[] a, double[] b)
         {

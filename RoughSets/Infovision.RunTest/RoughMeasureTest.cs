@@ -14,7 +14,7 @@ namespace Infovision.RunTest
     {
         #region Globals
 
-        private ParameterList parameterList;
+        private ParameterCollection parameterList;
         private string[] parmNames;
         private ParameterVectorEnumerator i_parm;
 
@@ -58,7 +58,7 @@ namespace Infovision.RunTest
 
         #region Constructor
 
-        public RoughMeasureTest(ParameterList parameterList)
+        public RoughMeasureTest(ParameterCollection parameterList)
         {
             this.parameterList = parameterList;
             this.parmNames = parameterList.GetParameterNames();
@@ -67,7 +67,7 @@ namespace Infovision.RunTest
         }
 
         public RoughMeasureTest(ITestParameter[] parameters)
-            : this(new ParameterList(parameters))
+            : this(new ParameterCollection(parameters))
         {
         }
 

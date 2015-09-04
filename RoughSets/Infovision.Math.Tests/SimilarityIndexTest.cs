@@ -118,5 +118,14 @@ namespace Infovision.Math.Tests
             Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
+
+
+        [Test]
+        public void TverskyDelegateTest()
+        {
+            double result1 = SimilarityIndex.Tversky2(vectors[2], vectors[3], 0.5, 0.5);
+            double result2 = SimilarityIndex.Tversky(vectors[2], vectors[3], 0.5, 0.5);
+            Assert.AreEqual(result1, result2);
+        }
     }
 }

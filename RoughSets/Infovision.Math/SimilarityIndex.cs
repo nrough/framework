@@ -10,7 +10,8 @@ namespace Infovision.Math
     {
         private static readonly double tinyDouble = 0.0000000001;
 
-        public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
+        
+        public static double Tversky2(double[] prototype, double[] variant, double alpha, double beta)
         {
             int[] assoc = SimilarityIndex.BinaryAssociation(prototype, variant);
             int a = assoc[0];
@@ -24,6 +25,32 @@ namespace Infovision.Math
                 return 0.0;
 
             return c / denominator;
+        }        
+
+        public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
+        {
+            return SimilarityIndex.TverskyDelegate(alpha, beta).Invoke(prototype, variant);
+        }
+
+        public static Func<double[], double[], double> TverskyDelegate(double alpha, double beta)
+        {                       
+            Func<double[], double[], double> tverskyDistance = (p, v) =>
+            {
+                int[] assoc = SimilarityIndex.BinaryAssociation(p, v);
+                int a = assoc[0];
+                int b = assoc[1];
+                int c = assoc[2];
+                int d = assoc[3];
+
+                double denominator = (alpha * a + beta * b + c);
+
+                if (DoubleEpsilonComparer.NearlyEqual(denominator, 0.0, tinyDouble))
+                    return 0.0;
+
+                return c / denominator;
+            };
+
+            return tverskyDistance;
         }
 
         public static double TverskySymetric(double[] prototype, double[] variant, double alpha, double beta)

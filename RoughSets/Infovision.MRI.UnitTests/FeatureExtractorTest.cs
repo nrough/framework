@@ -29,7 +29,7 @@ namespace Infovision.MRI.UnitTests
             featureExtractor.ImageHeight = imageHeight;
             featureExtractor.ImageDepth = imageDepth;
 
-            ParameterList histogramParamList = new ParameterList();
+            ParameterCollection histogramParamList = new ParameterCollection();
 
             //order is important
             histogramParamList.Add(new ParameterObjectReferenceList<ImageHistogramCluster>("Cluster", new ImageHistogramCluster()));
@@ -49,7 +49,7 @@ namespace Infovision.MRI.UnitTests
             featureExtractor.AddFeatureGenerator("Historgram", new ImageFeatureHistogramCluster(), histogramParamList);
 
             
-            ParameterList phantomParamList = new ParameterList();
+            ParameterCollection phantomParamList = new ParameterCollection();
             phantomParamList.Add(new ParameterObjectReference<IImage>("Image", imagePH));
             featureExtractor.AddFeatureGenerator("Phantom", new ImageFeatureVoxelMagnitude(), phantomParamList);
 

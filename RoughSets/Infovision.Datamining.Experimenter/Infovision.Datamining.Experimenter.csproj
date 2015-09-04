@@ -73,7 +73,7 @@
     <Compile Include="Parms\ParameterCollection.cs" />
     <Compile Include="Parms\ParameterObjectCollection.cs" />
     <Compile Include="Parms\ParametersValueEnumerator.cs" />
-    <Compile Include="Parms\ParameterValueList.cs" />
+    <Compile Include="Parms\ParameterValueCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

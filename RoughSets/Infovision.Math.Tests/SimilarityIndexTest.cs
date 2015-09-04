@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -116,6 +117,130 @@ namespace Infovision.Math.Tests
             double result = Similarity.TverskySymetric(vec1, vec2, alpha, beta);
             Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
-        }             
+        }
+
+
+        public static double[][] GetBinaryVectors()
+        {
+            double[][] result = new double[32][];
+            int k;
+
+            for (int i = 0; i < 32; i++)
+            {
+                result[i] = new double[5];
+                BitArray bits = new BitArray(new int[] { i });
+                for (int j = 0; j < bits.Count && j < 5; j++)
+                {
+                    if (bits[j])
+                    {
+                        result[i][j] = 1.0;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static double[] GetWeights()
+        {
+            double[] w = new double[32];
+            for (int i = 0; i < 32; i++)
+                w[i] = 1.0;
+            return w;
+        }
+        
+        public static IEnumerable<Func<double[], double[], double[], double>> GetSimilarityWeightedFunctions()
+        {
+                        
+            List<Func<double[], double[], double[], double>> list = new List<Func<double[], double[], double[], double>>();
+            
+            list.Add(Similarity.CosineB);
+            list.Add(Similarity.DiceB);
+            list.Add(Similarity.EuclideanB);
+            list.Add(Similarity.ForbesB);
+            list.Add(Similarity.HammanB);
+            list.Add(Similarity.JaccardB);
+            list.Add(Similarity.KulczynskiB);
+            list.Add(Similarity.ManhattanB);
+            list.Add(Similarity.MatchingB);
+            list.Add(Similarity.PearsonB);
+            list.Add(Similarity.RogersTanimotoB);
+            list.Add(Similarity.RussellRaoB);
+            list.Add(Similarity.SimpsonB);
+            list.Add(Similarity.TanimotoB);
+            list.Add(Similarity.YuleB);
+            list.Add(Similarity.SokalSneathB);
+            list.Add(Similarity.KulsinskiB);
+
+            //TODO Tversky
+            //TODO Minkowski
+
+            return list;
+        }
+
+        public static IEnumerable<Func<double[], double[], double>> GetSimilarityNotWeightedFunctions()
+        {
+            List<Func<double[], double[], double>> list = new List<Func<double[], double[], double>>();
+
+            list.Add(Similarity.Euclidean);
+            list.Add(Similarity.Manhattan);
+            list.Add(Similarity.Hamming);
+            list.Add(Similarity.JaccardFuzzy);
+            list.Add(Similarity.SquaredEuclidean);
+            list.Add(Similarity.Cosine);
+            list.Add(Similarity.BrayCurtis);
+            list.Add(Similarity.Canberra);
+
+            return list;
+        }
+
+        [Test, TestCaseSource("GetSimilarityWeightedFunctions")]
+        public void WeightedFunctionsTest(Func<double[], double[], double[], double> distance)
+        {
+                        
+            double[][] v = SimilarityTest.GetBinaryVectors();
+            double[] w = SimilarityTest.GetWeights();
+
+            //TODO select vectors
+            
+            CalcDistanceWeighted(distance, v[0], v[1], w);
+            CalcDistanceWeighted(distance, v[0], v[1], w);
+            CalcDistanceWeighted(distance, v[0], v[1], w);
+            CalcDistanceWeighted(distance, v[0], v[1], w);
+            CalcDistanceWeighted(distance, v[0], v[1], w);
+        }
+
+        public void CalcDistanceWeighted(Func<double[], double[], double[], double> distance, double[] v1, double[] v2, double[] w)
+        {
+            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+
+            //TODO print v1
+            //TODO print v2
+            //TODO print distance
+        }
+
+        [Test, TestCaseSource("GetSimilarityNotWeightedFunctions")]
+        public void WeightedFunctionsTest(Func<double[], double[], double> distance)
+        {
+
+            double[][] v = SimilarityTest.GetBinaryVectors();
+
+            //TODO select vectors
+
+            CalcDistanceNotWeighted(distance, v[0], v[1]);
+            CalcDistanceNotWeighted(distance, v[0], v[1]);
+            CalcDistanceNotWeighted(distance, v[0], v[1]);
+            CalcDistanceNotWeighted(distance, v[0], v[1]);
+            CalcDistanceNotWeighted(distance, v[0], v[1]);
+        }
+
+        public void CalcDistanceNotWeighted(Func<double[], double[], double> distance, double[] v1, double[] v2)
+        {
+            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+
+            //TODO print v1
+            //TODO print v2
+            //TODO print distance
+        }
     }
 }

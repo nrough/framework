@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             
             Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];            
-            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);            
+            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
                         
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
@@ -164,6 +164,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Bitmap dendrogram = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, 480);
                 dendrogram.Save((string) args["DendrogramBitmapFile"]);                
             }            
-        }             
+        }
+     
+
     }
 }

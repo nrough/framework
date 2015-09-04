@@ -50,7 +50,16 @@ namespace Infovision.Math
                 if (a[i] != b[i])
                     sum++;
             return sum;
-        }        
+        }
+
+        public static double Hamming(double[] v1, double[] v2)
+        {
+            double sum = 0;
+            for (int i = 0; i < v1.Length; i++)
+                if (!DoubleEpsilonComparer.NearlyEqual(v1[i], v2[i], tinyDouble))
+                    sum += System.Math.Max(v1[i], v2[i]);
+            return sum;
+        }
 
         public static double JaccardFuzzy(double[] a, double[] b)
         {
@@ -386,7 +395,7 @@ namespace Infovision.Math
             return sum;
         }
 
-        public static double Kulsinski(double[] v1, double[] v2, double[] w)
+        public static double KulsinskiB(double[] v1, double[] v2, double[] w)
         {
             double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];

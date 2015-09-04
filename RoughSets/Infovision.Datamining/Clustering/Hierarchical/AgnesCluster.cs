@@ -27,12 +27,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.objects; }
             private set { this.objects = value; }
-        }
-
-        public IEnumerable<int> Objects
-        {
-            get { return this.objects; }
-        }
+        }        
 
         public static AgnesCluster MergeClusters(int newClusterIndex, AgnesCluster cluster1, AgnesCluster cluster2)
         {

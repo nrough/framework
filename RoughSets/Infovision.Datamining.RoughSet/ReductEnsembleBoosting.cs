@@ -24,8 +24,8 @@ namespace Infovision.Datamining.Roughset
 		public int IterationsPassed { get { return this.iterPassed; } }
 		public int MaxNumberOfWeightResets { get; set; }
 		public int NumberOfWeightResets { get { return this.numberOfWeightResets; } }
-        public bool CheckEnsembleErrorDuringTraining { get; set; }
-        public WeightGenerator WeightGenerator { get; set; }
+		public bool CheckEnsembleErrorDuringTraining { get; set; }
+		public WeightGenerator WeightGenerator { get; set; }
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = Int32.MaxValue;
-            this.CheckEnsembleErrorDuringTraining = true;
+			this.CheckEnsembleErrorDuringTraining = true;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -59,7 +59,7 @@ namespace Infovision.Datamining.Roughset
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = Int32.MaxValue;
-            this.CheckEnsembleErrorDuringTraining = true;
+			this.CheckEnsembleErrorDuringTraining = true;
 		}
 
 		public override void InitFromArgs(Args args)
@@ -68,7 +68,9 @@ namespace Infovision.Datamining.Roughset
 
 			if (this.DataStore != null)
 			{
-				this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+				//this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) + 1.0, 2.0));
+
 				this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
 				this.WeightGenerator.Generate();
 
@@ -98,11 +100,11 @@ namespace Infovision.Datamining.Roughset
 			if (args.Exist(ReductGeneratorParamHelper.MaxIterations))
 				this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);
 
-            if (args.Exist(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining))
-                this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);
+			if (args.Exist(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining))
+				this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);
 
-            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
-                this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+				this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 		}
 
 		public override void Generate()
@@ -117,7 +119,7 @@ namespace Infovision.Datamining.Roughset
 			numberOfWeightResets = 0;
 			double error = -1.0;
 			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
-            this.WeightGenerator.Generate();
+			this.WeightGenerator.Generate();
 
 			do
 			{								
@@ -167,7 +169,7 @@ namespace Infovision.Datamining.Roughset
 					else
 						this.WeightGenerator.Weights[i] *= System.Math.Exp(alpha);  //*= (1.0 - error) / error) 
 
-                    sum += this.WeightGenerator.Weights[i];
+					sum += this.WeightGenerator.Weights[i];
 				}
 
 				//Normalize object weights
@@ -181,41 +183,41 @@ namespace Infovision.Datamining.Roughset
 				if (error == 0.0)
 					break;
 
-                if (this.CheckEnsembleErrorDuringTraining)
-                {
-                    if (this.models.Count > 1)
-                    {
-                        RoughClassifier classifierEnsemble = new RoughClassifier();
-                        classifierEnsemble.ReductStoreCollection = this.models;
-                        classifierEnsemble.Classify(this.DataStore);
-                        ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
+				if (this.CheckEnsembleErrorDuringTraining)
+				{
+					if (this.models.Count > 1)
+					{
+						RoughClassifier classifierEnsemble = new RoughClassifier();
+						classifierEnsemble.ReductStoreCollection = this.models;
+						classifierEnsemble.Classify(this.DataStore);
+						ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
-                        if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified == 0.0)
-                        {
-                            bool modelHasConverged = true;
-                            foreach (IReductStore model in this.models)
-                            {
-                                model.IsActive = false;
+						if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified == 0.0)
+						{
+							bool modelHasConverged = true;
+							foreach (IReductStore model in this.models)
+							{
+								model.IsActive = false;
 
-                                RoughClassifier localClassifierEnsemble = new RoughClassifier();
-                                localClassifierEnsemble.ReductStoreCollection = this.models;
-                                localClassifierEnsemble.Classify(this.DataStore);
-                                ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
+								RoughClassifier localClassifierEnsemble = new RoughClassifier();
+								localClassifierEnsemble.ReductStoreCollection = this.models;
+								localClassifierEnsemble.Classify(this.DataStore);
+								ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
-                                model.IsActive = true;
+								model.IsActive = true;
 
-                                if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified != 0.0)
-                                {
-                                    modelHasConverged = false;
-                                    break;
-                                }
-                            }
+								if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified != 0.0)
+								{
+									modelHasConverged = false;
+									break;
+								}
+							}
 
-                            if (modelHasConverged == true)
-                                break;
-                        }
-                    }
-                }
+							if (modelHasConverged == true)
+								break;
+						}
+					}
+				}
 			} while(iterPassed < this.MaxIterations);
 						
 			// Normalize weights for models confidence

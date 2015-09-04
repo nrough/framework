@@ -255,9 +255,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                      "TST_ERROR",
                                      "AVG_REDUCT");
 
-            for (int t = 0; t < 5; t++)
+            for (int iter = 1; iter <= 100; iter++)
             {
-                for (int iter = 1; iter <= 300; iter++)
+                for (int t = 0; t < 10; t++)
                 {
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
@@ -266,7 +266,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 1);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
+                    //parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 
@@ -312,9 +312,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       "TST_ERROR",
                                       "AVG_REDUCT");
 
-            for (int t = 0; t < 5; t++)
+            for (int iter = 1; iter <= 100; iter++)
             {
-                for (int iter = 1; iter <= 300; iter++)
+                for (int t = 0; t < 10; t++)
                 {
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
@@ -326,7 +326,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 2);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
+                    //parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, 20);
@@ -374,10 +374,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       "TRN_ERROR",
                                       "TST_ERROR",
                                       "AVG_REDUCT");
-
-            for (int t = 0; t < 5; t++)
+            
+            for (int iter = 1; iter <= 100; iter++)
             {
-                for (int iter = 1; iter <= 300; iter++)
+                for (int t = 0; t < 10; t++)
                 {
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
@@ -386,7 +386,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);                                                            
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 2);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
+                    //parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 

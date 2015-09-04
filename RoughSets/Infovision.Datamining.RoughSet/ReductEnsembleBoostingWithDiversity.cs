@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
 		private IReduct[] reducts;		
 		private int reductCounter;
 		private bool reductsCalculated;
-		private double[] weights;		
+		private double[] weights;        
 		
 		public Func<double[], double[], double> Distance { get; set; }
 		public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
@@ -69,17 +69,23 @@ namespace Infovision.Datamining.Roughset
 			//TODO for each one element cluster created from each of m new reducts find the one that is most diverse
 			//TODO return most diverse reduct
 
-			//TODO is it possible to leverage dendrogram to find k most diverse reducts
-			//TODO if reduct is selected as model add this to a cluster in order not to construct it every time we want to get new reduct
+			//TODO is it possible to leverage dendrogram to find k most diverse reducts			
+
+            IReduct[] candidates = new IReduct[this.NumberOfReductsToTest];
+            for (int i = 0; i < this.NumberOfReductsToTest; i++)
+                candidates[i] = base.GetNextReduct(weights, minimumLength, maximumLength);
 
 
-			for (int i = 0; i < this.NumberOfReductsToTest; i++)
-			{
-
-			}
 
 			return base.GetNextReduct(weights, minimumLength, maximumLength);
-		}						
+		}
+
+		protected override void AddModel(IReductStore model, double modelWeight)
+		{
+			base.AddModel(model, modelWeight);
+
+            //TODO if reduct is selected as model add this to a cluster in order not to construct it every time we want to get new reduct
+		}		
 	}
 
 	public class ReductEnsembleBoostingWithDiversityFactory : IReductFactory

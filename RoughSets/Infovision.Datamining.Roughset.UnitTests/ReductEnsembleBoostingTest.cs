@@ -12,6 +12,7 @@ using Infovision.Math;
 using Infovision.Datamining.Clustering.Hierarchical;
 using System.IO;
 
+
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
@@ -216,7 +217,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return argsList;
         }
 
-        [Test, TestCaseSource("GetGenerateTestArgs"), Ignore]        
+        [Test, TestCaseSource("GetGenerateTestArgs"), Ignore] 
         public void GenerateTest(Dictionary<string, object> args)
         {            
             Args parms = new Args();

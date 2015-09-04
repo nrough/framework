@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string MaxIterations = "MaxIterations";
         public static readonly string NumberOfReductsToTest = "NumberOfReductsToTest";
         public static readonly string AgregateFunction = "AgregateFunction";
-                                                                                    
+        public static readonly string CheckEnsembleErrorDuringTraining = "CheckEnsembleErrorDuringTraining";                                                                                    
     }
 
     //TODO Keys should be returned from Generator classes as static fields

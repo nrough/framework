@@ -8,23 +8,24 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductGamma(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double approxDegree)
+        public BireductGamma(DataStore dataStore, int[] fieldIds, int[] objectIndexes, int approxDegree)
             : base(dataStore, fieldIds, objectIndexes, approxDegree)
         {
         }
 
-        public BireductGamma(DataStore dataStore, int[] fieldIds, double approxDegree)
+        public BireductGamma(DataStore dataStore, int[] fieldIds, int approxDegree)
             : this(dataStore, fieldIds, new int[] { }, approxDegree)
         {
         }
 
-        public BireductGamma(DataStore dataStore, double approxDegree)
+        public BireductGamma(DataStore dataStore, int approxDegree)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, approxDegree)
         {
         }
 
         public BireductGamma(BireductGamma gammaBireduct)
-            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(), gammaBireduct.ApproximationDegree)
+            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(), 
+                   gammaBireduct.ApproximationDegree)
         {
 
         }

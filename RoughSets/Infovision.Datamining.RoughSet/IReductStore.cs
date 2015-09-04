@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset
         void AddReduct(IReduct reduct);
         IReduct GetReduct(int index);
         
-        bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false);
+        bool IsSuperSet(IReduct reduct);
         
         IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         double GetAvgMeasure(IReductMeasure reductMeasure);

@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Globals
 
-        private double approximationDegree;        
+        private int approximationDegree;        
         private double[] objectWeights;
 
         private DataStore dataStore;
@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public double ApproximationDegree
+        public int ApproximationDegree
         {
             get { return this.approximationDegree; }
             private set { this.approximationDegree = value; }
@@ -92,7 +92,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Reduct(DataStore dataStore, int [] fieldIds, double approximationDegree)
+        public Reduct(DataStore dataStore, int [] fieldIds, int approximationDegree)
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
                 this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;                                           
         }       
 
-        public Reduct(DataStore dataStore, double approximationDegree)
+        public Reduct(DataStore dataStore, int approximationDegree)
             : this(dataStore, new int[] { }, approximationDegree)
         {            
         }

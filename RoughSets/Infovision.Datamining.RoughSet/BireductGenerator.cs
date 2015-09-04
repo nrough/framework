@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = reductStore;                        
         }        
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
         {
             Bireduct r = new Bireduct(this.DataStore, fieldIds, approxDegree);
             r.Id = id;
@@ -53,7 +53,10 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, this.GetNextReductId().ToString()) as Bireduct;
+            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
+                                                        0, 
+                                                        this.GetNextReductId().ToString()) as Bireduct;
+            
             this.Reach(bireduct, permutation, reductStore);
             return bireduct;
         }
@@ -111,7 +114,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
         {
             
             BireductGamma r = new BireductGamma(this.DataStore, approxDegree);

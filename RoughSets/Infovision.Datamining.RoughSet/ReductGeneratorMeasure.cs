@@ -103,14 +103,14 @@ namespace Infovision.Datamining.Roughset
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
         {
             Reduct r = new Reduct(this.DataStore, fieldIds, approxDegree);
             r.Id = id;
             return r;
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double approxDegree)
+        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, int approxDegree)
         {
             IReduct reduct = this.CreateReductObject(new int[] { }, 
                                                      approxDegree,
@@ -177,7 +177,7 @@ namespace Infovision.Datamining.Roughset
 
             double partitionQuality = this.GetPartitionQuality(reduct);
             double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;              
-            if (partitionQuality >= (((1.0 - this.ApproximationDegree) * this.DataSetQuality) - tinyDouble))            
+            if (partitionQuality >= (((1.0 - (this.ApproximationDegree / 100.0)) * this.DataSetQuality) - tinyDouble))            
             {
                 if(useCache)
                     this.UpdateReductCacheInfo(reductInfo, key, true);

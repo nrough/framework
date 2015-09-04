@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private PermutationCollection permutationList;
         private DataStore dataStore = null;
-        private double approximationLevel = 0;
+        private int approximationLevel = 0;
         private int[][] fieldGroups;
         private int reductIdSequence;
         private bool useCache;
@@ -55,13 +55,13 @@ namespace Infovision.Datamining.Roughset
             get { return dataStore; }
         }
 
-        public double ApproximationDegree
+        public int ApproximationDegree
         {
             get { return approximationLevel; }
             set
             {
-                if (value < 0.0 || value > 1.0)
-                    throw new ArgumentException("The approximation ratio value must be in range [0; 1)");
+                if (value < 0 || value > 100)
+                    throw new ArgumentException("The approximation ratio value must be in range [0; 100)");
 
                 approximationLevel = value;
             }
@@ -115,7 +115,7 @@ namespace Infovision.Datamining.Roughset
 
         public abstract void Generate();        
         protected abstract IReductStore CreateReductStore();
-        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree, string id);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, int approximationDegree, string id);
 
         public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {

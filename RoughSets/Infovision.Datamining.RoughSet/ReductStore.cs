@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset
         public abstract IEnumerator<IReduct> GetEnumerator();
         public abstract void AddReduct(IReduct reduct);        
         public abstract IReduct GetReduct(int index);
-        public abstract bool IsSuperSet(IReduct reduct, bool checkApproxDegree);
+        public abstract bool IsSuperSet(IReduct reduct);
         public abstract IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         public abstract double GetAvgMeasure(IReductMeasure reductMeasure);
         public abstract bool Exist(IReduct reduct);
@@ -131,18 +131,15 @@ namespace Infovision.Datamining.Roughset
         /// Checks if passed-in reduct is a superset of reducts already existing in the store
         /// </summary>
         /// <param name="reduct"></param>
-        /// <param name="checkApproxDegree"></param>
         /// <returns></returns>
-        public override bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false)
+        public override bool IsSuperSet(IReduct reduct)
         {
             bool ret = false;
-
             lock (this.SyncRoot)
             {
                 foreach (IReduct localReduct in reductSet)
                 {
-                    if (checkApproxDegree == false
-                        || localReduct.ApproximationDegree < reduct.ApproximationDegree)
+                    if (localReduct.ApproximationDegree < reduct.ApproximationDegree)
                     {
                         if (reduct.Attributes.Superset(localReduct.Attributes))
                         {
@@ -152,7 +149,6 @@ namespace Infovision.Datamining.Roughset
                     }
                 }                   
             }
-            
             return ret;
         }
         
@@ -190,8 +186,17 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CanAddReduct(IReduct reduct)
         {
-            if (this.IsSuperSet(reduct))
-                return false;
+            foreach (IReduct localReduct in reductSet)
+            {
+                if (localReduct.ApproximationDegree == reduct.ApproximationDegree)
+                {
+                    if (reduct.Attributes.Superset(localReduct.Attributes))
+                    {
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
 

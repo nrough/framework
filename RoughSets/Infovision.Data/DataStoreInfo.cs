@@ -26,18 +26,6 @@ namespace Infovision.Data
         
         #endregion
 
-        #region Constructor
-
-        public DataStoreInfo()
-        {
-            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
-            {
-                fieldTypeCount.Add(ft, 0);
-            }
-        }
-
-        #endregion
-
         #region Properties
 
         public int NumberOfRecords
@@ -88,6 +76,18 @@ namespace Infovision.Data
             get { return this.recordWeights; }
             set { this.recordWeights = value; }
         }
+
+        #region Constructor
+
+        public DataStoreInfo()
+        {
+            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+            {
+                fieldTypeCount.Add(ft, 0);
+            }
+        }
+
+        #endregion
 
         #endregion
 

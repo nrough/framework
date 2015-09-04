@@ -16,18 +16,18 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
         
-        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double approxDegree)
+        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, int approxDegree)
             : base(dataStore, fieldIds, approxDegree)
         {
             objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, double approxDegree)
+        public Bireduct(DataStore dataStore, int[] fieldIds, int approxDegree)
             : this(dataStore, fieldIds, new int[] { }, approxDegree)
         {
         }
 
-        public Bireduct(DataStore dataStore, double approxDegree)
+        public Bireduct(DataStore dataStore, int approxDegree)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, approxDegree)
         {
         }

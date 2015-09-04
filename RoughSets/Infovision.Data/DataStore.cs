@@ -77,7 +77,7 @@ namespace Infovision.Data
         private void Resize()
         {
             long newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
-            Int64[] newStorage = new Int64[newCapacity * this.dataStoreInfo.NumberOfFields];
+            long[] newStorage = new Int64[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
             data = newStorage;
@@ -169,9 +169,9 @@ namespace Infovision.Data
             return new DataVector(this.GetObjectFields(objectIndex, fieldSet), false);
         }
 
-        public Int64[] GetObjectFields(int objectIndex, int[] fieldIds)
+        public long[] GetObjectFields(int objectIndex, int[] fieldIds)
         {
-            Int64[] data = new Int64[fieldIds.Length];
+            long[] data = new Int64[fieldIds.Length];
             for (int i = 0; i < fieldIds.Length; i++)
             {
                 data[i] = this.GetObjectField(objectIndex, fieldIds[i]);
@@ -179,9 +179,9 @@ namespace Infovision.Data
             return data;
         }
 
-        public Int64[] GetObjectFields(int objectIndex, FieldSet fieldSet)
+        public long[] GetObjectFields(int objectIndex, FieldSet fieldSet)
         {
-            Int64[] data = new Int64[fieldSet.Count];
+            long[] data = new long[fieldSet.Count];
             int j = 0;
             for (int i = 0; i < fieldSet.Data.Length; i++)
             {
@@ -204,9 +204,9 @@ namespace Infovision.Data
             return data[index];
         }
 
-        public Int64[] GetObjectIds()
+        public long[] GetObjectIds()
         {
-            return objectId2Index.Keys.ToArray<Int64>();
+            return objectId2Index.Keys.ToArray<long>();
         }
 
         public int[] GetObjectIndexes()

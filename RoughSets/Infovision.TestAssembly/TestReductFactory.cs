@@ -36,7 +36,6 @@ namespace Infovision.TestAssembly
     public class TestReductGenerator : Infovision.Datamining.Roughset.IReductGenerator
     {        
         private IReductStore reductPool;
-        private double approximationLevel = 0;        
 
         public IReductStore ReductPool
         {
@@ -51,10 +50,10 @@ namespace Infovision.TestAssembly
             }
         }
 
-        public double ApproximationDegree
+        public int ApproximationDegree
         {
-            get { return this.approximationLevel; }
-            set { this.approximationLevel = value; }
+            get;
+            set;
         }
 
         

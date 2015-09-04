@@ -378,7 +378,7 @@ namespace Infovision.Datamining.Roughset
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
-            reductGenerator.ApproximationDegree = approximationRatio / 100.0;
+            reductGenerator.ApproximationDegree = approximationRatio;
             //this.reductStore = reductGenerator.Generate(args).First();
             reductGenerator.Generate();
             this.reductStore = reductGenerator.ReductPool;

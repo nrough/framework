@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
             r.Id = id;

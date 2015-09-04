@@ -4,17 +4,17 @@ namespace Infovision.Datamining.Roughset
 {
     public class ReductCacheInfo
     {
-        private double reductApproximationThreshold = -1;
-        private double notReductApproximationThreshold = -1;
+        private int reductApproximationThreshold = -1;
+        private int notReductApproximationThreshold = -1;
         private bool reductThresholdSet = false;
         private bool notReductThresholdSet = false;
 
-        public ReductCacheInfo(bool isReduct, double approximationLevel)
+        public ReductCacheInfo(bool isReduct, int approximationLevel)
         {
             this.SetApproximationRanges(isReduct, approximationLevel);
         }
 
-        public void SetApproximationRanges(bool isReduct, double approximationLevel)
+        public void SetApproximationRanges(bool isReduct, int approximationLevel)
         {
             if (isReduct)
             {
@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public NoYesUnknown CheckIsReduct(double approximationLevel)
+        public NoYesUnknown CheckIsReduct(int approximationLevel)
         {
             if (this.reductThresholdSet == true
                 && approximationLevel >= (this.reductApproximationThreshold - 0.000000001))

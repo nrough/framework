@@ -223,10 +223,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         });                        
                                                                         
                         ReductStore randomReductGroup = new ReductStore();
+                        int[] randomReductIndices = RandomExt.RandomVectorNoRepetition(ensemble.Length, 0, reductGenerator.ReductPool.Count() - 1);
                         for (int i = 0; i < ensemble.Length; i++)
                         {
-                            int randomIdx = RandomSingleton.Random.Next(reductGenerator.ReductPool.Count());
-                            randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomIdx));
+                            randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomReductIndices[i]));
                         }
 
                         RoughClassifier rc2 = new RoughClassifier();

@@ -131,6 +131,7 @@
     <Compile Include="ReductStoreMulti.cs" />
     <Compile Include="ReductStoreWeights.cs" />
     <Compile Include="ReductStoreWorkerTaskInfo.cs" />
+    <Compile Include="ReductStreamEnsembleGenerator.cs" />
     <Compile Include="ReductWeight.cs" />
     <Compile Include="RoughClassifier.cs" />
     <Compile Include="InformationMeasure.cs" />

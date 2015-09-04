@@ -73,9 +73,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutationList = permGen.Generate(20);
             args.AddParameter("PermutationCollection", permutationList);
 
+            redGenStd.InitFromArgs(args);
             redGenStd.Generate();
             IReductStore redStore = redGenStd.ReductPool;
 
+            redGenWgh.InitFromArgs(args);
             redGenWgh.Generate();
             IReductStore redStoreW = redGenWgh.ReductPool;
 
@@ -109,7 +111,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutationList = permGen.Generate(100);
             args.AddParameter("PermutationCollection", permutationList);
 
+            redGenStd.InitFromArgs(args);
             redGenStd.Generate();
+
+            redGenWgh.InitFromArgs(args);
             redGenWgh.Generate();
 
             IReductStore redStore = redGenStd.ReductPool;

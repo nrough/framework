@@ -105,6 +105,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// <returns></returns>
         private static double CalcESS(int[] cluster, DistanceMatrix distanceMatrix, double[][] data)
         {
+            if (distanceMatrix.Distance == null)
+                throw new InvalidOperationException("Distance method is not set.");
+            
             double[] centroid = new double[data[0].Length];
             for (int i = 0; i < cluster.Length; i++)            
                 for (int j = 0; j < data[i].Length; j++)                

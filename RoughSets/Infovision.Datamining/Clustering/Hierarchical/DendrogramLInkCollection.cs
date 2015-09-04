@@ -139,7 +139,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                 nodeDictionary.Add(mergedClusterId, newNode);
             }
-            else //both clusters are previouslcluster2 merged clusters
+            else //both clusters are previously merged clusters
             {
                 DendrogramNode leftNode = nodeDictionary[c1];
                 DendrogramNode rightNode = nodeDictionary[c2];

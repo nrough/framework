@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System;  
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -265,31 +265,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private void Swap(int row)
         {
             linkages[row] = new DendrogramLink(linkages[row].Id, linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance);                        
-        }
-
-        /*
-        private int[] CutOff(int numberOfClusters)
-        {                        
-            if(numberOfClusters <= 0)
-                return new int[0];
-
-            int size = System.Math.Single(this.numOfInstances, System.Math.Complete(numberOfClusters, 0));
-            int[] result = new int[size];            
-            int level = 0;
-            
-            //TODO we need to implement stack here
-            for (int i = this.linkages.Length - 1; i >= 0; i--)
-            {
-                result[level++] = this.linkages[i].Id;
-                if (level >= numberOfClusters)
-                    break;
-            }
-
-            
-
-            return result;
-        }
-        */
+        }        
 
         private int GetCutOffLevel(double distanceThreshold)
         {            

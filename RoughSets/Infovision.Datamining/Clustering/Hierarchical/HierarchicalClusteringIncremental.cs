@@ -45,17 +45,24 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             nextClusterId = ROOT_ID - 1;
         }
 
-        public void AddInstance(int id, double[] instance)
+        public HierarchicalClusteringIncremental(Func<double[], double[], double> distance,
+                                                 Func<int[], int[], DistanceMatrix, double[][], double> linkage)
+            : this()
         {
-            //create Node for new instance
-            DendrogramNode newNode = new DendrogramNode
-            {
-                NodeId = id
-            };
+            this.Distance = distance;
+            this.Linkage = linkage;
+        }
 
+        public void AddInstance(int id, double[] instance)
+        {                        
             //special case no nodes except root node
             if (instances.Count() == 0)
             {
+                DendrogramNode newNode = new DendrogramNode
+                {
+                    NodeId = id
+                };
+
                 newNode.Parent = this.root;
                 this.root.LeftInstance = newNode.NodeId;
                 this.root.LeftNode = newNode;
@@ -67,13 +74,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             //only one node (on the left) existing 
             else if (instances.Count() == 1)
             {
+                DendrogramNode newNode = new DendrogramNode
+                {
+                    NodeId = id
+                };
+
                 newNode.Parent = this.root;
                 this.root.RightInstance = newNode.NodeId;
                 this.root.RightNode = newNode;
                 double distance = this.Distance(instance, instances[this.root.LeftInstance]);
                 this.root.Height = distance;
 
-                distanceMatrix.Add(new MatrixKey(id, this.root.LeftInstance), distance);
+                distanceMatrix.Add(new MatrixKey(this.root.LeftInstance, id), distance);
 
                 instances.Add(id, instance);
                 nodes.Add(id, newNode);
@@ -81,11 +93,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 return;
             }
 
-            this.instances.Add(id, instance);
-            int[] cluster0 = new int[] { id };
+            //update distance Matrix
+            foreach (KeyValuePair<int, double[]> kvp in instances)
+            {
+                this.distanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
+            }
 
-
-            
+            this.instances.Add(id, instance);            
+            this.SIHC(id, this.root);            
         }
 
         protected void SIHC(int newInstanceId, DendrogramNode node)
@@ -101,6 +116,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     NodeId = newInstanceId
                 };
 
+                nodes.Add(newInstanceId, singleton);
+
                 DendrogramNode newParentNode = new DendrogramNode
                 {
                     NodeId = nextClusterId,
@@ -110,15 +127,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     RightInstance = node.NodeId,
                     Height = d,
                     Parent = node.Parent,
-                    LeftLength = 0, //TODO
-                    RightLength = 0 //TODO
+                    LeftLength = d,
+                    RightLength = d - node.Height 
                 };
+
+                nodes.Add(nextClusterId, newParentNode);
 
                 nextClusterId--;  
             }
             else
             {
-                //TOCO substitute with leftLenght and RightLenght?
+                //TODO substitute with leftLenght and RightLenght?
 
                 int[] leftCluster = this.GetLeaves(node.LeftNode);
                 int[] rightCluster = this.GetLeaves(node.RightNode);
@@ -126,18 +145,33 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 double leftDistance = this.GetClusterDistance(leftCluster, cluster0);
                 double rightDistance = this.GetClusterDistance(rightCluster, cluster0);
 
-                UpdateHeight(node);
+
                 if (leftDistance < rightDistance)
+                {
+                    //update_height
+                    int[] mergedCluster = new int[leftCluster.Length + 1];
+                    Array.Copy(leftCluster, mergedCluster, leftCluster.Length);
+                    mergedCluster[leftCluster.Length] = newInstanceId;
+
+                    double newDistance = this.GetClusterDistance(mergedCluster, rightCluster);
+                    node.Height = newDistance;
+
                     this.SIHC(newInstanceId, node.LeftNode);
+                }
                 else
+                {
+                    //update_height
+                    int[] mergedCluster = new int[rightCluster.Length + 1];
+                    Array.Copy(rightCluster, mergedCluster, rightCluster.Length);
+                    mergedCluster[rightCluster.Length] = newInstanceId;
+
+                    double newDistance = this.GetClusterDistance(mergedCluster, leftCluster);
+                    node.Height = newDistance;
+
                     this.SIHC(newInstanceId, node.RightNode);
+                }
             }
-        }
-
-        private void UpdateHeight(DendrogramNode node)
-        {
-
-        }
+        }        
 
         public void AddInstance2(int id, double[] instance)
         {

@@ -93,7 +93,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public DendrogramNode(int nodeId)
             : this()
-        {            
+        {
+            this.NodeId = nodeId;
         }
 
         public int CompareTo(object obj)

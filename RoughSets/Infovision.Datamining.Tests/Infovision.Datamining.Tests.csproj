@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimpleTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringTest.cs" />
     <Compile Include="Clustering\Hierarchical\DistanceMatrixTest.cs" />

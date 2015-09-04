@@ -6,16 +6,7 @@ namespace Infovision.Datamining.Roughset
 {
     [Serializable]
     public class BireductGenerator : ReductGenerator
-    {
-        #region Constructors
-
-        public BireductGenerator(DataStore dataStore)
-            : base(dataStore)
-        {
-        }
-
-        #endregion
-
+    {       
         #region Properties
 
         protected override IPermutationGenerator PermutationGenerator
@@ -25,61 +16,33 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
+        #region Constructors
+
+        public BireductGenerator() : base()
+        {
+        }
+
+        #endregion
+
         #region Methods
 
-        //protected override IReductStore CreateReductStore(Args args)
         protected override IReductStore CreateReductStore()
         {
             return new BireductStore();
-        }
-
-        /*
-        protected PermutationCollection FindOrCreatePermutationList(Args args)
-        {
-            PermutationCollection permutationList = null;
-            if (args.Exist("PermutationCollection"))
-            {
-                permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
-            }
-            else if (args.Exist("NumberOfReducts"))
-            {
-                int numberOfReducts = (int)args.GetParameter("NumberOfReducts");
-                permutationList = this.PermutationGenerator.Generate(numberOfReducts);
-            }
-            else if (args.Exist("NumberOfPermutations"))
-            {
-                int numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
-                permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
-            }
-
-            if (permutationList == null)
-            {
-                throw new NullReferenceException("PermutationCollection is null");
-            }
-
-            return permutationList;
-        }
-        */
-
-        //public override IReductStoreCollection Generate(Args args)
+        }      
+        
         public override void Generate()
         {
-            //PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             IReductStore reductStore = this.CreateReductStore();
-            
-            //foreach (Permutation permutation in permutationList)
+                        
             foreach (Permutation permutation in this.Permutations)
             {               
                 Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation, reductStore);
                 reductStore.AddReduct(bireduct);
             }
 
-            this.ReductPool = reductStore;
-            
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
-            reductStoreCollection.AddStore(reductStore);
-            this.ReductStoreCollection = reductStoreCollection;        
-        }
+            this.ReductPool = reductStore;                        
+        }        
 
         protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree, string id)
         {
@@ -118,8 +81,8 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductRelativeGenerator(DataStore dataStore)
-            : base(dataStore)
+        public BireductRelativeGenerator()
+            : base()
         {
         }
 
@@ -140,8 +103,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductGammaGenerator(DataStore dataStore)
-            : base(dataStore)
+        public BireductGammaGenerator() : base()
         {
         }
 

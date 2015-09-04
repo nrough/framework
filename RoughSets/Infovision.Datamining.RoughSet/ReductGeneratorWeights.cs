@@ -8,8 +8,8 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public ReductGeneratorWeights(DataStore dataStore)
-            : base(dataStore)
+        public ReductGeneratorWeights()
+            : base()
         {
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights);
         }
@@ -42,8 +42,8 @@ namespace Infovision.Datamining.Roughset
     {
         private WeightGenerator weightGenerator;
 
-        public ReductGeneratorWeightsMajority(DataStore dataStore)
-            : base(dataStore)
+        public ReductGeneratorWeightsMajority()
+            : base()
         {
         }
 
@@ -66,8 +66,8 @@ namespace Infovision.Datamining.Roughset
     {
         private WeightGenerator weightGenerator;
 
-        public ReductGeneratorWeightsRelative(DataStore dataStore)
-            : base(dataStore)
+        public ReductGeneratorWeightsRelative()
+            : base()
         {
         }
 

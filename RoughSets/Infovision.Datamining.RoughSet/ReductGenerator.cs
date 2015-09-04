@@ -8,8 +8,7 @@ namespace Infovision.Datamining.Roughset
     public abstract class ReductGenerator : IReductGenerator
     {
         #region Globals
-
-        private IReductStoreCollection reductStoreCollection;
+        
         private IReductStore reductPool;
         private IPermutationGenerator permutationGenerator;
         private PermutationCollection permutationList;
@@ -23,20 +22,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
         
-        #region Properties
-
-        public IReductStoreCollection ReductStoreCollection
-        {
-            get
-            {
-                return this.reductStoreCollection;
-            }
-
-            protected set
-            {
-                this.reductStoreCollection = value;
-            }
-        }
+        #region Properties        
 
         public IReductStore ReductPool
         {
@@ -116,17 +102,42 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
-        #region Constructors
+        #region Constructors        
 
-        private ReductGenerator()
+        protected ReductGenerator()
         {
+            this.SetDefaultParameters();            
         }
 
-        protected ReductGenerator(DataStore dataStore)
-        {
-            this.dataStore = dataStore;
+        #endregion 
 
-            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+        #region Methods               
+
+        public abstract void Generate();        
+        protected abstract IReductStore CreateReductStore();
+        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree, string id);
+
+        public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        {
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(this.ReductPool);
+            return reductStoreCollection;
+        }
+        
+        protected int GetNextReductId()
+        {
+            reductIdSequence++;
+            return reductIdSequence;
+        }
+
+        public virtual void SetDefaultParameters()
+        {
+            this.useCache = false;
+        }
+
+        public virtual void initFromDataStore(DataStore data)
+        {
+            int[] fieldIds = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {
@@ -135,26 +146,14 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        #endregion 
-
-        #region Methods
-        
-        //public abstract IReductStore Generate(Args args);
-        //public abstract IReductStoreCollection Generate(Args args);
-        //protected abstract IReductStore CreateReductStore(Args args);
-
-        public abstract void Generate();
-        protected abstract IReductStore CreateReductStore();
-        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree, string id);
-
-        protected int GetNextReductId()
-        {
-            reductIdSequence++;
-            return reductIdSequence;
-        }
-
         public virtual void InitFromArgs(Args args)
-        {
+        {                        
+            if (args.Exist("DataStore"))
+            {
+                this.dataStore = (DataStore)args.GetParameter("DataStore");
+                this.initFromDataStore(dataStore);
+            }            
+            
             if (args.Exist("PermutationCollection"))
             {
                 this.permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
@@ -174,8 +173,7 @@ namespace Infovision.Datamining.Roughset
             {
                 throw new NullReferenceException("PermutationCollection is null");
             }
-
-            this.useCache = false;
+            
             if (args.Exist("USECACHE"))
                 this.useCache = true;
         }

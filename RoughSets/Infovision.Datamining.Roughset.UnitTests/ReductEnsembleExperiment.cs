@@ -35,52 +35,49 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public int NumberOfClassified { get; set; }
         public int NumberOfMisclassified { get; set; }
         public int NumberOfUnclassifed { get; set; }
-
-        //public double GroupAccuracy { get; set; }
-        //public double GroupBalancedAccuracy { get; set; }
-        //public double GroupCoverage { get; set; }
-        //public double GroupConfidence { get; set; }
-
+        
         public int ClusterId { get; set; }
         public string TestType { get; set; }
+
+        public IdentificationType IdentificationType { get; set; }
+        public VoteType VoteType { get; set; }
     }
 
     public static class ReductEnsembleExperimentExtensions
     {
-        public static void SaveToFile(this List<ReductEnsembleExperimentResult> results, string fileName)
+        public static void SaveToFile(this List<ReductEnsembleExperimentResult> results, string fileName, bool append, bool addHeader)
         {
             string separator = ";";
             StringBuilder sb = new StringBuilder();
 
             //header            
-            sb.Append("Id").Append(separator)
-                .Append("NumberOfClusters").Append(separator)
-                .Append("ClusterId").Append(separator)
-                .Append("TestType").Append(separator)
-                .Append("MinEpsilon").Append(separator)
-                .Append("MaxEpsilon").Append(separator)
-                .Append("NumberOfPermuations").Append(separator)
-                .Append("NumberOfReducts").Append(separator)
-                .Append("Distance").Append(separator)
-                .Append("Linkage").Append(separator)
-                .Append("Dataset").Append(separator)
-                .Append("WeightGenerator").Append(separator)
-                .Append("DiscernibiltyVector").Append(separator)
-                //.Append("PermutationCollection").Append(separator)
-                .Append("Accuracy").Append(separator)
-                .Append("BalancedAccuracy").Append(separator)
-                .Append("Coverage").Append(separator)
-                .Append("Confidence").Append(separator)
-                .Append("NumberOfClassified").Append(separator)
-                .Append("NumberOfMisclassified").Append(separator)
-                .Append("NumberOfUnclassifed").Append(separator)
-                //.Append("GroupAccuracy").Append(separator)
-                //.Append("GroupBalancedAccuracy").Append(separator)
-                //.Append("GroupCoverage").Append(separator)
-                //.Append("GroupConfidence").Append(separator)
-                
-                ;
-            sb.Append(Environment.NewLine);
+            if (addHeader)
+            {
+                sb.Append("Id").Append(separator)
+                    .Append("NumberOfClusters").Append(separator)
+                    .Append("ClusterId").Append(separator)
+                    .Append("TestType").Append(separator)
+                    .Append("MinEpsilon").Append(separator)
+                    .Append("MaxEpsilon").Append(separator)
+                    .Append("NumberOfPermuations").Append(separator)
+                    .Append("NumberOfReducts").Append(separator)
+                    .Append("Distance").Append(separator)
+                    .Append("Linkage").Append(separator)
+                    .Append("Dataset").Append(separator)
+                    .Append("WeightGenerator").Append(separator)
+                    .Append("DiscernibiltyVector").Append(separator)
+                    .Append("Accuracy").Append(separator)
+                    .Append("BalancedAccuracy").Append(separator)
+                    .Append("Coverage").Append(separator)
+                    .Append("Confidence").Append(separator)
+                    .Append("NumberOfClassified").Append(separator)
+                    .Append("NumberOfMisclassified").Append(separator)
+                    .Append("NumberOfUnclassifed").Append(separator)
+                    .Append("IdentificationType").Append(separator)
+                    .Append("VoteType").Append(separator);
+
+                sb.Append(Environment.NewLine);
+            }
 
             foreach (ReductEnsembleExperimentResult result in results)
             {
@@ -91,16 +88,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append(result.MinEpsilon).Append(separator)
                     .Append(result.MaxEpsilon).Append(separator)
                     .Append(result.NumberOfPermuations).Append(separator)
-                    .Append(result.NumberOfReducts).Append(separator)
-                    //.Append(String.Format("{0}.{1}", result.Distance.Method.DeclaringType.Name, result.Distance.Method.Name)).Append(separator)
-                    .Append(String.Format("{0}", result.Distance.Method.Name)).Append(separator)
-                    //.Append(String.Format("{0}.{1}", result.Linkage.Method.DeclaringType.Name, result.Linkage.Method.Name)).Append(separator)
+                    .Append(result.NumberOfReducts).Append(separator)                    
+                    .Append(String.Format("{0}", result.Distance.Method.Name)).Append(separator)                    
                     .Append(String.Format("{0}", result.Linkage.Method.Name)).Append(separator)
                     .Append(result.Dataset.Name).Append(separator)
-                    .Append(result.WeightGenerator.GetType().Name).Append(separator)
-                    //.Append(String.Format("{0}.{1}", result.DiscernibiltyVector.Method.DeclaringType.Name, result.DiscernibiltyVector.Method.Name)).Append(separator)
-                    .Append(String.Format("{0}", result.DiscernibiltyVector.Method.Name)).Append(separator)
-                    //.Append(result.PermutationCollection).Append(separator)
+                    .Append(result.WeightGenerator.GetType().Name).Append(separator)                    
+                    .Append(String.Format("{0}", result.DiscernibiltyVector.Method.Name)).Append(separator)                    
                     .Append(result.Accuracy).Append(separator)
                     .Append(result.BalancedAccuracy).Append(separator)
                     .Append(result.Coverage).Append(separator)
@@ -108,16 +101,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append(result.NumberOfClassified).Append(separator)
                     .Append(result.NumberOfMisclassified).Append(separator)
                     .Append(result.NumberOfUnclassifed).Append(separator)
-                    //.Append(result.GroupAccuracy).Append(separator)
-                    //.Append(result.GroupBalancedAccuracy).Append(separator)
-                    //.Append(result.GroupCoverage).Append(separator)
-                    //.Append(result.GroupConfidence).Append(separator)
-                    ;
+                    .Append(result.IdentificationType).Append(separator)
+                    .Append(result.VoteType).Append(separator);
                 
                 sb.Append(Environment.NewLine);
             }
-
-            File.WriteAllText(fileName, sb.ToString());
+            
+            if (append)
+                File.AppendAllText(fileName, sb.ToString());
+            else
+                File.WriteAllText(fileName, sb.ToString());
         }
     }
     
@@ -131,129 +124,126 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int seed = randSeed.Next(Int32.MaxValue);            
             RandomSingleton.Seed = seed;
 
-            int numberOfPermutations = 20;
+            int numberOfPermutations = 50;
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            string resultFileName = @"F:\dna_modified_101.csv";
             int minEpsilon = 0;
             int maxEpsilon = 25;
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
             data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
 
+            IdentificationType identificationType = IdentificationType.WeightConfidence;
+            VoteType voteType = VoteType.WeightConfidence;
+
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+
             List<ReductEnsembleExperimentResult> experimentResults = new List<ReductEnsembleExperimentResult>();
+            experimentResults.SaveToFile(resultFileName, false, true);
             
             for (int testNo = 1; testNo <= 100; testNo++)
             {
                 Console.WriteLine("Test {0}", testNo);
-
-                PermutationGenerator permGenerator = new PermutationGenerator(data);
+                
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
                 
                 int[] epsilons = new int[numberOfPermutations];
                 for (int i = 0; i < numberOfPermutations; i++)
                     epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
+                
+                Args args = new Args();                
+                args.AddParameter("DataStore", data);
+                args.AddParameter("PermutationEpsilon", epsilons);
+                args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
+                args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);                
+                args.AddParameter("FactoryKey", "ReductEnsemble");
+                args.AddParameter("PermutationCollection", permList);
+                args.AddParameter("WeightGenerator", weightGenerator);
+                args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);                
+                    
+                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+                reductGenerator.Generate();
 
-                for (int clusterNo = 1; clusterNo <= 7; clusterNo++)
-                {                    
-                    Args args = new Args();
-
-                    args.AddParameter("_TestData", testData);
-                    args.AddParameter("_Seed", seed);
-
-                    args.AddParameter("DataStore", data);
-                    args.AddParameter("PermutationEpsilon", epsilons);
-                    args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
-                    args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
-                    args.AddParameter("NumberOfClusters", clusterNo);
-                    args.AddParameter("FactoryKey", "ReductEnsemble");
-                    args.AddParameter("PermutationCollection", permList);
-                    args.AddParameter("WeightGenerator", weightGenerator);
-                    args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-
-                    //TODO Generate should be called once
-                    //TODO Add additional method for getting hierarchical cluster results for different number of clusters
-                    IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-                    reductGenerator.Generate();
-                    IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;                                        
-
+                int poolSize = reductGenerator.ReductPool.Count();
+                for (int clusterNo = 1; clusterNo <= poolSize; clusterNo+=2)
+                {
+                    IReductStoreCollection reductStoreCollection = reductGenerator.GetReductGroups(clusterNo);
+                    
                     ParameterCollection clusterCollection = new ParameterCollection(clusterNo, 0);
                     int counter = 0;
                     foreach (IReductStore reductStore in reductStoreCollection)
                     {
                         ParameterObjectReferenceCollection<IReduct> valueCollection
-                                = new ParameterObjectReferenceCollection<IReduct>(String.Format("{0}", counter), reductStore.ToArray<IReduct>());
-                        clusterCollection.Add(valueCollection);
-                        counter++;
+                                = new ParameterObjectReferenceCollection<IReduct>(String.Format("{0}", counter++), reductStore.ToArray<IReduct>());
+                        clusterCollection.Add(valueCollection);                        
                     }
 
                     int ensembleId = 0;
                     foreach (object[] ensemble in clusterCollection.Values())
                     {
-                        ReductStore tmpReductStore = new ReductStore();
+                        ReductStore reductEnsemble = new ReductStore();
                         for (int i = 0; i < ensemble.Length; i++)
                         {
-                            tmpReductStore.DoAddReduct((IReduct)ensemble[i]);
+                            reductEnsemble.DoAddReduct((IReduct)ensemble[i]);
                         }
 
                         RoughClassifier rc = new RoughClassifier();
-                        rc.ReductStore = tmpReductStore;
+                        rc.ReductStore = reductEnsemble;
                         rc.Classify(testData);
-                        ClassificationResult classificationResult = rc.Vote(testData,
-                                                                            IdentificationType.WeightConfidence,
-                                                                            VoteType.WeightConfidence);
+                        ClassificationResult classificationResult = rc.Vote(testData, identificationType, voteType);
 
-                        ReductEnsembleExperimentResult result = new ReductEnsembleExperimentResult
+                        experimentResults.Add(new ReductEnsembleExperimentResult
                         {
-                            Id = String.Format("{0}", testNo),                            
+                            Id = String.Format("{0}", testNo),
                             NumberOfClusters = clusterNo,
                             ClusterId = ensembleId,
                             TestType = "Ensemble",
                             MinEpsilon = minEpsilon,
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
-                            NumberOfReducts = tmpReductStore.Count,
+                            NumberOfReducts = reductEnsemble.Count,
                             Distance = (Func<double[], double[], double>)args["Distance"],
                             Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
                             Dataset = data,
                             WeightGenerator = (WeightGenerator)args["WeightGenerator"],
                             DiscernibiltyVector = (Func<IReduct, double[], double[]>)args["ReconWeights"],
                             PermutationCollection = (PermutationCollection)args["PermutationCollection"],
-                            
+
                             Accuracy = classificationResult.Accuracy,
                             BalancedAccuracy = classificationResult.BalancedAccuracy,
                             Coverage = classificationResult.Coverage,
                             Confidence = classificationResult.Confidence,
                             NumberOfClassified = classificationResult.NumberOfClassified,
                             NumberOfMisclassified = classificationResult.NumberOfMisclassified,
-                            NumberOfUnclassifed = classificationResult.NumberOfUnclassifed                   
-                        };
+                            NumberOfUnclassifed = classificationResult.NumberOfUnclassifed,
 
-                        experimentResults.Add(result);
-                                                
-                        //random reduct ensemble of the same size
-
-                        ReductStore randomReductStore = new ReductStore();
+                            IdentificationType = identificationType,
+                            VoteType = voteType
+                        });                        
+                                                                        
+                        ReductStore randomReductGroup = new ReductStore();
                         for (int i = 0; i < ensemble.Length; i++)
                         {
                             int randomIdx = RandomSingleton.Random.Next(reductGenerator.ReductPool.Count());
-                            randomReductStore.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomIdx));
+                            randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomIdx));
                         }
 
                         RoughClassifier rc2 = new RoughClassifier();
-                        rc2.ReductStore = randomReductStore;
+                        rc2.ReductStore = randomReductGroup;
                         rc2.Classify(testData);
-                        ClassificationResult classificationResult2 = rc2.Vote(testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence);
+                        ClassificationResult classificationResult2 = rc2.Vote(testData, identificationType, voteType);
 
-                        ReductEnsembleExperimentResult result2 = new ReductEnsembleExperimentResult
+                        experimentResults.Add(new ReductEnsembleExperimentResult
                         {
                             Id = String.Format("{0}", testNo),
                             NumberOfClusters = clusterNo,
                             ClusterId = ensembleId,
-                            TestType = "Group",
+                            TestType = "Random group",
                             MinEpsilon = minEpsilon,
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
-                            NumberOfReducts = randomReductStore.Count,
+                            NumberOfReducts = randomReductGroup.Count,
                             Distance = (Func<double[], double[], double>)args["Distance"],
                             Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
                             Dataset = data,
@@ -267,20 +257,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             Confidence = classificationResult2.Confidence,
                             NumberOfClassified = classificationResult2.NumberOfClassified,
                             NumberOfMisclassified = classificationResult2.NumberOfMisclassified,
-                            NumberOfUnclassifed = classificationResult2.NumberOfUnclassifed
-                        };
+                            NumberOfUnclassifed = classificationResult2.NumberOfUnclassifed,
 
-                        experimentResults.Add(result2);
+                            IdentificationType = identificationType,
+                            VoteType = voteType
+                        });
 
                         ensembleId++;
-
                     } //for each ensemble
+                } //clusterNo
 
-
-                } //clusterNo                
+                experimentResults.SaveToFile(resultFileName, true, false);
+                experimentResults = new List<ReductEnsembleExperimentResult>();
             } //test No           
 
-            experimentResults.SaveToFile(@"f:\results.csv");
+            
         }        
     }
 }

@@ -36,8 +36,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureRelative()
         {
-            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeights", parms);
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductRelativeWeights", dataStoreTrain });
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(10);
             parms.AddParameter("PermutationCollection", permutationList);
 

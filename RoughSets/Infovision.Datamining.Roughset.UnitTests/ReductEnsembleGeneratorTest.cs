@@ -92,13 +92,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 parms.AddParameter(kvp.Key, kvp.Value);
             }                                 
-                                    
-            //TODO Create generator based on parms, not generator name
-            //TODO Store args inside generator
-            //TODO Generate method without parameters
+                                                            
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             reductGenerator.Generate();
-            IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;
+            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductGroups((int)args["NumberOfClusters"]);
 
             DataStore data = (DataStore) parms.GetParameter("DataStore");
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;

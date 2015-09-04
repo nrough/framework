@@ -61,15 +61,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string localFileName = @"Data\dna.train";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
-            IReductGenerator redGenStd = new ReductGeneratorMajority(localDataStore);
+            IReductGenerator redGenStd = new ReductGeneratorMajority();
             redGenStd.ApproximationDegree = 0.10;
 
-            IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority(localDataStore);
+            IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority();
             redGenWgh.ApproximationDegree = 0.10;
- 
-            Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
+
+            Args args = new Args(new string[] { "FactoryKey", "DataStore" }, new object[] { "ApproximateReductRelative", localDataStore });
             
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", args);
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
             PermutationCollection permutationList = permGen.Generate(20);
             args.AddParameter("PermutationCollection", permutationList);
 
@@ -97,15 +97,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
-            IReductGenerator redGenStd = new ReductGeneratorRelative(localDataStore);
+            IReductGenerator redGenStd = new ReductGeneratorRelative();
             redGenStd.ApproximationDegree = 0.1;
 
-            IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative(localDataStore);
+            IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative();
             redGenWgh.ApproximationDegree = 0.1;
 
-            Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
+            Args args = new Args(new string[] { "FactoryKey", "DataStore" }, new object[] { "ApproximateReductRelative", localDataStore });
 
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", args);
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
             PermutationCollection permutationList = permGen.Generate(100);
             args.AddParameter("PermutationCollection", permutationList);
 
@@ -325,10 +325,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             Args args = new Args();
             args.AddParameter("DataStore", localDataStore);            
-            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(reductGeneratorKey1, args).Generate(10);            
-            args.AddParameter("PermutationCollection", permutationList);
             args.AddParameter("ApproximationRatio", 10);
             args.AddParameter("FactoryKey", reductGeneratorKey1);
+
+            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(10);
+
+            args.AddParameter("PermutationCollection", permutationList);
             
             IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(args);
             reductGenerator1.Generate();

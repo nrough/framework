@@ -131,6 +131,7 @@ namespace Infovision.Datamining.Roughset
         /// Checks if passed-in reduct is a superset of reducts already existing in the store
         /// </summary>
         /// <param name="reduct"></param>
+        /// <param name="checkApproxDegree"></param>
         /// <returns></returns>
         public override bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false)
         {
@@ -286,7 +287,7 @@ namespace Infovision.Datamining.Roughset
 
             if (this.Count > 0)
             {
-                return measureSum / (double) this.Count;
+                return measureSum / this.Count;
             }
 
             return 0;

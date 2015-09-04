@@ -218,8 +218,8 @@ namespace Infovision.RunTest
 
             if (this.CheckRegeneratePermutation())
             {
-                Args parms = new Args(new string[] { "DataStore", "ApproximationRatio" }, new object[] { localDataStoreTrain, epsilon });
-                this.permutationList = ReductFactory.GetPermutationGenerator(reductFactoryKey, parms).Generate(numberOfPermutations);
+                Args parms = new Args(new string[] { "FactoryKey", "DataStore", "ApproximationRatio" }, new object[] { reductFactoryKey, localDataStoreTrain, epsilon });
+                this.permutationList = ReductFactory.GetPermutationGenerator(parms).Generate(numberOfPermutations);
                 this.ForceTraining(true);
             }
 

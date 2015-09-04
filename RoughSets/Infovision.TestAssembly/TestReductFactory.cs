@@ -34,23 +34,9 @@ namespace Infovision.TestAssembly
     }
 
     public class TestReductGenerator : Infovision.Datamining.Roughset.IReductGenerator
-    {
-        private IReductStoreCollection reductStoreCollection;
+    {        
         private IReductStore reductPool;
-        private double approximationLevel = 0;
-
-        public IReductStoreCollection ReductStoreCollection
-        {
-            get
-            {
-                return this.reductStoreCollection;
-            }
-
-            protected set
-            {
-                this.reductStoreCollection = value;
-            }
-        }
+        private double approximationLevel = 0;        
 
         public IReductStore ReductPool
         {
@@ -87,9 +73,14 @@ namespace Infovision.TestAssembly
 
         public virtual void Generate()
         {
-            this.ReductPool = new ReductStore();
-            this.ReductStoreCollection = new ReductStoreCollection();
-            this.ReductStoreCollection.AddStore(this.ReductPool);
+            this.ReductPool = new ReductStore();            
+        }
+
+        public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        {
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            reductStoreCollection.AddStore(this.ReductPool);
+            return reductStoreCollection;
         }
     }
 }

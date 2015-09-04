@@ -61,10 +61,10 @@ namespace Infovision.Datamining.ReductGenerator
                 currentEpsilon = (int) parm[1];
                 currentIdentType = (IdentificationType) parm[2];
 
-                Console.WriteLine("{0} {1} {2}", currentReductType, currentEpsilon, currentIdentType);                
+                Console.WriteLine("{0} {1} {2}", currentReductType, currentEpsilon, currentIdentType);
 
-                Utils.Args config = new Utils.Args(new string[] { "DataStore", "ReductType", "IdentificationType" }, new object[] { dataStore, currentReductType, currentIdentType });
-                PermutationCollection permutations = ReductFactory.GetPermutationGenerator(currentReductType, config).Generate(numberOfSubsets);
+                Utils.Args config = new Utils.Args(new string[] { "FactoryKey", "DataStore", "ReductType", "IdentificationType" }, new object[] { currentReductType, dataStore, currentReductType, currentIdentType });
+                PermutationCollection permutations = ReductFactory.GetPermutationGenerator(config).Generate(numberOfSubsets);
 
                 RoughClassifier roughClassifier = new RoughClassifier();
                 roughClassifier.Train(dataStore, currentReductType, currentEpsilon, permutations);

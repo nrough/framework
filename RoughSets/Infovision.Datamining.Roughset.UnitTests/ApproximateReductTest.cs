@@ -227,8 +227,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EquivalenceClassMapTest()
         {
-            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductRelative", dataStoreTrain });
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
             parms.AddParameter("FactoryKey", "ApproximateReductRelative");
@@ -278,8 +278,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductPositiveTest()
         {
-            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductPositive", parms);
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductPositive", dataStoreTrain });
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
             parms.AddParameter("FactoryKey", "ApproximateReductPositive");
@@ -303,8 +303,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
-            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajority", parms);
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductMajority", dataStoreTrain });
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
             parms.AddParameter("FactoryKey", "ApproximateReductMajority");
@@ -327,8 +327,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
-            Args parms = new Args(new string[] { "DataStore" }, new Object[] { dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
+            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductRelative", dataStoreTrain });
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter("PermutationCollection", permutationList);
             parms.AddParameter("FactoryKey", "ApproximateReductRelative");

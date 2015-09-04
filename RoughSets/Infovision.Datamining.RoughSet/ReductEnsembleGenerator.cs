@@ -18,13 +18,12 @@ namespace Infovision.Datamining.Roughset
         private int[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;        
-        private WeightGenerator weightGenerator;
-        private HierarchicalClustering hCluster;
+        private WeightGenerator weightGenerator;        
         private Func<IReduct, double[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;
-        private int numberOfClusters;
-
+        private HierarchicalClustering hCluster;
+        
         public HierarchicalClustering Dendrogram
         {
             get { return this.hCluster; }
@@ -92,32 +91,31 @@ namespace Infovision.Datamining.Roughset
             }
         }
         
-        public ReductEnsembleGenerator(DataStore data, int[] epsilon)
-            : base(data)
-        {
-            this.permEpsilon = new int[epsilon.Length];
-            Array.Copy(epsilon, this.permEpsilon, epsilon.Length);
-            this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
-            this.linkage = ClusteringLinkage.Single;
-            this.distance = Similarity.Euclidean;
-            this.numberOfClusters = 5;
+        public ReductEnsembleGenerator()
+            : base()
+        {            
         }
 
         public override void InitFromArgs(Args args)
-        {
-            base.InitFromArgs(args);
+        {            
+            this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            this.linkage = ClusteringLinkage.Complete;
+            this.distance = Similarity.Euclidean;
+            
+            base.InitFromArgs(args);            
+
+            if (args.Exist("PermutationEpsilon"))
+            {
+                int[] epsilons = (int[])args.GetParameter("PermutationEpsilon");
+                this.permEpsilon = new int[epsilons.Length];
+                Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
+            }
             
             if (args.Exist("Distance"))
                 this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");
-
-            if (args.Exist("NumberOfClusters"))
-                this.numberOfClusters = (int)args.GetParameter("NumberOfClusters");
-
-            if (this.numberOfClusters > this.DataStore.NumberOfRecords)
-                this.numberOfClusters = this.DataStore.NumberOfRecords;
+                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");            
 
             if (args.Exist("WeightGenerator"))
                 this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
@@ -125,10 +123,8 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("ReconWeights"))
                 this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
 
-
         }
-        
-        //public override IReductStoreCollection Generate(Args args)
+                
         public override void Generate()
         {
             ReductStore localReductPool = new ReductStore();
@@ -165,18 +161,22 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
 
-                localReductPool.DoAddReduct(reduct);                
+                localReductPool.DoAddReduct(reduct);
             }
 
             localReductPool = localReductPool.RemoveDuplicates();
             this.ReductPool = localReductPool;
 
-            double[][] errorVectors = this.GetWeightVectorsFromReducts(this.ReductPool);
-            hCluster = new HierarchicalClustering(distance, linkage);            
-            hCluster.Compute(errorVectors);                                    
-            
-            Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
-            this.ReductStoreCollection = new ReductStoreCollection();
+            double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
+            this.hCluster = new HierarchicalClustering(distance, linkage);
+            this.hCluster.Compute(errorVectors);
+        }
+        
+
+        public override IReductStoreCollection GetReductGroups(int numberOfEnsembles)
+        {            
+            Dictionary<int, List<int>> clusterMembership = this.hCluster.GetClusterMembershipAsDict(numberOfEnsembles);
+            ReductStoreCollection result = new ReductStoreCollection();
 
             foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
             {
@@ -186,43 +186,11 @@ namespace Infovision.Datamining.Roughset
                     tmpReductStore.DoAddReduct(this.ReductPool.GetReduct(r));
                 }
 
-                this.ReductStoreCollection.AddStore(tmpReductStore);
+                result.AddStore(tmpReductStore);
             }
 
-            /*
-            if (!reverseDistanceFunction)
-            {
-                ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);
-                foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
-                {
-                    ParameterValueCollection<int> valueCollection = new ParameterValueCollection<int>(String.Format("{0}", kvp.Key), kvp.Value.ToArray<int>());
-                    clusterCollection.Add(valueCollection);
-                }
-                
-                foreach (object[] ensemble in clusterCollection.Values())
-                {
-                    ReductStore tmpReductStore = new ReductStore();
-                    for (int i = 0; i < numberOfClusters; i++)
-                    {
-                        tmpReductStore.DoAddReduct(internalStore.GetReduct((int)ensemble[i]));
-                    }
-                    reductStoreCollection.AddStore(tmpReductStore);
-                }
-            }
-            else
-            {                           
-                foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
-                {
-                    ReductStore tmpReductStore = new ReductStore();
-                    foreach (int r in kvp.Value)
-                    {
-                        tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
-                    }
-                    reductStoreCollection.AddStore(tmpReductStore);
-                }
-            }
-            */
-        }                   
+            return result;            
+        }
 
         /// <summary>
         /// Returns a weight vector array, where for each reduct an recognition weight is stored        
@@ -259,7 +227,7 @@ namespace Infovision.Datamining.Roughset
             double result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {                                               
-                double maxValue = 0;
+                double maxValue = Double.MinValue;
                 long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
                 {
@@ -286,8 +254,7 @@ namespace Infovision.Datamining.Roughset
             IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
-
-        //protected override IReductStore CreateReductStore(Args args)
+        
         protected override IReductStore CreateReductStore()
         {
             return new ReductStore();
@@ -299,34 +266,6 @@ namespace Infovision.Datamining.Roughset
             r.Id = id;
             return r;
         }
-
-        /*
-        protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)
-        {
-            PermutationCollection permutationList = null;
-            if (args.Exist("PermutationCollection"))
-            {
-                permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
-            }
-            else if (args.Exist("NumberOfReducts"))
-            {
-                int numberOfReducts = (int)args.GetParameter("NumberOfReducts");
-                permutationList = this.PermutationGenerator.Generate(numberOfReducts);
-            }
-            else if (args.Exist("NumberOfPermutations"))
-            {
-                int numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
-                permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
-            }
-
-            if (permutationList == null)
-            {
-                throw new NullReferenceException("PermutationCollection is null");
-            }
-
-            return permutationList;
-        }
-        */
     }
 
     public class ReductEnsambleFactory : IReductFactory
@@ -337,10 +276,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
-        {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
-            int[] epsilons = (int[])args.GetParameter("PermutationEpsilon");
-            ReductEnsembleGenerator rGen = new ReductEnsembleGenerator(dataStore, epsilons);
+        {            
+            ReductEnsembleGenerator rGen = new ReductEnsembleGenerator();
             rGen.InitFromArgs(args);
             return rGen;
         }

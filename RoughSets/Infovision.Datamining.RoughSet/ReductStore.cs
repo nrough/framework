@@ -87,6 +87,8 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class ReductStore : ReductStoreBase
     {
+        //TODO Add Reduct Weight (Weak classifier weight)
+        
         #region Members
 
         private List<IReduct> reductSet;

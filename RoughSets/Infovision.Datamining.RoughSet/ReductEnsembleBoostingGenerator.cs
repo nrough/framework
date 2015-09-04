@@ -10,12 +10,16 @@ namespace Infovision.Datamining.Roughset
 {
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
 	{
-
 		public static string FactoryKey = "ReductEnsembleBoosting";
 		private double[] alpha;
 		private int numberOfWeakClassifiers;
 		private IdentificationType identyficationType;
 		private VoteType voteType;
+		private double threshold;
+        private int maximumReductLength;
+        private WeightBoostingGenerator weightGenerator;
+
+        public WeightBoostingGenerator WeightGenerator { get { return this.weightGenerator; } }
 
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -23,15 +27,19 @@ namespace Infovision.Datamining.Roughset
 			this.numberOfWeakClassifiers = 10; //TODO should be calculated of passed as parameter
 			this.identyficationType = IdentificationType.WeightConfidence;
 			this.voteType = VoteType.WeightCoverage;
-
+            this.threshold = 0.5; //TODO how to estimate threshold? Check Accord UnitTests for AdaBoost
 
 			alpha = new double[this.numberOfWeakClassifiers];
-		}
+		}        
 
 		public override void Generate()
-		{			
+		{
+            //TODO To be set as parameter
+            this.maximumReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2;
+
+            double alphaSum = 0.0;
 			this.ReductPool = this.CreateReductStore();
-			WeightBoostingGenerator weightGenerator = new WeightBoostingGenerator(this.DataStore);
+			weightGenerator = new WeightBoostingGenerator(this.DataStore);
 			int m = 10;
 			int iter = 0;
 
@@ -41,29 +49,63 @@ namespace Infovision.Datamining.Roughset
 				weightGenerator.Generate();
 				for (int i = 0; i < m; m++)
 				{
-					IReduct reduct = this.GetNextReduct(weightGenerator.Weights);
-					localReductStore.AddReduct(reduct);
+                    IReduct reduct = this.GetNextReduct(weightGenerator.Weights, this.maximumReductLength);
+					localReductStore.AddReduct(reduct); //TODO reduct should be added with a weight, default weight = 1.0
 				}
+
+				//TODO Add reducts to global store
 
 				RoughClassifier classifier = new RoughClassifier();
-
 				classifier.ReductStore = localReductStore;
 				classifier.Classify(this.DataStore);
+				
 				ClassificationResult result = classifier.Vote(this.DataStore, this.identyficationType, this.voteType);                                
-				double error = result.Error;
-				alpha[iter] = System.Math.Log((1.0 - error) / error);
+				double error = result.UnclassifiedSumOfWeigths + result.MisclassifiedSumOfWeights;
 
+				if(error >= threshold)
+					break;
+				
+                //AdaBoost
+                double alpha = 0.5 * System.Math.Log((1.0 - error) / error);
+                
+                //SAME
+                //In SAME there is no 0.5
+                //int K = this.DataStore.DataStoreInfo.GetDecisionValues().Count;
+                //double alpha = System.Math.Log((1.0 - error) / error) + System.Math.Log(K - 1);                
+
+				double sum = 0.0;				
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
-				{
-					//TODO What is I( c_i != T^m (x_i))
+				{					                    					
+					//TODO This is only for binary decision encoded as +1 / -1
+					weightGenerator.Weights[i] *= System.Math.Exp(
+							-alpha
+							* this.DataStore.GetDecisionValue(i)
+							* result.GetResult(this.DataStore.ObjectIndex2ObjectId(i))
+							);
 
-					
-					weightGenerator.Weights[i] = weightGenerator.Weights[i] * System.Math.Exp(alpha[iter] * )
+					sum += weightGenerator.Weights[i];
 				}
 
+				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
+					weightGenerator.Weights[i] /= sum;
+
+				//TODO classifier.Add(alpha, model) - Classifier must be ready for weak classifier weighting
+
+				alphaSum += alpha;
 				iter++;
 
+				//convergence.NewValue = error;
+
 			} while (true);
+			//while(convergence.HasConverged)
+
+			/*
+			// Normalize weights for confidence calculation
+			for (int i = 0; i < classifier.Models.Count; i++)
+				classifier.Models[i].Weight /= alphaSum;
+
+			return ComputeError(inputs, outputs);
+			*/
 
 			//TODO
 			//add generalized decision 
@@ -146,13 +188,70 @@ namespace Infovision.Datamining.Roughset
 				return classification > 0.0 ? +1 : -1; 
 			}
 			*/
+
+			/*
+			private double run(double[][] inputs, int[] outputs, double[] sampleWeights)
+			{
+				double error = 0;
+				double weightSum = 0;
+
+				int[] actualOutputs = new int[outputs.Length];
+
+				do
+				{
+					// Create and train a classifier
+					TModel model = Creation(sampleWeights);
+
+					if (model == null)
+						break;
+
+					// Determine its current accuracy
+					for (int i = 0; i < actualOutputs.Length; i++)
+						actualOutputs[i] = model.Compute(inputs[i]);
+
+					error = 0;
+					for (int i = 0; i < actualOutputs.Length; i++)
+						if (actualOutputs[i] != outputs[i]) error += sampleWeights[i];
+
+					if (error >= threshold)
+						break;
+
+
+					// AdaBoost
+					double w = 0.5 * System.Math.Log((1.0 - error) / error);
+
+					double sum = 0;
+					for (int i = 0; i < sampleWeights.Length; i++)
+						sum += sampleWeights[i] *= System.Math.Exp(-w * outputs[i] * actualOutputs[i]);
+
+					// Update sample weights
+					for (int i = 0; i < sampleWeights.Length; i++)
+						sampleWeights[i] /= sum;
+
+					classifier.Add(w, model);
+
+					weightSum += w;
+
+					convergence.NewValue = error;
+
+				} while (!convergence.HasConverged);
+
+
+				// Normalize weights for confidence calculation
+				for (int i = 0; i < classifier.Models.Count; i++)
+					classifier.Models[i].Weight /= weightSum;
+
+				return ComputeError(inputs, outputs);
+			}
+			*/
 		}
 
-		private IReduct GetNextReduct(double[] weights)
+		private IReduct GetNextReduct(double[] weights, int maximumLength)
 		{            
 			int idx = this.GetNextReductId();
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
-			int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
+            int length = System.Math.Min(maximumLength, permutation.Length - 1);
+			int cutoff = RandomSingleton.Random.Next(0, length);
 			
 			int[] attributes = new int[cutoff + 1];
 			for (int i = 0; i <= cutoff; i++)

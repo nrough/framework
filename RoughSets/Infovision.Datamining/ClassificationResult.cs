@@ -70,7 +70,7 @@ namespace Infovision.Datamining
 
         #endregion
 
-        #region Globals
+        #region Members
 
         private Dictionary<long, long> classificationMap;
         private Dictionary<ConfusionMatrixKey, int> confusionMatrix = new Dictionary<ConfusionMatrixKey, int>();
@@ -92,7 +92,7 @@ namespace Infovision.Datamining
         #region Properties
 
         /// <summary>
-        /// Number of elements beeing classified e.g. total number of objects in the test dataset
+        /// Number of elements being classified e.g. total number of objects in the test dataset
         /// </summary>
         public int Count
         {
@@ -173,6 +173,10 @@ namespace Infovision.Datamining
             get { return numberOfUnclassified; }
         }
 
+        public double ClassifiedSumOfWeights { get { return classifiedSumOfWeights; } }
+        public double MisclassifiedSumOfWeights { get { return misclassifiedSumOfWeights; } }
+        public double UnclassifiedSumOfWeigths { get { return unclassifiedSumOfWeigths; } }        
+
         //TODO use classification info instead
         public double QualityRatio
         {
@@ -223,7 +227,7 @@ namespace Infovision.Datamining
             else
             {
                 this.numberOfUnclassified++;
-                this.unclassifiedSumOfWeights += weight;
+                this.unclassifiedSumOfWeigths += weight;
             }
         }
 

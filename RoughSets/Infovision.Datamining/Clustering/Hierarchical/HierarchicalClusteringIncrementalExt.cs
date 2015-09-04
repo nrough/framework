@@ -10,7 +10,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClusteringIncrementalExt : HierarchicalClusteringSIHC
     {
-        public HierarchicalClusteringIncrementalExt()
+        HierarchicalClusteringIncrementalExt()
             : base()
         {                        
         }
@@ -19,6 +19,29 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                                                     Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(distance, linkage)
         {         
+        }
+
+        public override bool AddToCluster(int id, double[] instance)
+        {
+            base.AddToCluster(id, instance);
+
+            if (this.NumberOfInstances % this.MinimumNumberOfInstances == 0
+                    && this.NumberOfInstances != this.MinimumNumberOfInstances)
+            {
+                HierarchicalClustering newClustering = new HierarchicalClustering(this.Distance, this.Linkage);
+                newClustering.DistanceMatrix = new DistanceMatrix(this.DistanceMatrix);
+                newClustering.Instances = new Dictionary<int, double[]>(this.Instances);
+                newClustering.Compute();
+
+                double correlation = newClustering.BakersGammaIndex(this);
+                Console.WriteLine("{0} {1}", this.NumberOfInstances, correlation);
+
+                this.Root = newClustering.Root;
+                this.NextClusterId = newClustering.NextClusterId;
+                this.Nodes = newClustering.Nodes;
+            }
+
+            return true;
         }
 
         /*
@@ -59,12 +82,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
         */
 
+        
+        /*
         //version complete vs. incremental
         public override bool AddToCluster(int id, double[] instance)
         {
             if (this.NumberOfInstances < this.MinimumNumberOfInstances
-                || (this.NumberOfInstances >= this.MinimumNumberOfInstances
-                    && this.NumberOfInstances <= 1))
+                || (this.MinimumNumberOfInstances <= 1 && this.NumberOfInstances <= 1))
             {
                 return base.AddToCluster(id, instance);
             }
@@ -105,5 +129,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Nodes = newClustering.Nodes;
             return true;
         }
+        */
     }
 }

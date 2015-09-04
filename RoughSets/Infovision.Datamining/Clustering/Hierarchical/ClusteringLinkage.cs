@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public static double Average(int[] cluster1, int[] cluster2, DistanceMatrix distanceMatrix, double[][] data)
         {
-            double sum = 0;
+            double sum = 0.0;
             int n = cluster1.Length * cluster2.Length;
 
             foreach (int a in cluster1)            
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         //aka Group average
         public static double Mean(int[] cluster1, int[] cluster2, DistanceMatrix distanceMatrix, double[][] data)
         {
-            double sum = 0;            
+            double sum = 0;
             int[] merge = new int[cluster1.Length + cluster2.Length];
             Array.Copy(cluster1, 0, merge, 0, cluster1.Length);
             Array.Copy(cluster2, 0, merge, cluster1.Length, cluster2.Length);
@@ -127,13 +127,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             // finds the distance of the centroids of the clusters
             double[] centroid1 = new double[data[0].Length];
-            for (int i = 0; i < cluster1.Length; i++)                            
-                for (int j = 0; j < data[i].Length; j++)                
+            for (int i = 0; i < cluster1.Length; i++)
+                for (int j = 0; j < data[cluster1[i]].Length; j++)                
                     centroid1[j] += data[cluster1[i]][j];
 
             double[] centroid2 = new double[data[0].Length];
             for (int i = 0; i < cluster2.Length; i++)
-                for (int j = 0; j < data[i].Length; j++)
+                for (int j = 0; j < data[cluster2[i]].Length; j++)
                     centroid2[j] += data[cluster2[i]][j];
 
             for (int j = 0; j < data[0].Length; j++)

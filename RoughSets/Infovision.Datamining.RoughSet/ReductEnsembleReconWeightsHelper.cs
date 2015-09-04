@@ -56,6 +56,16 @@ namespace Infovision.Datamining.Roughset
                     result[i] = objectWeights[i];
             return result;
         }
+
+
+        public static double[] GetCorrectBinary(IReduct reduct, double[] objectWeights)
+        {
+            double[] result = new double[objectWeights.Length];
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+                foreach (int i in e.GetObjectIndexes(e.MajorDecision))
+                    result[i] = 1.0;
+            return result;
+        }
         
     }
 }

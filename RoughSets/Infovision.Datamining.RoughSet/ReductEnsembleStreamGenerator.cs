@@ -29,6 +29,7 @@ namespace Infovision.Datamining.Roughset
         #region Properties        
 
         public int ReductSize { get; set; }
+        public int MinimumNumberOfInstances { get; set; }
         public Func<double[], double[], double> Distance { get; set; }
         public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
         public Func<IReduct, double[], double[]> ReconWeights {get; set; }
@@ -116,7 +117,8 @@ namespace Infovision.Datamining.Roughset
 
             this.ReconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             this.Linkage = ClusteringLinkage.Complete;
-            this.Distance = Similarity.Euclidean;            
+            this.Distance = Similarity.Euclidean;
+            this.MinimumNumberOfInstances = 1;
         }
 
         public override void InitFromArgs(Args args)
@@ -144,6 +146,9 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("ReductSize"))
                 this.ReductSize = (int)args.GetParameter("ReductSize");
+
+            if (args.Exist("MinimumNumberOfInstances"))
+                this.MinimumNumberOfInstances = (int)args.GetParameter("MinimumNumberOfInstances");
 
         }
 
@@ -213,7 +218,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = new ReductStore();
 
             this.hCluster = new HierarchicalClusteringIncrementalExt(this.Distance, this.Linkage);
-            this.hCluster.MinimumNumberOfInstances = 0;
+            this.hCluster.MinimumNumberOfInstances = this.MinimumNumberOfInstances;
 
             while (!this.HasConverged())
             {
@@ -226,6 +231,7 @@ namespace Infovision.Datamining.Roughset
                     {
                         this.ReductPool.AddReduct(reduct);
                                                 
+                        /*
                         //TODO Remove this
                         DendrogramChart chart = new DendrogramChart(this.hCluster, 1920, 1200);
                         //chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange, Color.Brown, Color.Beige});
@@ -236,6 +242,7 @@ namespace Infovision.Datamining.Roughset
                             chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_0{1}.bmp", this.DataStore.Name, reduct.Id));
                         else
                             chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_{1}.bmp", this.DataStore.Name, reduct.Id));
+                        */
                     }
                 }
             }            

@@ -517,40 +517,42 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         //TODO Move to extension class
         public virtual double BakersGammaIndex(HierarchicalClusteringBase otherCluster)
-        {
-            
+        {            
             if (this.isLeafDistanceCalculated == false)
                 this.CalculateLeavesDistance();
             
-            int[] numOfClusters = Enumerable.Range(1, this.NumberOfInstances).ToArray();
+            int[] cutIndices = Enumerable.Range(1, System.Math.Min(this.NumberOfInstances, 
+                                                                   otherCluster.NumberOfInstances)).ToArray();
             
-            Dictionary<int, int[]> cutof1 = this.CutTree(numOfClusters);
-            Dictionary<int, int[]> cutof2 = otherCluster.CutTree(numOfClusters);
+            Dictionary<int, int[]> cutoff1 = this.NumberOfInstances <= otherCluster.NumberOfInstances 
+                                           ? this.CutTree(cutIndices) 
+                                           : otherCluster.CutTree(cutIndices);
+            Dictionary<int, int[]> cutoff2 = this.NumberOfInstances <= otherCluster.NumberOfInstances 
+                                           ? otherCluster.CutTree(cutIndices) 
+                                           : this.CutTree(cutIndices);                                    
+            
+            int numberOfPairs = System.Math.Min(this.lca.Count, otherCluster.GetLCA().Count);
+            int[] lcb1 = new int[numberOfPairs];
+            int[] lcb2 = new int[numberOfPairs];            
 
-            int[] item1, item2;
-            
-            int[] lcb1 = new int[otherCluster.GetLCA().Count];
-            int[] lcb2 = new int[otherCluster.GetLCA().Count];
+            Dictionary<Tuple<int, int>, DendrogramNode> lca1 = this.NumberOfInstances <= otherCluster.NumberOfInstances
+                                                              ? this.GetLCA()
+                                                              : otherCluster.GetLCA();
+
+            Dictionary<Tuple<int, int>, DendrogramNode> lca2 = this.NumberOfInstances <= otherCluster.NumberOfInstances
+                                                              ? otherCluster.GetLCA()
+                                                              : this.GetLCA();
 
             int i = 0;
-            foreach (KeyValuePair<Tuple<int, int>, DendrogramNode> kvp in otherCluster.GetLCA())
+            foreach (KeyValuePair<Tuple<int, int>, DendrogramNode> kvp in lca1)
             {
-                item1 = cutof2[kvp.Key.Item1];
-                item2 = cutof2[kvp.Key.Item2];
-
-                lcb2[i] = HierarchicalClusteringBase.LowestCommonBranch(item1, item2);
-
-                if (this.lca.ContainsKey(kvp.Key))
+                if (lca2.ContainsKey(kvp.Key))
                 {
-                    item1 = cutof1[kvp.Key.Item1];
-                    item2 = cutof1[kvp.Key.Item2];
-
-                    lcb1[i] = HierarchicalClusteringBase.LowestCommonBranch(item1, item2);
+                    lcb1[i] = HierarchicalClusteringBase.LowestCommonBranch(cutoff1[kvp.Key.Item1], cutoff1[kvp.Key.Item2]);
+                    lcb2[i] = HierarchicalClusteringBase.LowestCommonBranch(cutoff2[kvp.Key.Item1], cutoff2[kvp.Key.Item2]);                                                        
                 }
                 else
-                {
                     throw new InvalidOperationException("Dendrograms have different leaves");
-                }
 
                 i++;
             }

@@ -54,17 +54,21 @@ namespace Infovision.Math
 
         public static double Hamming(double[] v1, double[] v2)
         {
-            double sum = 0;
+            if (v1.Length != v2.Length)
+                throw new InvalidOperationException("Arrays have different length.");
+
+            double sum = 0.0;
             for (int i = 0; i < v1.Length; i++)
-                if (!DoubleEpsilonComparer.NearlyEqual(v1[i], v2[i], tinyDouble))
+                if ( ! DoubleEpsilonComparer.NearlyEqual(v1[i], v2[i], tinyDouble))
                     sum += System.Math.Max(v1[i], v2[i]);
-            return sum;
+            
+            return v1.Length > 0 ? sum / (double) v1.Length : 0.0;
         }
 
         public static double JaccardFuzzy(double[] a, double[] b)
         {
-            double minSum = 0;
-            double maxSum = 0;
+            double minSum = 0.0;
+            double maxSum = 0.0;
 
             for (int i = 0; i < a.Length; i++)
             {

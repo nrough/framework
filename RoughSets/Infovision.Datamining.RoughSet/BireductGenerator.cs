@@ -37,17 +37,18 @@ namespace Infovision.Datamining.Roughset
                         
             foreach (Permutation permutation in this.Permutations)
             {               
-                Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation, reductStore);
+                Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation.ToArray(), reductStore);
                 reductStore.AddReduct(bireduct);
             }
 
             this.ReductPool = reductStore;                        
         }
 
-        public override IReduct CreateReduct(Permutation permutation)
+        //public override IReduct CreateReduct(Permutation permutation)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
         {
             IReductStore localReductStore = this.CreateReductStore();
-            return this.CalculateReduct(permutation, localReductStore);
+            return this.CalculateReduct(permutation, localReductStore);            
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
@@ -57,17 +58,19 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
+        //protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
+        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
             Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
                                                         this.Epsilon, 
                                                         this.GetNextReductId().ToString()) as Bireduct;
             
-            this.Reach(bireduct, permutation, reductStore);
+            this.Reach(bireduct, permutation, reductStore);            
             return bireduct;
         }
 
-        protected virtual void Reach(Bireduct bireduct, Permutation permutation, IReductStore reductStore)
+        //protected virtual void Reach(Bireduct bireduct, Permutation permutation, IReductStore reductStore)
+        protected virtual void Reach(Bireduct bireduct, int[]  permutation, IReductStore reductStore)
         {
             for (int i = 0; i < permutation.Length; i++)
             {
@@ -183,7 +186,7 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
-        protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
+        protected override IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
             BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
                                                              this.Epsilon, 

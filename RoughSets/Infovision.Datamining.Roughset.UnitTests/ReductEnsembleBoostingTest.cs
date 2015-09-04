@@ -278,7 +278,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     //parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);                    
-                    parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, UpdateWeights.All);
                     
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
@@ -400,10 +399,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("GenerateExperimentBoostingWithAttributeDiversity");
 
-            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\pendigits.trn", FileFormat.Rses1);
+            DataStore tstData = DataStore.Load(@"Data\pendigits.tst", FileFormat.Rses1, trnData.DataStoreInfo);            
+
             WeightingSchema weightingSchema = WeightingSchema.Majority;
-            int numberOfTests = 10;
+            int numberOfTests = 1;
             int maxNumberOfIterations = 100;
 
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
@@ -433,8 +433,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);                                                            
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);                                      
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
-                    parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, UpdateWeights.All);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);                    
 
                     WeightGenerator weightGenerator;
                     switch(weightingSchema)

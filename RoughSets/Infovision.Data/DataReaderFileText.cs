@@ -8,7 +8,7 @@ namespace Infovision.Data
 {
     public class DataReaderFileCsv : DataReaderFile
     {
-        #region Globals
+        #region Members
         
         private Char[] fieldDelimiter = new Char[] { ' ', ';', '\t' };
         private int header = 0;
@@ -164,6 +164,13 @@ namespace Infovision.Data
             {
                 using (StreamReader streamReader = new StreamReader(fileStream))
                 {
+                    Dictionary<Type, int> typeDict = new Dictionary<Type, int>
+                    {
+                        {typeof(int),  0},
+                        {typeof(double), 1},
+                        {typeof(string), 2}
+                    };
+                    
                     this.SkipHeader(streamReader);        
                     while ((line = streamReader.ReadLine()) != null)
                     {
@@ -172,14 +179,7 @@ namespace Infovision.Data
                         if (fields.Length != dataStoreInfo.NumberOfFields)
                             throw new System.InvalidOperationException();
 
-                        object[] typedFieldValues = new Object[fields.Length];
-
-                        Dictionary<Type, int> typeDict = new Dictionary<Type, int>
-                        {
-                            {typeof(int),  0},
-                            {typeof(double), 1},
-                            {typeof(string), 2}
-                        };
+                        object[] typedFieldValues = new Object[fields.Length];                        
 
                         for (int i = 0; i < fields.Length; i++)
                         {

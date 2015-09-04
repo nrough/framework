@@ -19,21 +19,32 @@ namespace ApproxReductBoosting
             string testFilename = args[1];
             int numberOfTests = Int32.Parse(args[2]);
             int maxNumberOfIterations = Int32.Parse(args[3]);
+            int startIteration = Int32.Parse(args[4]);
+            int iterationStep = Int32.Parse(args[5]);
+
+            if (startIteration < 1)
+                throw new ArgumentOutOfRangeException();
+
+            if(startIteration > maxNumberOfIterations)
+                throw new ArgumentOutOfRangeException();
 
             DataStore trnData = DataStore.Load(trainFilename, FileFormat.Rses1);
-            DataStore tstData = DataStore.Load(testFilename, FileFormat.Rses1, trnData.DataStoreInfo);                        
+            DataStore tstData = DataStore.Load(testFilename, FileFormat.Rses1, trnData.DataStoreInfo);
+                        
 
             ParameterCollection parmList = new ParameterCollection(
                 new IParameter[] {
-                    new ParameterNumericRange<int>("NumberOfIterations", 1, maxNumberOfIterations, 1),
-                    new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests, 1),
+                    new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
+                    new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
                     ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", ReductFactoryKeyHelper.ReductEnsembleBoosting,
                                                                                                  ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity),
-                    ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority, 
-                                                                                                                     WeightingSchema.Relative) ,
+                    ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Relative, 
+                                                                                                                     WeightingSchema.Majority) ,
                     ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", true, false),
-                    ParameterValueCollection<UpdateWeights>.CreateFromElements<UpdateWeights>("UpdateWeights", UpdateWeights.All, UpdateWeights.NotCorrectOnly),
-                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 0, 1)
+                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All, 
+                                                                                                                               ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_OnlyNotCorrect,
+                                                                                                                               ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoostM1),
+                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 0)
                 }
             );
 
@@ -63,7 +74,7 @@ namespace ApproxReductBoosting
                 string factoryKey = (string)p[2];
                 WeightingSchema weightingSchema = (WeightingSchema)p[3];
                 bool checkEnsembleErrorDuringTraining = (bool)p[4];
-                UpdateWeights updateWeights = (UpdateWeights)p[5];
+                UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
                 int minLen = (int)p[6];
                 
                 Args parms = new Args();
@@ -74,7 +85,7 @@ namespace ApproxReductBoosting
                 parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                 parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                 parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
-                parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
+                parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);                
 
                 WeightGenerator weightGenerator;
                 switch (weightingSchema)
@@ -98,7 +109,7 @@ namespace ApproxReductBoosting
                 if(minLen != 0)
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
 
-                ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms) ;//as ReductEnsembleBoostingGenerator;
+                ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
                 reductGenerator.Generate();
 
                 RoughClassifier classifierTrn = new RoughClassifier();
@@ -111,12 +122,36 @@ namespace ApproxReductBoosting
                 classifierTst.Classify(tstData);
                 ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+                string updWeightsMethodName = String.Empty;
+                switch (reductGenerator.UpdateWeights.Method.Name)
+                {
+                    case "UpdateWeightsAdaBoost_All":
+                        updWeightsMethodName = "All";
+                        break;
+                    
+                    case "UpdateWeightsAdaBoost_OnlyNotCorrect":
+                        updWeightsMethodName = "NotCorrectOnly";
+                        break;
+                    
+                    case "UpdateWeightsAdaBoost_OnlyCorrect":
+                        updWeightsMethodName = "CorrectOnly";
+                        break;
+                    
+                    case "UpdateWeightsAdaBoostM1":
+                        updWeightsMethodName = "M1";
+                        break;
+                    
+                    default:
+                        updWeightsMethodName = "Unknown";
+                        break;
+                }
+
                 Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                     factoryKey,
                                     reductGenerator.IdentyficationType,
                                     reductGenerator.VoteType,
                                     reductGenerator.MinReductLength,
-                                    reductGenerator.UpdateWeights,
+                                    updWeightsMethodName, //reductGenerator.UpdateWeights,
                                     weightingSchema,
                                     reductGenerator.CheckEnsembleErrorDuringTraining,
                                     t + 1,

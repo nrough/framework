@@ -9,7 +9,6 @@ namespace Infovision.Datamining.Experimenter.Parms
 {   
     [Serializable]
     public class ParameterValueCollection<T> : ParameterBase<T>
-        where T : IConvertible
     {
         #region Members
 
@@ -63,17 +62,15 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Methods
 
-        public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T[] elements)
-            where T : IConvertible
+        public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T[] elements)           
         {
             return new ParameterValueCollection<T>(name, elements);
         }
 
-        public static ParameterValueCollection<T> CreateFromDefault<T>(string name, T element)
-            where T : IConvertible
-        {
-            return new ParameterValueCollection<T>(name, element);
-        }
+        //public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T element)
+        //{
+        //    return new ParameterValueCollection<T>(name, element);
+        //}
 
         public T GetValue(int index)
         {

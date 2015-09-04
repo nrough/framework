@@ -42,14 +42,16 @@ namespace Infovision.Datamining.Roughset
             {
                 int[][] selectedAttributes;
                 int count = 0;
-                foreach (IReductStore rs in models.ActiveModels())
-                    count += rs.Count;
+                foreach (IReductStore rs in models)
+                    if(rs.IsActive)
+                        count += rs.Count;
                 selectedAttributes = new int[count][];
 
                 int k = 0;
-                foreach (IReductStore rs in models.ActiveModels())
-                    foreach (IReduct r in rs)
-                        selectedAttributes[k++] = r.Attributes.ToArray();
+                foreach (IReductStore rs in models)
+                    if(rs.IsActive)
+                        foreach (IReduct r in rs)
+                            selectedAttributes[k++] = r.Attributes.ToArray();
 
                 this.Setup(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), selectedAttributes);
             }
@@ -71,6 +73,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             this.attributeCount = new Dictionary<int, int>(elements.Length);
+            this.countSum = 0;
             foreach (int attributeId in elements)
                 this.attributeCount.Add(attributeId, 1);
             this.countSum += elements.Length;

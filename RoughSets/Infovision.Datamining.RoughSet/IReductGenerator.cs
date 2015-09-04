@@ -9,6 +9,7 @@ namespace Infovision.Datamining.Roughset
         void Generate();
         IReductStore ReductPool { get; }        
         IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles);
-        IReduct CreateReduct(Permutation permutation);
+        //IReduct CreateReduct(Permutation permutation);
+        IReduct CreateReduct(int[] permutation, double epsilon, double[] weights);
     }
 }

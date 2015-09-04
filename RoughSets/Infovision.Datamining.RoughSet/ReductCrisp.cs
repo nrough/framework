@@ -97,6 +97,9 @@ namespace Infovision.Datamining.Roughset
 		/// <param name="attributeOrder">Attributes to be tried to be removed in given order.</param>
 		public virtual void Reduce(int[] attributeOrder, int minimumLength)
 		{
+			if (minimumLength == this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard))
+				return;
+			
 			foreach (EquivalenceClass eq in this.EquivalenceClasses)
 				eq.RemoveObjectsWithMinorDecisions();
 			

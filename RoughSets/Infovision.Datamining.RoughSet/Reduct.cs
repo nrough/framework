@@ -17,6 +17,7 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassCollection eqClassMap;
+        private int[] attributeOrder;
 
         #endregion
 
@@ -100,7 +101,10 @@ namespace Infovision.Datamining.Roughset
 
             this.objectWeights = new double[this.dataStore.NumberOfRecords];
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;                                           
+                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;
+
+            this.attributeOrder = new int[fieldIds.Length];
+            Array.Copy(fieldIds, this.attributeOrder, fieldIds.Length);
         }       
 
         public Reduct(DataStore dataStore, double epsilon)

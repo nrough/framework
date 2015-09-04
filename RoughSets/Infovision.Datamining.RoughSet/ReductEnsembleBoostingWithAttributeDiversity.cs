@@ -43,14 +43,7 @@ namespace Infovision.Datamining.Roughset
 			for (int i = 0; i <= cutoff; i++)
 				attributes[i] = permutation[i];
 
-			ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, weights, 0);
-			reduct.Id = this.GetNextReductId().ToString();
-			reduct.Reduce(attributes, this.MinReductLength);
-
-			if (reduct.Attributes.Count < minimumLength)
-				throw new InvalidProgramException("Reduct length is less than minimum length");
-
-			return reduct;
+			return this.CreateReduct(attributes, this.Epsilon, weights);
 		}				
 	}
 

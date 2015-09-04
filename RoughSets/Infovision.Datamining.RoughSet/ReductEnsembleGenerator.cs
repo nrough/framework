@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset
             this.hCluster.Compute();
         }
 
-        public override IReduct CreateReduct(Permutation permutation)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

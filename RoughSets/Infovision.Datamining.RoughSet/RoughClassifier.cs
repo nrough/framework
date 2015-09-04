@@ -391,9 +391,12 @@ namespace Infovision.Datamining.Roughset
             {
                 foreach (IReductStore rs in reductStoreCollection)
                 {
-                    Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
-                    localReductStore = rs.FilterReducts(numberOfReducts, reductComparer);
-                    localReductStoreCollection.AddStore(localReductStore);
+                    if (rs.IsActive)
+                    {
+                        Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
+                        localReductStore = rs.FilterReducts(numberOfReducts, reductComparer);
+                        localReductStoreCollection.AddStore(localReductStore);
+                    }
                 }
             }
             else
@@ -420,36 +423,36 @@ namespace Infovision.Datamining.Roughset
         {
             return this.Classify(dataStore, null, 0);
         }
-
-        //private ReductRuleDescriptor CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
+        
         private List<ReductRuleDescriptor> CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
         {
             List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);
 
-            foreach (IReductStore rs in reductStoreCollection.ActiveModels())
+            foreach (IReductStore rs in reductStoreCollection)
             {
-                ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
-                reductRuleDescriptor.Weight = rs.Weight;
-                foreach (IReduct reduct in rs)
-                {                                        
-                    int[] attributes = reduct.Attributes.ToArray();
-                    long[] values = new long[attributes.Length];
-                    for (int i = 0; i < attributes.Length; i++)
-                        values[i] = record[attributes[i]];
+                if (rs.IsActive)
+                {
+                    ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
+                    reductRuleDescriptor.Weight = rs.Weight;
+                    foreach (IReduct reduct in rs)
+                    {
+                        int[] attributes = reduct.Attributes.ToArray();
+                        long[] values = new long[attributes.Length];
+                        for (int i = 0; i < attributes.Length; i++)
+                            values[i] = record[attributes[i]];
 
-                    AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
-                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
+                        AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
+                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);                        
+                        DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
+                        foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                            decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
 
-                    //DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues, rs.Weight);
-                    DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
-                    foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
-                        decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
+                        decisionRuleDescriptor.IdentifyDecision();
+                        reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
+                    }
 
-                    decisionRuleDescriptor.IdentifyDecision();
-                    reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);                                        
+                    result.Add(reductRuleDescriptor);
                 }
-
-                result.Add(reductRuleDescriptor);
             }
             return result;
         }        

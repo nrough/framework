@@ -75,12 +75,12 @@
         Unknown = 2
     }
 
-    public enum UpdateWeights
-    {
-        All = 0,
-        CorrectOnly = 1,
-        NotCorrectOnly = 2
-    }
+    //public enum UpdateWeights
+    //{
+    //    All = 0,
+    //    CorrectOnly = 1,
+    //    NotCorrectOnly = 2
+    //}
 
     public enum WeightingSchema
     {

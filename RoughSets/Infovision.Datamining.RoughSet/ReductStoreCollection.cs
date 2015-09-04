@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         void AddStore(IReductStore reductStore);
         int Count { get; }
-        List<IReductStore> ActiveModels();
+        //List<IReductStore> ActiveModels();
     }
 
     public class ReductStoreCollection : IReductStoreCollection

@@ -131,10 +131,12 @@ namespace Infovision.Datamining.Roughset
             if (eqClass == null)
                 return 0;
 
-            double weightSum_XE = eqClass.GetWeight(decisionValue);            
+            double weightSum_XE = eqClass.GetWeight(decisionValue);                        
             double weightSum_X = 0.0;
-            foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                weightSum_X += reduct.Weights[objectIndex];
+
+            if (weightSum_XE != 0.0)
+                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                    weightSum_X += reduct.Weights[objectIndex];
 
             return weightSum_X != 0 ? weightSum_XE / weightSum_X : 0;
         }
@@ -186,8 +188,10 @@ namespace Infovision.Datamining.Roughset
             double weightSum_XE = eqClass.GetWeight(decisionValue);            
             double weightSum_E = eqClass.GetWeight();            
             double weightSum_X = 0;
-            foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                weightSum_X += reduct.Weights[objectIndex];
+            
+            if (weightSum_E != 0.0)
+                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                    weightSum_X += reduct.Weights[objectIndex];
 
             return (weightSum_E * weightSum_X) != 0 ? weightSum_XE / (weightSum_E * weightSum_X) : 0;
         }

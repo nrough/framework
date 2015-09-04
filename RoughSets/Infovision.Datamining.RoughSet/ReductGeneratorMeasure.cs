@@ -60,7 +60,7 @@ namespace Infovision.Datamining.Roughset
             IReductStore reductStore = this.CreateReductStore();
             foreach (Permutation permutation in permutationList)
             {
-                IReduct reduct = this.CalculateReduct(permutation, reductStore, this.UseCache, this.Epsilon);
+                IReduct reduct = this.CalculateReduct(permutation.ToArray(), reductStore, this.UseCache, this.Epsilon);
                 reductStore.AddReduct(reduct);
             }
 
@@ -79,13 +79,13 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
-        public override IReduct CreateReduct(Permutation permutation)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
         {
             IReductStore localReductStore = this.CreateReductStore();
-            return this.CalculateReduct(permutation, localReductStore, false, this.Epsilon);
+            return this.CalculateReduct(permutation, localReductStore, false, epsilon);
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double epsilon)
+        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, double epsilon)
         {
             IReduct reduct = this.CreateReductObject(new int[] { }, 
                                                      epsilon,
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
             return reduct;
         }
 
-        protected virtual void Reach(IReduct reduct, Permutation permutation, IReductStore reductStore, bool useCache)
+        protected virtual void Reach(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
         {
             for (int i = 0; i < permutation.Length; i++)
             {
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected virtual void Reduce(IReduct reduct, Permutation permutation, IReductStore reductStore, bool useCache)
+        protected virtual void Reduce(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
         {
             int len = permutation.Length - 1;
             for (int i = len; i >= 0; i--)

@@ -34,7 +34,8 @@ namespace Infovision.Datamining.Roughset
         public static readonly string NumberOfReductsToTest = "NumberOfReductsToTest";
         public static readonly string AgregateFunction = "AgregateFunction";
         public static readonly string CheckEnsembleErrorDuringTraining = "CheckEnsembleErrorDuringTraining";
-        public static readonly string UpdateWeights = "UpdateWeights";                                                                            
+        public static readonly string UpdateWeights = "UpdateWeights";
+        public static readonly string CalcModelConfidence = "CalcModelConfidence";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

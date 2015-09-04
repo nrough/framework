@@ -190,8 +190,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm);
-                IReduct r2 = gammaGenerator.CreateReduct(perm);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++ )
@@ -413,8 +413,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm);
-                IReduct r2 = gammaGenerator.CreateReduct(perm);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++)

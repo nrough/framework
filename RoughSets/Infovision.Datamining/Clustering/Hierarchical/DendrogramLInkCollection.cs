@@ -9,20 +9,21 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     public class DendrogramLinkCollection : IEnumerable<DendrogramLink>
     {        
-        private List<DendrogramLink> linkages;
+        private DendrogramLink[] linkages;
+        int nextLinkagesIdx = 0;
         private Dictionary<int, DendrogramNode> nodeDictionary;
         private DendrogramNode rootNode;
         private int numOfInstances;
 
         public int Count
         {
-            get { return linkages.Count; }
+            get { return linkages.Length; }
         }
 
         public DendrogramLinkCollection(int numOfInstances)
         {
             this.numOfInstances = numOfInstances;
-            linkages = new List<DendrogramLink>(this.numOfInstances - 1);
+            linkages = new DendrogramLink[this.numOfInstances - 1];
             nodeDictionary = new Dictionary<int, DendrogramNode>(this.numOfInstances - 1);            
         }
         
@@ -37,7 +38,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 c2 = cluster1;
             }
                         
-            linkages.Add(new DendrogramLink(c1, c2, distance));
+            linkages[nextLinkagesIdx++] = new DendrogramLink(c1, c2, distance);
 
             DendrogramNode newNode;
             if (c1 < this.numOfInstances && c2 < this.numOfInstances)
@@ -233,6 +234,41 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             linkages[row] = new DendrogramLink(linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance);                        
         }
 
+        public DendrogramLink[] CutOff(int numberOfClusters)
+        {                        
+            if(numberOfClusters <= 0)
+                return new DendrogramLink[0];
+
+            int size = System.Math.Min(this.numOfInstances, System.Math.Max(numberOfClusters, 1));
+            DendrogramLink[] result = new DendrogramLink[size];
+
+            if(size == this.numOfInstances)
+            {
+                Array.Copy(linkages, result, size);
+                return result;
+            }
+
+            int level = 0;
+            for (int i = this.linkages.Length - 1; i >= 0; i--)
+            {
+                result[level++] = this.linkages[i];
+                if (level >= numberOfClusters)
+                    break;
+            }
+
+            return result;
+        }
+
+        public DendrogramLink[] CutOff(double distanceThreshold)
+        {
+            //TODO implement
+            int level = 0;
+            
+            DendrogramLink[] result = new DendrogramLink[level];
+
+            return result;
+        }
+
         /// <summary>
         ///   Returns an enumerator that iterates through a collection.
         /// </summary>
@@ -243,7 +279,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// 
         public IEnumerator<DendrogramLink> GetEnumerator()
         {
-            return linkages.GetEnumerator();
+            return linkages.AsEnumerable().GetEnumerator();
         }
 
         /// <summary>

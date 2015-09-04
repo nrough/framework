@@ -20,7 +20,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         
         private Func<double[], double[], double> distance;
         private Func<int[], int[], DistanceMatrix, double> linkage;
-        private DendrogramLinkCollection dendrogram;                       
+        private DendrogramLinkCollection dendrogram;
+
+        int numberOfInstances;    
 
         /// <summary>
         ///   Gets or sets the distance function used
@@ -80,9 +82,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private void Initialize(double[][] points)
         {
             if (points == null)
-                throw new ArgumentNullException("points");            
+                throw new ArgumentNullException("points");
 
-            dendrogram = new DendrogramLinkCollection(points.Length);
+            this.numberOfInstances = points.Length;
+
+            dendrogram = new DendrogramLinkCollection(this.numberOfInstances);
 
             this.InitDistanceMatrix(points);
             this.InitClusters(points);            
@@ -281,6 +285,19 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected void Cleanup()
         {
             clusters = null;
+            nextClusterId = 0;
         }
+
+        public int[] GetClusterMembership(int numberOfClusters)
+        {
+            int[] clusters = new int[this.numberOfInstances];
+            
+            //TODO implement
+
+
+            return clusters;
+        }
+
+
     }
 }

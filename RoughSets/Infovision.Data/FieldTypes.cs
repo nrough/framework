@@ -12,8 +12,9 @@ namespace Infovision.Data
         Identifier = 2,
         Decision = 4,
         Technical = 8,
+        Importance = 16,
 
-        All = 15
+        All = 31
     }
 
     public static class FieldTypesHelper

@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private Random rand;
         private PermutationGenerator permGenerator;
         private PermutationCollection permList;
-        private WeightGeneratorConstant weightGenerator;
+        private WeightGenerator weightGenerator;
         private int[] epsilons;        
         
         public ReductGeneratorComparisonTest()
@@ -41,7 +41,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             rand = new Random();
             permGenerator = new PermutationGenerator(data);
             permList = permGenerator.Generate(numberOfPermutations);
-            weightGenerator = new WeightGeneratorConstant(data);
+            //weightGenerator = new WeightGeneratorConstant(data);
+            weightGenerator = new WeightGeneratorRelative(data);
+
+            data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
             
             epsilons = new int[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
@@ -72,10 +75,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetGenerateTestArgs")]
         public void GenerateTest(Dictionary<string, object> args)
         {
+            //TODO Add Classification result of training set
+            //TODO Add reduct statistics info
+            //TODO Add Number of recognized and unrecognized objects                        
+            
             Console.WriteLine("Generator: {0}", (string)args["FactoryKey"]);
             Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];
             Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);  
                      
+            Func<IReduct, double[], double[]> recognition = (Func<IReduct, double[], double[]>) args["ReconWeights"];
+            Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name); 
+
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)           
                 parms.AddParameter(kvp.Key, kvp.Value);           
@@ -83,6 +93,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Generate();
             IReductStoreCollection reductStoreCollection = reductGenerator.ReductStoreCollection;
+            
+            ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
+            if (reductPool != null)
+            {
+                reductPool.SaveRecognitionToFile(data, recognition, @"F:\Reducts.csv");
+            }
 
             Console.WriteLine("------------------------ Reduct Groups ------------------------");
             
@@ -121,9 +137,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 rc.Classify(testData);
                 ClassificationResult classificationResult = rc.Vote(testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence);
 
-                PrintResult(tmpReductStore, classificationResult);
-                
+                PrintResult(tmpReductStore, classificationResult);    
             }
+
         }
 
         private void PrintResult(IReductStore reductStore, ClassificationResult classificationResult)

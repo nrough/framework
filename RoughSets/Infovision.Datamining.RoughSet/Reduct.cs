@@ -5,7 +5,7 @@ using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{
+{ 
     [Serializable]
     public class Reduct : IReduct
     {

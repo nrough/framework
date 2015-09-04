@@ -22,7 +22,8 @@ namespace Infovision.Data
         private Dictionary<int, DataFieldInfo> fields = new Dictionary<int, DataFieldInfo>();
         private Dictionary<int, FieldTypes> fieldTypes = new Dictionary<int, FieldTypes>();
         private Dictionary<FieldTypes, int> fieldTypeCount = new Dictionary<FieldTypes, int>();
-
+        private double[] recordWeights;
+        
         #endregion
 
         #region Constructor
@@ -82,11 +83,22 @@ namespace Infovision.Data
             get { return this.fields.Values; }
         }
 
+        public double[] RecordWeights
+        {
+            get { return this.recordWeights; }
+            set { this.recordWeights = value; }
+        }
+
         #endregion
 
         #region Methods
 
-        public ICollection<Int64> GetDecisionValues()
+        public double GetRecordWeight(int objectIdx)
+        {
+            return this.recordWeights[objectIdx];
+        }
+
+        public ICollection<long> GetDecisionValues()
         {
             return this.DecisionInfo.InternalValues();
         }

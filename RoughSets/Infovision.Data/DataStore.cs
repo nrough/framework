@@ -12,14 +12,14 @@ namespace Infovision.Data
 
         private string name;
         private long nextObjectId = 1;
-        private Int64[] data;
+        private long[] data;
         private long capacity;
         private int lastIndex;
         private double capacityFactor;
-        private Dictionary<Int64, int> objectId2Index;
-        private Dictionary<int, Int64> index2ObjectId;
+        private Dictionary<long, int> objectId2Index;
+        private Dictionary<int, long> index2ObjectId;
         private DataStoreInfo dataStoreInfo;
-        private Dictionary<Int64, List<int>> decisionValue2ObjectIndex;
+        private Dictionary<long, List<int>> decisionValue2ObjectIndex;
 
         #endregion
 

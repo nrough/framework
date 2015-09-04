@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
         private double dataSetQuality = 1.0;        
         private WeightGenerator weightGenerator;
         private HierarchicalClustering hCluster;
-        private Func<IReduct, double[], double[]> reconWeights;
+        private Func<IReduct, double[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double> linkage;
         private Func<double[], double[], double> distance;
         private int numberOfClusters;
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.permEpsilon = new int[epsilon.Length];
             Array.Copy(epsilon, this.permEpsilon, epsilon.Length);
-            this.reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             this.linkage = ClusteringLinkage.Min;
             this.distance = Similarity.Euclidean;
             this.numberOfClusters = 5;
@@ -123,7 +123,7 @@ namespace Infovision.Datamining.Roughset
                 this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
 
             if (args.Exist("ReconWeights"))
-                this.reconWeights = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
+                this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
 
 
         }
@@ -233,7 +233,7 @@ namespace Infovision.Datamining.Roughset
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)                           
-                errors[i] = reconWeights(store.GetReduct(i), this.WeightGenerator.Weights);                            
+                errors[i] = recognition(store.GetReduct(i), this.WeightGenerator.Weights);                            
             return errors;
         }
 
@@ -340,8 +340,9 @@ namespace Infovision.Datamining.Roughset
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
             int[] epsilons = (int[])args.GetParameter("PermutationEpsilon");
-            ReductEnsembleGenerator reductGenerator = new ReductEnsembleGenerator(dataStore, epsilons);
-            return reductGenerator;
+            ReductEnsembleGenerator rGen = new ReductEnsembleGenerator(dataStore, epsilons);
+            rGen.InitFromArgs(args);
+            return rGen;
         }
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)

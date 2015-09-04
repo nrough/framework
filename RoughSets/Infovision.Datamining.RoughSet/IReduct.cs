@@ -11,6 +11,8 @@ namespace Infovision.Datamining.Roughset
         
         //TODO Move to Bireduct Interface
         ObjectSet ObjectSet { get; }
+        
+        //TODO decide should this be stored in reduct or in dataStore object
         double[] Weights { get; }
         double ApproximationDegree { get; }
         string Id { get; }
@@ -18,10 +20,15 @@ namespace Infovision.Datamining.Roughset
         EquivalenceClassMap EquivalenceClassMap { get; }
 
         bool AddAttribute(int attributeId);               
-        
         bool RemoveAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);
         bool ContainsObject(int objectIndex);
+
+        //TODO We want to dispplay Reducts statistics
+        //Cardinality
+        //Number of objects recognizable in DS
+        //Number of objects not recognizable in DS
+        //Accuracy on training data
 
         //Each implementation of Reduct must define its hash code and equal method
         int GetHashCode();

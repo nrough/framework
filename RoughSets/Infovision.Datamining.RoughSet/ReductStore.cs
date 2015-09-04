@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -295,18 +297,6 @@ namespace Infovision.Datamining.Roughset
         public override bool Exist(IReduct reduct)
         {
             return reductSet.Exists(r => r.Equals(reduct));
-
-            /*
-            foreach (IReduct r in reductSet)
-            {
-                if (r.Equals(reduct))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-            */
         }
 
         #region IEnumerable Members
@@ -320,6 +310,30 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion        
+
+        public virtual void SaveRecognitionToFile(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ";")
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < data.NumberOfRecords; i++ )
+            {
+                sb.Append(separator).Append(String.Format("o{0}", i + 1));
+            }
+            sb.Append(Environment.NewLine);
+
+            foreach (IReduct r in this)
+            {
+                sb.Append("r").Append(r.Id).Append(separator);
+                double[] errors = recognition(r, data.DataStoreInfo.RecordWeights);
+                for (int i = 0; i < errors.Length; i++)
+                {
+                    sb.Append(errors[i]);
+                    if (i < errors.Length - 1)
+                        sb.Append(separator);
+                }
+                sb.Append(Environment.NewLine);
+            }
+            File.WriteAllText(filePath, sb.ToString());
+        }
         
         #endregion
     }

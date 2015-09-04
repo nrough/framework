@@ -88,6 +88,6 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 Console.Write("{0} ", i);
             }
             Console.WriteLine();            
-        }
+        }r
     }
 }

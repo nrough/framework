@@ -335,7 +335,7 @@ namespace Infovision.Math
             double c = assoc[2];
             double d = assoc[3];
 
-            return (a + b + d) / (a + b + c + d);  //denominarot was v1.Length in the original formula
+            return (a + b + d) / (a + b + c + d);  //denominator was v1.Length in the original formula
         }
 
         public static double SimpsonB(double[] v1, double[] v2, double[] w)

@@ -124,7 +124,7 @@
     <Compile Include="ReductFactory.cs" />
     <Compile Include="ReductGenerator.cs" />
     <Compile Include="ReductMeasure.cs" />
-    <Compile Include="EquivalenceClassInfo.cs" />
+    <Compile Include="EquivalenceClass.cs" />
     <Compile Include="ReductStore.cs" />
     <Compile Include="ReductStoreMulti.cs" />
     <Compile Include="ReductStoreWeights.cs" />

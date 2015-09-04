@@ -85,6 +85,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clustering\Hierarchical\AgnesTest.cs" />
+    <Compile Include="Clustering\Hierarchical\DistanceMatrix.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DiscretizationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

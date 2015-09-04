@@ -135,10 +135,14 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual IReductStore CreateReductStoreFromPermutationList(PermutationList permutationList, Args args)
         {
+            bool useCache = false;
+            if (args.Exist("USECACHE"))
+                useCache = true;
+
             IReductStore reductStore = this.CreateReductStore(args);
             foreach (Permutation permutation in permutationList)
             {
-                IReduct reduct = this.CalculateReduct(permutation, reductStore);
+                IReduct reduct = this.CalculateReduct(permutation, reductStore, useCache);
                 reductStore.AddReduct(reduct);
             }
 
@@ -156,17 +160,17 @@ namespace Infovision.Datamining.Roughset
             return new Reduct(this.DataStore, fieldIds);
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
+        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache)
         {
             IReduct reduct = this.CreateReductObject(new int[]{});
 
-            this.Reach(reduct, permutation, reductStore);
-            this.Reduce(reduct, permutation, reductStore);
+            this.Reach(reduct, permutation, reductStore, useCache);
+            this.Reduce(reduct, permutation, reductStore, useCache);
 
             return reduct;
         }
 
-        protected virtual void Reach(IReduct reduct, Permutation permutation, IReductStore reductStore)
+        protected virtual void Reach(IReduct reduct, Permutation permutation, IReductStore reductStore, bool useCache)
         {
             DataStoreInfo info = this.DataStore.DataStoreInfo;
 
@@ -174,14 +178,14 @@ namespace Infovision.Datamining.Roughset
             {
                 reduct.AddAttribute(permutation[i]);
 
-                if (this.IsReduct(reduct, reductStore))
+                if (this.IsReduct(reduct, reductStore, useCache))
                 {
                     return;
                 }
             }
         }
 
-        protected virtual void Reduce(IReduct reduct, Permutation permutation, IReductStore reductStore)
+        protected virtual void Reduce(IReduct reduct, Permutation permutation, IReductStore reductStore, bool useCache)
         {
             int len = permutation.Length - 1;
             for (int i = len; i >= 0; i--)
@@ -189,7 +193,7 @@ namespace Infovision.Datamining.Roughset
                 int attributeId = permutation[i];
                 if (reduct.RemoveAttribute(attributeId))
                 {
-                    if (!this.IsReduct(reduct, reductStore))
+                    if (!this.IsReduct(reduct, reductStore, useCache))
                     {
                         reduct.AddAttribute(attributeId);
                     }
@@ -211,21 +215,27 @@ namespace Infovision.Datamining.Roughset
             */
         }
 
-        protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore)
+        protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
         {
             string key = this.GetReductCacheKey(reduct);
-            ReductCacheInfo reductInfo = ReductCache.Instance.Get(key) as ReductCacheInfo;
-            if (reductInfo != null)
+            ReductCacheInfo reductInfo = null;
+
+            if (useCache)
             {
-                if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.Yes)
-                    return true;
-                if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.No)
-                    return false;
+                reductInfo = ReductCache.Instance.Get(key) as ReductCacheInfo;
+                if (reductInfo != null)
+                {
+                    if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.Yes)
+                        return true;
+                    if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.No)
+                        return false;
+                }
             }
 
             if (reductStore.IsSuperSet(reduct))
             {
-                this.UpdateReductCacheInfo(reductInfo, key, true);
+                if(useCache)
+                    this.UpdateReductCacheInfo(reductInfo, key, true);
                 return true;
             }
 
@@ -234,11 +244,13 @@ namespace Infovision.Datamining.Roughset
             if (partitionQuality >= ((((double)1 - this.ApproximationLevel) * this.DataSetQuality) - (0.0001 / (double)this.DataStore.NumberOfRecords)))
             // >>>> if (partitionQuality >= (((double)1 - this.ApproximationLevel - (0.0001 / (double)this.DataStore.NumberOfRecords)) * this.DataSetQuality) )
             {
-                this.UpdateReductCacheInfo(reductInfo, key, true);
+                if(useCache)
+                    this.UpdateReductCacheInfo(reductInfo, key, true);
                 return true;
             }
 
-            this.UpdateReductCacheInfo(reductInfo, key, false);
+            if(useCache)
+                this.UpdateReductCacheInfo(reductInfo, key, false);
             return false;
         }
 
@@ -258,6 +270,7 @@ namespace Infovision.Datamining.Roughset
                 ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.ApproximationLevel));
             }
         }
+
 
         protected virtual string GetReductCacheKey(IReduct reduct)
         {

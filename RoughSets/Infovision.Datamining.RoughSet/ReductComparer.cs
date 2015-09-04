@@ -55,9 +55,10 @@ namespace Infovision.Datamining.Roughset
 
     public class BireductRelativeComparer : Comparer<IReduct>
     {
+        BireductMeasureRelative bireductMeasureRelative = new BireductMeasureRelative();
+
         public override int Compare(IReduct left, IReduct right)
-        {
-            BireductMeasureRelative bireductMeasureRelative = new BireductMeasureRelative();
+        {            
             double leftResult = bireductMeasureRelative.Calc(left);
             double rightResult = bireductMeasureRelative.Calc(right);
 
@@ -70,6 +71,17 @@ namespace Infovision.Datamining.Roughset
                 return -1;
             }
 
+            return 0;
+        }
+    }
+
+    public class DiversityComparer : Comparer<IReduct>
+    {
+        
+        
+        public override int Compare(IReduct left, IReduct right)
+        {
+            //TODO
             return 0;
         }
     }

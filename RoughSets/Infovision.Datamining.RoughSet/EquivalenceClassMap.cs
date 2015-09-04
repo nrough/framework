@@ -8,11 +8,11 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class EquivalenceClassMap : IEnumerable<EquivalenceClassInfo>, ICloneable
+    public class EquivalenceClassMap : IEnumerable<EquivalenceClass>, ICloneable
     {
         #region Globals
 
-        private Dictionary<DataVector, EquivalenceClassInfo> partitions;
+        private Dictionary<DataVector, EquivalenceClass> partitions;
         private Dictionary<Int64, int> decisionCount;
         private bool decisionCountCalculated;
 
@@ -22,20 +22,20 @@ namespace Infovision.Datamining.Roughset
 
         private EquivalenceClassMap()
         {
-            this.partitions = new Dictionary<DataVector, EquivalenceClassInfo>();
+            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
             this.decisionCount = new Dictionary<Int64, int>();
             this.decisionCountCalculated = false;
         }
         
         public EquivalenceClassMap(DataStoreInfo dataStoreInfo)
         {
-            this.partitions = new Dictionary<DataVector, EquivalenceClassInfo>();
+            this.partitions = new Dictionary<DataVector, EquivalenceClass>();
             this.InitDecisionCount(dataStoreInfo);
         }
 
         private EquivalenceClassMap(EquivalenceClassMap roughPartitionMap)
         {
-            this.partitions = (Dictionary<DataVector, EquivalenceClassInfo>) roughPartitionMap.Partitions.CloneDictionaryCloningValues<DataVector, EquivalenceClassInfo>();
+            this.partitions = (Dictionary<DataVector, EquivalenceClass>) roughPartitionMap.Partitions.CloneDictionaryCloningValues<DataVector, EquivalenceClass>();
             this.decisionCount = new Dictionary<Int64, int>(roughPartitionMap.DecisionCount);
             this.decisionCountCalculated = roughPartitionMap.DecisionCountCalculated;
         }
@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        public Dictionary<DataVector, EquivalenceClassInfo> Partitions
+        public Dictionary<DataVector, EquivalenceClass> Partitions
         {
             get { return partitions; }
         }
@@ -100,14 +100,14 @@ namespace Infovision.Datamining.Roughset
         private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex)
         {
             DataVector record = dataStore.GetDataVector(objectIndex, attributeArray);
-            EquivalenceClassInfo reductStatistic = null;
+            EquivalenceClass reductStatistic = null;
             if (this.partitions.TryGetValue(record, out reductStatistic))
             {
                 reductStatistic.AddObject(objectIndex, dataStore);
             }
             else
             {
-                reductStatistic = new EquivalenceClassInfo(dataStore.DataStoreInfo);
+                reductStatistic = new EquivalenceClass(dataStore.DataStoreInfo);
                 reductStatistic.AddObject(objectIndex, dataStore);
                 this.partitions[record] = reductStatistic;
             }
@@ -115,13 +115,13 @@ namespace Infovision.Datamining.Roughset
 
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet)
         {
-            Dictionary<DataVector, EquivalenceClassInfo> localPartitions = new Dictionary<DataVector, EquivalenceClassInfo>();
+            Dictionary<DataVector, EquivalenceClass> localPartitions = new Dictionary<DataVector, EquivalenceClass>();
             int[] attributeArray = attributeSet.ToArray();
 
             foreach (int objectIndex in objectSet)
             {
                 DataVector record = dataStore.GetDataVector(objectIndex, attributeArray);
-                EquivalenceClassInfo reductStatistic = null;
+                EquivalenceClass reductStatistic = null;
                 if (localPartitions.TryGetValue(record, out reductStatistic))
                 {
                     reductStatistic.AddObject(objectIndex, dataStore);
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    reductStatistic = new EquivalenceClassInfo(dataStore.DataStoreInfo);
+                    reductStatistic = new EquivalenceClass(dataStore.DataStoreInfo);
                     reductStatistic.AddObject(objectIndex, dataStore);
                     localPartitions[record] = reductStatistic;
                 }
@@ -140,16 +140,16 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        public EquivalenceClassInfo GetStatistics(DataVector dataVector)
+        public EquivalenceClass GetEquivalenceClass(DataVector dataVector)
         {
-            EquivalenceClassInfo reductStatstic = null;
+            EquivalenceClass reductStatstic = null;
             if (this.partitions.TryGetValue(dataVector, out reductStatstic))
             {
                 return reductStatstic;
             }
             else
             {
-                reductStatstic = new EquivalenceClassInfo();
+                reductStatstic = new EquivalenceClass();
                 this.partitions.Add(dataVector, reductStatstic);
             }
 
@@ -171,7 +171,7 @@ namespace Infovision.Datamining.Roughset
         /// Returns an IEnumerator to enumerate through the partition map.
         /// </summary>
         /// <returns>An IEnumerator instance.</returns>
-        public IEnumerator<EquivalenceClassInfo> GetEnumerator()
+        public IEnumerator<EquivalenceClass> GetEnumerator()
         {
             return partitions.Values.GetEnumerator();
         }
@@ -199,7 +199,7 @@ namespace Infovision.Datamining.Roughset
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (KeyValuePair<DataVector, EquivalenceClassInfo> kvp in this.partitions)
+            foreach (KeyValuePair<DataVector, EquivalenceClass> kvp in this.partitions)
             {
                 stringBuilder.AppendLine(kvp.Value.ToString());
             }

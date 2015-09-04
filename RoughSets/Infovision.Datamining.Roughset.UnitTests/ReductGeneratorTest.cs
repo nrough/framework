@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore.DataStoreInfo);
                         partitionMap.Calc(reduct.AttributeSet, localDataStore, reduct.ObjectSet);
 
-                        foreach (EquivalenceClassInfo stats in partitionMap)
+                        foreach (EquivalenceClass stats in partitionMap)
                         {
                             Assert.AreEqual(1, stats.NumberOfDecisions);
                         }
@@ -138,7 +138,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore.DataStoreInfo);
                 partitionMap.Calc(reduct.AttributeSet, localDataStore, reduct.ObjectSet);
 
-                foreach (EquivalenceClassInfo stats in partitionMap)
+                foreach (EquivalenceClass stats in partitionMap)
                 {
                     Assert.AreEqual(1, stats.NumberOfDecisions);
                 }

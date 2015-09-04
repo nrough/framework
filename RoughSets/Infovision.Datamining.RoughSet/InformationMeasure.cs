@@ -64,7 +64,7 @@ namespace Infovision.Datamining.Roughset
         public override double Calc(IReduct reduct)
         {
             int result = 0;
-            foreach (EquivalenceClassInfo e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 if (e.NumberOfDecisions == 1)
                 {
@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset
             double maxDecisionProbability = -1;
             double decProbability;
 
-            foreach (EquivalenceClassInfo e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 maxDecisionProbability = -1;
                 foreach (Int64 decisionValue in e.DecisionValues)
@@ -141,7 +141,7 @@ namespace Infovision.Datamining.Roughset
             double maxDecisionProbability = -1;
             double decProbability;
 
-            foreach (EquivalenceClassInfo e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 maxDecisionProbability = -1;
                 foreach (Int64 decisionValue in e.DecisionValues)
@@ -181,7 +181,7 @@ namespace Infovision.Datamining.Roughset
         public override double Calc(IReduct reduct)
         {
             double result = 0;
-            foreach (EquivalenceClassInfo e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 double maxValue = 0;
                 Int64 maxDecision = -1;

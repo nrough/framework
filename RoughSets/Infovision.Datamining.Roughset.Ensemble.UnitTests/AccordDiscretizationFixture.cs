@@ -19,7 +19,6 @@ using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
-using Infovision.Datamining.Roughset;
 
 
 namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
@@ -41,9 +40,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 		private string filename;
 		private string[] nominalAttributes;
 		private string[] continuesAttributes;
-		private int numberOfFolds;
 		private int numberOfHistBins;
-		private int numberOfPermutations;
 
 		#endregion
 
@@ -79,8 +76,8 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 		#region Test Methods        
 	
 
-        //[TestCase(2, 1, 20)]
-        //[TestCase(2, 1, 5)]
+		//[TestCase(2, 1, 20)]
+		//[TestCase(2, 1, 5)]
 		//[TestCase(2, 1, 10)]
 		//[TestCase(2, 3, 5)]
 		//[TestCase(2, 3, 10)]
@@ -88,8 +85,8 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 		//[TestCase(2, 5, 10)]
 		//[TestCase(2, 7, 5)]
 		//[TestCase(2, 7, 10)]
-        
-        [TestCase(2, 7, 20)]
+		
+		[TestCase(2, 7, 20)]
 		public void LoadDataTable(int cvFolds, int numberOfReducts, int epsilon)
 		{
 			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
@@ -110,14 +107,14 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				rawData.Columns[i].ColumnName = "a" + i.ToString();
 			rawData.Columns[decisionIdx].ColumnName = "d";
 
-			rawData.WriteToCSVFile(String.Format("{0}.csv", "RawData"), " ");
+			//rawData.WriteToCSVFile(String.Format("{0}.csv", "RawData"), " ");
 
 			// Create a new codification codebook to
 			// convert strings into integer symbols
 			Codification codebook = new Codification(rawData, nominalAttributes);
 
 			DataTable tmpSymbols = codebook.Apply(rawData);
-			tmpSymbols.WriteToCSVFile(String.Format("{0}.csv", "TmpSymbols"), " ");
+			//tmpSymbols.WriteToCSVFile(String.Format("{0}.csv", "TmpSymbols"), " ");
 
 			DataTable symbols = tmpSymbols.Clone();
 			symbols.Columns["id"].DataType = typeof(int);
@@ -132,7 +129,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			tmpSymbols.Dispose();
 			tmpSymbols = null;
 						
-            int[] folds = CrossValidation.Splittings(symbols.Rows.Count, cvFolds);
+			int[] folds = CrossValidation.Splittings(symbols.Rows.Count, cvFolds);
 			CrossValidation<RoughClassifier> val = new CrossValidation<RoughClassifier>(folds, cvFolds);
 			val.RunInParallel = false;           
 
@@ -144,10 +141,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 				DataTable validationSet = symbols.Subtable(indicesValidation);
 				validationSet.TableName = "Test-" + k.ToString();
-				validationSet.WriteToCSVFile(String.Format("{0}.csv", validationSet.TableName), " ");
-
-				//Accord.Statistics.Visualizations.Histogram[] histograms
-				//	= new Accord.Statistics.Visualizations.Histogram[continuesAttributes.Length];
+				validationSet.WriteToCSVFile(String.Format("{0}.csv", validationSet.TableName), " ");				
 				
 				Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization[] discretizations
 					= new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization[continuesAttributes.Length];
@@ -217,7 +211,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
 				DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);
 
-				//localDataStoreTrain.WriteToCSVFile(String.Format("{0}-Store.csv", trainingSet.TableName), " ");
+				localDataStoreTrain.WriteToCSVFile(String.Format("{0}-Store.csv", trainingSet.TableName), " ");
 				//localDataStoreTest.WriteToCSVFile(String.Format("{0}-Store.csv", validationSet.TableName), " ");
 
 				//localDataStoreTrain.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", trainingSet.TableName), " ");
@@ -229,28 +223,27 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				RoughClassifier roughClassifier = new RoughClassifier();
 				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
-                double[][] discernVerctor = new double[roughClassifier.ReductStore.Count][];
-                
-                for(int i=0; i<roughClassifier.ReductStore.Count; i++)
-                {
-                    var reduct = roughClassifier.ReductStore.GetReduct(i);
-                    discernVerctor[i] = GetDiscernibilityVector(localDataStoreTrain, reduct, reduct.Weights);
-
-                    var measure = new InformationMeasureMajority().Calc(reduct);
-                    Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
-                }
-                    
-
-				IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
-				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
-				classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
-
 				IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
 				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
 				classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
 
-				//Console.WriteLine("Training result: {0}", classificationResultTrn.Accuracy);
-				//Console.WriteLine("Validation result: {0}", classificationResultTst.Accuracy);
+				for(int i=0; i<roughClassifier.ReductStore.Count; i++)
+				{
+					var reduct = roughClassifier.ReductStore.GetReduct(i);
+					var measure = new InformationMeasureMajority().Calc(reduct);
+					Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
+
+					double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
+					for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
+					{
+						Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVerctor[j]);
+					}
+					Console.Write(Environment.NewLine);
+				}
+
+				IReductStore reductStoreTst = roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType);
+				classificationResultTst.QualityRatio = reductStoreTst.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));							
 
 				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
@@ -264,19 +257,111 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
 		}
 
-        public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
-        {
-            double[] dicernVector = new double[data.NumberOfRecords];            
-            foreach (EquivalenceClassInfo eqClass in reduct.EquivalenceClassMap)
-            {
-                foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MostFrequentDecision))
-                {
-                    dicernVector[objectIdx] = weightVector[objectIdx];
-                }
-            }
+		public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
+		{
+			double[] dicernVector = new double[data.NumberOfRecords];            
+			foreach (EquivalenceClass eqClass in reduct.EquivalenceClassMap)
+			{
+				//TODO Most frequent decision is ok for normal approximate reducts
+				//TODO for weighted approximate reduct we should choose dicision with highest object weight sum?
 
-            return dicernVector;
-        }
+				foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MostFrequentDecision))
+				{
+					dicernVector[objectIdx] = weightVector[objectIdx];
+				}
+			}
+
+			return dicernVector;
+		}
+
+		
+
+		[TestCase(7, 20)]
+		public void DiscernibilityVectorTest(int numberOfReducts, int epsilon)
+		{
+			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
+			permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
+			
+			DataTable rawData;
+			using (GenericParserAdapter gpa = new GenericParserAdapter(@"Data\DiscernibilityVectorTest.csv"))
+			{
+				gpa.ColumnDelimiter = " ".ToCharArray()[0];
+				gpa.FirstRowHasHeader = true;
+				gpa.IncludeFileLineNumber = false;
+				gpa.TrimResults = true;
+
+				rawData = gpa.GetDataTable();
+			}
+
+			DataTable symbols = rawData.Clone();
+			foreach (DataColumn col in symbols.Columns)
+			{
+				col.DataType = typeof(int);
+			}
+
+			foreach (DataRow row in rawData.Rows)
+			{
+				symbols.ImportRow(row);
+			}
+
+			rawData.Dispose();
+			rawData = null;
+
+			//1 = Id
+			//2 = a1
+			//...
+			//21 = a20
+			//d not exist (only conditional attributes)
+			//Permutation permutation = new Permutation(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
+            PermutationList permList;
+
+            //permList = new PermutationList(permutation);
+            permList = this.permutationList;
+
+			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			
+			RoughClassifier roughClassifier = new RoughClassifier();
+			roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permList);
+
+			IReductStore reductStoreTrn = roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType);
+			classificationResultTrn.QualityRatio = reductStoreTrn.GetAvgMeasure(ReductFactory.GetReductMeasure(reductMeasureKey));
+
+			for(int i=0; i<roughClassifier.ReductStore.Count; i++)
+			{
+				var reduct = roughClassifier.ReductStore.GetReduct(i);
+				var measure = new InformationMeasureMajority().Calc(reduct);
+				Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
+
+				double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
+				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
+				{
+					Int64 objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);
+					Console.Write("({0} {1}) ", objectId, discernVerctor[j]);
+
+					Int64 decisionValue = localDataStoreTrain.GetDecisionValue(j);
+					EquivalenceClassMap eqMap = reduct.EquivalenceClassMap;
+					DataVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.AttributeSet);
+					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
+					Int64 mostFrequentDecisionValue = eqClass.MostFrequentDecision;
+
+					
+                    if (decisionValue == mostFrequentDecisionValue)
+					{
+                        if(eqClass.NumberOfObjectsWithDecision(0) != eqClass.NumberOfObjectsWithDecision(1))
+                            Assert.Greater(discernVerctor[j], 0);                                                   
+					}
+					else
+					{
+                        if (eqClass.NumberOfObjectsWithDecision(0) != eqClass.NumberOfObjectsWithDecision(1))
+                            Assert.AreEqual(0, discernVerctor[j]);
+					}
+                    
+				}
+				Console.Write(Environment.NewLine);
+			}
+								
+		}
+
 
 		public void HistogramTest()
 		{

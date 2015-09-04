@@ -112,7 +112,7 @@ namespace Infovision.Datamining.Roughset
 
             #region Methods
 
-            public void AddDescription(Int64 decision, IReduct reduct, EquivalenceClassInfo reductStatistic)
+            public void AddDescription(Int64 decision, IReduct reduct, EquivalenceClass reductStatistic)
             {
                 
                 decisionSupport.Add(decision, support.Calc(decision, reduct, reductStatistic));
@@ -160,7 +160,7 @@ namespace Infovision.Datamining.Roughset
             public Int64 GetIdentifiedDecision(string measureKey)
             {
                 return identifiedDecision[measureKey];
-            }
+            }            
 
             public double GetSupport(Int64 decisionValue)
             {
@@ -373,6 +373,7 @@ namespace Infovision.Datamining.Roughset
             args.AddParameter("ApproximationRatio", approximationRatio);
             args.AddParameter("NumberOfThreads", 32);
             args.AddParameter("PermutationList", permutations);
+            //args.AddParameter("USECACHE", null);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(reductFactoryKey, args);
 
@@ -385,6 +386,7 @@ namespace Infovision.Datamining.Roughset
             Args args = new Args();
             args.AddParameter("DataStore", trainingData);
             args.AddParameter("ApproximationRatio", approximationRatio);
+            //args.AddParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
             PermutationList permutations = permGen.Generate(numberOfPermutations);
@@ -394,7 +396,10 @@ namespace Infovision.Datamining.Roughset
 
         public IReductStore Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStore reductStore)
         {
-            IReductStore localReductStore = reductStore.FilterReducts(numberOfReducts, ReductFactory.GetReductComparer(reductMeasureKey));
+
+            Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
+
+            IReductStore localReductStore = reductStore.FilterReducts(numberOfReducts, reductComparer);
 
             this.objectReductDescriptorMap = new Dictionary<Int64, ReductRuleDescriptor>(dataStore.NumberOfRecords);
             
@@ -431,7 +436,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 DataVector dataVector = new DataVector(dataVectorArray, false);
-                EquivalenceClassInfo reductStatistic = reduct.EquivalenceClassMap.GetStatistics(dataVector);
+                EquivalenceClass reductStatistic = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
                 DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
                 foreach (Int64 decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
@@ -444,6 +449,56 @@ namespace Infovision.Datamining.Roughset
             }
 
             return reductRuleDescrptor;            
+        }
+
+        public double[] GetDiscernibilityVector(DataStore data, double[] weights, IReduct reduct, IdentificationType decisionIdentificationType)
+        {
+            double[] result = new double[data.NumberOfRecords];
+            foreach(Int64 objectId in data.GetObjectIds())
+            {
+                int objectIdx = data.ObjectId2ObjectIndex(objectId);
+                ReductRuleDescriptor reductDescriptor = this.objectReductDescriptorMap[objectId];
+                DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
+                
+                Int64 decision = -1;
+                switch (decisionIdentificationType)
+                {
+                    case IdentificationType.Support:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Support.Description());
+                        break;
+
+                    case IdentificationType.Confidence:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Confidence.Description());
+                        break;
+
+                    case IdentificationType.Coverage:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Coverage.Description());
+                        break;
+
+                    case IdentificationType.WeightSupport:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightSupport.Description());
+                        break;
+
+                    case IdentificationType.WeightConfidence:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightConfidence.Description());
+                        break;
+
+                    case IdentificationType.WeightCoverage:
+                        decision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightCoverage.Description());
+                        break;
+
+                    default:
+                        throw new ArgumentException("Unknown value", "identificationType");
+                }
+                
+                if (decision == data.GetDecisionValue(objectIdx))
+                {
+                    result[objectIdx] = weights[objectIdx];
+                }
+            }
+
+            return result;
+            
         }
 
         public ClassificationResult Vote(DataStore dataStore, IdentificationType identificationType, VoteType voteType)

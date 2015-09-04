@@ -142,7 +142,7 @@ namespace Infovision.Datamining.Roughset
         public override Double Calc(IReduct reduct)
         {
             Double result = 0;
-            foreach (Int32 objectIdx in reduct.ObjectSet)
+            foreach (int objectIdx in reduct.ObjectSet)
             {
                 Int64 decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
                 result += (Double)reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue) / (Double)reduct.ObjectSetInfo.NumberOfRecords;

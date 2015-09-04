@@ -6,7 +6,7 @@ using Infovision.Data;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class EquivalenceClassInfo : ICloneable
+    public class EquivalenceClass : ICloneable
     {
         #region Globals
         
@@ -18,26 +18,26 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public EquivalenceClassInfo()
+        public EquivalenceClass()
         {
             this.decisionCount = new Dictionary<Int64, int>();
             this.objectIndexes = new HashSet<int>();
             this.decisionObjectIndexes = new Dictionary<Int64, HashSet<int>>();
         }
 
-        public EquivalenceClassInfo(int numberOfDecisions)
+        public EquivalenceClass(int numberOfDecisions)
         {
             this.decisionCount = new Dictionary<Int64, int>(numberOfDecisions);
             this.objectIndexes = new HashSet<int>();
             this.decisionObjectIndexes = new Dictionary<Int64, HashSet<int>>(numberOfDecisions);
         }
 
-        public EquivalenceClassInfo(DataStoreInfo dataStoreInfo)
+        public EquivalenceClass(DataStoreInfo dataStoreInfo)
             : this(dataStoreInfo.GetFieldInfo(dataStoreInfo.DecisionFieldId).InternalValues().Count)
         {            
         }
 
-        public EquivalenceClassInfo(EquivalenceClassInfo equivalenceClassInfo)
+        public EquivalenceClass(EquivalenceClass equivalenceClassInfo)
         {
             this.decisionCount = new Dictionary<Int64, int>(equivalenceClassInfo.DecisionCount);
             this.objectIndexes = new HashSet<int>(equivalenceClassInfo.objectIndexes);
@@ -205,7 +205,7 @@ namespace Infovision.Datamining.Roughset
         /// <returns>A new instance of a EquivalenceClassMap, using a deep copy.</returns>
         public virtual object Clone()
         {
-            return new EquivalenceClassInfo(this);
+            return new EquivalenceClass(this);
         }
         #endregion
 

@@ -102,6 +102,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\DiscernibilityVectorTest.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\german.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

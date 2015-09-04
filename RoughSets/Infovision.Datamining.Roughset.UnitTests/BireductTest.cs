@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                foreach (EquivalenceClassInfo reductStat in reduct.EquivalenceClassMap)
+                foreach (EquivalenceClass reductStat in reduct.EquivalenceClassMap)
                 {
                     Assert.AreEqual(1, reductStat.NumberOfDecisions);
                 }

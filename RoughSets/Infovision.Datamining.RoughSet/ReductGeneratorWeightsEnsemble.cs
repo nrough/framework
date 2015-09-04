@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset
             return this.CreateReductStoreFromPermutationList(permutationList, args);
         }
 
-        protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
+        protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache)
         {
             /*
             int[] elements = new int[this.numberOfAttributes];
@@ -69,11 +69,15 @@ namespace Infovision.Datamining.Roughset
             return base.CalculateReduct(p, reductStore); 
             */
 
-            return base.CalculateReduct(permutation, reductStore);
+            return base.CalculateReduct(permutation, reductStore, useCache);
         }
 
         protected override IReductStore CreateReductStoreFromPermutationList(PermutationList permutationList, Args args)
         {
+            bool useCache = false;
+            if (args.Exist("USECACHE"))
+                useCache = true;
+
             IReductStore reductStore = this.CreateReductStore(args);
             permutationReductStore = new List<IReductStore>(permutationList.Count);
 
@@ -82,7 +86,7 @@ namespace Infovision.Datamining.Roughset
                 IReductStore localReductStore = this.CreateReductStore(args);
                 for (int i = 0; i < this.NumberOfIterations; i++)
                 {
-                    IReduct reduct = this.CalculateReduct(permutation, localReductStore);
+                    IReduct reduct = this.CalculateReduct(permutation, localReductStore, useCache);
                     localReductStore.AddReduct(reduct);
                     this.wgen.NewReduct(reduct);
                 }

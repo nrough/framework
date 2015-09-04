@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset
             this.NumberOfReducts++;
 
             //TODO Calculate max according to the type of 
-            foreach (EquivalenceClassInfo e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
                 double maxValue = 0;
                 Int64 maxDecision = -1;

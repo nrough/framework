@@ -12,10 +12,10 @@ namespace Infovision.Data
         [CLSCompliant(false)]
         public static DataStore ToDataStore(this DataTable source, Codification codification, int decisionIdx = -1, int idIdx = -1)
         {
-            if (idIdx == -1 && codification.Columns.Count != source.Columns.Count)
-                throw new InvalidOperationException("Number of columns in source tabe and codification description must be the same");
-            if (idIdx != -1 && codification.Columns.Count != (source.Columns.Count - 1))
-                throw new InvalidOperationException("Number of columns in source tabe and codification description must be the same");
+            //if (idIdx == -1 && codification.Columns.Count != source.Columns.Count)
+            //    throw new InvalidOperationException("Number of columns in source table and codification description must be the same");
+            //if (idIdx != -1 && codification.Columns.Count != (source.Columns.Count - 1))
+            //    throw new InvalidOperationException("Number of columns in source table and codification description must be the same");
 
             DataStoreInfo dataStoreInfo = new DataStoreInfo();
             dataStoreInfo.NumberOfRecords = source.Rows.Count;
@@ -26,32 +26,32 @@ namespace Infovision.Data
             for (int i = 0; i < source.Columns.Count; i++)
             {
                 DataColumn col = source.Columns[i];
-                bool isFieldCodified = codification.Columns.Contains(col.ColumnName);
+                bool isFieldCodified = (codification != null) ? codification.Columns.Contains(col.ColumnName) : false;
                 Type columnType = isFieldCodified ? typeof(String) : col.DataType;
 
                 DataFieldInfo fieldInfo = new DataFieldInfo(i + 1, columnType);
                 fieldInfo.Name = col.ColumnName;
                 fieldInfo.NameAlias = col.ColumnName;
                 fieldIds[i] = fieldInfo.Id;
-
-                //Codification does not contain all columns e.g. continues attributes and id
-                if (isFieldCodified)
-                {                    
-                    foreach (KeyValuePair<string, int> kvp in codification.Columns[col.ColumnName].Mapping)
-                    {
-                        fieldInfo.AddInternal((long)kvp.Value, kvp.Key);
-                    }
-                }
-                else if (i == idIdx)
+                
+                if (i == idIdx || codification == null)
                 {
+                    //Get unchanged Id
                     for (int j = 0; j < source.Rows.Count; j++)
                     {
                         int idValue = source.Rows[j].Field<int>(i);
                         fieldInfo.AddInternal((long)idValue, idValue);
                     }
                 }
-
-                
+                //Codification does not contain all columns e.g. continues attributes and id
+                else if (isFieldCodified)
+                {                    
+                    foreach (KeyValuePair<string, int> kvp in codification.Columns[col.ColumnName].Mapping)
+                    {
+                        fieldInfo.AddInternal((long)kvp.Value, kvp.Key);
+                    }
+                }
+                                
 
                 if (i == decisionIdx)
                 {

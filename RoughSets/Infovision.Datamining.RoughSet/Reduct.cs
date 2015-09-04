@@ -15,8 +15,8 @@ namespace Infovision.Datamining.Roughset
         private EquivalenceClassMap eqClassMap;
         
         protected double[] objectWeights;
-        //TODO
-        //private List<int> attributeOrder;
+        
+        //TODO private List<int> attributeOrder;
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CheckRemoveAttribute(int attributeId)
         {
-            return this.attributeSet.ContainsElement(attributeId) == true;
+            return this.attributeSet.ContainsElement(attributeId);
         }
 
         //TODO removeAt

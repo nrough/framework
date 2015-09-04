@@ -222,8 +222,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajorityWeights", parms);
-            PermutationList permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(1000);
+            parms.AddParameter("PermutationCollection", permutationList);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductMajorityWeights", parms);
 
@@ -272,8 +272,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductMajorityWeights", parms);
-            PermutationList permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(1000);
+            parms.AddParameter("PermutationCollection", permutationList);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductMajorityWeights", parms);
             IReductStore reductStore = reductGenerator.Generate(parms);
@@ -295,8 +295,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeights", parms);
-            PermutationList permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(1000);
+            parms.AddParameter("PermutationCollection", permutationList);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelativeWeights", parms);
             IReductStore reductStore = reductGenerator.Generate(parms);

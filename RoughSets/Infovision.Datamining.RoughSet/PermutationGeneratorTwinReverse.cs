@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override PermutationList Generate(int numberOfPermutations)
+        public override PermutationCollection Generate(int numberOfPermutations)
         {
             List<Permutation> permutationList = new List<Permutation>(numberOfPermutations);
             for (int i = 0; i < (numberOfPermutations / 2); i++)
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
                 permutationList.Add(this.CreatePermutation());
             }
 
-            return new PermutationList(permutationList);
+            return new PermutationCollection(permutationList);
         }
 
         #endregion

@@ -70,8 +70,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
             
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", args);
-            PermutationList permutationList = permGen.Generate(20);
-            args.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(20);
+            args.AddParameter("PermutationCollection", permutationList);
             
             IReductStore redStore = redGenStd.Generate(args);
             IReductStore redStoreW = redGenWgh.Generate(args);
@@ -103,8 +103,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", args);
-            PermutationList permutationList = permGen.Generate(100);
-            args.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(100);
+            args.AddParameter("PermutationCollection", permutationList);
 
             IReductStore redStore = redGenStd.Generate(args);
             IReductStore redStoreW = redGenWgh.Generate(args);
@@ -130,7 +130,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
-            PermutationList permutationList = permGen.Generate(5);
+            PermutationCollection permutationList = permGen.Generate(5);
 
             roughClassifier.Train(localDataStore, "ApproximateReductRelative", 20, permutationList);
 
@@ -159,7 +159,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
-            PermutationList permutationList = permGen.Generate(5);
+            PermutationCollection permutationList = permGen.Generate(5);
 
             roughClassifier.Train(localDataStore, "ApproximateReductMajority", 20, permutationList);
 
@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             RoughClassifier roughClassifier = new RoughClassifier();
 
-            PermutationList permutationList = new PermutationList();
+            PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new Int32[] { 3, 4, 2, 1 }));
             permutationList.Add(new Permutation(new Int32[] { 4, 3, 1, 2 }));
@@ -214,7 +214,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             RoughClassifier roughClassifier = new RoughClassifier();
 
-            PermutationList permutationList = new PermutationList();
+            PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new Int32[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new Int32[] { 3, 4, 2, 1 }));
             permutationList.Add(new Permutation(new Int32[] { 4, 3, 1, 2 }));
@@ -320,9 +320,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args = new Args();
             args.AddParameter("DataStore", localDataStore);
             
-            PermutationList permutationList = ReductFactory.GetPermutationGenerator(reductGeneratorKey1, args).Generate(10);
+            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(reductGeneratorKey1, args).Generate(10);
             
-            args.AddParameter("PermutationList", permutationList);
+            args.AddParameter("PermutationCollection", permutationList);
             args.AddParameter("ApproximationRatio", 10);
             
             IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(reductGeneratorKey1, args);

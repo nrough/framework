@@ -30,14 +30,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("NumberOfThreads", 1);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelative", parms);
-            parms.AddParameter("PermutationList", permGen.Generate(100));
+            parms.AddParameter("PermutationCollection", permGen.Generate(100));
             
             reductGenerator = ReductFactory.GetReductGenerator("ApproximateReductRelative", parms);
 
             Args parmsMulti = new Args();
             parmsMulti.AddParameter("DataStore", dataStoreTrain);
             parmsMulti.AddParameter("NumberOfThreads", InfovisionHelper.NumberOfCores());
-            parmsMulti.AddParameter("PermutationList", (PermutationList)parms.GetParameter("PermutationList"));
+            parmsMulti.AddParameter("PermutationCollection", (PermutationCollection)parms.GetParameter("PermutationCollection"));
 
             reductGeneratorMulti = ReductFactory.GetReductGenerator("ApproximateReductRelative", parmsMulti);
         }
@@ -72,14 +72,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter("DataStore", localDataStore);
                 args.AddParameter("ApproximationRatio", i);
                 IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductType).GetPermutationGenerator(args);
-                PermutationList permutations = permGen.Generate(100);
+                PermutationCollection permutations = permGen.Generate(100);
 
                 for (int j = 0; j < 100; j++)
                 {
                     Boolean first = true;
                     if (showInfo)
                     {
-                        foreach (Int32 permElement in permutations[j].ToArray())
+                        foreach (int permElement in permutations[j].ToArray())
                         {
                             if (!first)
                             {
@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Console.Write(" & ");
                     }
 
-                    roughClassifier.Train(localDataStore, reductType, i, new PermutationList(permutations[j]));
+                    roughClassifier.Train(localDataStore, reductType, i, new PermutationCollection(permutations[j]));
 
                     foreach (IReduct reduct in roughClassifier.ReductStore)
                     {
@@ -125,12 +125,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(@"playgolf.train", FileFormat.Rses1);
             RoughClassifier roughClassifier = new RoughClassifier();
 
-            PermutationList permutationList = new PermutationList();
-            permutationList.Add(new Permutation(new Int32[] { -3, 1, 6, 8, 0, -4, 12, 11, 5, 4, 7, 3, 10, 2, 13, 9, -1, -2 }));
-            permutationList.Add(new Permutation(new Int32[] { 6, 10, -3, 4, -4, 11, 2, 12, 3, 8, 0, 9, 5, 13, 7, 1, -2, -1 }));
-            permutationList.Add(new Permutation(new Int32[] { -4, -3, 9, 1, 7, 10, -1, 6, 0, 4, 8, 12, 11, -2, 3, 5, 2, 13 }));
-            permutationList.Add(new Permutation(new Int32[] { 1, -3, 12, 8, 2, -4, 9, 13, 10, 11, 0, 3, 7, 4, 6, 5, -1, -2 }));
-            permutationList.Add(new Permutation(new Int32[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
+            PermutationCollection permutationList = new PermutationCollection();
+            permutationList.Add(new Permutation(new int[] { -3, 1, 6, 8, 0, -4, 12, 11, 5, 4, 7, 3, 10, 2, 13, 9, -1, -2 }));
+            permutationList.Add(new Permutation(new int[] { 6, 10, -3, 4, -4, 11, 2, 12, 3, 8, 0, 9, 5, 13, 7, 1, -2, -1 }));
+            permutationList.Add(new Permutation(new int[] { -4, -3, 9, 1, 7, 10, -1, 6, 0, 4, 8, 12, 11, -2, 3, 5, 2, 13 }));
+            permutationList.Add(new Permutation(new int[] { 1, -3, 12, 8, 2, -4, 9, 13, 10, 11, 0, 3, 7, 4, 6, 5, -1, -2 }));
+            permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
             
             roughClassifier.Train(localDataStore, "Bireduct", 0, permutationList);
             foreach (IReduct reduct in roughClassifier.ReductStore)
@@ -150,15 +150,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
-            Int32 start = Environment.TickCount;
+            int start = Environment.TickCount;
 
-            for (Int32 epsilon = 20; epsilon < 50; epsilon++)
+            for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGeneratorMulti.ApproximationLevel = (Double)epsilon / (Double)100;
+                reductGeneratorMulti.ApproximationLevel = (double)epsilon / (double)100;
                 IReductStore reductStore = reductGeneratorMulti.Generate(parms);
             }
 
-            Int32 stop = Environment.TickCount;
+            int stop = Environment.TickCount;
 
             Console.WriteLine("Multi-thread timing is {0}", stop - start);
         }
@@ -168,15 +168,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
-            Int32 start = Environment.TickCount;
+            int start = Environment.TickCount;
 
-            for (Int32 epsilon = 20; epsilon < 50; epsilon++)
+            for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGenerator.ApproximationLevel = (double)epsilon / (double)100;
                 IReductStore reductStore = reductGenerator.Generate(parms);
             }
 
-            Int32 stop = Environment.TickCount;
+            int stop = Environment.TickCount;
 
             Console.WriteLine("Single-thread timing is {0}", stop - start);
         }
@@ -186,26 +186,26 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ThreadPoolTest()
         {
             PascalSet[] resource = new PascalSet[10000];
-            for (Int32 i = 0; i < 10000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 resource[i] = new PascalSet(0, 1000);
-                for (Int32 j = 0; j < 1000; j++)
+                for (int j = 0; j < 1000; j++)
                 {
                     resource[i].AddElement(j);
                 }
             }
 
-            Int64[] results = new Int64[64];
+            long[] results = new long[64];
 
-            for (Int32 t = 0; t < 100; t++)
+            for (int t = 0; t < 100; t++)
             {
-                for (Int32 numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
+                for (int numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
                 {
                     resetEvents = new ManualResetEvent[numberOfThreads];
 
-                    Int32 start = Environment.TickCount;
+                    int start = Environment.TickCount;
 
-                    for (Int32 i = 0; i < numberOfThreads; i++)
+                    for (int i = 0; i < numberOfThreads; i++)
                     {
                         resetEvents[i] = new ManualResetEvent(false);
                         ThreadPool.QueueUserWorkItem(new WaitCallback(this.ThreadPoolItemTest),
@@ -214,7 +214,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     ManualResetEvent.WaitAll(resetEvents);
 
-                    Int32 stop = Environment.TickCount;
+                    int stop = Environment.TickCount;
 
                     results[numberOfThreads] += (stop - start);
                 }
@@ -228,7 +228,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private class WorkerTaskInfo
         {
-            public WorkerTaskInfo(Int32 threadIndex, Int32 numberOfThreads, PascalSet[] array, ManualResetEvent resetEvent)
+            public WorkerTaskInfo(Int32 threadIndex, int numberOfThreads, PascalSet[] array, ManualResetEvent resetEvent)
             {
                 this.ThreadIndex = threadIndex;
                 this.NumberOfThreads = numberOfThreads;
@@ -236,16 +236,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 this.ResetEvent = resetEvent;
             }
 
-            public Int32 ThreadIndex { get; set; }
-            public Int32 NumberOfThreads { get; set; }
+            public int ThreadIndex { get; set; }
+            public int NumberOfThreads { get; set; }
             public PascalSet[] Array { get; set; }
             public ManualResetEvent ResetEvent { get; set; }
         }
 
         public void ThreadPoolItemTest(Object obj)
         {
-            WorkerTaskInfo task = (WorkerTaskInfo) obj;   
-            for (Int32 i = 0; i < 10000; i += task.NumberOfThreads)
+            WorkerTaskInfo task = (WorkerTaskInfo) obj;
+            for (int i = 0; i < 10000; i += task.NumberOfThreads)
             {
                 task.Array[task.ThreadIndex].Superset(task.Array[i]);
             }

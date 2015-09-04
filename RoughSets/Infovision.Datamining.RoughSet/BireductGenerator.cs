@@ -32,12 +32,12 @@ namespace Infovision.Datamining.Roughset
             return new BireductStore();
         }
 
-        protected PermutationList FindOrCreatePermutationList(Args args)
+        protected PermutationCollection FindOrCreatePermutationList(Args args)
         {
-            PermutationList permutationList = null;
-            if (args.Exist("PermutationList"))
+            PermutationCollection permutationList = null;
+            if (args.Exist("PermutationCollection"))
             {
-                permutationList = (PermutationList)args.GetParameter("PermutationList");
+                permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
             }
             else if (args.Exist("NumberOfReducts"))
             {
@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset
 
             if (permutationList == null)
             {
-                throw new NullReferenceException("PermutationList is null");
+                throw new NullReferenceException("PermutationCollection is null");
             }
 
             return permutationList;
@@ -60,7 +60,7 @@ namespace Infovision.Datamining.Roughset
 
         public override IReductStore Generate(Args args)
         {
-            PermutationList permutationList = this.FindOrCreatePermutationList(args);
+            PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             IReductStore reductStore = this.CreateReductStore(args);
             foreach (Permutation permutation in permutationList)
             {

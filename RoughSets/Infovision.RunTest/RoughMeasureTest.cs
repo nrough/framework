@@ -22,7 +22,7 @@ namespace Infovision.RunTest
         private RoughClassifier roughClassifier = null;
         private ClassificationResult result = null;
         
-        private PermutationList permutationList = null;
+        private PermutationCollection permutationList = null;
 
         private DataStore dataStoreTrain = null;
         private DataStore dataStoreTest = null;

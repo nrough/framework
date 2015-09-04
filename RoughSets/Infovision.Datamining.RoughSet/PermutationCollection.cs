@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class PermutationList : ICloneable
+    public class PermutationCollection : ICloneable, IEnumerable<Permutation>
     {
         #region Globals
 
@@ -19,22 +19,22 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public PermutationList()
+        public PermutationCollection()
         {
             this.internalList = new List<Permutation>();
         }
 
-        public PermutationList(List<Permutation> permutationList)
+        public PermutationCollection(List<Permutation> permutationList)
         {
             this.internalList = (List<Permutation>)permutationList.Clone();
         }
 
-        public PermutationList(PermutationList permutationList)
+        public PermutationCollection(PermutationCollection permutationList)
         {
             this.internalList = (List<Permutation>)permutationList.InternalList.Clone();
         }
 
-        public PermutationList(Permutation permutation)
+        public PermutationCollection(Permutation permutation)
         {
             this.internalList = new List<Permutation>(1);
             this.internalList.Add(permutation);
@@ -63,9 +63,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public static PermutationList LoadFromCsvFile(string fileName)
+        public static PermutationCollection LoadFromCsvFile(string fileName)
         {
-            PermutationList permutationList = new PermutationList();
+            PermutationCollection permutationList = new PermutationCollection();
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (StreamReader streamReader = new StreamReader(fileStream))
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
             return permutationList;
         }
 
-        public static void SaveToCsvFile(PermutationList permutationList, string fileName)
+        public static void SaveToCsvFile(PermutationCollection permutationList, string fileName)
         {
             using (FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
@@ -101,20 +101,20 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public static PermutationList LoadFromJson(String jsonText)
+        public static PermutationCollection LoadFromJson(String jsonText)
         {
-            PermutationList permutationList = new PermutationList();
+            PermutationCollection permutationList = new PermutationCollection();
             JObject json = JObject.Parse(jsonText);
 
             return permutationList;
         }
 
-        public static String GetJson(PermutationList permutationList)
+        public static String GetJson(PermutationCollection permutationList)
         {
             return permutationList.ToString();
         }
 
-        public static PermutationList LoadFromJsonFile(string fileName)
+        public static PermutationCollection LoadFromJsonFile(string fileName)
         {
             String jsonText = String.Empty;
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -125,16 +125,16 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            return PermutationList.LoadFromJson(jsonText);
+            return PermutationCollection.LoadFromJson(jsonText);
         }
 
-        public static void SaveToJsonFile(PermutationList permutationList, string fileName)
+        public static void SaveToJsonFile(PermutationCollection permutationList, string fileName)
         {
             using (FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
                 using (StreamWriter streamWriter = new StreamWriter(fileStream))
                 {
-                    streamWriter.Write(PermutationList.GetJson(permutationList));
+                    streamWriter.Write(PermutationCollection.GetJson(permutationList));
                 }
             }
         }
@@ -143,8 +143,13 @@ namespace Infovision.Datamining.Roughset
         {
             this.internalList.Add(permutation);
         }
-        
-        public IEnumerator GetEnumerator()
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return internalList.GetEnumerator();
+        }
+
+        public IEnumerator<Permutation> GetEnumerator()
         {
             return internalList.GetEnumerator();
         }
@@ -153,7 +158,7 @@ namespace Infovision.Datamining.Roughset
 
         public object Clone()
         {
-            return new PermutationList(this);
+            return new PermutationCollection(this);
         }
 
         #endregion

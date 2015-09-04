@@ -89,6 +89,7 @@
     <Compile Include="ReductCacheTest.cs" />
     <Compile Include="ReductClassifierTest.cs" />
     <Compile Include="ReductDiscernibilityMatrixTest.cs" />
+    <Compile Include="ReductEnsembleTest.cs" />
     <Compile Include="ReductFactoryTest.cs" />
     <Compile Include="ReductGeneratorTest.cs" />
     <Compile Include="WeightGeneratorTest.cs" />
@@ -121,35 +122,35 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="dna.test">
+    <None Include="Data\dna.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dna.train">
+    <None Include="Data\dna.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dna_modified.trn">
+    <None Include="Data\dna_modified.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dna_modified.tst">
+    <None Include="Data\dna_modified.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="letter.trn">
+    <None Include="Data\letter.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="monks-1.test">
+    <None Include="Data\monks-1.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="monks-1.train">
+    <None Include="Data\monks-1.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="optdigits.trn">
+    <None Include="Data\optdigits.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="optdigits.tst">
+    <None Include="Data\optdigits.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="playgolf.train">
+    <None Include="Data\playgolf.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

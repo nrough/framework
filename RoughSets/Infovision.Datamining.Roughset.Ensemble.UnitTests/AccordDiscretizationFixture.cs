@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 		private string reductMeasureKey;		
 		private int numberOfAttributes;
 		private int[] attributes;
-		private PermutationList permutationList;
+		private PermutationCollection permutationList;
 		private IdentificationType identificationType;
 		private VoteType voteType;
 		private int decisionIdx;
@@ -263,7 +263,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			foreach (EquivalenceClass eqClass in reduct.EquivalenceClassMap)
 			{
 				//TODO Most frequent decision is ok for normal approximate reducts
-				//TODO for weighted approximate reduct we should choose dicision with highest object weight sum?
+				//TODO for weighted approximate reduct we should choose decision with highest object weight sum?
 
 				foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MostFrequentDecision))
 				{
@@ -313,9 +313,9 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 			//21 = a20
 			//d not exist (only conditional attributes)
 			//Permutation permutation = new Permutation(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
-            PermutationList permList;
+            PermutationCollection permList;
 
-            //permList = new PermutationList(permutation);
+            //permList = new PermutationCollection(permutation);
             permList = this.permutationList;
 
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			

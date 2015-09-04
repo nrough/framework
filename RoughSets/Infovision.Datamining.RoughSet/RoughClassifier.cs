@@ -366,13 +366,13 @@ namespace Infovision.Datamining.Roughset
         /// <param name="reductFactoryKey"></param>
         /// <param name="approximationRatio">Value from range 0 to 99</param>
         /// <param name="permutations"></param>
-        public void Train(DataStore trainingData, string reductFactoryKey, int approximationRatio, PermutationList permutations)
+        public void Train(DataStore trainingData, string reductFactoryKey, int approximationRatio, PermutationCollection permutations)
         {
             Args args = new Args();
             args.AddParameter("DataStore", trainingData);
             args.AddParameter("ApproximationRatio", approximationRatio);
             args.AddParameter("NumberOfThreads", 32);
-            args.AddParameter("PermutationList", permutations);
+            args.AddParameter("PermutationCollection", permutations);
             //args.AddParameter("USECACHE", null);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(reductFactoryKey, args);
@@ -389,7 +389,7 @@ namespace Infovision.Datamining.Roughset
             //args.AddParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
-            PermutationList permutations = permGen.Generate(numberOfPermutations);
+            PermutationCollection permutations = permGen.Generate(numberOfPermutations);
             
             Train(trainingData, reductFactoryKey, approximationRatio, permutations);
         }

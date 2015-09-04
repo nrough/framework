@@ -7,15 +7,15 @@ namespace Infovision.Datamining.Roughset
     {
         #region Globals
 
-        private Int32 numberOfThreads;
+        private int numberOfThreads;
         private ManualResetEvent[] resetEvents;
-        private Boolean threadResults;
+        private bool threadResults;
 
         #endregion
 
         #region Constructors
 
-        public ReductStoreMulti(Int32 numberOfThreads)
+        public ReductStoreMulti(int numberOfThreads)
             : base()
         {
             this.numberOfThreads = numberOfThreads;
@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override Boolean IsSuperSet(IReduct reduct)
+        public override bool IsSuperSet(IReduct reduct)
         {
             lock (this.SyncRoot)
             {
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
 
                 this.threadResults = false;
 
-                for (Int32 i = 0; i < this.numberOfThreads; i++)
+                for (int i = 0; i < this.numberOfThreads; i++)
                 {
                     this.resetEvents[i] = new ManualResetEvent(false);
                     ThreadPool.QueueUserWorkItem(new WaitCallback(this.ReductCheckWorkItem),

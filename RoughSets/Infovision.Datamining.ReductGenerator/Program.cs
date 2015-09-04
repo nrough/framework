@@ -67,7 +67,7 @@ namespace Infovision.Datamining.ReductGenerator
                 Console.WriteLine("{0} {1} {2}", currentReductType, currentEpsilon, currentIdentType);
 
                 Utils.Args config = new Utils.Args(new string[] { "DataStore", "ReductType", "IdentificationType" }, new object[] { dataStore, currentReductType, currentIdentType });
-                PermutationList permutations = ReductFactory.GetPermutationGenerator(currentReductType, config).Generate(numberOfSubsets);
+                PermutationCollection permutations = ReductFactory.GetPermutationGenerator(currentReductType, config).Generate(numberOfSubsets);
 
                 RoughClassifier roughClassifier = new RoughClassifier();
                 roughClassifier.Train(dataStore, currentReductType, currentEpsilon, permutations);

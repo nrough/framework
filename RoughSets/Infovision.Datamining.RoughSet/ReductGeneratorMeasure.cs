@@ -107,12 +107,12 @@ namespace Infovision.Datamining.Roughset
             this.DataSetQuality = this.informationMeasure.Calc(reduct);
         }
 
-        protected virtual PermutationList FindOrCreatePermutationList(Args args)
+        protected virtual PermutationCollection FindOrCreatePermutationList(Args args)
         {
-            PermutationList permutationList = null;
-            if (args.Exist("PermutationList"))
+            PermutationCollection permutationList = null;
+            if (args.Exist("PermutationCollection"))
             {
-                permutationList = (PermutationList)args.GetParameter("PermutationList");
+                permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
             }
             else if (args.Exist("NumberOfReducts"))
             {
@@ -127,13 +127,13 @@ namespace Infovision.Datamining.Roughset
 
             if (permutationList == null)
             {
-                throw new NullReferenceException("PermutationList is null");
+                throw new NullReferenceException("PermutationCollection is null");
             }
 
             return permutationList;
         }
 
-        protected virtual IReductStore CreateReductStoreFromPermutationList(PermutationList permutationList, Args args)
+        protected virtual IReductStore CreateReductStoreFromPermutationList(PermutationCollection permutationList, Args args)
         {
             bool useCache = false;
             if (args.Exist("USECACHE"))
@@ -151,7 +151,7 @@ namespace Infovision.Datamining.Roughset
 
         public override IReductStore Generate(Args args)
         {
-            PermutationList permutationList = this.FindOrCreatePermutationList(args);
+            PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             return this.CreateReductStoreFromPermutationList(permutationList, args);
         }
 
@@ -198,21 +198,7 @@ namespace Infovision.Datamining.Roughset
                         reduct.AddAttribute(attributeId);
                     }
                 }
-            }
-
-            /*
-            for (int i = permutation.Length - 1; i >= 0; i--)
-            {
-                if (reduct.ContainsAttribute(permutation[i]))
-                {
-                    reduct.RemoveAttribute(permutation[i]);
-                    if (!this.IsReduct(reduct, reductStore))
-                    {
-                        reduct.AddAttribute(permutation[i]);
-                    }
-                }
-            }
-            */
+            }            
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
@@ -241,8 +227,8 @@ namespace Infovision.Datamining.Roughset
 
             double partitionQuality = this.GetPartitionQuality(reduct);
 
-            if (partitionQuality >= ((((double)1 - this.ApproximationLevel) * this.DataSetQuality) - (0.0001 / (double)this.DataStore.NumberOfRecords)))
-            // >>>> if (partitionQuality >= (((double)1 - this.ApproximationLevel - (0.0001 / (double)this.DataStore.NumberOfRecords)) * this.DataSetQuality) )
+            // >>>> if (partitionQuality >= (((double)1 - this.ApproximationLevel - (0.0001 / (double)this.DataStore.NumberOfRecords)) * this.DataSetQuality) )            
+            if (partitionQuality >= ((((double)1 - this.ApproximationLevel) * this.DataSetQuality) - (0.0001 / (double)this.DataStore.NumberOfRecords)))            
             {
                 if(useCache)
                     this.UpdateReductCacheInfo(reductInfo, key, true);

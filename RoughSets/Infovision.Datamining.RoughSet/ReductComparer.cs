@@ -76,12 +76,10 @@ namespace Infovision.Datamining.Roughset
     }
 
     public class DiversityComparer : Comparer<IReduct>
-    {
-        
-        
+    {                
         public override int Compare(IReduct left, IReduct right)
         {
-            //TODO
+            //TODO DiversityComparer.Compare(...)
             return 0;
         }
     }

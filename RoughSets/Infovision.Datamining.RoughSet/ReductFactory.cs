@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductFactory
     {
         private static volatile ReductFactory reductFactoryInstance = null;
-        private static Object syncRoot = new object();        
+        private static object syncRoot = new object();        
 
         ListDictionary registeredReductFactories = new ListDictionary();
         ListDictionary registeredReductMeasures = new ListDictionary();
@@ -65,8 +65,8 @@ namespace Infovision.Datamining.Roughset
         public void RegisterFactory(string className)
         {            
             StringBuilder assemblyName = new StringBuilder();
-            String [] assemblyNameParts = className.Split(new Char[] {'.'});
-            for (Int32 i = 0; i < assemblyNameParts.Length - 1; i++)
+            string [] assemblyNameParts = className.Split(new Char[] {'.'});
+            for (int i = 0; i < assemblyNameParts.Length - 1; i++)
             {
                 assemblyName.Append(assemblyNameParts[i]);
                 if (i < assemblyNameParts.Length - 2)
@@ -106,13 +106,13 @@ namespace Infovision.Datamining.Roughset
                 Type iReductFactory = type.GetInterface(interfaceName);
                 if (iReductFactory != null)
                 {
-                    Object factoryInstance = type.Assembly.CreateInstance(type.FullName, true,
+                    object factoryInstance = type.Assembly.CreateInstance(type.FullName, true,
                         BindingFlags.CreateInstance, null, null, null, null);
 
                     if (factoryInstance != null)
                     {
                         IFactoryProduct keyDesc = (IFactoryProduct)factoryInstance;
-                        String key = keyDesc.FactoryKey;
+                        string key = keyDesc.FactoryKey;
                         factoryInstance = null;
 
                         if (interfaceName == "IReductFactory")
@@ -159,7 +159,7 @@ namespace Infovision.Datamining.Roughset
                         
             if (type != null)
             {
-                Object reductFactory = type.Assembly.CreateInstance(type.FullName, 
+                object reductFactory = type.Assembly.CreateInstance(type.FullName, 
                                         true, 
                                         BindingFlags.CreateInstance, 
                                         null, 
@@ -199,7 +199,7 @@ namespace Infovision.Datamining.Roughset
 
             if (type != null)
             {
-                Object reductMeasure = type.Assembly.CreateInstance(type.FullName,
+                object reductMeasure = type.Assembly.CreateInstance(type.FullName,
                                         true,
                                         BindingFlags.CreateInstance,
                                         null,
@@ -285,7 +285,7 @@ namespace Infovision.Datamining.Roughset
 
     public class ApproximateReductMajorityFactory : ApproximateReductFactory
     {
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "ApproximateReductMajority"; }
         }
@@ -327,7 +327,7 @@ namespace Infovision.Datamining.Roughset
 
     public class ApproximateReductRelativeFactory : ApproximateReductFactory
     {
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "ApproximateReductRelative"; }
         }
@@ -369,7 +369,7 @@ namespace Infovision.Datamining.Roughset
 
     public class ApproximateReductPositiveFactory : ApproximateReductFactory
     {
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "ApproximateReductPositive"; }
         }
@@ -383,7 +383,7 @@ namespace Infovision.Datamining.Roughset
 
     public class BireductFactory : IReductFactory
     {
-        public virtual String FactoryKey
+        public virtual string FactoryKey
         {
             get { return "Bireduct"; }
         }
@@ -400,8 +400,8 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("ApproximationRatio"))
             {
-                Int32 approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                Double selectionRatio = (Double)approximationRatio / (Double)100;
+                int approximationRatio = (int)args.GetParameter("ApproximationRatio");
+                double selectionRatio = (double)approximationRatio / (double)100;
 
                 return new PermutationGeneratorFieldObject(dataStore, selectionRatio);
             }
@@ -412,7 +412,7 @@ namespace Infovision.Datamining.Roughset
 
     public class BireductRelativeFactory : BireductFactory
     {
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "BireductRelative"; }
         }
@@ -429,8 +429,8 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist("ApproximationRatio"))
             {
-                Int32 approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                Double selectionRatio = (Double)approximationRatio / (Double)100;
+                int approximationRatio = (int)args.GetParameter("ApproximationRatio");
+                double selectionRatio = (double)approximationRatio / (double)100;
 
                 return new PermutationGeneratorFieldObjectRelative(dataStore, selectionRatio);
             }
@@ -441,7 +441,7 @@ namespace Infovision.Datamining.Roughset
 
     public class GammaBireductFactory : BireductFactory
     {
-        public override String FactoryKey
+        public override string FactoryKey
         {
             get { return "GammaBireduct"; }
         }
@@ -451,8 +451,6 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
             return new GammaBireductGenerator(dataStore);
         }
-    }
-
-
+    }   
 
 }

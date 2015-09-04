@@ -34,8 +34,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeightsEnsemble", parms);
-            PermutationList permutationList = permGen.Generate(10);
-            parms.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(10);
+            parms.AddParameter("PermutationCollection", permutationList);
 
             ReductGeneratorWeightsEnsembleRelative reductGenerator = new ReductGeneratorWeightsEnsembleRelative(dataStoreTrain);
             reductGenerator.ApproximationLevel = 0.4;

@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FieldObjectPermutationRatioTest()
         {
             PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore, 0.5);
-            PermutationList permList = permGen.Generate(100);
+            PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
 
@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void RelativePermutationRatioTest()
         {
             PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore, 0.5);
-            PermutationList permList = permGen.Generate(100);
+            PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
 
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FieldObjectPermutationTest()
         {
             PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore);
-            PermutationList permList = permGen.Generate(100);
+            PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
 
@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void RelativePermutationTest()
         {
             PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore);
-            PermutationList permList = permGen.Generate(100);
+            PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
 
@@ -53,11 +53,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FieldGroupPermutationTest()
         {
             PermutatioGeneratorFieldGroup permGen = new PermutatioGeneratorFieldGroup(dataStore);
-            PermutationList permList = permGen.Generate(10);
+            PermutationCollection permList = permGen.Generate(10);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { });
         }
 
-        private void CheckPermutationCompletness(PermutationList permList, int[] fields, int[] objects)
+        private void CheckPermutationCompletness(PermutationCollection permList, int[] fields, int[] objects)
         {
             foreach (Permutation perm in permList)
             {
@@ -196,7 +196,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FieldImportance()
         {
             PermutationGeneratorFieldObject permGen;
-            PermutationList permList;
+            PermutationCollection permList;
             int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
             int[] objects = dataStore.GetObjectIndexes();
 
@@ -283,7 +283,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                                                                         fields,
                                                                                                         new int[] {}});
             
-            PermutationList permutationList = generator.Generate(10);
+            PermutationCollection permutationList = generator.Generate(10);
             this.CheckPermutationCompletness(permutationList, fields, new int[] { });
 
 

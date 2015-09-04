@@ -83,7 +83,7 @@ namespace Infovision.CudaLib
             int threadsPerBlock = thread.blockDim.x;
             int tickPosition = (threadIndex + (blockIndex * threadsPerBlock));
 
-            //TODO
+            //TODO QuickSort.GPUParalell(...)
         }
 
         [Cudafy]

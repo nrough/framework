@@ -449,7 +449,7 @@ namespace Infovision.RunTest
 
             //if (System.IO.File.Exists(permutationFilename))
             //{
-            //    test.FixedPermutationList = PermutationList.LoadFromCsvFile(permutationFilename); 
+            //    test.FixedPermutationList = PermutationCollection.LoadFromCsvFile(permutationFilename); 
             //}
 
             TestRunner testRunner = new TestRunner(resultFilename, test);

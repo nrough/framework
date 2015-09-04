@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset
         {
             //numberOfAttributes = (int)((double)DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * this.ApproximationLevel);
 
-            PermutationList permutationList = this.FindOrCreatePermutationList(args);
+            PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
             return this.CreateReductStoreFromPermutationList(permutationList, args);
         }
 
@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset
             return base.CalculateReduct(permutation, reductStore, useCache);
         }
 
-        protected override IReductStore CreateReductStoreFromPermutationList(PermutationList permutationList, Args args)
+        protected override IReductStore CreateReductStoreFromPermutationList(PermutationCollection permutationList, Args args)
         {
             bool useCache = false;
             if (args.Exist("USECACHE"))

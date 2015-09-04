@@ -7,7 +7,7 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IPermutationGenerator
     {
-        PermutationList Generate(int numberOfPermutations);
+        PermutationCollection Generate(int numberOfPermutations);
     }
     
     public class PermutationGenerator : IPermutationGenerator
@@ -44,14 +44,14 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public virtual PermutationList Generate(int numberOfPermutations)
+        public virtual PermutationCollection Generate(int numberOfPermutations)
         {
             List<Permutation> permutationList = new List<Permutation>(numberOfPermutations);
             for (int i = 0; i < numberOfPermutations; i++)
             {
                 permutationList.Add(this.CreatePermutation());
             }
-            return new PermutationList(permutationList);
+            return new PermutationCollection(permutationList);
         }
 
         protected virtual Permutation CreatePermutation()

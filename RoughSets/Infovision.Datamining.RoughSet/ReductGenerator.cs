@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Roughset
             set
             {
                 if (value < 0 || value > 1)
-                    throw new ArgumentException("The approximation ration value must be in range [0; 1)");
+                    throw new ArgumentException("The approximation ratio value must be in range [0; 1)");
 
                 approximationLevel = value;
             }

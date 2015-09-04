@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductGeneratorWeightsEnsemble.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="PermutationGeneratorReverse.cs" />
     <Compile Include="PermutationGeneratorTwin.cs" />
     <Compile Include="PermutationGeneratorTwinReverse.cs" />
-    <Compile Include="PermutationList.cs" />
+    <Compile Include="PermutationCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IReduct.cs" />
     <Compile Include="Reduct.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="ReductMeasure.cs" />
     <Compile Include="EquivalenceClass.cs" />
     <Compile Include="ReductStore.cs" />
+    <Compile Include="ReductStoreCollection.cs" />
     <Compile Include="ReductStoreMulti.cs" />
     <Compile Include="ReductStoreWeights.cs" />
     <Compile Include="ReductStoreWorkerTaskInfo.cs" />

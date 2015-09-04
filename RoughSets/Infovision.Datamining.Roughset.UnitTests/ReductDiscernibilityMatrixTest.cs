@@ -38,8 +38,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator("ApproximateReductRelativeWeights", parms);
-            PermutationList permutationList = permGen.Generate(10);
-            parms.AddParameter("PermutationList", permutationList);
+            PermutationCollection permutationList = permGen.Generate(10);
+            parms.AddParameter("PermutationCollection", permutationList);
 
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(dataStoreTrain, "ApproximateReductRelativeWeights", 20, permutationList);

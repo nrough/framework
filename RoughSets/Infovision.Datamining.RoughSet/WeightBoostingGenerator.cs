@@ -9,18 +9,26 @@ namespace Infovision.Datamining.Roughset
 {
     public class WeightBoostingGenerator : WeightGenerator
     {
+        private bool isFirst;
+        
         public WeightBoostingGenerator(DataStore dataStore)
             : base(dataStore)
         {
+            this.isFirst = true;
         }
 
         public override void Generate()
         {
-            throw new NotImplementedException("WeightBoostingGenerator.Generate() is not implemented");
-
-            //TODO
-            //First Weights are equal to Majority Weights
-            //Each next Generate() call needs to adjust weights to current ensemble
+            if (this.isFirst)
+            {
+                for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+                    this.Weights[i] = 1.0 / this.DataStore.NumberOfRecords;
+                this.isFirst = false;
+            }
+            else
+            {
+                //TODO Each next Generate() call needs to adjust weights to current ensemble
+            }            
         }
     }
 }

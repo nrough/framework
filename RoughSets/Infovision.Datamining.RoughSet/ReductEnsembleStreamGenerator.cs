@@ -175,32 +175,6 @@ namespace Infovision.Datamining.Roughset
             for (int i = attributes.Length - 1; i >= 0; i--)
                 reduct.TryRemoveAttribute(attributes[i]);
 
-
-            /*
-            ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, this.WeightGenerator.Weights, this.permEpsilon[idx - 1]);
-            reduct.Id = idx.ToString();
-            
-            //Reach
-            for (int i = 0; i < permutation.Length; i++)
-            {
-                reduct.AddAttribute(permutation[i]);
-
-                if (this.IsReduct(reduct, this.ReductPool, false))
-                {
-                    break;
-                }
-            }
-
-            //Reduce
-            int len = permutation.Length - 1;
-            for (int i = len; i >= 0; i--)
-            {                
-                if (reduct.TryRemoveAttribute(permutation[i]))
-                    if (!this.IsReduct(reduct, this.ReductPool, false))
-                        reduct.AddAttribute(permutation[i]);
-            }
-            */
-
             return reduct;
         }        
 

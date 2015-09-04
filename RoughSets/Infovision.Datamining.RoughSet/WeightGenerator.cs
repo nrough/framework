@@ -33,7 +33,8 @@ namespace Infovision.Datamining.Roughset
                     this.Generate();
                 return this.weights; 
             }
-            protected set { this.weights = value; }
+            
+            set { this.weights = value; }
         }
 
         protected bool CalcFlag

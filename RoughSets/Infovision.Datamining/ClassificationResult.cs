@@ -79,6 +79,10 @@ namespace Infovision.Datamining
         private int numberOfClassified = 0;
         private int numberOfMisclassified = 0;
         private int numberOfUnclassified = 0;
+        
+        private double classifiedSumOfWeights = 0.0;
+        private double misclassifiedSumOfWeights = 0.0;
+        private double unclassifiedSumOfWeigths = 0.0;
 
         //TODO use classificationInfo instead
         private double qualityRatio = 0;
@@ -93,6 +97,18 @@ namespace Infovision.Datamining
         public int Count
         {
             get { return classificationMap.Count; }
+        }
+
+        public double Error
+        {
+            get
+            {
+                double weightSum = this.misclassifiedSumOfWeights + this.unclassifiedSumOfWeigths + this.classifiedSumOfWeights;
+                if (weightSum != 0.0)
+                    return (this.misclassifiedSumOfWeights + this.unclassifiedSumOfWeigths) / weightSum;
+                else
+                    return 1.0;
+            }
         }
 
         public double Accuracy
@@ -182,27 +198,32 @@ namespace Infovision.Datamining
 
         #region Methods
 
+        //TODO add object weight
         public virtual void AddResult(long objectId, long prediction)
         {
-            classificationMap[objectId] = prediction;
+            classificationMap[objectId] = prediction;            
         }
-        
-        public virtual void AddResult(long objectId, long prediction, long actual)
+
+        //TODO add object weight
+        public virtual void AddResult(long objectId, long prediction, long actual, double weight = 1.0)
         {
             this.AddResult(objectId, prediction);
             this.AddConfusionMatrix(prediction, actual);
             
             if (prediction == actual)
             {
-                numberOfClassified++;
+                this.numberOfClassified++;
+                this.classifiedSumOfWeights += weight;
             }
             else if (prediction != actual && prediction != -1)
             {
-                numberOfMisclassified++;
+                this.numberOfMisclassified++;
+                this.misclassifiedSumOfWeights += weight;
             }
             else
             {
-                numberOfUnclassified++;
+                this.numberOfUnclassified++;
+                this.unclassifiedSumOfWeights += weight;
             }
         }
 

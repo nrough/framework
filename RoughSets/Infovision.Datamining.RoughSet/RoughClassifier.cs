@@ -405,8 +405,17 @@ namespace Infovision.Datamining.Roughset
 
         public IReductStore Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStore reductStore)
         {
-            Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
-            IReductStore localReductStore = reductStore.FilterReducts(numberOfReducts, reductComparer);
+            IReductStore localReductStore;
+            if (String.IsNullOrEmpty(reductMeasureKey) == false)
+            {
+                Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
+                localReductStore = reductStore.FilterReducts(numberOfReducts, reductComparer);
+            }
+            else
+            {
+                localReductStore = this.ReductStore;
+            }
+
             this.objectReductDescriptorMap = new Dictionary<long, ReductRuleDescriptor>(dataStore.NumberOfRecords);          
             foreach(int objectIndex in dataStore.GetObjectIndexes())
             {

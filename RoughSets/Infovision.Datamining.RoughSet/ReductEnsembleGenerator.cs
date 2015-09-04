@@ -183,7 +183,12 @@ namespace Infovision.Datamining.Roughset
             this.hCluster = new HierarchicalClustering(distance, linkage);
             this.hCluster.Instances = errors;
             this.hCluster.Compute();
-        }        
+        }
+
+        public override IReduct CreateReduct(Permutation permutation)
+        {
+            throw new NotImplementedException("CreteReduct() method was not implemented.");
+        }
 
         public override IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {            

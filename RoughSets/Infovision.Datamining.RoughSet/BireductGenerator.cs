@@ -44,6 +44,12 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = reductStore;                        
         }
 
+        public override IReduct CreateReduct(Permutation permutation)
+        {
+            IReductStore localReductStore = this.CreateReductStore();
+            return this.CalculateReduct(permutation, localReductStore);
+        }
+
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             Bireduct r = new Bireduct(this.DataStore, fieldIds, epsilon);
@@ -54,7 +60,7 @@ namespace Infovision.Datamining.Roughset
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
             Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
-                                                        0, 
+                                                        this.Epsilon, 
                                                         this.GetNextReductId().ToString()) as Bireduct;
             
             this.Reach(bireduct, permutation, reductStore);
@@ -65,13 +71,18 @@ namespace Infovision.Datamining.Roughset
         {
             for (int i = 0; i < permutation.Length; i++)
             {
-                if (permutation[i] > 0)
+                //if (permutation[i] > 0)
+                if (permutation[i] < 0)
                 {
-                    bireduct.TryRemoveAttribute(permutation[i]);
+                    //bireduct.TryRemoveAttribute(permutation[i]);
+                    bireduct.TryRemoveAttribute(-permutation[i]);
                 }
                 else
                 {
-                    bireduct.AddObject(-permutation[i]);
+                    //bireduct.AddObject(-permutation[i]);
+                    
+                    //TODO Problem: Objects numbering in permutations starts from 1
+                    bireduct.AddObject(permutation[i]-1);
                 }
             }
         }

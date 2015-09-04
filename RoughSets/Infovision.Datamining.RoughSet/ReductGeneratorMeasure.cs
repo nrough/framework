@@ -51,19 +51,7 @@ namespace Infovision.Datamining.Roughset
                 
         protected override IReductStore CreateReductStore()
         {
-            return new ReductStore();
-
-            /*
-            int numberOfThreads = args.Exist("NumberOfThreads") ? (int)args.GetParameter("NumberOfThreads") : 1;
-            if (numberOfThreads > 1)
-            {
-                return new ReductStoreMulti(numberOfThreads);
-            }
-            else
-            {
-                return new ReductStore();
-            }
-            */
+            return new ReductStore();            
         }
 
         protected virtual void CalcDataSetQuality()
@@ -94,6 +82,12 @@ namespace Infovision.Datamining.Roughset
             Reduct r = new Reduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
+        }
+
+        public override IReduct CreateReduct(Permutation permutation)
+        {
+            IReductStore localReductStore = this.CreateReductStore();
+            return this.CalculateReduct(permutation, localReductStore, false, this.Epsilon);
         }
 
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double epsilon)

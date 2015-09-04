@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -337,7 +338,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Globals
 
-        private Dictionary<Int64, ReductRuleDescriptor> objectReductDescriptorMap;
+        private Dictionary<long, ReductRuleDescriptor> objectReductDescriptorMap;
         private IReductStore reductStore;
 
         #endregion
@@ -375,13 +376,11 @@ namespace Infovision.Datamining.Roughset
             args.AddParameter("ApproximationRatio", epsilon);
             args.AddParameter("NumberOfThreads", 32);
             args.AddParameter("PermutationCollection", permutations);
-            args.AddParameter("FactoryKey", reductFactoryKey);
-            //args.AddParameter("USECACHE", true);
+            args.AddParameter("FactoryKey", reductFactoryKey);            
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
-            reductGenerator.Epsilon = epsilon;
-            //this.reductStore = reductGenerator.Generate(args).First();
+            reductGenerator.Epsilon = epsilon;            
             reductGenerator.Generate();
             this.reductStore = reductGenerator.ReductPool;
         }
@@ -681,6 +680,28 @@ namespace Infovision.Datamining.Roughset
                 return true;
 
             return false;
+        }
+
+        public string PrintDecisionRules(DataStoreInfo dataStoreInfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (IReduct reduct in this.ReductStore)
+            {
+                int[] attr = reduct.Attributes.ToArray();
+                for (int i = 0; i < attr.Length; i++)
+                    sb.Append(dataStoreInfo.GetFieldInfo(attr[i]).NameAlias).Append(' ');
+                sb.AppendLine();
+
+                foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                {
+                    sb.AppendLine(String.Format("{0} => {1}={2}", 
+                                    eq.Instance.ToString2(dataStoreInfo), 
+                                    dataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    dataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
         }
 
         #endregion

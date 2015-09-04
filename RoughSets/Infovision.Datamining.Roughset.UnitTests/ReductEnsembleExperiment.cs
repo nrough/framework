@@ -50,8 +50,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Hamming);
                 args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.AddParameter("PermutationCollection", permList);
-                //args.AddParameter("WeightGenerator", new WeightGeneratorRandom(data));
-                args.AddParameter("WeightGenerator", new WeightGeneratorMajority(data));
+                args.AddParameter("WeightGenerator", new WeightGeneratorRandom(data));
+                //args.AddParameter("WeightGenerator", new WeightGeneratorMajority(data));
                 args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
                 args.AddParameter("ReductSize", reductSize);
                 args.AddParameter("MinimumNumberOfInstances", 10);

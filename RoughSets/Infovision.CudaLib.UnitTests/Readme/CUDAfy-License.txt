@@ -1,5 +1,5 @@
 CUDAfy .NET SDK - General Purpose GPU programming for .NET
-Copyright 2011-13 Hybrid DSP Systems
+Copyright 2011-14 Hybrid DSP Systems
 www.hybriddsp.com
 
 		  GNU LESSER GENERAL PUBLIC LICENSE

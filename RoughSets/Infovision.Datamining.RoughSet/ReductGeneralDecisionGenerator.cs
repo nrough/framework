@@ -58,6 +58,11 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;            
         }
 
+        public override IReduct CreateReduct(Permutation permutation)
+        {
+            throw new NotImplementedException("CreteReduct() method was not implemented.");
+        }
+
         public ReductCrisp CalculateReduct(int[] attributes)
         {
             ReductCrisp reduct = (ReductCrisp)this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());

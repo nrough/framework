@@ -515,6 +515,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return result;
         }
 
+        //TODO
+        //http://en.wikipedia.org/wiki/Cophenetic_correlation
+        public virtual double CopheneticCorrelation(HierarchicalClusteringBase otherCluster)
+        {
+            return 0.0;
+        }
+
+
         //TODO Move to extension class
         public virtual double BakersGammaIndex(HierarchicalClusteringBase otherCluster)
         {            

@@ -248,6 +248,10 @@ namespace Infovision.Datamining.Roughset
             }            
         }
 
+        public override IReduct CreateReduct(Permutation permutation)
+        {
+            throw new NotImplementedException("CreteReduct() method was not implemented.");
+        }
 
         public override IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {

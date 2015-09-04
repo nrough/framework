@@ -131,6 +131,20 @@ namespace Infovision.Data
             return stringBuilder.ToString();
         }
 
+        public string ToString2(DataStoreInfo dataStoreInfo)
+        {
+            StringBuilder sb = new StringBuilder();            
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                sb.Append(String.Format("{0}={1}", 
+                        dataStoreInfo.GetFieldInfo(attributes[i]).NameAlias, 
+                        dataStoreInfo.GetFieldInfo(attributes[i]).Internal2External(values[i])));
+                if (i != attributes.Length - 1)
+                    sb.Append(" & ");
+            }
+            return sb.ToString();
+        }
+
         #endregion
 
         #region ICloneable Members

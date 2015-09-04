@@ -123,6 +123,7 @@ namespace Infovision.Datamining.Roughset
         public abstract void Generate();        
         protected abstract IReductStore CreateReductStore();
         protected abstract IReduct CreateReductObject(int[] fieldIds, double epsilon, string id);
+        public abstract IReduct CreateReduct(Permutation permutation);
 
         public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles)
         {

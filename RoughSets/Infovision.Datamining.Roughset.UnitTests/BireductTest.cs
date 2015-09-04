@@ -18,8 +18,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public BireductTest()
         {
-            string trainFileName = @"Data\monks-1.train";
-            string testFileName = @"Data\monks-1.test";
+            string trainFileName = @"Data\playgolf.train";
+            string testFileName = @"Data\playgolf.train";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -107,6 +107,185 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void BireductRelativeClassifierTest()
         {
             this.Classify("BireductRelative");
+        }
+
+        //Ad 1
+        [Test]
+        public void PrintDecisionRulesTest()
+        {
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+
+            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+
+
+            RoughClassifier roughClassifier = new RoughClassifier();
+            
+            RoughClassifier classifier = new RoughClassifier();
+            classifier.Train(localDataStore, "ApproximateReductMajority", 0, 10);
+            Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
+        }
+
+
+        //Ad 2
+        [Test]
+        public void TestBireductGolf_2()
+        {
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+            
+            
+            /*
+            \scriptsize{O 8 W 1 4 7 2 14 10 12 9 T 6 3 13 5 11 H} & \scriptsize{(\{H\},$\{u_i: i \in \{1,2,5,7..11,13..14\}\}$)}\\ \hline
+            \scriptsize{H 13 T 8 W 6 11 3 14 10 O 5 7 9 2 1 4 12} & \scriptsize{(\{O\},\{1..3 6..8 12..14\})}\\ \hline
+            \scriptsize{3 8 T 1 W 11 9 O 14 12 6 4 7 H 10 13 2 5} & \scriptsize{(\{O H\},\{1..3 6..9 11..14\})}\\ \hline
+            \scriptsize{2 13 5 14 11 7 12 4 3 1 9 6 8 10 H O W T} & \scriptsize{(\{O T W\},\{1..14\})}\\ \hline
+            \scriptsize{9 4 12 14 1 8 7 3 10 13 6 11 2 5 W T H O} & \scriptsize{(\{O H W\},\{1..14\})}\\ \hline
+            \scriptsize{11 O 2 H 1 10 5 7 9 8 3 13 T 6 14 12 4 W} & \scriptsize{(\{T\},\{1..2 4..5 7 9..12\})}\\ \hline
+            \scriptsize{T 2 5 H 10 11 W 14 1 12 7 9 13 6 4 8 3 O} & \scriptsize{(\{O\},\{1..5,7..8,10,12..13\})}\\ \hline
+            \scriptsize{W 6 H O 5 8 4 7 3 2 10 9 12 11 13 14 1 T} & \scriptsize{(\{T\},\{3 6 8 13..14\})}\\ \hline
+            \scriptsize{O 2 3 13 1 H 4 T W 6 12 14 5 8 9 10 11 7} & \scriptsize{(\{W\},\{2..6 9..10 13..14\})}\\ \hline
+            \scriptsize{O H 14 1 10 7 4 3 12 13 5 W 9 T 11 8 2 6} & \scriptsize{(\{T W\},\{1..2 4..5 7 9..10 14\})}\\ \hline
+            \scriptsize{6 5 10 9 H O 12 T 8 W 4 2 13 3 7 1 14 11} & \scriptsize{(\{T W\},\{2..6 9..13\})}\\ \hline
+            \scriptsize{11 14 9 13 3 7 8 2 5 1 12 W 6 4 10 H O T} & \scriptsize{(\{O H\},\{1..3 5 7..14\})}\\ \hline
+            \scriptsize{13 8 6 H 7 W 9 T 5 3 4 12 O 2 10 14 11 1} & \scriptsize{(\{O T\},\{1..4 6..10 12..13\})}\\ \hline
+            \scriptsize{9 H 2 4 6 13 14 7 T 11 10 O W 3 5 1 8 12} & \scriptsize{(\{O W\},\{2..7 9..10 12..14\})}\\ \hline
+            \scriptsize{W 5 3 O 12 4 T H 7 2 13 11 10 6 8 1 14 9} & \scriptsize{(\{\},\{3..5 7 9..13\})}\\ \hline
+            */
+
+            PermutationCollection permutations = new PermutationCollection();
+            permutations.Add(new Permutation(new int[] { -1, 8, -4, 1, 4, 7, 2, 14, 10, 12, 9, -2, 6, 3, 13, 5, 11, -3 }));
+            permutations.Add(new Permutation(new int[] { -3, 13, -2, 8, -4, 6, 11, 3, 14, 10, -1, 5, 7, 9, 2, 1, 4, 12 }));
+            permutations.Add(new Permutation(new int[] { 3, 8, -2, 1, -4, 11, 9, -1, 14, 12, 6, 4, 7, -3, 10, 13, 2, 5 }));
+            permutations.Add(new Permutation(new int[] { 2, 13, 5, 14, 11, 7, 12, 4, 3, 1, 9, 6, 8, 10, -3, -1, -4, -2 }));
+            permutations.Add(new Permutation(new int[] { 9, 4, 12, 14, 1, 8, 7, 3, 10, 13, 6, 11, 2, 5, -4, -2, -3, -1 }));
+            permutations.Add(new Permutation(new int[] { 11, -1, 2, -3, 1, 10, 5, 7, 9, 8, 3, 13, -2, 6, 14, 12, 4, -4 }));
+            permutations.Add(new Permutation(new int[] { -2, 2, 5, -3, 10, 11, -4, 14, 1, 12, 7, 9, 13, 6, 4, 8, 3, -1 }));
+            permutations.Add(new Permutation(new int[] { -4, 6, -3, -1, 5, 8, 4, 7, 3, 2, 10, 9, 12, 11, 13, 14, 1, -2 }));
+            permutations.Add(new Permutation(new int[] { -1, 2, 3, 13, 1, -3, 4, -2, -4, 6, 12, 14, 5, 8, 9, 10, 11, 7 }));
+            permutations.Add(new Permutation(new int[] { -1, -3, 14, 1, 10, 7, 4, 3, 12, 13, 5, -4, 9, -2, 11, 8, 2, 6 }));
+            permutations.Add(new Permutation(new int[] { 6, 5, 10, 9, -3, -1, 12, -2, 8, -4, 4, 2, 13, 3, 7, 1, 14, 11 }));
+            permutations.Add(new Permutation(new int[] { 11, 14, 9, 13, 3, 7, 8, 2, 5, 1, 12, -4, 6, 4, 10, -3, -1, -2 }));
+            permutations.Add(new Permutation(new int[] { 13, 8, 6, -3, 7, -4, 9, -2, 5, 3, 4, 12, -1, 2, 10, 14, 11, 1 }));
+            permutations.Add(new Permutation(new int[] { 9, -3, 2, 4, 6, 13, 14, 7, -2, 11, 10, -1, -4, 3, 5, 1, 8, 12 }));
+            permutations.Add(new Permutation(new int[] { -4, 5, 3, -1, 12, 4, -2, -3, 7, 2, 13, 11, 10, 6, 8, 1, 14, 9 }));
+
+            Args parms;            
+
+            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
+                             new object[] { "Bireduct", localDataStore, permutations });
+
+            BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator(parms);
+
+            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
+                             new object[] { "GammaBireduct", localDataStore, permutations });
+
+            BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
+
+            foreach (Permutation perm in permutations)
+            {
+                IReduct r1 = bireductGenerator.CreateReduct(perm);
+                IReduct r2 = gammaGenerator.CreateReduct(perm);
+
+                Console.WriteLine("{0} & {1} & {2}", perm, r1.ToString(), r2.ToString());
+            }                                                            
+        }
+
+        //Ad 4
+        [Test]
+        public void PrintDecisionRulesForBireduct()
+        {
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "S";
+
+
+            /*
+            \scriptsize{O 8 W 1 4 7 2 14 10 12 9 T 6 3 13 5 11 H} & \scriptsize{(\{H\},$\{u_i: i \in \{1,2,5,7..11,13..14\}\}$)}\\ \hline
+            \scriptsize{H 13 T 8 W 6 11 3 14 10 O 5 7 9 2 1 4 12} & \scriptsize{(\{O\},\{1..3 6..8 12..14\})}\\ \hline
+            \scriptsize{3 8 T 1 W 11 9 O 14 12 6 4 7 H 10 13 2 5} & \scriptsize{(\{O H\},\{1..3 6..9 11..14\})}\\ \hline
+            \scriptsize{2 13 5 14 11 7 12 4 3 1 9 6 8 10 H O W T} & \scriptsize{(\{O T W\},\{1..14\})}\\ \hline
+            \scriptsize{9 4 12 14 1 8 7 3 10 13 6 11 2 5 W T H O} & \scriptsize{(\{O H W\},\{1..14\})}\\ \hline
+            \scriptsize{11 O 2 H 1 10 5 7 9 8 3 13 T 6 14 12 4 W} & \scriptsize{(\{T\},\{1..2 4..5 7 9..12\})}\\ \hline
+            \scriptsize{T 2 5 H 10 11 W 14 1 12 7 9 13 6 4 8 3 O} & \scriptsize{(\{O\},\{1..5,7..8,10,12..13\})}\\ \hline
+            \scriptsize{W 6 H O 5 8 4 7 3 2 10 9 12 11 13 14 1 T} & \scriptsize{(\{T\},\{3 6 8 13..14\})}\\ \hline
+            \scriptsize{O 2 3 13 1 H 4 T W 6 12 14 5 8 9 10 11 7} & \scriptsize{(\{W\},\{2..6 9..10 13..14\})}\\ \hline
+            \scriptsize{O H 14 1 10 7 4 3 12 13 5 W 9 T 11 8 2 6} & \scriptsize{(\{T W\},\{1..2 4..5 7 9..10 14\})}\\ \hline
+            \scriptsize{6 5 10 9 H O 12 T 8 W 4 2 13 3 7 1 14 11} & \scriptsize{(\{T W\},\{2..6 9..13\})}\\ \hline
+            \scriptsize{11 14 9 13 3 7 8 2 5 1 12 W 6 4 10 H O T} & \scriptsize{(\{O H\},\{1..3 5 7..14\})}\\ \hline
+            \scriptsize{13 8 6 H 7 W 9 T 5 3 4 12 O 2 10 14 11 1} & \scriptsize{(\{O T\},\{1..4 6..10 12..13\})}\\ \hline
+            \scriptsize{9 H 2 4 6 13 14 7 T 11 10 O W 3 5 1 8 12} & \scriptsize{(\{O W\},\{2..7 9..10 12..14\})}\\ \hline
+            \scriptsize{W 5 3 O 12 4 T H 7 2 13 11 10 6 8 1 14 9} & \scriptsize{(\{\},\{3..5 7 9..13\})}\\ \hline
+            */
+
+            PermutationCollection permutations = new PermutationCollection();
+            permutations.Add(new Permutation(new int[] { -1, 8, -4, 1, 4, 7, 2, 14, 10, 12, 9, -2, 6, 3, 13, 5, 11, -3 }));
+            permutations.Add(new Permutation(new int[] { -3, 13, -2, 8, -4, 6, 11, 3, 14, 10, -1, 5, 7, 9, 2, 1, 4, 12 }));
+            permutations.Add(new Permutation(new int[] { 3, 8, -2, 1, -4, 11, 9, -1, 14, 12, 6, 4, 7, -3, 10, 13, 2, 5 }));
+            permutations.Add(new Permutation(new int[] { 2, 13, 5, 14, 11, 7, 12, 4, 3, 1, 9, 6, 8, 10, -3, -1, -4, -2 }));
+            permutations.Add(new Permutation(new int[] { 9, 4, 12, 14, 1, 8, 7, 3, 10, 13, 6, 11, 2, 5, -4, -2, -3, -1 }));
+            permutations.Add(new Permutation(new int[] { 11, -1, 2, -3, 1, 10, 5, 7, 9, 8, 3, 13, -2, 6, 14, 12, 4, -4 }));
+            permutations.Add(new Permutation(new int[] { -2, 2, 5, -3, 10, 11, -4, 14, 1, 12, 7, 9, 13, 6, 4, 8, 3, -1 }));
+            permutations.Add(new Permutation(new int[] { -4, 6, -3, -1, 5, 8, 4, 7, 3, 2, 10, 9, 12, 11, 13, 14, 1, -2 }));
+            permutations.Add(new Permutation(new int[] { -1, 2, 3, 13, 1, -3, 4, -2, -4, 6, 12, 14, 5, 8, 9, 10, 11, 7 }));
+            permutations.Add(new Permutation(new int[] { -1, -3, 14, 1, 10, 7, 4, 3, 12, 13, 5, -4, 9, -2, 11, 8, 2, 6 }));
+            permutations.Add(new Permutation(new int[] { 6, 5, 10, 9, -3, -1, 12, -2, 8, -4, 4, 2, 13, 3, 7, 1, 14, 11 }));
+            permutations.Add(new Permutation(new int[] { 11, 14, 9, 13, 3, 7, 8, 2, 5, 1, 12, -4, 6, 4, 10, -3, -1, -2 }));
+            permutations.Add(new Permutation(new int[] { 13, 8, 6, -3, 7, -4, 9, -2, 5, 3, 4, 12, -1, 2, 10, 14, 11, 1 }));
+            permutations.Add(new Permutation(new int[] { 9, -3, 2, 4, 6, 13, 14, 7, -2, 11, 10, -1, -4, 3, 5, 1, 8, 12 }));
+            permutations.Add(new Permutation(new int[] { -4, 5, 3, -1, 12, 4, -2, -3, 7, 2, 13, 11, 10, 6, 8, 1, 14, 9 }));
+
+            Args parms;
+
+            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
+                             new object[] { "Bireduct", localDataStore, permutations });
+
+            BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
+
+            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
+                             new object[] { "GammaBireduct", localDataStore, permutations });
+
+            BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
+
+            foreach (Permutation perm in permutations)
+            {
+                IReduct r1 = bireductGenerator.CreateReduct(perm);
+                IReduct r2 = gammaGenerator.CreateReduct(perm);
+
+                Console.WriteLine("{0} & {1} & {2}", perm, r1.ToString(), r2.ToString());
+
+                Console.WriteLine("Bireduct rules");
+                foreach (EquivalenceClass eq in r1.EquivalenceClassMap)
+                {
+                    Console.WriteLine(String.Format("{0} => {1}={2}",
+                                    eq.Instance.ToString2(localDataStore.DataStoreInfo),
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
+                }
+
+                Console.WriteLine();
+
+                Console.WriteLine("Gamma Bireduct rules");
+                foreach (EquivalenceClass eq in r2.EquivalenceClassMap)
+                {
+                    Console.WriteLine(String.Format("{0} => {1}={2}",
+                                    eq.Instance.ToString2(localDataStore.DataStoreInfo),
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
+                }
+
+                Console.WriteLine();
+            }
         }
 
         private void Classify(string reductGeneratorKey)

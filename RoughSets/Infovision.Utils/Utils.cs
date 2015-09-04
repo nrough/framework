@@ -180,11 +180,11 @@ namespace Infovision.Utils
             }
 
             return typeof(String);
-        }        
+        }
 
-        public static string IntArray2Ranges(Int64[] array, string rangeSeparator = "..", string elementSeparator = " ")
+        public static string IntArray2Ranges(long[] array, string rangeSeparator = "..", string elementSeparator = " ")
         {
-            List<KeyValuePair<Int64, Int64>> ranges = new List<KeyValuePair<Int64, Int64>>();
+            List<KeyValuePair<long, long>> ranges = new List<KeyValuePair<long, long>>();
             StringBuilder stringBuilder = new StringBuilder();
             ;
 
@@ -197,26 +197,22 @@ namespace Infovision.Utils
                     j++;
                 }
 
-                ranges.Add(new KeyValuePair<Int64, Int64>(array[i], array[j]));
+                ranges.Add(new KeyValuePair<long, long>(array[i], array[j]));
                 i = j + 1;
             }
 
             bool first = true;
-            foreach (KeyValuePair<Int64, Int64> kvp in ranges)
+            foreach (KeyValuePair<long, long> kvp in ranges)
             {
                 if (!first)
-                {
                     stringBuilder.Append(elementSeparator);
-                }
 
-                if (kvp.Key != kvp.Value)
-                {
+                if (kvp.Key == (kvp.Value - 1))
+                    stringBuilder.Append(kvp.Key).Append(elementSeparator).Append(kvp.Value);
+                else if (kvp.Key != kvp.Value)
                     stringBuilder.Append(kvp.Key).Append(rangeSeparator).Append(kvp.Value);
-                }
                 else
-                {
                     stringBuilder.Append(kvp.Key);
-                }
 
                 first = false;
             }
@@ -226,7 +222,7 @@ namespace Infovision.Utils
 
         public static string IntArray2Ranges(int[] array, string rangeSeparator = "..", string elementSeparator = " ")
         {
-            Int64[] longArray = Array.ConvertAll<int, Int64>(array, delegate(int i) { return (Int64)i; });
+            long[] longArray = Array.ConvertAll<int, long>(array, delegate(int i) { return (long)i; });
             return IntArray2Ranges(longArray, rangeSeparator, elementSeparator);
         }
 

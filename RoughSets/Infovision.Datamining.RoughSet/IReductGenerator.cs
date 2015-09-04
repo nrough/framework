@@ -6,8 +6,9 @@ namespace Infovision.Datamining.Roughset
     {                        
         double Epsilon { get; set; }        
         void InitFromArgs(Args args);
-        IReductStore ReductPool { get; }
         void Generate();
+        IReductStore ReductPool { get; }        
         IReductStoreCollection GetReductGroups(int numberOfEnsembles);
+        IReduct CreateReduct(Permutation permutation);
     }
 }

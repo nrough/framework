@@ -1,4 +1,4 @@
-CUDAfy .NET SDK V1.25 - General Purpose GPU programming for .NET
+CUDAfy .NET SDK V1.26 - General Purpose GPU programming for .NET
 Copyright 2011-13 Hybrid DSP Systems
 www.hybriddsp.com
 
@@ -32,6 +32,22 @@ CudafyModuleViewer can be used to examine Cudafy modules (*.cdfy)
 
 Releases
 --------
+V1.27 20-07-14
+	Fix: CUDA and OpenCL tests should handle devices with max block threads < 1024
+	Fix: Single floating point Execute called instead of double (emulator only)
+	Add: CUDA 6.0 support.
+	Add: Compute capability 5.0 support.
+	Add: CUDA 6.0 support.
+
+V1.26 25-11-13
+	Fix: Emulator
+	Add: SIMD in a word function.
+	Add: Throw statements now cause all threads to abort.
+	Fix: Structs with property Length were not translated correctly.
+	Fix: Ignore cast to object.
+	Add: Support for classes with the DeviceClassHelper (enable in translator). 
+	Add: Warp Shuffle Functions (CUDA only).
+
 V1.25 02-08-13
 	Fix: Typo in xml comment of GThread.
 	Fix: Use of eCudafyAddressSpace attribute on parameters (needed for OpenCL).
@@ -156,7 +172,7 @@ V1.4 - 11-07-11
 	Add: Ability to pass GThread between device functions.
 	Add: Max and Min support to Math and GMath.
 	Fix: Math.Abs translation.
-	Fix: long and Ulong not translated correctly.
+	Fix: Int64 and UInt64 not translated correctly.
 	Fix: Catch kernels without any members in TryVerifyChecksums and VerifyChecksums.
 	Add: Enum support (not flags).
 	Fix: 32-bit and 64-bit cross compiler options.
@@ -194,7 +210,7 @@ V1.1 - 23-05-11
 	Add	: CUBLAS Wrapper (Alpha)
 	Add	: CUFFT Wrapper
 	Change	: CudafyByExample and CudafyExamples updated to use CudafyTranslator.
-	Add	: Char (Unicode) + string copy to/from device support
+	Add	: Char (Unicode) + String copy to/from device support
 	Add	: Multiple kernel module support
 	Add	: Casting between 1D, 2D and 3D arrays
 	Add	: Foreach support
@@ -284,7 +300,7 @@ The following constructs are not currently supported for translation:
 	Nested types
 	Operator overloading
 	Overloaded Methods
-	Classes (individual methods, constants and blittable structs are)
+	Classes (see - DeviceClassHelper)
 
 Furthermore only blittable and value types are supported. For example:
 	Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Char, Single, Double

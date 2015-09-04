@@ -104,7 +104,9 @@ namespace Infovision.Datamining.Roughset
                 // calling this.EquivalenceClassMap will invoke calculating eqClassMap based on existing objectSet
                 // than, what AddObject is called we will get duplicates of object id inside eqClass
                 
-                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, this.DataStore.GetDecisionValue(objectIdx), 1.0 / this.DataStore.NumberOfRecords);
+                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, 
+                                                                                   this.DataStore.GetDecisionValue(objectIdx), 
+                                                                                   1.0 / this.DataStore.NumberOfRecords);
                 objectSet.AddElement(objectIdx);
 
                 return true;
@@ -164,7 +166,7 @@ namespace Infovision.Datamining.Roughset
             }
             stringBuilder.Append("},{");
 
-            Int64[] objectIds = Array.ConvertAll<int, Int64>(this.ObjectSet.ToArray(), 
+            long[] objectIds = Array.ConvertAll<int, long>(this.ObjectSet.ToArray(), 
                                                                delegate(int i) 
                                                                { 
                                                                    return this.DataStore.ObjectIndex2ObjectId(i); 

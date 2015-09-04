@@ -316,7 +316,7 @@ namespace Infovision.Datamining.Roughset
 
 		public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
 		{
-			ReductCrisp reduct = new ReductCrisp(this.DataStore, permutation, weights, 0);
+			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();
 			reduct.Reduce(permutation, this.MinReductLength);
 			return reduct;

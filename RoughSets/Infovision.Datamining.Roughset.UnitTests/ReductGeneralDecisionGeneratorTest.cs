@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                ReductCrisp reduct = reductGenerator.CalculateReduct(attributes);
+                ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(attributes);
                 for (int i = attributes.Length - 1; i >= 0; i--)
                 {
                     if (reduct.TryRemoveAttribute(attributes[i]))
@@ -99,7 +99,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                ReductCrisp reduct = reductGenerator.CalculateReduct(attributes);
+                ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(attributes);
                 List<int> cLen = null;
                 if (results.TryGetValue(attributes.Length, out cLen))
                 {

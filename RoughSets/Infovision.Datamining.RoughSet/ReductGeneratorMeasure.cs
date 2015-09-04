@@ -82,7 +82,7 @@ namespace Infovision.Datamining.Roughset
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore, false, epsilon);
         }
-
+        
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, double epsilon)
         {
             IReduct reduct = this.CreateReductObject(new int[] { }, 

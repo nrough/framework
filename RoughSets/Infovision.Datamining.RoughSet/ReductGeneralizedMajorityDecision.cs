@@ -8,46 +8,48 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-	public class ReductCrisp : ReductWeights
+	//TODO wprowadzic epsilon do obliczen
+    //TODO zoptymalizowac liczenie po kolejnych usunieciach
+    public class ReductGeneralizedMajorityDecision : ReductWeights
 	{
 		private HashSet<int> removedAttributes;
 		private bool isEqMapCreated;
 		
 		#region Constructors
 		
-		public ReductCrisp(DataStore dataStore)
+		public ReductGeneralizedMajorityDecision(DataStore dataStore)
 			: base(dataStore, 0.0)
 		{
 			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, double epsilon)
+		public ReductGeneralizedMajorityDecision(DataStore dataStore, double epsilon)
 			: base(dataStore, epsilon)
 		{
 			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, int[] fieldIds, double epsilon)
+		public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, double epsilon)
 			: base(dataStore, fieldIds, epsilon)
 		{
 			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, int[] fieldIds, double[] weights, double epsilon)
+		public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, double[] weights, double epsilon)
 			: base(dataStore, fieldIds, weights, epsilon)
 		{
 			this.Init();
 		}        
 
-		public ReductCrisp(ReductCrisp reduct)
+		public ReductGeneralizedMajorityDecision(ReductGeneralizedMajorityDecision reduct)
 			: base(reduct as ReductWeights)
 		{
 			//TODO Casting Error:
 			/*
 			Test 'Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(System.Collections.Generic.Dictionary`2[System.String,System.Object])' failed:
 				System.InvalidCastException : Nie można rzutować obiektu typu 'Infovision.Datamining.Roughset.EquivalenceClassCollection' na typ 'Infovision.Datamining.Roughset.EquivalenceClassSortedMap'.
-				w Infovision.Datamining.Roughset.ReductCrisp..ctor(ReductCrisp reduct) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 38
-				w Infovision.Datamining.Roughset.ReductCrisp.Clone() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 105
+				w Infovision.Datamining.Roughset.ReductGeneralizedMajorityDecision..ctor(ReductGeneralizedMajorityDecision reduct) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralizedMajorityDecision.cs:wiersz 38
+				w Infovision.Datamining.Roughset.ReductGeneralizedMajorityDecision.Clone() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralizedMajorityDecision.cs:wiersz 105
 				w Infovision.Datamining.Roughset.ReductStore..ctor(ReductStore reductStore) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 121
 				w Infovision.Datamining.Roughset.ReductStore.RemoveDuplicates() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 157
 				w Infovision.Datamining.Roughset.ReductGeneralDecisionGenerator.Generate() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralDecisionGenerator.cs:wiersz 56
@@ -219,7 +221,7 @@ namespace Infovision.Datamining.Roughset
 		/// <returns>A new instance of a FieldSet, using a deep copy.</returns>
 		public override object Clone()
 		{
-			return new ReductCrisp(this);
+			return new ReductGeneralizedMajorityDecision(this);
 		}
 		#endregion        
 
@@ -230,7 +232,7 @@ namespace Infovision.Datamining.Roughset
 			if (obj == null)
 				return false;
 		   
-			ReductCrisp reduct = obj as ReductCrisp;
+			ReductGeneralizedMajorityDecision reduct = obj as ReductGeneralizedMajorityDecision;
 			if (reduct == null)
 				return false;
 

@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
         {
             double[] data = { 5, 5, 5, 5, 5, 7, 8, 9, 10, 12, 13, 14, 16, 40, 41, 42, 43, 44, 45, 45, 46, 47, 48, 49 };
             
-            Discretization disc = new Discretization();                        
+            Discretization disc = new Discretization();
             disc.Compute(data, numberOfBins: 3);
 
             Console.WriteLine(disc.ToStringCuts());

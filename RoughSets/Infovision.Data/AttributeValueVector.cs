@@ -109,7 +109,7 @@ namespace Infovision.Data
                 return false;
 
             for (int i = 0; i < values.Length; i++)
-                if (this[i] != p[i])
+                if (this.values[i] != p.values[i])
                     return false;
 
             return true;

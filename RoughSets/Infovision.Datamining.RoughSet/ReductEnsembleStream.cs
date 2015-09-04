@@ -168,7 +168,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i <= cutoff; i++)
                 attributes[i] = permutation[i];
             
-            ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
+            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
             reduct.Id = idx.ToString();
             foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 eq.RemoveObjectsWithMinorDecisions();

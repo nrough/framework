@@ -29,24 +29,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CalcBiReductPositive()
         {
-            this.CheckBireductUnique("GammaBireduct");
+            this.CheckBireductUnique(ReductFactoryKeyHelper.GammaBireduct);
         }
 
         [Test]
         public void CalcBiReductMajority()
         {
-            this.CheckBireductUnique("Bireduct");
+            this.CheckBireductUnique(ReductFactoryKeyHelper.Bireduct);
         }
 
         [Test]
         public void CalcBiReductRelative()
         {
-            this.CheckBireductUnique("BireductRelative");
+            this.CheckBireductUnique(ReductFactoryKeyHelper.BireductRelative);
         }
 
         private void CheckBireductUnique(string reductGeneratorKey)
         {
-            Args parms = new Args(new string[] { "FactoryKey", "DataStore", "NumberOfPermutations" },
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.NumberOfPermutations },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
             
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
@@ -93,19 +93,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void BireductMajorityClassifierTest()
         {
-            this.Classify("Bireduct");
+            this.Classify(ReductFactoryKeyHelper.Bireduct);
         }
 
         [Test]
         public void BireductPositiveClassifierTest()
         {
-            this.Classify("GammaBireduct");
+            this.Classify(ReductFactoryKeyHelper.GammaBireduct);
         }
 
         [Test]
         public void BireductRelativeClassifierTest()
         {
-            this.Classify("BireductRelative");
+            this.Classify(ReductFactoryKeyHelper.BireductRelative);
         }
 
         //Ad 1
@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RoughClassifier roughClassifier = new RoughClassifier();
             
             RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(localDataStore, "ApproximateReductMajority", 0, 10);
+            classifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductMajority, 0, 10);
             Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
         }
 
@@ -178,13 +178,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms;            
 
-            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
-                             new object[] { "Bireduct", localDataStore, permutations });
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+                             new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
-                             new object[] { "GammaBireduct", localDataStore, permutations });
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+                             new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
 
@@ -401,13 +401,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms;
 
-            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
-                             new object[] { "Bireduct", localDataStore, permutations });
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+                             new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { "FactoryKey", "DataStore", "PermutationCollection" },
-                             new object[] { "GammaBireduct", localDataStore, permutations });
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+                             new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
 

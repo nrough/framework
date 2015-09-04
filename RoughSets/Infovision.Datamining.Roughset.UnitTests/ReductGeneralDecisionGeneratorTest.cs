@@ -34,11 +34,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
-            parms.AddParameter("PermutationCollection", permList);
-            parms.AddParameter("WeightGenerator", weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductGeneralizedDecision);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
 
@@ -81,11 +81,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
-            parms.AddParameter("PermutationCollection", permList);
-            parms.AddParameter("WeightGenerator", weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductGeneralizedDecision);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
 
@@ -151,21 +151,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(data);            
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
-            parms.AddParameter("PermutationCollection", permList);
-            parms.AddParameter("WeightGenerator", weightGenerator);                                                                       
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductGeneralizedDecision);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);                                                                       
 
             ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
             reductGenerator.Generate();
                         
             Args parms2 = new Args();
-            parms2.AddParameter("DataStore", data);
-            parms2.AddParameter("NumberOfThreads", 1);
-            parms2.AddParameter("FactoryKey", "ApproximateReductRelativeWeights");
-            parms2.AddParameter("PermutationCollection", permList);
-            parms2.AddParameter("WeightGenerator", weightGenerator);
+            parms2.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms2.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+            parms2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             ReductGeneratorWeightsRelative rGen2 = ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsRelative;            
 
@@ -205,21 +205,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
-            parms.AddParameter("PermutationCollection", permList);
-            parms.AddParameter("WeightGenerator", weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductGeneralizedDecision);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
             reductGenerator.Generate();
 
             Args parms2 = new Args();
-            parms2.AddParameter("DataStore", data);
-            parms2.AddParameter("NumberOfThreads", 1);
-            parms2.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
-            parms2.AddParameter("PermutationCollection", permList);
-            parms2.AddParameter("WeightGenerator", weightGenerator);
+            parms2.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms2.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             ReductGeneratorWeightsMajority rGen2 = ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
 
@@ -260,11 +260,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(data);
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
-            parms.AddParameter("PermutationCollection", permList);
-            parms.AddParameter("WeightGenerator", weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductGeneralizedDecision);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
             ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
             reductGenerator.Generate();

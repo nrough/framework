@@ -46,11 +46,11 @@ namespace Infovision.Datamining.Roughset
 		{
 			base.InitFromArgs(args);
 
-			if (args.Exist("Distance"))
-				this.Distance = (Func<double[], double[], double>)args.GetParameter("Distance");
+			if (args.Exist(ReductGeneratorParamHelper.Distance))
+				this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
 
-			if (args.Exist("Linkage"))
-				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");
+			if (args.Exist(ReductGeneratorParamHelper.Linkage))
+				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 		}
 
 		public override void Generate()

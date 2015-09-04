@@ -193,7 +193,7 @@
             // 
             // dlgNumberOfClusters
             // 
-            this.dlgNumberOfClusters.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.sOMClusteringBindingSource, "NumberOfClusters", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.dlgNumberOfClusters.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.sOMClusteringBindingSource, ReductGeneratorParamHelper.NumberOfClusters, true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.dlgNumberOfClusters.Location = new System.Drawing.Point(108, 19);
             this.dlgNumberOfClusters.Name = "dlgNumberOfClusters";
             this.dlgNumberOfClusters.Size = new System.Drawing.Size(120, 20);

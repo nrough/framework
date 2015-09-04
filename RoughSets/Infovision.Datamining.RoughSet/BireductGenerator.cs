@@ -106,10 +106,10 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
 
-            if (args.Exist("ApproximationRatio"))
-                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter("ApproximationRatio"));
+            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio));
 
             return new PermutationGeneratorFieldObject(dataStore);
         }
@@ -141,7 +141,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "BireductRelative"; }
+            get { return ReductFactoryKeyHelper.BireductRelative; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -153,10 +153,10 @@ namespace Infovision.Datamining.Roughset
 
         public override IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
 
-            if (args.Exist("ApproximationRatio"))
-                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter("ApproximationRatio"));
+            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio));
 
             return new PermutationGeneratorFieldObjectRelative(dataStore);
         }
@@ -199,7 +199,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "GammaBireduct"; }
+            get { return ReductFactoryKeyHelper.GammaBireduct; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

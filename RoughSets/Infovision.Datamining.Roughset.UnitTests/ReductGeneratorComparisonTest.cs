@@ -53,22 +53,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             argSet.Add("_TestData", testData);
 
-            argSet.Add("DataStore", data);
-            argSet.Add("PermutationEpsilon", epsilons);
-            argSet.Add("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
-            argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
-            argSet.Add("NumberOfClusters", 5);
-            argSet.Add("FactoryKey", "ReductEnsemble");
-            argSet.Add("PermutationCollection", permList);
-            argSet.Add("WeightGenerator", weightGenerator);
-            argSet.Add("ReconWeights", (Func<IReduct, double[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-            argSet.Add("DendrogramBitmapFile", @"F:\reducts.bmp");
+            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
+            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
+            argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
+            argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 5);
+            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
+            argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
+            argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"F:\reducts.bmp");
             argsList.Add(argSet);
 
             //for (int i = 0; i < numberOfPermutations; i++)
             //{
             //    argSet = new Dictionary<string, object>(argSet);
-            //    argSet["NumberOfClusters"] = 2 + i;
+            //    argSet[ReductGeneratorParamHelper.NumberOfClusters] = 2 + i;
             //    argsList.Add(argSet);
             //}            
 
@@ -86,18 +86,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetComparisonTestArgs")]
         public void ComparisonTest(Dictionary<string, object> args)
         {
-            DataStore data = (DataStore)args["DataStore"];
+            DataStore data = (DataStore)args[ReductGeneratorParamHelper.DataStore];
             DataStore testData = (DataStore)args["_TestData"];
-            int numberOfClusters = (int)args["NumberOfClusters"];
+            int numberOfClusters = (int)args[ReductGeneratorParamHelper.NumberOfClusters];
 
-            Console.WriteLine("Generator: {0}", (string)args["FactoryKey"]);
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];
+            Console.WriteLine("Generator: {0}", (string)args[ReductGeneratorParamHelper.FactoryKey]);
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
             Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
-            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"];
+            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
             Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
                      
-            Func<IReduct, double[], double[]> recognition = (Func<IReduct, double[], double[]>) args["ReconWeights"];
+            Func<IReduct, double[], double[]> recognition = (Func<IReduct, double[], double[]>) args[ReductGeneratorParamHelper.ReconWeights];
             Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
             
             Args parms = new Args();
@@ -183,7 +183,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 DendrogramChart dc = new DendrogramChart(ensembleGenerator.Dendrogram, 640, (int)ensembleGenerator.Dendrogram.Root.Height + 100);
                 Bitmap dendrogram = dc.GetAsBitmap();                
-                dendrogram.Save((string)args["DendrogramBitmapFile"]);
+                dendrogram.Save((string)args[ReductGeneratorParamHelper.DendrogramBitmapFile]);
             }
 
         }

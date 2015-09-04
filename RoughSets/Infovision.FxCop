@@ -100,7 +100,7 @@
       <Namespaces>
        <Namespace Name="Infovision.Datamining.Roughset">
         <Types>
-         <Type Name="Bireduct">
+         <Type Name=ReductFactoryKeyHelper.Bireduct>
           <Members>
            <Member Name="#.ctor(Infovision.Data.DataStore,System.int[],System.int[])">
             <Messages>

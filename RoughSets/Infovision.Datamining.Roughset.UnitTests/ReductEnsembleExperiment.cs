@@ -153,12 +153,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = reductEnsemble.Count,
-                            Distance = (Func<double[], double[], double>)args["Distance"],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
+                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
-                            WeightGenerator = (WeightGenerator)args["WeightGenerator"],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args["ReconWeights"],
-                            PermutationCollection = (PermutationCollection)args["PermutationCollection"],
+                            WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
+                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
+                            PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
 
                             Accuracy = classificationResult.Accuracy,
                             BalancedAccuracy = classificationResult.BalancedAccuracy,
@@ -194,12 +194,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = randomReductGroup.Count,
-                            Distance = (Func<double[], double[], double>)args["Distance"],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args["Linkage"],
+                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
-                            WeightGenerator = (WeightGenerator)args["WeightGenerator"],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args["ReconWeights"],
-                            PermutationCollection = (PermutationCollection)args["PermutationCollection"],
+                            WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
+                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
+                            PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
 
                             Accuracy = classificationResult2.Accuracy,
                             BalancedAccuracy = classificationResult2.BalancedAccuracy,
@@ -264,17 +264,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
             if (addHeader)
             {
                 sb.Append("Id").Append(separator)
-                    .Append("NumberOfClusters").Append(separator)
+                    .Append(ReductGeneratorParamHelper.NumberOfClusters).Append(separator)
                     .Append("ClusterId").Append(separator)
                     .Append("TestType").Append(separator)
                     .Append("MinEpsilon").Append(separator)
                     .Append("MaxEpsilon").Append(separator)
                     .Append("NumberOfPermuations").Append(separator)
-                    .Append("NumberOfReducts").Append(separator)
-                    .Append("Distance").Append(separator)
-                    .Append("Linkage").Append(separator)
+                    .Append(ReductGeneratorParamHelper.NumberOfReducts).Append(separator)
+                    .Append(ReductGeneratorParamHelper.Distance).Append(separator)
+                    .Append(ReductGeneratorParamHelper.Linkage).Append(separator)
                     .Append("Dataset").Append(separator)
-                    .Append("WeightGenerator").Append(separator)
+                    .Append(ReductGeneratorParamHelper.WeightGenerator).Append(separator)
                     .Append("DiscernibiltyVector").Append(separator)
                     .Append("Accuracy").Append(separator)
                     .Append("BalancedAccuracy").Append(separator)
@@ -283,8 +283,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append("Classified").Append(separator)
                     .Append("Misclassified").Append(separator)
                     .Append("Unclassified").Append(separator)
-                    .Append("IdentificationType").Append(separator)
-                    .Append("VoteType").Append(separator);
+                    .Append(ReductGeneratorParamHelper.IdentificationType).Append(separator)
+                    .Append(ReductGeneratorParamHelper.VoteType).Append(separator);
 
                 sb.Append(Environment.NewLine);
             }

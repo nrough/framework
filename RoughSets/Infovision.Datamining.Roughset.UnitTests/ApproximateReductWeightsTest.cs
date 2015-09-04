@@ -36,10 +36,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
             
             Args parms = new Args();
-            parms.AddParameter("DataStore", data);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
-            parms.AddParameter("NumberOfPermutations", 100);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfPermutations, 100);
             
             ReductGeneratorWeightsMajority reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
             reductGenerator.Generate();
@@ -247,11 +247,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EquivalenceClassMapTest()
         {
-            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductMajorityWeights", dataStoreTrain });
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, 
+                                                 ReductGeneratorParamHelper.DataStore }, 
+                                  new Object[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights, dataStoreTrain });
+
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationCollection", permutationList);
-            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
 
@@ -302,11 +305,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights, 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
-            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductMajorityWeights", dataStoreTrain });
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, 
+                                                 ReductGeneratorParamHelper.DataStore }, 
+                                  new Object[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights, dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationCollection", permutationList);
-            parms.AddParameter("FactoryKey", "ApproximateReductMajorityWeights");
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Generate();
@@ -327,11 +332,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights, 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
-            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductRelativeWeights", dataStoreTrain });
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new Object[] { ReductFactoryKeyHelper.ApproximateReductRelativeWeights, dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
-            parms.AddParameter("PermutationCollection", permutationList);
-            parms.AddParameter("FactoryKey", "ApproximateReductRelativeWeights");
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Generate();

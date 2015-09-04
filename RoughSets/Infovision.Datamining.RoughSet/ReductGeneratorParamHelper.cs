@@ -20,10 +20,10 @@ namespace Infovision.Datamining.Roughset
         public static readonly string NumberOfClusters = "NumberOfClusters";
         public static readonly string WeightGenerator = "WeightGenerator";
         public static readonly string ReconWeights = "ReconWeights";
-        public static readonly string DendrogramBitmapFile = "DendrogramBitmapFile";        
+        public static readonly string DendrogramBitmapFile = "DendrogramBitmapFile";
         public static readonly string NumberOfReducts = "NumberOfReducts";
         public static readonly string ReductSize = "ReductSize";
-        public static readonly string MinimumNumberOfInstances ="MinimumNumberOfInstances";
+        public static readonly string MinimumNumberOfInstances = "MinimumNumberOfInstances";
         public static readonly string IdentificationType = "IdentificationType";
         public static readonly string VoteType = "VoteType";
         public static readonly string MaxReductLength = "MaxReductLength";

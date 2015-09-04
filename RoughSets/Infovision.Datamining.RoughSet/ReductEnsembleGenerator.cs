@@ -109,24 +109,24 @@ namespace Infovision.Datamining.Roughset
         {            
             base.InitFromArgs(args);            
 
-            if (args.Exist("PermutationEpsilon"))
+            if (args.Exist(ReductGeneratorParamHelper.PermutationEpsilon))
             {
-                double[] epsilons = (double[])args.GetParameter("PermutationEpsilon");
+                double[] epsilons = (double[])args.GetParameter(ReductGeneratorParamHelper.PermutationEpsilon);
                 this.permEpsilon = new double[epsilons.Length];
                 Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
             }
             
-            if (args.Exist("Distance"))
-                this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
+            if (args.Exist(ReductGeneratorParamHelper.Distance))
+                this.distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
 
-            if (args.Exist("Linkage"))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");            
+            if (args.Exist(ReductGeneratorParamHelper.Linkage))
+                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);            
 
-            if (args.Exist("WeightGenerator"))
-                this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+                this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
-            if (args.Exist("ReconWeights"))
-                this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
+            if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
+                this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
         }        
        
         public override void Generate()
@@ -286,7 +286,7 @@ namespace Infovision.Datamining.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return "ReductEnsemble"; }
+            get { return ReductFactoryKeyHelper.ReductEnsemble; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -298,7 +298,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             return new PermutationGenerator(dataStore);
         }
     }

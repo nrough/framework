@@ -15,7 +15,7 @@ namespace Infovision.TestAssembly
 
         public IReductGenerator GetReductGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             TestReductGenerator rGen = new TestReductGenerator(dataStore);
             rGen.InitFromArgs(args);
             return rGen;
@@ -23,7 +23,7 @@ namespace Infovision.TestAssembly
 
         public IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             return new PermutationGeneratorReverse(dataStore);
         }
 

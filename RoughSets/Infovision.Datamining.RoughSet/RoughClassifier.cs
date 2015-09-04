@@ -343,11 +343,11 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, double epsilon, PermutationCollection permutations)
         {
             Args args = new Args();
-            args.AddParameter("DataStore", trainingData);
-            args.AddParameter("ApproximationRatio", epsilon);
-            args.AddParameter("NumberOfThreads", 32);
-            args.AddParameter("PermutationCollection", permutations);
-            args.AddParameter("FactoryKey", reductFactoryKey);            
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, epsilon);
+            args.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);            
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
@@ -362,8 +362,8 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, double epsilon, int numberOfPermutations)
         {
             Args args = new Args();
-            args.AddParameter("DataStore", trainingData);
-            args.AddParameter("ApproximationRatio", epsilon);
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, epsilon);
             //args.AddParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);

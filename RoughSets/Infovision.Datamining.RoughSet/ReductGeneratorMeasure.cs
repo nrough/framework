@@ -201,7 +201,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             return new PermutationGeneratorReverse(dataStore);
         }
 
@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "ApproximateReductRelative"; }
+            get { return ReductFactoryKeyHelper.ApproximateReductRelative; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -257,7 +257,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "ApproximateReductMajority"; }
+            get { return ReductFactoryKeyHelper.ApproximateReductMajority; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -287,7 +287,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "ApproximateReductPositive"; }
+            get { return ReductFactoryKeyHelper.ApproximateReductPositive; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

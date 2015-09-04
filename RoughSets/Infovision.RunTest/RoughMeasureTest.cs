@@ -219,7 +219,7 @@ namespace Infovision.RunTest
 
             if (this.CheckRegeneratePermutation())
             {
-                Args parms = new Args(new string[] { "FactoryKey", "DataStore", "ApproximationRatio" }, new object[] { reductFactoryKey, localDataStoreTrain, epsilon });
+                Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.ApproximationRatio }, new object[] { reductFactoryKey, localDataStoreTrain, epsilon });
                 this.permutationList = ReductFactory.GetPermutationGenerator(parms).Generate(numberOfPermutations);
                 this.ForceTraining(true);
             }
@@ -295,8 +295,8 @@ namespace Infovision.RunTest
             parms.Append("TrainInfo").Append('\t');
             parms.Append("TestName").Append('\t');
             parms.Append("TestInfo").Append('\t');
-            parms.Append("NumberOfReducts").Append('\t');
-            parms.Append("NumberOfPermutations").Append('\t');
+            parms.Append(ReductGeneratorParamHelper.NumberOfReducts).Append('\t');
+            parms.Append(ReductGeneratorParamHelper.NumberOfPermutations).Append('\t');
             parms.Append("ReductMeasureType").Append('\t');
             parms.Append("NumberOfFolds").Append('\t');
             
@@ -306,8 +306,8 @@ namespace Infovision.RunTest
             parms.Append("Epsilon").Append('\t');
             parms.Append("InformationMeasure").Append('\t');
 
-            parms.Append("IdentificationType").Append('\t');
-            parms.Append("VoteType").Append('\t');
+            parms.Append(ReductGeneratorParamHelper.IdentificationType).Append('\t');
+            parms.Append(ReductGeneratorParamHelper.VoteType).Append('\t');
 
             parms.Append("RuleVoteCenseqentRating").Append('\t');
             parms.Append("RuleVoteAntecedentRating").Append('\t');
@@ -351,16 +351,16 @@ namespace Infovision.RunTest
         {
             dataStoreTrain = (DataStore)args.GetParameter("DataStoreTraining");
             dataStoreTest = (DataStore)args.GetParameter("DataStoreTest");
-            numberOfReducts = (int)args.GetParameter("NumberOfReducts");
-            numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
+            numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
+            numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
             nfold = (int)args.GetParameter("NumberOfFolds");
             foldNumber = (int)args.GetParameter("FoldNumber");
             testNumber = (int)args.GetParameter("NumberOfTests");
             reductFactoryKey = (string)args.GetParameter("ReductType");
             epsilon = (int)args.GetParameter("Epsilon");
             reductMeasureKey = (string)args.GetParameter("ReductMeasure");
-            identificationType = (IdentificationType)args.GetParameter("IdentificationType");
-            voteType = (VoteType)args.GetParameter("VoteType");
+            identificationType = (IdentificationType)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
+            voteType = (VoteType)args.GetParameter(ReductGeneratorParamHelper.VoteType);
         }
 
         public bool MoveNext()

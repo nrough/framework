@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return "BireductRelative";
+            return ReductFactoryKeyHelper.BireductRelative;
         }
 
         #endregion

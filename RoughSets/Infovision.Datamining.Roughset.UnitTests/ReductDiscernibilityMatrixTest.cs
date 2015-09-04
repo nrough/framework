@@ -36,13 +36,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureRelative()
         {
-            Args parms = new Args(new string[] { "FactoryKey", "DataStore" }, new Object[] { "ApproximateReductRelativeWeights", dataStoreTrain });
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new Object[] { ReductFactoryKeyHelper.ApproximateReductRelativeWeights, dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(10);
-            parms.AddParameter("PermutationCollection", permutationList);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
 
             RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(dataStoreTrain, "ApproximateReductRelativeWeights", 20, permutationList);
+            classifier.Train(dataStoreTrain, ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 20, permutationList);
             IReductStoreCollection reductStoreCollection = classifier.Classify(dataStoreTrain);
             
             using (FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.Read))

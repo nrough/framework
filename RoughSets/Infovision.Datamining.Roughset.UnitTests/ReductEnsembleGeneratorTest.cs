@@ -59,18 +59,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();
-            argSet.Add("DataStore", data);
-            argSet.Add("NumberOfThreads", 1);
-            argSet.Add("PermutationEpsilon", epsilons);            
-            argSet.Add("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
-            argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
-            argSet.Add("NumberOfClusters", 3);
-            argSet.Add("FactoryKey", "ReductEnsemble");                
-            argSet.Add("PermutationCollection", permList);
-            argSet.Add("DendrogramBitmapFile", @"euclidean");
+            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);            
+            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
+            argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
+            argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 3);
+            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);                
+            argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
+            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"euclidean");
             argSet.Add("ReductWeightFileName", @"euclidean");
-            argSet.Add("WeightGenerator", weightGenerator);
-            argSet.Add("ReconWeights", reconWeights);
+            argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            argSet.Add(ReductGeneratorParamHelper.ReconWeights, reconWeights);
             argsList.Add(argSet);
                         
             return argsList;
@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateTest(Dictionary<string, object> args)
         {
             
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args["Distance"];            
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];            
             Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
                         
             Args parms = new Args();
@@ -91,9 +91,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                             
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             reductGenerator.Generate();
-            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args["NumberOfClusters"]);
+            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args[ReductGeneratorParamHelper.NumberOfClusters]);
 
-            DataStore data = (DataStore) parms.GetParameter("DataStore");
+            DataStore data = (DataStore) parms.GetParameter(ReductGeneratorParamHelper.DataStore);
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
 
@@ -123,7 +123,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             /*
             Console.WriteLine("Reduct groups");
-            Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)parms.GetParameter("NumberOfClusters"));
+            Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)parms.GetParameter(ReductGeneratorParamHelper.NumberOfClusters));
             foreach (KeyValuePair<int, List<int>> kvp in membership)
             {
                 Console.WriteLine("Reduct Group Alias {0}", kvp.Key);
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             if (ensembleGenerator != null)
             {
                 Bitmap dendrogramLinkCollection = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int) ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
-                dendrogramLinkCollection.Save((string) args["DendrogramBitmapFile"]);                
+                dendrogramLinkCollection.Save((string) args[ReductGeneratorParamHelper.DendrogramBitmapFile]);                
             }
             */
         }

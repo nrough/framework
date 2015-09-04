@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		public AccordDiscretizationFixture()
 		{
 			filename = @"Data\german.data";			
-			reductFactoryKey = "ApproximateReductMajority";
+			reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajority;
 			reductMeasureKey = "ReductMeasureLength";
 
 			numberOfAttributes = 20;

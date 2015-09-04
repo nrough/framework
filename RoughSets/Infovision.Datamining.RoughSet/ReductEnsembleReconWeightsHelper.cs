@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         /// <returns></returns>
         public static double[] GetDefaultReconWeights(IReduct reduct, double[] objectWeights)
         {
-            //TODO jezeli arg_max zwraca wiecej niz jedna decyzje to nalezy to uwzglednic
+            //TODO If arg_max returns more than one decision, this method should take this into account
             double[] result = new double[objectWeights.Length];
             Array.Copy(objectWeights, result, objectWeights.Length);
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)            

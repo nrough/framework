@@ -40,7 +40,7 @@ namespace Infovision.MRI.DAL
                                             new XAttribute("Name", "LearningRate")),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.NumberOfClusters),
-                                            new XAttribute("Name", "NumberOfClusters")),
+                                            new XAttribute("Name", ReductGeneratorParamHelper.NumberOfClusters)),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.NumberOfIterations),
                                             new XAttribute("Name", "NumberOfIterations")),
@@ -64,7 +64,7 @@ namespace Infovision.MRI.DAL
             provider.NumberDecimalSeparator = ".";
 
             this.LearningRate = Convert.ToDouble(this.XMLGetParameterValue(parametersElement, "LearningRate"), provider);
-            this.NumberOfClusters = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "NumberOfClusters"));
+            this.NumberOfClusters = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, ReductGeneratorParamHelper.NumberOfClusters));
             this.NumberOfIterations = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "NumberOfIterations"));
             this.Radius = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "Radius"));
             this.FileNameLoad = this.XMLGetParameterValue(parametersElement, "NetworkFileName");

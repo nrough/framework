@@ -181,17 +181,17 @@ namespace Infovision.Datamining.Roughset
 
         public static IReductGenerator GetReductGenerator(Args args)
         {
-            if (!args.Exist("FactoryKey"))
+            if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
-            string factoryKey = (string) args.GetParameter("FactoryKey");
+            string factoryKey = (string) args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
             return ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);
         }
 
         public static IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            if (!args.Exist("FactoryKey"))
+            if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
-            string factoryKey = (string)args.GetParameter("FactoryKey");
+            string factoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
 
             return (IPermutationGenerator)ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
         }

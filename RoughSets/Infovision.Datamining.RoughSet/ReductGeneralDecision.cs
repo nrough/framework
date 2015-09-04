@@ -34,8 +34,8 @@ namespace Infovision.Datamining.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist("WeightGenerator"))
-                this.weightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
         }
 
         public override void Generate()
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return "ReductGeneralizedDecision"; }
+            get { return ReductFactoryKeyHelper.ReductGeneralizedDecision; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -99,7 +99,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter("DataStore");
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             return new PermutationGenerator(dataStore);
         }
     }

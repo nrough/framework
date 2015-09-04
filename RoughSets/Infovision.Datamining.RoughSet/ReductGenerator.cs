@@ -161,24 +161,24 @@ namespace Infovision.Datamining.Roughset
          
         public virtual void InitFromArgs(Args args)
         {                        
-            if (args.Exist("DataStore"))
+            if (args.Exist(ReductGeneratorParamHelper.DataStore))
             {
-                this.dataStore = (DataStore)args.GetParameter("DataStore");
+                this.dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
                 this.initFromDataStore(dataStore);
             }            
             
-            if (args.Exist("PermutationCollection"))
+            if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))
             {
-                this.permutationList = (PermutationCollection)args.GetParameter("PermutationCollection");
+                this.permutationList = (PermutationCollection)args.GetParameter(ReductGeneratorParamHelper.PermutationCollection);
             }
-            else if (args.Exist("NumberOfReducts"))
+            else if (args.Exist(ReductGeneratorParamHelper.NumberOfReducts))
             {
-                int numberOfReducts = (int)args.GetParameter("NumberOfReducts");
+                int numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
                 this.permutationList = this.PermutationGenerator.Generate(numberOfReducts);
             }
-            else if (args.Exist("NumberOfPermutations"))
+            else if (args.Exist(ReductGeneratorParamHelper.NumberOfPermutations))
             {
-                int numberOfPermutations = (int)args.GetParameter("NumberOfPermutations");
+                int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
                 this.permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
             }            
             

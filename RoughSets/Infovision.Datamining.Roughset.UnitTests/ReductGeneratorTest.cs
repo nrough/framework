@@ -26,33 +26,31 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
-            parms.AddParameter("DataStore", dataStoreTrain);
-            parms.AddParameter("NumberOfThreads", 1);
-            parms.AddParameter("FactoryKey", "ApproximateReductRelative");
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            parms.AddParameter("PermutationCollection", permGen.Generate(10));
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permGen.Generate(10));
             
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
-            parmsMulti.AddParameter("DataStore", dataStoreTrain);
-            parmsMulti.AddParameter("NumberOfThreads", InfovisionHelper.NumberOfCores());
-            parmsMulti.AddParameter("PermutationCollection", (PermutationCollection)parms.GetParameter("PermutationCollection"));
-            parmsMulti.AddParameter("FactoryKey", "ApproximateReductRelative");
+            parmsMulti.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parmsMulti.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, InfovisionHelper.NumberOfCores());
+            parmsMulti.AddParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
+            parmsMulti.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
             reductGeneratorMulti = ReductFactory.GetReductGenerator(parmsMulti);
         }
 
         [Test]
-        public void TestGolf([Values("GammaBireduct", "Bireduct", "BireductRelative")] string reductType)
+        public void TestGolf([Values("GammaBireduct", "Bireduct", "BireductRelative")] string factoryKey)
         {
             bool showInfo = false;
             
             if (showInfo)
-            {
-                Console.WriteLine(reductType);
-            }
+                Console.WriteLine(factoryKey);
 
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
 
@@ -71,9 +69,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
 
                 Args args = new Args();
-                args.AddParameter("DataStore", localDataStore);
-                args.AddParameter("ApproximationRatio", i / 100.0);
-                IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductType).GetPermutationGenerator(args);
+                args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, i / 100.0);
+                IPermutationGenerator permGen = ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
 
                 for (int j = 0; j < 100; j++)
@@ -100,7 +98,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Console.Write(" & ");
                     }
 
-                    roughClassifier.Train(localDataStore, reductType, i, new PermutationCollection(permutations[j]));
+                    roughClassifier.Train(localDataStore, factoryKey, i, new PermutationCollection(permutations[j]));
 
                     foreach (IReduct reduct in roughClassifier.ReductStore)
                     {
@@ -134,7 +132,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 1, -3, 12, 8, 2, -4, 9, 13, 10, 11, 0, 3, 7, 4, 6, 5, -1, -2 }));
             permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
             
-            roughClassifier.Train(localDataStore, "Bireduct", 0, permutationList);
+            roughClassifier.Train(localDataStore, ReductFactoryKeyHelper.Bireduct, 0, permutationList);
             foreach (IReduct reduct in roughClassifier.ReductStore)
             {
                 EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);

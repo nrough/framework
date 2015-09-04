@@ -28,46 +28,52 @@ namespace Infovision.Datamining.ReductGenerator
             
             int currentEpsilon;
             IdentificationType currentIdentType;
-            string currentReductType;
+            string currentFactoryKey;
             
             DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);                        
                                                                         
-            IParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", minEpsiolon, maxEpsilon, stepEpsilon);            
-            IParameter parmReductType = new ParameterValueCollection<string>("ReductType",
-                                                                            new string[] { "ApproximateReductMajorityWeights",
-                                                                                           "ApproximateReductRelativeWeights",
-                                                                                           "ApproximateReductRelative", 
-                                                                                           "ApproximateReductMajority",
-                                                                                           "ApproximateReductPositive"
+            IParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", minEpsiolon, maxEpsilon, stepEpsilon);
+            IParameter factoryKey = new ParameterValueCollection<string>(ReductGeneratorParamHelper.FactoryKey,
+                                                                            new string[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights,
+                                                                                           ReductFactoryKeyHelper.ApproximateReductRelativeWeights,
+                                                                                           ReductFactoryKeyHelper.ApproximateReductRelative, 
+                                                                                           ReductFactoryKeyHelper.ApproximateReductMajority,
+                                                                                           ReductFactoryKeyHelper.ApproximateReductPositive
                                                                                             });
 
-            IParameter parmIdentification = new ParameterValueCollection<IdentificationType>("IdentificationType", new IdentificationType[] { IdentificationType.Confidence,
+            IParameter parmIdentification = new ParameterValueCollection<IdentificationType>(ReductGeneratorParamHelper.IdentificationType, new IdentificationType[] { IdentificationType.Confidence,
                                                                                                                                             IdentificationType.Coverage,
                                                                                                                                             IdentificationType.WeightConfidence,
                                                                                                                                             IdentificationType.WeightCoverage,
                                                                                                                                             IdentificationType.Support,
-                                                                                                                                            IdentificationType.WeightSupport});         
+                                                                                                                                            IdentificationType.WeightSupport});
 
-            
-            
-            ParameterCollection parameterList = new ParameterCollection(new IParameter[] { parmReductType, parmEpsilon, parmIdentification });
+
+
+            ParameterCollection parameterList = new ParameterCollection(new IParameter[] { factoryKey, parmEpsilon, parmIdentification });
             
             int i = 0;
             foreach(object[] parm in parameterList.Values())
             {
                 i++;
 
-                currentReductType = (string) parm[0];
+                currentFactoryKey = (string) parm[0];
                 currentEpsilon = (int) parm[1];
                 currentIdentType = (IdentificationType) parm[2];
 
-                Console.WriteLine("{0} {1} {2}", currentReductType, currentEpsilon, currentIdentType);
+                Console.WriteLine("{0} {1} {2}", currentFactoryKey, currentEpsilon, currentIdentType);
 
-                Utils.Args config = new Utils.Args(new string[] { "FactoryKey", "DataStore", "ReductType", "IdentificationType" }, new object[] { currentReductType, dataStore, currentReductType, currentIdentType });
+                Utils.Args config = new Utils.Args(new string[] { ReductGeneratorParamHelper.FactoryKey, 
+                                                                  ReductGeneratorParamHelper.DataStore,                                                                   
+                                                                  ReductGeneratorParamHelper.IdentificationType }, 
+                                                   new object[] { currentFactoryKey, 
+                                                                  dataStore,                                                                   
+                                                                  currentIdentType });
+
                 PermutationCollection permutations = ReductFactory.GetPermutationGenerator(config).Generate(numberOfSubsets);
 
                 RoughClassifier roughClassifier = new RoughClassifier();
-                roughClassifier.Train(dataStore, currentReductType, currentEpsilon, permutations);
+                roughClassifier.Train(dataStore, currentFactoryKey, currentEpsilon, permutations);
 
                 foreach (IReduct reduct in roughClassifier.ReductStore)
                 {

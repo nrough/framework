@@ -226,7 +226,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductEnsembleBoostingGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingGenerator;
             reductGenerator.Generate();
 
-            DataStore data = (DataStore)parms.GetParameter("DataStore");
+            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.DataStore);
             RoughClassifier classifierTrn = new RoughClassifier();
             classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
             classifierTrn.Classify(data);

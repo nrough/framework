@@ -49,8 +49,8 @@ namespace Infovision.Datamining.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist("WeightGenerator"))
-                this.weightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)

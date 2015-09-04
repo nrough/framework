@@ -22,9 +22,11 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9)
-            
-        };
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
+        }; 
 
         [Test]
         public void ComputeTest()
@@ -85,7 +87,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Console.WriteLine();
 
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            string fileName = String.Format(@"F:\DendrogramSimple_{0}.bmp", id);
+            string fileName = String.Format(@"F:\Dendrogram\DendrogramSimple_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }
@@ -119,7 +121,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Console.WriteLine();
 
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            string fileName = String.Format(@"F:\DendrogramSimple_{0}.bmp", id);
+            string fileName = String.Format(@"F:\Dendrogram\DendrogramSimple_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }

@@ -22,6 +22,7 @@ namespace Infovision.Math
         private Dictionary<MatrixKey, double> matrix;        
         private ReadOnlyDictionary<MatrixKey, double> readOnlyMatrix;
         private Func<double[], double[], double> distance;
+        private int numberOfInstances;
 
         public DistanceMatrix()
         {            
@@ -82,12 +83,19 @@ namespace Infovision.Math
             }
         }
 
+        public int NumberOfInstances
+        {
+            get { return this.numberOfInstances; }
+            set { this.numberOfInstances = value; }
+        }
+
 
         public void Initialize(double[][] points)
         {
             int size = points.Length * (points.Length - 1) / 2;
             matrix = new Dictionary<MatrixKey, double>(size);
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
+            this.numberOfInstances = points.Length;
 
             //calculate initial distance matrix
             for (int i = 0; i < points.Length; i++)

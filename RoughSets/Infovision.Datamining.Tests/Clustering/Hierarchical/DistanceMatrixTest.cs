@@ -19,8 +19,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             matrix.Initialize(HierarchicalClusteringTest.GetData());
             Assert.IsTrue(true);
 
-            Console.Write(matrix.ToString());
-            Console.WriteLine();
+            //Console.Write(matrix.ToString());
+            //Console.WriteLine();
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 {                    
                     double distance = Infovision.Math.Distance.SquaredEuclidean(data[i], data[j]);
 
-                    Console.WriteLine("{0}, {1}, {2}", i, j, distance);
+                    //Console.WriteLine("{0}, {1}, {2}", i, j, distance);
 
                     matrix.Add(new MatrixKey(i, j), distance);
                 }
@@ -45,6 +45,23 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Console.Write(matrix.ToString());
             Console.WriteLine();
 
+        }
+
+        [Test]
+        public void InitializeTest()
+        {
+            double[][] data = HierarchicalClusteringTest.GetData();
+            DistanceMatrix matrix = new DistanceMatrix(data.Length, Infovision.Math.Distance.SquaredEuclidean);            
+            matrix.Initialize(data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                for (int j = i + 1; j < data.Length; j++)
+                {
+                    double distance = Infovision.Math.Distance.SquaredEuclidean(data[i], data[j]);
+                    Assert.AreEqual(distance, matrix.GetDistance(i, j));                    
+                }
+            }
         }
     }
 }

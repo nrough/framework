@@ -40,10 +40,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return max;
         }
 
-        public static double Mean(int[] pointsA, int[] pointsB, DistanceMatrix distanceMatrix)
+        public static double Average(int[] pointsA, int[] pointsB, DistanceMatrix distanceMatrix)
         {
             double sum = 0;
-            int size = pointsA.Length + pointsB.Length;
+            int n = pointsA.Length * pointsB.Length;
 
             foreach (int a in pointsA)
             {
@@ -52,7 +52,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     sum += distanceMatrix.GetDistance(a, b);                    
                 }
             }
-            return size != 0 ? sum / (double) size : 0;            
+            return n != 0 ? sum / (double) n : Double.MaxValue;            
         }
+
+        public static double Mean(int[] pointsA, int[] pointsB, DistanceMatrix distanceMatrix)
+        {
+            double sum = 0;
+            int n = pointsA.Length + pointsB.Length;
+            int[] merge = new int[n];
+            Array.Copy(pointsA, 0, merge, 0, pointsA.Length);
+            Array.Copy(pointsB, 0, merge, pointsA.Length, pointsB.Length);
+
+            for (int i = 0; i < merge.Length; i++)
+                for (int j = i + 1; j < merge.Length; j++)
+                    sum += distanceMatrix.GetDistance(merge[i], merge[j]);
+
+            return n > 1 ? sum / (double) (n * (n - 1.0) / 2.0) : Double.MaxValue;
+        }                
     }
 }

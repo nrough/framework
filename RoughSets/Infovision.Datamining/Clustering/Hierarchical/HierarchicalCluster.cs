@@ -30,6 +30,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set { this.objects = value; }
         }
 
+        public int Count
+        {
+            get { return this.objects.Count; }
+        }
+
         public System.Collections.ObjectModel.ReadOnlyCollection<int> MemberObjects
         {
             get { return this.objects.AsReadOnly(); }

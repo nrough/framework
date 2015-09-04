@@ -10,6 +10,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     public class DendrogramLinkCollection : IEnumerable<DendrogramLink>
     {        
         private DendrogramLink[] linkages;
+        int[] clusterIds;
         int nextLinkagesIdx = 0;
         private Dictionary<int, DendrogramNode> nodeDictionary;
         private DendrogramNode rootNode;
@@ -44,20 +45,30 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.numOfInstances = numOfInstances;
             linkages = new DendrogramLink[this.numOfInstances - 1];
             nodeDictionary = new Dictionary<int, DendrogramNode>(this.numOfInstances - 1);
+            clusterIds = new int[numOfInstances];
+            for (int i = 0; i < numOfInstances; i++)
+            {
+                clusterIds[i] = i;
+            }
         }
         
         public void Add(int cluster1, int cluster2, double distance, int mergedClusterId, bool isRoot)
-        {
-            int c1 = cluster1;
-            int c2 = cluster2;
-
-            if (cluster2 < cluster1)
+        {                        
+            int c1, c2;
+            if (clusterIds[cluster2] < clusterIds[cluster1])
             {
-                c1 = cluster2;
-                c2 = cluster1;
+                c1 = clusterIds[cluster2];
+                c2 = clusterIds[cluster1];
+            }
+            else
+            {
+                c1 = clusterIds[cluster1];
+                c2 = clusterIds[cluster2];
             }
 
             linkages[nextLinkagesIdx++] = new DendrogramLink(mergedClusterId, c1, c2, distance);
+            clusterIds[cluster1] = mergedClusterId;
+            clusterIds[cluster2] = mergedClusterId;
 
             DendrogramNode newNode;
             if (c1 < this.numOfInstances && c2 < this.numOfInstances)

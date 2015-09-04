@@ -41,7 +41,10 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9)             
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
         };        
 
         [Test]
@@ -50,22 +53,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             Assert.IsTrue(true);
-        }
+        }        
 
-        private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>[] AgregativeLinkages =
-        {            
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1)
-            /*
-            ,
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Max, 2),            
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min, 4),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Max, 5),            
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8)                   
-             * */
-        };
-
-        [Test, TestCaseSource("AgregativeLinkages")]
+        [Test, TestCaseSource("DistancesAndLinkages")]
         public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int> t)
         {
             Func<double[], double[], double> distance = t.Item1;
@@ -76,19 +66,22 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             aggregativeVersion.Compute(HierarchicalClusteringTest.GetData());
 
             HierarchicalClusteringSimple simpleVersion = new HierarchicalClusteringSimple(distance, linkage);
-            simpleVersion.Compute(HierarchicalClusteringTest.GetData());
-
-            Assert.AreEqual(simpleVersion.DendrogramLinkCollection.Count, 
-                            aggregativeVersion.DendrogramLinkCollection.Count, 
-                            String.Format("DendrogramLinkCollections have different sizes: {0} {1}", simpleVersion.DendrogramLinkCollection, aggregativeVersion.DendrogramLinkCollection));
+            simpleVersion.Compute(HierarchicalClusteringTest.GetData());            
 
             Bitmap bitmap = aggregativeVersion.GetDendrogramAsBitmap(640, 480);
-            string fileName = String.Format(@"F:\DndrA_{0}.bmp", id);
+            string fileName = String.Format(@"F:\Dendrogram\DndrA_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             bitmap = simpleVersion.GetDendrogramAsBitmap(640, 480);
-            fileName = String.Format(@"F:\DndrS_{0}.bmp", id);
+            fileName = String.Format(@"F:\Dendrogram\DndrS_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            Assert.AreEqual(simpleVersion.DendrogramLinkCollection.Count,
+                            aggregativeVersion.DendrogramLinkCollection.Count,
+                            String.Format("DendrogramLinkCollections have different sizes: {0} {1}", simpleVersion.DendrogramLinkCollection, aggregativeVersion.DendrogramLinkCollection));
+            
+            Console.WriteLine(simpleVersion.DendrogramLinkCollection.ToString());
+            Console.WriteLine(aggregativeVersion.DendrogramLinkCollection.ToString());
 
             for (int i = 0; i < simpleVersion.DendrogramLinkCollection.Count; i++ )
             {
@@ -96,8 +89,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 DendrogramLink aggregativeLink = aggregativeVersion.DendrogramLinkCollection[i];
 
                 Assert.AreEqual(simpleLink.Id, aggregativeLink.Id, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                Assert.AreEqual(simpleLink.Cluster1, aggregativeLink.Cluster1, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                //The ordering of items with the same distance might be different
+                //Assert.AreEqual(simpleLink.Cluster1, aggregativeLink.Cluster1, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                //Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
                 Assert.AreEqual(simpleLink.Distance, aggregativeLink.Distance, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
             }
         }
@@ -127,7 +121,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             {
                 Console.Write("{0} ", i);
             }
-            Console.WriteLine();            
+            Console.WriteLine();    
         }
 
         [Test]
@@ -169,7 +163,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Console.WriteLine();
 
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            string fileName = String.Format(@"F:\Dendrogram_{0}.bmp", id);
+            string fileName = String.Format(@"F:\Dendrogram\Dendrogram_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }       

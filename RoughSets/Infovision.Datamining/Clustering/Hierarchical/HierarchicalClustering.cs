@@ -55,6 +55,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             get { return this.dendrogram; }
         }
 
+        public int NumberOfInstances
+        {
+            get { return this.numberOfInstances; }
+        }
+
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>        
@@ -188,21 +193,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// 
         /// <param name="data">The data where to compute the algorithm.</param>        
         public virtual void Compute(double[][] data)
-        {
-            // Initial argument checking
+        {            
             if (data == null)
                 throw new ArgumentNullException("data");
 
             if (data.Length == 0)
                 return;
-
-            // Perform initialization of the clusters
+            
             this.Initialize(data);
-
-            //Console.Write(distanceMatrix.ToString());
-
             this.CreateClusters();
-
             this.Cleanup();            
         }
         
@@ -217,6 +216,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             clusters.Remove(key);
         }
 
+        protected int GetClusterSize(int clusterIdx)
+        {
+            return this.clusters[clusterIdx].Count;
+        }
+
         protected bool HasMoreClustersToMerge()
         {
             return clusters.Count > 1;
@@ -224,7 +228,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         protected virtual void CreateClusters()
         {                                    
-            for (int i = 0; i < this.numberOfInstances; i++ )
+            for (int i = 0; i < this.numberOfInstances - 1; i++ )
             {
                 // use priority queue to find next best pair to cluster
                 HierarchicalClusterTuple t;
@@ -251,17 +255,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         }
                     }
                 }
-            }
-                                                            
-            /*
-            while (this.HasMoreClustersToMerge())
-            {
-                DendrogramLink link = this.GetClustersToMerge();
-                int mergedClusterIdx = this.MergeClusters(link);
-                
-                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);
-            }
-            */
+            }                                                                        
         }        
 
         protected DendrogramLink GetClustersToMerge()
@@ -343,7 +337,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         protected double GetClusterDistance(int i, int j)
         {
-            return this.Linkage(clusters[i].MemberObjects.ToArray(), clusters[j].MemberObjects.ToArray(), this.distanceMatrix);
+            if (clusters[i].Count == 1 && clusters[j].Count == 1)
+                //assume that clusterId and objectId at the begining are the same
+                return this.distanceMatrix.GetDistance(i, j);            
+                        
+            int[] cluster1 = clusters[i].MemberObjects.ToArray();
+            int[] cluster2 = clusters[j].MemberObjects.ToArray();
+            return this.Linkage(cluster1, cluster2, this.distanceMatrix);
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)

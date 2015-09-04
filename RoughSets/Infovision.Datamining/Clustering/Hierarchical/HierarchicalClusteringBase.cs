@@ -114,6 +114,23 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             Init();
         }
+
+        public HierarchicalClusteringBase(DistanceMatrix distanceMatrix,
+                                         Func<int[], int[], DistanceMatrix, double[][], double> linkage)
+            : this()
+        {
+            if (distanceMatrix == null)
+                throw new ArgumentNullException("distanceMatrix");
+
+            if (linkage == null)
+                throw new ArgumentNullException("linkage");
+            
+            if (distanceMatrix.Distance != null)
+                this.Distance = distanceMatrix.Distance;
+            this.DistanceMatrix = distanceMatrix;
+
+            this.Linkage = linkage;
+        }
                 
         public HierarchicalClusteringBase(Func<double[], double[], double> distance,
                                           Func<int[], int[], DistanceMatrix, double[][], double> linkage)
@@ -230,10 +247,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (node == null)
                 return;
-            
-            HierarchicalClusteringBase.TraversePreOrder(node.LeftNode, action);
+
+            HierarchicalClusteringBase.TraverseInOrder(node.LeftNode, action);
             action.Invoke(node);
-            HierarchicalClusteringBase.TraversePreOrder(node.RightNode, action);
+            HierarchicalClusteringBase.TraverseInOrder(node.RightNode, action);
         }
 
         public static void TraversePostOrder(DendrogramNode node, Action<DendrogramNode> action)
@@ -241,8 +258,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (node == null)
                 return;
 
-            HierarchicalClusteringBase.TraversePreOrder(node.LeftNode, action);
-            HierarchicalClusteringBase.TraversePreOrder(node.RightNode, action);
+            HierarchicalClusteringBase.TraversePostOrder(node.LeftNode, action);
+            HierarchicalClusteringBase.TraversePostOrder(node.RightNode, action);
             action.Invoke(node);
         }
 

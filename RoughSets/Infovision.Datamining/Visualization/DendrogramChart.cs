@@ -96,61 +96,51 @@ namespace Infovision.Datamining.Visualization
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
 
-                //calculate leaf node positions
-                int[] leafOrder = this.HCluster.GetLeaves();
-                Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
+
+                //TODO Use tree PostOrderTraversal instead of LeafOrder + DendrogramLink collection!
+                Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(this.HCluster.NumberOfInstances - 1);
                 int xAxisOffset = 10;
                 int nodePointX = yAxisEnd.X + xAxisOffset;
-                for (int i = 0; i < leafOrder.Length; i++)
+
+                DendrogramLinkChartData linkChartData = null;
+                DendrogramLinkChartData linkChartData1 = null;
+                DendrogramLinkChartData linkChartData2 = null;
+
+                Action<DendrogramNode> buildChartPoints = delegate(DendrogramNode d)
                 {
-                    DendrogramLinkChartData linkChartData = new DendrogramLinkChartData(leafOrder[i]);
-
-                    linkChartData.LeftNodeX = nodePointX;
-                    linkChartData.LeftNodeY = yAxisEnd.Y;
-                    linkChartData.RightNodeX = nodePointX;
-                    linkChartData.RightNodeY = yAxisEnd.Y;
-                    linkChartData.ParentNodeY = yAxisEnd.Y;
-
-                    dendrogramChartData.Add(leafOrder[i], linkChartData);
-
-                    nodePointX += xMajorScalePx;
-                }
-                leafOrder = null;
-
-                //draw dendrogramLinkCollection                
-                foreach (DendrogramLink link in this.HCluster.DendrogramLinkCollection)
-                {
-                    DendrogramLinkChartData linkChartData1 = null, linkChartData2 = null;
-
-                    if (dendrogramChartData.ContainsKey(link.Cluster1))
+                    if (d.IsLeaf)
                     {
-                        linkChartData1 = dendrogramChartData[link.Cluster1];
+                        linkChartData = new DendrogramLinkChartData(d.Id);
+
+                        linkChartData.LeftNodeX = nodePointX;
+                        linkChartData.LeftNodeY = yAxisEnd.Y;
+                        linkChartData.RightNodeX = nodePointX;
+                        linkChartData.RightNodeY = yAxisEnd.Y;
+                        linkChartData.ParentNodeY = yAxisEnd.Y;
+
+                        dendrogramChartData.Add(d.Id, linkChartData);
+
+                        nodePointX += xMajorScalePx;
                     }
                     else
                     {
-                        linkChartData1 = null;
+                        linkChartData1 = dendrogramChartData[d.LeftNode.Id];
+                        linkChartData2 = dendrogramChartData[d.RightNode.Id];
+
+                        linkChartData = new DendrogramLinkChartData(d.Id);
+                        linkChartData.LeftNodeX = linkChartData1.ParentNodeX;
+                        linkChartData.LeftNodeY = linkChartData1.ParentNodeY;
+                        linkChartData.RightNodeX = linkChartData2.ParentNodeX;
+                        linkChartData.RightNodeY = linkChartData2.ParentNodeY;
+
+                        int nodeHeight = (int)(d.Height * heightScale * yMajorScalePx);
+                        linkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;
+
+                        dendrogramChartData.Add(d.Id, linkChartData);
                     }
+                };
 
-                    if (dendrogramChartData.ContainsKey(link.Cluster2))
-                    {
-                        linkChartData2 = dendrogramChartData[link.Cluster2];
-                    }
-                    else
-                    {
-                        linkChartData2 = null;
-                    }
-
-                    DendrogramLinkChartData newLinkChartData = new DendrogramLinkChartData(link.Id);
-                    newLinkChartData.LeftNodeX = linkChartData1.ParentNodeX;
-                    newLinkChartData.LeftNodeY = linkChartData1.ParentNodeY;
-                    newLinkChartData.RightNodeX = linkChartData2.ParentNodeX;
-                    newLinkChartData.RightNodeY = linkChartData2.ParentNodeY;
-
-                    int nodeHeight = (int)(link.Distance * heightScale * yMajorScalePx);
-                    newLinkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;
-
-                    dendrogramChartData.Add(link.Id, newLinkChartData);
-                }
+                HierarchicalClusteringBase.TraversePostOrder(this.HCluster.Root, buildChartPoints);                                                
 
                 Font font = new Font("Tahoma", 9);
                 Pen dendrogramPen = new Pen(foreground, 2);

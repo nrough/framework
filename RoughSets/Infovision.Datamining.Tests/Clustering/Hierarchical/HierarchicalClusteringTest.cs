@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             //DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             //Bitmap bitmap = dc.GetAsBitmap();
             //string fileName = @"F:\Dendrogram\Dendrogram_LCA.bmp";
-            //bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);                        
+            //bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             Assert.AreEqual(8, hClustering.GetLeafDistance(1, 5));
             Assert.AreEqual(2, hClustering.GetLeafDistance(5, 9));
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         {
             Func<double[], double[], double> distance = t.Item1;
             Func<int[], int[], DistanceMatrix, double[][], double> linkage = t.Item2;
-            int id = t.Item3;            
+            int id = t.Item3;
 
             HierarchicalClustering aggregativeVersion = new HierarchicalClustering(distance, linkage);
             aggregativeVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
@@ -118,7 +118,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             
             HierarchicalClusteringSimple simpleVersion = new HierarchicalClusteringSimple(distance, linkage);
             simpleVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
-            simpleVersion.Compute();            
+            simpleVersion.Compute();
 
             DendrogramChart dc1 = new DendrogramChart(aggregativeVersion, 640, 480);
             Bitmap bitmap = dc1.GetAsBitmap();
@@ -146,7 +146,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 //The ordering of items with the same distance might be different
                 //Assert.AreEqual(simpleLink.Cluster1, aggregativeLink.Cluster1, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
                 //Assert.AreEqual(simpleLink.Cluster2, aggregativeLink.Cluster2, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
-                Assert.AreEqual(simpleLink.Distance, aggregativeLink.Distance, String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
+                Assert.AreEqual(System.Math.Round(simpleLink.Distance, 11), System.Math.Round(aggregativeLink.Distance, 11), String.Format("Simple: {0}; Aggregative: {1}", simpleLink, aggregativeLink));
             }
         }       
 

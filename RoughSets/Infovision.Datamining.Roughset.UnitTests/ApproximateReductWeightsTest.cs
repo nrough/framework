@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (ReductWeights localReduct in reductStore)
             {
                 EquivalenceClassMap result = localReduct.EquivalenceClassMap;
-                Assert.AreEqual(124, result.Count);
+                Assert.AreEqual(124, result.NumberOfPartitions);
 
                 AttributeValueVector dataVector = new AttributeValueVector(new int[] { 1, 2, 3, 4, 5, 6 }, new long[] {1, 1, 1, 1, 1, 1});
                 EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
@@ -240,7 +240,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     EquivalenceClassMap partitionMap = new EquivalenceClassMap(dataStoreTrain);
                     partitionMap.Calc(reduct.Attributes, dataStoreTrain);
 
-                    Assert.AreEqual(partitionMap.Count, reduct.EquivalenceClassMap.Count);
+                    Assert.AreEqual(partitionMap.NumberOfPartitions, reduct.EquivalenceClassMap.NumberOfPartitions);
 
                     int objectCount = 0;
                     foreach (AttributeValueVector dataVector in partitionMap.Partitions.Keys)

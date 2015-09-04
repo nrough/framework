@@ -9,6 +9,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClusteringSimple : HierarchicalClustering
     {
+        private Dictionary<int, HierarchicalCluster> clusters;
+
         public HierarchicalClusteringSimple()
             : base()
         {
@@ -22,7 +24,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public HierarchicalClusteringSimple(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(matrix, linkage)
         {
-        }
+        }        
 
         protected override void CreateClusters()
         {
@@ -33,7 +35,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 {
                     clusterDistance[i, j] = this.GetClusterDistance(i,j);
                     clusterDistance[j, i] = clusterDistance[i, j];
-
                 }
             }
                         
@@ -78,10 +79,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     }
                 }
 
-                this.MergeClusters(iMin1, iMin2, minDistance);                
-
-                //TODO MergeClusters removes old cluster and adds a new one with new id
-                //The following code was based on the assumption that new cluster ids are utilized from the old ones
+                this.MergeClustersSimple(iMin1, iMin2, minDistance);                
+                
                 // update distances
                 for (int j = 0; j < NumberOfInstances; j++)
                 {
@@ -94,8 +93,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         clusterDistance[i2, i1] = distance;
                     }
                 }
-            }
-            
+            }            
         }                                       
     }
 }

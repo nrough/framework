@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
 
         public override double Calc(IReduct reduct)
         {
-            return (double)reduct.EquivalenceClassMap.Count;
+            return (double)reduct.EquivalenceClassMap.NumberOfPartitions;
         }
 
         public override string ToString()

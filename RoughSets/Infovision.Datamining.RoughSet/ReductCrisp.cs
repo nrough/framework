@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
 			: base(dataStore, fieldIds, weights, epsilon)
 		{
 			this.Init();
-		}
+		}        
 
 		public ReductCrisp(ReductCrisp reduct)
 			: base(reduct as ReductWeights)

@@ -13,7 +13,128 @@ namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductGeneralDecisionGeneratorTest
-    {        
+    {
+        [Test]
+        public void TryRemoveAttribute()
+        {
+            Random randSeed = new Random();
+            int seed = randSeed.Next(Int32.MaxValue);
+            RandomSingleton.Seed = seed;
+
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);            
+
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+            int numberOfPermutations = 10;
+            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+
+            Args parms = new Args();
+            parms.AddParameter("DataStore", data);
+            parms.AddParameter("NumberOfThreads", 1);
+            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
+            parms.AddParameter("PermutationCollection", permList);
+            parms.AddParameter("WeightGenerator", weightGenerator);
+
+            Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
+
+            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+
+            foreach (Permutation permutation in permList)
+            {
+                int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
+
+                int[] attributes = new int[cutoff + 1];
+                for (int i = 0; i <= cutoff; i++)
+                    attributes[i] = permutation[i];
+
+                ReductCrisp reduct = reductGenerator.CalculateReduct(attributes);
+                for (int i = attributes.Length - 1; i >= 0; i--)
+                {
+                    if (reduct.TryRemoveAttribute(attributes[i]))
+                    {
+                        //TODO
+                    }
+                }
+            }            
+        }
+        
+        
+        [Test]
+        public void ExperimentAvgReductLength()
+        {
+            Random randSeed = new Random();
+            int seed = randSeed.Next(Int32.MaxValue);
+            RandomSingleton.Seed = seed;
+
+            DataStore data = DataStore.Load(@"Data\optdigits.trn", FileFormat.Rses1);
+            //DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+            int numberOfPermutations = 1000;
+            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+
+            Args parms = new Args();
+            parms.AddParameter("DataStore", data);
+            parms.AddParameter("NumberOfThreads", 1);
+            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
+            parms.AddParameter("PermutationCollection", permList);
+            parms.AddParameter("WeightGenerator", weightGenerator);
+
+            Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
+
+            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+
+            foreach (Permutation permutation in permList)
+            {
+                int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
+
+                int[] attributes = new int[cutoff + 1];
+                for (int i = 0; i <= cutoff; i++)
+                    attributes[i] = permutation[i];
+
+                ReductCrisp reduct = reductGenerator.CalculateReduct(attributes);
+                List<int> cLen = null;
+                if (results.TryGetValue(attributes.Length, out cLen))
+                {
+                    cLen.Add(reduct.Attributes.GetCardinality());
+                }
+                else
+                {
+                    cLen = new List<int>();
+                    cLen.Add(reduct.Attributes.GetCardinality());
+                    results.Add(attributes.Length, cLen);
+                }
+            }
+
+            string fileName = @"F:\Temp\ReductGeneralDecisionGeneratorTest_ExperimentAvgReductLength.txt";
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
+            {
+                foreach (KeyValuePair<int, List<int>> kvp in results)
+                {
+                    List<int> cLen = kvp.Value;
+                    int sum = 0;
+                    int min = Int32.MaxValue;
+                    int max = Int32.MinValue;
+                    foreach (int k in cLen)
+                    {
+                        sum += k;
+
+                        if (min > k)
+                            min = k;
+                        if (max < k)
+                            max = k;
+                    }
+                    double avgLen = (double)sum / (double)cLen.Count;
+
+                    file.WriteLine(String.Format("{0} {1} {2} {3} {4}", kvp.Key, avgLen, cLen.Count, min, max));
+                }
+            }
+        }
+        
+        
         [Test]
         public void GenerateRelativeTest()
         {            
@@ -129,6 +250,34 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     approxReduct.AddAttribute(attributeId);
                 }
             }
-        } 
+        }
+
+        [Test]
+        public void GenerateTest()
+        {
+            Random randSeed = new Random();
+            int seed = randSeed.Next(Int32.MaxValue);
+            RandomSingleton.Seed = seed;
+
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+            int numberOfPermutations = 10;
+            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+            WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(data);
+
+            Args parms = new Args();
+            parms.AddParameter("DataStore", data);
+            parms.AddParameter("NumberOfThreads", 1);
+            parms.AddParameter("FactoryKey", "ReductGeneralizedDecision");
+            parms.AddParameter("PermutationCollection", permList);
+            parms.AddParameter("WeightGenerator", weightGenerator);
+
+            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            reductGenerator.Generate();
+
+            Assert.True(true);
+        }
     }
 }

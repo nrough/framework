@@ -16,10 +16,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     public class HierarchicalClustering : HierarchicalClusteringBase
     {                        
         private PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer> queue;        
-        private Dictionary<int, HierarchicalCluster> clusters;        
+        private Dictionary<int, HierarchicalCluster> clusters;
         private DendrogramLinkCollection dendrogramLinkCollection;
         private int nextLinkagesIdx;        
         private Dictionary<int, DendrogramNode> nodes;
+
+        private Dictionary<int, int> nodeIdLookupSimple;
         
         //TODO
         public Dictionary<int, DendrogramNode> Nodes
@@ -31,7 +33,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public override DendrogramLinkCollection DendrogramLinkCollection
         {
             get { return this.dendrogramLinkCollection; }
-        }                        
+        }               
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
@@ -63,12 +65,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
         /// 
         public HierarchicalClustering(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
-            : base(matrix.Distance, linkage)
-        {           
-            this.Distance = matrix.Distance;
+            : base(matrix, linkage)
+        {
+            if (matrix.Distance != null)
+                this.Distance = matrix.Distance;
+            
             this.Linkage = linkage;
 
             this.DistanceMatrix = new DistanceMatrix();
+            this.DistanceMatrix.Distance = matrix.Distance;
             foreach (KeyValuePair<MatrixKey, double> kvp in matrix)
                 this.DistanceMatrix.Add(new MatrixKey(kvp.Key.X, kvp.Key.Y), kvp.Value);
         }
@@ -112,7 +117,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(instanceKeys[i], instanceKeys[j], this.DistanceMatrix[instanceKeys[i], instanceKeys[j]], 1, 1);                                       
                     queue.Enqueue(tuple);
                 }
-            }
+            }            
         }                
 
         /// <summary>
@@ -130,18 +135,21 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             
             this.Initialize();
             this.CreateClusters();
+            
+            this.Root = this.FindNode(this.DendrogramLinkCollection.GetLast().Id);
+            
             this.Cleanup();            
         }        
         
         protected void AddCluster(HierarchicalCluster cluster)
         {
-            clusters.Add(cluster.Index, cluster);
+            this.clusters.Add(cluster.Index, cluster);
             this.GetNextNodeId();
         }
 
         protected void RemoveCluster(int key)
         {
-            clusters.Remove(key);
+            this.clusters.Remove(key);
         }
 
         protected int GetClusterSize(int clusterIdx)
@@ -149,9 +157,19 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return this.clusters[clusterIdx].Count;
         }
 
+        protected bool ExistsCluster(int clusterIdx)
+        {
+            return this.clusters.ContainsKey(clusterIdx);
+        }
+
         protected bool HasMoreClustersToMerge()
         {
-            return clusters.Count > 1;
+            return this.clusters.Count > 1;
+        }
+
+        protected HierarchicalCluster GetCluster(int clusterIdx)
+        {
+            return this.clusters[clusterIdx];
         }
 
         protected virtual void CreateClusters()
@@ -200,7 +218,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
 
-            this.Root = this.FindNode(this.DendrogramLinkCollection.GetLast().Id);
+            //this.Root = this.FindNode(this.DendrogramLinkCollection.GetLast().Id);
         }        
 
         protected DendrogramLink GetClustersToMerge()
@@ -221,6 +239,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return new DendrogramLink(this.NextClusterId, result[0], result[1], minDistance);
         }
 
+        /*
         protected DendrogramLink GetClustersToMergeSimple()
         {
             int[] key = new int[2] { -1, -1 };
@@ -247,9 +266,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             return new DendrogramLink(this.NextClusterId, key[0], key[1], minClusterDistance);
         }
+        */ 
 
         protected int MergeClusters(int x, int y, double distance)
-        {        
+        {                    
             HierarchicalCluster destination = clusters[x];
             HierarchicalCluster source = clusters[y];
             HierarchicalCluster.MergeClustersInPlace(destination, source);
@@ -292,6 +312,61 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             return newNode.Id;
         }
 
+        protected int MergeClustersSimple(int x, int y, double distance)
+        {
+            if (this.nodeIdLookupSimple == null)
+            {
+                this.nodeIdLookupSimple = new Dictionary<int, int>();
+                foreach(KeyValuePair<int, double[]> kvp in this.Instances)
+                    this.nodeIdLookupSimple.Add(kvp.Key, kvp.Key);
+            }
+
+            HierarchicalCluster destination = clusters[x];
+            HierarchicalCluster source = clusters[y];
+            HierarchicalCluster.MergeClustersInPlace(destination, source);
+                        
+            //clusters.Remove(y); //remove empty cluster
+            //clusters.Add(this.NextClusterId, destination); //add new merged cluster under new id
+            //clusters.Remove(x); //remove old cluster id
+
+            int c1 = x;
+            int c2 = y;
+            if (c2 < c1)
+            {
+                c1 = y;
+                c2 = x;
+            }
+
+            dendrogramLinkCollection[nextLinkagesIdx++] = new DendrogramLink(this.NextClusterId, c1, c2, distance);            
+            
+            DendrogramNode leftNode = nodes[this.nodeIdLookupSimple[c1]];
+            DendrogramNode rightNode = nodes[this.nodeIdLookupSimple[c2]];
+
+            DendrogramNode newNode = new DendrogramNode
+            {
+                Id = this.NextClusterId,
+                Parent = null,
+
+                LeftNode = leftNode,
+                LeftLength = distance - leftNode.Height,
+
+                RightNode = rightNode,
+                RightLength = distance - rightNode.Height,
+
+                Height = distance
+            };
+
+            leftNode.Parent = newNode;
+            rightNode.Parent = newNode;
+            nodes.Add(newNode.Id, newNode);
+
+            this.nodeIdLookupSimple[x] = newNode.Id;
+            this.nodeIdLookupSimple.Remove(y);
+
+            this.GetNextNodeId();
+            return newNode.Id;
+        }
+
         protected override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {
             return this.Linkage(cluster1, cluster2, this.DistanceMatrix, Instances.Values.ToArray());
@@ -311,7 +386,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         protected void Cleanup()
         {
-            this.clusters = null;            
+            this.clusters = null;
+            this.nodeIdLookupSimple = null;
         }                
 
         protected override DendrogramNode FindNode(int nodeId)

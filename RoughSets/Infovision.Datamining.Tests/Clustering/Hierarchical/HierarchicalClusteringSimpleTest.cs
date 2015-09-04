@@ -39,7 +39,6 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
-
             Assert.IsTrue(true);
         }
 
@@ -72,9 +71,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(distance, linkage);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
-            hClustering.Compute();
-            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
-            hClustering.Compute();            
+            hClustering.Compute();                        
+
             Console.Write(hClustering.DendrogramLinkCollection.ToString());
             Console.WriteLine();
 
@@ -95,6 +93,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             int id = t.Item3;
 
             DistanceMatrix matrix = new DistanceMatrix();
+            //matrix.Distance = Infovision.Math.Similarity.Euclidean;
             double[][] data = HierarchicalClusteringTest.GetData();
             for (int i = 0; i < data.Length; i++)
             {

@@ -64,7 +64,7 @@ namespace Infovision.Datamining.Roughset
 
             comparer = new DataStoreOrderByComparer(dataStore, orderByTmp);
 
-            int i = 0, j = 0;                        
+            int i = 0, j = 0, sum = 0;                        
             while(i < sortedObjIdx.Length)
             {
                 AttributeValueVector dataVector = dataStore.GetDataVector(sortedObjIdx[i], orderByTmp);
@@ -81,8 +81,12 @@ namespace Infovision.Datamining.Roughset
                 }
                 
                 this.Partitions.Add(dataVector, eq);
+                sum += eq.NumberOfObjects;
                 i = j;
             }
+
+            if (sum != sortedObjIdx.Length)
+                throw new InvalidProgramException("Sum of eqivalence classes does not equal to all objects.");
         }
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)

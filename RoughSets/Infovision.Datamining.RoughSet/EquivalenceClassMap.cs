@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset
             get { return decisionCount; }
         }        
 
-        public int Count
+        public int NumberOfPartitions
         {
             get { return partitions.Count; }
         }

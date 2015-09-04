@@ -35,11 +35,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             get { return this.objects.Count; }
         }
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<int> MemberObjects
-        {
-            get { return this.objects.AsReadOnly(); }
-        }
+        //public System.Collections.ObjectModel.ReadOnlyCollection<int> MemberObjects
+        //{
+        //    get { return this.objects.AsReadOnly(); }
+        //}
 
+        public List<int> MemberObjects
+        {
+            get { return this.objects; }
+        }
 
         public static HierarchicalCluster MergeClusters(int newClusterIndex, HierarchicalCluster cluster1, HierarchicalCluster cluster2)
         {

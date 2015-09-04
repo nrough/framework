@@ -48,21 +48,26 @@ namespace Infovision.Datamining.Roughset
                 int[] attributes = new int[cutoff + 1];
                 for(int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
-
-                ReductCrisp reduct = (ReductCrisp) this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());               
-                foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
-                    eq.RemoveObjectsWithMinorDecisions();
-
-                for (int i = attributes.Length - 1; i >= 0; i--)
-                {
-                    reduct.TryRemoveAttribute(attributes[i]);
-                }
-
-                localReductPool.DoAddReduct(reduct);
+                
+                localReductPool.DoAddReduct(this.CalculateReduct(attributes));
             }
 
+            //TODO Repair ReductCrisp Clone in order to get this working
             //localReductPool = localReductPool.RemoveDuplicates();
+
             this.ReductPool = localReductPool;            
+        }
+
+        public ReductCrisp CalculateReduct(int[] attributes)
+        {
+            ReductCrisp reduct = (ReductCrisp)this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());
+            foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                eq.RemoveObjectsWithMinorDecisions();
+
+            for (int i = attributes.Length - 1; i >= 0; i--)
+                reduct.TryRemoveAttribute(attributes[i]);
+
+            return reduct;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)

@@ -16,13 +16,13 @@ namespace Infovision.Datamining.Roughset
         private AttributeValueVector dataVector; //attributes and values for which EQ class was created
         private Dictionary<int, double> instances;  //objectId --> object weight
 
-        private bool calcStats; //flags if statistics have been calculated        
+        private bool isStatCalculated; //flags if statistics have been calculated
         private Dictionary<long, HashSet<int>> decisionObjectIndexes; //decision value --> set of objects with decision
-        private List<KeyValuePair<long, double>> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)                                                 
+        private List<KeyValuePair<long, double>> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
         private long majorDecision; //decision within EQ class with greatest object weight sum
         private double majorDecisionWeightSum; //sum of weights for a major decision
         private double totalWeightSum;
-        private PascalSet decisionSet;  //pascal set containing all decisions within EQ class        
+        private PascalSet decisionSet;  //pascal set containing all decisions within EQ class
         private DataStore dataStore;
         
         //TODO add equivalence class description as Attributes and their values
@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset
         {
             get 
             {
-                if (!this.calcStats)
+                if (!this.isStatCalculated)
                     this.CalcStatistics();
 
                 return this.majorDecision;                                
@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                if (!this.calcStats)
+                if (!this.isStatCalculated)
                     this.CalcStatistics();
                 return decisionSet;                
             }
@@ -123,7 +123,7 @@ namespace Infovision.Datamining.Roughset
 
         private void CalcStatistics()
         {
-            this.calcStats = false;
+            this.isStatCalculated = false;
 
             long tmpMajorDecision = -1;
             double maxWeightSum = Double.MinValue;
@@ -165,7 +165,7 @@ namespace Infovision.Datamining.Roughset
             this.majorDecision = tmpMajorDecision;
             this.majorDecisionWeightSum = maxWeightSum;
 
-            this.calcStats = true;
+            this.isStatCalculated = true;
         }
 
         public void AddObject(int objectIndex, long decisionValue, double weight)
@@ -181,7 +181,7 @@ namespace Infovision.Datamining.Roughset
             }
             localObjectSet.Add(objectIndex);
 
-            this.calcStats = false;
+            this.isStatCalculated = false;
         }        
 
         public void RemoveObject(int objectIndex)
@@ -199,7 +199,7 @@ namespace Infovision.Datamining.Roughset
 
                 this.instances.Remove(objectIndex);                                
             }
-            this.calcStats = false;
+            this.isStatCalculated = false;
         }                
 
         public int GetNumberOfObjectsWithDecision(long decisionValue)
@@ -210,7 +210,7 @@ namespace Infovision.Datamining.Roughset
                 return indices.Count;
             }
             return 0;
-        }
+        }        
 
         public double GetDecisionProbability(long decisionValue)
         {
@@ -219,15 +219,20 @@ namespace Infovision.Datamining.Roughset
 
         public void RemoveObjectsWithMinorDecisions()
         {            
-            if (!this.calcStats)
+            if (!this.isStatCalculated)
                 this.CalcStatistics();
 
             DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0001 / this.dataStore.NumberOfRecords);
 
             foreach (KeyValuePair<long, double> kvp in this.decisionWeigthSums)
             {
-                if (comparer.Equals(kvp.Value, this.majorDecisionWeightSum) == false)                    
+                if (comparer.Equals(kvp.Value, this.majorDecisionWeightSum) == false)
+                {
+                    foreach (int objectIdx in decisionObjectIndexes[kvp.Key])
+                        this.instances.Remove(objectIdx);
+
                     decisionObjectIndexes.Remove(kvp.Key);
+                }
             }
 
             this.CalcStatistics();            

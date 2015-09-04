@@ -123,7 +123,7 @@ namespace Infovision.Math.Tests
         [Test]
         public void TverskyDelegateTest()
         {
-            double result1 = SimilarityIndex.Tversky2(vectors[2], vectors[3], 0.5, 0.5);
+            double result1 = SimilarityIndex.Tversky_DEL(vectors[2], vectors[3], 0.5, 0.5);
             double result2 = SimilarityIndex.Tversky(vectors[2], vectors[3], 0.5, 0.5);
             Assert.AreEqual(result1, result2);
         }

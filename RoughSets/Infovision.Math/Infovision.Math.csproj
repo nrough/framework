@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum.cs" />
     <Compile Include="Correlation.cs" />
     <Compile Include="DoubleExtensions.cs" />
     <Compile Include="Similarity.cs" />

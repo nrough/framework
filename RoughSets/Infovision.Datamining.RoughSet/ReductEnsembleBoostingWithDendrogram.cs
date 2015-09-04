@@ -11,9 +11,7 @@ using Infovision.Math;
 namespace Infovision.Datamining.Roughset
 {
 	public class ReductEnsembleBoostingWithDendrogramGenerator : ReductEnsembleBoostingGenerator
-	{
-		public static string FactoryKey = ReductFactoryKeyHelper.ReductEnsembleBoostingWithDendrogram;
-
+	{		
 		private IReduct[] reducts;		
 		private int reductCounter;
 		private bool reductsCalculated;
@@ -134,7 +132,7 @@ namespace Infovision.Datamining.Roughset
 	{
 		public virtual string FactoryKey
 		{
-			get { return ReductEnsembleBoostingWithDendrogramGenerator.FactoryKey; }
+			get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithDendrogram; }
 		}
 
 		public virtual IReductGenerator GetReductGenerator(Args args)

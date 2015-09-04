@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
             Array.Copy(objectWeights, result, objectWeights.Length);
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)            
                 foreach (int objectIdx in e.GetObjectIndexes(e.MajorDecision))                
-                    result[objectIdx] *= -1;                            
+                    result[objectIdx] *= -1;
             return result;
         }
 

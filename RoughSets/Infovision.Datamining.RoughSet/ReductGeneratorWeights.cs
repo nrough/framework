@@ -81,7 +81,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "ApproximateReductMajorityWeights"; }
+            get { return ReductFactoryKeyHelper.ApproximateReductMajorityWeights; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return "ApproximateReductRelativeWeights"; }
+            get { return ReductFactoryKeyHelper.ApproximateReductRelativeWeights;; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

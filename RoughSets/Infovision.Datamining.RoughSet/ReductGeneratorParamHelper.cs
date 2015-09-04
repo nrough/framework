@@ -31,6 +31,8 @@ namespace Infovision.Datamining.Roughset
         public static readonly string Threshold = "Threshold";
         public static readonly string NumberOfReductsInWeakClassifier = "NumberOfReductsInWeakClassifier";
         public static readonly string MaxIterations = "MaxIterations";
+        public static readonly string NumberOfReductsToTest = "NumberOfReductsToTest";
+        public static readonly string AgregateFunction = "AgregateFunction";
                                                                                     
     }
 

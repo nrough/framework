@@ -9,9 +9,7 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 {
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
-	{
-		public static string FactoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
-				
+	{						
 		private WeightBoostingGenerator weightGenerator;
 		private ReductStoreCollection models;
 		private int iterPassed;
@@ -25,7 +23,11 @@ namespace Infovision.Datamining.Roughset
 		public int NumberOfReductsInWeakClassifier { get; set; }
 		public int MaxIterations { get; set; }
 		public int IterationsPassed { get { return this.iterPassed; } }
-        public int MaxNumberOfWeightResets { get; set; }
+		public int MaxNumberOfWeightResets { get; set; }
+		public int NumberOfWeightResets
+		{
+			get { return this.numberOfWeightResets; }            
+		}
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -37,7 +39,7 @@ namespace Infovision.Datamining.Roughset
 			this.VoteType = VoteType.WeightCoverage;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
-            this.MaxNumberOfWeightResets = 999;
+			this.MaxNumberOfWeightResets = 999;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -51,13 +53,18 @@ namespace Infovision.Datamining.Roughset
 			base.SetDefaultParameters();
 
 			this.MinReductLength = 1;
-			this.MaxReductLength = 1;
+
+			if (this.DataStore != null)
+				this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+			else
+				this.MaxReductLength = 9999;
+			
 			this.Threshold = 0.5;
 			this.IdentyficationType = IdentificationType.WeightConfidence;
 			this.VoteType = VoteType.WeightCoverage;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
-            this.MaxNumberOfWeightResets = 999;
+			this.MaxNumberOfWeightResets = 999;
 		}
 
 		public override void InitFromArgs(Args args)
@@ -65,7 +72,7 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);
 
 			if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
-				this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
+				this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
 
 			if (args.Exist(ReductGeneratorParamHelper.MaxReductLength))
 				this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);
@@ -133,22 +140,22 @@ namespace Infovision.Datamining.Roughset
 												
 				double alpha = error != 0.0 ? System.Math.Log((1.0 - error) / error) : 10000;
 
-                this.AddModel(localReductStore, alpha);
+				this.AddModel(localReductStore, alpha);
 
-                double sum = 0.0;
-                for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                {
-                    if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
-                    {
-                        weightGenerator.Weights[i] *= System.Math.Exp(-alpha);
-                    }
-                    else
-                    {
-                        weightGenerator.Weights[i] *= System.Math.Exp(alpha);
-                    }
+				double sum = 0.0;
+				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+				{
+					if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
+					{
+						weightGenerator.Weights[i] *= System.Math.Exp(-alpha);
+					}
+					else
+					{
+						weightGenerator.Weights[i] *= System.Math.Exp(alpha);
+					}
 
-                    sum += weightGenerator.Weights[i];
-                }
+					sum += weightGenerator.Weights[i];
+				}
 
 				//Normalize object w
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
@@ -166,11 +173,11 @@ namespace Infovision.Datamining.Roughset
 				rs.Weight /= alphaSum;
 		}		
 
-        protected virtual void AddModel(IReductStore model, double modelWeight)
-        {
-            model.Weight = modelWeight;
-            this.models.AddStore(model);
-        }
+		protected virtual void AddModel(IReductStore model, double modelWeight)
+		{
+			model.Weight = modelWeight;
+			this.models.AddStore(model);
+		}
 
 		public virtual IReductStoreCollection GetReductGroups(int numberOfEnsembles = Int32.MaxValue)
 		{
@@ -182,8 +189,7 @@ namespace Infovision.Datamining.Roughset
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);
 			int minLen = System.Math.Max(minimumLength - 1, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, length);
-			
+			int cutoff = RandomSingleton.Random.Next(minLen, length);			
 			
 			int[] attributes = new int[cutoff + 1];
 			for (int i = 0; i <= cutoff; i++)
@@ -192,6 +198,10 @@ namespace Infovision.Datamining.Roughset
 			ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();						
 			reduct.Reduce(attributes, this.MinReductLength);
+
+			if (reduct.Attributes.Count < minimumLength)
+				throw new InvalidProgramException("Reduct length is less than minimum length");
+
 			return reduct;
 		}
 		
@@ -213,7 +223,7 @@ namespace Infovision.Datamining.Roughset
 	{
 		public virtual string FactoryKey
 		{
-			get { return ReductEnsembleBoostingGenerator.FactoryKey; }
+			get { return ReductFactoryKeyHelper.ReductEnsembleBoosting; }
 		}
 
 		public virtual IReductGenerator GetReductGenerator(Args args)

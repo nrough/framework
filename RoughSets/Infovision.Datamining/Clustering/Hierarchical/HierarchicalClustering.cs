@@ -131,13 +131,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             while (clusters.Count > 1)
             {
                 MatrixKey key = this.GetClustersToMerge();                
-                HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(nextClusterId, clusters[key.X], clusters[key.Y]);
-
-                this.RemoveCluster(key.X);
-                this.RemoveCluster(key.Y);
-                this.AddCluster(mergedCluster);
-
-                this.CalculateDistanceMatrix(key.X, key.Y, mergedCluster.Index);                
+                                
             }
         }
 
@@ -157,6 +151,22 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
 
             return new MatrixKey(result[0], result[1]);
+        }
+
+        protected void MergeClusters(int x, int y)
+        {
+            HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(nextClusterId, clusters[x], clusters[y]);
+
+            this.RemoveCluster(x);
+            this.RemoveCluster(y);
+            this.AddCluster(mergedCluster);
+
+            this.CalculateDistanceMatrix(x, y, mergedCluster.Index);
+        }
+
+        protected void MergeClusters(MatrixKey key)
+        {
+            this.MergeClusters(key.X, key.Y);                      
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)

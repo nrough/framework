@@ -55,8 +55,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
 
             return new MatrixKey(key[0], key[1]);                        
-        }
-
-        
+        }               
     }
 }

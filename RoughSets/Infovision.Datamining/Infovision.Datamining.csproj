@@ -105,6 +105,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationResult.cs" />
+    <Compile Include="Clustering\Hierarchical\Dendrogram.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramLink.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalCluster.cs" />

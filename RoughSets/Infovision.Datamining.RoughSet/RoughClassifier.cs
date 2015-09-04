@@ -438,7 +438,7 @@ namespace Infovision.Datamining.Roughset
                         values[i] = record[attributes[i]];
 
                     AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
-                    EquivalenceClass eqClass = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
                     //DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues, rs.Weight);
                     DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
@@ -714,7 +714,7 @@ namespace Infovision.Datamining.Roughset
                     sb.Append(dataStoreInfo.GetFieldInfo(attr[i]).NameAlias).Append(' ');
                 sb.AppendLine();
 
-                foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
                     sb.AppendLine(String.Format("{0} => {1}={2}", 
                                     eq.Instance.ToString2(dataStoreInfo), 

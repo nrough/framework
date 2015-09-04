@@ -38,6 +38,7 @@ namespace Infovision.Datamining.Roughset
 		public override void SetDefaultParameters()
 		{
 			base.SetDefaultParameters();
+
 			this.Distance = Similarity.Manhattan;
 			this.Linkage = ClusteringLinkage.Average;
 			this.ReconWeights = ReductEnsembleReconWeightsHelper.GetErrorReconWeights;
@@ -62,15 +63,8 @@ namespace Infovision.Datamining.Roughset
 				this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
 
 			if (args.Exist(ReductGeneratorParamHelper.AgregateFunction))
-				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
-
-			
-		}
-
-		public override void Generate()
-		{									
-			base.Generate();                        
-		}
+				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);			
+		}		
 
 		//TODO is it possible to leverage dendrogram to find k most diverse reducts
 		protected override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
@@ -109,7 +103,7 @@ namespace Infovision.Datamining.Roughset
 					distanceMatrix[j, this.clusterInstances2.Count + i] = this.Distance(this.clusterInstances2[j], condidateVector);
 
 				mergedInstances[this.clusterInstances2.Count + i] = condidateVector;
-				oneElementcluster[0] = this.clusterInstances2.Count + i;                                
+				oneElementcluster[0] = this.clusterInstances2.Count + i;
 
 				double clusterDistance = this.Linkage(this.clusterInstances.Values.ToArray(), 
 													  oneElementcluster, 

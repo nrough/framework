@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             //int seed = 1243882054;
             RandomSingleton.Seed = seed;
             

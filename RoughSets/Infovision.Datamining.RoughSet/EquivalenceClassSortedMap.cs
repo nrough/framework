@@ -7,7 +7,7 @@ using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
 {
-    public class EquivalenceClassSortedMap : EquivalenceClassMap
+    public class EquivalenceClassSortedMap : EquivalenceClassCollection
     {        
         #region Constructors
 

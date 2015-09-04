@@ -170,7 +170,7 @@ namespace Infovision.Datamining.Roughset
             
             ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
             reduct.Id = idx.ToString();
-            foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 eq.RemoveObjectsWithMinorDecisions();
             for (int i = attributes.Length - 1; i >= 0; i--)
                 reduct.TryRemoveAttribute(attributes[i]);
@@ -282,7 +282,7 @@ namespace Infovision.Datamining.Roughset
 
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
             double result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 double maxValue = Double.MinValue;
                 long maxDecision = -1;

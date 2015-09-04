@@ -8,7 +8,7 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public class EquivalenceClassMap : IEnumerable<EquivalenceClass>, ICloneable
+    public class EquivalenceClassCollection : IEnumerable<EquivalenceClass>, ICloneable
     {
         #region Members
 
@@ -44,13 +44,13 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
-        public EquivalenceClassMap(DataStore data)
+        public EquivalenceClassCollection(DataStore data)
         {            
             this.InitDecisionCount(data.DataStoreInfo);
             //this.dataStore = data;
         }
 
-        private EquivalenceClassMap(EquivalenceClassMap equivalenceClassMap)
+        private EquivalenceClassCollection(EquivalenceClassCollection equivalenceClassMap)
         {
             this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)equivalenceClassMap.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
             this.decisionCount = new Dictionary<long, int>(equivalenceClassMap.DecisionCount);            
@@ -129,7 +129,7 @@ namespace Infovision.Datamining.Roughset
                 weights[i] = 1.0 / dataStore.NumberOfRecords;
             }
 
-            return EquivalenceClassMap.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
+            return EquivalenceClassCollection.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
         }
         
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
@@ -198,12 +198,12 @@ namespace Infovision.Datamining.Roughset
 
         #region ICloneable Members
         /// <summary>
-        /// Clones the EquivalenceClassMap, performing a deep copy.
+        /// Clones the EquivalenceClassCollection, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a EquivalenceClassMap, using a deep copy.</returns>
+        /// <returns>A new instance of a EquivalenceClassCollection, using a deep copy.</returns>
         public virtual object Clone()
         {
-            return new EquivalenceClassMap(this);
+            return new EquivalenceClassCollection(this);
         }
         #endregion
 

@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             foreach (Reduct localReduct in reductStore)
             {
-                EquivalenceClassMap result = localReduct.EquivalenceClassMap;
+                EquivalenceClassCollection result = localReduct.EquivalenceClasses;
                 
                 AttributeValueVector dataVector = new AttributeValueVector(new int[] {1, 2}, new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1), 
                                                                      dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) });
@@ -138,7 +138,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Reduct localReduct in reductStore)
             {
-                EquivalenceClassMap result = localReduct.EquivalenceClassMap;
+                EquivalenceClassCollection result = localReduct.EquivalenceClasses;
 
                 AttributeValueVector dataVector = new AttributeValueVector(new int[] { }, new long[] { });
                 EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
@@ -159,7 +159,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Reduct localReduct in reductStore)
             {
-                EquivalenceClassMap result = localReduct.EquivalenceClassMap;
+                EquivalenceClassCollection result = localReduct.EquivalenceClasses;
                 Assert.AreEqual(124, result.NumberOfPartitions);
 
                 AttributeValueVector dataVector = new AttributeValueVector(new int[] { 1, 2, 3, 4, 5, 6 }, new long[] { 1, 1, 1, 1, 1, 1 });
@@ -244,30 +244,30 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 foreach (Reduct reduct in reductStore)
                 {
-                    EquivalenceClassMap partitionMap = new EquivalenceClassMap(dataStoreTrain);
+                    EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(dataStoreTrain);
                     partitionMap.Calc(reduct.Attributes, dataStoreTrain);
 
-                    Assert.AreEqual(partitionMap.NumberOfPartitions, reduct.EquivalenceClassMap.NumberOfPartitions);
+                    Assert.AreEqual(partitionMap.NumberOfPartitions, reduct.EquivalenceClasses.NumberOfPartitions);
 
                     int objectCount = 0;
                     foreach (AttributeValueVector dataVector in partitionMap.Partitions.Keys)
                     {
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MajorDecision, reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).MajorDecision, "Major Decision");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
+                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MajorDecision, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision, "Major Decision");
                         EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
-                        EquivalenceClass reductEqClass = reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector);
+                        EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
                         Assert.AreEqual(partitionEqClass.GetNumberOfObjectsWithDecision(partitionEqClass.MajorDecision),
                                         reductEqClass.GetNumberOfObjectsWithDecision(reductEqClass.MajorDecision), "Number of objects with major decision");
 
                         foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {
                             Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue),
-                                            reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decision");
+                                            reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decision");
                         }
 
-                        objectCount += reduct.EquivalenceClassMap.GetEquivalenceClass(dataVector).NumberOfObjects;
+                        objectCount += reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects;
                     }
 
                     Assert.AreEqual(dataStoreTrain.NumberOfRecords, objectCount);
@@ -290,7 +290,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Reduct reduct in reductStore)
             {
-                foreach (EquivalenceClass stat in reduct.EquivalenceClassMap)
+                foreach (EquivalenceClass stat in reduct.EquivalenceClasses)
                 {
                     Assert.AreEqual(1, stat.NumberOfDecisions);
                 }

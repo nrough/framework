@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void RemoveObjectsWithMinorDecisionsTest()
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = randSeed.Next(Guid.NewGuid().GetHashCode());
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 ReductCrisp reduct = new ReductCrisp(data, attributes, weightGenerator.Weights, 0.0);                                                    
 
-                foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
                     int origNumberOfDecisionValues = eq.DecisionValues.Count();
                     long origMajorDecision = eq.MajorDecision;

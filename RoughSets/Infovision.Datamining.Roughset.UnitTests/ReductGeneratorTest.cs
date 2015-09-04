@@ -109,7 +109,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             Console.WriteLine(reduct);
                         }
 
-                        EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore);
+                        EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);
                         partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                         foreach (EquivalenceClass stats in partitionMap)
@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             roughClassifier.Train(localDataStore, "Bireduct", 0, permutationList);
             foreach (IReduct reduct in roughClassifier.ReductStore)
             {
-                EquivalenceClassMap partitionMap = new EquivalenceClassMap(localDataStore);
+                EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);
                 partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                 foreach (EquivalenceClass stats in partitionMap)

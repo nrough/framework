@@ -20,8 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {            
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
-            //int seed = 1814821014;
+            int seed = Guid.NewGuid().GetHashCode();       
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -237,8 +236,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateExperimentBoostingStandard()
         {
+            Console.WriteLine("GenerateExperimentBoostingStandard");
+            
+            //TODO move to class level
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);            
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}", seed);
             RandomSingleton.Seed = seed;
 
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -255,8 +258,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 1);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
-                    parms.AddParameter(ReductGeneratorParamHelper.Threshold, 0.5);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 
@@ -287,8 +289,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateExperimentBoostingWithDiversity()
         {
+            Console.WriteLine("GenerateExperimentBoostingWithDiversity");
+
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}", seed);
             RandomSingleton.Seed = seed;
 
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -303,13 +308,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
-                    parms.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetErrorReconWeights);
-                    parms.AddParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Euclidean);
+                    parms.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.AddParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
                     parms.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 2);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
-                    parms.AddParameter(ReductGeneratorParamHelper.Threshold, 0.6);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, 20);
@@ -338,6 +342,25 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
                 }
             }
+        }
+
+        [Test]
+        public void RandomSingletonTest()
+        {
+            //TODO Move to class level
+            Random randSeed = new Random();
+            int seed = Guid.NewGuid().GetHashCode();
+            Console.WriteLine("Seed: {0}", seed);            
+            RandomSingleton.Seed = seed;
+
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));
+            Console.WriteLine(RandomSingleton.Random.Next(1, 5));            
         }
     }
 }

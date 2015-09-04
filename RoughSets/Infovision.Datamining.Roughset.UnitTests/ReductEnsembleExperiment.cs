@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Data: {0}", kvp.Key);
 
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             int numberOfPermutations = 500;
@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void RunExperiment()
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             int numberOfPermutations = 10;

@@ -144,7 +144,7 @@
     <Compile Include="ReductWeight.cs" />
     <Compile Include="RoughClassifier.cs" />
     <Compile Include="InformationMeasure.cs" />
-    <Compile Include="EquivalenceClassMap.cs" />
+    <Compile Include="EquivalenceClassCollection.cs" />
     <Compile Include="RuleMeasure.cs" />
     <Compile Include="WeightBoostingGenerator.cs" />
     <Compile Include="WeightGeneratorEnsemble.cs" />

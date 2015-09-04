@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TryRemoveAttribute()
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);            
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ExperimentAvgReductLength(KeyValuePair<string, BenchmarkData> fileName)
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
@@ -143,7 +143,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateRelativeTest()
         {            
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -201,7 +201,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateMajorityTest()
         {
             Random randSeed = new Random();
-            int seed = randSeed.Next(Int32.MaxValue);
+            int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);

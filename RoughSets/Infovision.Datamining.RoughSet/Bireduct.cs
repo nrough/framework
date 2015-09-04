@@ -60,7 +60,7 @@ namespace Infovision.Datamining.Roughset
             if (this.objectSet != null)
             {
                 this.InitEquivalenceMap();
-                this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.objectSet, this.Weights);
+                this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.objectSet, this.Weights);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
-            return EquivalenceClassMap.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
+            return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
         }
 
         protected virtual bool CheckAddObject(int objectIndex)
@@ -81,7 +81,7 @@ namespace Infovision.Datamining.Roughset
                 return false;
             
             AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
-            EquivalenceClass reductStatistics = this.EquivalenceClassMap.GetEquivalenceClass(dataVector);
+            EquivalenceClass reductStatistics = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
             if (reductStatistics.NumberOfDecisions <= 1)
             {
@@ -104,10 +104,10 @@ namespace Infovision.Datamining.Roughset
                 AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
 
                 // important fist add to eqClass map, than to objectSet, otherwise 
-                // calling this.EquivalenceClassMap will invoke calculating eqClassMap based on existing objectSet
+                // calling this.EquivalenceClassCollection will invoke calculating eqClassMap based on existing objectSet
                 // than, what TryAddObject is called we will get duplicates of object id inside eqClass
                 
-                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, 
+                this.EquivalenceClasses.GetEquivalenceClass(dataVector).AddObject(objectIdx, 
                                                                                    this.DataStore.GetDecisionValue(objectIdx), 
                                                                                    1.0 / this.DataStore.NumberOfRecords);
                 objectSet.AddElement(objectIdx);
@@ -134,7 +134,7 @@ namespace Infovision.Datamining.Roughset
             {
                 objectSet.RemoveElement(objectIdx);
                 AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
-                this.EquivalenceClassMap.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
+                this.EquivalenceClasses.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
                 return true;
             }
 

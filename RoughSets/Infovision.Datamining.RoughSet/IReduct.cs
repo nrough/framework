@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
         double Epsilon { get; }
         string Id { get; }
         
-        EquivalenceClassMap EquivalenceClassMap { get; }
+        EquivalenceClassCollection EquivalenceClasses { get; }
 
         bool AddAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);

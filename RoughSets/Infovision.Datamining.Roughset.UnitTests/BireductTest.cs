@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                foreach (EquivalenceClass reductStat in reduct.EquivalenceClassMap)
+                foreach (EquivalenceClass reductStat in reduct.EquivalenceClasses)
                 {
                     Assert.AreEqual(1, reductStat.NumberOfDecisions);
                 }
@@ -327,7 +327,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 Bireduct bireduct = new Bireduct(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassMap.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.ObjectSet);
+                EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.ObjectSet);
                 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireduct.TryRemoveAttribute(k));
@@ -341,7 +341,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 BireductGamma bireductGamma = new BireductGamma(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassMap.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.ObjectSet);
+                EquivalenceClassCollection.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.ObjectSet);
 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireductGamma.TryRemoveAttribute(k));
@@ -432,7 +432,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
 
                 Console.WriteLine("Bireduct rules");
-                foreach (EquivalenceClass eq in r1.EquivalenceClassMap)
+                foreach (EquivalenceClass eq in r1.EquivalenceClasses)
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),
@@ -443,7 +443,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine();
 
                 Console.WriteLine("Gamma Bireduct rules");
-                foreach (EquivalenceClass eq in r2.EquivalenceClassMap)
+                foreach (EquivalenceClass eq in r2.EquivalenceClasses)
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),

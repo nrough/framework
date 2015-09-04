@@ -21,10 +21,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
+            //TODO Do not use random here. We do not know where to set seed. NUnit first calls all parameter methods and random is a singleton!
             Random randSeed = new Random();
-            //int seed = randSeed.Next(Int32.MaxValue);
-            int seed = 1814821014;
-
+            int seed = randSeed.Next(Guid.NewGuid().GetHashCode());            
             RandomSingleton.Seed = seed;
             
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -48,7 +47,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     double[] result = new double[w.Length];
                     Array.Copy(w, result, w.Length);
-                    foreach (EquivalenceClass e in r.EquivalenceClassMap)
+                    foreach (EquivalenceClass e in r.EquivalenceClasses)
                         foreach (int i in e.GetObjectIndexes(e.MajorDecision))
                             result[i] *= -1;
 

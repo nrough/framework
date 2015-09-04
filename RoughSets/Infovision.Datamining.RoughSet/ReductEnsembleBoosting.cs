@@ -24,27 +24,24 @@ namespace Infovision.Datamining.Roughset
 		public int MaxIterations { get; set; }
 		public int IterationsPassed { get { return this.iterPassed; } }
 		public int MaxNumberOfWeightResets { get; set; }
-		public int NumberOfWeightResets
-		{
-			get { return this.numberOfWeightResets; }            
-		}
+		public int NumberOfWeightResets { get { return this.numberOfWeightResets; } }
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
 		{
 			this.MinReductLength = 1;
-			this.MaxReductLength = 1;
+            this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = IdentificationType.WeightConfidence;
 			this.VoteType = VoteType.WeightCoverage;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
-			this.MaxNumberOfWeightResets = 999;
+			this.MaxNumberOfWeightResets = Int32.MaxValue;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
 			: this()		
-		{			            
+		{
 			this.weightGenerator = new WeightBoostingGenerator(data);
 		}
 
@@ -53,23 +50,29 @@ namespace Infovision.Datamining.Roughset
 			base.SetDefaultParameters();
 
 			this.MinReductLength = 1;
-
-			if (this.DataStore != null)
-				this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
-			else
-				this.MaxReductLength = 9999;
-			
+            this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = IdentificationType.WeightConfidence;
 			this.VoteType = VoteType.WeightCoverage;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
-			this.MaxNumberOfWeightResets = 999;
+			this.MaxNumberOfWeightResets = Int32.MaxValue;
 		}
 
 		public override void InitFromArgs(Args args)
 		{
 			base.InitFromArgs(args);
+
+            if (this.DataStore != null)
+            {
+                this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+                this.weightGenerator = new WeightBoostingGenerator(this.DataStore);
+                this.weightGenerator.Generate();
+
+                IReduct emptyReduct = this.GetNextReduct(this.weightGenerator.Weights, 0, 0);
+                double M = new InformationMeasureWeights().Calc(emptyReduct);
+                this.Threshold = 1.0 - M;
+            }
 
 			if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
 				this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
@@ -90,25 +93,23 @@ namespace Infovision.Datamining.Roughset
 				this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier);
 
 			if (args.Exist(ReductGeneratorParamHelper.MaxIterations))
-				this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);
+				this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);            
 		}
 
 		public override void Generate()
 		{									
 			this.ReductPool = this.CreateReductStore();
 			this.ReductPool.AllowDuplicates = true;
-			this.weightGenerator = new WeightBoostingGenerator(this.DataStore);
+			
 			this.models = new ReductStoreCollection();
 
 			double alphaSum = 0.0;
 			iterPassed = 0;
 			numberOfWeightResets = 0;
-			double error = -1.0;					
+			double error = -1.0;
 
 			do
-			{
-				iterPassed++;
-				
+			{								
 				IReductStore localReductStore = this.CreateReductStore();
 				weightGenerator.Generate();
 				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
@@ -118,7 +119,7 @@ namespace Infovision.Datamining.Roughset
 					this.ReductPool.AddReduct(reduct);
 				}				
 
-				RoughClassifier classifier = new RoughClassifier();				
+				RoughClassifier classifier = new RoughClassifier();
 				classifier.ReductStore = localReductStore;
 
 				IReductStoreCollection rsCollection = new ReductStoreCollection();
@@ -132,27 +133,31 @@ namespace Infovision.Datamining.Roughset
 				error = result.WeightUnclassified + result.WeightMisclassified;
 
 				if (error >= this.Threshold)
-				{					
-					weightGenerator.Reset();
+				{
 					numberOfWeightResets++;
+
+					if (numberOfWeightResets > this.MaxNumberOfWeightResets)
+						break;
+
+					weightGenerator.Reset();
 					continue;
 				}
-												
-				double alpha = error != 0.0 ? System.Math.Log((1.0 - error) / error) : 10000;
+
+				int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+				double alpha = error != 0.0 
+					? System.Math.Log((1.0 - error) / error) + System.Math.Log(K - 1)
+					: (Double.MaxValue / 2.0);
 
 				this.AddModel(localReductStore, alpha);
 
 				double sum = 0.0;
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
 				{
+					//TODO ROzważyć zmiany tylko wag na ktorych sie mylimy
 					if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
-					{
-						weightGenerator.Weights[i] *= System.Math.Exp(-alpha);
-					}
+						weightGenerator.Weights[i] *= System.Math.Exp(-alpha); //*= error / (1.0 - error)
 					else
-					{
-						weightGenerator.Weights[i] *= System.Math.Exp(alpha);
-					}
+						weightGenerator.Weights[i] *= System.Math.Exp(alpha);  //*= (1.0 - error) / error) 
 
 					sum += weightGenerator.Weights[i];
 				}
@@ -163,12 +168,14 @@ namespace Infovision.Datamining.Roughset
 
 				alphaSum += localReductStore.Weight;
 
+				iterPassed++;
+
 				if (error == 0.0)
 					break;
 				
 			} while(iterPassed < this.MaxIterations);
 						
-			// Normalize w for models confidence
+			// Normalize weights for models confidence
 			foreach(IReductStore rs in this.models)
 				rs.Weight /= alphaSum;
 		}		
@@ -189,7 +196,7 @@ namespace Infovision.Datamining.Roughset
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);
 			int minLen = System.Math.Max(minimumLength - 1, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, length);			
+			int cutoff = RandomSingleton.Random.Next(minLen, length);
 			
 			int[] attributes = new int[cutoff + 1];
 			for (int i = 0; i <= cutoff; i++)

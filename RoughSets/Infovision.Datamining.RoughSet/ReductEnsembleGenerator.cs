@@ -244,7 +244,7 @@ namespace Infovision.Datamining.Roughset
 
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
             double result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {                                               
                 double maxValue = Double.MinValue;
                 long maxDecision = -1;

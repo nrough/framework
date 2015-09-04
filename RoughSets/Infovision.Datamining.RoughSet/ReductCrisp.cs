@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
 			//TODO Casting Error:
 			/*
 			Test 'Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(System.Collections.Generic.Dictionary`2[System.String,System.Object])' failed:
-				System.InvalidCastException : Nie można rzutować obiektu typu 'Infovision.Datamining.Roughset.EquivalenceClassMap' na typ 'Infovision.Datamining.Roughset.EquivalenceClassSortedMap'.
+				System.InvalidCastException : Nie można rzutować obiektu typu 'Infovision.Datamining.Roughset.EquivalenceClassCollection' na typ 'Infovision.Datamining.Roughset.EquivalenceClassSortedMap'.
 				w Infovision.Datamining.Roughset.ReductCrisp..ctor(ReductCrisp reduct) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 38
 				w Infovision.Datamining.Roughset.ReductCrisp.Clone() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductCrisp.cs:wiersz 105
 				w Infovision.Datamining.Roughset.ReductStore..ctor(ReductStore reductStore) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 121
@@ -54,10 +54,10 @@ namespace Infovision.Datamining.Roughset
 				w Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(Dictionary`2 args) w f:\Projects\Infovision\Infovision.Datamining.Roughset.UnitTests\ReductGeneralDecisionGeneratorTest.cs:wiersz 87
 			*/
 
-			//this.EquivalenceClassMap = (EquivalenceClassSortedMap) reduct.EquivalenceClassMap.Clone();
+			//this.EquivalenceClassCollection = (EquivalenceClassSortedMap) reduct.EquivalenceClassCollection.Clone();
 
 			//TODO Temporary fix : This will cause EQ map to be recalculated on next call
-			this.EquivalenceClassMap = null;
+			this.EquivalenceClasses = null;
 			this.removedAttributes = new HashSet<int>(reduct.removedAttributes);
 		}
 
@@ -74,7 +74,7 @@ namespace Infovision.Datamining.Roughset
 		protected override void InitEquivalenceMap()
 		{
 			if (isEqMapCreated == false)
-				this.EquivalenceClassMap = new EquivalenceClassSortedMap(this.DataStore);
+				this.EquivalenceClasses = new EquivalenceClassSortedMap(this.DataStore);
 			else
 				throw new InvalidOperationException("EquicalenceClassMap can only be initialized once.");
 		}
@@ -85,7 +85,7 @@ namespace Infovision.Datamining.Roughset
 			if (isEqMapCreated == false)
 			{ 
 				this.InitEquivalenceMap();
-				this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.Weights);
+				this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);
 				
 				this.isEqMapCreated = true;
 			}
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
 		/// <param name="attributeOrder">Attributes to be tried to be removed in given order.</param>
 		public virtual void Reduce(int[] attributeOrder, int minimumLength)
 		{
-			foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+			foreach (EquivalenceClass eq in this.EquivalenceClasses)
 				eq.RemoveObjectsWithMinorDecisions();
 			
 			bool isReduced = false;
@@ -114,11 +114,11 @@ namespace Infovision.Datamining.Roughset
 
 			if (isReduced)
 			{
-				this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.Weights);
+				this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);
 
 				/*
 				EquivalenceClassSortedMap newEqMap = new EquivalenceClassSortedMap(this.DataStore);
-				foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+				foreach (EquivalenceClass eq in this.EquivalenceClassCollection)
 				{                    
 					AttributeValueVector instance = eq.Instance;
 					foreach (int removedAttribute in this.removedAttributes)
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset
 					existingEqClass.Merge(eq);					
 				}
 
-				this.EquivalenceClassMap = newEqMap;
+				this.EquivalenceClassCollection = newEqMap;
 				*/
 
 				this.removedAttributes = new HashSet<int>();
@@ -187,7 +187,7 @@ namespace Infovision.Datamining.Roughset
 			Dictionary<AttributeValueVector, PascalSet> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet>();                                                            
 			DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();
 				
-			foreach (EquivalenceClass eq in this.EquivalenceClassMap)
+			foreach (EquivalenceClass eq in this.EquivalenceClasses)
 			{
 				//instance of a record belonging to equivalence class
 				AttributeValueVector instance = eq.Instance.RemoveAttribute(attributeId);

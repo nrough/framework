@@ -23,11 +23,11 @@ namespace Infovision.Datamining.Roughset
     {
         public override int Compare(IReduct left, IReduct right)
         {
-            if (left.EquivalenceClassMap.NumberOfPartitions > right.EquivalenceClassMap.NumberOfPartitions)
+            if (left.EquivalenceClasses.NumberOfPartitions > right.EquivalenceClasses.NumberOfPartitions)
             {
                 return 1;
             }
-            else if (left.EquivalenceClassMap.NumberOfPartitions < right.EquivalenceClassMap.NumberOfPartitions)
+            else if (left.EquivalenceClasses.NumberOfPartitions < right.EquivalenceClasses.NumberOfPartitions)
             {
                 return -1;
             }

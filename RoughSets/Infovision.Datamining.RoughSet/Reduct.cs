@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
 
         private DataStore dataStore;
         private FieldSet attributeSet;
-        private EquivalenceClassMap eqClassMap;
+        private EquivalenceClassCollection eqClassMap;
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.dataStore.DataStoreInfo; }
         }
 
-        public EquivalenceClassMap EquivalenceClassMap
+        public EquivalenceClassCollection EquivalenceClasses
         {
             get 
             {
@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
 
-            this.eqClassMap = (EquivalenceClassMap)reduct.EquivalenceClassMap.Clone();
+            this.eqClassMap = (EquivalenceClassCollection)reduct.EquivalenceClasses.Clone();
         }
 
         #endregion        
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void InitEquivalenceMap()
         {
-            this.eqClassMap = new EquivalenceClassMap(this.DataStore);
+            this.eqClassMap = new EquivalenceClassCollection(this.DataStore);
         }
         
         public virtual void BuildEquivalenceMap()
@@ -144,7 +144,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             string partitionKey = this.ReductPartitionCacheKey;
-            this.eqClassMap = ReductCache.Instance.Get(partitionKey) as EquivalenceClassMap;
+            this.eqClassMap = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
             if (eqClassMap == null)
             {
                 this.InitEquivalenceMap();

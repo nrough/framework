@@ -254,9 +254,9 @@ namespace Infovision.Datamining.Roughset
 
         #region ICloneable Members
         /// <summary>
-        /// Clones the EquivalenceClassMap, performing a deep copy.
+        /// Clones the EquivalenceClassCollection, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a EquivalenceClassMap, using a deep copy.</returns>
+        /// <returns>A new instance of a EquivalenceClassCollection, using a deep copy.</returns>
         public virtual object Clone()
         {
             return new EquivalenceClass(this);

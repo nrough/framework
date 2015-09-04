@@ -15,8 +15,7 @@ namespace Infovision.Datamining.Roughset
         private int[][] existingAttributeSets;
         private Dictionary<int, int> attributeCount;
         private bool generateWithProbability;
-        private int countSum;
-        private int countZeroAttributes;
+        private int countSum;        
 
         #endregion
 
@@ -49,18 +48,8 @@ namespace Infovision.Datamining.Roughset
 
                 int k = 0;
                 foreach (IReductStore rs in models.ActiveModels())
-                {
                     foreach (IReduct r in rs)
-                    {
-                        selectedAttributes[k] = r.Attributes.ToArray();
-                        for (int i = 0; i < selectedAttributes[k].Length; i++)
-                        {
-                            this.attributeCount[selectedAttributes[k][i]]++;
-                            countSum++;
-                        }
-                        k++;
-                    }
-                }
+                        selectedAttributes[k++] = r.Attributes.ToArray();
 
                 this.Setup(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), selectedAttributes);
             }
@@ -70,6 +59,7 @@ namespace Infovision.Datamining.Roughset
 
         private void Setup(int[] elements, int[][] attributes)
         {
+            
             if (attributes != null)
             {
                 this.existingAttributeSets = new int[attributes.Length][];
@@ -80,28 +70,20 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            if (attributes != null && attributes.Length > 0)
-            {
-                attributeCount = new Dictionary<int, int>(elements.Length);
-                foreach (int attributeId in elements)
-                    attributeCount.Add(attributeId, 1);
+            this.attributeCount = new Dictionary<int, int>(elements.Length);
+            foreach (int attributeId in elements)
+                this.attributeCount.Add(attributeId, 1);
+            this.countSum += elements.Length;
 
+            if (attributes != null && attributes.Length > 0)
+            {                
                 for (int k = 0; k < this.existingAttributeSets.Length; k++)
-                {
                     for (int i = 0; i < existingAttributeSets[k].Length; i++)
                     {
                         this.attributeCount[existingAttributeSets[k][i]]++;
                         countSum++;
                     }
-                }
-
-                countZeroAttributes = 0;
-                foreach (var kvp in this.attributeCount)
-                {
-                    if (kvp.Value == 0)
-                        countZeroAttributes++;
-                }
-
+                
                 this.generateWithProbability = true;
             }
         }
@@ -111,21 +93,19 @@ namespace Infovision.Datamining.Roughset
             if(this.generateWithProbability == false)
                 return base.CreatePermutation();
 
-            int[] pds = new int[countSum + countZeroAttributes];
+            int[] pds = new int[this.countSum];
             int pos = 0;
-            foreach (var kvp in this.attributeCount)
-            {
+            foreach (var kvp in this.attributeCount)                
                 for (int i = 0; i < kvp.Value; i++)
                     pds[pos++] = kvp.Key;
-            }
 
-            int[] localElements = new int[this.elements.Length];
+            int[] result = new int[this.elements.Length];
             int idx = this.elements.Length - 1;
-            int size = countSum + countZeroAttributes;
+            int size = this.countSum;
             foreach (var kvp in this.attributeCount)
             {
                 pos = RandomSingleton.Random.Next(size);
-                localElements[idx--] = pds[pos];
+                result[idx--] = pds[pos];
 
                 int newSize = size - this.attributeCount[pds[pos]];
                 int[] newPds = new int[newSize];
@@ -140,7 +120,7 @@ namespace Infovision.Datamining.Roughset
                 pds = newPds;
             }
 
-            Permutation permutation = new Permutation(localElements);
+            Permutation permutation = new Permutation(result);
             return permutation;
         }
     }

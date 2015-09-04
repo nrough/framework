@@ -53,5 +53,6 @@ namespace Infovision.Datamining.Roughset
         public static readonly string ReductEnsembleBoosting = "ReductEnsembleBoosting";
         public static readonly string ReductEnsembleBoostingWithDendrogram = "ReductEnsembleBoostingWithDendrogram";
         public static readonly string ReductEnsembleBoostingWithDiversity = "ReductEnsembleBoostingWithDiversity";
+        public static readonly string ReductEnsembleBoostingWithAttributeDiversity = "ReductEnsembleBoostingWithAttributeDiversity";
     }
 }

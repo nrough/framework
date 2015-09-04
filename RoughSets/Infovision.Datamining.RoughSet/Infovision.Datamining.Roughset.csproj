@@ -99,6 +99,7 @@
     <Compile Include="PermutationGeneratorEnsemble.cs" />
     <Compile Include="ReductCrisp.cs" />
     <Compile Include="ReductEnsembleBoosting.cs" />
+    <Compile Include="ReductEnsembleBoostingWithAttributeDiversity.cs" />
     <Compile Include="ReductEnsembleBoostingWithDendrogram.cs" />
     <Compile Include="ReductEnsembleBoostingWithDiversity.cs" />
     <Compile Include="ReductEnsembleDistanceHelper.cs" />

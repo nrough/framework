@@ -63,10 +63,30 @@ namespace Infovision.Datamining.Roughset
 				this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
 
 			if (args.Exist(ReductGeneratorParamHelper.AgregateFunction))
-				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);			
-		}		
+				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
+		}
 
-		//TODO is it possible to leverage dendrogram to find k most diverse reducts
+		private IReduct GetNextReductLocal(double[] weights, int minimumLength, int maximumLength)
+		{
+			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
+			int length = System.Math.Min(maximumLength, permutation.Length - 1);
+			int minLen = System.Math.Max(minimumLength - 1, 0);
+			int cutoff = RandomSingleton.Random.Next(minLen, length);
+
+			int[] attributes = new int[cutoff + 1];
+			for (int i = 0; i <= cutoff; i++)
+				attributes[i] = permutation[i];
+
+			ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, weights, 0);
+			reduct.Id = this.GetNextReductId().ToString();
+			reduct.Reduce(attributes, this.MinReductLength);
+
+			if (reduct.Attributes.Count < minimumLength)
+				throw new InvalidProgramException("Reduct length is less than minimum length");
+
+			return reduct;
+		}
+		
 		protected override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			if (clusterInstances2.Count == 0 || this.NumberOfReductsToTest == 1)
@@ -131,19 +151,19 @@ namespace Infovision.Datamining.Roughset
 					return candidates[maxIndex];
 			}
 			
-			return candidates[maxIndex];			
+			return candidates[maxIndex];
 		}
 
 		protected override void AddModel(IReductStore model, double modelWeight)
 		{
-			base.AddModel(model, modelWeight);			
+			base.AddModel(model, modelWeight);
 
 			foreach (IReduct r in model)
 			{
 				clusterInstances.Add(r.Id, clusterInstances2.Count);
 				clusterInstances2.Add(this.ReconWeights(r, r.Weights));
-			}			
-		}		
+			}
+		}
 	}
 
 	public class ReductEnsembleBoostingWithDiversityFactory : IReductFactory

@@ -15,13 +15,13 @@ using System.IO;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    class ReductEnsembleBoostingGeneratorTest
+    public class ReductEnsembleBoostingTest
     {
-        public ReductEnsembleBoostingGeneratorTest()
+        public ReductEnsembleBoostingTest()
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("Seed: {0}");
+            Console.WriteLine("class ReductEnsembleBoostingTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -314,6 +314,54 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
 
                     ReductEnsembleBoostingWithDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithDiversityGenerator;
+                    reductGenerator.Generate();
+
+                    RoughClassifier classifierTrn = new RoughClassifier();
+                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
+                    classifierTrn.Classify(trnData);
+                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    RoughClassifier classifierTst = new RoughClassifier();
+                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
+                    classifierTst.Classify(tstData);
+                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5}",
+                                      t + 1,
+                                      reductGenerator.MaxIterations,
+                                      reductGenerator.IterationsPassed - reductGenerator.NumberOfWeightResets,
+                                      resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
+                                      resultTst.WeightMisclassified + resultTst.WeightUnclassified,
+                                      reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                }
+            }
+        }
+
+        [Test]
+        public void GenerateExperimentBoostingWithAttributeDiversity()
+        {
+            Console.WriteLine("GenerateExperimentBoostingWithAttributeDiversity");
+
+            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
+
+            for (int t = 0; t < 7; t++)
+            {
+                for (int iter = 1; iter <= 300; iter++)
+                {
+                    Args parms = new Args();
+                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity);
+                    parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);                                                            
+                    parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
+                    parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, 2);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
+                    parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
+
+
+                    ReductEnsembleBoostingWithAttributeDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithAttributeDiversityGenerator;
                     reductGenerator.Generate();
 
                     RoughClassifier classifierTrn = new RoughClassifier();

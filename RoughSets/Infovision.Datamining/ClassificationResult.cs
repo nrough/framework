@@ -83,21 +83,7 @@ namespace Infovision.Datamining
         //TODO use classificationInfo instead
         private double qualityRatio = 0;
 
-        #endregion
-
-        #region Constructors
-
-        public ClassificationResult(DataStore dataStore)
-        {
-            classificationMap = new Dictionary<Int64, Int64>(dataStore.DataStoreInfo.NumberOfRecords);
-            decisionActualCount = new Dictionary<Int64, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
-            foreach (long decisionValue in dataStore.DataStoreInfo.GetDecisionValues())
-            {
-                decisionActualCount[decisionValue] = 0;
-            }
-        }
-
-        #endregion
+        #endregion        
 
         #region Properties
 
@@ -176,6 +162,20 @@ namespace Infovision.Datamining
         {
             get { return qualityRatio; }
             set { qualityRatio = value; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public ClassificationResult(DataStore dataStore)
+        {
+            classificationMap = new Dictionary<long, long>(dataStore.DataStoreInfo.NumberOfRecords);
+            decisionActualCount = new Dictionary<long, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
+            foreach (long decisionValue in dataStore.DataStoreInfo.GetDecisionValues())
+            {
+                decisionActualCount[decisionValue] = 0;
+            }
         }
 
         #endregion

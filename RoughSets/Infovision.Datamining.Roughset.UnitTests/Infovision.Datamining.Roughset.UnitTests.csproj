@@ -95,6 +95,7 @@
     <Compile Include="ReductCacheTest.cs" />
     <Compile Include="ReductClassifierTest.cs" />
     <Compile Include="ReductDiscernibilityMatrixTest.cs" />
+    <Compile Include="ReductEnsembleExperiment.cs" />
     <Compile Include="ReductEnsembleGeneratorTest.cs" />
     <Compile Include="ReductFactoryTest.cs" />
     <Compile Include="ReductGeneratorComparisonTest.cs" />

@@ -6,7 +6,7 @@ namespace Infovision.Utils
     {
         private static RandomSingleton randomSingleton = null;
         private static object syncRoot = new object();
-
+        private static int seed;
         private Random systemRandom;
 
         private RandomSingleton()
@@ -21,8 +21,8 @@ namespace Infovision.Utils
 
         public static int Seed
         {
-            get;
-            set;
+            get { return RandomSingleton.seed; }
+            set { RandomSingleton.seed = value; }
         }
 
         public Random SystemRandom

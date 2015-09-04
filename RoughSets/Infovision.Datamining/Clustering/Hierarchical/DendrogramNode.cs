@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
           
-    [Serializable]
-    public class DendrogramNode
+    [Serializable]    
+    //TODO single points should also be DendrogramNodes! for simplicity!    
+
+    public class DendrogramNode : IComparable, IComparable<DendrogramNode>
     {
         private DendrogramNode left;
         private DendrogramNode right;
@@ -91,20 +93,41 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public DendrogramNode(int nodeId)
             : this()
         {            
-        }        
+        }
 
-        public static DendrogramNode Swap(DendrogramNode node)
+        public int CompareTo(object obj)
         {
-            DendrogramNode newNode = new DendrogramNode(node.NodeId);
-            newNode.LeftInstance = node.RightInstance;
-            newNode.LeftLength = node.RightLength;
-            newNode.LeftNode = node.RightNode;
-            newNode.RightInstance = node.LeftInstance;
-            newNode.RightLength = node.LeftLength;
-            newNode.RightNode = node.LeftNode;
-            newNode.Parent = node.Parent;
+            if (obj == null)
+                return 1;
 
-            return newNode;
+            DendrogramNode node = obj as DendrogramNode;
+            if (node == null)
+                throw new ArgumentException("Object is not a DendrogramNode");
+
+            return this.Height.CompareTo(node.Height);
+        }
+
+        public int CompareTo(DendrogramNode other)
+        {            
+            if (other == null)
+                return 1;
+            return this.Height.CompareTo(other.Height);            
+        }        
+    }
+
+    public class DendrogramNodeAscendingComparer : Comparer<DendrogramNode>
+    {
+        public override int Compare(DendrogramNode x, DendrogramNode y)
+        {
+            return x.CompareTo(y);
+        }
+    }
+
+    public class DendrogramNodeDescendingComparer : Comparer<DendrogramNode>
+    {
+        public override int Compare(DendrogramNode x, DendrogramNode y)
+        {
+            return -1 * x.CompareTo(y);
         }
     }
 }

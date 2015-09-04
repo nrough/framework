@@ -39,6 +39,23 @@ namespace Infovision.Utils
         private List<string> parameterOrder = null;
         private Dictionary<int, string> index2parameter = null;
         private int nextIndex = 0;
+
+        public int Count
+        {
+            get { return this.parameters.Count; }
+        }
+
+        public object this[string id]
+        {
+            get
+            {
+                return this.GetParameter(id);
+            }
+            set
+            {
+                this.AddParameter(id, value);
+            }
+        }
         
         public Args()
         {
@@ -82,10 +99,7 @@ namespace Infovision.Utils
             this.nextIndex = keys.Length;
         }
 
-        public int Count
-        {
-            get { return this.parameters.Count; }
-        }
+        
 
         public void AddParameter(string key, object value)
         {

@@ -24,6 +24,17 @@ namespace Infovision.Math
         private Func<double[], double[], double> distance;
         private int numberOfInstances;
 
+        /// <summary>
+        ///   Gets or sets the distance function used
+        ///   as a distance metric between data points.
+        /// </summary>
+        /// 
+        public Func<double[], double[], double> Distance
+        {
+            get { return this.distance; }
+            set { this.distance = value; }
+        }
+
         public ReadOnlyDictionary<MatrixKey, double> ReadOnlyMatrix
         {
             get { return this.readOnlyMatrix; }
@@ -83,18 +94,7 @@ namespace Infovision.Math
             this.Distance = distance;
             matrix = new Dictionary<MatrixKey, double>(size);
             readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
-        }
-                
-        /// <summary>
-        ///   Gets or sets the distance function used
-        ///   as a distance metric between data points.
-        /// </summary>
-        /// 
-        public Func<double[], double[], double> Distance
-        {
-            get { return this.distance; }
-            set { this.distance = value; }
-        }       
+        }                             
 
         public void Initialize(double[][] points)
         {

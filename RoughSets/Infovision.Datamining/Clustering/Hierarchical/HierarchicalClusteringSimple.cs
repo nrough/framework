@@ -14,12 +14,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
         }
 
-        public HierarchicalClusteringSimple(Func<double[], double[], double> distance, Func<int[], int[], DistanceMatrix, double> linkage)
+        public HierarchicalClusteringSimple(Func<double[], double[], double> distance, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(distance, linkage)
         {
         }
 
-        public HierarchicalClusteringSimple(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double> linkage)
+        public HierarchicalClusteringSimple(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(matrix, linkage)
         {
         }

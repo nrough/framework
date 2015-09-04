@@ -87,6 +87,7 @@
     <Compile Include="Pair.cs" />
     <Compile Include="PascalSet.cs" />
     <Compile Include="PriorityQueue.cs" />
+    <Compile Include="PriorityQueue_DEL.cs" />
     <Compile Include="RandomSingleton.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Utils.cs" />

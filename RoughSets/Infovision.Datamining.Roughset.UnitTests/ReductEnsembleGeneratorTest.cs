@@ -26,7 +26,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
-            Random rand = new Random();
+            Random randSeed = new Random();
+            //int seed = randSeed.Next(Int32.MaxValue);
+            int seed = 1814821014;
+
+            RandomSingleton.Seed = seed;
             
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             
@@ -41,7 +45,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int[] epsilons = new int[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {
-                epsilons[i] = rand.Next(36);
+                epsilons[i] = RandomSingleton.Random.Next(36);
             }
 
             //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;
@@ -63,7 +67,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add("NumberOfThreads", 1);
             argSet.Add("PermutationEpsilon", epsilons);            
             argSet.Add("Distance", (Func<double[], double[], double>)Similarity.Manhattan);
-            argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double>)ClusteringLinkage.Min);
+            argSet.Add("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
             argSet.Add("NumberOfClusters", 3);
             argSet.Add("FactoryKey", "ReductEnsemble");                
             argSet.Add("PermutationCollection", permList);

@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset
         private WeightGenerator weightGenerator;
         private HierarchicalClustering hCluster;
         private Func<IReduct, double[], double[]> recognition;
-        private Func<int[], int[], DistanceMatrix, double> linkage;
+        private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;
         private int numberOfClusters;
 
@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset
             this.permEpsilon = new int[epsilon.Length];
             Array.Copy(epsilon, this.permEpsilon, epsilon.Length);
             this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
-            this.linkage = ClusteringLinkage.Min;
+            this.linkage = ClusteringLinkage.Single;
             this.distance = Similarity.Euclidean;
             this.numberOfClusters = 5;
         }
@@ -111,7 +111,7 @@ namespace Infovision.Datamining.Roughset
                 this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double>)args.GetParameter("Linkage");
+                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");
 
             if (args.Exist("NumberOfClusters"))
                 this.numberOfClusters = (int)args.GetParameter("NumberOfClusters");

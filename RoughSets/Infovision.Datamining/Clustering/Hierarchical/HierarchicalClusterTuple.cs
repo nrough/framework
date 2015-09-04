@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    internal class HierarchicalClusterTuple
+    internal class HierarchicalClusterTuple// : IComparable, IComparable<HierarchicalClusterTuple>
     {
         private readonly int x;
         private readonly int y;
         private readonly double val;
         private readonly int sizeX;
-        private readonly int sizeY;
+        private readonly int sizeY;        
 
         public HierarchicalClusterTuple(int x, int y, double val, int sizeX, int sizeY)
         {
@@ -37,27 +37,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public double Value
         {
             get { return this.val; }
-        }
-
-        public long LongValue
-        {
-            get
-            {
-                //in case of reversed distance function (1/d(x,y)) when d(x,y) is 0.0
-                //we substitte the 1/d with Double.MaxValue, then after mapping to long value with multiplication it becomes negative
-                //the Abs function removes the negative sign
-                //
-                //the above is not correct. Double.MaxValue is far more grater than Int64.MaxValue, the conversion is still producing negative value
-
-                if (this.val > (Double.MaxValue - 2))
-                {
-                    return Int64.MaxValue;
-                }
-
-                double result = System.Math.Abs(this.val * 10000000);
-                return (long)result;
-            }
-        }
+        }        
 
         public int SizeX
         {
@@ -68,23 +48,54 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.sizeY; }
         }
-
-        public long GetLongValue()
+        
+       
+        /*
+        public int CompareTo(object obj)
         {
-            //in case of reversed distance function (1/d(x,y)) when d(x,y) is 0.0
-            //we substitte the 1/d with Double.MaxValue, then after mapping to long value with multiplication it becomes negative
-            //the Abs function removes the negative sign
-            //
-            //the above is not correct. Double.MaxValue is far more grater than Int64.MaxValue, the conversion is still producing negative value
+            if(obj == null) return 1;
+            HierarchicalClusterTuple tuple = obj as HierarchicalClusterTuple;
+            if(tuple == null)
+                throw new ArgumentException("Object is not HierarchicalClusterTuple");
 
-            if (this.val == Double.MaxValue)
-            {
-                return Int64.MaxValue;
-            }
+            int valResult = this.Value.CompareTo(tuple.Value);
+            if (valResult != 0)
+                return valResult;                        
 
-            double result = System.Math.Abs(this.val * 10000000);
-            return (long)result;
+            if (this.X < tuple.X)
+                return -1;
+            if (this.X > tuple.X)
+                return 1;
+
+            if (this.Y < tuple.Y)
+                return -1;
+            if (this.Y > tuple.Y)
+                return 1;
+
+            return 0;
         }
+
+        public int CompareTo(HierarchicalClusterTuple other)
+        {
+            if (other == null) return 1;
+
+            int valResult = this.Value.CompareTo(tuple.Value);
+            if (valResult != 0)
+                return valResult;
+
+            if (this.X < other.X)
+                return -1;
+            if (this.X > other.X)
+                return 1;
+
+            if (this.Y < other.Y)
+                return -1;
+            if (this.Y > other.Y)
+                return 1;
+
+            return 0;
+        }
+        */
 
         #region System.Object Methods
 
@@ -116,15 +127,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         #endregion
     }
 
-    internal class MHierarchicalClusterTupleValueComparer : Comparer<HierarchicalClusterTuple>
+    internal class HierarchicalClusterTupleValueAscendingComparer : Comparer<HierarchicalClusterTuple>
     {
         public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
         {
-            if (t1.Value < t2.Value)
-                return -1;
-            if (t1.Value > t2.Value)
-                return 1;
+            return t1.Value.CompareTo(t2.Value);
 
+            /*
+            int valResult = t1.Value.CompareTo(t2.Value);
+            if (valResult != 0)
+                return valResult;            
             if (t1.X < t2.X)
                 return -1;
             if (t1.X > t2.X)
@@ -133,9 +145,34 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (t1.Y < t2.Y)
                 return -1;
             if (t1.Y > t2.Y)
-                return 1;
-
+                return 1;            
             return 0;
+            */
+        }
+    }
+
+    internal class HierarchicalClusterTupleValueDescendingComparer : Comparer<HierarchicalClusterTuple>
+    {
+        public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
+        {
+            return -1 * t1.Value.CompareTo(t2.Value);
+            /*
+            int valResult = t1.Value.CompareTo(t2.Value);
+            if (valResult != 0)
+                return - valResult;
+
+            
+            if (t1.X < t2.X)
+                return 1;
+            if (t1.X > t2.X)
+                return -1;
+
+            if (t1.Y < t2.Y)
+                return 1;
+            if (t1.Y > t2.Y)
+                return -1;            
+            return 0;
+            */
         }
     }
 }

@@ -398,7 +398,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 				Console.WriteLine("{0} was discretized into {1} bins", continuesAttributes[i], histograms[i].Bins.Count);
 				foreach (HistogramBin bin in histograms[i].Bins)
 				{
-					Console.WriteLine("{0}-{1} ({2})", bin.Range.Min, bin.Range.Max, bin.Value);
+					Console.WriteLine("{0}-{1} ({2})", bin.Range.Single, bin.Range.Complete, bin.Value);
 				}
 
 				tmp.Columns[continuesAttributes[i]].DataType = typeof(int);

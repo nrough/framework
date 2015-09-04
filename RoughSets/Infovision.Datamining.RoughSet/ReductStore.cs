@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,10 +46,8 @@ namespace Infovision.Datamining.Roughset
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (IReduct reduct in this)
-            {
-                stringBuilder.AppendLine(reduct.ToString());
-            }
+            for (int i = 0; i < this.Count; i++)
+                stringBuilder.Append(String.Format("{0}: ", i)).Append(this.GetReduct(i).ToString()).Append(Environment.NewLine);                               
             return stringBuilder.ToString();
         }
         #endregion
@@ -311,7 +310,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion        
 
-        public virtual void SaveRecognitionToFile(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ";")
+        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++ )
@@ -326,7 +325,32 @@ namespace Infovision.Datamining.Roughset
                 double[] errors = recognition(r, data.DataStoreInfo.RecordWeights);
                 for (int i = 0; i < errors.Length; i++)
                 {
-                    sb.Append(errors[i]);
+                    sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));
+                    if (i < errors.Length - 1)
+                        sb.Append(separator);
+                }
+                sb.Append(Environment.NewLine);
+            }
+            File.WriteAllText(filePath, sb.ToString());
+        }
+
+        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ",")
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < data.NumberOfRecords; i++)
+            {
+                sb.Append(String.Format("o{0}", i + 1));
+                if (i < data.NumberOfRecords - 1)
+                    sb.Append(separator);
+            }
+            sb.Append(Environment.NewLine);
+
+            foreach (IReduct r in this)
+            {                
+                double[] errors = recognition(r, data.DataStoreInfo.RecordWeights);
+                for (int i = 0; i < errors.Length; i++)
+                {
+                    sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));
                     if (i < errors.Length - 1)
                         sb.Append(separator);
                 }

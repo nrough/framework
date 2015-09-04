@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
@@ -72,7 +73,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             DendrogramNode newNode;
             if (c1 < this.numOfInstances && c2 < this.numOfInstances)
-            {
+            {                                                                                
                 newNode = new DendrogramNode
                 {
                     NodeId = mergedClusterId,
@@ -266,14 +267,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             linkages[row] = new DendrogramLink(linkages[row].Id, linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance);                        
         }
 
+        /*
         private int[] CutOff(int numberOfClusters)
         {                        
             if(numberOfClusters <= 0)
                 return new int[0];
 
-            int size = System.Math.Min(this.numOfInstances, System.Math.Max(numberOfClusters, 0));
+            int size = System.Math.Single(this.numOfInstances, System.Math.Complete(numberOfClusters, 0));
             int[] result = new int[size];            
             int level = 0;
+            
+            //TODO we need to implement stack here
             for (int i = this.linkages.Length - 1; i >= 0; i--)
             {
                 result[level++] = this.linkages[i].Id;
@@ -281,10 +285,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     break;
             }
 
+            
+
             return result;
         }
+        */
 
-        private int[] CutOff(double distanceThreshold)
+        private int GetCutOffLevel(double distanceThreshold)
         {            
             int level = 0;                        
             for (int i = this.linkages.Length - 1; i >= 0; i--)
@@ -298,63 +305,50 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 level = this.numOfInstances - 1;
 
             int numberOfClusters = level + 1;
-            int[] result = new int[numberOfClusters];
+            return numberOfClusters;
+        }        
 
-            level = 0;
-            for (int i = this.linkages.Length - 1; i >= 0; i--)
-            {
-                result[level++] = this.linkages[i].Id;
-                if (level >= numberOfClusters)
-                    break;
-            }             
-
-            return result;
+        public int[] GetClusterMembership(double distanceThreshold)
+        {            
+            return this.GetClusterMembership(this.GetCutOffLevel(distanceThreshold));
         }
 
         public int[] GetClusterMembership(int numberOfClusters)
         {
-            int[] clusters = this.CutOff(numberOfClusters);
-            return this.GetClusterMembership(clusters);            
-        }
-
-        public int[] GetClusterMembership(double distanceThreshold)
-        {
-            int[] clusters = this.CutOff(distanceThreshold);
-            return this.GetClusterMembership(clusters);
-        }
-
-        private int[] GetClusterMembership(int[] clusters)
-        {
             int[] result = new int[this.numOfInstances];
-
-            for (int i = 0; i < clusters.Length; i++)
+            numberOfClusters = System.Math.Min(this.numOfInstances, System.Math.Max(numberOfClusters, 0));
+                       
+            SetClusterIdRecursive(this.rootNode.NodeId, ref result, this.rootNode);
+            for (int j = 0; j < numberOfClusters - 1; j++)
             {
-                if(clusters[i] < this.numOfInstances)
-                {
-                    result[clusters[i]] = clusters[i];
-                }
+                DendrogramNode node = this.nodeDictionary[this.linkages[this.linkages.Length - 1 - j].Id];
+
+                if (node.LeftNode != null)
+                    SetClusterIdRecursive(node.LeftInstance, ref result, node.LeftNode);
                 else
-                {
-                    DendrogramNode node = nodeDictionary[clusters[i]];
-                    WalkClusterMembershipFromNode(clusters[i], ref result, node);               
-                }
-            }
+                    result[node.LeftInstance] = node.LeftInstance;
+
+                if(node.RightNode != null)
+                    SetClusterIdRecursive(node.RightInstance, ref result, node.RightNode);
+                else
+                    result[node.RightInstance] = node.RightInstance;
+            }                            
 
             return result;
-        }
+        }                
 
-        private void WalkClusterMembershipFromNode(int clusterId, ref int[] result, DendrogramNode node)
+        private void SetClusterIdRecursive(int clusterId, ref int[] result, DendrogramNode node)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
 
             if (node.LeftNode != null)
-                WalkClusterMembershipFromNode(clusterId, ref result, node.LeftNode);
+                SetClusterIdRecursive(clusterId, ref result, node.LeftNode);
             else
                 result[node.LeftInstance] = clusterId;
 
             if (node.RightNode != null)
-                WalkClusterMembershipFromNode(clusterId, ref result, node.RightNode);
+                SetClusterIdRecursive(clusterId, ref result, node.RightNode);
             else
                 result[node.RightInstance] = clusterId;
         }        

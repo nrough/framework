@@ -15,16 +15,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     [Serializable]
     public class HierarchicalClustering
     {                
-        private DistanceMatrix distanceMatrix;
-
-        private PriorityQueue<long, HierarchicalClusterTuple> queue;                    
+        private DistanceMatrix distanceMatrix;        
+        private PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer> queue;
         private Dictionary<int, HierarchicalCluster> clusters;
         
         private int nextClusterId = 0;
         
         private Func<double[], double[], double> distance;
-        private Func<int[], int[], DistanceMatrix, double> linkage;
-        private DendrogramLinkCollection dendrogram;
+        private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
+        private DendrogramLinkCollection dendrogram; 
+        private double[][] data;
 
         int numberOfInstances;            
 
@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set { this.distance = value; }
         }
 
-        public Func<int[], int[], DistanceMatrix, double> Linkage
+        public Func<int[], int[], DistanceMatrix, double[][], double> Linkage
         {
             get { return this.linkage; }
             set { this.linkage = value; }
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>        
         public HierarchicalClustering()
-            : this(Infovision.Math.Similarity.SquaredEuclidean, ClusteringLinkage.Min) { }
+            : this(Infovision.Math.Similarity.SquaredEuclidean, ClusteringLinkage.Single) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
@@ -78,10 +78,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// <param name="distance">The distance function to use. Default is to
         /// use the <see cref="Infovision.Math.Similarity.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
-        /// use the <see cref="ClusteringLinkage.Min(int[], int[], DistanceMatrix)"/> linkage.</param>
+        /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
         /// 
         public HierarchicalClustering(Func<double[], double[], double> distance, 
-                                      Func<int[], int[], DistanceMatrix, double> linkage)
+                                      Func<int[], int[], DistanceMatrix, double[][], double> linkage)
         {
             if (distance == null)
                 throw new ArgumentNullException("distance");
@@ -99,9 +99,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         ///         
         /// <param name="distanceMatrix">The distance matrix to use. </param>
         /// <param name="linkage">The linkage function to use. Default is to
-        /// use the <see cref="ClusteringLinkage.Min(int[], int[], DistanceMatrix)"/> linkage.</param>
+        /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
         /// 
-        public HierarchicalClustering(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double> linkage)
+        public HierarchicalClustering(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
         {
             if (matrix == null)
                 throw new ArgumentNullException("matrix");
@@ -122,12 +122,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (points == null)
                 throw new ArgumentNullException("points");
 
+            data = points;
+
             this.numberOfInstances = points.Length;
             dendrogram = new DendrogramLinkCollection(this.numberOfInstances);
-           
-            //this.InitDistanceMatrix(points);
-            //this.InitClusters(points);            
-
+                       
             bool calculateDistanceMatrix = false;
             if (distanceMatrix == null)
             {
@@ -135,8 +134,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 distanceMatrix = new DistanceMatrix(size, this.Distance);
                 calculateDistanceMatrix = true;
             }
-            
-            queue = new PriorityQueue<long, HierarchicalClusterTuple>();
+                        
+            queue = new PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer>();
+
             clusters = new Dictionary<int, HierarchicalCluster>(points.Length);
             for (int i = 0; i < points.Length; i++)
             {
@@ -147,41 +147,50 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 for (int j = i + 1; j < points.Length; j++)
                 {
                     if (calculateDistanceMatrix)
-                    {                                                
-                        double distance = this.Distance(points[i], points[j]);                                                
+                    {
+                        double distance = this.Distance(points[i], points[j]);
+                        
+                        /*
+                        //HACK Wards linkage needs special zero distance calculation
+                        if(this.linkage == ClusteringLinkage.Ward)
+                            distance = this.Linkage(new int[] {i}, new int[] {j}, this.distanceMatrix, data);
+                        else
+                            distance = this.Distance(points[i], points[j]);
+                        */
+
                         distanceMatrix[i, j] = distance;
                     }
-                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i, j, distanceMatrix[i, j], 1, 1);
-                    //queue.Enqueue(tuple.LongValue, tuple);
-                    queue.Enqueue(tuple.GetLongValue(), tuple);
+                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i, j, distanceMatrix[i, j], 1, 1);                                       
+                    queue.Enqueue(tuple);
                 }
             }
 
             nextClusterId = points.Length;
         }
         
+        /*
         private void InitDistanceMatrix(double[][] points)
         {
             if (distanceMatrix == null)
             {
                 int size = points.Length * (points.Length - 1) / 2;
-                distanceMatrix = new DistanceMatrix(size, this.Distance);
-                //distanceMatrix = new DistanceMatrix(this.Distance);
-                //distanceMatrix.Initialize(points);                
-                queue = new PriorityQueue<long, HierarchicalClusterTuple>();                                
+                distanceMatrix = new DistanceMatrix(size, this.Distance);                                
+                queue = new PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer>();
                 for (int i = 0; i < points.Length; i++)
                 {                                        
                     for (int j = i + 1; j < points.Length; j++)
                     {                                                
                         double distance = this.Distance(points[i], points[j]);                        
                         distanceMatrix[i,j] = distance;                                                           
-                        HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i,j,distance,1,1);
-                        queue.Enqueue(tuple.LongValue, tuple);
+                        HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i,j,distance,1,1);                        
+                        queue.Enqueue(tuple);
                     }
                 }                
             }
         }
+        */
 
+        /*
         private void InitClusters(double[][] points)
         {
             clusters = new Dictionary<int, HierarchicalCluster>(points.Length);
@@ -193,9 +202,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
             nextClusterId = points.Length;
         }
+        */
 
         /// <summary>
-        ///  Creates a hirarchy of clusters 
+        ///  Creates a hierarchy of clusters 
         /// </summary>
         /// 
         /// <param name="data">The data where to compute the algorithm.</param>        
@@ -237,12 +247,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {                                    
             for (int i = 0; i < this.numberOfInstances - 1; i++ )
             {
-                // use priority queue to find next best pair to cluster
+                // use priority queue to find next best pair to cluster                
                 HierarchicalClusterTuple t;
                 do
-                {
+                {                    
                     t = queue.Dequeue();
-                } while (t != null && (clusters[t.X].MemberObjects.Count != t.SizeX || clusters[t.Y].MemberObjects.Count != t.SizeY));
+
+                } while (t != null 
+                            && (clusters[t.X].MemberObjects.Count != t.SizeX 
+                                || clusters[t.Y].MemberObjects.Count != t.SizeY));
 
                 if (t != null)
                 {
@@ -257,8 +270,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                             int i2 = System.Math.Max(t.X, j);
 
                             double distance = this.GetClusterDistance(i1, i2);
-                            HierarchicalClusterTuple newTuple = new HierarchicalClusterTuple(i1, i2, distance, clusters[i1].MemberObjects.Count, clusters[i2].MemberObjects.Count);
-                            queue.Enqueue(newTuple.LongValue, newTuple);
+                            HierarchicalClusterTuple newTuple = new HierarchicalClusterTuple(i1, i2, distance, clusters[i1].MemberObjects.Count, clusters[i2].MemberObjects.Count);                            
+                            queue.Enqueue(newTuple);
                         }
                     }
                 }
@@ -317,118 +330,33 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         protected int MergeClusters(int x, int y, double distance)
-        {
-            //HierarchicalCluster mergedCluster = HierarchicalCluster.MergeClusters(nextClusterId, clusters[x], clusters[y]);
-            HierarchicalCluster.MergeClustersInPlace(clusters[x], clusters[y]);
-
-            //this.RemoveCluster(x);
-            //this.RemoveCluster(y);
-            //this.AddCluster(mergedCluster);            
-
-            this.dendrogram.Add(x, y, distance, nextClusterId, clusters[x].MemberObjects.Count == this.numberOfInstances);
-
-            //Console.WriteLine("{0} merged with {1} to {2} {3}", x, y, mergedCluster.Index, distance); 
-
+        {            
+            HierarchicalCluster.MergeClustersInPlace(clusters[x], clusters[y]);            
+            this.dendrogram.Add(x, y, distance, nextClusterId, clusters[x].MemberObjects.Count == this.numberOfInstances);            
             return nextClusterId++;
         }
 
-        protected int MergeClusters(MatrixKey key, double distance)
-        {
-            return this.MergeClusters(key.X, key.Y, distance);                      
-        }
+        //protected int MergeClusters(MatrixKey key, double distance)
+        //{
+        //    return this.MergeClusters(key.X, key.Y, distance);                      
+        //}
 
-        protected int MergeClusters(DendrogramLink link)
-        {
-            return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);            
-        }
+        //protected int MergeClusters(DendrogramLink link)
+        //{
+        //    return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);            
+        //}
 
         protected double GetClusterDistance(int i, int j)
         {
             if (clusters[i].Count == 1 && clusters[j].Count == 1)
-                //assume that clusterId and objectId at the begining are the same
-                return this.distanceMatrix.GetDistance(i, j);            
+                //assume that clusterId and objectId at the beginning are the same
+                return this.distanceMatrix.GetDistance(i, j);
                         
             int[] cluster1 = clusters[i].MemberObjects.ToArray();
             int[] cluster2 = clusters[j].MemberObjects.ToArray();
-            return this.Linkage(cluster1, cluster2, this.distanceMatrix);
-        }
-
-        /*
-        private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)
-        {
-            CalculateDistanceMatrix(mergedCluster1.Index, mergedCluster2.Index, newCluster.Index);
-        }
-        */
-
-        /*
-        private void CalculateDistanceMatrix(int mergedCluster1, int mergedCluster2, int newCluster)
-        {            
-            DistanceMatrix newMatrix = new DistanceMatrix(distanceMatrix.Distance);
-
-            foreach (KeyValuePair<MatrixKey, double> kvp in distanceMatrix.ReadOnlyMatrix)
-            {
-                // If the cluster IDs in the key are both the same as the recently merged clusters, skip it. This value
-                // won't be in the new table.
-                if ((kvp.Key.X == mergedCluster1 && kvp.Key.Y == mergedCluster2)
-                    || (kvp.Key.Y == mergedCluster2 && kvp.Key.X == mergedCluster1))
-                {
-                    // don't need this value anymore, since these clusters are merged into clNew
-                    continue;
-                }
-                // If one of the cluster IDs in the key match with one of the recently merged clusters, the use
-                // this value to calculate the distances of the new cluster.
-                else if (kvp.Key.X == mergedCluster1 || kvp.Key.X == mergedCluster2)
-                {
-                    MatrixKey newKey = new MatrixKey(newCluster, kvp.Key.Y);
-
-                    var query = distanceMatrix.ReadOnlyMatrix.Where(x => (x.Key.X == mergedCluster1 || x.Key.X == mergedCluster2)
-                                                    && x.Key.Y == kvp.Key.Y);
-
-                    //TODO To be substituted by linkage delegate
-                    var newDistance = query.Aggregate(query.First(), (min, curr) => curr.Value < min.Value ? curr : min);
-
-                    if (newMatrix.ContainsKey(newKey))
-                    {
-                        newMatrix[newKey] = newDistance.Value;
-                    }
-                    else
-                    {
-                        newMatrix.Add(newKey, newDistance.Value);
-                    }
-
-                }
-                // This block is same as above. Only checking the other cluster ID. This eliminates the dependency of the order
-                // of the IDs in the key.
-                else if (kvp.Key.Y == mergedCluster1 || kvp.Key.Y == mergedCluster2)
-                {
-                    MatrixKey newKey = new MatrixKey(newCluster, kvp.Key.X);
-
-                    var query = distanceMatrix.ReadOnlyMatrix.Where(x => (x.Key.Y == mergedCluster1 || x.Key.Y == mergedCluster2)
-                                                    && x.Key.X == kvp.Key.X);
-
-                    //TODO To be substituted by linkage delegate
-                    var newDistance = query.Aggregate(query.First(), (min, curr) => curr.Value < min.Value ? curr : min);
-
-                    if (newMatrix.ContainsKey(newKey))
-                    {
-                        newMatrix[newKey] = newDistance.Value;
-                    }
-                    else
-                    {
-                        newMatrix.Add(newKey, newDistance.Value);
-                    }
-                }
-                // If the IDs both don't match with the current key, then this distance is not relevant to
-                // the recently merged clusters. So we can use the old value as is.
-                else
-                {
-                    newMatrix.Add(kvp.Key, kvp.Value);
-                }
-            }
-
-            distanceMatrix = newMatrix;
-        }
-        */
+            
+            return this.Linkage(cluster1, cluster2, this.distanceMatrix, data);
+        }        
 
         protected void Cleanup()
         {

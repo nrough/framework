@@ -31,35 +31,35 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             return data;
         }
 
-        private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>[] DistancesAndLinkages =
+        private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>[] DistancesAndLinkages =
         {            
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Max, 2),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min, 4),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Max, 5),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single, 1),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Complete, 2),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Single, 4),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Complete, 5),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Single, 7),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Complete, 8),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
         };        
 
         [Test]
         public void ComputeTest()
         {                                    
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             Assert.IsTrue(true);
         }        
 
         [Test, TestCaseSource("DistancesAndLinkages")]
-        public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int> t)
+        public void ComputeSimpleVsAgregativeTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int> t)
         {
             Func<double[], double[], double> distance = t.Item1;
-            Func<int[], int[], DistanceMatrix, double> linkage = t.Item2;
+            Func<int[], int[], DistanceMatrix, double[][], double> linkage = t.Item2;
             int id = t.Item3;            
 
             HierarchicalClustering aggregativeVersion = new HierarchicalClustering(distance, linkage);
@@ -99,7 +99,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void ComputeLeafNodesTest()
         {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodes();
             Assert.IsTrue(true);
@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void ComputeLeafNodesFromTreeTest()
         {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
             Assert.IsTrue(true);
@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                     matrix.Add(new MatrixKey(i, j), distance);
                 }
             }
-            HierarchicalClustering hClustering = new HierarchicalClustering(matrix, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(matrix, ClusteringLinkage.Single);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
             int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodesFromTree();
             Assert.IsTrue(true);
@@ -149,11 +149,11 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         }
 
 
-        [Test, TestCaseSource("DistancesAndLinkages")]        
-        public void GetDendrogramAsBitmapTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int> t)
+        [Test, TestCaseSource("DistancesAndLinkages")]
+        public void GetDendrogramAsBitmapTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int> t)
         {
             Func<double[], double[], double> distance = t.Item1;
-            Func<int[], int[], DistanceMatrix, double> linkage = t.Item2;
+            Func<int[], int[], DistanceMatrix, double[][], double> linkage = t.Item2;
             int id = t.Item3;
 
             HierarchicalClustering hClustering = new HierarchicalClustering(distance, linkage);
@@ -171,7 +171,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void GetClusterMembershipTest()
         {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
+            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Compute(HierarchicalClusteringTest.GetData());            
             int[] membership2 = hClustering.GetClusterMembership(3.6);
             int[] membership = hClustering.GetClusterMembership(4);            

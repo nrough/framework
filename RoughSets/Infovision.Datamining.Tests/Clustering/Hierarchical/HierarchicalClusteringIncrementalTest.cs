@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Datamining.Clustering.Hierarchical;
-using Infovision.Datamining.Visualization;
 using Infovision.Math;
 using Infovision.Utils;
 using NUnit.Framework;

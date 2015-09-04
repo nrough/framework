@@ -10,7 +10,6 @@ using Infovision.Datamining;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
 using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Datamining.Visualization;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -192,16 +191,17 @@ namespace Infovision.Datamining.Roughset
                     if (this.hCluster.AddToCluster(Convert.ToInt32(reduct.Id), errorvector))
                     {
                         this.ReductPool.AddReduct(reduct);
-                        
+                                                
+                        //TODO Remove this
                         DendrogramChart chart = new DendrogramChart(this.hCluster, 1920, 1200);
-                        //chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange});
+                        chart.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Orange, Color.Brown, Color.Beige});
                         Bitmap chartBitmap = chart.GetAsBitmap();
                         if (reduct.Id.Length == 1)
-                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_00{0}.bmp", reduct.Id));
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_00{1}.bmp", this.DataStore.Name, reduct.Id));
                         else if (reduct.Id.Length == 2)
-                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_0{0}.bmp", reduct.Id));
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_0{1}.bmp", this.DataStore.Name, reduct.Id));
                         else
-                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}.bmp", reduct.Id));
+                            chartBitmap.Save(String.Format(@"F:\Temp\Dendrogram_Incremental_{0}_{1}.bmp", this.DataStore.Name, reduct.Id));
                     }
                 }
             }            

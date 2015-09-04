@@ -6,7 +6,6 @@ using System.Text;
 using Infovision.Datamining.Clustering.Hierarchical;
 using NUnit.Framework;
 using Infovision.Math;
-using Infovision.Datamining.Visualization;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {

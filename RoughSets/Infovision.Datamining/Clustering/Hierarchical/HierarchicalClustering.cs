@@ -16,9 +16,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     public class HierarchicalClustering : HierarchicalClusteringBase
     {                        
         private PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer> queue;        
-        private Dictionary<int, HierarchicalCluster> clusters;
-        //private DendrogramLinkCollection dendrogramLinkCollection;
-        //private int nextLinkagesIdx;        
+        private Dictionary<int, HierarchicalCluster> clusters;             
         private Dictionary<int, DendrogramNode> nodes;
 
         private Dictionary<int, int> nodeIdLookupSimple;
@@ -28,12 +26,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             get { return this.nodes; }
             set { this.nodes = value; }
-        }
-
-        //public override DendrogramLinkCollection DendrogramLinkCollection
-        //{
-        //    get { return this.dendrogramLinkCollection; }
-        //}               
+        }       
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
@@ -218,24 +211,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
         }        
-
-        protected DendrogramLink GetClustersToMerge()
-        {
-            int[] result = new int[2] { -1, -1 };
-            double minDistance = Double.MaxValue;
-
-            foreach (KeyValuePair<MatrixKey, double> kvp in this.DistanceMatrix)
-            {                                
-                if (kvp.Value < minDistance)
-                {
-                    result[0] = kvp.Key.X;
-                    result[1] = kvp.Key.Y;
-                    minDistance = kvp.Value;
-                }
-            }
-
-            return new DendrogramLink(this.NextClusterId, result[0], result[1], minDistance);
-        } 
 
         protected int MergeClusters(int x, int y, double distance)
         {                    

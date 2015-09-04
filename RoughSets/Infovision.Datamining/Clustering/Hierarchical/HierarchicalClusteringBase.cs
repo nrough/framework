@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         public HierarchicalClusteringBase(DistanceMatrix distanceMatrix,
-                                         Func<int[], int[], DistanceMatrix, double[][], double> linkage)
+                                          Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : this()
         {
             if (distanceMatrix == null)
@@ -171,7 +171,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 if (d.IsLeaf)
                     order[pos++] = d.Id;
             };
-
             HierarchicalClusteringBase.TraversePreOrder(this.Root, getLeaves);
             return order;
         }        
@@ -179,13 +178,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected virtual int[] GetLeaves(DendrogramNode node)
         {            
             HashSet<int> leaves = new HashSet<int>();
-
             Action<DendrogramNode> getLeaves = delegate(DendrogramNode d)
             {
                 if (d.IsLeaf)
                     leaves.Add(d.Id);
             };
-
             HierarchicalClusteringBase.TraversePreOrder(node, getLeaves);
             return leaves.ToArray();
         }        
@@ -201,7 +198,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {            
             Queue<DendrogramNode> queue = new Queue<DendrogramNode>();
             queue.Enqueue(node);            
-
             while (queue.Count != 0)
             {
                 DendrogramNode currentNode = queue.Dequeue();
@@ -218,7 +214,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (node == null)
                 return;
-
             action.Invoke(node);
             HierarchicalClusteringBase.TraversePreOrder(node.LeftNode, action);
             HierarchicalClusteringBase.TraversePreOrder(node.RightNode, action);
@@ -228,7 +223,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (node == null)
                 return;
-
             HierarchicalClusteringBase.TraverseInOrder(node.LeftNode, action);
             action.Invoke(node);
             HierarchicalClusteringBase.TraverseInOrder(node.RightNode, action);
@@ -238,7 +232,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (node == null)
                 return;
-
             HierarchicalClusteringBase.TraversePostOrder(node.LeftNode, action);
             HierarchicalClusteringBase.TraversePostOrder(node.RightNode, action);
             action.Invoke(node);
@@ -248,20 +241,25 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (node == null)
                 return;
-
             action.Invoke(node);
-
             if (node.LeftNode != null)
             {
                 HierarchicalClusteringBase.TraverseEulerPath(node.LeftNode, action);
                 action.Invoke(node);
             }
-
             if (node.RightNode != null)
             {
                 HierarchicalClusteringBase.TraverseEulerPath(node.RightNode, action);
                 action.Invoke(node);
             }
+        }
+
+        public static void TraverseParent(DendrogramNode node, Action<DendrogramNode> action)
+        {
+            if(node == null)
+                return;
+            action.Invoke(node);
+            HierarchicalClusteringBase.TraverseParent(node.Parent, action);
         }
 
         protected virtual void OnDistanceChanged(EventArgs e) 
@@ -270,35 +268,32 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 distanceChanged(this, e);
         }
 
-        private List<DendrogramNode> GetCutOffNodes(int numberOfClusters)
+        public List<DendrogramNode> GetCutOffNodes(int numberOfClusters)
         {
             numberOfClusters = System.Math.Min(this.NumberOfInstances, System.Math.Max(numberOfClusters, 0));
             PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer> queue = new PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer>();
             queue.Enqueue(this.Root);
             int clusters2Find = numberOfClusters - 1;
             DendrogramNode node = null;
+            
+            //TODO Problem with flat dendrogram (all Heights = 0.0)
             while (queue.Count > 0 && clusters2Find > 0)
             {
                 node = queue.Dequeue();
-
                 if (node.LeftNode != null)
                     queue.Enqueue(node.LeftNode);
-
                 if (node.RightNode != null)
                     queue.Enqueue(node.RightNode);
-
                 clusters2Find--;
             }
-
-            //assert queue.Count == numberOfClusters
-
+            
             List<DendrogramNode> result = new List<DendrogramNode>(numberOfClusters);
             while (queue.Count > 0)
                 result.Add(queue.Dequeue());
             return result;
         }
 
-        private List<DendrogramNode> GetCutOffNodes(double threshold)
+        public List<DendrogramNode> GetCutOffNodes(double threshold)
         {            
             PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer> queue = new PriorityQueue<DendrogramNode, DendrogramNodeDescendingComparer>();
             queue.Enqueue(this.Root);
@@ -307,9 +302,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             while (queue.Count > 0 && currentHeight > threshold)
             {
                 node = queue.Dequeue();
-
                 double heightLeft = 0.0, heightRight = 0.0;
-
                 if (node.LeftNode != null)
                 {
                     queue.Enqueue(node.LeftNode);
@@ -322,9 +315,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
 
                 currentHeight = System.Math.Max(heightLeft, heightRight);                                    
-            }
-
-            //assert queue.Count == numberOfClusters
+            }           
 
             List<DendrogramNode> result = new List<DendrogramNode>(queue.Count);
             while (queue.Count > 0)
@@ -346,7 +337,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             List<DendrogramNode> subTrees = this.GetCutOffNodes(numberOfClusters);
             Dictionary<int, int> node2Cluster = new Dictionary<int, int>(this.NumberOfInstances);            
             foreach (DendrogramNode node in subTrees)
-                HierarchicalClusteringBase.TraversePreOrder(node, d => node2Cluster[d.Id] = node.Id);                            
+                HierarchicalClusteringBase.TraversePreOrder(node, d => node2Cluster[d.Id] = node.Id);
             return node2Cluster;
         }
         
@@ -392,11 +383,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Action<DendrogramNode> node2Lookup = delegate(DendrogramNode d)
             {
                 nodeIds[i] = d.Id;
-                nodeId2Idx[d.Id] = i;
-                i++;
+                nodeId2Idx[d.Id] = i++;                
                 if (d.IsLeaf)
                     leaves[l++] = d.Id;
-
                 if (d.IsRoot == true)
                     d.Level = 0;
                 else
@@ -412,9 +401,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 eulerPath.Add(nodeId2Idx[d.Id]);
                 if (!firstVisit.TryGetValue(d.Id, out nodeIdx))
-                {
-                    firstVisit[d.Id] = i;                    
-                }
+                    firstVisit[d.Id] = i;
                 i++;
             };
             HierarchicalClusteringBase.TraverseEulerPath(this.Root, node2Array);
@@ -428,7 +415,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 for (j = i + 1; j < leaves.Length; j++)
                 {
                     indexY = firstVisit[leaves[j]];
-
                     if (indexY < indexX)
                     {
                         temp = indexX;

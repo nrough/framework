@@ -13,7 +13,6 @@ using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Datamining.Experimenter;
 using Infovision.Datamining.Experimenter.Parms;
 using System.Drawing;
-using Infovision.Datamining.Visualization;
 
 
 

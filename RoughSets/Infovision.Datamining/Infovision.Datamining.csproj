@@ -106,9 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationResult.cs" />
-    <Compile Include="Clustering\Hierarchical\DendrogramLinkChartData.cs" />
-    <Compile Include="Clustering\Hierarchical\DendrogramLinkCollection.cs" />
-    <Compile Include="Clustering\Hierarchical\DendrogramLink.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringBase.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncremental.cs" />
@@ -120,7 +118,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Visualization\DendrogramChart.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">

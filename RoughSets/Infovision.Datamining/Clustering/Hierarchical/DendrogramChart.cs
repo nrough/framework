@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.Datamining.Clustering.Hierarchical;
 
-namespace Infovision.Datamining.Visualization
+namespace Infovision.Datamining.Clustering.Hierarchical
 {
     public class DendrogramChart
     {
@@ -27,6 +27,7 @@ namespace Infovision.Datamining.Visualization
         public DendrogramChart(HierarchicalClusteringBase clustering, int width, int height)
             : this()
         {
+            this.Colors = new List<Color>();
             this.HCluster = clustering;
             this.Width = width;
             this.Height = height;
@@ -102,25 +103,34 @@ namespace Infovision.Datamining.Visualization
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
                 
-                Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(this.HCluster.NumberOfInstances - 1);
+                Dictionary<int, DendrogramChartNode> dendrogramChartData = new Dictionary<int, DendrogramChartNode>(this.HCluster.NumberOfInstances - 1);
                 int xAxisOffset = 10;
                 int nodePointX = yAxisEnd.X + xAxisOffset;
 
-                DendrogramLinkChartData linkChartData = null;
-                DendrogramLinkChartData linkChartData1 = null;
-                DendrogramLinkChartData linkChartData2 = null;
+                DendrogramChartNode linkChartData = null;
+                DendrogramChartNode linkChartData1 = null;
+                DendrogramChartNode linkChartData2 = null;
 
                 Dictionary<int, int> node2cluster = null;
                 Dictionary<int, int> cluster2color = null;
+                //HashSet<int> uncoloredNodes = null;
                 if (this.Colors.Count > 1)
                 {
-                    node2cluster = this.HCluster.GetClusterMembership(this.Colors.Count);
+                    List<DendrogramNode> subTrees = this.HCluster.GetCutOffNodes(this.Colors.Count);
+                    node2cluster = new Dictionary<int, int>(this.HCluster.NumberOfInstances);
+                    //uncoloredNodes = new HashSet<int>();              
+                    foreach (DendrogramNode node in subTrees)
+                    {
+                        HierarchicalClusteringBase.TraversePreOrder(node, d => node2cluster[d.Id] = node.Id);
+                        //if (node.Parent != null)
+                        //    HierarchicalClusteringBase.TraverseParent(node.Parent.Parent, d => uncoloredNodes.Add(d.Id));
+                    }                    
                     cluster2color = new Dictionary<int, int>(this.Colors.Count);
                     int c = 0;
                     foreach (KeyValuePair<int, int> kvp in node2cluster)
                     {
                         if (!cluster2color.ContainsKey(kvp.Value))
-                            cluster2color.Add(kvp.Value, c++);
+                            cluster2color.Add(kvp.Value, c++);                        
                     }
                 }
 
@@ -128,16 +138,22 @@ namespace Infovision.Datamining.Visualization
                 {
                     if (d.IsLeaf)
                     {
-                        linkChartData = new DendrogramLinkChartData(d.Id);
+                        linkChartData = new DendrogramChartNode(d.Id);
 
                         linkChartData.LeftNodeX = nodePointX;
                         linkChartData.LeftNodeY = yAxisEnd.Y;
                         linkChartData.RightNodeX = nodePointX;
                         linkChartData.RightNodeY = yAxisEnd.Y;
                         linkChartData.ParentNodeY = yAxisEnd.Y;
-                        linkChartData.Color = this.Colors.Count > 1 
+
+                        if (!node2cluster.ContainsKey(d.Id))
+                            Console.WriteLine("xxx");                        
+
+                        linkChartData.LeftColor = this.Colors.Count > 1 
                                             ? this.Colors[cluster2color[node2cluster[d.Id]]] 
                                             : foreground;
+                        linkChartData.RightColor = linkChartData.LeftColor;
+
                                                 
                         dendrogramChartData.Add(d.Id, linkChartData);
 
@@ -148,7 +164,7 @@ namespace Infovision.Datamining.Visualization
                         linkChartData1 = dendrogramChartData[d.LeftNode.Id];
                         linkChartData2 = dendrogramChartData[d.RightNode.Id];
 
-                        linkChartData = new DendrogramLinkChartData(d.Id);
+                        linkChartData = new DendrogramChartNode(d.Id);
                         linkChartData.LeftNodeX = linkChartData1.ParentNodeX;
                         linkChartData.LeftNodeY = linkChartData1.ParentNodeY;
                         linkChartData.RightNodeX = linkChartData2.ParentNodeX;
@@ -156,10 +172,14 @@ namespace Infovision.Datamining.Visualization
                         
                         int nodeHeight = (int)(d.Height * heightScale * yMajorScalePx);
                         linkChartData.ParentNodeY = yAxisEnd.Y - nodeHeight;
+                        linkChartData.LeftColor = linkChartData1.LeftColor;
+                        linkChartData.RightColor = linkChartData2.RightColor;
 
-                        linkChartData.Color = linkChartData1.Color == linkChartData2.Color
-                                            ? linkChartData1.Color
-                                            : foreground;
+                        //if (uncoloredNodes != null && uncoloredNodes.Contains(d.Id))
+                        //{
+                        //    linkChartData.LeftColor = foreground;
+                        //    linkChartData.RightColor = foreground;
+                        //}
 
                         dendrogramChartData.Add(d.Id, linkChartData);
                     }
@@ -175,7 +195,7 @@ namespace Infovision.Datamining.Visualization
                            ? this.HCluster.Root.LeftNode.Id
                            : this.HCluster.Root.RightNode.Id;
 
-                    linkChartData = new DendrogramLinkChartData(id);
+                    linkChartData = new DendrogramChartNode(id);
 
                     linkChartData.LeftNodeX = nodePointX;
                     linkChartData.LeftNodeY = yAxisEnd.Y;
@@ -188,14 +208,14 @@ namespace Infovision.Datamining.Visualization
 
                 Font font = new Font("Tahoma", 9);
                 Pen dendrogramPen = new Pen(foreground, 2);
-                foreach (KeyValuePair<int, DendrogramLinkChartData> kvp in dendrogramChartData)
-                {
-                    dendrogramPen.Color = kvp.Value.Color;
-                    kvp.Value.Draw(g, dendrogramPen, true, font);
-                }
+                Brush brush = new SolidBrush(foreground);
+                
+                foreach (KeyValuePair<int, DendrogramChartNode> kvp in dendrogramChartData)                                    
+                    kvp.Value.Draw(g, dendrogramPen, brush, true, font);
+                                
+                brush.Dispose();
                 dendrogramPen.Dispose();
                 font.Dispose();
-
 
                 g.Flush();
                 Bitmap result = new Bitmap(bitmap);

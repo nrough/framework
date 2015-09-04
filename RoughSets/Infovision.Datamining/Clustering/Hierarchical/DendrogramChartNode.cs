@@ -7,25 +7,16 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
-    internal class DendrogramLinkChartData
+    internal class DendrogramChartNode
     {
-        public DendrogramLinkChartData(int nodeId)
-        {
-            this.NodeId = nodeId;
-            this.Color = Color.Black;
-        }
-        
-        public int NodeId { get; private set; }                
-
+        public int NodeId { get; private set; }
         public int LeftNodeX { get; set; }
         public int LeftNodeY { get; set; }
-
         public int RightNodeX { get; set; }
         public int RightNodeY { get; set; }
-        
         public int ParentNodeY { get; set; }
-
-        public Color Color { get; set;}
+        public Color LeftColor { get; set; }
+        public Color RightColor { get; set; }
 
         public int ParentNodeX
         {
@@ -33,23 +24,46 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 return (this.LeftNodeX + this.RightNodeX) / 2;
             }
-        }        
+        }
 
-        public void Draw(Graphics g, Pen pen, bool showLabel, Font font)
+        public DendrogramChartNode(int nodeId)
+        {
+            this.NodeId = nodeId;
+            this.LeftColor = Color.Black;
+            this.RightColor = Color.Black;
+        }                        
+
+        public void Draw(Graphics g, Pen pen, Brush brush, bool showLabel, Font font)
         {
             Point a = new Point(this.LeftNodeX, this.LeftNodeY);
             Point b = new Point(this.LeftNodeX, this.ParentNodeY);
+            Point x = new Point(this.ParentNodeX, this.ParentNodeY);
             Point c = new Point(this.RightNodeX, this.ParentNodeY);
             Point d = new Point(this.RightNodeX, this.RightNodeY);
 
-            g.DrawLines(pen, new Point[] { a, b, c, d });
+            Color origColor = pen.Color;
+            
+            pen.Color = this.LeftColor;
+            g.DrawLines(pen, new Point[] { a, b});
 
-            SolidBrush brush = new SolidBrush(pen.Color);
+
+            pen.Color = this.LeftColor == this.RightColor ? this.LeftColor : origColor;
+            g.DrawLines(pen, new Point[] { b, x });
+
+            pen.Color = this.LeftColor == this.RightColor ? this.RightColor : origColor;
+            g.DrawLines(pen, new Point[] { x, c });
+
+            pen.Color = this.RightColor;
+            g.DrawLines(pen, new Point[] { c, d });
+
+            pen.Color = origColor;            
             if (showLabel)
             {
-                g.DrawString(this.NodeId.ToString(), font, brush, new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
-            }
-            brush.Dispose();
+                g.DrawString(this.NodeId.ToString(), 
+                             font, 
+                             brush, 
+                             new PointF(this.ParentNodeX - ((font.Size * this.NodeId.ToString().Length) / 2), this.ParentNodeY + 4));
+            }            
         }
         
 

@@ -273,20 +273,28 @@ namespace Infovision.Datamining.Roughset.UnitTests
             } //test No           
 
             
-        }        
+        }
 
-        [Test]
-        public void RunExperimentIncremental()
+        public Dictionary<string, BenchmarkData> GetDataFiles()
         {
+            return BenchmarkDataHelper.GetDataFiles();
+        }
+
+        [Test, TestCaseSource("GetDataFiles")]
+        public void RunExperimentIncremental(KeyValuePair<string, BenchmarkData> kvp)
+        {
+            Console.WriteLine("Data: {0}", kvp.Key);
+            
             Random randSeed = new Random();
             int seed = randSeed.Next(Int32.MaxValue);
             RandomSingleton.Seed = seed;
 
-            int numberOfPermutations = 200;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
+            int numberOfPermutations = 300;
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            data.Name = kvp.Key;
+
             int minEpsilon = 0;
-            int maxEpsilon = 25;
+            int maxEpsilon = 33;
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
             data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
@@ -314,7 +322,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
                 reductGenerator.Generate();
 
-            } //test No           
+            } //test No
         }
     }
 }

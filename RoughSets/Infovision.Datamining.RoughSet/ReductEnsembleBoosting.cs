@@ -295,7 +295,7 @@ namespace Infovision.Datamining.Roughset
 			return this.models;
 		}
 
-		protected virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public virtual IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);

@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);			
 		}
 
-		protected override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);

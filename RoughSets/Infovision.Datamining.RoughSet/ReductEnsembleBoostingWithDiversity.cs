@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
 			return reduct;
 		}
 		
-		protected override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			if (clusterInstances2.Count == 0 || this.NumberOfReductsToTest == 1)
 				return base.GetNextReduct(weights, minimumLength, maximumLength);

@@ -201,20 +201,14 @@ namespace Infovision.Datamining.Roughset
 				PascalSet existingGeneralDecisions = null;
 
 				if (generalDecisionMap.TryGetValue(instance, out existingGeneralDecisions))
-				{
 					existingGeneralDecisions = existingGeneralDecisions.Intersection(eq.DecisionSet);
-				}
 				else
-				{
 					existingGeneralDecisions = eq.DecisionSet;
-				}
 				generalDecisionMap[instance] = existingGeneralDecisions;
 
 				//empty intersection => we cannot remove the attribute
 				if (existingGeneralDecisions.GetCardinality() == 0)
-				{
 					return false;
-				}
 			}
 			
 			return true;            

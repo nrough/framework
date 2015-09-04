@@ -119,7 +119,7 @@ namespace Infovision.Datamining.Roughset
 			reductsCalculated = true;
 		}
 
-		protected override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			if (reductsCalculated)								
 				return reducts[reductCounter++];

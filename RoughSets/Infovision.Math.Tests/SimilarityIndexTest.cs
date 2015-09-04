@@ -9,9 +9,8 @@ using NUnit.Framework;
 namespace Infovision.Math.Tests
 {
     [TestFixture]
-    class SimilarityIndexTest
+    class SimilarityTest
     {
-
         private double[][] vectors = new double[][] { 
             new double[] { 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 0.33, 0.33, 0.33, 0.33 },
             new double[] { 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.33 },
@@ -76,17 +75,17 @@ namespace Infovision.Math.Tests
         [TestCase(3, 3, 0.0, 0.0)]
         public void TverskyTest(int prototypeIdx, int variantIdx, double alpha, double beta)
         {
-            RunTversky(vectors[prototypeIdx], 
-                       vectors[variantIdx], 
-                       alpha, 
-                       beta);            
+            RunTversky(vectors[prototypeIdx],
+                       vectors[variantIdx],
+                       alpha,
+                       beta);
         }
 
         private void RunTversky(double[] vec1, double[] vec2, double alpha, double beta)
         {
             ShowVector(vec1);
             ShowVector(vec2);
-            double result = SimilarityIndex.Tversky(vec1, vec2, alpha, beta);
+            double result = Similarity.Tversky(vec1, vec2, alpha, beta);
             Assert.That(result, Is.Not.NaN);
             Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
@@ -96,7 +95,7 @@ namespace Infovision.Math.Tests
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < vector.Length; i++)
-                sb.Append(String.Format("{0:f2}", vector[i])).Append(" ");            
+                sb.Append(String.Format("{0:f2}", vector[i])).Append(" ");
             Console.WriteLine(sb.ToString());
         }
 
@@ -109,12 +108,12 @@ namespace Infovision.Math.Tests
             RunTverskySymetric(vectors[1], vectors[1], alpha, beta);
             RunTverskySymetric(vectors[1], vectors[1], alpha, beta);
             RunTverskySymetric(vectors[1], vectors[1], alpha, beta);
-            RunTverskySymetric(vectors[1], vectors[1], alpha, beta);            
+            RunTverskySymetric(vectors[1], vectors[1], alpha, beta);
         }
 
         private void RunTverskySymetric(double[] vec1, double[] vec2, double alpha, double beta)
         {
-            double result = SimilarityIndex.TverskySymetric(vec1, vec2, alpha, beta);
+            double result = Similarity.TverskySymetric(vec1, vec2, alpha, beta);
             Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
@@ -123,9 +122,9 @@ namespace Infovision.Math.Tests
         [Test]
         public void TverskyDelegateTest()
         {
-            double result1 = SimilarityIndex.Tversky_DEL(vectors[2], vectors[3], 0.5, 0.5);
-            double result2 = SimilarityIndex.Tversky(vectors[2], vectors[3], 0.5, 0.5);
+            double result1 = Similarity.Tversky_DEL(vectors[2], vectors[3], 0.5, 0.5);
+            double result2 = Similarity.Tversky(vectors[2], vectors[3], 0.5, 0.5);
             Assert.AreEqual(result1, result2);
-        }
+        }        
     }
 }

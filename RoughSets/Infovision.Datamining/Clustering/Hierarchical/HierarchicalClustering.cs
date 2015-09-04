@@ -63,26 +63,20 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public DistanceMatrix DistanceMatrix
         {
             get { return this.distanceMatrix; }
-        }
-
-        public bool ReverseDistanceFunction
-        {
-            get;
-            set;
-        }
+        }        
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>        
         public HierarchicalClustering()
-            : this(Infovision.Math.Distance.SquaredEuclidean, ClusteringLinkage.Min) { }
+            : this(Infovision.Math.Similarity.SquaredEuclidean, ClusteringLinkage.Min) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         ///         
         /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Infovision.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
+        /// use the <see cref="Infovision.Math.Similarity.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Min(int[], int[], DistanceMatrix)"/> linkage.</param>
         /// 
@@ -154,12 +148,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 {
                     if (calculateDistanceMatrix)
                     {                                                
-                        double distance = this.Distance(points[i], points[j]);                        
-                        if (this.ReverseDistanceFunction)
-                        {
-                            distance = System.Math.Exp(-distance);
-                        }
-
+                        double distance = this.Distance(points[i], points[j]);                                                
                         distanceMatrix[i, j] = distance;
                     }
                     HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i, j, distanceMatrix[i, j], 1, 1);
@@ -176,7 +165,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (distanceMatrix == null)
             {
                 int size = points.Length * (points.Length - 1) / 2;
-                distanceMatrix = new DistanceMatrix(size, this.Distance);                
+                distanceMatrix = new DistanceMatrix(size, this.Distance);
                 //distanceMatrix = new DistanceMatrix(this.Distance);
                 //distanceMatrix.Initialize(points);                
                 queue = new PriorityQueue<long, HierarchicalClusterTuple>();                                
@@ -184,13 +173,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 {                                        
                     for (int j = i + 1; j < points.Length; j++)
                     {                                                
-                        double distance = this.Distance(points[i], points[j]);
-
-                        if (this.ReverseDistanceFunction)
-                        {
-                            distance = System.Math.Exp(-distance);
-                        }
-
+                        double distance = this.Distance(points[i], points[j]);                        
                         distanceMatrix[i,j] = distance;                                                           
                         HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(i,j,distance,1,1);
                         queue.Enqueue(tuple.LongValue, tuple);

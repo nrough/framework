@@ -107,7 +107,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             {
                 for (int j = i + 1; j < data.Length; j++)
                 {
-                    double dist = Infovision.Math.Distance.Euclidean(data[i], data[j]);
+                    double dist = Infovision.Math.Similarity.Euclidean(data[i], data[j]);
                     matrix.Add(new MatrixKey(i, j), dist);
                 }
             }

@@ -99,15 +99,14 @@ namespace Infovision.Datamining.Roughset
         public override IReductStoreCollection Generate(Args args)
         {
             internalStore = new ReductStore();
-            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);                                    
-            Func<double[], double[], double> distance = SimilarityIndex.ReductSimDelegate(0.5);
+            PermutationCollection permutations = this.FindOrCreatePermutationCollection(args);
+            Func<double[], double[], double> distance = Similarity.ReductSimDelegate(0.5);
             Func<int[], int[], DistanceMatrix, double> linkage = ClusteringLinkage.Min;
             int numberOfClusters = 5;
-            bool useErrorsAsVectors = true;
-            bool reverseDistanceFunction = false;
+            bool useErrorsAsVectors = true;            
 
             if (args.Exist("Distance"))
-                distance = (Func<double[], double[], double>) args.GetParameter("Distance");
+                distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
                 linkage = (Func<int[], int[], DistanceMatrix, double>) args.GetParameter("Linkage");
@@ -119,10 +118,7 @@ namespace Infovision.Datamining.Roughset
                 numberOfClusters = this.DataStore.NumberOfRecords;
 
             if (args.Exist("UseErrosAsVectors"))
-                useErrorsAsVectors = (bool) args.GetParameter("UseErrosAsVectors");
-
-            if (args.Exist("ReverseDistanceFunction"))
-                reverseDistanceFunction = (bool)args.GetParameter("ReverseDistanceFunction");
+                useErrorsAsVectors = (bool) args.GetParameter("UseErrosAsVectors");            
             
             int k = -1;            
             foreach (Permutation permutation in permutations)
@@ -162,13 +158,23 @@ namespace Infovision.Datamining.Roughset
             internalStore = internalStore.RemoveDuplicates();
 
             double[][] errorVectors = this.GetWeightVectorsFromReducts(internalStore);
-            hCluster = new HierarchicalClustering(distance, linkage);
-            hCluster.ReverseDistanceFunction = reverseDistanceFunction;
+            hCluster = new HierarchicalClustering(distance, linkage);            
             hCluster.Compute(errorVectors);                                    
             
             Dictionary<int, List<int>> clusterMembership = hCluster.GetClusterMembershipAsDict(numberOfClusters);
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
 
+            foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
+            {
+                ReductStore tmpReductStore = new ReductStore();
+                foreach (int r in kvp.Value)
+                {
+                    tmpReductStore.DoAddReduct(internalStore.GetReduct(r));
+                }
+                reductStoreCollection.AddStore(tmpReductStore);
+            }
+
+            /*
             if (!reverseDistanceFunction)
             {
                 ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);
@@ -189,8 +195,7 @@ namespace Infovision.Datamining.Roughset
                 }
             }
             else
-            { 
-                //alternative approach, we change the standard way of dendrogam (inverse distance)            
+            {                           
                 foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
                 {
                     ReductStore tmpReductStore = new ReductStore();
@@ -200,7 +205,8 @@ namespace Infovision.Datamining.Roughset
                     }
                     reductStoreCollection.AddStore(tmpReductStore);
                 }
-            }            
+            }
+            */
 
             return reductStoreCollection;
         }        

@@ -23,7 +23,7 @@ namespace Infovision.Math
  
             // Spearman's Coefficient of Correlation
             // ρ = 1 - ((6 * sum of rank differences^2) / (n(n^2 - 1))
-            double rho = 1 - ((6 * sigmaDiff) / (System.Math.Pow(n, 3) - n));
+            double rho = 1.0 - ((6.0 * sigmaDiff) / (System.Math.Pow(n, 3) - n));
  
             return rho;
         }

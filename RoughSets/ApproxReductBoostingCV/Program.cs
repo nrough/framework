@@ -53,16 +53,17 @@ namespace ApproxReductBoostingCV
                     //new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
                     ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),                    
                     new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
-                    ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", 
-                                                                                //ReductFactoryKeyHelper.ReductEnsembleBoosting,
-                                                                                //ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity,
-                                                                                ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+                    ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
+                                                                                //,ReductFactoryKeyHelper.ReductEnsembleBoosting
+                                                                                //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
+                                                                                ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+                                                                                ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
                                                                                ),
                     ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
                     ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
-                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
-                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
+                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
                 }
             );
 
@@ -102,24 +103,53 @@ namespace ApproxReductBoostingCV
                 {
                     DataStore trnFoldOrig = null;
                     DataStore tstFoldOrig = null;
+                    
                     splitter.ActiveFold = f;
                     splitter.Split(ref trnFoldOrig, ref tstFoldOrig);
 
-                    DataStore trnFold = null, tstFold = null;
-                    if (data.DataStoreInfo.HasMissingData)
+                    DataStore trnFoldReplaced = null;
+
+                    Args parms = new Args();
+
+                    WeightGenerator weightGenerator;
+                    if (trnFoldOrig.DataStoreInfo.HasMissingData)
                     {
-                        trnFold = new ReplaceMissingValues().Compute(trnFoldOrig);
-                        //tstFold = new ReplaceMissingValues().Compute(tstFoldOrig, trnFoldOrig);
-                        tstFold = tstFoldOrig;
+                        trnFoldReplaced = new ReplaceMissingValues().Compute(trnFoldOrig);
+                        parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFoldReplaced);                        
+                        switch (weightingSchema)
+                        {
+                            case WeightingSchema.Majority:
+                                weightGenerator = new WeightGeneratorMajority(trnFoldReplaced);
+                                break;
+
+                            case WeightingSchema.Relative:
+                                weightGenerator = new WeightGeneratorRelative(trnFoldReplaced);
+                                break;
+
+                            default:
+                                weightGenerator = new WeightBoostingGenerator(trnFoldReplaced);
+                                break;
+                        }
                     }
                     else
                     {
-                        trnFold = trnFoldOrig;
-                        tstFold = tstFoldOrig;
-                    }
+                        parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFoldOrig);                        
+                        switch (weightingSchema)
+                        {
+                            case WeightingSchema.Majority:
+                                weightGenerator = new WeightGeneratorMajority(trnFoldOrig);
+                                break;
 
-                    Args parms = new Args();
-                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFold);
+                            case WeightingSchema.Relative:
+                                weightGenerator = new WeightGeneratorRelative(trnFoldOrig);
+                                break;
+
+                            default:
+                                weightGenerator = new WeightBoostingGenerator(trnFoldOrig);
+                                break;
+                        }
+                    }                    
+                    
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
@@ -128,38 +158,32 @@ namespace ApproxReductBoostingCV
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
 
-                    WeightGenerator weightGenerator;
-                    switch (weightingSchema)
-                    {
-                        case WeightingSchema.Majority:
-                            weightGenerator = new WeightGeneratorMajority(trnFold);
-                            break;
-
-                        case WeightingSchema.Relative:
-                            weightGenerator = new WeightGeneratorRelative(trnFold);
-                            break;
-
-                        default:
-                            weightGenerator = new WeightBoostingGenerator(trnFold);
-                            break;
-                    }
+                    
 
                     parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
+                    parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
 
                     ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);                   
                     reductGenerator.Generate();
 
                     RoughClassifier classifierTrn = new RoughClassifier();
                     classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnFold);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnFold, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    classifierTrn.Classify(trnFoldOrig.DataStoreInfo.HasMissingData 
+                                                ? trnFoldReplaced 
+                                                : trnFoldOrig);
+                    ClassificationResult resultTrn = classifierTrn.Vote(trnFoldOrig.DataStoreInfo.HasMissingData 
+                                                                            ? trnFoldReplaced 
+                                                                            : trnFoldOrig, 
+                                                                        reductGenerator.IdentyficationType, 
+                                                                        reductGenerator.VoteType, 
+                                                                        null);
 
                     RoughClassifier classifierTst = new RoughClassifier();
                     classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstFold);
-                    ClassificationResult resultTst = classifierTst.Vote(tstFold, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    classifierTst.Classify(tstFoldOrig);
+                    ClassificationResult resultTst = classifierTst.Vote(tstFoldOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
                     string updWeightsMethodName = String.Empty;
                     switch (reductGenerator.UpdateWeights.Method.Name)

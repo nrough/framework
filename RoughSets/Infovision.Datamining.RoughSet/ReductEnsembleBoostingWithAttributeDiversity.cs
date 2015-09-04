@@ -35,15 +35,18 @@ namespace Infovision.Datamining.Roughset
 		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
 		{
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
-			int length = System.Math.Min(maximumLength, permutation.Length - 1);
-			int minLen = System.Math.Max(minimumLength - 1, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, length);
+            int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+            int minLen = System.Math.Max(minimumLength, 0);
+            int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
 
-			int[] attributes = new int[cutoff + 1];
-			for (int i = 0; i <= cutoff; i++)
-				attributes[i] = permutation[i];
+            int[] attributes = new int[cutoff];
+            for (int i = 0; i < cutoff; i++)
+                attributes[i] = permutation[i];
 
-			return this.CreateReduct(attributes, this.Epsilon, weights);
+            return this.CreateReduct(attributes, this.Epsilon, weights);
+
+            if (minimumLength > maximumLength)
+                throw new ArgumentOutOfRangeException();            
 		}				
 	}
 

@@ -33,7 +33,8 @@ namespace ApproxReductBoosting
 
 			DataStore trnDataOrig = DataStore.Load(trainFilename, fileFormat);
 			DataStore tstDataOrig = DataStore.Load(testFilename, fileFormat, trnDataOrig.DataStoreInfo);
-			
+			DataStore trnDataReplaced = null;
+
 			if (decisionPosition != -1)
 			{
 				trnDataOrig.SetDecisionFieldId(decisionPosition);
@@ -53,15 +54,8 @@ namespace ApproxReductBoosting
 			Console.WriteLine("Missing Values: {0}", tstDataOrig.DataStoreInfo.HasMissingData);
 
 			if (trnDataOrig.DataStoreInfo.HasMissingData)
-			{
-				
-				DataStore trnDataReplaced = new ReplaceMissingValues().Compute(trnDataOrig);
-				//DataStore tstDataReplaced = new ReplaceMissingValues().Compute(tstDataOrig, trnDataOrig);
-
-
-				trnDataOrig = trnDataReplaced;
-				//tstDataOrig = tstDataReplaced;
-
+			{				
+				trnDataReplaced = new ReplaceMissingValues().Compute(trnDataOrig);
 				Console.WriteLine("Missing values replacing...DONE");
 			}            
 
@@ -72,11 +66,11 @@ namespace ApproxReductBoosting
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
 					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
-					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", 
-																				 //ReductFactoryKeyHelper.ReductEnsembleBoosting,
-																				 //ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity,
-																				 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps,
-																				 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
+					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
+																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
@@ -117,7 +111,11 @@ namespace ApproxReductBoosting
 				int minLen = (int)p[6];
 				
 				Args parms = new Args();
-				parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnDataOrig);
+				if (trnDataOrig.DataStoreInfo.HasMissingData)
+					parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnDataReplaced);
+				else
+					parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnDataOrig);
+
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 				parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
@@ -145,14 +143,22 @@ namespace ApproxReductBoosting
 				parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 				parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
+				parms.AddParameter(ReductGeneratorParamHelper.MaxReductLength, minLen);
 
 				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);				
 				reductGenerator.Generate();
 
 				RoughClassifier classifierTrn = new RoughClassifier();
 				classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-				classifierTrn.Classify(trnDataOrig);
-				ClassificationResult resultTrn = classifierTrn.Vote(trnDataOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+				classifierTrn.Classify(trnDataOrig.DataStoreInfo.HasMissingData 
+										? trnDataReplaced 
+										: trnDataOrig);
+				ClassificationResult resultTrn = classifierTrn.Vote(trnDataOrig.DataStoreInfo.HasMissingData
+																	? trnDataReplaced
+																	: trnDataOrig,
+																	reductGenerator.IdentyficationType,
+																	reductGenerator.VoteType,
+																	null);
 
 				RoughClassifier classifierTst = new RoughClassifier();
 				classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();

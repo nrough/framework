@@ -89,7 +89,7 @@ namespace Infovision.Data
             if (capacity == 0)
                 return true;
 
-            //if ((double)lastIndex > (double)capacity * (1 - capacityFactor) + 1.0)
+            //if ((double)lastIndex > (double)capacity * (1.0 - capacityFactor) + 1.0)
             //    return true;
 
             if (lastIndex >= capacity)

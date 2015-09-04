@@ -9,7 +9,8 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 {
 	public class ReductEnsembleBoostingVarEpsGenerator : ReductEnsembleBoostingGenerator
-	{				
+	{
+		private double m0;
 		private InformationMeasureWeights informationMeasure;		
 
 		private InformationMeasureWeights InformationMeasure
@@ -22,6 +23,11 @@ namespace Infovision.Datamining.Roughset
 			}
 		}
 
+		public double M0
+		{
+			get { return this.m0; }
+			protected set { this.m0 = value; }
+		}
 		
 		public ReductEnsembleBoostingVarEpsGenerator()
 			: base()
@@ -214,11 +220,22 @@ namespace Infovision.Datamining.Roughset
 			}
 		}
 
+		/// <summary>
+		/// Checks if M(Bw) – M(0) >= (1-epsilon) * (M(Aw)-M(0))
+		/// which is equivalent to M(Bw) >= (1 - epsilon) * M(Aw) + epsilon * M(0)
+		/// </summary>
+		/// <param name="reduct"></param>
+		/// <returns></returns>
 		public virtual bool CheckIsReduct(IReduct reduct)
-		{
-			double partitionQuality = this.GetPartitionQuality(reduct);
+		{            
 			double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-			if (partitionQuality >= (((1.0 - this.Epsilon) * this.GetDataSetQuality(reduct)) - tinyDouble))
+			double mB = this.GetPartitionQuality(reduct);
+			double mA = this.GetDataSetQuality(reduct);
+
+			if( (mB - this.m0) >= ((1.0 - this.Epsilon) * (mA-m0) - tinyDouble))
+				return true;
+			
+			if ( mB >= (((1.0 - this.Epsilon) * mA) + (this.Epsilon * this.m0) - tinyDouble) )
 				return true;
 			return false;
 		}
@@ -248,13 +265,20 @@ namespace Infovision.Datamining.Roughset
 		public override void SetDefaultParameters()
 		{
 			base.SetDefaultParameters();
+						
 			this.Epsilon = 0.5 * this.Threshold;
+
 		}
 
 		public override void InitFromArgs(Args args)
 		{
 			base.InitFromArgs(args);
+			
+			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
+			this.M0 = this.GetPartitionQuality(emptyReduct);
+
 			this.Epsilon = 0.5 * this.Threshold;
+
 		}
 	}
 

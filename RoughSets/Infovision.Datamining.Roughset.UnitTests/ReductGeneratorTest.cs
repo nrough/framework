@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Args args = new Args();
                 args.AddParameter("DataStore", localDataStore);
-                args.AddParameter("ApproximationRatio", i);
+                args.AddParameter("ApproximationRatio", i / 100.0);
                 IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductType).GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
 
@@ -155,7 +155,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGeneratorMulti.ApproximationDegree = epsilon;
+                reductGeneratorMulti.Epsilon = epsilon / 100.0;
                 reductGeneratorMulti.Generate();
                 IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGenerator.ApproximationDegree = epsilon;
+                reductGenerator.Epsilon = epsilon / 100.0;
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.ReductPool;
             }

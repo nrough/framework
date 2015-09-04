@@ -12,19 +12,19 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public ReductWeights(DataStore dataStore, int[] fieldIds, double[] objectWeights, int approximationDegree)
-            : base(dataStore, fieldIds, approximationDegree)
+        public ReductWeights(DataStore dataStore, int[] fieldIds, double[] objectWeights, double epsilon)
+            : base(dataStore, fieldIds, epsilon)
         {
             this.Weights = objectWeights;
         }
 
-        public ReductWeights(DataStore dataStore, int[] fieldIds, int approximationDegree)
-            : this(dataStore, fieldIds, null, approximationDegree)
+        public ReductWeights(DataStore dataStore, int[] fieldIds, double epsilon)
+            : this(dataStore, fieldIds, null, epsilon)
         {
         }
 
-        public ReductWeights(DataStore dataStore, int approximationDegree)
-            : this(dataStore, new int[] { }, approximationDegree)
+        public ReductWeights(DataStore dataStore, double epsilon)
+            : this(dataStore, new int[] { }, epsilon)
         {
         }
 

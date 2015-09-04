@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset
         
         //TODO decide should this be stored in reduct or in dataStore object
         double[] Weights { get; }
-        int ApproximationDegree { get; }
+        double Epsilon { get; }
         string Id { get; }
         
         EquivalenceClassMap EquivalenceClassMap { get; }

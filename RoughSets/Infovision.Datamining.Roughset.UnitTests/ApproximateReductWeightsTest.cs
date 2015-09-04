@@ -230,7 +230,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 0; epsilon < 100; epsilon+= 11)
             {
-                reductGenerator.ApproximationDegree = epsilon;
+                reductGenerator.Epsilon = epsilon / 100.0;
 
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.ReductPool;

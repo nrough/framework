@@ -8,32 +8,39 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-	public class ReductCrisp : Reduct
+	public class ReductCrisp : ReductWeights
 	{
+		private HashSet<int> removedAttributes;
+		private bool isEqMapCreated;
+		
 		#region Construct
 		
 		public ReductCrisp(DataStore dataStore)
-			: base(dataStore, 0)
+			: base(dataStore, 0.0)
 		{
+			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, int approximationDegree)
-			: base(dataStore, 0)
+		public ReductCrisp(DataStore dataStore, double epsilon)
+			: base(dataStore, epsilon)
 		{
+			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, int[] fieldIds, int approximationDegree)
-			: base(dataStore, fieldIds, 0)
+		public ReductCrisp(DataStore dataStore, int[] fieldIds, double epsilon)
+			: base(dataStore, fieldIds, epsilon)
 		{
+			this.Init();
 		}
 
-		public ReductCrisp(DataStore dataStore, int[] fieldIds, double[] weights, int approximationDegree)
-			: base(dataStore, fieldIds, 0)
+		public ReductCrisp(DataStore dataStore, int[] fieldIds, double[] weights, double epsilon)
+			: base(dataStore, fieldIds, weights, epsilon)
 		{
+			this.Init();
 		}
 
 		public ReductCrisp(ReductCrisp reduct)
-			: base(reduct as Reduct)
+			: base(reduct as ReductWeights)
 		{
 			//TODO Casting Error:
 			/*
@@ -51,15 +58,49 @@ namespace Infovision.Datamining.Roughset
 
 			//TODO Temporary fix : This will cause EQ map to be recalculated on next call
 			this.EquivalenceClassMap = null;
+			this.removedAttributes = new HashSet<int>(reduct.removedAttributes);
 		}
 
 		#endregion
 
 		#region Methods
 
+		private void Init()
+		{
+			this.removedAttributes = new HashSet<int>();
+			this.isEqMapCreated = false;
+		}
+
 		protected override void InitEquivalenceMap()
 		{
-			this.EquivalenceClassMap = new EquivalenceClassSortedMap(this.DataStore);
+			if (isEqMapCreated == false)
+				this.EquivalenceClassMap = new EquivalenceClassSortedMap(this.DataStore);
+			else
+				throw new InvalidOperationException("EquicalenceClassMap can only be initialized once.");
+		}
+
+		public override void BuildEquivalenceMap()
+		{
+			//base.BuildEquivalenceMap();
+			if (isEqMapCreated == false)
+			{ 
+				this.InitEquivalenceMap();
+				this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.Weights);
+				this.isEqMapCreated = true;
+			}
+		}
+
+		public override bool TryRemoveAttribute(int attributeId)
+		{
+			//base.TryRemoveAttribute(attributeId);
+			if (this.CheckRemoveAttribute(attributeId))
+			{
+				this.Attributes.RemoveElement(attributeId);
+				this.removedAttributes.Add(attributeId);                
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -86,6 +127,8 @@ namespace Infovision.Datamining.Roughset
 			{
 				//instance of a record belonging to equivalence class
 				AttributeValueVector instance = eq.Instance.RemoveAttribute(attributeId);
+				foreach (int removedAttribute in this.removedAttributes)
+					instance = instance.RemoveAttribute(removedAttribute);				
 
 				//add EQ class to map and calculate intersection of decisions
 				PascalSet existingGeneralDecisions = null;
@@ -106,7 +149,7 @@ namespace Infovision.Datamining.Roughset
 					return false;
 				}
 			}
-
+			
 			return true;            
 		}
 

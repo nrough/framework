@@ -62,10 +62,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorMajority();
-            redGenStd.ApproximationDegree = 10;
+            redGenStd.Epsilon = 0.1;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority();
-            redGenWgh.ApproximationDegree = 10;
+            redGenWgh.Epsilon = 0.1;
 
             Args args = new Args(new string[] { "FactoryKey", "DataStore" }, new object[] { "ApproximateReductRelative", localDataStore });
             
@@ -100,10 +100,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorRelative();
-            redGenStd.ApproximationDegree = 10;
+            redGenStd.Epsilon = 0.1;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative();
-            redGenWgh.ApproximationDegree = 10;
+            redGenWgh.Epsilon = 0.1;
 
             Args args = new Args(new string[] { "FactoryKey", "DataStore" }, new object[] { "ApproximateReductRelative", localDataStore });
 

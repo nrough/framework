@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Infovision.Data;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -139,7 +140,7 @@ namespace Infovision.Datamining.Roughset
             {
                 foreach (IReduct localReduct in reductSet)
                 {
-                    if (localReduct.ApproximationDegree < reduct.ApproximationDegree)
+                    if (localReduct.Epsilon < reduct.Epsilon)
                     {
                         if (reduct.Attributes.Superset(localReduct.Attributes))
                         {
@@ -188,7 +189,7 @@ namespace Infovision.Datamining.Roughset
         {
             foreach (IReduct localReduct in reductSet)
             {
-                if (localReduct.ApproximationDegree == reduct.ApproximationDegree)
+                if (DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001))
                 {
                     if (reduct.Attributes.Superset(localReduct.Attributes))
                     {

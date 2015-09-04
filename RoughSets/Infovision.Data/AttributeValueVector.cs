@@ -12,7 +12,6 @@ namespace Infovision.Data
         private int[] attributes;
         private long[] values;
         
-
         #endregion
 
         #region Constructors
@@ -93,7 +92,7 @@ namespace Infovision.Data
             }
 
             return new AttributeValueVector(newAttributes, newValues);
-        }
+        }       
 
         #region System.Object Methods
 

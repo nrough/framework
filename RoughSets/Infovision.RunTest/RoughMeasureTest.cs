@@ -357,7 +357,7 @@ namespace Infovision.RunTest
             foldNumber = (int)args.GetParameter("FoldNumber");
             testNumber = (int)args.GetParameter("NumberOfTests");
             reductFactoryKey = (string)args.GetParameter("ReductType");
-            epsilon = (int)args.GetParameter("ApproximationDegree");
+            epsilon = (int)args.GetParameter("Epsilon");
             reductMeasureKey = (string)args.GetParameter("ReductMeasure");
             identificationType = (IdentificationType)args.GetParameter("IdentificationType");
             voteType = (VoteType)args.GetParameter("VoteType");

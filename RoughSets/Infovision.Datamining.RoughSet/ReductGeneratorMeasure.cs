@@ -8,11 +8,10 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public abstract class ReductGeneratorMeasure : ReductGenerator
     {
-        #region Globals
+        #region Members
 
         private IInformationMeasure informationMeasure;        
-        private double dataSetQuality = 1.0;
-        private bool isQualityCalculated = false;
+        private double dataSetQuality = Double.MinValue;        
 
         #endregion
 
@@ -25,32 +24,19 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
-        #region Properties
-
-        protected bool IsQualityCalculated
-        {
-            get { return this.isQualityCalculated; }
-            set { this.isQualityCalculated = value; }
-        }
+        #region Properties        
 
         protected double DataSetQuality
         {
             get
             {
-                if (!this.isQualityCalculated)
+                if (this.dataSetQuality < -1.0)
                 {
-                    this.CalcDataSetQuality();
-                    this.IsQualityCalculated = true;
+                    this.CalcDataSetQuality();                
                 }
 
                 return this.dataSetQuality;
-            }
-
-            set
-            {
-                this.dataSetQuality = value;
-                this.IsQualityCalculated = true;
-            }
+            }            
         }
 
         protected IInformationMeasure InformationMeasure
@@ -83,7 +69,7 @@ namespace Infovision.Datamining.Roughset
         protected virtual void CalcDataSetQuality()
         {
             IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, this.GetNextReductId().ToString());
-            this.DataSetQuality = this.informationMeasure.Calc(reduct);
+            this.dataSetQuality = this.informationMeasure.Calc(reduct);            
         }        
         
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
@@ -91,7 +77,7 @@ namespace Infovision.Datamining.Roughset
             IReductStore reductStore = this.CreateReductStore();
             foreach (Permutation permutation in permutationList)
             {
-                IReduct reduct = this.CalculateReduct(permutation, reductStore, this.UseCache, this.ApproximationDegree);
+                IReduct reduct = this.CalculateReduct(permutation, reductStore, this.UseCache, this.Epsilon);
                 reductStore.AddReduct(reduct);
             }
 
@@ -103,17 +89,17 @@ namespace Infovision.Datamining.Roughset
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            Reduct r = new Reduct(this.DataStore, fieldIds, approxDegree);
+            Reduct r = new Reduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, int approxDegree)
+        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double epsilon)
         {
             IReduct reduct = this.CreateReductObject(new int[] { }, 
-                                                     approxDegree,
+                                                     epsilon,
                                                      this.GetNextReductId().ToString());
 
             this.Reach(reduct, permutation, reductStore, useCache);
@@ -151,42 +137,43 @@ namespace Infovision.Datamining.Roughset
             }            
         }
 
+        public virtual bool CheckIsReduct(IReduct reduct)
+        {
+            double partitionQuality = this.GetPartitionQuality(reduct);
+            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
+            if (partitionQuality >= (((1.0 - this.Epsilon) * this.DataSetQuality) - tinyDouble))
+                return true;
+            return false;
+        }
+
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
         {
-            string key = this.GetReductCacheKey(reduct);
+            string key = String.Empty;
             ReductCacheInfo reductInfo = null;
 
             if (useCache)
             {
+                key = this.GetReductCacheKey(reduct);
                 reductInfo = ReductCache.Instance.Get(key) as ReductCacheInfo;
                 if (reductInfo != null)
                 {
-                    if (reductInfo.CheckIsReduct(this.ApproximationDegree) == NoYesUnknown.Yes)
+                    if (reductInfo.CheckIsReduct(this.Epsilon) == NoYesUnknown.Yes)
                         return true;
-                    if (reductInfo.CheckIsReduct(this.ApproximationDegree) == NoYesUnknown.No)
+                    if (reductInfo.CheckIsReduct(this.Epsilon) == NoYesUnknown.No)
                         return false;
                 }
             }
 
+            bool isReduct = false;
             if (reductStore.IsSuperSet(reduct))
-            {
-                if(useCache)
-                    this.UpdateReductCacheInfo(reductInfo, key, true);
-                return true;
-            }
+                isReduct = true;
+            else
+                isReduct = this.CheckIsReduct(reduct);
 
-            double partitionQuality = this.GetPartitionQuality(reduct);
-            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;              
-            if (partitionQuality >= (((1.0 - (this.ApproximationDegree / 100.0)) * this.DataSetQuality) - tinyDouble))            
-            {
-                if(useCache)
-                    this.UpdateReductCacheInfo(reductInfo, key, true);
-                return true;
-            }
+            if (useCache)
+                this.UpdateReductCacheInfo(reductInfo, key, isReduct);
 
-            if(useCache)
-                this.UpdateReductCacheInfo(reductInfo, key, false);
-            return false;
+            return isReduct;
         }
 
         protected virtual double GetPartitionQuality(IReduct reduct)
@@ -198,11 +185,11 @@ namespace Infovision.Datamining.Roughset
         {
             if (reductInfo != null)
             {
-                reductInfo.SetApproximationRanges(isReduct, this.ApproximationDegree);
+                reductInfo.SetApproximationRanges(isReduct, this.Epsilon);
             }
             else
             {
-                ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.ApproximationDegree));
+                ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.Epsilon));
             }
         }
 

@@ -4,8 +4,10 @@ using Infovision.Data;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public abstract class ReductGeneratorWeights : ReductGeneratorMeasure
+    public class ReductGeneratorWeights : ReductGeneratorMeasure
     {
+        private WeightGenerator weightGenerator;
+
         #region Constructors
 
         public ReductGeneratorWeights()
@@ -18,70 +20,73 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        protected abstract WeightGenerator WeightGenerator
+        public virtual WeightGenerator WeightGenerator
         {
-            get;
+            get
+            {
+                if (this.weightGenerator == null)
+                {
+                    WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
+                    wGen.Value = 1.0;
+                    this.weightGenerator = wGen;                    
+                }
+
+                return this.weightGenerator;
+            }
+
+            set
+            {
+                this.weightGenerator = value;
+            }
         }
 
         #endregion
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        public override void InitFromArgs(Utils.Args args)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
+            base.InitFromArgs(args);
+
+            if (args.Exist("WeightGenerator"))
+                this.weightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+        }
+
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        {
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
             return r;
-        }
+        }       
 
         #endregion
     }
 
     [Serializable]
     public class ReductGeneratorWeightsMajority : ReductGeneratorWeights
-    {
-        private WeightGenerator weightGenerator;
-
+    {       
         public ReductGeneratorWeightsMajority()
             : base()
         {
         }
 
-        protected override WeightGenerator WeightGenerator
+        protected WeightGenerator CreateWeightGenerator()
         {
-            get
-            {
-                if (this.weightGenerator == null)
-                {
-                    this.weightGenerator = new WeightGeneratorMajority(this.DataStore);
-                }
-
-                return this.weightGenerator;
-            }
+            return new WeightGeneratorMajority(this.DataStore);
         }
     }
 
     [Serializable]
     public class ReductGeneratorWeightsRelative : ReductGeneratorWeights
-    {
-        private WeightGenerator weightGenerator;
-
+    {        
         public ReductGeneratorWeightsRelative()
             : base()
         {
         }
 
-        protected override WeightGenerator WeightGenerator
+        protected WeightGenerator CreateWeightGenerator()
         {
-            get
-            {
-                if (this.weightGenerator == null)
-                {
-                    this.weightGenerator = new WeightGeneratorRelative(this.DataStore);
-                }
-
-                return this.weightGenerator;
-            }
-        }
+            return new WeightGeneratorRelative(this.DataStore);
+        }        
     }
 }

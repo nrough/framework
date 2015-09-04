@@ -364,13 +364,13 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="trainingData"></param>
         /// <param name="reductFactoryKey"></param>
-        /// <param name="approximationRatio">Value from range 0 to 99</param>
+        /// <param name="epsilon">Value from range 0 to 99</param>
         /// <param name="permutations"></param>
-        public void Train(DataStore trainingData, string reductFactoryKey, int approximationRatio, PermutationCollection permutations)
+        public void Train(DataStore trainingData, string reductFactoryKey, double epsilon, PermutationCollection permutations)
         {
             Args args = new Args();
             args.AddParameter("DataStore", trainingData);
-            args.AddParameter("ApproximationRatio", approximationRatio);
+            args.AddParameter("ApproximationRatio", epsilon);
             args.AddParameter("NumberOfThreads", 32);
             args.AddParameter("PermutationCollection", permutations);
             args.AddParameter("FactoryKey", reductFactoryKey);
@@ -378,23 +378,23 @@ namespace Infovision.Datamining.Roughset
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
-            reductGenerator.ApproximationDegree = approximationRatio;
+            reductGenerator.Epsilon = epsilon;
             //this.reductStore = reductGenerator.Generate(args).First();
             reductGenerator.Generate();
             this.reductStore = reductGenerator.ReductPool;
         }
 
-        public void Train(DataStore trainingData, string reductFactoryKey, int approximationRatio, int numberOfPermutations)
+        public void Train(DataStore trainingData, string reductFactoryKey, double epsilon, int numberOfPermutations)
         {
             Args args = new Args();
             args.AddParameter("DataStore", trainingData);
-            args.AddParameter("ApproximationRatio", approximationRatio);
+            args.AddParameter("ApproximationRatio", epsilon);
             //args.AddParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
             PermutationCollection permutations = permGen.Generate(numberOfPermutations);
             
-            Train(trainingData, reductFactoryKey, approximationRatio, permutations);
+            Train(trainingData, reductFactoryKey, epsilon, permutations);
         }
 
         public void Train(DataStore trainingtData, IReductStore reductStore)

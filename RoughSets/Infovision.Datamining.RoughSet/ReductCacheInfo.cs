@@ -4,54 +4,54 @@ namespace Infovision.Datamining.Roughset
 {
     public class ReductCacheInfo
     {
-        private int reductApproximationThreshold = -1;
-        private int notReductApproximationThreshold = -1;
+        private double epsilonThreshold = -1;
+        private double notReductEpsilonThreshold = -1;
         private bool reductThresholdSet = false;
         private bool notReductThresholdSet = false;
 
-        public ReductCacheInfo(bool isReduct, int approximationLevel)
+        public ReductCacheInfo(bool isReduct, double epsilon)
         {
-            this.SetApproximationRanges(isReduct, approximationLevel);
+            this.SetApproximationRanges(isReduct, epsilon);
         }
 
-        public void SetApproximationRanges(bool isReduct, int approximationLevel)
+        public void SetApproximationRanges(bool isReduct, double epsilon)
         {
             if (isReduct)
             {
-                if (approximationLevel <= this.reductApproximationThreshold
+                if (epsilon <= this.epsilonThreshold
                         || this.reductThresholdSet == false)
                 {
-                    this.reductApproximationThreshold = approximationLevel;
+                    this.epsilonThreshold = epsilon;
                     this.reductThresholdSet = true;
                 }
             }
             else
             {
-                if (approximationLevel >= this.notReductApproximationThreshold)
+                if (epsilon >= this.notReductEpsilonThreshold)
                 {
-                    this.notReductApproximationThreshold = approximationLevel;
+                    this.notReductEpsilonThreshold = epsilon;
                     this.notReductThresholdSet = true;
                 }
             }
 
             if (this.reductThresholdSet == true
                 && this.notReductThresholdSet == true
-                && this.reductApproximationThreshold <= this.notReductApproximationThreshold)
+                && this.epsilonThreshold <= this.notReductEpsilonThreshold)
             {
                 throw new InvalidOperationException("Reduct approximation ranges are overlapping");
             }
         }
 
-        public NoYesUnknown CheckIsReduct(int approximationLevel)
+        public NoYesUnknown CheckIsReduct(double epsilon)
         {
             if (this.reductThresholdSet == true
-                && approximationLevel >= (this.reductApproximationThreshold - 0.000000001))
+                && epsilon >= (this.epsilonThreshold - 0.000000001))
             {
                 return NoYesUnknown.Yes;
             }
 
             if (this.notReductThresholdSet == true
-                && approximationLevel <= (this.notReductApproximationThreshold + 0.000000001))
+                && epsilon <= (this.notReductEpsilonThreshold + 0.000000001))
             {
                 return NoYesUnknown.No;
             }

@@ -169,7 +169,6 @@
     <None Include="app.config" />
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
-    <None Include="ReductClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -32,7 +32,7 @@ namespace Infovision.Datamining.ReductGenerator
             
             DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);                        
                                                                         
-            IParameter parmEpsilon = new ParameterNumericRange<int>("ApproximationDegree", minEpsiolon, maxEpsilon, stepEpsilon);            
+            IParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", minEpsiolon, maxEpsilon, stepEpsilon);            
             IParameter parmReductType = new ParameterValueCollection<string>("ReductType",
                                                                             new string[] { "ApproximateReductMajorityWeights",
                                                                                            "ApproximateReductRelativeWeights",

@@ -31,7 +31,7 @@ namespace Infovision.RunTest
             }
 
             ITestParameter parmTestNumber = new ParameterNumericRange<int>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<int>("ApproximationDegree", 0, 99, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", 0, 99, 1);
 
             ITestParameter parmReductType = new ParameterValueList<string>("ReductType",
                                                                             new string[] { 
@@ -179,7 +179,7 @@ namespace Infovision.RunTest
             }
 
             ITestParameter parmTestNumber = new ParameterNumericRange<int>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<int>("ApproximationDegree", 0, 99, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", 0, 99, 1);
             
             ITestParameter parmReductType = new ParameterValueList<string>("ReductType", 
                                                                             new string[] { "ApproximateReductPositive", 
@@ -291,7 +291,7 @@ namespace Infovision.RunTest
             }
 
             ITestParameter parmTestNumber = new ParameterNumericRange<Int32>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<Int32>("ApproximationDegree", 0, 99, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<Int32>("Epsilon", 0, 99, 1);
 
             ITestParameter parmReductType = new ParameterValueList<String>("ReductType",
                                                                             new string[] { "ApproximateReductMajorityWeights",

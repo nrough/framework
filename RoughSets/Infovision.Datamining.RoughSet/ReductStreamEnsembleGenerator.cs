@@ -247,7 +247,7 @@ namespace Infovision.Datamining.Roughset
 
             double partitionQuality = this.GetPartitionQuality(reduct);
             double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - (reduct.ApproximationDegree / 100.0)) * this.DataSetQuality) - tinyDouble))
+            if (partitionQuality >= (((1.0 - (reduct.Epsilon / 100.0)) * this.DataSetQuality) - tinyDouble))
                 return true;
 
             return false;
@@ -295,9 +295,9 @@ namespace Infovision.Datamining.Roughset
             return new ReductStore();
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
             return r;
         }

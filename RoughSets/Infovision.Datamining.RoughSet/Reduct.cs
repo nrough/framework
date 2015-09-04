@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
 
-        private int approximationDegree;        
+        private double epsilon;        
         private double[] objectWeights;
 
         private DataStore dataStore;
@@ -40,10 +40,10 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public int ApproximationDegree
+        public double Epsilon
         {
-            get { return this.approximationDegree; }
-            private set { this.approximationDegree = value; }
+            get { return this.epsilon; }
+            private set { this.epsilon = value; }
         }
 
         public virtual ObjectSet ObjectSet
@@ -92,24 +92,24 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Reduct(DataStore dataStore, int [] fieldIds, int approximationDegree)
+        public Reduct(DataStore dataStore, int [] fieldIds, double epsilon)
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
-            this.approximationDegree = approximationDegree;
+            this.epsilon = epsilon;
 
             this.objectWeights = new double[this.dataStore.NumberOfRecords];
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
                 this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;                                           
         }       
 
-        public Reduct(DataStore dataStore, int approximationDegree)
-            : this(dataStore, new int[] { }, approximationDegree)
+        public Reduct(DataStore dataStore, double epsilon)
+            : this(dataStore, new int[] { }, epsilon)
         {            
         }
 
         public Reduct(DataStore dataStore)
-            : this(dataStore, new int[] { }, 0)
+            : this(dataStore, new int[] { }, 0.0)
         {            
         }
 
@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
-            this.ApproximationDegree = reduct.approximationDegree;                                             
+            this.Epsilon = reduct.epsilon;                                             
             this.objectWeights = new double[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
@@ -252,7 +252,7 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return String.Format("[{0}] {1} ({2})", this.Id, this.attributeSet.ToString(), this.ApproximationDegree);
+            return String.Format("[{0}] {1} ({2})", this.Id, this.attributeSet.ToString(), this.Epsilon);
         }
 
         public override int GetHashCode()
@@ -321,7 +321,7 @@ namespace Infovision.Datamining.Roughset
                             }
                         }
 
-                        return x.ApproximationDegree.CompareTo(y.ApproximationDegree);                        
+                        return x.Epsilon.CompareTo(y.Epsilon);                        
                     }
                 }
             }

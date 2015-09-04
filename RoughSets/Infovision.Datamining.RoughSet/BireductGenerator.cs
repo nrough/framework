@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObject(this.DataStore, this.ApproximationDegree); }
+            get { return new PermutationGeneratorFieldObject(this.DataStore, this.Epsilon); }
         }
 
         #endregion
@@ -42,11 +42,11 @@ namespace Infovision.Datamining.Roughset
             }
 
             this.ReductPool = reductStore;                        
-        }        
+        }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            Bireduct r = new Bireduct(this.DataStore, fieldIds, approxDegree);
+            Bireduct r = new Bireduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
@@ -95,7 +95,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.ApproximationDegree); }
+            get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.Epsilon); }
         }
 
         #endregion
@@ -114,10 +114,10 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             
-            BireductGamma r = new BireductGamma(this.DataStore, approxDegree);
+            BireductGamma r = new BireductGamma(this.DataStore, epsilon);
             r.Id = id;
             return r;
         }
@@ -125,7 +125,7 @@ namespace Infovision.Datamining.Roughset
         protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
             BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
-                                                             this.ApproximationDegree, 
+                                                             this.Epsilon, 
                                                              this.GetNextReductId().ToString()) as BireductGamma;
             Reach(bireduct, permutation, reductStore);
             return bireduct;

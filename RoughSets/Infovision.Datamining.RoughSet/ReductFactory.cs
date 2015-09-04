@@ -382,13 +382,8 @@ namespace Infovision.Datamining.Roughset
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
 
-            if (args.Exist("ApproximationRatio"))
-            {
-                int approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                double selectionRatio = approximationRatio / 100.0;
-
-                return new PermutationGeneratorFieldObject(dataStore, selectionRatio);
-            }
+            if (args.Exist("ApproximationRatio"))                           
+                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter("ApproximationRatio"));            
 
             return new PermutationGeneratorFieldObject(dataStore);
         }
@@ -412,13 +407,8 @@ namespace Infovision.Datamining.Roughset
         {
             DataStore dataStore = (DataStore)args.GetParameter("DataStore");
 
-            if (args.Exist("ApproximationRatio"))
-            {
-                int approximationRatio = (int)args.GetParameter("ApproximationRatio");
-                double selectionRatio = approximationRatio / 100.0;
-
-                return new PermutationGeneratorFieldObjectRelative(dataStore, selectionRatio);
-            }
+            if (args.Exist("ApproximationRatio"))                
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter("ApproximationRatio"));
 
             return new PermutationGeneratorFieldObjectRelative(dataStore);
         }

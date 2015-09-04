@@ -50,7 +50,7 @@ namespace Infovision.TestAssembly
             }
         }
 
-        public int ApproximationDegree
+        public double Epsilon
         {
             get;
             set;

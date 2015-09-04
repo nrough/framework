@@ -15,25 +15,25 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #region Constructors
-        
-        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, int approxDegree)
-            : base(dataStore, fieldIds, approxDegree)
+
+        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double epsilon)
+            : base(dataStore, fieldIds, epsilon)
         {
             objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, int approxDegree)
-            : this(dataStore, fieldIds, new int[] { }, approxDegree)
+        public Bireduct(DataStore dataStore, int[] fieldIds, double epsilon)
+            : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }
 
-        public Bireduct(DataStore dataStore, int approxDegree)
-            : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, approxDegree)
+        public Bireduct(DataStore dataStore, double epsilon)
+            : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, epsilon)
         {
         }
 
         public Bireduct(Bireduct bireduct)
-            : this(bireduct.DataStore, bireduct.Attributes.ToArray(), bireduct.ObjectSet.ToArray(), bireduct.ApproximationDegree)
+            : this(bireduct.DataStore, bireduct.Attributes.ToArray(), bireduct.ObjectSet.ToArray(), bireduct.Epsilon)
         {
         }
 

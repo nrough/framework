@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Roughset
             foreach (KeyValuePair<long, double> kvp in this.decisionWeigthSums)
             {
                 if (comparer.Equals(kvp.Value, this.majorDecisionWeightSum) == false)                    
-                    decisionObjectIndexes.Remove(kvp.Key);                                        
+                    decisionObjectIndexes.Remove(kvp.Key);
             }
 
             this.CalcStatistics();            

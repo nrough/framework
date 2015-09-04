@@ -30,58 +30,44 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
+        public override void InitFromArgs(Args args)
+        {
+            base.InitFromArgs(args);
+
+            if (args.Exist("WeightGenerator"))
+                this.weightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
+        }
+
         public override void Generate()
         {
             ReductStore localReductPool = new ReductStore();            
             foreach (Permutation permutation in this.Permutations)
             {
                 int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
+                
                 int[] attributes = new int[cutoff + 1];
                 for(int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                ReductCrisp reduct = (ReductCrisp) this.CreateReductObject(attributes, this.ApproximationDegree, this.GetNextReductId().ToString());
-                
-                Console.WriteLine(reduct);
-
+                ReductCrisp reduct = (ReductCrisp) this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());               
                 foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
                     eq.RemoveObjectsWithMinorDecisions();
 
-                
                 for (int i = attributes.Length - 1; i >= 0; i--)
                 {
-                    if (reduct.TryRemoveAttribute(attributes[i]))
-                    {
-                        Console.Write("{0} ", attributes[i]);
-                    }
+                    reduct.TryRemoveAttribute(attributes[i]);
                 }
-                Console.WriteLine();
-
 
                 localReductPool.DoAddReduct(reduct);
             }
 
-            localReductPool = localReductPool.RemoveDuplicates();
-            this.ReductPool = localReductPool;
-
-            /*
-            double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
-
-            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
-            for (int i = 0; i < errorVectors.Length; i++)
-            {
-                errors.Add(i, errorVectors[i]);
-            }
-
-            this.hCluster = new HierarchicalClustering(distance, linkage);
-            this.hCluster.Instances = errors;
-            this.hCluster.Compute();
-            */
+            //localReductPool = localReductPool.RemoveDuplicates();
+            this.ReductPool = localReductPool;            
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, int approxDegree, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            ReductCrisp r = new ReductCrisp(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);
+            ReductCrisp r = new ReductCrisp(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
             return r;
         }

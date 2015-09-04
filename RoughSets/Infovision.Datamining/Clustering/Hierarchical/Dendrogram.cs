@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+//TODO Delete this class
+
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]

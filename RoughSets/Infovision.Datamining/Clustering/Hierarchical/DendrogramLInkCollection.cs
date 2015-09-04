@@ -13,11 +13,25 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         int nextLinkagesIdx = 0;
         private Dictionary<int, DendrogramNode> nodeDictionary;
         private DendrogramNode rootNode;
+        private DendrogramNode lastAddedNode;
         private int numOfInstances;
 
         public int Count
         {
             get { return linkages.Length; }
+        }
+
+        public double MaxHeight
+        {
+            get
+            {
+                if (this.rootNode != null)
+                    return this.rootNode.Height;
+                else if (this.lastAddedNode != null)
+                    return this.lastAddedNode.Height;
+                else
+                    return 0;
+            }
         }
 
         public DendrogramLinkCollection(int numOfInstances)
@@ -137,6 +151,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             if (isRoot)
                 this.rootNode = newNode;
+
+            this.lastAddedNode = newNode;
         }
 
         public void SetRoot(int clusterId, bool isRoot)
@@ -328,6 +344,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 WalkClusterMembershipFromNode(clusterId, ref result, node.RightNode);
             else
                 result[node.RightInstance] = clusterId;
+        }        
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (DendrogramLink link in this)
+            {
+                sb.AppendLine(link.ToString());
+            }
+
+
+            return sb.ToString();
         }
 
         /// <summary>

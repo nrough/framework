@@ -365,23 +365,27 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Color background = Color.White;
             Color foreground = Color.Black;
 
-            double xMajorScale = dendrogramWidth / (this.numberOfInstances + 1);
-            double xMinorScale = 0;
+            //double xMajorScale = dendrogramWidth / (this.numberOfInstances + 1);
+            //double xMinorScale = 0;
 
             int xMajorScalePx = (int) System.Math.Floor((double) dendrogramWidth / (this.numberOfInstances + 1));
-            int xMinorScalePx = 0;
+            //int xMinorScalePx = 0;
 
-            double yMajorScale = 1;
-            double yMinorScale = 0.5;
-            int yMajorScalePx = 20; //TODO
-            int yMinorScalePx = 10; //TODO
+            //double yMajorScale = 1;
+            //double yMinorScale = 0.5;
+            
+            int yMajorScalePx = (int) ((double) (dendrogramHeight - 40) / System.Math.Ceiling(this.DendrogramLinkCollection.MaxHeight)); //TODO
+            //int yMinorScalePx = 10; //TODO
 
             int[] leafOrder = this.DendrogramLinkCollection.ComputeLeafNodesFromTree();
+            Dictionary<int, DendrogramLinkChartData> dendrogramChartData = new Dictionary<int, DendrogramLinkChartData>(leafOrder.Length - 1);
                                                
             Bitmap bitmap = new Bitmap(width, height);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
+                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
                 g.Clear(background);
                 Pen pen = new Pen(foreground, 1);
 
@@ -403,26 +407,78 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     p1.Y -= yMajorScalePx;
                     p3.Y = p1.Y;
                 }
-
                 
                 //draw X axis only labels
-                p1.X = p2.X + ;
-                p1.Y = p2.Y;
+                pen.Width = 2;
+                Font font = new Font("Tahoma", 8);
+                p1.X = p2.X + 10;
+                p1.Y = p2.Y - 10;
+                PointF pointF = new PointF(p1.X, p1.Y);
+                SolidBrush brush = new SolidBrush(foreground);
+                for (int i = 0; i < leafOrder.Length; i++)
+                {
+                    g.DrawString(leafOrder[i].ToString(), font, brush, pointF);
+                    
+                    DendrogramLinkChartData linkChartData = new DendrogramLinkChartData(leafOrder[i]);
+                    linkChartData.LeftBottomX = (int) pointF.X;
+                    linkChartData.LeftBottomY =  (int) pointF.Y;
+                    linkChartData.LeftTopX = linkChartData.LeftBottomX;
+                    linkChartData.LeftTopY = linkChartData.LeftBottomY;
+                    linkChartData.RightBottomX = linkChartData.LeftBottomX;
+                    linkChartData.RightBottomY = linkChartData.LeftBottomY;
+                    linkChartData.RightTopX = linkChartData.LeftBottomX;
+                    linkChartData.RightTopY = linkChartData.LeftBottomY;
 
+
+                    dendrogramChartData.Add(leafOrder[i], linkChartData);
+
+                    pointF.X += xMajorScalePx;
+                }
+
+                //draw dendrogram                
+                foreach (DendrogramLink link in this.DendrogramLinkCollection)
+                {
+                    DendrogramLinkChartData linkChartData1 = dendrogramChartData[link.Cluster1];
+                    DendrogramLinkChartData linkChartData2 = dendrogramChartData[link.Cluster2];
+
+                    DendrogramLinkChartData newLinkChartData = new DendrogramLinkChartData(link.Id);
+                    newLinkChartData.LeftBottomX = linkChartData1.ParentNodeX;
+                    newLinkChartData.LeftBottomY = linkChartData1.ParentNodeY;
+                    newLinkChartData.LeftTopX = linkChartData1.ParentNodeX;
+
+                    int nodeHeight = (int) (link.Distance * (double) yMajorScalePx);
+
+                    //TODO
+                    //newLinkChartData.LeftTopY = linkChartData1.ParentNodeY - nodeHeight;
+                    newLinkChartData.LeftTopY = p1.Y - nodeHeight;
+                    
+                    newLinkChartData.RightBottomX = linkChartData2.ParentNodeX;
+                    newLinkChartData.RightBottomY = linkChartData2.ParentNodeY;
+                    newLinkChartData.RightTopX = linkChartData2.ParentNodeX;
+                    newLinkChartData.RightTopY = newLinkChartData.LeftTopY;
+
+                    if (link.Cluster1 < this.numberOfInstances)
+                        dendrogramChartData.Remove(link.Cluster1);
+
+                    if(link.Cluster2 < this.numberOfInstances)
+                        dendrogramChartData.Remove(link.Cluster2);
+
+                    dendrogramChartData.Add(link.Id, newLinkChartData);
+                }
                 
+                foreach (KeyValuePair<int, DendrogramLinkChartData> kvp in dendrogramChartData)
+                {
+                    kvp.Value.Draw(g, pen);
+                }
 
 
-                
-
-                //draw dendrogram
-
-                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-                                                
                 g.Flush();
+                
                 Bitmap result = new Bitmap(bitmap);
 
-                pen.Dispose();                
+                pen.Dispose();
+                font.Dispose();
+                brush.Dispose();
             }
 
             return bitmap;

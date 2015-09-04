@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="ClassificationResult.cs" />
     <Compile Include="Clustering\Hierarchical\Dendrogram.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramLinkChartData.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramLinkCollection.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramLink.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />

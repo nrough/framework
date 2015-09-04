@@ -96,6 +96,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         {
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
+            Console.Write(hClustering.DendrogramLinkCollection.ToString());
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
             bitmap.Save(@"F:\test.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
         }

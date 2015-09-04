@@ -106,6 +106,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="chess.dta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

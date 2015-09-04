@@ -42,8 +42,8 @@ namespace Infovision.MRI.DAL
 
                 IImage image = extractModel.Image as IImage;
 
-                this.Width = image.Width;
-                this.Height = image.Height;
+                this.Width = (int) image.Width;
+                this.Height = (int) image.Height;
                 this.Depth = 0;
 
                 this.Header = 0;

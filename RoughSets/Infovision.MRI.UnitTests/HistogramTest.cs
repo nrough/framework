@@ -55,7 +55,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(image,
                                             new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, sliceId }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUInt32 vector = new VectorUInt32(new UInt32[] { 0, 0 });
             Infovision.Utils.Histogram histogram = new Infovision.Utils.Histogram();
@@ -149,7 +149,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(image,
                                             new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, sliceId }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageHistogram histogramChart = new ImageHistogram();
             histogramChart.HistogramBucketSize = 8;
@@ -179,11 +179,11 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(trainImage,
                                             new VectorUInt32(new UInt32[] { trainImage.GetWidth(), trainImage.GetHeight(), 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, (int)89 }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             Assert.NotNull(slice);
 
-            itk.simple.Image doubleImage = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64.swigValue);
+            itk.simple.Image doubleImage = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64);
             StatisticsImageFilter imageStats = new StatisticsImageFilter();
             imageStats.Execute(doubleImage);
 

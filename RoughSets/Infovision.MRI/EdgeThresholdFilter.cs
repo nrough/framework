@@ -74,7 +74,7 @@ namespace Infovision.MRI
 										   ? SimpleITK.Extract(imageITK.ItkImage, inSize, new VectorInt32(new int[] { 0, 0, z }))
 										   : imageITK.ItkImage;
 
-				itk.simple.Image sliceDouble = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64.swigValue);
+				itk.simple.Image sliceDouble = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64);
 				sliceDouble = SimpleITK.Normalize(sliceDouble);
 				Marshal.Copy(sliceDouble.GetBufferAsDouble(), pixels, 0, (int)width * (int)height);
 				
@@ -118,7 +118,7 @@ namespace Infovision.MRI
 					}
 				}
 
-				result = SimpleITK.Cast(result, imageITK.ItkImage.GetPixelIDValue());
+				result = SimpleITK.Cast(result, imageITK.ItkImage.GetPixelID());
 				imageSeries.Add(result);
 			}
 

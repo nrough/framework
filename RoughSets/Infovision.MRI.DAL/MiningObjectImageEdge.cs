@@ -81,7 +81,7 @@ namespace Infovision.MRI.DAL
                                                                 (double)this.Foreground,
                                                                 (double)this.Background);
 
-            itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
+            //itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
             Infovision.MRI.ImageITK edgeImage = new Infovision.MRI.ImageITK(edgeFilter.Execute(itkImage));
 
             this.Image = edgeImage;

@@ -5,6 +5,16 @@ using System.Text;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
+    public interface IDistanceMatrix
+    {
+        Func<double[], double[], double> Distance
+        {
+            get;
+            set;
+        }
+    }
+    
+    
     public class DistanceMatrix
     {
         private Dictionary<MatrixKey, double> matrix = new Dictionary<MatrixKey, double>();

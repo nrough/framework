@@ -84,7 +84,7 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="GenericParsing">
-      <HintPath>..\..\GenericParser\Release\GenericParsing.dll</HintPath>
+      <HintPath>..\external\GenericParsing\GenericParsing.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>

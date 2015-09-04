@@ -33,7 +33,7 @@ namespace Infovision.MRI
             itk.simple.Image doubleImage;
             if ( ! imageITK.PixelType.Equals(typeof(double)))
             {
-                doubleImage = SimpleITK.Cast(imageITK.ItkImage, PixelIDValueEnum.sitkFloat64.swigValue);
+                doubleImage = SimpleITK.Cast(imageITK.ItkImage, PixelIDValueEnum.sitkFloat64);
             }
             else
             {

@@ -48,15 +48,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Distance = distance;
         }
 
-
-        /// <summary>
-        ///   Randomizes the clusters inside a dataset.
-        /// </summary>
-        /// 
-        /// <param name="points">The data to randomize the algorithm.</param>
-        /// <param name="useSeeding">True to use the k-means++ seeding algorithm. False otherwise.</param>
-        /// 
-        public void Initialize(double[][] points)
+        private void Initialize(double[][] points)
         {
             if (points == null)
                 throw new ArgumentNullException("points");

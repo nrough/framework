@@ -87,7 +87,7 @@
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SimpleITKCSharpManaged">
-      <HintPath>..\SimpleITK\SimpleITK-0.5.1-CSharp-Win64-anycpu\SimpleITKCSharpManaged.dll</HintPath>
+      <HintPath>..\external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpManaged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

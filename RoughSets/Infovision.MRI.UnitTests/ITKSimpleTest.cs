@@ -383,7 +383,7 @@ namespace Infovision.MRI.UnitTests
             gaussian.SetSigma(2.0);
             slice = gaussian.Execute(slice);
 
-            slice = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat32.swigValue);
+            slice = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat32);
             LaplacianImageFilter laplacian = new LaplacianImageFilter();
             itk.simple.Image laplacianImage = laplacian.Execute(slice);
 
@@ -399,7 +399,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(image, 
                                             new VectorUInt32(new UInt32[] { width, height, 0 }), 
                                             new VectorInt32(new Int32[] { 0, 0, sliceId }), 
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
             Assert.IsNotNull(slice);
             SimpleITK.Show(slice, "Extracted slice 89");
         }
@@ -413,7 +413,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(image,
                                             new VectorUInt32(new UInt32[] { width, height, 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, sliceId }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUIntList seeds = new VectorUIntList();
             VectorUInt32 seedValues = new VectorUInt32();
@@ -441,7 +441,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image slice = SimpleITK.Extract(image,
                                             new VectorUInt32(new UInt32[] { width, height, 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, sliceId }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             MeasurementMap measurementMap = SimpleITK.Statistics(slice);
             VectorString measurementNames = measurementMap.GetVectorOfMeasurementNames();
@@ -544,7 +544,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image image = SimpleITKHelper.ReadImageRAW(@"t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             SimpleITK.Show(image);
             
-            itk.simple.Image doubleImage = SimpleITK.Cast(image, PixelIDValueEnum.sitkFloat64.swigValue);
+            itk.simple.Image doubleImage = SimpleITK.Cast(image, PixelIDValueEnum.sitkFloat64);
             int numberOfBuckets = (int) Math.Ceiling(SimpleITKHelper.MaxPixelValue(image.GetPixelIDValue()) / (double) 4);
             MathNet.Numerics.Statistics.Histogram histogram = ImageHistogram.GetHistogram(doubleImage, numberOfBuckets);
 
@@ -557,7 +557,7 @@ namespace Infovision.MRI.UnitTests
             binaryImageFilter.SetUpperThreshold(SimpleITKHelper.MaxPixelValue(image.GetPixelIDValue()));
             itk.simple.Image binaryImage = binaryImageFilter.Execute(doubleImage);
 
-            binaryImage = SimpleITK.Cast(binaryImage, itk.simple.PixelIDValueEnum.sitkFloat64.swigValue);
+            binaryImage = SimpleITK.Cast(binaryImage, itk.simple.PixelIDValueEnum.sitkFloat64);
 
             SimpleITK.Show(binaryImage, "Binary Threshold");
 
@@ -663,7 +663,7 @@ namespace Infovision.MRI.UnitTests
             binaryErode20.SetBackgroundValue(0);
             binaryErode20.SetForegroundValue(255);
             binaryErode20.SetKernelRadius(10);
-            binaryErode20.SetKernelType(BinaryErodeImageFilter.KernelType.Cross);
+            binaryErode20.SetKernelType(KernelEnum.sitkCross);
             itk.simple.Image erodedImage20 = binaryErode20.Execute(maskImage.ItkImage);
             SimpleITK.Show(erodedImage20);
 
@@ -671,7 +671,7 @@ namespace Infovision.MRI.UnitTests
             binaryErode40.SetBackgroundValue(0);
             binaryErode40.SetForegroundValue(255);
             binaryErode40.SetKernelRadius(50);
-            binaryErode40.SetKernelType(BinaryErodeImageFilter.KernelType.Cross);
+            binaryErode40.SetKernelType(KernelEnum.sitkCross);
             itk.simple.Image erodedImage40 = binaryErode40.Execute(maskImage.ItkImage);
             SimpleITK.Show(erodedImage40);
 
@@ -717,7 +717,7 @@ namespace Infovision.MRI.UnitTests
             binaryErode.SetBackgroundValue(0);
             binaryErode.SetForegroundValue(255);
             binaryErode.SetKernelRadius(10);
-            binaryErode.SetKernelType(BinaryErodeImageFilter.KernelType.Cross);
+            binaryErode.SetKernelType(KernelEnum.sitkCross);
 
             itk.simple.Image erodedImage = new itk.simple.Image(maskImageItk.ItkImage);
             erodedImage.CopyInformation(maskImageItk.ItkImage);

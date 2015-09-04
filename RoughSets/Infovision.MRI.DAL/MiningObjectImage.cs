@@ -131,9 +131,9 @@ namespace Infovision.MRI.DAL
                 ImageITK imageItk = ImageITK.Construct(ImageHelper.ImageType2ITKImageType(this.ImageType));
 
                 imageItk.FileName = this.FileName;
-                imageItk.Width = this.Width;
-                imageItk.Height = this.Height;
-                imageItk.Depth = this.Depth;
+                imageItk.Width = (uint) this.Width;
+                imageItk.Height = (uint) this.Height;
+                imageItk.Depth = (uint) this.Depth;
                 imageItk.PixelTypeId = this.PixelType;
                 imageItk.EndiannessId = this.Endianness;
                 imageItk.Header = this.Header;
@@ -157,9 +157,9 @@ namespace Infovision.MRI.DAL
                 this.Image = imageModel.Image;
                 
                 this.ImageType = imageModel.ImageTypeId;
-                this.Width = imageModel.Width;
-                this.Height = imageModel.Height;
-                this.Depth = imageModel.Depth;
+                this.Width = (int) imageModel.Width;
+                this.Height = (int) imageModel.Height;
+                this.Depth = (int) imageModel.Depth;
                 this.Header = imageModel.Header;
                 this.SliceFrom = imageModel.SliceFrom;
                 this.SliceTo = imageModel.SliceTo;

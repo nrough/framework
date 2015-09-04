@@ -23,10 +23,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             set { this.index = value; }
         }
 
-        public List<int> Objects
+        private List<int> Objects
         {
             get { return this.objects; }
-            private set { this.objects = value; }
+            set { this.objects = value; }
         }        
 
         public static AgnesCluster MergeClusters(int newClusterIndex, AgnesCluster cluster1, AgnesCluster cluster2)

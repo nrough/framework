@@ -76,18 +76,18 @@
       <HintPath>..\packages\AForge.Neuro.2.2.5\lib\AForge.Neuro.dll</HintPath>
     </Reference>
     <Reference Include="IntervalTreeLib">
-      <HintPath>..\..\intervaltree\IntervalTreeLib\bin\Release\IntervalTreeLib.dll</HintPath>
+      <HintPath>..\external\IntervalTreeLib\IntervalTreeLib.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="PowerCollections">
-      <HintPath>..\..\intervaltree\IntervalTreeLib\bin\Release\PowerCollections.dll</HintPath>
+      <HintPath>..\external\IntervalTreeLib\PowerCollections.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SimpleITKCSharpManaged">
-      <HintPath>..\SimpleITK\SimpleITK-0.5.1-CSharp-Win64-anycpu\SimpleITKCSharpManaged.dll</HintPath>
+      <HintPath>..\external\SimpleITK\SimpleITK-0.8.0-CSharp-win32-x86\SimpleITKCSharpManaged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

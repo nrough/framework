@@ -334,7 +334,7 @@ namespace Infovision.MRI
                 : (int)itkImage.GetWidth() * (int)itkImage.GetHeight();
 
             Array array = Array.CreateInstance(typeof(T), numerOfPixels);
-            itk.simple.Image imageConverted = SimpleITK.Cast(itkImage, SimpleITKHelper.Type2PixelIDValue(typeof(T)));
+            itk.simple.Image imageConverted = SimpleITK.Cast(itkImage, SimpleITKHelper.Type2PixelID(typeof(T)));
             
             var @switch = new Dictionary<Type, Action> {
                 { typeof(sbyte), () => Marshal.Copy((IntPtr)imageConverted.GetBufferAsInt8(), (byte[])array, (int)0, (int)numerOfPixels) },
@@ -525,7 +525,7 @@ namespace Infovision.MRI
             itk.simple.Image slice = SimpleITK.Extract(this.ItkImage,
                                             new VectorUInt32(new UInt32[] { this.ItkImage.GetWidth(), this.ItkImage.GetHeight(), 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, z }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             return new ImageITK(slice);    
         }

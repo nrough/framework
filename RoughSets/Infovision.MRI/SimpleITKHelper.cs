@@ -397,7 +397,7 @@ namespace Infovision.MRI
             itk.simple.Image slice = SimpleITK.Extract(image,
                                             new VectorUInt32(new UInt32[] { image.GetWidth(), image.GetHeight(), 0 }),
                                             new VectorInt32(new Int32[] { 0, 0, sliceIdx }),
-                                            ExtractImageFilter.DirectionCollapseStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
+                                            ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             return slice;
         }
@@ -690,10 +690,10 @@ namespace Infovision.MRI
 
         public static int Type2PixelIDValue(Type type)
         {
-            return SimpleITKHelper.Type2PixelIDValueEnum(type).swigValue;
+            return SimpleITKHelper.Type2PixelID(type).swigValue;
         }
 
-        public static itk.simple.PixelIDValueEnum Type2PixelIDValueEnum(Type type)
+        public static itk.simple.PixelIDValueEnum Type2PixelID(Type type)
         {
             itk.simple.PixelIDValueEnum pixelIdValue = itk.simple.PixelIDValueEnum.sitkUnknown;
 
@@ -715,7 +715,7 @@ namespace Infovision.MRI
 
         public static itk.simple.Image ConstructImage(uint width, uint height, uint depth, Type pixelType)
         {
-            itk.simple.Image itkImage = new itk.simple.Image(width, height, depth, SimpleITKHelper.Type2PixelIDValueEnum(pixelType));
+            itk.simple.Image itkImage = new itk.simple.Image(width, height, depth, SimpleITKHelper.Type2PixelID(pixelType));
 
             VectorDouble direction = (depth > 0)
 

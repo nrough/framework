@@ -149,7 +149,6 @@
     <Compile Include="EquivalenceClassCollection.cs" />
     <Compile Include="RuleMeasure.cs" />
     <Compile Include="WeightBoostingGenerator.cs" />
-    <Compile Include="WeightGeneratorEnsemble.cs" />
     <Compile Include="WeightGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

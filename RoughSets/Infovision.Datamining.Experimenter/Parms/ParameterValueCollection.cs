@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Experimenter.Parms
     public class ParameterValueCollection<T> : ParameterBase<T>
         where T : IConvertible
     {
-        #region Globals
+        #region Members
 
         private T[] values;
         private int currentIndex;
@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.Name = name;
             values.CopyTo(this.values, 0);
             this.ResetCurrent();
-        }
+        }        
 
         public ParameterValueCollection(string name, IEnumerable<T> collection)
         {
@@ -61,11 +61,19 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #endregion
 
-        #region Properties                        
-
-        #endregion
-
         #region Methods
+
+        public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T[] elements)
+            where T : IConvertible
+        {
+            return new ParameterValueCollection<T>(name, elements);
+        }
+
+        public static ParameterValueCollection<T> CreateFromDefault<T>(string name, T element)
+            where T : IConvertible
+        {
+            return new ParameterValueCollection<T>(name, element);
+        }
 
         public T GetValue(int index)
         {

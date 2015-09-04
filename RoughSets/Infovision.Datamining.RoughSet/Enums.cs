@@ -74,4 +74,18 @@
         Yes = 1,
         Unknown = 2
     }
+
+    public enum UpdateWeights
+    {
+        All = 0,
+        CorrectOnly = 1,
+        NotCorrectOnly = 2
+    }
+
+    public enum WeightingSchema
+    {
+        Unknown = 0,
+        Majority = 1,
+        Relative = 2
+    }
 }

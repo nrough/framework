@@ -92,8 +92,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Exper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Experimenter.Test", "Infovision.Datamining.Experimenter.Test\Infovision.Datamining.Experimenter.Test.csproj", "{D4C765AF-AC85-472D-9549-5D682015A124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.ReductGenerator", "Infovision.Datamining.ReductGenerator\Infovision.Datamining.ReductGenerator.csproj", "{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Tests", "Infovision.Datamining.Tests\Infovision.Datamining.Tests.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
@@ -150,6 +148,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{F198125A-8AA1-4258-9545-6C6C50EAD439}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Math.Tests", "Infovision.Math.Tests\Infovision.Math.Tests.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{DC06D7E3-73A5-415B-8937-E66C64AD7C05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoosting", "ApproxReductBoosting\ApproxReductBoosting.csproj", "{9C213D37-3249-453F-BA30-460255EA955D}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -241,20 +243,21 @@ Global
 		SccProjectTopLevelParentUniqueName24 = Infovision.sln
 		SccProjectName24 = Infovision.Datamining.Experimenter.Test
 		SccLocalPath24 = Infovision.Datamining.Experimenter.Test
-		SccProjectUniqueName25 = Infovision.Datamining.ReductGenerator\\Infovision.Datamining.ReductGenerator.csproj
-		SccProjectName25 = Infovision.Datamining.ReductGenerator
-		SccLocalPath25 = Infovision.Datamining.ReductGenerator
-		SccProjectUniqueName26 = Infovision.Datamining.Tests\\Infovision.Datamining.Tests.csproj
-		SccProjectTopLevelParentUniqueName26 = Infovision.sln
-		SccProjectName26 = Infovision.Datamining.Tests
-		SccLocalPath26 = Infovision.Datamining.Tests
-		SccProjectUniqueName27 = Infovision.Math\\Infovision.Math.csproj
-		SccProjectName27 = Infovision.Math
-		SccLocalPath27 = Infovision.Math
-		SccProjectUniqueName28 = Infovision.Math.Tests\\Infovision.Math.Tests.csproj
+		SccProjectUniqueName25 = Infovision.Datamining.Tests\\Infovision.Datamining.Tests.csproj
+		SccProjectTopLevelParentUniqueName25 = Infovision.sln
+		SccProjectName25 = Infovision.Datamining.Tests
+		SccLocalPath25 = Infovision.Datamining.Tests
+		SccProjectUniqueName26 = Infovision.Math\\Infovision.Math.csproj
+		SccProjectName26 = Infovision.Math
+		SccLocalPath26 = Infovision.Math
+		SccProjectUniqueName27 = Infovision.Math.Tests\\Infovision.Math.Tests.csproj
+		SccProjectTopLevelParentUniqueName27 = Infovision.sln
+		SccProjectName27 = Infovision.Math.Tests
+		SccLocalPath27 = Infovision.Math.Tests
+		SccProjectUniqueName28 = ApproxReductBoosting\\ApproxReductBoosting.csproj
 		SccProjectTopLevelParentUniqueName28 = Infovision.sln
-		SccProjectName28 = Infovision.Math.Tests
-		SccLocalPath28 = Infovision.Math.Tests
+		SccProjectName28 = ApproxReductBoosting
+		SccLocalPath28 = ApproxReductBoosting
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -625,22 +628,6 @@ Global
 		{D4C765AF-AC85-472D-9549-5D682015A124}.Release|x64.ActiveCfg = Release|x64
 		{D4C765AF-AC85-472D-9549-5D682015A124}.Release|x64.Build.0 = Release|x64
 		{D4C765AF-AC85-472D-9549-5D682015A124}.Release|x86.ActiveCfg = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|x64.ActiveCfg = Debug|x64
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|x64.Build.0 = Debug|x64
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|Win32.ActiveCfg = Release|Any CPU
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|x64.ActiveCfg = Release|x64
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|x64.Build.0 = Release|x64
-		{EDAC1B0C-4C71-4680-AE5D-DD0CCA5A1894}.Release|x86.ActiveCfg = Release|Any CPU
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -654,7 +641,7 @@ Global
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|Win32.ActiveCfg = Release|Any CPU
-		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|x64.ActiveCfg = Release|x64
 		{C32F57FC-32D0-4853-8145-2645A559BF6B}.Release|x86.ActiveCfg = Release|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -669,7 +656,8 @@ Global
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|Win32.ActiveCfg = Release|Any CPU
-		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|x64.ActiveCfg = Release|Any CPU
+		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|x64.ActiveCfg = Release|x64
+		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|x64.Build.0 = Release|x64
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}.Release|x86.ActiveCfg = Release|Any CPU
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -684,8 +672,23 @@ Global
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|Win32.ActiveCfg = Release|Any CPU
-		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|x64.ActiveCfg = Release|Any CPU
+		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|x64.ActiveCfg = Release|x64
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|x64.ActiveCfg = Release|x64
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|x64.Build.0 = Release|x64
+		{9C213D37-3249-453F-BA30-460255EA955D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -711,5 +714,6 @@ Global
 		{150B212C-FB52-4A96-8A5C-9B00477875C6} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 		{40F3E529-C9BC-4C90-BC5B-EFB93E93E3D3} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 		{E0FD0250-8740-4501-BDCB-13AED3D208CE} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+		{9C213D37-3249-453F-BA30-460255EA955D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 EndGlobal

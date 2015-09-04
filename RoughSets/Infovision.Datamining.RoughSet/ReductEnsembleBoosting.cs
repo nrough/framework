@@ -7,7 +7,7 @@ using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{
+{       
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
 	{						
 		private ReductStoreCollection models;
@@ -26,6 +26,7 @@ namespace Infovision.Datamining.Roughset
 		public int NumberOfWeightResets { get { return this.numberOfWeightResets; } }
 		public bool CheckEnsembleErrorDuringTraining { get; set; }
 		public WeightGenerator WeightGenerator { get; set; }
+		public UpdateWeights UpdateWeights { get; set; }
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -39,6 +40,7 @@ namespace Infovision.Datamining.Roughset
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = Int32.MaxValue;
 			this.CheckEnsembleErrorDuringTraining = true;
+			this.UpdateWeights = UpdateWeights.All;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -60,6 +62,7 @@ namespace Infovision.Datamining.Roughset
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = Int32.MaxValue;
 			this.CheckEnsembleErrorDuringTraining = true;
+			this.UpdateWeights = UpdateWeights.All;
 		}
 
 		public override void InitFromArgs(Args args)
@@ -70,6 +73,7 @@ namespace Infovision.Datamining.Roughset
 			{
 				//this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) + 1.0, 2.0));
+				this.MinReductLength = this.MaxReductLength;
 
 				this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
 				this.WeightGenerator.Generate();
@@ -105,6 +109,9 @@ namespace Infovision.Datamining.Roughset
 
 			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
 				this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+
+			if (args.Exist(ReductGeneratorParamHelper.UpdateWeights))
+				this.UpdateWeights = (UpdateWeights)args.GetParameter(ReductGeneratorParamHelper.UpdateWeights);
 		}
 
 		public override void Generate()
@@ -163,11 +170,26 @@ namespace Infovision.Datamining.Roughset
 				double sum = 0.0;
 				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
 				{
-					//TODO Consider changing weights only for objects where weak classifier is not correct
-					if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
-						this.WeightGenerator.Weights[i] *= System.Math.Exp(-alpha); //*= error / (1.0 - error)
-					else
-						this.WeightGenerator.Weights[i] *= System.Math.Exp(alpha);  //*= (1.0 - error) / error) 
+					switch(this.UpdateWeights)
+					{
+						case UpdateWeights.All:
+							if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
+								this.WeightGenerator.Weights[i] *= System.Math.Exp(-alpha); //*= error / (1.0 - error)
+							else
+								this.WeightGenerator.Weights[i] *= System.Math.Exp(alpha);  //*= (1.0 - error) / error)
+							break;
+
+						case UpdateWeights.NotCorrectOnly:
+							if (this.DataStore.GetDecisionValue(i) != result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))                                
+								this.WeightGenerator.Weights[i] *= System.Math.Exp(alpha);  //*= (1.0 - error) / error)
+							break;
+
+						case UpdateWeights.CorrectOnly:
+							if (this.DataStore.GetDecisionValue(i) == result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)))
+								this.WeightGenerator.Weights[i] *= System.Math.Exp(-alpha); //*= error / (1.0 - error)                            
+							break;
+
+					}
 
 					sum += this.WeightGenerator.Weights[i];
 				}

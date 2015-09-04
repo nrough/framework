@@ -24,6 +24,11 @@ namespace Infovision.Datamining.Roughset
         {
             this.stores = new List<IReductStore>();            
         }
+
+        public ReductStoreCollection(int capacity)
+        {
+            this.stores = new List<IReductStore>(capacity);
+        }
         
         public void AddStore(IReductStore reductStore)
         {

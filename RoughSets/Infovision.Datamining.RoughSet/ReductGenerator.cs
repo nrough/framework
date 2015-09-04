@@ -129,6 +129,11 @@ namespace Infovision.Datamining.Roughset
             return new ReductStore();
         }
 
+        protected virtual IReductStore CreateReductStore(int capacity)
+        {
+            return new ReductStore(capacity);
+        }
+
         public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue)
         {
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();

@@ -34,6 +34,12 @@ namespace Infovision.Datamining.Roughset
             this.IsActive = true;
         }
 
+        public ReductStoreBase(int capacity)
+        {
+            this.Weight = 1.0;
+            this.IsActive = true;
+        }
+
         protected ReductStoreBase(ReductStoreBase reductStore)
         {
             this.Weight = reductStore.Weight;
@@ -130,10 +136,16 @@ namespace Infovision.Datamining.Roughset
             this.reducts = new List<IReduct>();
         }
 
+        public ReductStore(int capacity)
+            : base(capacity)
+        {
+            this.reducts = new List<IReduct>(capacity);
+        }
+
         protected ReductStore(ReductStore reductStore)
             : base(reductStore as ReductStoreBase)
         {
-            this.reducts = new List<IReduct>();
+            this.reducts = new List<IReduct>(reductStore.Count);
             foreach (IReduct reduct in reductStore)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
@@ -278,19 +290,16 @@ namespace Infovision.Datamining.Roughset
 
             reducts.Sort(comparer);
 
-            ReductStore result = new ReductStore();
+            ReductStore result = new ReductStore(System.Math.Min(numberOfReducts, reducts.Count));
             int i = 0;
             foreach (IReduct reduct in reducts)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
-
                 result.AddReduct(reductClone);
 
                 i++;
                 if (i >= numberOfReducts)
-                {
                     break;
-                }
             }
 
             return result;

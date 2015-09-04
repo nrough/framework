@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private Func<double[], double[], double> distance;
         private Func<int[], int[], DistanceMatrix, double> linkage;
 
-        private Dendrogram dendrogram;
+        private DendrogramLinkCollection dendrogram;
 
         /// <summary>
         ///   Gets or sets the distance function used
@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             get { return this.nextClusterId; }
         }
 
-        public Dendrogram Dendrogram
+        public DendrogramLinkCollection DendrogramLinkCollection
         {
             get { return this.dendrogram; }
         }
@@ -75,7 +75,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Distance = distance;
             this.Linkage = linkage;
 
-            dendrogram = new Dendrogram();
+            dendrogram = new DendrogramLinkCollection();
         }
 
         private void Initialize(double[][] points)
@@ -142,9 +142,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 DendrogramLink link = this.GetClustersToMerge();
 
                 int mergedClusterIdx = this.MergeClusters(link);
-                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);
-
-
+                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);                               
             }
         }        
 

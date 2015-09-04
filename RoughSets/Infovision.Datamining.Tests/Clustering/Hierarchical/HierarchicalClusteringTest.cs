@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         {
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
-            int[] leaves = hClustering.Dendrogram.ComputeLeafNodes();
+            int[] leaves = hClustering.DendrogramLinkCollection.ComputeLeafNodes();
 
             foreach (int i in leaves)
             {

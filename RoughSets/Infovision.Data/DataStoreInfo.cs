@@ -12,7 +12,7 @@ namespace Infovision.Data
     [Serializable]
     public class DataStoreInfo : Infovision.Data.IObjectSetInfo
     {
-        #region Globals
+        #region Members
         
         private int recordCount;
         private int fieldCount;
@@ -21,8 +21,7 @@ namespace Infovision.Data
         private int decisionFieldId;
         private Dictionary<int, DataFieldInfo> fields = new Dictionary<int, DataFieldInfo>();
         private Dictionary<int, FieldTypes> fieldTypes = new Dictionary<int, FieldTypes>();
-        private Dictionary<FieldTypes, int> fieldTypeCount = new Dictionary<FieldTypes, int>();
-        private double[] recordWeights;
+        private Dictionary<FieldTypes, int> fieldTypeCount = new Dictionary<FieldTypes, int>();        
         
         #endregion
 
@@ -69,13 +68,7 @@ namespace Infovision.Data
         public IEnumerable<DataFieldInfo> Fields
         {
             get { return this.fields.Values; }
-        }
-
-        public double[] RecordWeights
-        {
-            get { return this.recordWeights; }
-            set { this.recordWeights = value; }
-        }
+        }        
 
         #region Constructor
 
@@ -91,12 +84,7 @@ namespace Infovision.Data
 
         #endregion
 
-        #region Methods
-
-        public double GetRecordWeight(int objectIdx)
-        {
-            return this.recordWeights[objectIdx];
-        }
+        #region Methods        
 
         public ICollection<long> GetDecisionValues()
         {

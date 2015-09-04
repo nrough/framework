@@ -16,15 +16,22 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class ReductEnsembleStreamGenerator : ReductGenerator
     {
+        #region Members
+        
         private double[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;
-        private WeightGenerator weightGenerator;
-        private Func<IReduct, double[], double[]> recognition;
-        private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
-        private Func<double[], double[], double> distance;
+        private WeightGenerator weightGenerator;        
         private HierarchicalClusteringIncrementalExt hCluster;
-        //private ReductStore localReductPool;
+
+        #endregion
+
+        #region Properties        
+
+        public int ReductSize { get; set; }
+        public Func<double[], double[], double> Distance { get; set; }
+        public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
+        public Func<IReduct, double[], double[]> ReconWeights {get; set; }
 
         public HierarchicalClusteringIncrementalExt Dendrogram
         {
@@ -94,6 +101,10 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
+
+
+        #endregion
+
         public ReductEnsembleStreamGenerator()
             : base()
         {
@@ -103,9 +114,9 @@ namespace Infovision.Datamining.Roughset
         {
             base.SetDefaultParameters();
 
-            this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
-            this.linkage = ClusteringLinkage.Complete;
-            this.distance = Similarity.Euclidean;
+            this.ReconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            this.Linkage = ClusteringLinkage.Complete;
+            this.Distance = Similarity.Euclidean;            
         }
 
         public override void InitFromArgs(Args args)
@@ -120,16 +131,19 @@ namespace Infovision.Datamining.Roughset
             }
 
             if (args.Exist("Distance"))
-                this.distance = (Func<double[], double[], double>)args.GetParameter("Distance");
+                this.Distance = (Func<double[], double[], double>)args.GetParameter("Distance");
 
             if (args.Exist("Linkage"))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");
+                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter("Linkage");
 
             if (args.Exist("WeightGenerator"))
                 this.WeightGenerator = (WeightGenerator)args.GetParameter("WeightGenerator");
 
             if (args.Exist("ReconWeights"))
-                this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
+                this.ReconWeights = (Func<IReduct, double[], double[]>)args.GetParameter("ReconWeights");
+
+            if (args.Exist("ReductSize"))
+                this.ReductSize = (int)args.GetParameter("ReductSize");
 
         }
 
@@ -138,10 +152,29 @@ namespace Infovision.Datamining.Roughset
             //TODO do not use permutations list - generate new permutations and epsilons here
             
             int idx = this.GetNextReductId();
-            IReduct reduct = this.CreateReductObject(new int[] { }, this.permEpsilon[idx - 1], idx.ToString());
             this.Epsilon = this.permEpsilon[idx - 1];
             Permutation permutation = this.Permutations[idx - 1];
+            int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
 
+            //IReduct reduct = this.CreateReductObject(new int[] { }, this.permEpsilon[idx - 1], idx.ToString());
+            this.WeightGenerator.Generate();
+            
+            int[] attributes = new int[cutoff + 1];
+            for (int i = 0; i <= cutoff; i++)
+                attributes[i] = permutation[i];
+            
+            ReductCrisp reduct = new ReductCrisp(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
+            reduct.Id = idx.ToString();
+            foreach (EquivalenceClass eq in reduct.EquivalenceClassMap)
+                eq.RemoveObjectsWithMinorDecisions();
+            for (int i = attributes.Length - 1; i >= 0; i--)
+                reduct.TryRemoveAttribute(attributes[i]);
+
+
+            /*
+            ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, this.WeightGenerator.Weights, this.permEpsilon[idx - 1]);
+            reduct.Id = idx.ToString();
+            
             //Reach
             for (int i = 0; i < permutation.Length; i++)
             {
@@ -161,6 +194,7 @@ namespace Infovision.Datamining.Roughset
                     if (!this.IsReduct(reduct, this.ReductPool, false))
                         reduct.AddAttribute(permutation[i]);
             }
+            */
 
             return reduct;
         }        
@@ -178,7 +212,7 @@ namespace Infovision.Datamining.Roughset
         {            
             this.ReductPool = new ReductStore();
 
-            this.hCluster = new HierarchicalClusteringIncrementalExt(distance, linkage);
+            this.hCluster = new HierarchicalClusteringIncrementalExt(this.Distance, this.Linkage);
             this.hCluster.MinimumNumberOfInstances = 0;
 
             while (!this.HasConverged())
@@ -186,7 +220,7 @@ namespace Infovision.Datamining.Roughset
                 IReduct reduct = this.GetNextReduct();
                 if (reduct.Attributes.GetCardinality() > 0)
                 {
-                    double[] errorvector = this.recognition(reduct, this.WeightGenerator.Weights);
+                    double[] errorvector = this.ReconWeights(reduct, reduct.Weights);
                                         
                     if (this.hCluster.AddToCluster(Convert.ToInt32(reduct.Id), errorvector))
                     {
@@ -236,7 +270,10 @@ namespace Infovision.Datamining.Roughset
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)
-                errors[i] = this.recognition(store.GetReduct(i), this.WeightGenerator.Weights);
+            {
+                IReduct reduct = store.GetReduct(i);
+                errors[i] = this.ReconWeights(reduct, reduct.Weights);
+            }
             return errors;
         }
 

@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
 		private HashSet<int> removedAttributes;
 		private bool isEqMapCreated;
 		
-		#region Construct
+		#region Constructors
 		
 		public ReductCrisp(DataStore dataStore)
 			: base(dataStore, 0.0)

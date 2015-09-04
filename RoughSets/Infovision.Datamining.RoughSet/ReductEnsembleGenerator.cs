@@ -212,8 +212,11 @@ namespace Infovision.Datamining.Roughset
         public double[][] GetWeightVectorsFromReducts(IReductStore store)
         {
             double[][] errors = new double[store.Count][];
-            for (int i = 0; i < store.Count; i++)                           
-                errors[i] = recognition(store.GetReduct(i), this.WeightGenerator.Weights);                            
+            for (int i = 0; i < store.Count; i++)
+            {
+                IReduct reduct = store.GetReduct(i);
+                errors[i] = recognition(reduct, reduct.Weights);
+            }
             return errors;
         }
 

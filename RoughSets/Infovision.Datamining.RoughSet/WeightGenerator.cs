@@ -46,7 +46,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
         
-        protected virtual void Generate()
+        public virtual void Generate()
         {
             this.CalcFlag = true;
         }
@@ -63,65 +63,36 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        protected override void Generate()
+        public override void Generate()
         {
-            this.CalcFlag = true;
+            if (this.CalcFlag == true)
+                return;
 
-            double sum = 0;
-            double weight = 0;
+            base.Generate();
+
+            double sum = 0.0;            
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                weight = RandomSingleton.Random.Next(1, this.DataStore.NumberOfRecords + 1) * this.DataStore.NumberOfRecords;
-                sum += weight;
-                this.Weights[i] = weight;
+                this.Weights[i] = RandomSingleton.Random.Next(0, this.DataStore.NumberOfRecords);
+                sum += this.Weights[i];
             }
 
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+            if (sum != 0.0)
             {
-                this.Weights[i] = this.Weights[i] / sum;
+                double allocated = 0.0;
+                for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+                {
+                    this.Weights[i] = this.Weights[i] / sum;
+
+                    if (i == this.DataStore.NumberOfRecords - 1)
+                        this.Weights[i] = 1.0 - allocated;
+
+                    allocated += this.Weights[i];
+                }
             }
-        }
-    }
-
-    [Serializable]
-    public class WeightGeneratorMajority : WeightGenerator
-    {
-        public WeightGeneratorMajority(DataStore dataStore)
-            : base(dataStore)
-        {
-        }
-
-        protected override void Generate()
-        {
-            this.CalcFlag = true;
-
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+            else
             {
-                this.Weights[i] = 1.0 / this.DataStore.NumberOfRecords;
-            }
-        }
-    }
-
-    [Serializable]
-    public class WeightGeneratorRelative : WeightGenerator
-    {
-        public WeightGeneratorRelative(DataStore dataStore)
-            : base(dataStore)
-        {
-        }
-
-        protected override void Generate()
-        {
-            this.CalcFlag = true;
-
-            double weight = 0;
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-            {
-                weight = 1.0
-                    / (this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
-                        * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
-
-                this.Weights[i] = weight;
+                throw new InvalidOperationException("sum of weigths cannot be zero.");
             }
         }
     }
@@ -136,19 +107,57 @@ namespace Infovision.Datamining.Roughset
             get { return this.value; }
             set { this.value = value; }
         }
-        
+
         public WeightGeneratorConstant(DataStore dataStore)
             : base(dataStore)
         {
         }
 
-        protected override void Generate()
+        public WeightGeneratorConstant(DataStore dataStore, double value)
+            : base(dataStore)
         {
-            this.CalcFlag = true;
+            this.Value = value;
+        }
+
+        public override void Generate()
+        {
+            if (this.CalcFlag == true)
+                return;
+            base.Generate();
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-            {
                 this.Weights[i] = value;
-            }            
         }
     }
+
+    [Serializable]
+    public class WeightGeneratorMajority : WeightGeneratorConstant
+    {
+        public WeightGeneratorMajority(DataStore dataStore)
+            : base(dataStore, 1.0 / dataStore.NumberOfRecords)
+        {
+        }        
+    }
+
+    [Serializable]
+    public class WeightGeneratorRelative : WeightGenerator
+    {
+        public WeightGeneratorRelative(DataStore dataStore)
+            : base(dataStore)
+        {
+        }
+
+        public override void Generate()
+        {
+            if (this.CalcFlag == true)
+                return;
+
+            base.Generate();          
+            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+            {
+                this.Weights[i] = 1.0
+                    / (this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
+                        * this.DataStore.DataStoreInfo.NumberOfDecisionValues);                 
+            }
+        }
+    }    
 }

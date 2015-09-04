@@ -30,13 +30,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             data.Name = kvp.Key;
 
             int minEpsilon = 0;
-            int maxEpsilon = 99;
-
-            //WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
-            WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
-            weightGenerator.Value = 1.0;
-
-            data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
+            int maxEpsilon = 0;
+            int reductSize = data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2;            
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
@@ -55,8 +50,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter("Distance", (Func<double[], double[], double>)Similarity.Hamming);
                 args.AddParameter("Linkage", (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                 args.AddParameter("PermutationCollection", permList);
-                args.AddParameter("WeightGenerator", weightGenerator);
+                //args.AddParameter("WeightGenerator", new WeightGeneratorRandom(data));
+                args.AddParameter("WeightGenerator", new WeightGeneratorMajority(data));
                 args.AddParameter("ReconWeights", (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                args.AddParameter("ReductSize", reductSize);
 
                 ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
                 reductGenerator.Generate();
@@ -83,8 +80,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int minEpsilon = 0;
             int maxEpsilon = 25;
 
-            WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
-            data.DataStoreInfo.RecordWeights = weightGenerator.Weights;
+            WeightGenerator weightGenerator = new WeightGeneratorMajority(data);            
 
             IdentificationType identificationType = IdentificationType.WeightConfidence;
             VoteType voteType = VoteType.WeightConfidence;

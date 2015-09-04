@@ -14,18 +14,8 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        protected int NumberOfReducts
-        {
-            get;
-            set;
-        }
-
-        protected int[] DiscernibilityMatrix
-        {
-            get;
-            set;
-        }
-
+        protected int NumberOfReducts { get; set; }
+        protected int[] DiscernibilityMatrix { get; set; }
 
         #endregion
 
@@ -63,7 +53,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected override void Generate()
+        public override void Generate()
         {
             this.CalcFlag = true;
             double sum = 0;
@@ -106,7 +96,7 @@ namespace Infovision.Datamining.Roughset
                     / (this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(objectIdx))
                                                 * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
 
-            return this.NumberOfReducts > 0 ? result * (1.0 - (this.DiscernibilityMatrix[objectIdx] / this.NumberOfReducts)) : result;
+            return this.NumberOfReducts > 0 ? result * (1.0 - ((double)this.DiscernibilityMatrix[objectIdx] / (double)this.NumberOfReducts)) : result;
         }
 
         #endregion
@@ -130,8 +120,8 @@ namespace Infovision.Datamining.Roughset
         {
             double result;
 
-            result = (double) 1 / (double) this.DataStore.NumberOfRecords;
-            return this.NumberOfReducts > 0 ? result * (1 - (this.DiscernibilityMatrix[objectIdx] / this.NumberOfReducts)) : result;
+            result = 1.0 / (double) this.DataStore.NumberOfRecords;
+            return this.NumberOfReducts > 0 ? result * (1.0 - ((double)this.DiscernibilityMatrix[objectIdx] / (double)this.NumberOfReducts)) : result;
         }
 
         #endregion

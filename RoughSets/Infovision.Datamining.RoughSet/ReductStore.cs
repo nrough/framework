@@ -329,7 +329,7 @@ namespace Infovision.Datamining.Roughset
             foreach (IReduct r in this)
             {
                 sb.Append("r").Append(r.Id).Append(separator);
-                double[] errors = recognition(r, data.DataStoreInfo.RecordWeights);
+                double[] errors = recognition(r, r.Weights);
                 for (int i = 0; i < errors.Length; i++)
                 {
                     sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));
@@ -354,7 +354,7 @@ namespace Infovision.Datamining.Roughset
 
             foreach (IReduct r in this)
             {                
-                double[] errors = recognition(r, data.DataStoreInfo.RecordWeights);
+                double[] errors = recognition(r, r.Weights);
                 for (int i = 0; i < errors.Length; i++)
                 {
                     sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));

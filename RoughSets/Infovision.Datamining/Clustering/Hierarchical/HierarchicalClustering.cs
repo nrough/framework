@@ -139,14 +139,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             while (clusters.Count > 1)
             {
-                MatrixKey key = this.GetClustersToMerge();
+                DendrogramLink link = this.GetClustersToMerge();
 
-                int mergedClusterIdx = this.MergeClusters(key, 0);
-                this.CalculateDistanceMatrix(key.X, key.Y, mergedClusterIdx);
+                int mergedClusterIdx = this.MergeClusters(link);
+                this.CalculateDistanceMatrix(link.Cluster1, link.Cluster2, mergedClusterIdx);
+
+
             }
         }        
 
-        protected virtual MatrixKey GetClustersToMerge()
+        protected virtual DendrogramLink GetClustersToMerge()
         {
             int[] result = new int[2] { -1, -1 };
             double minDistance = Double.MaxValue;
@@ -161,7 +163,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
 
-            return new MatrixKey(result[0], result[1]);
+            return new DendrogramLink(result[0], result[1], minDistance);
         }
 
         protected int MergeClusters(int x, int y, double distance)
@@ -178,6 +180,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected int MergeClusters(MatrixKey key, double distance)
         {
             return this.MergeClusters(key.X, key.Y, distance);                      
+        }
+
+        protected int MergeClusters(DendrogramLink link)
+        {
+            return this.MergeClusters(link.Cluster1, link.Cluster2, link.Distance);
         }
 
         private void CalculateDistanceMatrix(HierarchicalCluster mergedCluster1, HierarchicalCluster mergedCluster2, HierarchicalCluster newCluster)

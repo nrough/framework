@@ -7,24 +7,29 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     public class Dendrogram
-    {
+    {        
         List<DendrogramLink> linkages;
-        int level;
 
-        public Dendrogram()
-        {
-            linkages = new List<DendrogramLink>();
-            level = -1;
-        }
+        DendrogramNode root;
 
         public int Count
         {
             get { return linkages.Count; }
         }
 
+        public DendrogramNode Root
+        {
+            get { return this.root; }
+        }
+
+        public Dendrogram()
+        {
+            linkages = new List<DendrogramLink>();            
+        }        
+
         public void Add(int cluster1, int cluster2, double distance)
         {
-            linkages.Add(new DendrogramLink(cluster1, cluster2, distance, ++level));
+            linkages.Add(new DendrogramLink(cluster1, cluster2, distance));
         }
 
         public int[] ComputeLeafNodes()
@@ -87,7 +92,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         private void Swap(int row)
         {
-            linkages[row] = new DendrogramLink(linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance, linkages[row].Level);                        
-        }
+            linkages[row] = new DendrogramLink(linkages[row].Cluster2, linkages[row].Cluster1, linkages[row].Distance);                        
+        }        
     }
 }

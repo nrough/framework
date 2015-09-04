@@ -20,15 +20,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
         
         protected override void CreateClusters()
-        {
+        {                        
             while (clusters.Count > 1)
             {
-                MatrixKey key = this.GetClustersToMerge();
-                this.MergeClusters(key, 0);
+                DendrogramLink link = this.GetClustersToMerge();
+                this.MergeClusters(link);
             }
         }
 
-        protected override MatrixKey GetClustersToMerge()
+        protected override DendrogramLink GetClustersToMerge()
         {
             int[] key = new int[2] {-1, -1};
             int[] clusterIds = clusters.Keys.ToArray();                   
@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
 
-            return new MatrixKey(key[0], key[1]);                        
+            return new DendrogramLink(key[0], key[1], minClusterDistance);                        
         }               
     }
 }

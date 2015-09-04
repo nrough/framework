@@ -10,16 +10,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     public struct DendrogramLink
     {
         private readonly int cluster1;
-        private readonly int cluster2;
-        private readonly int level;
+        private readonly int cluster2;        
         private readonly double distance;
 
-        public DendrogramLink(int cluster1, int cluster2, double distance, int level)
+        public DendrogramLink(int cluster1, int cluster2, double distance)
         {
             this.cluster1 = cluster1;
             this.cluster2 = cluster2;
-            this.distance = distance;
-            this.level = level;
+            this.distance = distance;            
         }
 
         public int Cluster1
@@ -30,12 +28,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public int Cluster2
         {
             get { return this.cluster2; }
-        }
-
-        public int Level
-        {
-            get { return this.level; }
-        }
+        }        
 
         public double Distance
         {
@@ -46,12 +39,12 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
         public override string ToString()
         {
-            return String.Format("{0} {1} {2}", this.level, this.cluster1, this.cluster2);
+            return String.Format("d({0};{1}) = {2}", this.cluster1, this.cluster2, this.distance);
         }
 
         public override int GetHashCode()
         {
-            return cluster1.GetHashCode() ^ cluster2.GetHashCode() ^ level.GetHashCode();
+            return cluster1.GetHashCode() ^ cluster2.GetHashCode();
         }
 
         public override bool Equals(object obj)

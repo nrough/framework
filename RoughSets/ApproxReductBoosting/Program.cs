@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Experimenter.Parms;
+using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
 
@@ -21,6 +22,8 @@ namespace ApproxReductBoosting
 			int maxNumberOfIterations = Int32.Parse(args[3]);
 			int startIteration = Int32.Parse(args[4]);
 			int iterationStep = Int32.Parse(args[5]);
+			FileFormat fileFormat = args.Length >= 7 ? (FileFormat)Int32.Parse(args[6]) : FileFormat.Rses1;
+			int decisionPosition = args.Length >= 8 ? Int32.Parse(args[7]) : -1;
 
 			if (startIteration < 1)
 				throw new ArgumentOutOfRangeException();
@@ -28,11 +31,41 @@ namespace ApproxReductBoosting
 			if(startIteration > maxNumberOfIterations)
 				throw new ArgumentOutOfRangeException();
 
-			DataStore trnData = DataStore.Load(trainFilename, FileFormat.Rses1);
-			DataStore tstData = DataStore.Load(testFilename, FileFormat.Rses1, trnData.DataStoreInfo);
+			DataStore trnDataOrig = DataStore.Load(trainFilename, fileFormat);
+			DataStore tstDataOrig = DataStore.Load(testFilename, fileFormat, trnDataOrig.DataStoreInfo);
+			
+			if (decisionPosition != -1)
+			{
+				trnDataOrig.SetDecisionFieldId(decisionPosition);
+				tstDataOrig.SetDecisionFieldId(decisionPosition);
+			}
 
-			int numOfAttr = trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);			
-						
+			Console.WriteLine("Training dataset: {0} ({1})", trainFilename, fileFormat);
+			Console.WriteLine("Number of records: {0}", trnDataOrig.DataStoreInfo.NumberOfRecords);
+			Console.WriteLine("Number of attributes: {0}", trnDataOrig.DataStoreInfo.NumberOfFields);
+			Console.WriteLine("Decision attribute position: {0}", trnDataOrig.DataStoreInfo.DecisionFieldId);
+			Console.WriteLine("Missing Values: {0}", trnDataOrig.DataStoreInfo.HasMissingData);
+
+			Console.WriteLine("Test dataset: {0} ({1})", testFilename, fileFormat);
+			Console.WriteLine("Number of records: {0}", tstDataOrig.DataStoreInfo.NumberOfRecords);
+			Console.WriteLine("Number of attributes: {0}", tstDataOrig.DataStoreInfo.NumberOfFields);
+			Console.WriteLine("Decision attribute position: {0}", tstDataOrig.DataStoreInfo.DecisionFieldId);
+			Console.WriteLine("Missing Values: {0}", tstDataOrig.DataStoreInfo.HasMissingData);
+
+			if (trnDataOrig.DataStoreInfo.HasMissingData)
+			{
+				
+				DataStore trnDataReplaced = new ReplaceMissingValues().Compute(trnDataOrig);
+				DataStore tstDataReplaced = new ReplaceMissingValues().Compute(tstDataOrig, trnDataOrig);
+
+				trnDataOrig = trnDataReplaced;
+				tstDataOrig = tstDataReplaced;
+
+				Console.WriteLine("Missing values replacing...DONE");
+			}            
+
+			int numOfAttr = trnDataOrig.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+									
 			ParameterCollection parmList = new ParameterCollection(
 				new IParameter[] {
 					new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
@@ -76,7 +109,7 @@ namespace ApproxReductBoosting
 				int minLen = (int)p[6];
 				
 				Args parms = new Args();
-				parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
+				parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnDataOrig);
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 				parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
@@ -89,15 +122,15 @@ namespace ApproxReductBoosting
 				switch (weightingSchema)
 				{
 					case WeightingSchema.Majority:
-						weightGenerator = new WeightGeneratorMajority(trnData);
+						weightGenerator = new WeightGeneratorMajority(trnDataOrig);
 						break;
 
 					case WeightingSchema.Relative:
-						weightGenerator = new WeightGeneratorRelative(trnData);
+						weightGenerator = new WeightGeneratorRelative(trnDataOrig);
 						break;
 
 					default:
-						weightGenerator = new WeightBoostingGenerator(trnData);
+						weightGenerator = new WeightBoostingGenerator(trnDataOrig);
 						break;
 				}
 
@@ -110,13 +143,13 @@ namespace ApproxReductBoosting
 
 				RoughClassifier classifierTrn = new RoughClassifier();
 				classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-				classifierTrn.Classify(trnData);
-				ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+				classifierTrn.Classify(trnDataOrig);
+				ClassificationResult resultTrn = classifierTrn.Vote(trnDataOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
 				RoughClassifier classifierTst = new RoughClassifier();
 				classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-				classifierTst.Classify(tstData);
-				ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+				classifierTst.Classify(tstDataOrig);
+				ClassificationResult resultTst = classifierTst.Vote(tstDataOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
 				string updWeightsMethodName = String.Empty;
 				switch (reductGenerator.UpdateWeights.Method.Name)
@@ -148,7 +181,7 @@ namespace ApproxReductBoosting
 									reductGenerator.VoteType,
 									reductGenerator.MinReductLength,
 									reductGenerator.MaxReductLength,
-									updWeightsMethodName, //reductGenerator.UpdateWeights,
+									updWeightsMethodName,
 									weightingSchema,
 									reductGenerator.CheckEnsembleErrorDuringTraining,
 									t + 1,

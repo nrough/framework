@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Experimenter.Parms;
+using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
 
@@ -20,6 +21,8 @@ namespace ApproxReductBoostingCV
             int maxNumberOfIterations = Int32.Parse(args[2]);
             int startIteration = Int32.Parse(args[3]);
             int iterationStep = Int32.Parse(args[4]);
+            FileFormat fileFormat = args.Length >= 6 ? (FileFormat)Int32.Parse(args[5]) : FileFormat.Rses1;
+            int decisionPosition = args.Length >= 7 ? Int32.Parse(args[6]) : -1;
 
             if (startIteration < 1)
                 throw new ArgumentOutOfRangeException();
@@ -27,8 +30,23 @@ namespace ApproxReductBoostingCV
             if (startIteration > maxNumberOfIterations)
                 throw new ArgumentOutOfRangeException();
 
-            DataStore data = DataStore.Load(dataFilename, FileFormat.Rses1);
-            DataStoreSplitter splitter = new DataStoreSplitter(data, 5);            
+            DataStore data = DataStore.Load(dataFilename, fileFormat);
+
+            if (decisionPosition != -1)
+                data.SetDecisionFieldId(decisionPosition);
+
+            Console.WriteLine("Training dataset: {0} ({1})", dataFilename, fileFormat);
+            Console.WriteLine("Number of records: {0}", data.DataStoreInfo.NumberOfRecords);
+            Console.WriteLine("Number of attributes: {0}", data.DataStoreInfo.NumberOfFields);
+            Console.WriteLine("Decision attribute position: {0}", data.DataStoreInfo.DecisionFieldId);
+            Console.WriteLine("Missing Values: {0}", data.DataStoreInfo.HasMissingData);
+            
+            int cvfolds = 5;
+            DataStoreSplitter splitter = new DataStoreSplitter(data, cvfolds);
+
+            Console.WriteLine("Using Cross Validation with {0} splits", cvfolds);            
+
+            int numOfAttr = data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 
             ParameterCollection parmList = new ParameterCollection(
                 new IParameter[] {
@@ -36,21 +54,19 @@ namespace ApproxReductBoostingCV
                     new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
                     ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", ReductFactoryKeyHelper.ReductEnsembleBoosting,
                                                                                                  ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity),
-                    ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Relative, 
-                                                                                                                     WeightingSchema.Majority) ,
-                    ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", true, false),
-                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All, 
-                                                                                                                               ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_OnlyNotCorrect,
-                                                                                                                               ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoostM1),
-                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 0)
+                    ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
+                    ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
+                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
+                    ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
                 }
             );
 
-            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14}",
+            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
                                      "METHOD",
                                      "IDENTYFICATION",
                                      "VOTETYPE",
                                      "MIN_LEN",
+                                     "MAX_LEN",
                                      "UPDATE_WEIGHTS",
                                      "WEIGHT_TYPE",
                                      "CHECK_ENSEBLE_ERROR",
@@ -74,14 +90,26 @@ namespace ApproxReductBoostingCV
                 WeightingSchema weightingSchema = (WeightingSchema)p[3];
                 bool checkEnsembleErrorDuringTraining = (bool)p[4];
                 UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
-                int minLen = (int)p[6];                
-                
-                for (int f = 1; f <= 5; f++)
+                int minLen = (int)p[6];
+
+                for (int f = 1; f <= cvfolds; f++)
                 {
-                    DataStore trnFold = null;
-                    DataStore tstFold = null;
+                    DataStore trnFoldOrig = null;
+                    DataStore tstFoldOrig = null;
                     splitter.ActiveFold = f;
-                    splitter.Split(ref trnFold, ref tstFold);
+                    splitter.Split(ref trnFoldOrig, ref tstFoldOrig);
+
+                    DataStore trnFold = null, tstFold = null;
+                    if (data.DataStoreInfo.HasMissingData)
+                    {
+                        trnFold = new ReplaceMissingValues().Compute(trnFoldOrig);
+                        tstFold = new ReplaceMissingValues().Compute(tstFoldOrig, trnFoldOrig);
+                    }
+                    else
+                    {
+                        trnFold = trnFoldOrig;
+                        tstFold = tstFoldOrig;
+                    }
 
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFold);
@@ -152,12 +180,13 @@ namespace ApproxReductBoostingCV
                             break;
                     }
 
-                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14}",
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
                                         factoryKey,
                                         reductGenerator.IdentyficationType,
                                         reductGenerator.VoteType,
                                         reductGenerator.MinReductLength,
-                                        updWeightsMethodName, //reductGenerator.UpdateWeights,
+                                        reductGenerator.MaxReductLength,
+                                        updWeightsMethodName,
                                         weightingSchema,
                                         reductGenerator.CheckEnsembleErrorDuringTraining,
                                         t + 1,

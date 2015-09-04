@@ -11,6 +11,7 @@ using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {       
+    [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator
     {                        
         private int[] permEpsilon;
@@ -194,7 +195,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual double GetPartitionQuality(IReduct reduct)
         {
-            //TODO 
+            //TODO Consider changing to indormation measue
             //return this.InformationMeasure.Calc(reduct);
 
             double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);

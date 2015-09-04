@@ -66,12 +66,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parms\ParameterObjectReferenceList.cs" />
+    <Compile Include="Parms\ParameterObjectReferenceCollection.cs" />
     <Compile Include="Parms\IParameter.cs" />
     <Compile Include="Parms\ParameterNumericRange.cs" />
     <Compile Include="Parms\ParameterBase.cs" />
-    <Compile Include="Parms\ParameterList.cs" />
-    <Compile Include="Parms\ParameterObjectList.cs" />
+    <Compile Include="Parms\ParameterCollection.cs" />
+    <Compile Include="Parms\ParameterObjectCollection.cs" />
     <Compile Include="Parms\ParametersValueEnumerator.cs" />
     <Compile Include="Parms\ParameterValueList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

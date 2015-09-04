@@ -6,11 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{
-    //TODO Change "List" to "Collection" in class name
-
+{   
     [Serializable]
-    public class ParameterValueList<T> : ParameterBase<T>
+    public class ParameterValueCollection<T> : ParameterBase<T>
         where T : IConvertible
     {
         #region Globals
@@ -22,7 +20,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Constructors
 
-        public ParameterValueList(string name, T value)
+        public ParameterValueCollection(string name, T value)
         {
             this.values = new T[1];
             this.values[0] = value;
@@ -30,7 +28,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        public ParameterValueList(string name, T[] values)
+        public ParameterValueCollection(string name, T[] values)
         {
             this.values = new T[values.Length];
             this.Name = name;
@@ -38,7 +36,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        public ParameterValueList(string name, IEnumerable<T> collection)
+        public ParameterValueCollection(string name, IEnumerable<T> collection)
         {
             int count = 0;
             this.Name = name;
@@ -53,7 +51,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        public ParameterValueList(ParameterValueList<T> parameterValueList)
+        public ParameterValueCollection(ParameterValueCollection<T> parameterValueList)
         {
             this.values = new T[parameterValueList.Count];
             this.Name = parameterValueList.Name;
@@ -130,7 +128,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         public override object Clone()
         {
-            return new ParameterValueList<T>(this);
+            return new ParameterValueCollection<T>(this);
         }
         #endregion
 

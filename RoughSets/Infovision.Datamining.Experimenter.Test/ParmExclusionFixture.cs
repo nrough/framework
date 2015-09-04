@@ -16,18 +16,18 @@ namespace Infovision.Datamining.Experimenter.Test
         {
             Console.WriteLine("*** CreateExclusionList ****");
 
-            IParameter parmA = new ParameterValueList<int>("A", new int[] { 1, 2, 3 });
-            IParameter parmB = new ParameterValueList<int>("B", new int[] { 1, 2, 3 });
-            IParameter parmC = new ParameterValueList<int>("C", new int[] { 1, 2, 3 });
+            IParameter parmA = new ParameterValueCollection<int>("A", new int[] { 1, 2, 3 });
+            IParameter parmB = new ParameterValueCollection<int>("B", new int[] { 1, 2, 3 });
+            IParameter parmC = new ParameterValueCollection<int>("C", new int[] { 1, 2, 3 });
 
-            IParameter parmAx1 = new ParameterValueList<int>("Ax1", new int[] { 1 });
-            IParameter parmBx1 = new ParameterValueList<int>("Bx1", new int[] { 1 });
-            IParameter parmCx1 = new ParameterValueList<int>("Cx1", new int[] { 1 });
+            IParameter parmAx1 = new ParameterValueCollection<int>("Ax1", new int[] { 1 });
+            IParameter parmBx1 = new ParameterValueCollection<int>("Bx1", new int[] { 1 });
+            IParameter parmCx1 = new ParameterValueCollection<int>("Cx1", new int[] { 1 });
 
-            IParameter parmAx2 = new ParameterValueList<int>("Ax2", new int[] { 1 });            
-            IParameter parmCx2 = new ParameterValueList<int>("Cx2", new int[] { 3 });
+            IParameter parmAx2 = new ParameterValueCollection<int>("Ax2", new int[] { 1 });            
+            IParameter parmCx2 = new ParameterValueCollection<int>("Cx2", new int[] { 3 });
 
-            IParameter parmAx3 = new ParameterValueList<int>("Ax3", new int[] { 2 });
+            IParameter parmAx3 = new ParameterValueCollection<int>("Ax3", new int[] { 2 });
 
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC });
 

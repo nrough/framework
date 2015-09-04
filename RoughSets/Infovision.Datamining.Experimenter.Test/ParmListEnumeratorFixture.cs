@@ -17,9 +17,9 @@ namespace Infovision.Datamining.Experimenter.Test
         {
             Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerList ****");
             
-            IParameter parmA = new ParameterValueList<int>("A", new int[] {0, 1});
-            IParameter parmB = new ParameterValueList<int>("B", new int[] {0, 1});
-            IParameter parmC = new ParameterValueList<int>("C", new int[] {0, 1});
+            IParameter parmA = new ParameterValueCollection<int>("A", new int[] {0, 1});
+            IParameter parmB = new ParameterValueCollection<int>("B", new int[] {0, 1});
+            IParameter parmC = new ParameterValueCollection<int>("C", new int[] {0, 1});
 
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC });
 
@@ -38,10 +38,10 @@ namespace Infovision.Datamining.Experimenter.Test
         {
             Console.WriteLine("*** ParameterValueEnumerator_GenerateStringList ****");
             
-            IParameter parmA = new ParameterValueList<string>("A", new string[] { "1", "2", "3" });
-            IParameter parmB = new ParameterValueList<string>("B", new string[] { "1", "2", "3" });
-            IParameter parmC = new ParameterValueList<string>("C", new string[] { "1", "2", "3" });
-            IParameter parmD = new ParameterValueList<string>("D", new string[] { "1", "2", "3" });
+            IParameter parmA = new ParameterValueCollection<string>("A", new string[] { "1", "2", "3" });
+            IParameter parmB = new ParameterValueCollection<string>("B", new string[] { "1", "2", "3" });
+            IParameter parmC = new ParameterValueCollection<string>("C", new string[] { "1", "2", "3" });
+            IParameter parmD = new ParameterValueCollection<string>("D", new string[] { "1", "2", "3" });
 
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC, parmD });
 
@@ -60,9 +60,9 @@ namespace Infovision.Datamining.Experimenter.Test
         {
             Console.WriteLine("*** ParameterValueEnumerator_GenerateMixedList ****");
 
-            IParameter parmA = new ParameterValueList<int>("A", new int[] { 1, 2, 3 });
-            IParameter parmB = new ParameterValueList<string>("B", new string[] { "A", "B", "C" });
-            IParameter parmC = new ParameterValueList<double>("C", new double[] { 0.1, 0.2, 0.3 });
+            IParameter parmA = new ParameterValueCollection<int>("A", new int[] { 1, 2, 3 });
+            IParameter parmB = new ParameterValueCollection<string>("B", new string[] { "A", "B", "C" });
+            IParameter parmC = new ParameterValueCollection<double>("C", new double[] { 0.1, 0.2, 0.3 });
 
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC });
 

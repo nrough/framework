@@ -6,12 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{
-    //TODO Change "List" to "Collection" in class name
-
+{    
     [Serializable]
-    public class ParameterObjectList<T> : ParameterBase<T>
-        where T : ICloneable
+    public class ParameterObjectReferenceCollection<T> : ParameterBase<T>
     {
         #region Globals
 
@@ -22,73 +19,54 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Constructors
 
-        public ParameterObjectList(string name, T value)
+        public ParameterObjectReferenceCollection(string name, T value)
         {
             this.values = new T[1];
-            this.values[0] = (T)value.Clone();
+            this.values[0] = value;
             this.Name = name;
             this.ResetCurrent();
         }
 
-        public ParameterObjectList(string name, T[] values)
+        public ParameterObjectReferenceCollection(string name, T[] values)
         {
             this.values = new T[values.Length];
-            for (int i = 0; i < values.Length; i++)
-            {
-                this.values[i] = (T)values[i].Clone();
-            }
+            values.CopyTo(this.values, 0);
             this.Name = name;
             this.ResetCurrent();
         }
 
-        public ParameterObjectList(string name, IEnumerable<T> collection)
+        public ParameterObjectReferenceCollection(string name, IEnumerable<T> collection)
         {
             int count = 0;
             this.Name = name;
             foreach (T element in collection)
+            {
                 count++;
+            }
             this.values = new T[count];
             count = 0;
             foreach (T element in collection)
             {
-                this.values[count++] = (T)element.Clone();
+                this.values[count++] = element;
             }
             this.ResetCurrent();
         }
 
-        private ParameterObjectList(ParameterObjectList<T> parameterObjectList)
+        public ParameterObjectReferenceCollection(ParameterObjectReferenceCollection<T> parameterObjectReferenceList)
         {
-            this.values = new T[parameterObjectList.Count];
-            this.Name = parameterObjectList.Name;
+            this.values = new T[parameterObjectReferenceList.Count];
+            this.Name = parameterObjectReferenceList.Name;
             int i = 0;
-            foreach (T value in parameterObjectList)
+            foreach (T value in parameterObjectReferenceList)
             {
-                this.values[i++] = (T)value.Clone();
+                this.values[i++] = (T)value;
             }
             this.ResetCurrent();
         }
 
         #endregion
 
-        #region Properties
-
-        
-        public virtual int Count
-        {
-            get { return this.values.Length; }
-        }
-        
-        public override object Current
-        {
-            get
-            {
-                if (currentIndex >= this.values.Length)
-                    throw new InvalidOperationException();
-                if (currentIndex < 0)
-                    throw new InvalidOperationException();
-                return this.values.GetValue(currentIndex);
-            }
-        }
+        #region Properties                
 
         #endregion
 
@@ -111,7 +89,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         private void ResetCurrent()
         {
-            currentIndex = -1;
+            this.currentIndex = -1;
         }
 
         #region IEnumerable Members
@@ -124,6 +102,16 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region IEnumerator Members
 
+        public override object Current
+        {
+            get
+            {
+                if (currentIndex >= this.values.Length || currentIndex < 0)
+                    throw new InvalidOperationException();
+                return this.values.GetValue(currentIndex);
+            }
+        }
+        
         public override void Reset()
         {
             this.ResetCurrent();
@@ -143,30 +131,26 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         public override object Clone()
         {
-            return new ParameterObjectList<T>(this);
+            return new ParameterObjectReferenceCollection<T>(this);
         }
         #endregion
 
-        
         #region ICollection Members
 
+        public virtual int Count
+        {
+            get { return this.values.Length; }
+        }
+        
         /// <summary>
         /// Copies the elements of the ICollection to an Array, starting at a particular Array index.
         /// </summary>
         public virtual void CopyTo(Array array, int index)
         {
-            T[] valueArray = new T[this.values.Length];
-            int i = 0;
-            foreach (T val in this.values)
-            {
-                valueArray[i++] = (T)this.values.Clone();
-            }
-
-            valueArray.CopyTo(array, index);
+            this.values.CopyTo(array, index);
         }
 
         #endregion
-        
 
         #endregion
     }

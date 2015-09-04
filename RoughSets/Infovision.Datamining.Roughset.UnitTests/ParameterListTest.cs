@@ -75,7 +75,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parameterList.AddExclusion(exclusion2);
 
 
-            Int32 counter = 0;
+            int counter = 0;
             ParameterVectorEnumerator i_parm = (ParameterVectorEnumerator)parameterList.ParmValueEnumerator;
             while (i_parm.MoveNext())
             {

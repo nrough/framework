@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ValueInListRange()
         {
-            IParameter parmA = new ParameterValueList<int>("A", new int[] {1, 2, 3, 4, 7, 8, 9});
+            IParameter parmA = new ParameterValueCollection<int>("A", new int[] {1, 2, 3, 4, 7, 8, 9});
 
             Assert.IsTrue(parmA.InRange(1));
             Assert.IsTrue(parmA.InRange(4));

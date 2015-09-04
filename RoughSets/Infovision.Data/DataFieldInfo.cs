@@ -7,10 +7,7 @@ namespace Infovision.Data
 {
     [Serializable]
     public class DataFieldInfo
-    {
-        private string name;
-        private string alias;
-        private int id;
+    {               
         private Type fieldValueType;
         private Dictionary<long, object> indexDictionary;
         private Dictionary<object, long> valueDictionary;
@@ -30,30 +27,19 @@ namespace Infovision.Data
             this.Id = attributeId;
             this.Name = String.Format(CultureInfo.InvariantCulture, "a{0}", attributeId);
             this.histogram = new Histogram();
+
+            this.HasMissingValues = false;
+            this.MissingValue = null;
         }
 
         #endregion
 
         #region Properties
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public string NameAlias
-        {
-            get { return alias; }
-            set { alias = value; }
-        }
-
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
-
+        public string Name { get; set; }        
+        public string Alias { get; set; }        
+        public int Id { get; set; }
+        
         public Type FieldValueType
         {
             get { return fieldValueType; }
@@ -73,6 +59,10 @@ namespace Infovision.Data
         {
             get { return histogram.MaxElement; }
         }
+
+        public bool HasMissingValues { get; set; }
+        public object MissingValue { get; set; }
+        public long MissingValueInternal { get; set; }
 
         /*
         public FieldTypes FieldType
@@ -153,7 +143,6 @@ namespace Infovision.Data
             }
         }
         
-
         #endregion
         */
 
@@ -161,18 +150,45 @@ namespace Infovision.Data
 
         #region Methods
 
-        public void InitFromDataFieldInfo(DataFieldInfo dataFieldInfo)
+        public void InitFromDataFieldInfo(DataFieldInfo dataFieldInfo, bool initValues, bool initMissingValues)
         {
-            foreach (KeyValuePair<long, object> kvp in dataFieldInfo.indexDictionary)
+            if (initValues)
             {
-                this.AddInternal(kvp.Key, kvp.Value);
+                foreach (KeyValuePair<long, object> kvp in dataFieldInfo.indexDictionary)
+                {
+                    if (initMissingValues)
+                    {
+                        if (dataFieldInfo.HasMissingValues && dataFieldInfo.MissingValue.Equals(kvp.Value))
+                            this.AddInternal(kvp.Key, kvp.Value, true);
+                        else
+                            this.AddInternal(kvp.Key, kvp.Value, false);
+                    }
+                    else
+                    {
+                        if (dataFieldInfo.HasMissingValues && dataFieldInfo.MissingValueInternal == kvp.Key)
+                        {
+                            continue; //do nothing
+                            //this.AddInternal(kvp.Key, kvp.Value, true);
+                        }
+                        else
+                        {
+                            this.AddInternal(kvp.Key, kvp.Value, false);
+                        }
+                    }
+                }
+
+                this.maxValueInternalId = dataFieldInfo.maxValueInternalId;
             }
 
             this.fieldValueType = dataFieldInfo.FieldValueType;
             this.Name = dataFieldInfo.Name;
-            this.NameAlias = dataFieldInfo.NameAlias;
+            this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
-            this.maxValueInternalId = dataFieldInfo.maxValueInternalId;
+
+            if (initMissingValues)
+            {
+                this.HasMissingValues = dataFieldInfo.HasMissingValues;
+            }
         }
 
         public long External2Internal(object externalValue)
@@ -195,7 +211,7 @@ namespace Infovision.Data
             return null;
         }
 
-        public long Add(object value)
+        public long Add(object value, bool isMissing)
         {
             if (!valueDictionary.ContainsKey(value))
             {
@@ -203,19 +219,61 @@ namespace Infovision.Data
                 valueDictionary.Add(value, maxValueInternalId);
                 indexDictionary.Add(maxValueInternalId, value);
 
+                if (isMissing)
+                {
+                    if (this.MissingValue == null)
+                    {
+                        this.MissingValue = value;
+                        this.MissingValueInternal = maxValueInternalId;
+                    }
+                    else if (!this.MissingValue.Equals(value))
+                    {
+                        throw new InvalidOperationException(String.Format("Missing value is already set. Trying to substitute current value {0} with {1}", this.MissingValue, value));
+                    }
+                }
+
                 return maxValueInternalId;
             }
-            
+
+            if (isMissing)
+            {
+                if (this.MissingValue == null)
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing value, while the existing missing value is null", value));
+                else if (!this.MissingValue.Equals(value))
+                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing value, while the existing missing value is {1}", value, this.MissingValue));
+            }
+
             return this.External2Internal(value);
         }
 
-        public void AddInternal(long internalValue, object externalValue)
+        public void AddInternal(long internalValue, object externalValue, bool isMissing)
         {
             //TODO in case we just copy values from existing FieldInfo we need to increase maxValueInternalId
             if (!valueDictionary.ContainsKey(externalValue))
             {
                 valueDictionary.Add(externalValue, internalValue);
                 indexDictionary.Add(internalValue, externalValue);
+
+                if (isMissing)
+                {
+                    if (this.MissingValue == null)
+                    {
+                        this.MissingValue = externalValue;
+                        this.MissingValueInternal = internalValue;
+                    }
+                    else if (!this.MissingValue.Equals(externalValue))
+                    {
+                        throw new InvalidOperationException(String.Format("Missing value is already set. Trying to substitute current value {0} with {1}", this.MissingValue, externalValue));
+                    }
+                }
+            }
+
+            if (isMissing)
+            {
+                if (this.MissingValue == null)
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing value, while the existing missing value is null", externalValue));
+                else if (!this.MissingValue.Equals(externalValue))
+                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing value, while the existing missing value is {1}", externalValue, this.MissingValue));
             }
         }
 

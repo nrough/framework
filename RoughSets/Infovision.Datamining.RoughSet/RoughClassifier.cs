@@ -714,14 +714,14 @@ namespace Infovision.Datamining.Roughset
             {
                 int[] attr = reduct.Attributes.ToArray();
                 for (int i = 0; i < attr.Length; i++)
-                    sb.Append(dataStoreInfo.GetFieldInfo(attr[i]).NameAlias).Append(' ');
+                    sb.Append(dataStoreInfo.GetFieldInfo(attr[i]).Alias).Append(' ');
                 sb.AppendLine();
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
                     sb.AppendLine(String.Format("{0} => {1}={2}", 
                                     eq.Instance.ToString2(dataStoreInfo), 
-                                    dataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    dataStoreInfo.GetDecisionFieldInfo().Alias,
                                     dataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
                 sb.AppendLine();

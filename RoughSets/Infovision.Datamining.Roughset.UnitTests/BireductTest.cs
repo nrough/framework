@@ -114,11 +114,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
 
-            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
-            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
-            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
-            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
+            localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
 
 
             RoughClassifier roughClassifier = new RoughClassifier();
@@ -134,11 +134,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TestBireductGolf_2()
         {
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
-            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
-            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
-            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
+            localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
             
             
             /*
@@ -198,7 +198,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     if (perm[i] < 0)
                     {
-                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).NameAlias)).Append(' ');
+                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).Alias)).Append(' ');
                     }
                     else
                     {
@@ -256,11 +256,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
              */
             
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
-            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
-            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
-            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
+            localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
 
             int[][] attributesBireducts = new int[][]
             {
@@ -357,11 +357,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void PrintDecisionRulesForBireduct()
         {
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
-            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
-            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
-            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias = "d";
+            localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
+            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
 
 
             /*
@@ -421,7 +421,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     if (perm[i] < 0)
                     {
-                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).NameAlias)).Append(' ');
+                        sb.Append(14 + (-perm[i])).Append(String.Format("({0})", localDataStore.DataStoreInfo.GetFieldInfo(-perm[i]).Alias)).Append(' ');
                     }
                     else
                     {
@@ -436,7 +436,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),
-                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
 
@@ -447,7 +447,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),
-                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().NameAlias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
 

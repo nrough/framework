@@ -79,20 +79,18 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);
 
 			if (this.DataStore != null)
-			{
-				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
-
-				//this.MaxReductLength = numOfAttr;
-				//this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
-
-				this.MinReductLength = 1;
-
+			{				
 				this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
 				this.WeightGenerator.Generate();
 
-				ReductCrisp crispReduct = this.GetNextReduct(this.WeightGenerator.Weights, numOfAttr, numOfAttr) as ReductCrisp;
-				crispReduct.Reduce();
-				this.MaxReductLength = crispReduct.Attributes.Count;
+				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+				//this.MaxReductLength = numOfAttr;
+				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
+				this.MinReductLength = 1;
+
+				//ReductCrisp crispReduct = this.GetNextReduct(this.WeightGenerator.Weights, numOfAttr, numOfAttr) as ReductCrisp;
+				//crispReduct.Reduce();
+				//this.MaxReductLength = crispReduct.Attributes.Count;
 
 				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights, 0, 0);
 				double M = new InformationMeasureWeights().Calc(emptyReduct);

@@ -6,9 +6,12 @@ namespace Infovision.Data
     public interface IDataReader
     {
         DataStoreInfo Analyze();
-        void Load(DataStoreInfo dataStoreInfo, DataStore dataStore, DataStoreInfo referenceDataStoreInfo);
+        void Load(DataStoreInfo dataStoreInfo, DataStore dataStore);
         string DataName { get; }
         int DecisionId { get; set; }
+        string MissingValue { get; set; }
+        DataStoreInfo ReferenceDataStoreInfo { get; set; }
+        bool HandleMissingData { get; set; }
     }
     
     public abstract class DataReaderFile : IDataReader
@@ -33,6 +36,16 @@ namespace Infovision.Data
             set { this.decisionId = value; }
         }
 
+        public bool HandleMissingData { get; set; }
+        public string MissingValue { get; set; }
+        public DataStoreInfo ReferenceDataStoreInfo { get; set; }
+
+        public DataReaderFile()
+        {
+            this.MissingValue = "?";
+            this.HandleMissingData = true;
+        }
+
         public static IDataReader Construct(FileFormat fileFormat, string fileName)
         {
             IDataReader dataReader;
@@ -46,6 +59,10 @@ namespace Infovision.Data
                     dataReader = new DataReaderFileRses(fileName);
                     break;
 
+                case FileFormat.Rses1_1:
+                    dataReader = new DataReaderFileRses11(fileName);
+                    break;
+
                 default:
                     throw new System.NotImplementedException("");
             }
@@ -54,6 +71,6 @@ namespace Infovision.Data
         }
 
         public abstract DataStoreInfo Analyze();
-        public abstract void Load(DataStoreInfo dataStoreInfo, DataStore dataStore, DataStoreInfo referenceDataStoreInfo);
+        public abstract void Load(DataStoreInfo dataStoreInfo, DataStore dataStore);
     }
 }

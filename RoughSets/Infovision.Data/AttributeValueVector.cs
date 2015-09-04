@@ -137,7 +137,7 @@ namespace Infovision.Data
             for (int i = 0; i < attributes.Length; i++)
             {
                 sb.Append(String.Format("{0}={1}", 
-                        dataStoreInfo.GetFieldInfo(attributes[i]).NameAlias, 
+                        dataStoreInfo.GetFieldInfo(attributes[i]).Alias, 
                         dataStoreInfo.GetFieldInfo(attributes[i]).Internal2External(values[i])));
                 if (i != attributes.Length - 1)
                     sb.Append(" & ");

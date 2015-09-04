@@ -125,6 +125,7 @@
     <Compile Include="Clustering\KMeans.cs" />
     <Compile Include="Convergence.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
+    <Compile Include="Filters\Unsupervised\Attribute\ReplaceMissingValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />
   </ItemGroup>

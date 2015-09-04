@@ -153,8 +153,8 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < attr.Length; i++)
             {
                 DataFieldInfo dataField = this.DataStore.DataStoreInfo.GetFieldInfo(attr[i]);
-                string attrName = !String.IsNullOrEmpty(dataField.NameAlias)
-                                ? dataField.NameAlias
+                string attrName = !String.IsNullOrEmpty(dataField.Alias)
+                                ? dataField.Alias
                                 : !String.IsNullOrEmpty(dataField.Name)
                                 ? dataField.Name
                                 : (-attr[i]).ToString();

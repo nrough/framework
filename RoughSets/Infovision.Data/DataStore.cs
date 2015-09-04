@@ -9,8 +9,7 @@ namespace Infovision.Data
     public class DataStore : IDataTable
     {
         #region Members
-
-        private string name;
+        
         private long nextObjectId = 1;
         private long[] data;
         private long capacity;
@@ -20,16 +19,13 @@ namespace Infovision.Data
         private Dictionary<int, long> index2ObjectId;
         private DataStoreInfo dataStoreInfo;
         private Dictionary<long, List<int>> decisionValue2ObjectIndex;
+        private bool isDecisionMapCalculated = false;        
 
         #endregion        
 
         #region Properties
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; }
 
         public DataStoreInfo DataStoreInfo
         {
@@ -40,7 +36,7 @@ namespace Infovision.Data
         public int NumberOfRecords 
         {
             get { return this.DataStoreInfo.NumberOfRecords; } 
-        }
+        }        
         
         #endregion
 
@@ -49,7 +45,7 @@ namespace Infovision.Data
         public DataStore(DataStoreInfo dataStoreInfo)
         {
             this.dataStoreInfo = dataStoreInfo;
-            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0);
+            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.2);            
         }
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
@@ -59,8 +55,7 @@ namespace Infovision.Data
             this.capacityFactor = capacityFactor;
             lastIndex = -1;
             objectId2Index = new Dictionary<long, int>(capacity);
-            index2ObjectId = new Dictionary<int, long>(capacity);
-            decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
+            index2ObjectId = new Dictionary<int, long>(capacity);            
         }
 
         #endregion
@@ -91,14 +86,22 @@ namespace Infovision.Data
 
         private bool CheckResize()
         {
-            if ((double)lastIndex + 0.0001 > (double)capacity * (1 - capacityFactor) + 1.0)
+            if (capacity == 0)
                 return true;
+
+            //if ((double)lastIndex > (double)capacity * (1 - capacityFactor) + 1.0)
+            //    return true;
+
+            if (lastIndex >= capacity)
+                return true;
+
             return false;
+
         }
 
         private void Resize()
         {
-            long newCapacity = Convert.ToInt32((double)capacity * (1 + capacityFactor));
+            long newCapacity = capacity != 0 ? Convert.ToInt32((double)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
@@ -128,19 +131,13 @@ namespace Infovision.Data
                 long value = record[fieldId];
                 data[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
                 this.dataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
-            }
-
-            long decisionValue = record[this.DataStoreInfo.DecisionFieldId];            
-            List<int> objectList = null;
-            if (!decisionValue2ObjectIndex.TryGetValue(decisionValue, out objectList))
-            {
-                objectList = new List<int>();
-                decisionValue2ObjectIndex[decisionValue] = objectList;
-            }
-            objectList.Add(lastIndex);
+            }            
 
             index2ObjectId.Add(lastIndex, record.ObjectId);
             objectId2Index.Add(record.ObjectId, lastIndex);
+            record.ObjectIdx = lastIndex;
+
+            this.dataStoreInfo.RecordInserted(record);
         }
 
         public DataRecordInternal GetRecordByObjectId(long objectId)
@@ -241,12 +238,39 @@ namespace Infovision.Data
         public int[] GetObjectIndexes(long decisionValue)
         {
             List<int> result = null;
-            if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+            if (this.isDecisionMapCalculated == false)
             {
-                return new int[] { };
+                this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
+                foreach (int objectIdx in this.GetObjectIndexes())
+                {
+                    long decision = this.GetDecisionValue(objectIdx);
+                    result = null;
+                    if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+                    {
+                        result = new List<int>();
+                        this.decisionValue2ObjectIndex[decisionValue] = result;
+                    }
+                    result.Add(objectIdx);                    
+                }
+                this.isDecisionMapCalculated = true;
             }
 
+            result = null;
+            if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+                return new int[] { };
+
             return this.decisionValue2ObjectIndex[decisionValue].ToArray();
+        }
+
+        public void DecisionChanged()
+        {
+            this.isDecisionMapCalculated = false;
+        }
+
+        public void SetDecisionFieldId(int fieldId)
+        {
+            this.DataStoreInfo.DecisionFieldId = fieldId;
+            this.DecisionChanged();
         }
 
         public long GetDecisionValue(int objectIndex)
@@ -279,55 +303,75 @@ namespace Infovision.Data
             return this.DataStoreInfo.PriorDecisionProbability(decisionValue);
         }
 
-        public string ToStringInternal(string separator)
+        public string ToStringInternal(string separator, bool includeHeader = false)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            stringBuilder.Append(this.ToStringHeader(separator));
+            if (includeHeader)
+                stringBuilder.Append(this.ToStringHeader(separator));
             
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
                 //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
-                    stringBuilder.AppendFormat("{0}{1}", record[fieldId], separator);
+                    if (position == this.DataStoreInfo.NumberOfFields)
+                        stringBuilder.AppendFormat("{0}", record[fieldId]);
+                    else
+                        stringBuilder.AppendFormat("{0}{1}", record[fieldId], separator);
                 }
                 stringBuilder.Append(Environment.NewLine);
-            }
-            stringBuilder.Append(Environment.NewLine);
+            }            
             return stringBuilder.ToString();
         }
 
-        public string ToStringExternal(string separator)
+        public string ToStringExternal(string separator, bool includeHeader = false)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            
-            stringBuilder.Append(this.ToStringHeader(separator));
+
+            if (includeHeader)
+                stringBuilder.Append(this.ToStringHeader(separator));
 
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
                 //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
+                    position++;
                     DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
                     object externalVal = attr.Internal2External(record[fieldId]);
-                    string externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
-                    stringBuilder.AppendFormat("{0}{1}", externalValStr, separator);
+                    string externalValStr = String.Empty;
+                    
+                    if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
+                        externalValStr = this.DataStoreInfo.MissingValue;
+                    else
+                        externalValStr = (externalVal != null) ? externalVal.ToString() : "N/A";
+                    
+                    if(position == this.DataStoreInfo.NumberOfFields)
+                        stringBuilder.AppendFormat("{0}", externalValStr);
+                    else
+                        stringBuilder.AppendFormat("{0}{1}", externalValStr, separator);
                 }
                 stringBuilder.Append(Environment.NewLine);                
-            }
-            stringBuilder.Append(Environment.NewLine);
+            }            
             return stringBuilder.ToString();
         }
 
         public string ToStringHeader(string separator)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            int position = 0;
             foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
             {
-                stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
+                position++;
+                if(position == this.DataStoreInfo.NumberOfFields)
+                    stringBuilder.AppendFormat("{0}", field.Name);
+                else
+                    stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
             }
             stringBuilder.Append(Environment.NewLine);
             return stringBuilder.ToString();
@@ -336,25 +380,22 @@ namespace Infovision.Data
         public static DataStore Load(string fileName, FileFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
             IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
-            DataStore dataStore = DataStore.Load(fileReader, referenceDataStoreInfo);
+            fileReader.HandleMissingData = true;
+            fileReader.MissingValue = "?";
+
+            fileReader.ReferenceDataStoreInfo = referenceDataStoreInfo;
+            DataStore dataStore = DataStore.Load(fileReader);
             return dataStore;
         }
 
-        public static DataStore Load(IDataReader dataReader, DataStoreInfo referenceDataStoreInfo)
+        public static DataStore Load(IDataReader dataReader)
         {
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);
             dataStore.Name = dataReader.DataName;
-
-            dataReader.Load(dataStoreInfo, dataStore, referenceDataStoreInfo);
-
+            dataReader.Load(dataStoreInfo, dataStore);            
             return dataStore;
-        }
-        
-        public static DataStore Load(IDataReader dataReader)
-        {
-            return DataStore.Load(dataReader, null);
-        }
+        }              
 
         public static DataStore Load(string fileName, FileFormat fileFormat)
         {

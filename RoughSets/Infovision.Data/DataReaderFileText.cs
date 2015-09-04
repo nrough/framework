@@ -10,35 +10,12 @@ namespace Infovision.Data
     {
         #region Members
         
-        private Char[] fieldDelimiter = new Char[] { ' ', ';', '\t' };
+        private Char[] fieldDelimiter = new Char[] { ' ', ';', '\t', ',' };
         private int header = 0;
-
         private int expectedColums = -1;
-        private int expectedRows = -1;
-
+        private int expectedRows = -1;        
         private Dictionary<int, Type> typePool = new Dictionary<int, Type>();
-
-        #endregion
-
-        #region Constructors
-
-        public DataReaderFileCsv(string filePath)
-        {
-            this.FileName = filePath;
-        }
-
-        public DataReaderFileCsv(string fileName, int header)
-            : this(fileName)
-        {
-            this.header = header;
-        }
-
-        public DataReaderFileCsv(string fileName, int header, char[] fieldDelimiter)
-            : this(fileName, header)
-        {
-            this.fieldDelimiter = fieldDelimiter;        
-        }
-
+        private Dictionary<int, int> missingValuesCount = new Dictionary<int, int>();
         #endregion
 
         #region Properties
@@ -57,6 +34,28 @@ namespace Infovision.Data
 
         #endregion
 
+        #region Constructors
+
+        public DataReaderFileCsv(string filePath)
+            : base()
+        {
+            this.FileName = filePath;
+        }
+
+        public DataReaderFileCsv(string fileName, int header)
+            : this(fileName)
+        {
+            this.header = header;
+        }
+
+        public DataReaderFileCsv(string fileName, int header, char[] fieldDelimiter)
+            : this(fileName, header)
+        {
+            this.fieldDelimiter = fieldDelimiter;        
+        }
+
+        #endregion        
+
         #region Methods
 
         public char[] GetFieldDelimiter()
@@ -67,6 +66,8 @@ namespace Infovision.Data
         public override DataStoreInfo Analyze()
         {
             DataStoreInfo dataStoreInfo = new DataStoreInfo();
+            dataStoreInfo.MissingValue = this.MissingValue;
+
             string line = String.Empty;
             int rows = 0;
 
@@ -83,7 +84,7 @@ namespace Infovision.Data
                         line = streamReader.ReadLine();
                     }
                 }
-            }
+            }            
 
             if (!this.CheckNumberOfRows(rows))
             {
@@ -108,7 +109,13 @@ namespace Infovision.Data
                     fieldType = FieldTypes.Decision;
                 }
 
-                dataStoreInfo.AddFieldInfo(new DataFieldInfo(i, this.AttributeType(i-1)), fieldType);
+                DataFieldInfo fieldInfo = new DataFieldInfo(i, this.AttributeType(i-1));
+                if (this.missingValuesCount.ContainsKey(i - 1))
+                {
+                    fieldInfo.HasMissingValues = true;                   
+                }
+
+                dataStoreInfo.AddFieldInfo(fieldInfo, fieldType);
             }
 
             return dataStoreInfo;
@@ -153,11 +160,11 @@ namespace Infovision.Data
             return true;
         }
 
-        public override void Load(DataStoreInfo dataStoreInfo, DataStore dataStore, DataStoreInfo referenceDataStoreInfo)
+        public override void Load(DataStoreInfo dataStoreInfo, DataStore dataStore)
         {
-            int numberOfFields = referenceDataStoreInfo != null ? referenceDataStoreInfo.NumberOfFields : dataStoreInfo.NumberOfFields;
+            int numberOfFields = this.ReferenceDataStoreInfo != null ? this.ReferenceDataStoreInfo.NumberOfFields : dataStoreInfo.NumberOfFields;
             int[] fieldId = new int[numberOfFields];
-            Int64[] fieldValue = new Int64[numberOfFields];
+            long[] fieldValue = new long[numberOfFields];
             string line = String.Empty;
 
             using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
@@ -183,48 +190,81 @@ namespace Infovision.Data
 
                         for (int i = 0; i < fields.Length; i++)
                         {
-                            switch (typeDict[dataStoreInfo.GetFieldInfo(i + 1).FieldValueType])
-                            {
-                                case 0:
-                                    typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
-                                    break;
+                            if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
+                            {                                                                                                
+                                switch (typeDict[dataStoreInfo.GetFieldInfo(i + 1).FieldValueType])
+                                {
+                                    case 0:
+                                        typedFieldValues[i] = Int32.MinValue;
+                                        break;
 
-                                case 1:
-                                    typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
-                                    break;
+                                    case 1:
+                                        typedFieldValues[i] = Double.MinValue;
+                                        break;
 
-                                case 2:
-                                    typedFieldValues[i] = fields[i].Clone();
-                                    break;
+                                    case 2:
+                                        typedFieldValues[i] = this.MissingValue;
+                                        break;
 
-                                default:
-                                    throw new System.InvalidOperationException();
-                            }
-                        }
-
-                        for (int col = 0; col < dataStoreInfo.NumberOfFields; col++)
-                        {
-                            fieldId[col] = col + 1;
-
-                            long internalValue;
-                            if (referenceDataStoreInfo != null)
-                            {
-                                internalValue = referenceDataStoreInfo.AddFieldValue(fieldId[col], typedFieldValues[col]);
-                                dataStoreInfo.AddFieldInternalValue(fieldId[col], internalValue, typedFieldValues[col]);
+                                    default:
+                                        throw new System.InvalidOperationException();
+                                }
                             }
                             else
                             {
-                                internalValue = dataStoreInfo.AddFieldValue(fieldId[col], typedFieldValues[col]);
+                                switch (typeDict[dataStoreInfo.GetFieldInfo(i + 1).FieldValueType])
+                                {
+                                    case 0:
+                                        typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        break;
+
+                                    case 1:
+                                        typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        break;
+
+                                    case 2:
+                                        typedFieldValues[i] = fields[i].Clone();
+                                        break;
+
+                                    default:
+                                        throw new System.InvalidOperationException();
+                                }
+                            }
+                        }
+
+                        for (int i = 0; i < dataStoreInfo.NumberOfFields; i++)
+                        {
+                            fieldId[i] = i + 1;                            
+                            
+                            long internalValue;
+                            if (this.ReferenceDataStoreInfo != null)
+                            {
+                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
+                                {
+                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], true);
+                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], true);
+                                }
+                                else
+                                {
+                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], false);
+                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], false);
+                                }
+                            }
+                            else
+                            {
+                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
+                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], true);
+                                else
+                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], false);
                             }
 
-                            fieldValue[col] = internalValue;
+                            fieldValue[i] = internalValue;
                         }
 
                         dataStore.Insert(new DataRecordInternal(fieldId, fieldValue));
                     }
                 }
             }
-
         }
 
         protected virtual void AnalyzeHeader(StreamReader streamReader)
@@ -262,7 +302,18 @@ namespace Infovision.Data
             for (int i = 0; i < fields.Length; i++)
             {
                 string value = fields[i];
-                this.AddValue2TypePool(i, value);
+                if (this.HandleMissingData && String.Equals(value, this.MissingValue))
+                {
+                    int count = 0;
+                    if (missingValuesCount.TryGetValue(i, out count))
+                        missingValuesCount[i] = count + 1;
+                    else
+                        missingValuesCount[i] = 1;
+                }
+                else
+                {
+                    this.AddValue2TypePool(i, value);
+                }
             }
         }
 
@@ -316,6 +367,11 @@ namespace Infovision.Data
     public class DataReaderFileRses : DataReaderFileCsv
     {   
         public DataReaderFileRses(string filePath)
+            : this(filePath, 1)
+        {
+        }
+
+        public DataReaderFileRses(string filePath, int header)
             : base(filePath, 1)
         {
         }
@@ -335,6 +391,23 @@ namespace Infovision.Data
             this.ExpectedColumns = Int32.Parse(fields[1], CultureInfo.InvariantCulture);
             this.ExpectedRows = Int32.Parse(fields[0], CultureInfo.InvariantCulture);
             this.DecisionId = this.ExpectedColumns;
+        }
+    }
+
+    public class DataReaderFileRses11 : DataReaderFileRses
+    {
+        public DataReaderFileRses11(string filePath)
+            : base(filePath, 1)
+        {
+        }        
+
+        protected override void DecodeFileInfo(string fileInfo)
+        {
+            string[] fields = fileInfo.Split(this.GetFieldDelimiter(), StringSplitOptions.RemoveEmptyEntries);
+
+            base.DecodeFileInfo(fileInfo);
+
+            this.DecisionId = Int32.Parse(fields[2], CultureInfo.InvariantCulture);                        
         }
     }
 }

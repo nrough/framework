@@ -72,14 +72,14 @@ namespace Infovision.Data
                 this.GenerateSplit();
 
             DataStoreInfo dataStoreInfo1 = new DataStoreInfo();
-            dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo);
+            dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
             dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[this.ActiveFold - 1];
 
             dataStore1 = new DataStore(dataStoreInfo1);
             dataStore1.Name = dataStore.Name + "-" + this.ActiveFold.ToString();
             
             DataStoreInfo dataStoreInfo2 = new DataStoreInfo();
-            dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo);
+            dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
             dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold - 1];
            
             dataStore2 = new DataStore(dataStoreInfo2);

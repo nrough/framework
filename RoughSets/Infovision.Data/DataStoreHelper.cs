@@ -31,7 +31,7 @@ namespace Infovision.Data
 
                 DataFieldInfo fieldInfo = new DataFieldInfo(i + 1, columnType);
                 fieldInfo.Name = col.ColumnName;
-                fieldInfo.NameAlias = col.ColumnName;
+                fieldInfo.Alias = col.ColumnName;
                 fieldIds[i] = fieldInfo.Id;
                 
                 if (i == idIdx || codification == null)
@@ -40,7 +40,8 @@ namespace Infovision.Data
                     for (int j = 0; j < source.Rows.Count; j++)
                     {
                         int idValue = source.Rows[j].Field<int>(i);
-                        fieldInfo.AddInternal((long)idValue, idValue);
+                        //We assume that all missing values are replaced
+                        fieldInfo.AddInternal((long)idValue, idValue, false);
                     }
                 }
                 //Codification does not contain all columns e.g. continues attributes and id
@@ -48,7 +49,8 @@ namespace Infovision.Data
                 {                    
                     foreach (KeyValuePair<string, int> kvp in codification.Columns[col.ColumnName].Mapping)
                     {
-                        fieldInfo.AddInternal((long)kvp.Value, kvp.Key);
+                        //We assume that all missing values are replaced
+                        fieldInfo.AddInternal((long)kvp.Value, kvp.Key, false);
                     }
                 }
                                 
@@ -81,7 +83,7 @@ namespace Infovision.Data
 
                 DataRecordInternal dataStoreRecord = new DataRecordInternal(fieldIds, vector);
                 dataStoreRecord.ObjectId = vector[idIdx];
-                
+                                
                 //TODO Check this idIdx is this record index in DataStore?
                 dataStoreRecord.ObjectIdx = idIdx;
 

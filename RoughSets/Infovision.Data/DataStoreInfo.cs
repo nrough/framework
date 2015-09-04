@@ -7,15 +7,13 @@ using Infovision.Utils;
 namespace Infovision.Data
 {
     /// <summary>
-    /// Provides meta-data information about dataset
+    /// Provides meta information about dataset
     /// </summary>
     [Serializable]
     public class DataStoreInfo : Infovision.Data.IObjectSetInfo
     {
         #region Members
-        
-        private int recordCount;
-        private int fieldCount;
+               
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;
         private int decisionFieldId;
@@ -27,18 +25,9 @@ namespace Infovision.Data
 
         #region Properties
 
-        public int NumberOfRecords
-        {
-            get { return this.recordCount; }
-            set { this.recordCount = value; }
-        }
-
-        public int NumberOfFields
-        {
-            get { return this.fieldCount; }
-            set { this.fieldCount = value; }
-        }
-
+        public int NumberOfRecords { get; set; }        
+        public int NumberOfFields { get; set; }
+        
         public int NumberOfDecisionValues
         {
             get { return this.GetFieldInfo(this.DecisionFieldId).InternalValues().Count; }
@@ -57,7 +46,16 @@ namespace Infovision.Data
         public int DecisionFieldId
         {
             get { return decisionFieldId; }
-            set { this.decisionFieldId = value; }
+            set 
+            {
+                if (this.decisionFieldId != value)
+                {
+                    int prevDecisionFieldId = this.decisionFieldId;
+                    this.decisionFieldId = value;
+                    fieldTypes[prevDecisionFieldId] = FieldTypes.Standard;
+                    fieldTypes[this.decisionFieldId] = FieldTypes.Decision;                    
+                }
+            }
         }
 
         public DataFieldInfo DecisionInfo
@@ -68,7 +66,12 @@ namespace Infovision.Data
         public IEnumerable<DataFieldInfo> Fields
         {
             get { return this.fields.Values; }
-        }        
+        }
+
+        public bool HasMissingData { get; set; }
+        public string MissingValue { get; set; }
+
+        #endregion
 
         #region Constructor
 
@@ -80,9 +83,7 @@ namespace Infovision.Data
             }
         }
 
-        #endregion
-
-        #endregion
+        #endregion        
 
         #region Methods        
 
@@ -143,6 +144,9 @@ namespace Infovision.Data
             {
                 this.decisionFieldId = fieldInfo.Id;
             }
+
+            if (fieldInfo.HasMissingValues)
+                this.HasMissingData = true;
         }
 
         public DataFieldInfo GetFieldInfo(int fieldId)
@@ -155,15 +159,15 @@ namespace Infovision.Data
             return this.DecisionInfo;
         }
 
-        public long AddFieldValue(int fieldId, object externalValue)
+        public long AddFieldValue(int fieldId, object externalValue, bool isMissing)
         {
-            return this.GetFieldInfo(fieldId).Add(externalValue);
+            return this.GetFieldInfo(fieldId).Add(externalValue, isMissing);
         }
 
-        public void AddFieldInternalValue(int fieldId, long internalValue, object externalValue)
+        public void AddFieldInternalValue(int fieldId, long internalValue, object externalValue, bool isMissing)
         {
             DataFieldInfo attributeInfo = this.GetFieldInfo(fieldId);
-            attributeInfo.AddInternal(internalValue, externalValue);
+            attributeInfo.AddInternal(internalValue, externalValue, isMissing);
         }
 
         /*
@@ -243,21 +247,33 @@ namespace Infovision.Data
             return stringBuilder.ToString();
         }
 
-        public void InitFromDataStoreInfo(DataStoreInfo dataStoreInfo)
+        public void InitFromDataStoreInfo(DataStoreInfo dataStoreInfo, bool initValues, bool initMissingValues)
         {
-            this.recordCount            = 0;
-            this.decisionFieldId        = dataStoreInfo.DecisionFieldId;
-            this.fieldCount             = dataStoreInfo.NumberOfFields;    
-            this.minFieldId             = dataStoreInfo.MinFieldId;
-            this.maxFieldId             = dataStoreInfo.MaxFieldId;
+            this.NumberOfRecords = 0;
+            
+            this.decisionFieldId = dataStoreInfo.DecisionFieldId;
+            this.NumberOfFields = dataStoreInfo.NumberOfFields;
+
+            if (initValues)
+            {
+                this.minFieldId = dataStoreInfo.MinFieldId;
+                this.maxFieldId = dataStoreInfo.MaxFieldId;
+            }
 
             this.fields = new Dictionary<int, DataFieldInfo>(dataStoreInfo.NumberOfFields);
-            foreach(KeyValuePair<int, DataFieldInfo > kvp in dataStoreInfo.fields)
+            foreach (KeyValuePair<int, DataFieldInfo> kvp in dataStoreInfo.fields)
             {
                 DataFieldInfo dfi = new DataFieldInfo(kvp.Key, kvp.Value.FieldValueType);
-                dfi.InitFromDataFieldInfo(kvp.Value);
+                dfi.InitFromDataFieldInfo(kvp.Value, initValues, initMissingValues);
                 this.AddFieldInfo(dfi, dataStoreInfo.fieldTypes[kvp.Key]);
-            }         
+            }
+
+            if (initMissingValues)
+                this.HasMissingData = dataStoreInfo.HasMissingData;
+        }        
+
+        public void RecordInserted(DataRecordInternal record)
+        {            
         }
 
         #endregion

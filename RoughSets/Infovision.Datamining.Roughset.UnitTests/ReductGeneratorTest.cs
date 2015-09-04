@@ -54,10 +54,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
 
-            localDataStore.DataStoreInfo.GetFieldInfo(1).NameAlias = "O";
-            localDataStore.DataStoreInfo.GetFieldInfo(2).NameAlias = "T";
-            localDataStore.DataStoreInfo.GetFieldInfo(3).NameAlias = "H";
-            localDataStore.DataStoreInfo.GetFieldInfo(4).NameAlias = "W";
+            localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
+            localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
+            localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
+            localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
 
             RoughClassifier roughClassifier = new RoughClassifier();
 
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             }
                             if (permElement < 0)
                             {
-                                Console.Write("{0}", localDataStore.DataStoreInfo.GetFieldInfo(-permElement).NameAlias);
+                                Console.Write("{0}", localDataStore.DataStoreInfo.GetFieldInfo(-permElement).Alias);
                             }
                             else
                             {

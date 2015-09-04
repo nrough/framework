@@ -132,7 +132,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.InitPartitions();
             int[] attributeArray = attributeSet.ToArray();
-            foreach (int objectIndex in dataStore.GetObjectIndexes()
+            foreach (int objectIndex in dataStore.GetObjectIndexes())
                 this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
         }
 

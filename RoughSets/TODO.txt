@@ -1,0 +1,2 @@
+1. Funkcja zwracaj¹ca dane o plikach testowych: ID, PLik testowy, plik treningowy, czy u¿ywaæ cross walidacji
+2. 

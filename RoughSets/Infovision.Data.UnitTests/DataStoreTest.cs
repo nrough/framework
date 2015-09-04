@@ -16,8 +16,8 @@ namespace Infovision.Data.UnitTests
 
         public DataStoreTest()
         {
-            string trainFileName = @"monks-1.train";
-            string testFileName = @"monks-1.test";
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -222,16 +222,32 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void OrderByTest()
         {
-            int[] orderBy = new int[] { 1, 3, 5 };
-            DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(this.dataStoreTrain, orderBy);
-            int[] sortedArray = this.dataStoreTrain.OrderBy(orderBy, comparer);
             
-            for (int i = 1; i < this.dataStoreTrain.NumberOfRecords; i++)
-            {
-                AttributeValueVector record = this.dataStoreTrain.GetDataVector(sortedArray[i - 1], orderBy);
-                int result = comparer.Compare(sortedArray[i - 1], sortedArray[i]);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+                
+            int[][] orderBy = new int[][] 
+            { 
+                new int[] { 1, 3, 5 }, 
+                new int[] { 2, 1}, 
+                new int[] { 5, 3, 2},
+                new int[] { 19, 17, 18, 15, 14, 13, 12, 11, 7, 6, 4, 3, 2, 1},
+                new int[] { 19, 11, 15, 14, 10, 12, 7, 6, 5, 3, 2, 1}
+            };
 
-                Assert.AreNotEqual(1, result);
+            for (int i = 0; i < orderBy.Length; i++)
+            {
+                DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(data, orderBy[i]);
+                int[] sortedArray = data.OrderBy(orderBy[i], comparer);
+
+                for (int j = 1; j < data.NumberOfRecords; j++)
+                {
+                    AttributeValueVector record = data.GetDataVector(sortedArray[j - 1], orderBy[i]);                                        
+                    
+                    int result = comparer.Compare(sortedArray[j - 1], sortedArray[j]);
+                    Assert.AreNotEqual(1, result);
+                    
+                    Console.WriteLine(record);
+                }
             }
         }
 

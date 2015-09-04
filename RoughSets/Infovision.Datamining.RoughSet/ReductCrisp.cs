@@ -132,8 +132,8 @@ namespace Infovision.Datamining.Roughset
 
 				//add EQ class to map and calculate intersection of decisions
 				PascalSet existingGeneralDecisions = null;
-				generalDecisionMap.TryGetValue(instance, out existingGeneralDecisions);
-				if (existingGeneralDecisions != null)
+
+				if (generalDecisionMap.TryGetValue(instance, out existingGeneralDecisions))
 				{
 					existingGeneralDecisions = existingGeneralDecisions.Intersection(eq.DecisionSet);
 				}
@@ -144,7 +144,7 @@ namespace Infovision.Datamining.Roughset
 				generalDecisionMap[instance] = existingGeneralDecisions;
 
 				//empty intersection => we cannot remove the attribute
-				if (existingGeneralDecisions.Count == 0)
+				if (existingGeneralDecisions.GetCardinality() == 0)
 				{
 					return false;
 				}

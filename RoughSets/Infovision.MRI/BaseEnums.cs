@@ -14,11 +14,13 @@ namespace Infovision.MRI
         Int8 = 1,
         Int16 = 2,
         Int32 = 3,
-        UInt8 = 4,
-        UInt16 = 5,
-        Uint = 6,
-        Float = 7,
-        Double = 8
+        Int64 = 4,
+        UInt8 = 5,
+        UInt16 = 6,
+        UInt32 = 7,
+        UInt64 = 8,
+        Float = 9,
+        Double = 10
     }
 
     public enum ITKImageType

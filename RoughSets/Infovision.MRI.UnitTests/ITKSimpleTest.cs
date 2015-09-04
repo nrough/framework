@@ -139,7 +139,7 @@ namespace Infovision.MRI.UnitTests
             reader.SetFileName(fileName);
             itk.simple.Image image = reader.Execute();
 
-            // find all java processes running Minecraft servers
+            // find all java processes running ImageJ
             var query =
                 "SELECT ProcessId "
                 + "FROM Win32_Process "

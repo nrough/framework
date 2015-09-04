@@ -63,8 +63,8 @@ namespace Infovision.MRI
 			
 			VectorOfImage imageSeries = new VectorOfImage((int)depth);
 			double[] pixels = new double[width * height];
-			VectorUint inSize = new VectorUInt32(new uint[] { width, height, 0 });
-			VectorUint position = new VectorUInt32(new uint[] { 0, 0 });
+			VectorUInt32 inSize = new VectorUInt32(new uint[] { width, height, 0 });
+			VectorUInt32 position = new VectorUInt32(new uint[] { 0, 0 });
 
 			ImageITK imageITK = ImageITK.GetImageITK(image);
 
@@ -74,8 +74,8 @@ namespace Infovision.MRI
 										   ? SimpleITK.Extract(imageITK.ItkImage, inSize, new VectorInt32(new int[] { 0, 0, z }))
 										   : imageITK.ItkImage;
 
-				itk.simple.Image slicedouble = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64);
-				slicedouble = SimpleITK.Normalize(sliceDouble);
+				itk.simple.Image sliceDouble = SimpleITK.Cast(slice, PixelIDValueEnum.sitkFloat64);
+				sliceDouble = SimpleITK.Normalize(sliceDouble);
 				Marshal.Copy(sliceDouble.GetBufferAsDouble(), pixels, 0, (int)width * (int)height);
 				
 				itk.simple.Image result = new itk.simple.Image(sliceDouble);

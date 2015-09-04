@@ -16,8 +16,8 @@ namespace Infovision.MRI
             bool isImage3D = (image.Depth >= 1);
 
             VectorOfImage imageSeries = new VectorOfImage((int)depth);
-            VectorUint inSize = new VectorUInt32(new uint[] { width, height, 0 });
-            Vectorint inIndex = new VectorInt32(new int[] { 0, 0, 0 });
+            VectorUInt32 inSize = new VectorUInt32(new uint[] { width, height, 0 });
+            VectorInt32 inIndex = new VectorInt32(new int[] { 0, 0, 0 });
 
             ImageITK imageITK = ImageITK.GetImageITK(image);
 

@@ -11,14 +11,16 @@ namespace Infovision.MRI
         {
             switch (pixelType)
             {
-                case PixelType.double :  return (double) double.MaxValue;
-                case PixelType.Int16 :   return (double) short.MaxValue;
-                case PixelType.UInt8 :   return (double) byte.MaxValue;
-                case PixelType.UInt16 :  return (double) ushort.MaxValue;
-                case PixelType.Uint :  return (double) uint.MaxValue;
-                case PixelType.Int8 :    return (double) sbyte.MaxValue;
-                case PixelType.int :   return (double) int.MaxValue;
-                case PixelType.Float :   return (double) float.MaxValue;
+                case PixelType.Double : return (double) Double.MaxValue;
+                case PixelType.Int16 : return (double) Int16.MaxValue;
+                case PixelType.UInt8 : return (double) Byte.MaxValue;
+                case PixelType.UInt16 : return (double) UInt16.MaxValue;
+                case PixelType.UInt32 : return (double) UInt32.MaxValue;
+                case PixelType.Int8 : return (double) sbyte.MaxValue;
+                case PixelType.Int32 : return (double) Int32.MaxValue;
+                case PixelType.Float : return (double) float.MaxValue;
+                case PixelType.Int64: return (double)Int64.MaxValue;
+                case PixelType.UInt64: return (double)Int64.MaxValue;
                 
                 default:
                     throw new InvalidOperationException("Unknown pixel type");
@@ -37,7 +39,9 @@ namespace Infovision.MRI
                 { typeof(ushort), () => maxPixelValue = (double)ushort.MaxValue },
                 { typeof(uint), () => maxPixelValue = (double)uint.MaxValue },
                 { typeof(float), () => maxPixelValue = (double)float.MaxValue },
-                { typeof(double), () => maxPixelValue = (double)double.MaxValue }
+                { typeof(double), () => maxPixelValue = (double)double.MaxValue },
+                { typeof(long), () => maxPixelValue = (double)long.MaxValue },
+                { typeof(ulong), () => maxPixelValue = (double)ulong.MaxValue }
             };
 
             @switch[pixelType]();
@@ -58,6 +62,8 @@ namespace Infovision.MRI
                 case PixelType.Int8: return sizeof(sbyte);
                 case PixelType.Int32: return sizeof(int);
                 case PixelType.Float: return sizeof(float);
+                case PixelType.Int64: return sizeof(long);
+                case PixelType.UInt64: return sizeof(ulong);
 
                 default:
                     throw new InvalidOperationException("Unknown pixel type");

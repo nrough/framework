@@ -10,8 +10,10 @@ namespace Infovision.MRI
     [Serializable]
     public class ImageITK : ImageBase
     {
-        [NonSerialized] private itk.simple.Image image;
-        [NonSerialized] private VectorUint positionVector;
+        [NonSerialized] 
+        private itk.simple.Image image;
+        [NonSerialized]
+        private VectorUInt32 positionVector;
 
         public ImageITK()
         {
@@ -436,7 +438,7 @@ namespace Infovision.MRI
             ImportImageFilter importImageFilter = new ImportImageFilter();
             importImageFilter.SetSize(new VectorUInt32(new uint[] { width, height, depth }));
 
-            Vectordouble direction = (depth > 0)
+            VectorDouble direction = (depth > 0)
 
                 ? new VectorDouble(new double[] {1, 0, 0, 
                                                  0, 1, 0, 
@@ -447,13 +449,13 @@ namespace Infovision.MRI
 
             importImageFilter.SetDirection(direction);
 
-            Vectordouble origin = (depth) > 0
+            VectorDouble origin = (depth) > 0
                 ? new VectorDouble(new double[] { 0, 0, 0 })
                 : new VectorDouble(new double[] { 0, 0 });
 
             importImageFilter.SetOrigin(origin);
 
-            Vectordouble spacing = (depth > 0)
+            VectorDouble spacing = (depth > 0)
                 ? new VectorDouble(new double[] { 1, 1, 1 })
                 : new VectorDouble(new double[] { 1, 1 });
 
@@ -523,7 +525,7 @@ namespace Infovision.MRI
             }
 
             itk.simple.Image slice = SimpleITK.Extract(this.ItkImage,
-                                            new VectorUInt32(new Uint[] { this.ItkImage.GetWidth(), this.ItkImage.GetHeight(), 0 }),
+                                            new VectorUInt32(new uint[] { this.ItkImage.GetWidth(), this.ItkImage.GetHeight(), 0 }),
                                             new VectorInt32(new int[] { 0, 0, z }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 

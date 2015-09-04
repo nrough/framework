@@ -12,7 +12,7 @@ namespace Infovision.Data.UnitTests
         [SetUp]
         public void Init()
         {
-            string fileName = @"chess.dta";
+            string fileName = @"Data\chess.dta";
             dataStore = DataStore.Load(fileName, FileFormat.Rses1);
         }
 

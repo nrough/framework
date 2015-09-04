@@ -16,6 +16,39 @@ namespace Infovision.Utils
 
 		public bool IsCardinalityCalculated { get; set; }
 
+		#region PascalSet Properties
+		/// <summary>
+		/// Returns the lower bound of the set.
+		/// </summary>
+		public virtual int LowerBound
+		{
+			get
+			{
+				return this.lowerBound;
+			}
+		}
+
+		/// <summary>
+		/// Returns the upper bound of the set.
+		/// </summary>
+		public virtual int UpperBound
+		{
+			get
+			{
+				return this.upperBound;
+			}
+		}
+
+		public BitArray Data
+		{
+			get
+			{
+				return data;
+			}
+		}
+
+		#endregion
+
 		#region Constructors
 		/// <summary>
 		/// Creates a new PascalSet instance with a specified lower and upper bound.
@@ -681,39 +714,6 @@ namespace Infovision.Utils
 
 		#endregion
 
-		#region PascalSet Properties
-		/// <summary>
-		/// Returns the lower bound of the set.
-		/// </summary>
-		public virtual int LowerBound
-		{
-			get
-			{
-				return this.lowerBound;
-			}
-		}
-
-		/// <summary>
-		/// Returns the upper bound of the set.
-		/// </summary>
-		public virtual int UpperBound
-		{
-			get
-			{
-				return this.upperBound;
-			}
-		}
-
-		public BitArray Data
-		{
-			get
-			{
-				return data;
-			}
-		}
-
-		#endregion
-
 		#region ICloneable Members
 		/// <summary>
 		/// Clones the PascalSet, performing a deep copy.
@@ -748,6 +748,9 @@ namespace Infovision.Utils
 		{
 			get
 			{
+				return this.GetCardinality();
+				
+				/*
 				if (this.IsCardinalityCalculated == false)
 				{
 					//int elements = 0;
@@ -759,6 +762,7 @@ namespace Infovision.Utils
 				}
 
 				return cardinality;
+				*/
 			}
 		}
 

@@ -139,7 +139,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="ClassDiagram1.cd" />
-    <None Include="Clustering\Hierarchical\ClassDiagram1.cd" />
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
   </ItemGroup>

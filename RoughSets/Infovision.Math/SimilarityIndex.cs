@@ -45,6 +45,12 @@ namespace Infovision.Math
             return c / denominator;
         }
 
+        public static double ReductSimilarity(double[] vec1, double[] vec2, double alpha)
+        {
+            //TODO implement ReductSImilarity
+            return 0.0;
+        }
+
         //TODO Implement Other SimilarityIndexes
         //Cosine
         //Dice

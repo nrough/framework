@@ -31,6 +31,19 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             return data;
         }
 
+        private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>[] DistancesAndLinkages =
+        {            
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Min, 1),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Max, 2),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Min, 4),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Max, 5),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min, 7),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max, 8),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9)
+        };
+
         [Test]
         public void ComputeTest()
         {                                    
@@ -91,27 +104,25 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Console.WriteLine();            
         }
 
-        [Test]
-        public void GetDendrogramAsBitmapTest()
-        {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Manhattan, ClusteringLinkage.Max);
-            hClustering.Compute(HierarchicalClusteringTest.GetData());
-            Console.Write(hClustering.DendrogramLinkCollection.ToString());
-            Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            bitmap.Save(@"F:\test_euc_max.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
-            Assert.IsTrue(true);
-        }
 
-        [Test]
-        public void GetDendrogramAsBitmapMinLinkageTest()
+        [Test, TestCaseSource("DistancesAndLinkages")]        
+        public void GetDendrogramAsBitmapTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double>, int> t)
         {
-            HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Manhattan, ClusteringLinkage.Min);
+            Func<double[], double[], double> distance = t.Item1;
+            Func<int[], int[], DistanceMatrix, double> linkage = t.Item2;
+            int id = t.Item3;
+
+            HierarchicalClustering hClustering = new HierarchicalClustering(distance, linkage);
             hClustering.Compute(HierarchicalClusteringTest.GetData());
+            
             Console.Write(hClustering.DendrogramLinkCollection.ToString());
+            Console.WriteLine();
+
             Bitmap bitmap = hClustering.GetDendrogramAsBitmap(640, 480);
-            bitmap.Save(@"F:\test_euc_min.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            string fileName = String.Format(@"F:\Dendrogram_{0}.bmp", id);
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
-        }
+        }       
 
         [Test]
         public void GetClusterMembershipTest()

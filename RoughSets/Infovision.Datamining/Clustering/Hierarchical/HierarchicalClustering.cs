@@ -391,7 +391,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 p1.Y = p2.Y - yMajorScalePx;
                 p3 = new System.Drawing.Point(p1.X + 2, p1.Y);
 
-                //draw dashed grid
+                //draw dashed y lines
 
                 System.Drawing.Point dashedBegin, dashedEnd;
                 float[] dashValues = { 5, 3 };
@@ -419,9 +419,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 PointF pointF = new PointF(p1.X - 3, p1.Y);
                 SolidBrush brush = new SolidBrush(foreground);
                 for (int i = 0; i < leafOrder.Length; i++)
-                {
-                    //g.DrawString(leafOrder[i].ToString(), font, brush, pointF);
-                    
+                {                                        
                     DendrogramLinkChartData linkChartData = new DendrogramLinkChartData(leafOrder[i]);
                     linkChartData.LeftBottomX = (int) pointF.X + 3;
                     linkChartData.LeftBottomY =  (int) pointF.Y - 3;

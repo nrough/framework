@@ -90,6 +90,10 @@ namespace Infovision.Datamining.Roughset
 				this.MinReductLength = 1;				
 
 				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights, 0, 0);
+
+				if (emptyReduct.Attributes.Count != 0)
+					throw new InvalidOperationException("Empty reduct must be of zero length");
+
 				double M = new InformationMeasureWeights().Calc(emptyReduct);
 				this.Threshold = 1.0 - M;
 			}

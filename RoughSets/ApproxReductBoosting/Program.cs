@@ -75,7 +75,8 @@ namespace ApproxReductBoosting
 					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory", 
 																				 //ReductFactoryKeyHelper.ReductEnsembleBoosting,
 																				 //ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity,
-                                                                                 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
+																				 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps,
+																				 ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
@@ -85,7 +86,7 @@ namespace ApproxReductBoosting
 				}
 			);
 
-			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14}",
+			Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
 									 "METHOD",
 									 "IDENTYFICATION",
 									 "VOTETYPE",
@@ -100,7 +101,8 @@ namespace ApproxReductBoosting
 									 "NOF_WRESET",
 									 "TRN_ERROR",
 									 "TST_ERROR",
-									 "AVG_REDUCT");
+									 "AVG_REDUCT",
+									 "EPSILON");
 
 			int i = 0;
 			foreach (object[] p in parmList.Values())
@@ -144,11 +146,7 @@ namespace ApproxReductBoosting
 				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 				parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
 
-				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
-
-				ReductCrisp reduct = (ReductCrisp) reductGenerator.GetNextReduct(weightGenerator.Weights, numOfAttr, numOfAttr);
-				reductGenerator.MaxReductLength = reduct.Attributes.Count;
-
+				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);				
 				reductGenerator.Generate();
 
 				RoughClassifier classifierTrn = new RoughClassifier();
@@ -185,7 +183,7 @@ namespace ApproxReductBoosting
 						break;
 				}
 
-				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14}",
+				Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
 									factoryKey,
 									reductGenerator.IdentyficationType,
 									reductGenerator.VoteType,
@@ -200,7 +198,8 @@ namespace ApproxReductBoosting
 									reductGenerator.NumberOfWeightResets,
 									resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
 									resultTst.WeightMisclassified + resultTst.WeightUnclassified,
-									reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+									reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()),
+									reductGenerator.Epsilon);
 			}
 		}
 	}

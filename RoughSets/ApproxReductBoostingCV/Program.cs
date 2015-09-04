@@ -66,7 +66,7 @@ namespace ApproxReductBoostingCV
                 }
             );
 
-            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
+            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
                                      "METHOD",
                                      "IDENTYFICATION",
                                      "VOTETYPE",
@@ -82,7 +82,8 @@ namespace ApproxReductBoostingCV
                                      "TRN_ERROR",
                                      "TST_ERROR",
                                      "AVG_REDUCT",
-                                     "FOLD");
+                                     "FOLD",
+                                     "EPSILON");
 
             int i = 0;
             foreach (object[] p in parmList.Values())
@@ -147,11 +148,7 @@ namespace ApproxReductBoostingCV
                     parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
                     parms.AddParameter(ReductGeneratorParamHelper.MinReductLength, minLen);
 
-                    ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);//as ReductEnsembleBoostingGenerator;
-
-                    //ReductCrisp reduct = (ReductCrisp)reductGenerator.GetNextReduct(weightGenerator.Weights, numOfAttr, numOfAttr);
-                    //reductGenerator.MaxReductLength = reduct.Attributes.Count;
-
+                    ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);                   
                     reductGenerator.Generate();
 
                     RoughClassifier classifierTrn = new RoughClassifier();
@@ -188,7 +185,7 @@ namespace ApproxReductBoostingCV
                             break;
                     }
 
-                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16}",
                                         factoryKey,
                                         reductGenerator.IdentyficationType,
                                         reductGenerator.VoteType,
@@ -204,7 +201,8 @@ namespace ApproxReductBoostingCV
                                         resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                         resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                         reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()),
-                                        splitter.ActiveFold);
+                                        splitter.ActiveFold,
+                                        reductGenerator.Epsilon);
                 }                
             }
         }

@@ -6,11 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{
-    //TODO Change "List" to "Collection" in class name
-    
+{       
     [Serializable]
-    public class ParameterList : IEnumerable<IParameter>, ICloneable
+    public class ParameterCollection : IEnumerable<IParameter>, ICloneable
     {                
         #region Globals
 
@@ -29,12 +27,12 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Constructors
 
-        public ParameterList()
+        public ParameterCollection()
             : this(20, 20)
         {
         }
 
-        public ParameterList(int size, int exclusionSize)
+        public ParameterCollection(int size, int exclusionSize)
         {
             parmCount = 0;
             parameters = new IParameter[size];
@@ -48,7 +46,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             exclusionCount = 0;
         }
 
-        public ParameterList(IParameter[] parameters)
+        public ParameterCollection(IParameter[] parameters)
             : this(parameters.Length, 20)
         {
             
@@ -60,7 +58,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
         }
 
-        public ParameterList(ParameterList parameterList)
+        public ParameterCollection(ParameterCollection parameterList)
             : this(parameterList.Count, parameterList.exclusionCount)
         {            
             int i = 0;
@@ -86,7 +84,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         }
 
         /*
-        public ParameterList(IParameter[] parameters, ParameterExclusion[] exludedParams)
+        public ParameterCollection(IParameter[] parameters, ParameterExclusion[] exludedParams)
             : this(parameters)
         {
             this.excludedParameters = new List<ParameterExclusion>(exludedParams);
@@ -248,7 +246,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         public object Clone()
         {
-            return new ParameterList(this);
+            return new ParameterCollection(this);
         }
 
         #endregion

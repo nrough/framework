@@ -29,7 +29,7 @@ namespace Infovision.Utils
 			this.upperBound = upperBound;
 
 			// Create the BitArray
-			Int32 size = upperBound - lowerBound + 1;
+			int size = upperBound - lowerBound + 1;
 			data = new BitArray(size);
 		}
 
@@ -49,13 +49,13 @@ namespace Infovision.Utils
 			this.upperBound = upperBound;
 
 			// Create the BitArray
-			Int32 size = upperBound - lowerBound + 1;
+			int size = upperBound - lowerBound + 1;
 			data = new BitArray(size);
 
 			// Populuate the BitArray with the passed-in initialData array.
-			for (Int32 i = 0; i < initialData.LongLength; i++)
+			for (int i = 0; i < initialData.LongLength; i++)
 			{
-				Int32 val = initialData[i];
+				int val = initialData[i];
 				if (val >= this.lowerBound && val <= this.upperBound)
 				{
 					int index = val - this.lowerBound;

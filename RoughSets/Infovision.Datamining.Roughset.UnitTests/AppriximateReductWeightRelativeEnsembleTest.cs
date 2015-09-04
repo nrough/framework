@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductRelativeTest()
         {
             double[] weights = new WeightGeneratorEnsembleRelative(dataStoreTrain).Weights;
-            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights);
+            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights, 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter("PermutationCollection", permutationList);
 
             ReductGeneratorWeightsEnsembleRelative reductGenerator = new ReductGeneratorWeightsEnsembleRelative(dataStoreTrain);
-            reductGenerator.ApproximationLevel = 0.4;
+            reductGenerator.ApproximationDegree = 0.4;
             reductGenerator.NumberOfIterations = 3;
 
             reductGenerator.Generate(parms);

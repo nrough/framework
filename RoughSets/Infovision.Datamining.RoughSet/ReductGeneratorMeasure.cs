@@ -102,7 +102,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             this.DataSetQuality = this.informationMeasure.Calc(reduct);
         }
 
@@ -141,7 +141,7 @@ namespace Infovision.Datamining.Roughset
             IReductStore reductStore = this.CreateReductStore(args);
             foreach (Permutation permutation in permutationList)
             {
-                IReduct reduct = this.CalculateReduct(permutation, reductStore, useCache);
+                IReduct reduct = this.CalculateReduct(permutation, reductStore, useCache, this.ApproximationDegree);
                 reductStore.AddReduct(reduct);
             }
 
@@ -149,22 +149,21 @@ namespace Infovision.Datamining.Roughset
             reductStoreCollection.AddStore(reductStore);
             return reductStoreCollection;                        
         }
-
-        //public override IReductStore Generate(Args args)
+        
         public override IReductStoreCollection Generate(Args args)
         {
             PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);
             return this.CreateReductStoreFromPermutationCollection(permutationList, args);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
         {
-            return new Reduct(this.DataStore, fieldIds);
+            return new Reduct(this.DataStore, fieldIds, approxDegree);
         }
 
-        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache)
+        protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double approxDegree)
         {
-            IReduct reduct = this.CreateReductObject(new int[]{});
+            IReduct reduct = this.CreateReductObject(new int[] { }, approxDegree);
 
             this.Reach(reduct, permutation, reductStore, useCache);
             this.Reduce(reduct, permutation, reductStore, useCache);
@@ -211,9 +210,9 @@ namespace Infovision.Datamining.Roughset
                 reductInfo = ReductCache.Instance.Get(key) as ReductCacheInfo;
                 if (reductInfo != null)
                 {
-                    if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.Yes)
+                    if (reductInfo.CheckIsReduct(this.ApproximationDegree) == NoYesUnknown.Yes)
                         return true;
-                    if (reductInfo.CheckIsReduct(this.ApproximationLevel) == NoYesUnknown.No)
+                    if (reductInfo.CheckIsReduct(this.ApproximationDegree) == NoYesUnknown.No)
                         return false;
                 }
             }
@@ -226,9 +225,8 @@ namespace Infovision.Datamining.Roughset
             }
 
             double partitionQuality = this.GetPartitionQuality(reduct);
-
-            // >>>> if (partitionQuality >= (((double)1 - this.ApproximationLevel - (0.0001 / (double)this.DataStore.NumberOfRecords)) * this.DataSetQuality) )            
-            if (partitionQuality >= ((((double)1 - this.ApproximationLevel) * this.DataSetQuality) - (0.0001 / (double)this.DataStore.NumberOfRecords)))            
+            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;              
+            if (partitionQuality >= (((1.0 - this.ApproximationDegree) * this.DataSetQuality) - tinyDouble))            
             {
                 if(useCache)
                     this.UpdateReductCacheInfo(reductInfo, key, true);
@@ -249,11 +247,11 @@ namespace Infovision.Datamining.Roughset
         {
             if (reductInfo != null)
             {
-                reductInfo.SetApproximationRanges(isReduct, this.ApproximationLevel);
+                reductInfo.SetApproximationRanges(isReduct, this.ApproximationDegree);
             }
             else
             {
-                ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.ApproximationLevel));
+                ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.ApproximationDegree));
             }
         }
 

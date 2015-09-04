@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
+using Infovision.Datamining;
+using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {       
@@ -79,8 +82,7 @@ namespace Infovision.Datamining.Roughset
             permEpsilon = new int[epsilon.Length];
             Array.Copy(epsilon, permEpsilon, epsilon.Length);            
         }
-
-        //public override IReductStore Generate(Args args)
+        
         public override IReductStoreCollection Generate(Args args)
         {
             internalStore = new ReductStore();
@@ -95,14 +97,14 @@ namespace Infovision.Datamining.Roughset
             {                
                 double localApproxLevel = (double) this.permEpsilon[++k] / (double) 100;
 
-                IReduct reduct = this.CreateReductObject(new int[] { });
+                IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel);
                 
                 //Reach
                 for (int i = 0; i < permutation.Length; i++)
                 {
                     reduct.AddAttribute(permutation[i]);
 
-                    if (this.IsReduct(reduct, internalStore, false, localApproxLevel, false))
+                    if (this.IsReduct(reduct, internalStore, false))
                     {
                         break;
                     }
@@ -115,7 +117,7 @@ namespace Infovision.Datamining.Roughset
                     int attributeId = permutation[i];
                     if (reduct.RemoveAttribute(attributeId))
                     {
-                        if (!this.IsReduct(reduct, internalStore, false, localApproxLevel, false))
+                        if (!this.IsReduct(reduct, internalStore, false))
                         {
                             reduct.AddAttribute(attributeId);
                         }
@@ -125,25 +127,64 @@ namespace Infovision.Datamining.Roughset
                 internalStore.DoAddReduct(reduct);                
             }
 
-            //TODO Split onto individual reduct stores
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
-            //ReductStore reductStore = new ReductStore();
+            double[][] errorVectors = this.GetErrorVectorsFromReducts(internalStore);
+            HierarchicalClustering hCluster = new HierarchicalClustering(Distance.Manhattan, ClusteringLinkage.Min);
+            hCluster.Compute(errorVectors);            
+            
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();            
             reductStoreCollection.AddStore(internalStore);
 
             return reductStoreCollection;
         }
 
-        protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache, double approximationLevel, bool checkExistingReducts)
+        private double[][] GetErrorVectorsFromReducts(ReductStore store)
         {
+            double[][] errors = new double[store.Count][];
+            for (int i = 0; i < store.Count; i++)
+            {
+                errors[i] = new double[this.DataStore.NumberOfRecords];
+                IReduct reduct = store.GetReduct(i);
 
-            if (checkExistingReducts && reductStore.IsSuperSet(reduct))
+                Array.Copy(this.WeightGenerator.Weights, errors[i], this.DataStore.NumberOfRecords);
+
+                foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
+                {
+                    double maxValue = 0;
+                    long maxDecision = -1;
+                    foreach (long decisionValue in e.DecisionValues)
+                    {
+                        double sum = 0;
+                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                        {
+                            sum += reduct.Weights[objectIdx];
+                        }
+                        if (sum > maxValue + (0.0001 / reduct.ObjectSetInfo.NumberOfRecords))
+                        {
+                            maxValue = sum;
+                            maxDecision = decisionValue;
+                        }
+                    }
+                                        
+                    foreach (int objectIdx in e.GetObjectIndexes(maxDecision))
+                    {
+                        errors[i][objectIdx] = 0;
+                    }
+                }
+            }
+
+            return errors;
+        }
+
+        protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
+        {            
+            if (reductStore.IsSuperSet(reduct, true))
             {                
                 return true;
             }
                         
             double partitionQuality = this.GetPartitionQuality(reduct);
-            double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
-            if (partitionQuality >= ((((double)1 - approximationLevel) * this.DataSetQuality) - tinyDouble))
+            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
+            if (partitionQuality >= (((1.0 - reduct.ApproximationDegree) * this.DataSetQuality) - tinyDouble))
             {                
                 return true;
             }
@@ -156,6 +197,7 @@ namespace Infovision.Datamining.Roughset
             //TODO 
             //return this.InformationMeasure.Calc(reduct);
 
+            double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
             double result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClassMap)
             {
@@ -168,7 +210,7 @@ namespace Infovision.Datamining.Roughset
                     {
                         sum += reduct.Weights[objectIdx];
                     }
-                    if (sum > (maxValue + (0.0001 / (double)reduct.ObjectSetInfo.NumberOfRecords)))
+                    if (sum > (maxValue + tinyDouble))
                     {
                         maxValue = sum;
                         maxDecision = decisionValue;
@@ -183,7 +225,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 
@@ -192,10 +234,10 @@ namespace Infovision.Datamining.Roughset
             return new ReductStore();
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
         {
             //return new Reduct(this.DataStore, fieldIds);
-            return new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights);            
+            return new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, approxDegree);            
         }
 
         protected virtual PermutationCollection FindOrCreatePermutationCollection(Args args)

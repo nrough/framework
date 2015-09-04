@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Experimenter.Test
 
             IParameter parmAx3 = new ParameterValueList<int>("Ax3", new int[] { 2 });
 
-            ParameterList parmList = new ParameterList(new IParameter[] { parmA, parmB, parmC });
+            ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC });
 
             //Add exclusions
             parmList.AddExclusion(new string[] { "A", "B", "C" }, new IParameter[] { parmAx1, parmBx1, parmCx1 });
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Experimenter.Test
             IParameter parmBx2 = new ParameterNumericRange<double>("Bx1", 0.3, 0.5, 0.1);
 
 
-            ParameterList parmList = new ParameterList(new IParameter[] { parmA, parmB });
+            ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB });
 
             //Add exclusions
             parmList.AddExclusion(new string[] { "A"} , new IParameter[] { parmAx1 });

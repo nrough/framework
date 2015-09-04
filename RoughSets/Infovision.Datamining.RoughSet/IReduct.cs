@@ -12,8 +12,8 @@ namespace Infovision.Datamining.Roughset
         //TODO Move to Bireduct Interface
         ObjectSet ObjectSet { get; }
         double[] Weights { get; }
-
-        //TODO Move to Reduct store
+        double ApproximationDegree { get; }
+        
         EquivalenceClassMap EquivalenceClassMap { get; }
 
         bool AddAttribute(int attributeId);               

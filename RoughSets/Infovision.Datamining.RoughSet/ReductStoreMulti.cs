@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override bool IsSuperSet(IReduct reduct)
+        public override bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false)
         {
             lock (this.SyncRoot)
             {

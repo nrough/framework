@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
 
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
-            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
 
             double r = roughMeasure.Calc(reduct);
             double u = sumWeights / dataStoreTrainInfo.NumberOfRecords;

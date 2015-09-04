@@ -57,5 +57,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
 
         }
+
+        [Test]
+        public void TestTinyDouble()
+        {
+            double a = 1 / 1234;
+            double b = 1.0 / 1234;
+            double c = 1.0 / (double)1234;
+            double d = (double)1 / (double)1234;
+            double e = 1 / 1234.0;
+            double f = 1 - 0.001;
+
+
+            Console.WriteLine(a);
+            Console.WriteLine(b);
+            Console.WriteLine(c);
+            Console.WriteLine(d);
+            Console.WriteLine(e);
+            Console.WriteLine(f);
+        }
     }
 }

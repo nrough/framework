@@ -6,6 +6,6 @@ namespace Infovision.Datamining.Roughset
     {
         //IReductStore Generate(Args args);
         IReductStoreCollection Generate(Args args);
-        double ApproximationLevel { get; set; }
+        double ApproximationDegree { get; set; }
     }
 }

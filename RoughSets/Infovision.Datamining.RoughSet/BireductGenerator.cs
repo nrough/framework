@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObject(this.DataStore, this.ApproximationLevel); }
+            get { return new PermutationGeneratorFieldObject(this.DataStore, this.ApproximationDegree); }
         }
 
         #endregion
@@ -57,8 +57,7 @@ namespace Infovision.Datamining.Roughset
 
             return permutationList;
         }
-
-        //public override IReductStore Generate(Args args)
+        
         public override IReductStoreCollection Generate(Args args)
         {
             PermutationCollection permutationList = this.FindOrCreatePermutationList(args);
@@ -71,19 +70,17 @@ namespace Infovision.Datamining.Roughset
             
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
             reductStoreCollection.AddStore(reductStore);
-            return reductStoreCollection;
-
-            //return reductStore;
+            return reductStoreCollection;        
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
         {
-            return new Bireduct(this.DataStore, fieldIds);
+            return new Bireduct(this.DataStore, fieldIds, approxDegree);
         }
 
         protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard)) as Bireduct;
+            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0) as Bireduct;
             this.Reach(bireduct, permutation, reductStore);
             return bireduct;
         }
@@ -122,7 +119,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.ApproximationLevel); }
+            get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.ApproximationDegree); }
         }
 
         #endregion
@@ -142,14 +139,14 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
         {
-            return new GammaBireduct(this.DataStore);
+            return new GammaBireduct(this.DataStore, approxDegree);
         }
 
         protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         {
-            GammaBireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard)) as GammaBireduct;
+            GammaBireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), this.ApproximationDegree) as GammaBireduct;
             Reach(bireduct, permutation, reductStore);
             return bireduct;
         }

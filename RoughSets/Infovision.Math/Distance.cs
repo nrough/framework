@@ -36,7 +36,7 @@ namespace Infovision.Math
             char[] bc = b.ToCharArray();
 
             return Hamming(ac, bc);
-        }
+        }        
 
         public static double Hamming(char[] a, char[] b)
         {
@@ -45,6 +45,33 @@ namespace Infovision.Math
                 if (a[i] != b[i])
                     sum++;
             return sum;
+        }
+
+        public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
+        {                                 
+            return 0;
+        }
+
+        public static double TverskySymetric(double[] prototype, double[] variant, double alpha, double beta)
+        {                    
+            return 0;
+        }
+
+        public static double Jacard(double[] a, double[] b)
+        {
+            double minSum = 0;
+            double maxSum = 0;
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                minSum += System.Math.Min(a[i], b[i]);
+                maxSum += System.Math.Max(a[i], b[i]);
+            }
+
+            if(maxSum == 0)
+                return 1.0;
+
+            return 1.0 - (minSum / maxSum);    
         }
 
         public static double Levenshtein(string s, string t)
@@ -93,6 +120,6 @@ namespace Infovision.Math
             for (int i = 0; i < a.Length; i++)
                 sum += System.Math.Pow((a[i] - b[i]), 2);
             return sum;
-        }
+        }        
     }
 }

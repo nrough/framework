@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Ignore("Infinite long running test")]
         public void LongRunningLoop()
         {
-            ParameterList parmList = new ParameterList(new IParameter[] { 
+            ParameterCollection parmList = new ParameterCollection(new IParameter[] { 
                 new ParameterNumericRange<int>("1", 0, 10, 1),
                 new ParameterNumericRange<double>("2", 0, 10, 1),
                 new ParameterNumericRange<double>("3", 0, 0.1, 0.01),

@@ -62,10 +62,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorMajority(localDataStore);
-            redGenStd.ApproximationLevel = 0.10;
+            redGenStd.ApproximationDegree = 0.10;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority(localDataStore);
-            redGenWgh.ApproximationLevel = 0.10;
+            redGenWgh.ApproximationDegree = 0.10;
  
             Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
             
@@ -95,10 +95,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorRelative(localDataStore);
-            redGenStd.ApproximationLevel = 0.1;
+            redGenStd.ApproximationDegree = 0.1;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative(localDataStore);
-            redGenWgh.ApproximationLevel = 0.1;
+            redGenWgh.ApproximationDegree = 0.1;
 
             Args args = new Args(new string[] { "DataStore" }, new object[] { localDataStore });
 
@@ -301,7 +301,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
 
-            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights);
+            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
             IInformationMeasure infoMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority);
             double infoMeasureResult = infoMeasure.Calc(reduct);
 

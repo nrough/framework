@@ -43,7 +43,7 @@ namespace Infovision.TestAssembly
         {
         }
 
-        public Double ApproximationLevel
+        public Double ApproximationDegree
         {
             get { return this.approximationLevel; }
             set { this.approximationLevel = value; }

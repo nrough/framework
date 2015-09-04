@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductStatisticsTest()
         {
             ReductStore reductStore = new ReductStore();
-            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2 });
+            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2 }, 0);
             reductStore.AddReduct(reduct);
             
             foreach (Reduct localReduct in reductStore)
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FullAttributeSetReductStatisticsTest()
         {
             ReductStore reductStore = new ReductStore();
-            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3, 4, 5, 6 });
+            Reduct reduct = new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3, 4, 5, 6 }, 0);
             reductStore.AddReduct(reduct);
 
             foreach (Reduct localReduct in reductStore)
@@ -174,9 +174,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             ReductStore reductStore = new ReductStore();
 
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2 }));
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 5, 6 }));
-            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3 }));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2 }, 0));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 5, 6 }, 0));
+            reductStore.AddReduct(new Reduct(dataStoreTrain, new Int32[] { 1, 2, 3 }, 0));
 
             //IReductStore filteredReductStore = reductStore.FilterReducts(1, new ReductMeasureNumberOfPartitions());
             IReductStore filteredReductStore = reductStore.FilterReducts(1, new ReductRuleNumberComparer());
@@ -190,7 +190,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             double result = roughMeasure.Calc(reduct);
 
@@ -203,7 +203,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
             Double result = roughMeasure.Calc(reduct);
 
@@ -216,7 +216,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
             Double result = roughMeasure.Calc(reduct);
 
@@ -236,7 +236,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (Int32 epsilon = 0; epsilon < 100; epsilon+= 11)
             {
-                reductGenerator.ApproximationLevel = (double)epsilon/(double)100;
+                reductGenerator.ApproximationDegree = (double)epsilon/(double)100;
 
                 IReductStore reductStore = reductGenerator.Generate(parms).First();
 
@@ -293,7 +293,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductMajorityTest()
         {
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });
@@ -315,7 +315,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductRelativeTest()
         {
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard));
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             Double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new String[] { "DataStore" }, new Object[] { dataStoreTrain });

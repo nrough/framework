@@ -43,21 +43,21 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds)
+        protected override IReduct CreateReductObject(int[] fieldIds, double approxDegree)
         {
-            return base.CreateReductObject(fieldIds);
+            return base.CreateReductObject(fieldIds, approxDegree);
         }
 
         //public override IReductStore Generate(Args args)
         public override IReductStoreCollection Generate(Args args)
         {
-            //numberOfAttributes = (int)((double)DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * this.ApproximationLevel);
+            //numberOfAttributes = (int)((double)DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * this.ApproximationDegree);
 
             PermutationCollection permutationList = this.FindOrCreatePermutationCollection(args);            
             return this.CreateReductStoreFromPermutationCollection(permutationList, args);                        
         }
 
-        protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache)
+        protected override IReduct CalculateReduct(Permutation permutation, IReductStore reductStore, bool useCache, double approxDegree)
         {
             /*
             int[] elements = new int[this.numberOfAttributes];
@@ -70,7 +70,7 @@ namespace Infovision.Datamining.Roughset
             return base.CalculateReduct(p, reductStore); 
             */
 
-            return base.CalculateReduct(permutation, reductStore, useCache);
+            return base.CalculateReduct(permutation, reductStore, useCache, approxDegree);
         }
 
         protected override IReductStoreCollection CreateReductStoreFromPermutationCollection(PermutationCollection permutationList, Args args)
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
                 IReductStore localReductStore = this.CreateReductStore(args);
                 for (int i = 0; i < this.NumberOfIterations; i++)
                 {
-                    IReduct reduct = this.CalculateReduct(permutation, localReductStore, useCache);
+                    IReduct reduct = this.CalculateReduct(permutation, localReductStore, useCache, this.ApproximationDegree);
                     localReductStore.AddReduct(reduct);
                     this.wgen.NewReduct(reduct);
                 }

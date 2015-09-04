@@ -44,12 +44,12 @@ namespace Infovision.Datamining.Roughset
             get { return dataStore; }
         }
 
-        public double ApproximationLevel
+        public double ApproximationDegree
         {
             get { return approximationLevel; }
             set
             {
-                if (value < 0 || value > 1)
+                if (value < 0.0 || value > 1.0)
                     throw new ArgumentException("The approximation ratio value must be in range [0; 1)");
 
                 approximationLevel = value;
@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
         //public abstract IReductStore Generate(Args args);
         public abstract IReductStoreCollection Generate(Args args);
         protected abstract IReductStore CreateReductStore(Args args);
-        protected abstract IReduct CreateReductObject(int[] fieldIds);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, double approximationDegree);
 
         #endregion
     }

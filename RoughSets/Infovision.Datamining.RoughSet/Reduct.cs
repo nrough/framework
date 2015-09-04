@@ -13,45 +13,11 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassMap eqClassMap;
+        private double approximationDegree;
         
         protected double[] objectWeights;
         
         //TODO private List<int> attributeOrder;
-
-        #endregion
-
-        #region Constructors
-
-        public Reduct(DataStore dataStore, int [] fieldIds)
-        {
-            this.dataStore = dataStore;
-            this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
-            //this.attributeOrder = new List<int>(fieldIds);
-            this.BuildEquivalenceMap(true);
-            this.objectWeights = new double[dataStore.NumberOfRecords];
-            
-            for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = (double)1 / (double)this.DataStore.NumberOfRecords;
-        }
-
-        public Reduct(DataStore dataStore)
-            : this(dataStore, new int[] { })
-        {
-            //set size to number of fields minus one (decision attribute)
-            //this.attributeOrder = new List<int>(dataStore.DataStoreInfo.NumberOfFields - 1);
-        }
-
-        public Reduct(Reduct reduct)
-        {
-            this.attributeSet = new FieldSet(reduct.attributeSet);
-            this.dataStore = reduct.DataStore;
-            
-            //this.attributeOrder = new List<int>(reduct.attributeOrder);
-            
-            this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
-            this.objectWeights = new double[dataStore.NumberOfRecords];
-            Buffer.BlockCopy(reduct.Weights, 0, this.objectWeights, 0, reduct.DataStore.NumberOfRecords * sizeof(double));            
-        }
 
         #endregion
 
@@ -70,6 +36,12 @@ namespace Infovision.Datamining.Roughset
         public FieldSet AttributeSet
         {
             get { return this.attributeSet; }
+        }
+
+        public double ApproximationDegree
+        {
+            get { return this.approximationDegree; }
+            private set { this.approximationDegree = value; }
         }
 
         public virtual ObjectSet ObjectSet
@@ -97,12 +69,63 @@ namespace Infovision.Datamining.Roughset
                 stringBuilder.Append("m=Partition");
                 stringBuilder.Append("|a=").Append(this.attributeSet.CacheKey);
                 stringBuilder.Append("|d=").Append(this.dataStore.Name);
-                
+
                 return stringBuilder.ToString();
             }
         }
 
         #endregion
+
+        #region Constructors
+
+        public Reduct(DataStore dataStore, int [] fieldIds, double approximationDegree)
+        {
+            this.dataStore = dataStore;
+            this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
+            this.approximationDegree = approximationDegree;
+            //this.attributeOrder = new List<int>(fieldIds);
+            this.BuildEquivalenceMap(true);
+            this.objectWeights = new double[dataStore.NumberOfRecords];
+            
+            for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                this.objectWeights[i] = (double)1 / (double)this.DataStore.NumberOfRecords;
+        }
+
+        /*
+        public Reduct(DataStore dataStore, int[] fieldIds)
+            : this(dataStore, fieldIds, 1.0)
+        {
+        }
+        */
+
+        public Reduct(DataStore dataStore, double approximationDegree)
+            : this(dataStore, new int[] { }, approximationDegree)
+        {
+            //set size to number of fields minus one (decision attribute)
+            //this.attributeOrder = new List<int>(dataStore.DataStoreInfo.NumberOfFields - 1);
+        }
+
+        public Reduct(DataStore dataStore)
+            : this(dataStore, new int[] { }, 0)
+        {
+            //set size to number of fields minus one (decision attribute)
+            //this.attributeOrder = new List<int>(dataStore.DataStoreInfo.NumberOfFields - 1);
+        }
+
+        public Reduct(Reduct reduct)
+        {
+            this.attributeSet = new FieldSet(reduct.attributeSet);
+            this.dataStore = reduct.DataStore;
+            this.ApproximationDegree = reduct.approximationDegree;
+            
+            //this.attributeOrder = new List<int>(reduct.attributeOrder);
+            
+            this.eqClassMap = (EquivalenceClassMap) reduct.EquivalenceClassMap.Clone();
+            this.objectWeights = new double[dataStore.NumberOfRecords];
+            Buffer.BlockCopy(reduct.Weights, 0, this.objectWeights, 0, reduct.DataStore.NumberOfRecords * sizeof(double));            
+        }
+
+        #endregion        
 
         #region Methods
 

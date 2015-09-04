@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset
         public abstract IEnumerator<IReduct> GetEnumerator();
         public abstract void AddReduct(IReduct reduct);        
         public abstract IReduct GetReduct(int index);
-        public abstract bool IsSuperSet(IReduct reduct);
+        public abstract bool IsSuperSet(IReduct reduct, bool checkApproxDegree);
         public abstract IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         public abstract double GetAvgMeasure(IReductMeasure reductMeasure);
         public abstract bool Exist(IReduct reduct);
@@ -131,24 +131,28 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="reduct"></param>
         /// <returns></returns>
-        public override bool IsSuperSet(IReduct reduct)
+        public override bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false)
         {
             bool ret = false;
 
             lock (this.SyncRoot)
             {
                 foreach (IReduct localReduct in reductSet)
-                {                    
-                    if (reduct.AttributeSet.Superset(localReduct.AttributeSet))
+                {
+                    if (checkApproxDegree == false
+                        || localReduct.ApproximationDegree < reduct.ApproximationDegree)
                     {
-                        ret = true;
-                        break;
+                        if (reduct.AttributeSet.Superset(localReduct.AttributeSet))
+                        {
+                            ret = true;
+                            break;
+                        }
                     }
                 }                   
             }
             
             return ret;
-        }
+        }        
 
         public override IReduct GetReduct(int index)
         {

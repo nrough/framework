@@ -8,9 +8,7 @@ namespace Infovision.Datamining.Roughset
         public WeightGeneratorEnsemble(DataStore dataStore)
             : base(dataStore)
         {
-            this.DiscernibilityMatrix = new int[dataStore.NumberOfRecords];
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                this.DiscernibilityMatrix[i] = 0;
+            this.DiscernibilityMatrix = new int[dataStore.NumberOfRecords];            
             this.NumberOfReducts = 0;
         }
 
@@ -43,7 +41,7 @@ namespace Infovision.Datamining.Roughset
             {
                 double maxValue = 0;
                 Int64 maxDecision = -1;
-                foreach (Int64 decisionValue in e.DecisionValues)
+                foreach (long decisionValue in e.DecisionValues)
                 {
                     double sum = 0;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))

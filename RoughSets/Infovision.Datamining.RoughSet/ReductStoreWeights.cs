@@ -15,9 +15,9 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        public override bool IsSuperSet(IReduct reduct)
+        public override bool IsSuperSet(IReduct reduct, bool checkApproxDegree = false)
         {
-            return base.IsSuperSet(reduct);
+            return base.IsSuperSet(reduct, checkApproxDegree);
         }
     }
 }

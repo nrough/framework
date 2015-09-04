@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         #region Globals
                            
         private bool isFirst;
-        private ParameterList parameters;
+        private ParameterCollection parameters;
         private object[] currentValues;        
         int lastIdx;
 
@@ -21,9 +21,9 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Constructors
 
-        public ParametersValueEnumerator(ParameterList parameters)
+        public ParametersValueEnumerator(ParameterCollection parameters)
         {
-            this.parameters = (ParameterList) parameters.Clone();
+            this.parameters = (ParameterCollection) parameters.Clone();
             currentValues = new object[parameters.Count];
             lastIdx = parameters.Count - 1;                       
 

@@ -176,7 +176,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
 
-            return new DendrogramLink(result[0], result[1], minDistance);
+            return new DendrogramLink(this.nextClusterId, result[0], result[1], minDistance);
         }
 
         protected int MergeClusters(int x, int y, double distance)

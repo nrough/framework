@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 }
             }
 
-            return new DendrogramLink(key[0], key[1], minClusterDistance);                        
+            return new DendrogramLink(this.NextClusterId, key[0], key[1], minClusterDistance);                        
         }               
     }
 }

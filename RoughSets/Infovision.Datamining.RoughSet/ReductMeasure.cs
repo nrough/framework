@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
 
         public override Double Calc(IReduct reduct)
         {
-            return (Double)reduct.AttributeSet.Count;
+            return (Double)reduct.Attributes.Count;
         }
 
         public override String ToString()

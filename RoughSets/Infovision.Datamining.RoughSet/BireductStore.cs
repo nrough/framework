@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
         {
             foreach (IReduct localReduct in this.ReductSet)
             {
-                if (reduct.AttributeSet.Equals(localReduct.AttributeSet)
+                if (reduct.Attributes.Equals(localReduct.Attributes)
                     && reduct.ObjectSet.Equals(localReduct.ObjectSet))
                 {
                     return false;

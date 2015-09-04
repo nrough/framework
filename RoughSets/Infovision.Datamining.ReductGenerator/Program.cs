@@ -51,10 +51,7 @@ namespace Infovision.Datamining.ReductGenerator
             
             
             ParameterCollection parameterList = new ParameterCollection(new IParameter[] { parmReductType, parmEpsilon, parmIdentification });
-
-
-            //TODO create and enumerator that returns args or dictionary !!!
-
+            
             int i = 0;
             foreach(object[] parm in parameterList.Values())
             {

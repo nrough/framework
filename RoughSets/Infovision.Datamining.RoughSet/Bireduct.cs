@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public Bireduct(Bireduct bireduct)
-            : this(bireduct.DataStore, bireduct.AttributeSet.ToArray(), bireduct.ObjectSet.ToArray(), bireduct.ApproximationDegree)
+            : this(bireduct.DataStore, bireduct.Attributes.ToArray(), bireduct.ObjectSet.ToArray(), bireduct.ApproximationDegree)
         {
         }
 
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset
             if (this.objectSet != null)
             {
                 this.InitEquivalenceMap();
-                this.EquivalenceClassMap.Calc(this.AttributeSet, this.DataStore, this.objectSet);
+                this.EquivalenceClassMap.Calc(this.Attributes, this.DataStore, this.objectSet);
             }
         }
 
@@ -72,13 +72,13 @@ namespace Infovision.Datamining.Roughset
                 return false;
             }
 
-            FieldSet newAttributeSet = (FieldSet) (this.AttributeSet - attributeId);
+            FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
             return EquivalenceClassMap.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
         }
 
         protected virtual bool CheckAddObject(int objectIndex)
         {
-            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.AttributeSet);
+            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = this.EquivalenceClassMap.GetEquivalenceClass(dataVector);
 
             if (reductStatistics.NumberOfDecisions <= 1)
@@ -100,7 +100,7 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckAddObject(objectIdx))
             {
                 objectSet.AddElement(objectIdx);
-                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.AttributeSet);
+                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
                 this.EquivalenceClassMap.GetEquivalenceClass(dataVector).AddObject(objectIdx, this.DataStore);
                 return true;
             }
@@ -123,7 +123,7 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckRemoveObject(objectIdx))
             {
                 objectSet.RemoveElement(objectIdx);
-                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.AttributeSet);
+                DataVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
                 this.EquivalenceClassMap.GetEquivalenceClass(dataVector).RemoveObject(objectIdx, this.DataStore);
                 return true;
             }
@@ -139,7 +139,7 @@ namespace Infovision.Datamining.Roughset
 
             stringBuilder.Append('(');
             stringBuilder.Append('{');
-            int[] attr = this.AttributeSet.ToArray();
+            int[] attr = this.Attributes.ToArray();
             for (int i = 0; i < attr.Length; i++)
             {
                 DataFieldInfo dataField = this.DataStore.DataStoreInfo.GetFieldInfo(attr[i]);
@@ -174,7 +174,7 @@ namespace Infovision.Datamining.Roughset
 
         public override int GetHashCode()
         {
-            return (int) this.AttributeSet.GetHashCode() ^ this.ObjectSet.GetHashCode();
+            return (int) this.Attributes.GetHashCode() ^ this.ObjectSet.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -186,7 +186,7 @@ namespace Infovision.Datamining.Roughset
             if (bireduct == null)
                 return false;
 
-            if (!this.AttributeSet.Equals(bireduct.AttributeSet))
+            if (!this.Attributes.Equals(bireduct.Attributes))
                 return false;
 
             if (!this.ObjectSet.Equals(bireduct.ObjectSet))

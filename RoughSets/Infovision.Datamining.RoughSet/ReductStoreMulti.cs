@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset
 
             for (int i = taskInfo.ThreadIndex; i < this.Count; i += taskInfo.NumberOfThreads)
             {
-                if (taskInfo.Reduct.AttributeSet.Superset(this.GetReduct(i).AttributeSet))
+                if (taskInfo.Reduct.Attributes.Superset(this.GetReduct(i).Attributes))
                 {
                     this.threadResults = true;
                     break;

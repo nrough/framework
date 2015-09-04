@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
         #region Globals
 
         private Dictionary<DataVector, EquivalenceClass> partitions;
-        private Dictionary<Int64, int> decisionCount;
+        private Dictionary<long, int> decisionCount;
         private bool decisionCountCalculated;
 
         #endregion
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         private EquivalenceClassMap()
         {
             this.partitions = new Dictionary<DataVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<Int64, int>();
+            this.decisionCount = new Dictionary<long, int>();
             this.decisionCountCalculated = false;
         }
         
@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset
         private EquivalenceClassMap(EquivalenceClassMap roughPartitionMap)
         {
             this.partitions = (Dictionary<DataVector, EquivalenceClass>) roughPartitionMap.Partitions.CloneDictionaryCloningValues<DataVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<Int64, int>(roughPartitionMap.DecisionCount);
+            this.decisionCount = new Dictionary<long, int>(roughPartitionMap.DecisionCount);
             this.decisionCountCalculated = roughPartitionMap.DecisionCountCalculated;
         }
 
@@ -49,7 +49,7 @@ namespace Infovision.Datamining.Roughset
             get { return partitions; }
         }
 
-        private Dictionary<Int64, int> DecisionCount
+        private Dictionary<long, int> DecisionCount
         {
             get { return decisionCount; }
         }

@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.objectWeights; }
         }
 
-        public FieldSet AttributeSet
+        public FieldSet Attributes
         {
             get { return this.attributeSet; }
         }
@@ -225,17 +225,17 @@ namespace Infovision.Datamining.Roughset
             if (r == null)
                 return 1;
 
-            int retval = this.AttributeSet.Count.CompareTo(r.AttributeSet.Count);
+            int retval = this.Attributes.Count.CompareTo(r.Attributes.Count);
 
             if (retval != 0)
             {
                 return retval;
             }
 
-            for (int i = 0; i < this.AttributeSet.Count; i++)
+            for (int i = 0; i < this.Attributes.Count; i++)
             {
-                int xval = Convert.ToInt32(this.AttributeSet.Data.Get(i));
-                int yval = Convert.ToInt32(r.AttributeSet.Data.Get(i));
+                int xval = Convert.ToInt32(this.Attributes.Data.Get(i));
+                int yval = Convert.ToInt32(r.Attributes.Data.Get(i));
                 if (xval < yval)
                 {
                     return -1;
@@ -303,7 +303,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    int retval = x.AttributeSet.Count.CompareTo(y.AttributeSet.Count);
+                    int retval = x.Attributes.Count.CompareTo(y.Attributes.Count);
 
                     if (retval != 0)
                     {
@@ -311,10 +311,10 @@ namespace Infovision.Datamining.Roughset
                     }
                     else
                     {
-                        for (int i = 0; i < x.AttributeSet.Data.Count; i++)
+                        for (int i = 0; i < x.Attributes.Data.Count; i++)
                         {
-                            int xval = Convert.ToInt32(x.AttributeSet.Data.Get(i));
-                            int yval = Convert.ToInt32(y.AttributeSet.Data.Get(i));
+                            int xval = Convert.ToInt32(x.Attributes.Data.Get(i));
+                            int yval = Convert.ToInt32(y.Attributes.Data.Get(i));
                             if (xval < yval)
                             {
                                 return 1;

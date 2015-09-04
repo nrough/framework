@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset
         {
             //TODO weights should also be checked what is optimal way of calculating hash, and not scanning the whole array of weights
 
-            return HashHelper.GetHashCode(HashHelper.GetHashCode(this.AttributeSet.Data), HashHelper.GetHashCode(this.Weights));
+            return HashHelper.GetHashCode(HashHelper.GetHashCode(this.Attributes.Data), HashHelper.GetHashCode(this.Weights));
         }
 
         #endregion

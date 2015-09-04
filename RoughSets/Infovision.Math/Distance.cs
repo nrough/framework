@@ -108,7 +108,7 @@ namespace Infovision.Math
         {
             double sum = 0;
             for (int i = 0; i < a.Length; i++)
-                sum += System.Math.Pow((a[i] - b[i]), 2);
+                sum += System.Math.Pow((a[i] - b[i]), 2.0);
             return sum;
         }        
     }

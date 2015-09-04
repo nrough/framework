@@ -7,7 +7,7 @@ namespace Infovision.Datamining.Roughset
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
-        FieldSet AttributeSet { get; }        
+        FieldSet Attributes { get; }        
         
         //TODO Move to Bireduct Interface
         ObjectSet ObjectSet { get; }

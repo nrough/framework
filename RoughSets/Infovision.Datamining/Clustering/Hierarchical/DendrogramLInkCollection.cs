@@ -274,10 +274,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             int size = System.Math.Min(this.numOfInstances, System.Math.Max(numberOfClusters, 0));
             int[] result = new int[size];
 
-            if(size == this.numOfInstances)
+            if (size == 1)
             {
-                Array.Copy(linkages, result, size);
-                return result;
+                result[0] = 0;
             }
 
             int level = 0;

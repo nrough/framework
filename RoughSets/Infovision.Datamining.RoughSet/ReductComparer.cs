@@ -6,11 +6,11 @@ namespace Infovision.Datamining.Roughset
     {
         public override int Compare(IReduct left, IReduct right)
         {
-            if (left.AttributeSet.Count > right.AttributeSet.Count)
+            if (left.Attributes.Count > right.Attributes.Count)
             {
                 return 1;
             }
-            else if (left.AttributeSet.Count < right.AttributeSet.Count)
+            else if (left.Attributes.Count < right.Attributes.Count)
             {
                 return -1;
             }

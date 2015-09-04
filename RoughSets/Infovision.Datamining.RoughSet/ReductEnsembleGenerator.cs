@@ -270,7 +270,7 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
-        private double[][] GetWeightVectorsFromReducts(ReductStore store)
+        public double[][] GetWeightVectorsFromReducts(ReductStore store)
         {
             double[][] errors = new double[store.Count][];
             for (int i = 0; i < store.Count; i++)

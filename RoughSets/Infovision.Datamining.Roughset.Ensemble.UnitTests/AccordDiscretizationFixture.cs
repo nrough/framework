@@ -340,7 +340,7 @@ namespace Infovision.Datamining.Roughset.Ensemble.UnitTests
 
 					Int64 decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					EquivalenceClassMap eqMap = reduct.EquivalenceClassMap;
-					DataVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.AttributeSet);
+					DataVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
 					Int64 mostFrequentDecisionValue = eqClass.MostFrequentDecision;
 

@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public GammaBireduct(GammaBireduct gammaBireduct)
-            : this(gammaBireduct.DataStore, gammaBireduct.AttributeSet.ToArray(), gammaBireduct.ObjectSet.ToArray(), gammaBireduct.ApproximationDegree)
+            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(), gammaBireduct.ApproximationDegree)
         {
 
         }
@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset
             if (base.CheckRemoveAttribute(attributeId) == false)
                 return false;
             
-            FieldSet newAttributeSet = (FieldSet) (this.AttributeSet - attributeId);
+            FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
             
             EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
             localPartition.Calc(newAttributeSet, this.DataStore);
@@ -61,9 +61,9 @@ namespace Infovision.Datamining.Roughset
         protected override bool CheckAddObject(int objectIndex)
         {         
             EquivalenceClassMap localPartition = new EquivalenceClassMap(this.DataStore.DataStoreInfo);
-            localPartition.Calc(this.AttributeSet, this.DataStore);
+            localPartition.Calc(this.Attributes, this.DataStore);
             
-            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.AttributeSet);
+            DataVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = localPartition.GetEquivalenceClass(dataVector);
 
             if (reductStatistics.NumberOfDecisions > 1)

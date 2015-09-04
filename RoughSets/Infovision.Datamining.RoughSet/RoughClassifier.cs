@@ -429,7 +429,7 @@ namespace Infovision.Datamining.Roughset
 
             foreach (IReduct reduct in reductStore)
             {
-                int[] attributeArray = reduct.AttributeSet.ToArray();
+                int[] attributeArray = reduct.Attributes.ToArray();
                 Int64[] dataVectorArray = new Int64[attributeArray.Length];
                 for (int i = 0; i < attributeArray.Length; i++)
                 {

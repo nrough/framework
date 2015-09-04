@@ -142,7 +142,7 @@ namespace Infovision.Datamining.Roughset
                     if (checkApproxDegree == false
                         || localReduct.ApproximationDegree < reduct.ApproximationDegree)
                     {
-                        if (reduct.AttributeSet.Superset(localReduct.AttributeSet))
+                        if (reduct.Attributes.Superset(localReduct.Attributes))
                         {
                             ret = true;
                             break;

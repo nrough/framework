@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     {
                         foreach (IReduct red in rs)
                         {
-                            double quality = InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights).Calc(red);
+                            decimal quality = InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights).Calc(red);
                             resultFile.WriteLine("{0} : {1}", red.ToString(), quality);
                         }
                     }

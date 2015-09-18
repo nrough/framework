@@ -7,27 +7,23 @@ namespace Infovision.Datamining.Roughset
 {
     public class PermutationGeneratorFieldObject : PermutationGenerator
     {
-        private double fieldSelectionRatio = 0.5;
+        private decimal fieldSelectionRatio = 0.5M;
         private int numberOfFields = 0;
 
         #region Constructors
 
-        public PermutationGeneratorFieldObject(int[] objects, int[] fields, double fieldSelectionRatio)
+        public PermutationGeneratorFieldObject(int[] objects, int[] fields, decimal fieldSelectionRatio)
         {
             this.elements = new int[objects.Length + fields.Length];
             for (int i = 0; i < objects.Length; i++)
-            {
                 this.elements[i] = -objects[i];
-            }
             Buffer.BlockCopy(fields, 0, this.elements, objects.Length * sizeof(int), fields.Length * sizeof(int));
-            
             this.fieldSelectionRatio = fieldSelectionRatio;
             this.numberOfFields = fields.Length;
         }
 
-        //TODO What is the algorithm for alpha parameter calculation
         public PermutationGeneratorFieldObject(int[] objects, int[] fields)
-            : this(objects, fields, (double)fields.Length / (double)(fields.Length + objects.Length))
+            : this(objects, fields, (decimal)fields.Length / (decimal)(fields.Length + objects.Length))
         {
         }
 
@@ -36,7 +32,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        public PermutationGeneratorFieldObject(DataStore dataSet, double fieldSelectionRatio)
+        public PermutationGeneratorFieldObject(DataStore dataSet, decimal fieldSelectionRatio)
             : this(dataSet.GetObjectIndexes(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard), fieldSelectionRatio)
         {
         }
@@ -55,7 +51,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.numberOfFields; }
         }
 
-        protected double FieldSelectionRatio
+        protected decimal FieldSelectionRatio
         {
             get { return this.fieldSelectionRatio; }
         }
@@ -77,8 +73,8 @@ namespace Infovision.Datamining.Roughset
 
                 if (fieldList.Count > 0 && objectList.Count > 0)
                 {
-                    if (this.fieldSelectionRatio >= 1.0
-                        || RandomSingleton.Random.NextDouble() < this.fieldSelectionRatio)
+                    if (this.fieldSelectionRatio >= 1.0M
+                        || RandomSingleton.Random.NextDouble() < (double)this.fieldSelectionRatio)
                     {
                         element = this.GetAndRemoveListElement<int>(fieldList);
                     }
@@ -131,7 +127,7 @@ namespace Infovision.Datamining.Roughset
             return element;
         }
 
-        public static double CalcSelectionRatio(int numberOfFields, int numberOfObjects, double fieldSelectionRatio)
+        public static decimal CalcSelectionRatio(int numberOfFields, int numberOfObjects, decimal fieldSelectionRatio)
         {
             if (numberOfFields <= 0)
                 throw new System.ArgumentOutOfRangeException("numberOfFields", "Should be greater than zero");
@@ -139,9 +135,9 @@ namespace Infovision.Datamining.Roughset
                 throw new System.ArgumentOutOfRangeException("numberOfObjects", "Should be greater than zero");
 
             if(numberOfFields < numberOfObjects)
-                return 2 * fieldSelectionRatio * ((double)numberOfFields / ((double)numberOfFields + (double)numberOfObjects));
+                return 2 * fieldSelectionRatio * ((decimal)numberOfFields / ((decimal)numberOfFields + (decimal)numberOfObjects));
 
-            return fieldSelectionRatio * ((double)numberOfObjects / ((double)numberOfFields + (double)numberOfObjects));
+            return fieldSelectionRatio * ((decimal)numberOfObjects / ((decimal)numberOfFields + (decimal)numberOfObjects));
         }
 
         #endregion

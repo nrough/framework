@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private IInformationMeasure informationMeasure;        
-        private double dataSetQuality = Double.MinValue;        
+        private decimal dataSetQuality = Decimal.MinValue;        
 
         #endregion
 
@@ -26,11 +26,11 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties        
 
-        protected double DataSetQuality
+        protected decimal DataSetQuality
         {
             get
             {
-                if (this.dataSetQuality < -1.0)
+                if (this.dataSetQuality < -1.0M)
                     this.CalcDataSetQuality();
 
                 return this.dataSetQuality;
@@ -70,20 +70,20 @@ namespace Infovision.Datamining.Roughset
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             Reduct r = new Reduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
 
-        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore, false, epsilon);
         }
         
-        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, double epsilon)
+        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, decimal epsilon)
         {
             IReduct reduct = this.CreateReductObject(new int[] { }, 
                                                      epsilon,
@@ -159,10 +159,17 @@ namespace Infovision.Datamining.Roughset
 
         public virtual bool CheckIsReduct(IReduct reduct)
         {
-            double partitionQuality = this.GetPartitionQuality(reduct);
-            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - this.Epsilon) * this.DataSetQuality) - tinyDouble))
+            /*
+            decimal partitionQuality = this.GetPartitionQuality(reduct);
+            decimal tinydecimal = 0.0001 / this.DataStore.NumberOfRecords;
+            if (partitionQuality >= (((1.0M - this.Epsilon) * this.DataSetQuality) - tinyDouble))
                 return true;
+            */
+
+            decimal partitionQuality = this.GetPartitionQuality(reduct);
+            if (partitionQuality >= ((1.0M - this.Epsilon) * this.DataSetQuality))
+                return true;
+
             return false;
         }
 
@@ -196,7 +203,7 @@ namespace Infovision.Datamining.Roughset
             return isReduct;
         }
 
-        protected virtual double GetPartitionQuality(IReduct reduct)
+        protected virtual decimal GetPartitionQuality(IReduct reduct)
         {
             return this.InformationMeasure.Calc(reduct);
         }

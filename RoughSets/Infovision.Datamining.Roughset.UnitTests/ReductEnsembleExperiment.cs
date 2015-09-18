@@ -43,9 +43,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
-                double[] epsilons = new double[numberOfPermutations];
+                decimal[] epsilons = new decimal[numberOfPermutations];
                 for (int i = 0; i < numberOfPermutations; i++)
-                    epsilons[i] = (double)RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0;
+                    epsilons[i] = (decimal)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
 
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleStream);
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRandom(data));
                 //args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
                 args.AddParameter(ReductGeneratorParamHelper.ReductSize, reductSize);
                 args.AddParameter(ReductGeneratorParamHelper.MinimumNumberOfInstances, 10);
 
@@ -98,9 +98,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
-                double[] epsilons = new double[numberOfPermutations];
+                decimal[] epsilons = new decimal[numberOfPermutations];
                 for (int i = 0; i < numberOfPermutations; i++)
-                    epsilons[i] = (double)RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0;
+                    epsilons[i] = (decimal)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
 
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
@@ -110,7 +110,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
@@ -153,8 +153,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = reductEnsemble.Count,
-                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
                             WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
                             DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
@@ -194,8 +194,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = randomReductGroup.Count,
-                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
                             WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
                             DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
@@ -231,8 +231,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public int MaxEpsilon { get; set; }
         public int NumberOfPermuations { get; set; }
         public int NumberOfReducts { get; set; }
-        public Func<double[], double[], double> Distance { get; set; }
-        public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
+        public Func<double[], double[], decimal> Distance { get; set; }
+        public Func<int[], int[], DistanceMatrix, double[][], decimal> Linkage { get; set; }
         public DataStore Dataset { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
         public Func<IReduct, double[], double[]> DiscernibiltyVector { get; set; }

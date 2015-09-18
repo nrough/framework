@@ -6,7 +6,7 @@ namespace Infovision.Datamining.Roughset
     public interface IReductStore : IEnumerable<IReduct>
     {
         int Count { get; }
-        double Weight { get; set; }
+        decimal Weight { get; set; }
         bool AllowDuplicates { get; set; }
         bool IsActive { get; set; }
         void AddReduct(IReduct reduct);

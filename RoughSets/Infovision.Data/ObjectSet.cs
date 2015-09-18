@@ -102,12 +102,12 @@ namespace Infovision.Data
             return new ObjectSet(dataStore);
         }
 
-        public double PriorDecisionProbability(long decisionValue)
+        public decimal PriorDecisionProbability(long decisionValue)
         {
             int count = 0;
             if (this.decisionCount.TryGetValue(decisionValue, out count))
             {
-                return (this.NumberOfRecords > 0) ? (double)count / (double)this.NumberOfRecords : 0;
+                return (this.NumberOfRecords > 0) ? (decimal)count / (decimal)this.NumberOfRecords : 0;
             }
             return 0;
         }

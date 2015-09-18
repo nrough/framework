@@ -59,8 +59,8 @@ namespace Infovision.Datamining.Roughset
 
         public override int Compare(IReduct left, IReduct right)
         {            
-            double leftResult = bireductMeasureRelative.Calc(left);
-            double rightResult = bireductMeasureRelative.Calc(right);
+            decimal leftResult = bireductMeasureRelative.Calc(left);
+            decimal rightResult = bireductMeasureRelative.Calc(right);
 
             if (leftResult < rightResult)
             {

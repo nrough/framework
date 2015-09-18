@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
             argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
             argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
             argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"F:\reducts.bmp");
             argsList.Add(argSet);
 
@@ -91,13 +91,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int numberOfClusters = (int)args[ReductGeneratorParamHelper.NumberOfClusters];
 
             Console.WriteLine("Generator: {0}", (string)args[ReductGeneratorParamHelper.FactoryKey]);
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
+            Func<double[], double[], decimal> distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance];
             Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
-            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
+            Func<int[], int[], DistanceMatrix, double[][], decimal> linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage];
             Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
                      
-            Func<IReduct, double[], double[]> recognition = (Func<IReduct, double[], double[]>) args[ReductGeneratorParamHelper.ReconWeights];
+            Func<IReduct, decimal[], double[]> recognition = (Func<IReduct, decimal[], double[]>) args[ReductGeneratorParamHelper.ReconWeights];
             Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
             
             Args parms = new Args();

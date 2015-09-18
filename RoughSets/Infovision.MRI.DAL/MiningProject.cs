@@ -123,6 +123,25 @@ namespace Infovision.MRI.DAL
             return ++nextId;
         }
 
+        public IImage[] GetImageArray(long[] objectIds)
+        {
+            IImage[] result = new Infovision.MRI.ImageITK[objectIds.Length];
+            int i = 0;
+            foreach (long id in objectIds)
+            {
+                IMiningObjectViewImage miningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
+                if (miningObject == null)
+                    throw new InvalidOperationException("Unexpected error");
+
+                ImageITK itkImage = miningObject.Image as ImageITK;
+                if (itkImage == null)
+                    throw new InvalidOperationException("Unexpected error");
+
+                result[i++] = itkImage;
+            }
+            return result;
+        }
+
         public itk.simple.Image[] GetITKImageArray(long[] objectIds)
         {
             itk.simple.Image[] result = new itk.simple.Image[objectIds.Length];

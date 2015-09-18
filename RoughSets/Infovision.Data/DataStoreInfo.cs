@@ -195,9 +195,9 @@ namespace Infovision.Data
                 maxFieldId = fieldId;
         }
 
-        public double PriorDecisionProbability(long decisionValue)
+        public decimal PriorDecisionProbability(long decisionValue)
         {
-            return (double) this.NumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfRecords;
+            return (decimal) this.NumberOfObjectsWithDecision(decisionValue) / (decimal)this.NumberOfRecords;
         }
 
         public int NumberOfObjectsWithDecision(long decisionValue)

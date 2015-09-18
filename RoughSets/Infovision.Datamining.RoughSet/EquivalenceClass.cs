@@ -15,13 +15,13 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private AttributeValueVector dataVector; //attributes and values for which EQ class was created
-        private Dictionary<int, double> instances;  //objectId --> object weight
+        private Dictionary<int, decimal> instances;  //objectId --> object weight
         private bool isStatCalculated; //flags if statistics have been calculated
         private Dictionary<long, HashSet<int>> decisionObjectIndexes; //decision value --> set of objects with decision
-        private Dictionary<long, double> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
+        private Dictionary<long, decimal> decisionWeigthSums; //list of decision weight sum pairs (sorted during statistics calculation)
         private long majorDecision; //decision within EQ class with greatest object weight sum
-        private double majorDecisionWeightSum; //sum of w for a major decision
-        private double totalWeightSum;
+        private decimal majorDecisionWeightSum; //sum of w for a major decision
+        private decimal totalWeightSum;
         private PascalSet decisionSet;  //set containing all decisions within EQ class
         private DataStore dataStore;
 
@@ -41,7 +41,7 @@ namespace Infovision.Datamining.Roughset
 
         public int NumberOfDecisions
         {            
-            get { return this.decisionSet.Count; }
+            get { return this.DecisionSet.Count; }
         }
 
         public IEnumerable<int> ObjectIndexes
@@ -88,41 +88,42 @@ namespace Infovision.Datamining.Roughset
         #region Constructors        
 
         public EquivalenceClass(AttributeValueVector dataVector, DataStore data, bool manualStatCalculation = false)
-        {                        
-            this.dataVector = dataVector;
+        {
             this.dataStore = data;
-            this.ManualStatCalculation = manualStatCalculation;
-
-            this.instances = new Dictionary<int, double>();
             int numberOfDecisions = data.DataStoreInfo.GetDecisionFieldInfo().InternalValues().Count;
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);
-
             this.decisionSet = new PascalSet(Convert.ToInt32(this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MinValue),
                                              Convert.ToInt32(this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MaxValue));
+            this.decisionWeigthSums = new Dictionary<long, decimal>(numberOfDecisions);
 
-            this.decisionWeigthSums = new Dictionary<long, double>(numberOfDecisions);
+            this.dataVector = dataVector;
+            this.instances = new Dictionary<int, decimal>();
+            this.ManualStatCalculation = manualStatCalculation;
         }
 
         public EquivalenceClass(AttributeValueVector dataVector, bool manualStatCalculation = false)
         {
             this.dataVector = dataVector;
-            this.instances = new Dictionary<int, double>();
+            this.instances = new Dictionary<int, decimal>();
             this.ManualStatCalculation = manualStatCalculation;
+
+            this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>();
+            this.decisionWeigthSums = new Dictionary<long, decimal>();
         }
 
         private EquivalenceClass(EquivalenceClass eqClass)
         {            
             this.dataVector = new AttributeValueVector(eqClass.dataVector.GetAttributes(), eqClass.dataVector.GetValues(), true);
-            this.instances = new Dictionary<int, double>(eqClass.instances);
+            this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.isStatCalculated = eqClass.isStatCalculated;            
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(eqClass.decisionObjectIndexes.Count);            
             foreach (var kvp in eqClass.decisionObjectIndexes)
                 this.decisionObjectIndexes.Add(kvp.Key, new HashSet<int>(kvp.Value));
-            this.decisionWeigthSums = new Dictionary<long, double>(eqClass.decisionWeigthSums);
+            this.decisionWeigthSums = new Dictionary<long, decimal>(eqClass.decisionWeigthSums);
             this.majorDecision = eqClass.majorDecision;
             this.majorDecisionWeightSum = eqClass.majorDecisionWeightSum;
             this.totalWeightSum = eqClass.totalWeightSum;
-            this.decisionSet = new PascalSet(eqClass.decisionSet.LowerBound, eqClass.decisionSet.UpperBound, eqClass.decisionSet.Data);
+            this.decisionSet = new PascalSet(eqClass.DecisionSet.LowerBound, eqClass.DecisionSet.UpperBound, eqClass.decisionSet.Data);
             this.dataStore = eqClass.dataStore;
             this.ManualStatCalculation = eqClass.ManualStatCalculation;
         }
@@ -144,12 +145,12 @@ namespace Infovision.Datamining.Roughset
             return new HashSet<int>();
         }
 
-        public double GetDecisionWeigth(long decision)
+        public decimal GetDecisionWeigth(long decision)
         {
-            double result = 0.0;
+            decimal result = 0.0M;
             if (this.decisionWeigthSums.TryGetValue(decision, out result))
                 return result;
-            return 0.0;
+            return 0.0M;
         }
 
         private void CalcStatistics()
@@ -157,20 +158,20 @@ namespace Infovision.Datamining.Roughset
             this.isStatCalculated = false;
 
             long tmpMajorDecision = -1;
-            double maxWeightSum = Double.MinValue;
-            this.decisionWeigthSums = new Dictionary<long, double>(this.decisionObjectIndexes.Count);
-            this.totalWeightSum = 0.0;
+            decimal maxWeightSum = Decimal.MinValue;
+            this.decisionWeigthSums = new Dictionary<long, decimal>(this.decisionObjectIndexes.Count);
+            this.totalWeightSum = 0.0M;
             int[] values = new int[this.decisionObjectIndexes.Count];
 
-            double minWeight = Double.MaxValue;
+            decimal minWeight = Decimal.MaxValue;
 
             int i = 0;
             foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
-            {                
-                double sum = 0;
+            {
+                decimal sum = 0;
                 foreach (int idx in kvp.Value)
                 {
-                    double weight = instances[idx];
+                    decimal weight = instances[idx];
                     sum += weight;
                     if(minWeight > weight)
                         minWeight = weight;
@@ -197,11 +198,11 @@ namespace Infovision.Datamining.Roughset
             this.isStatCalculated = true;
         }
 
-        public void AddDecision(long decisionValue, double weight)
+        public void AddDecision(long decisionValue, decimal weight)
         {            
             int decisionValueInt = Convert.ToInt32(decisionValue);
             this.DecisionSet.AddElement(decisionValueInt);
-            double weightSum = 0.0;
+            decimal weightSum = 0.0M;
             if (!this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
                 this.decisionWeigthSums.Add(decisionValue, weight);
             else
@@ -210,7 +211,7 @@ namespace Infovision.Datamining.Roughset
             totalWeightSum += weight;
         }
 
-        public void AddObject(int objectIndex, long decisionValue, double weight)
+        public void AddObject(int objectIndex, long decisionValue, decimal weight)
         {
             this.instances.Add(objectIndex, weight);
                             
@@ -254,9 +255,9 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }        
 
-        public double GetDecisionProbability(long decisionValue)
+        public decimal GetDecisionProbability(long decisionValue)
         {
-            return (double)this.GetNumberOfObjectsWithDecision(decisionValue) / (double)this.NumberOfObjects;
+            return (decimal)this.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)this.NumberOfObjects;
         }
 
         public void RemoveObjectsWithMinorDecisions()
@@ -264,11 +265,11 @@ namespace Infovision.Datamining.Roughset
             if (!this.isStatCalculated && this.ManualStatCalculation == false)
                 this.CalcStatistics();
 
-            DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0001 / this.dataStore.NumberOfRecords);
+            //DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0001 / this.dataStore.NumberOfRecords);
 
-            foreach (KeyValuePair<long, double> kvp in this.decisionWeigthSums)
+            foreach (KeyValuePair<long, decimal> kvp in this.decisionWeigthSums)
             {
-                if (comparer.Equals(kvp.Value, this.majorDecisionWeightSum) == false)
+                if (kvp.Value != this.majorDecisionWeightSum)
                 {
                     foreach (int objectIdx in decisionObjectIndexes[kvp.Key])
                         this.instances.Remove(objectIdx);
@@ -280,7 +281,7 @@ namespace Infovision.Datamining.Roughset
             this.CalcStatistics();            
         }
 
-        public void KeepMajorDecisions(double epsilon)
+        public void KeepMajorDecisions(decimal epsilon)
         {
             bool isFirst = true;
             var items = from pair in decisionWeigthSums
@@ -288,9 +289,9 @@ namespace Infovision.Datamining.Roughset
                                         select pair;
 
             HashSet<long> decisionsToRemove = new HashSet<long>();
-            double totalWeightToRemove = 0.0;
-            double max = Double.MinValue;
-            foreach (KeyValuePair<long, double> pair in items)
+            decimal totalWeightToRemove = 0.0M;
+            decimal max = Decimal.MinValue;
+            foreach (KeyValuePair<long, decimal> pair in items)
             {
                 if (isFirst)
                 {
@@ -299,7 +300,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    if (pair.Value < (((1.0 - epsilon) * max) - 0.00000000001))
+                    if (pair.Value < (1.0M - epsilon) * max)
                     {
                         decisionsToRemove.Add(pair.Key);
                         totalWeightToRemove += pair.Value;
@@ -325,15 +326,15 @@ namespace Infovision.Datamining.Roughset
             this.totalWeightSum -= totalWeightToRemove;
         }
 
-        public void KeepMajorDecisions2(double epsilon)
+        public void KeepMajorDecisions2(decimal epsilon)
         {
             if (this.DecisionSet.Count <= 1)
                 return;
             
             HashSet<long> decisionsToRemove = new HashSet<long>();
-            double totalWeightToRemove = 0.0;
-            foreach (KeyValuePair<long, double> kvp in this.decisionWeigthSums)
-                if ((kvp.Value / this.totalWeightSum) < (1.0 - epsilon))
+            decimal totalWeightToRemove = 0.0M;
+            foreach (KeyValuePair<long, decimal> kvp in this.decisionWeigthSums)
+                if ((kvp.Value / this.totalWeightSum) < (1.0M - epsilon))
                 {
                     decisionsToRemove.Add(kvp.Key);
                     totalWeightToRemove += kvp.Value;                    
@@ -357,20 +358,20 @@ namespace Infovision.Datamining.Roughset
             this.totalWeightSum -= totalWeightToRemove;
         }
 
-        public double GetWeight()
+        public decimal GetWeight()
         {
             return this.totalWeightSum;
         }
 
-        public double GetWeight(long decision)
+        public decimal GetWeight(long decision)
         {
             if (!this.isStatCalculated && this.ManualStatCalculation == false)
                 this.CalcStatistics();            
             
-            double ret = 0.0;
+            decimal ret = 0;
             if (this.decisionWeigthSums.TryGetValue(decision, out ret))
                 return ret;
-            return 0.0;
+            return 0;
         }
 
         #region ICloneable Members

@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
 
     public interface IInformationMeasure
     {
-        double Calc(IReduct reduct);
+        decimal Calc(IReduct reduct);
         string Description();
     }
 
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         
         #region Methods
 
-        public abstract double Calc(IReduct reduct);
+        public abstract decimal Calc(IReduct reduct);
         public abstract string Description();
 
         public static IInformationMeasure Construct(InformationMeasureType measureType)
@@ -68,8 +68,9 @@ namespace Infovision.Datamining.Roughset
     {
         #region Methods
 
-        public override double Calc(IReduct reduct)
+        public override decimal Calc(IReduct reduct)
         {
+            /*
             int result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
@@ -78,7 +79,17 @@ namespace Infovision.Datamining.Roughset
                     result += e.NumberOfObjects;
                 }
             }
-            return reduct.ObjectSetInfo.NumberOfRecords != 0 ? (double)result / (double)reduct.ObjectSetInfo.NumberOfRecords : 0;
+            return reduct.ObjectSetInfo.NumberOfRecords != 0 ? (decimal)result / (decimal)reduct.ObjectSetInfo.NumberOfRecords : 0;
+            */
+
+            decimal result = 0;
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
+                if (e.NumberOfDecisions == 1)
+                    result += e.NumberOfObjects;
+
+            return (reduct.ObjectSetInfo.NumberOfRecords != 0) 
+                ? result / (decimal)reduct.ObjectSetInfo.NumberOfRecords 
+                : 0.0M;
         }
 
         public override string Description()
@@ -99,16 +110,17 @@ namespace Infovision.Datamining.Roughset
     {
         #region Methods
 
-        public override double Calc(IReduct reduct)
+        public override decimal Calc(IReduct reduct)
         {
-            double result = 0;
-            double maxDecisionProbability = -1;
-            double decProbability;
-            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
+            /*
+            decimal result = 0;
+            decimal maxDecisionProbability = -1;
+            decimal decProbability;
+            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
 
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                maxDecisionProbability = Double.MinValue;
+                maxDecisionProbability = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.GetDecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
@@ -117,6 +129,26 @@ namespace Infovision.Datamining.Roughset
                     {
                         maxDecisionProbability = decProbability;
                     }
+                }
+
+                result += e.NumberOfObjects * maxDecisionProbability;
+            }
+
+            return result / reduct.ObjectSetInfo.NumberOfRecords;
+            */
+
+            decimal result = 0;
+            decimal maxDecisionProbability = Decimal.MinValue;
+            decimal decProbability;
+
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
+            {
+                maxDecisionProbability = Decimal.MinValue;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    decProbability = e.GetDecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
+                    if (decProbability > maxDecisionProbability)
+                        maxDecisionProbability = decProbability;
                 }
 
                 result += e.NumberOfObjects * maxDecisionProbability;
@@ -143,15 +175,16 @@ namespace Infovision.Datamining.Roughset
     {
         #region Methods
 
-        public override double Calc(IReduct reduct)
+        public override decimal Calc(IReduct reduct)
         {
-            double result = 0;
-            double maxDecisionProbability = -1;
-            double decProbability;
-            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
+            /*
+            decimal result = 0;
+            decimal maxDecisionProbability = -1;
+            decimal decProbability;
+            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                maxDecisionProbability = Double.MinValue;
+                maxDecisionProbability = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.GetDecisionProbability(decisionValue);
@@ -161,6 +194,23 @@ namespace Infovision.Datamining.Roughset
                 result += e.NumberOfObjects * maxDecisionProbability;
             }
             return result / reduct.ObjectSetInfo.NumberOfRecords;
+            */
+
+            decimal result = 0.0M;
+            decimal maxDecisionProbability = Decimal.MinValue;
+            decimal decProbability;
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
+            {
+                maxDecisionProbability = Decimal.MinValue;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    decProbability = e.GetDecisionProbability(decisionValue);
+                    if (decProbability > maxDecisionProbability)
+                        maxDecisionProbability = decProbability;
+                }
+                result += e.NumberOfObjects * maxDecisionProbability;
+            }
+            return result / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
         }
 
         public override string Description()
@@ -181,29 +231,56 @@ namespace Infovision.Datamining.Roughset
     {
         #region Methods
 
-        public override double Calc(IReduct reduct)
+        public override decimal Calc(IReduct reduct)
         {
-            double result = 0;
-            double tinyDouble = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
+            /*
+            decimal result = 0;
+            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                double maxValue = Double.MinValue;
+                decimal maxValue = Decimal.MinValue;
                 long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    double sum = 0;
+                    decimal sum = 0;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
                     {
                         sum += reduct.Weights[objectIdx];
                     }
-                    
-                    if (sum > maxValue + tinyDouble )
+
+                    if (sum + tinydecimal > maxValue)
                     {
                         maxValue = sum;
                         maxDecision = decisionValue;
                     }
                 } 
                                                 
+                result += maxValue;
+            }
+
+            return result;
+            */
+
+            decimal result = 0;
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
+            {
+                decimal maxValue = Decimal.MinValue;
+                long maxDecision = -1;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    decimal sum = 0.0M;
+                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                    {
+                        sum += reduct.Weights[objectIdx];
+                    }
+
+                    if (sum > maxValue)
+                    {
+                        maxValue = sum;
+                        maxDecision = decisionValue;
+                    }
+                }
+
                 result += maxValue;
             }
 

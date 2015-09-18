@@ -45,7 +45,7 @@ namespace Infovision.MRI.DAL
             this.Width = image.Width;
             this.Height = image.Height;
             this.Depth = image.Depth;
-            this.PixelType = image.PixelTypeId;
+            this.PixelType = SimpleITKHelper.Type2PixelType(image.PixelType);
             this.FileName = fileName;
             this.ImageTypeId = imageType;
         }
@@ -183,7 +183,7 @@ namespace Infovision.MRI.DAL
             switch (this.ImageTypeId)
             {
                 case ImageType.ITKStandard :
-                    image = new Infovision.MRI.ImageITK(this.FileName);
+                    image = new Infovision.MRI.ImageITK();
                     break;
 
                 case ImageType.ITKRawImage :
@@ -206,7 +206,7 @@ namespace Infovision.MRI.DAL
             this.Width      = image.Width;
             this.Height     = image.Height;
             this.Depth      = image.Depth;
-            this.PixelType  = image.PixelTypeId;
+            this.PixelType  = SimpleITKHelper.Type2PixelType(image.PixelType);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
-            double weight = 1.0 / dataStore.NumberOfRecords;
+            decimal weight = 1.0M / dataStore.NumberOfRecords;
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
@@ -51,7 +51,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public override void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
+        public override void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
         {                        
             this.InitPartitions();            
             int[] orderByTmp = attributeSet.ToArray();
@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Roughset
                 throw new InvalidProgramException("Sum of eqivalence classes does not equal to all objects.");
         }
 
-        public override void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
+        public override void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             this.InitPartitions();
             int[] orderByTmp = attributeSet.ToArray();

@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         //aka Min
         public static double Single(int[] cluster1, int[] cluster2, DistanceMatrix distanceMatrix, double[][] data)
         {
-            double min = double.MaxValue;
+            double min = Double.MaxValue;
             foreach (int a in cluster1)
             {
                 foreach (int b in cluster2)
@@ -51,7 +51,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 foreach (int b in cluster2)                
                     sum += distanceMatrix.GetDistance(a, b);                                    
            
-            return n != 0 ? sum / (double) n : Double.MaxValue;            
+            return n != 0 ? sum / (double) n : double.MaxValue;            
         }
 
         //aka Group average
@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     sum += distanceMatrix.GetDistance(merge[i], merge[j]);
 
             int n = merge.Length;
-            return n > 1 ? sum / (double) (n * (n - 1.0) / 2.0) : Double.MaxValue;
+            return n > 1 ? sum / (double) (n * (n - 1.0) / 2.0) : double.MaxValue;
         }
 
         /// <summary>

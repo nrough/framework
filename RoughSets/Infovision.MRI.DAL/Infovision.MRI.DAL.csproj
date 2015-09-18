@@ -105,6 +105,10 @@
     <Compile Include="MiningObjectDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj">
+      <Project>{2d23e210-ffb7-46ef-ad27-18b5de007ee3}</Project>
+      <Name>Infovision.Datamining.Roughset</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Infovision.MRI\Infovision.MRI.csproj">
       <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
       <Name>Infovision.MRI</Name>

@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private PermutationCollection permutationList;
         private DataStore dataStore;
-        private double epsilon;
+        private decimal epsilon;
         private int[][] fieldGroups;
         private int reductIdSequence;
         private bool useCache;
@@ -55,15 +55,15 @@ namespace Infovision.Datamining.Roughset
             get { return dataStore; }
         }
 
-        public double Epsilon
+        public decimal Epsilon
         {
             get { return epsilon; }
             set
             {
-                if (value < 0.0)
-                    epsilon = 0.0;
-                else if (value > 1.0)
-                    epsilon = 1.0;                    
+                if (value < 0.0M)
+                    epsilon = 0.0M;
+                else if (value > 1.0M)
+                    epsilon = 1.0M;                    
                 else
                     epsilon = value;
             }
@@ -121,8 +121,8 @@ namespace Infovision.Datamining.Roughset
         #region Methods               
 
         public abstract void Generate();                
-        protected abstract IReduct CreateReductObject(int[] fieldIds, double epsilon, string id);
-        public abstract IReduct CreateReduct(int[] permutation, double epsilon, double[] weights);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
+        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);
 
         protected virtual IReductStore CreateReductStore()
         {
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset
         public virtual void SetDefaultParameters()
         {
             this.useCache = false;
-            this.epsilon = 0.0;
+            this.epsilon = 0;
         }
 
         public virtual void initFromDataStore(DataStore data)
@@ -190,8 +190,8 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("USECACHE"))
                 this.useCache = true;
 
-            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))            
-                this.Epsilon = (double)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio);
+            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+                this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio);
 
             //TODO FieldGroups
         }

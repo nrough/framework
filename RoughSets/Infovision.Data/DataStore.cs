@@ -14,7 +14,7 @@ namespace Infovision.Data
         private long[] data;
         private long capacity;
         private int lastIndex;
-        private double capacityFactor;
+        private decimal capacityFactor;
         private Dictionary<long, int> objectId2Index;
         private Dictionary<int, long> index2ObjectId;
         private DataStoreInfo dataStoreInfo;
@@ -45,10 +45,10 @@ namespace Infovision.Data
         public DataStore(DataStoreInfo dataStoreInfo)
         {
             this.dataStoreInfo = dataStoreInfo;
-            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.2);            
+            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.2M);            
         }
 
-        private void InitStorage(int capacity, int attributeSize, double capacityFactor)
+        private void InitStorage(int capacity, int attributeSize, decimal capacityFactor)
         {
             data = new long[capacity * attributeSize];
             this.capacity = capacity;
@@ -89,7 +89,7 @@ namespace Infovision.Data
             if (capacity == 0)
                 return true;
 
-            //if ((double)lastIndex > (double)capacity * (1.0 - capacityFactor) + 1.0)
+            //if ((decimal)lastIndex > (decimal)capacity * (1.0M - capacityFactor) + 1.0M)
             //    return true;
 
             if (lastIndex >= capacity)
@@ -101,7 +101,7 @@ namespace Infovision.Data
 
         private void Resize()
         {
-            long newCapacity = capacity != 0 ? Convert.ToInt32((double)capacity * (1 + capacityFactor)) + 1 : 1;
+            long newCapacity = capacity != 0 ? Convert.ToInt32((decimal)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
             this.capacity = newCapacity;
@@ -214,15 +214,16 @@ namespace Infovision.Data
 
         public long GetObjectField(int objectIndex, int fieldId)
         {
-            if(fieldId < this.DataStoreInfo.MinFieldId || fieldId > this.DataStoreInfo.MaxFieldId)
+            if(fieldId < this.DataStoreInfo.MinFieldId)
                 throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
-
-            if(objectIndex < 0 || objectIndex > this.NumberOfRecords-1)
+            if(fieldId > this.DataStoreInfo.MaxFieldId)
+                throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
+            if(objectIndex < 0)
                 throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
-            
-            int index = objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1);
+            if(objectIndex > this.NumberOfRecords-1)
+                throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
 
-            return data[index];
+            return data[objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)];
         }
 
         public long[] GetObjectIds()
@@ -298,7 +299,7 @@ namespace Infovision.Data
             return -1;
         }
 
-        public double PriorDecisionProbability(long decisionValue)
+        public decimal PriorDecisionProbability(long decisionValue)
         {
             return this.DataStoreInfo.PriorDecisionProbability(decisionValue);
         }

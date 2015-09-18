@@ -15,11 +15,11 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator
     {                        
-        private double[] permEpsilon;
+        private decimal[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
-        private double dataSetQuality = 1.0;        
+        private decimal dataSetQuality = 1.0M;        
         private WeightGenerator weightGenerator;
-        private Func<IReduct, double[], double[]> recognition;
+        private Func<IReduct, decimal[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;                
         private HierarchicalClusteringBase hCluster;
@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset
             get; set;
         }
 
-        protected double DataSetQuality
+        protected decimal DataSetQuality
         {
             get
             {
@@ -111,8 +111,8 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist(ReductGeneratorParamHelper.PermutationEpsilon))
             {
-                double[] epsilons = (double[])args.GetParameter(ReductGeneratorParamHelper.PermutationEpsilon);
-                this.permEpsilon = new double[epsilons.Length];
+                decimal[] epsilons = (decimal[])args.GetParameter(ReductGeneratorParamHelper.PermutationEpsilon);
+                this.permEpsilon = new decimal[epsilons.Length];
                 Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
             }
             
@@ -126,7 +126,7 @@ namespace Infovision.Datamining.Roughset
                 this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
             if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-                this.recognition = (Func<IReduct, double[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+                this.recognition = (Func<IReduct, decimal[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
         }        
        
         public override void Generate()
@@ -136,7 +136,7 @@ namespace Infovision.Datamining.Roughset
             int k = -1;            
             foreach (Permutation permutation in this.Permutations)
             {                
-                double localApproxLevel = this.permEpsilon[++k];
+                decimal localApproxLevel = this.permEpsilon[++k];
 
                 IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel, this.GetNextReductId().ToString());
                 
@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset
             this.hCluster.Compute();
         }
 
-        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
@@ -229,33 +229,62 @@ namespace Infovision.Datamining.Roughset
             if (reductStore.IsSuperSet(reduct))            
                 return true;            
                         
-            double partitionQuality = this.GetPartitionQuality(reduct);
-            double tinyDouble = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0 - reduct.Epsilon) * this.DataSetQuality) - tinyDouble))             
+            /*
+            decimal partitionQuality = this.GetPartitionQuality(reduct);
+            decimal tinydecimal = 0.0001 / this.DataStore.NumberOfRecords;
+            if (partitionQuality >= (((1.0M - reduct.Epsilon) * this.DataSetQuality) - tinyDouble))             
                 return true;            
-            
+            */
+
+            decimal partitionQuality = this.GetPartitionQuality(reduct);
+            if (partitionQuality >= ((1.0M - reduct.Epsilon) * this.DataSetQuality))
+                return true;
+
             return false;
         }
 
-        protected virtual double GetPartitionQuality(IReduct reduct)
+        protected virtual decimal GetPartitionQuality(IReduct reduct)
         {
             //TODO Consider changing to information measure
             //return this.InformationMeasure.Calc(reduct);
 
-            double tinyDouble = (0.0001 / (double)this.DataStore.NumberOfRecords);
-            double result = 0;
+            /*
+            decimal tinydecimal = (0.0001 / (decimal)this.DataStore.NumberOfRecords);
+            decimal result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {                                               
-                double maxValue = Double.MinValue;
+                decimal maxValue = Decimal.MinValue;
                 long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    double sum = 0;
+                    decimal sum = 0;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
                     {
                         sum += reduct.Weights[objectIdx];
                     }
                     if (sum > (maxValue + tinyDouble))
+                    {
+                        maxValue = sum;
+                        maxDecision = decisionValue;
+                    }
+                }
+
+                result += maxValue;
+            }
+            */
+
+            decimal result = 0;
+            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
+            {
+                decimal maxValue = Decimal.MinValue;
+                long maxDecision = -1;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    decimal sum = 0;
+                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                        sum += reduct.Weights[objectIdx];
+
+                    if (sum > maxValue)
                     {
                         maxValue = sum;
                         maxDecision = decisionValue;
@@ -274,7 +303,7 @@ namespace Infovision.Datamining.Roughset
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }               
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;

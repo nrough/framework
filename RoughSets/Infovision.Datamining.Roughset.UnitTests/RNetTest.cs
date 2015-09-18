@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]    
     public class RNetTest
     {
-        [Test]
+        [Ignore]
         public void HelloWorldTest()
         {
             REngine.SetEnvironmentVariables(); // <-- May be omitted; the next line would call it.

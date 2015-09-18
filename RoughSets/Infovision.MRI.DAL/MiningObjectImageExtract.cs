@@ -48,7 +48,7 @@ namespace Infovision.MRI.DAL
 
                 this.Header = 0;
                 this.ImageType = DAL.ImageType.ITKStandard;
-                this.PixelType = image.PixelTypeId;
+                this.PixelType = SimpleITKHelper.Type2PixelType(image.PixelType);
                 this.Endianness = MRI.Endianness.LittleEndian;
                 this.FileName = String.Empty;
             }

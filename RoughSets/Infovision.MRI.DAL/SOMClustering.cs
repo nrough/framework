@@ -131,7 +131,7 @@ namespace Infovision.MRI.DAL
             this.availableObjects.Remove(item);
         }
 
-        public void Train(itk.simple.Image[] images)
+        public void Train(IImage[] images)
         {
             this.Cluster = new ImageSOMCluster(this.Inputs, this.NumberOfClusters);
             this.Cluster.Train(images, this.NumberOfIterations, this.LearningRate, this.Radius);
@@ -146,6 +146,18 @@ namespace Infovision.MRI.DAL
         public void Save(string fileName)
         {
             this.Cluster.SaveNetwork(fileName);
+        }
+
+        public IImage[] GetImageArray()
+        {
+            IImage[] imageArray = new ImageITK[this.SelectedObjects.Count];
+            int i = 0;
+            foreach (MiningObjectDisplay somInputImage in this.SelectedObjects)
+            {
+                IMiningObjectViewImage imageObject = somInputImage.MiningObject as IMiningObjectViewImage;
+                imageArray[i++] = imageObject.Image;
+            }
+            return imageArray;
         }
 
         public itk.simple.Image[] GetITKImageArray()

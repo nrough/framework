@@ -50,7 +50,7 @@ namespace Infovision.TestAssembly
             }
         }
 
-        public double Epsilon
+        public decimal Epsilon
         {
             get;
             set;
@@ -76,7 +76,7 @@ namespace Infovision.TestAssembly
         }
 
         //public virtual IReduct CreateReduct(Permutation permutation)
-        public virtual IReduct CreateReduct(int[] attributes, double epsilon, double[] weights)
+        public virtual IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

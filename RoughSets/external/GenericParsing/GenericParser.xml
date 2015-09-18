@@ -973,7 +973,7 @@
                 string that has been enclosed with the text qualifier, if the text qualifier is
                 doubled up inside the string, the characters will be treated as an escape for
                 the literal character of the text qualifier (ie. "This""Test" will translate
-                with only one double quote inside the string).
+                with only one decimal quote inside the string).
               </para>
               <para>
                 Setting this to <see langword="null"/> can cause a performance boost, if none of the values are

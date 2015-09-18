@@ -174,7 +174,7 @@ namespace Infovision.Data
                     Dictionary<Type, int> typeDict = new Dictionary<Type, int>
                     {
                         {typeof(int),  0},
-                        {typeof(double), 1},
+                        {typeof(decimal), 1},
                         {typeof(string), 2}
                     };
                     
@@ -199,7 +199,7 @@ namespace Infovision.Data
                                         break;
 
                                     case 1:
-                                        typedFieldValues[i] = Double.MinValue;
+                                        typedFieldValues[i] = Decimal.MinValue;
                                         break;
 
                                     case 2:
@@ -219,7 +219,7 @@ namespace Infovision.Data
                                         break;
 
                                     case 1:
-                                        typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
                                         break;
 
                                     case 2:
@@ -352,7 +352,7 @@ namespace Infovision.Data
                 return;
             }
 
-            if (type == typeof(double))
+            if (type == typeof(decimal))
             {
                 this.typePool[fieldIndex] = type;
                 return;

@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+        public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
         {
             if(minimumLength == 0 && maximumLength == 0)
                 return this.CreateReduct(new int[] {}, this.Epsilon, weights);

@@ -453,7 +453,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
-                    parms.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
                     parms.AddParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
                     parms.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);

@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
         
-        private double[] objectWeights;                
+        private decimal[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassCollection eqClassMap;
@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.dataStore; }
         }
                  
-        public double[] Weights
+        public decimal[] Weights
         {
             get { return this.objectWeights; }
             protected set { this.objectWeights = value; }
@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public double Epsilon { get; private set; }        
+        public decimal Epsilon { get; private set; }        
 
         public virtual ObjectSet ObjectSet
         {
@@ -87,24 +87,24 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Reduct(DataStore dataStore, int [] fieldIds, double epsilon)
+        public Reduct(DataStore dataStore, int [] fieldIds, decimal epsilon)
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
             this.Epsilon = epsilon;
 
-            this.objectWeights = new double[this.dataStore.NumberOfRecords];
+            this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;            
+                this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);            
         }       
 
-        public Reduct(DataStore dataStore, double epsilon)
+        public Reduct(DataStore dataStore, decimal epsilon)
             : this(dataStore, new int[] { }, epsilon)
         {            
         }
 
         public Reduct(DataStore dataStore)
-            : this(dataStore, new int[] { }, 0.0)
+            : this(dataStore, new int[] { }, 0.0M)
         {            
         }
 
@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Roughset
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
             this.Epsilon = reduct.Epsilon;                                             
-            this.objectWeights = new double[dataStore.NumberOfRecords];
+            this.objectWeights = new decimal[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
 

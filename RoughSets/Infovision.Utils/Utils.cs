@@ -168,15 +168,15 @@ namespace Infovision.Utils
         public static Type String2Type(string value)
         {
             int intResult;
-            double decimalResult;
+            decimal decimalResult;
 
             if (Int32.TryParse(value, out intResult))
             {
                 return typeof(int);
             }
-            else if (Double.TryParse(value, out decimalResult))
+            else if (Decimal.TryParse(value, out decimalResult))
             {
-                return typeof(double);
+                return typeof(decimal);
             }
 
             return typeof(String);

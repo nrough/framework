@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Globalization;
 using System.IO;
+using Infovision.Datamining.Roughset;
 
 namespace Infovision.MRI.DAL
 {
@@ -119,7 +120,7 @@ namespace Infovision.MRI.DAL
                     }
                     else
                     {
-                        clusterModel.Train(project.GetITKImageArray(imageIds));
+                        clusterModel.Train(project.GetImageArray(imageIds));
                     }
 
                     this.somCluster = clusterModel.Cluster;
@@ -159,7 +160,7 @@ namespace Infovision.MRI.DAL
             }
             else if (clusterModel.SelectedObjects.Count > 0)
             {
-                clusterModel.Train(clusterModel.GetITKImageArray());
+                clusterModel.Train(clusterModel.GetImageArray());
                 this.somCluster = clusterModel.Cluster;                
             }
             

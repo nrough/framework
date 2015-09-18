@@ -14,7 +14,9 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorWeights()
             : base()
         {
-            this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights);
+            this.InformationMeasure = 
+                (IInformationMeasure)InformationMeasureBase
+                .Construct(InformationMeasureType.ObjectWeights);
         }
 
         #endregion
@@ -28,7 +30,7 @@ namespace Infovision.Datamining.Roughset
                 if (this.weightGenerator == null)
                 {
                     WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
-                    wGen.Value = 1.0;
+                    wGen.Value = 1.0M;
                     this.weightGenerator = wGen;                    
                 }
 
@@ -53,7 +55,7 @@ namespace Infovision.Datamining.Roughset
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;

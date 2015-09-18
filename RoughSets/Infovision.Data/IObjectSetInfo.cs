@@ -7,7 +7,7 @@ namespace Infovision.Data
     {
         int NumberOfRecords { get; }
         int NumberOfDecisionValues { get; }
-        double PriorDecisionProbability(long decisionValue);
+        decimal PriorDecisionProbability(long decisionValue);
         int NumberOfObjectsWithDecision(long decisionValue);
         ICollection<Int64> GetDecisionValues();
     }

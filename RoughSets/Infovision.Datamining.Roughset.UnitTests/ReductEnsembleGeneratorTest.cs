@@ -36,12 +36,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
-            weightGenerator.Value = 1.0;            
+            weightGenerator.Value = 1.0M;            
 
-            double[] epsilons = new double[numberOfPermutations];
+            decimal[] epsilons = new decimal[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {
-                epsilons[i] = (double)RandomSingleton.Random.Next(36) / 100.0;
+                epsilons[i] = (decimal)(RandomSingleton.Random.Next(36) / 100.0);
             }
 
             //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;
@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateTest(Dictionary<string, object> args)
         {
             
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];            
+            Func<double[], double[], decimal> distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance];            
             Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
                         
             Args parms = new Args();

@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset
 
         public abstract int Count { get; }
         public object SyncRoot { get { return syncRoot; } }
-        public double Weight { get; set; }
+        public decimal Weight { get; set; }
         public bool AllowDuplicates { get; set; }
         public bool IsActive { get; set; }
         
@@ -31,13 +31,13 @@ namespace Infovision.Datamining.Roughset
 
         public ReductStoreBase()
         {
-            this.Weight = 1.0;
+            this.Weight = 1.0M;
             this.IsActive = true;
         }
 
         public ReductStoreBase(int capacity)
         {
-            this.Weight = 1.0;
+            this.Weight = 1.0M;
             this.IsActive = true;
         }
 
@@ -221,11 +221,20 @@ namespace Infovision.Datamining.Roughset
         {
             foreach (IReduct localReduct in reducts)
             {
+                /*
                 if (this.AllowDuplicates == false
                     && DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
                     && reduct.Attributes.Superset(localReduct.Attributes))
                 {                    
                     return false;                    
+                }
+                */
+
+                if (this.AllowDuplicates == false
+                    && localReduct.Epsilon == reduct.Epsilon
+                    && reduct.Attributes.Superset(localReduct.Attributes))
+                {
+                    return false;
                 }
             }
             
@@ -244,13 +253,13 @@ namespace Infovision.Datamining.Roughset
                 return new ReductStore(this);
             }
             
-            Dictionary<IReduct, double> reductOrderMap = new Dictionary<IReduct, double>(reducts.Count);
+            Dictionary<IReduct, decimal> reductOrderMap = new Dictionary<IReduct, decimal>(reducts.Count);
             foreach (IReduct reduct in reducts)
             {
                 reductOrderMap[reduct] = reductMeasure.Calc(reduct);
             }
 
-            IOrderedEnumerable<KeyValuePair<IReduct, double>> sortedReducts;
+            IOrderedEnumerable<KeyValuePair<IReduct, decimal>> sortedReducts;
             switch (reductMeasure.SortDirection)
             {
                 case SortDirection.Ascending:
@@ -268,7 +277,7 @@ namespace Infovision.Datamining.Roughset
 
             ReductStore result = new ReductStore();
             int i = 0;
-            foreach (KeyValuePair<IReduct, double> kvp in sortedReducts)
+            foreach (KeyValuePair<IReduct, decimal> kvp in sortedReducts)
             {
                 IReduct reductClone = (IReduct)kvp.Key.Clone();
 
@@ -315,7 +324,7 @@ namespace Infovision.Datamining.Roughset
 
             double measureSum = 0;
             foreach (IReduct reduct in reducts)
-                measureSum += reductMeasure.Calc(reduct);
+                measureSum += (double)reductMeasure.Calc(reduct);
 
             if (this.Count > 0)
             {
@@ -332,7 +341,7 @@ namespace Infovision.Datamining.Roughset
             double[] values = new double[reducts.Count];
             int i = 0;
             foreach (IReduct reduct in reducts)
-                values[i++] = reductMeasure.Calc(reduct);
+                values[i++] = (double)reductMeasure.Calc(reduct);
             mean = Tools.Mean(values);
             stdDev = Tools.StdDev(values, mean);            
         }
@@ -344,7 +353,7 @@ namespace Infovision.Datamining.Roughset
             double[] values = new double[reducts.Count];
             int i = 0;
             foreach (IReduct reduct in reducts)
-                values[i++] = reductMeasure.Calc(reduct);
+                values[i++] = (double)reductMeasure.Calc(reduct);
             mean = Tools.Mean(values);
             aveDev = Tools.AveDev(values, mean);
         }
@@ -367,7 +376,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion        
 
-        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ";")
+        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, decimal[], double[]> recognition, string filePath, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++ )
@@ -391,7 +400,7 @@ namespace Infovision.Datamining.Roughset
             File.WriteAllText(filePath, sb.ToString());
         }
 
-        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, double[], double[]> recognition, string filePath, string separator = ",")
+        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, decimal[], double[]> recognition, string filePath, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)

@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 total += classificationResult.DecisionTotal(decision);
             }
 
-            Assert.AreEqual(1.0, aprioriSum);
+            Assert.AreEqual(1.0M, aprioriSum);
             Assert.AreEqual(dataStoreTest.NumberOfRecords, total);
             Assert.LessOrEqual(classificationResult.BalancedAccuracy, 1);
             Assert.GreaterOrEqual(classificationResult.BalancedAccuracy, 0);
@@ -63,10 +63,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorMajority();
-            redGenStd.Epsilon = 0.1;
+            redGenStd.Epsilon = 0.1M;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority();
-            redGenWgh.Epsilon = 0.1;
+            redGenWgh.Epsilon = 0.1M;
 
             Args args = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new object[] { ReductFactoryKeyHelper.ApproximateReductRelative, localDataStore });
             
@@ -101,10 +101,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             IReductGenerator redGenStd = new ReductGeneratorRelative();
-            redGenStd.Epsilon = 0.1;
+            redGenStd.Epsilon = 0.1M;
 
             IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative();
-            redGenWgh.Epsilon = 0.1;
+            redGenWgh.Epsilon = 0.1M;
 
             Args args = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new object[] { ReductFactoryKeyHelper.ApproximateReductRelative, localDataStore });
 
@@ -267,7 +267,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void TestWeightsNormalized(WeightGenerator weightGenerator)
         {
-            double weightSum = 0;
+            decimal weightSum = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
                 weightSum += weightGenerator.Weights[i];
@@ -279,7 +279,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void CheckWeightsEqual(WeightGenerator weightGenerator)
         {
-            double weight = 0;
+            decimal weight = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
                 if (i == 0)
@@ -315,13 +315,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
             IInformationMeasure infoMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority);
-            double infoMeasureResult = infoMeasure.Calc(reduct);
+            decimal infoMeasureResult = infoMeasure.Calc(reduct);
 
             IInformationMeasure infoMeasureWeights = InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights);
-            double infoMeasureWeightsResult = infoMeasureWeights.Calc(reduct);
+            decimal infoMeasureWeightsResult = infoMeasureWeights.Calc(reduct);
 
-            Assert.LessOrEqual(infoMeasureResult, infoMeasureWeightsResult + (0.00001 / (double)this.dataStore.NumberOfRecords));
-            Assert.GreaterOrEqual(infoMeasureResult, infoMeasureWeightsResult - (0.00001 / (double)this.dataStore.NumberOfRecords));
+            Assert.AreEqual(infoMeasureResult, infoMeasureWeightsResult);
         }
 
         public void CompareReductResult(string reductGeneratorKey1, string reductGeneratorKey2)
@@ -331,7 +330,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);            
-            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 10);
+            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.1m);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey1);
 
             PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(10);
@@ -345,7 +344,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args2 = new Args();
             args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
             args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            args2.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 10);
+            args2.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.1m);
             args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey2);
             
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
@@ -375,7 +374,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductRelativeTest()
         {
-            this.CompareReductResult(ReductFactoryKeyHelper.ApproximateReductRelative, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+            this.CompareReductResult(
+                ReductFactoryKeyHelper.ApproximateReductRelative, 
+                ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
         }
     }
 }

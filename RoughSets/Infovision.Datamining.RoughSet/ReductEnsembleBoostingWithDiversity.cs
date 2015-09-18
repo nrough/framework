@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
 		
 		public Func<double[], double[], double> Distance { get; set; }
 		public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
-		public Func<IReduct, double[], double[]> ReconWeights { get; set; }
+		public Func<IReduct, decimal[], double[]> ReconWeights { get; set; }
 		public int NumberOfReductsToTest { get; set; }
 		public AgregateFunction AgregateFunction { get; set; }
 
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
 				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 
 			if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-				this.ReconWeights = (Func<IReduct, double[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+				this.ReconWeights = (Func<IReduct, decimal[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
 
 			if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsToTest))
 				this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
@@ -66,7 +66,7 @@ namespace Infovision.Datamining.Roughset
 				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
 		}
 
-		private IReduct GetNextReductLocal(double[] weights, int minimumLength, int maximumLength)
+		private IReduct GetNextReductLocal(decimal[] weights, int minimumLength, int maximumLength)
 		{
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
 			int length = System.Math.Min(maximumLength, permutation.Length - 1);
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
 			return reduct;
 		}
 		
-		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
 		{
 			if (clusterInstances2.Count == 0 || this.NumberOfReductsToTest == 1)
 				return base.GetNextReduct(weights, minimumLength, maximumLength);

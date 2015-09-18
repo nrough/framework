@@ -89,7 +89,7 @@ namespace Infovision.MRI.DAL
                 if (imageObject != null)
                 {
                     Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)imageObject.Image;
-                    itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
+                    IImage binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
                     MRIMaskConcentricImageFilter imageMaskFilter = new MRIMaskConcentricImageFilter();
 
                     foreach (var item in imageMask.MaskItems)

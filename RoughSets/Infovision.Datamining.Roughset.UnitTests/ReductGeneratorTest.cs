@@ -70,7 +70,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-                args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, i / 100.0);
+                args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)(i / 100.0));
                 IPermutationGenerator permGen = ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
 
@@ -135,12 +135,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             roughClassifier.Train(localDataStore, ReductFactoryKeyHelper.Bireduct, 0, permutationList);
             foreach (IReduct reduct in roughClassifier.ReductStore)
             {
-                EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);
-                partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
+                EquivalenceClassCollection eqClasses = new EquivalenceClassCollection(localDataStore);
+                eqClasses.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
-                foreach (EquivalenceClass stats in partitionMap)
+                foreach (EquivalenceClass eq in eqClasses)
                 {
-                    Assert.AreEqual(1, stats.NumberOfDecisions);
+                    Assert.AreEqual(1, eq.NumberOfDecisions);
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGeneratorMulti.Epsilon = epsilon / 100.0;
+                reductGeneratorMulti.Epsilon = epsilon / 100.0M;
                 reductGeneratorMulti.Generate();
                 IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
@@ -171,7 +171,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGenerator.Epsilon = epsilon / 100.0;
+                reductGenerator.Epsilon = epsilon / 100.0M;
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.ReductPool;
             }

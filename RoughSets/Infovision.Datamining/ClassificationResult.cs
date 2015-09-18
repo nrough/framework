@@ -104,7 +104,7 @@ namespace Infovision.Datamining
             get
             {
                 double weightSum = this.weightMisclassfied + this.weightUnclassified + this.weightClassified;
-                if (weightSum != 0.0)
+                if (weightSum != 0)
                     return (this.weightMisclassfied + this.weightUnclassified) / weightSum;
                 else
                     return 1.0;

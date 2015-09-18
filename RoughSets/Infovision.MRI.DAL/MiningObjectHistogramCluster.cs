@@ -166,7 +166,7 @@ namespace Infovision.MRI.DAL
             else if(clusterModel.Image != null)
             {
                 ImageITK image = clusterModel.Image as ImageITK;
-                clusterModel.Train(image.ItkImage);
+                clusterModel.Train(image);
 
                 this.histogramCluster = clusterModel.Cluster;
             }

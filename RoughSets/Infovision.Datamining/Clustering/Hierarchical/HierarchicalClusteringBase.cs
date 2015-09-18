@@ -134,7 +134,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             this.Linkage = ClusteringLinkage.Complete;
             this.nextNodeId = -1;                        
             this.instances = new Dictionary<int, double[]>();
-            //this.avgNodeLevelDistance = Double.MinValue;           
+            //this.avgNodeLevelDistance = double.MinValue;           
             this.isLeafDistanceCalculated = false;
         }
 

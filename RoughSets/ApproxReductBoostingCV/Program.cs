@@ -63,7 +63,7 @@ namespace ApproxReductBoostingCV
                     ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
                     ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
-                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0)))
+                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((decimal)numOfAttr + 1.0M, 2.0)))
                     //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
                     new ParameterNumericRange<int>("Epsilon", 0, 50, 5)
                 }
@@ -164,7 +164,7 @@ namespace ApproxReductBoostingCV
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-                    parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (double)epsilon / 100.0);
+                    parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)epsilon / 100.0M);
                     parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 

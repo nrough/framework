@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
             this.dataStore = dataStore;            
         }
 
-        public PermutationGeneratorFieldObjectRelative(DataStore dataStore, double fieldSelectionRatio)
+        public PermutationGeneratorFieldObjectRelative(DataStore dataStore, decimal fieldSelectionRatio)
             : base(dataStore, fieldSelectionRatio)
         {
             this.dataStore = dataStore;
@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset
 
                 if (fieldList.Count > 0 && objectList.Count > 0)
                 {
-                    if (RandomSingleton.Random.NextDouble() <= this.FieldSelectionRatio)
+                    if (RandomSingleton.Random.NextDouble() <= (double)this.FieldSelectionRatio)
         
                     {
                         element = this.GetAndRemoveListElement<int>(fieldList);

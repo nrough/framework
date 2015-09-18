@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         if (max < k)
                             max = k;
                     }
-                    double avgLen = (double)sum / (double)cLen.Count;
+                    decimal avgLen = (decimal)sum / (decimal)cLen.Count;
 
                     file.WriteLine(String.Format("{0} {1} {2} {3} {4}", kvp.Key, avgLen, cLen.Count, min, max));
                 }
@@ -173,8 +173,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (IReduct reduct in reductPool)
             {                
                 InformationMeasureWeights m_Weights = new InformationMeasureWeights();                
-                double result_W = m_Weights.Calc(reduct);                                
-                rGen2.Epsilon = 1.0 - result_W;
+                decimal result_W = m_Weights.Calc(reduct);                                
+                rGen2.Epsilon = 1.0M - result_W;
 
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;
@@ -227,9 +227,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (IReduct reduct in reductPool)
             {
                 InformationMeasureWeights m_Weights = new InformationMeasureWeights();
-                double result_W = m_Weights.Calc(reduct);
+                decimal result_W = m_Weights.Calc(reduct);
                 
-                rGen2.Epsilon = 1.0 - result_W;
+                rGen2.Epsilon = 1.0M - result_W;
 
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;

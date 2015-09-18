@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);
 		}
 
-		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
 		{
 			if (minimumLength > maximumLength)
 				throw new ArgumentOutOfRangeException();

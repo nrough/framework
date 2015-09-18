@@ -666,6 +666,36 @@ namespace Infovision.MRI
             }
         }
 
+        public static Type PixelType2Type(PixelType pixelType)
+        {
+            switch (pixelType)
+            {
+                case PixelType.Int8:
+                    return typeof(short);
+                case PixelType.Int16:
+                    return typeof(Int16);
+                case PixelType.Int32:
+                    return typeof(Int32);
+                case PixelType.Int64:
+                    return typeof(Int64);
+                case PixelType.UInt8:
+                    return typeof(ushort);
+                case PixelType.UInt16:
+                    return typeof(UInt16);
+                case PixelType.UInt32:
+                    return typeof(UInt32);
+                case PixelType.UInt64:
+                    return typeof(UInt64);
+                case PixelType.Float:
+                    return typeof(float);
+                case PixelType.Double:
+                    return typeof(double);
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         public static PixelType ItkPixelIDValue2PixelType(int pixelIdValue)
         {
             if(pixelIdValue == itk.simple.PixelIDValueEnum.sitkInt8.swigValue) return PixelType.Int8;
@@ -717,6 +747,28 @@ namespace Infovision.MRI
             @switch[type]();
 
             return pixelIdValue;
+        }
+
+        public static PixelType Type2PixelType(Type type)
+        {
+            PixelType pixelType = PixelType.Unknown;
+
+            var @switch = new Dictionary<Type, Action> {
+                { typeof(sbyte), () => pixelType = PixelType.Int8 },
+                { typeof(short), () => pixelType = PixelType.Int16 },
+                { typeof(int), () => pixelType = PixelType.Int32 },
+                { typeof(long), () => pixelType = PixelType.Int64 },
+                { typeof(byte), () => pixelType = PixelType.UInt8 },
+                { typeof(ushort), () => pixelType = PixelType.UInt16 },
+                { typeof(uint), () => pixelType = PixelType.UInt32 },
+                { typeof(ulong), () => pixelType = PixelType.UInt64 },
+                { typeof(float), () => pixelType = PixelType.Float },
+                { typeof(double), () => pixelType = PixelType.Double }
+            };
+
+            @switch[type]();
+
+            return pixelType;
         }
 
         public static itk.simple.Image ConstructImage(uint width, uint height, uint depth, Type pixelType)

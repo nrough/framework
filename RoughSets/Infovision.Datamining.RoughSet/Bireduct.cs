@@ -16,18 +16,18 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, double epsilon)
+        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
             objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, double epsilon)
+        public Bireduct(DataStore dataStore, int[] fieldIds, decimal epsilon)
             : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }
 
-        public Bireduct(DataStore dataStore, double epsilon)
+        public Bireduct(DataStore dataStore, decimal epsilon)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, epsilon)
         {
         }
@@ -83,6 +83,9 @@ namespace Infovision.Datamining.Roughset
             AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
+            if (reductStatistics == null)
+                return true;
+
             if (reductStatistics.NumberOfDecisions <= 1)
             {
                 long decisionValue = this.DataStore.GetDecisionValue(objectIndex);
@@ -102,14 +105,19 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckAddObject(objectIdx))
             {                
                 AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
-
-                // important fist add to eqClass map, than to objectSet, otherwise 
-                // calling this.EquivalenceClassCollection will invoke calculating eqClassMap based on existing objectSet
-                // than, what TryAddObject is called we will get duplicates of object id inside eqClass
+                EquivalenceClass eq = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
                 
-                this.EquivalenceClasses.GetEquivalenceClass(dataVector).AddObject(objectIdx, 
-                                                                                   this.DataStore.GetDecisionValue(objectIdx), 
-                                                                                   1.0 / this.DataStore.NumberOfRecords);
+                if (eq == null)
+                {
+                    eq = new EquivalenceClass(dataVector, this.DataStore);
+                    this.EquivalenceClasses.Partitions.Add(dataVector, eq);
+                }
+
+                eq.AddObject(
+                    objectIdx, 
+                    this.DataStore.GetDecisionValue(objectIdx), 
+                    Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords));
+                
                 objectSet.AddElement(objectIdx);
 
                 return true;

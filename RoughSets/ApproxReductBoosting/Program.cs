@@ -128,7 +128,7 @@ namespace ApproxReductBoosting
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 				parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-				parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (double)epsilon / 100.0);
+				parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)epsilon / 100.0M);
 
 				WeightGenerator weightGenerator;
 				switch (weightingSchema)

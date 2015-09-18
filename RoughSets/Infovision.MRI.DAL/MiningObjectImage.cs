@@ -128,7 +128,12 @@ namespace Infovision.MRI.DAL
             if (!String.IsNullOrEmpty(this.FileName)
                 && File.Exists(this.FileName))
             {
-                ImageITK imageItk = ImageITK.Construct(ImageHelper.ImageType2ITKImageType(this.ImageType));
+                ImageITK imageItk = ImageITK.Construct(
+                    (uint) this.Width,
+                    (uint) this.Height,
+                    (uint) this.Depth,
+                    SimpleITKHelper.PixelType2Type(this.PixelType));
+                    
 
                 imageItk.FileName = this.FileName;
                 imageItk.Width = (uint) this.Width;

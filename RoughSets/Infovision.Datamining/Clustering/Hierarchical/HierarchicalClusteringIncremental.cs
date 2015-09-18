@@ -68,7 +68,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 return false;
 
             double distance = 0.0;
-            double minDistance = Double.MaxValue;
+            double minDistance = double.MaxValue;
             int minLeafKey = -1;
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
             {

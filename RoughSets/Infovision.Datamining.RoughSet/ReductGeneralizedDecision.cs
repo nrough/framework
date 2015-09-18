@@ -16,24 +16,24 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         public ReductGeneralizedMajorityDecision(DataStore dataStore)
-            : base(dataStore, 0.0)
+            : base(dataStore, 0.0M)
         {
             this.Init();
         }
 
-        public ReductGeneralizedMajorityDecision(DataStore dataStore, double epsilon)
+        public ReductGeneralizedMajorityDecision(DataStore dataStore, decimal epsilon)
             : base(dataStore, epsilon)
         {
             this.Init();
         }
 
-        public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, double epsilon)
+        public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
             this.Init();
         }
 
-        public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, double[] weights, double epsilon)
+        public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, decimal[] weights, decimal epsilon)
             : base(dataStore, fieldIds, weights, epsilon)
         {
             this.Init();
@@ -297,7 +297,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;            
         }
 
-        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
@@ -318,7 +318,7 @@ namespace Infovision.Datamining.Roughset
             return reduct;
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             ReductGeneralizedMajorityDecision r = new ReductGeneralizedMajorityDecision(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
@@ -388,7 +388,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
         }
 
-        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
@@ -418,7 +418,7 @@ namespace Infovision.Datamining.Roughset
             return (ReductGeneralizedMajorityDecision)this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());            
         }
 
-        private EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdToReduce, double epsilon, DataStore dataStore)
+        private EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdToReduce, decimal epsilon, DataStore dataStore)
         {
 
             int attributeIdxToRemove = -1;
@@ -475,7 +475,7 @@ namespace Infovision.Datamining.Roughset
             return eqClassCollection;
         }
 
-        private EquivalenceClassCollection Reduce2(EquivalenceClassCollection eqClasses, int attributeIdToReduce, double epsilon, DataStore dataStore)
+        private EquivalenceClassCollection Reduce2(EquivalenceClassCollection eqClasses, int attributeIdToReduce, decimal epsilon, DataStore dataStore)
         {
             int[] newAttr = new int[eqClasses.Attributes.Length - 1];
             int j = 0;
@@ -513,7 +513,7 @@ namespace Infovision.Datamining.Roughset
             return eqClassCollection;
         }  
 
-        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             ReductGeneralizedMajorityDecision r = new ReductGeneralizedMajorityDecision(this.DataStore, 
                                                                                         fieldIds, 

@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.9);
+            parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.9M);
 
 
             ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
@@ -72,21 +72,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
                 
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.0, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.1, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.2, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.3, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.4, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.5, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.6, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.7, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.8, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.9, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.0M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.1M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.2M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.3M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.4M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.5M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.6M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.7M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.8M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.9M, attributes);
             }
         }
 
 
-        public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
+        public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {
             //Console.WriteLine("Filename: {0}", data.Name);
             //Console.WriteLine("Epsilon: {0}", epsilon);
@@ -104,7 +104,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                    
             //Calculate reduct
             ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(attributeSubset);
-            double reductQuality = new InformationMeasureWeights().Calc(reduct);
+            decimal reductQuality = new InformationMeasureWeights().Calc(reduct);
 
             //Show reduction result
             for (int i = 0; i < attributeSubset.Length; i++)
@@ -115,7 +115,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return reduct;
         }
 
-        public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
+        public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {            
             //Console.WriteLine("Epsilon: {0}", epsilon);
 
@@ -132,7 +132,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             //Calculate reduct
             ReductWeights reduct = reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
-            double reductQuality = new InformationMeasureWeights().Calc(reduct);
+            decimal reductQuality = new InformationMeasureWeights().Calc(reduct);
 
             //Show reduction result
             for (int i = 0; i < attributeSubset.Length; i++)
@@ -157,45 +157,45 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int[] ar_attributes = null;
             foreach (Permutation permutation in permutations)
             {
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.0, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.0, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.0M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.0M, permutation.ToArray()).Attributes.ToArray();
 
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.1, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.1, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.1M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.1M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.2, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.2, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.2M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.2M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.3, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.3, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.3M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.3M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.4, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.4, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.4M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.4M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.5, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.5, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.5M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.5M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.6, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.6, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.6M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.6M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.7, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.7, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.7M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.7M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.8, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.8, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.8M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.8M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
 
-                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.9, permutation.ToArray()).Attributes.ToArray();
-                ar_attributes = CalculateApproximateReductFromSubset(data, 0.9, permutation.ToArray()).Attributes.ToArray();
+                gd_attributes = CalculateGeneralizedDecisionReductFromSubset(data, 0.9M, permutation.ToArray()).Attributes.ToArray();
+                ar_attributes = CalculateApproximateReductFromSubset(data, 0.9M, permutation.ToArray()).Attributes.ToArray();
                 ShowInfoIsSupersetOf(data, gd_attributes, ar_attributes);
             }
         }
@@ -223,22 +223,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
             
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
-            IReduct allAttributes = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0.0);
+            IReduct allAttributes = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0.0M);
             IInformationMeasure measure = new InformationMeasureWeights();
-            double dataQuality = measure.Calc(allAttributes);
+            decimal dataQuality = measure.Calc(allAttributes);
 
             IReduct gdReduct = null;
-            double gdQuality = 0.0;
+            decimal gdQuality = 0.0M;
 
-            Dictionary<double, Dictionary<string, int>> results = new Dictionary<double, Dictionary<string, int>>();
+            Dictionary<decimal, Dictionary<string, int>> results = new Dictionary<decimal, Dictionary<string, int>>();
             foreach (Permutation permutation in permutations)
             {
-                for (double eps = 0.0; eps < 0.02;)
+                for (decimal eps = 0.0M; eps < 0.02M;)
                 {
                     gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
                     gdQuality = measure.Calc(gdReduct);
 
-                    //Assert.LessOrEqual(gdQuality, ((1.0 - eps) * dataQuality)); 
+                    //Assert.LessOrEqual(gdQuality, ((1.0M - eps) * dataQuality)); 
 
                     Dictionary<string, int> resultsCount = null;
                     if (! results.TryGetValue(eps, out resultsCount))
@@ -248,7 +248,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                     
                     int counter = 0;
-                    double threshold = ((1.0 - eps) * dataQuality);
+                    decimal threshold = ((1.0M - eps) * dataQuality);
                     if (gdQuality < threshold)
                     {
                         Console.WriteLine("GD ({0}) is less than AR ({1})", gdQuality, threshold);
@@ -286,13 +286,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         }
                     }
 
-                    if (eps < 0.09999999)
+                    if (eps < .09M)
                     {
-                        eps += 0.01;
+                        eps += .01M;
                     }
                     else
                     {
-                        eps += 0.1;
+                        eps += .1M;
                     }
                 }
             }
@@ -310,7 +310,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2()
         {
             Console.WriteLine("CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()");
-            //string fileName = @"data\SPECT.train";
+            
             string fileName = @"data\dna_modified.trn";
             int numberOfPermutations = 5;
             DataStore data = DataStore.Load(fileName, FileFormat.Rses1);
@@ -318,27 +318,27 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
-            IReduct allAttributes = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0.0);
+            IReduct allAttributes = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0.0M);
             IInformationMeasure measure = new InformationMeasureWeights();
-            double dataQuality = measure.Calc(allAttributes);
+            decimal dataQuality = measure.Calc(allAttributes);
 
             IReduct gdReduct = null;
-            double gdQuality = 0.0;
+            decimal gdQuality = 0.0M;
 
             Dictionary<double, Dictionary<string, int>> results = new Dictionary<double, Dictionary<string, int>>();
             foreach (Permutation permutation in permutations)
             {
-                for (double eps = 0.0; eps < 1.0; )
+                for (decimal eps = 0.0M; eps < 1.0M; )
                 {
                     gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
                     gdQuality = measure.Calc(gdReduct);
 
                     Assert.LessOrEqual(dataQuality - gdQuality, eps);
                     
-                    if (eps < 0.09999999)
-                        eps += 0.01;
+                    if (eps < 0.09999999M)
+                        eps += 0.01M;
                     else
-                        eps += 0.1;
+                        eps += 0.1M;
                 }
             }
         }

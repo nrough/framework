@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Experimenter.Test
                 new ParameterNumericRange<double>("2", 0, 10, 1),
                 new ParameterNumericRange<double>("3", 0, 0.1, 0.01),
                 new ParameterNumericRange<float>("4", 0f, 1f, 0.1f),
-                new ParameterNumericRange<decimal>("5", 0, (decimal)11.5, 1),
+                new ParameterNumericRange<double>("5", 0, (double)11.5, 1),
                 new ParameterNumericRange<int>("6", -10, 0, 1),
                 new ParameterNumericRange<int>("7", 10, 0, -1),
                 new ParameterNumericRange<double>("8", -1, 0, 0.1),

@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void FieldObjectPermutationRatioTest()
         {
-            PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore, 0.5);
+            PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore, 0.5M);
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RelativePermutationRatioTest()
         {
-            PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore, 0.5);
+            PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore, 0.5M);
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), dataStore.GetObjectIndexes());
         }
@@ -131,65 +131,65 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void FieldSelecitonRatio()
         {
             this.CalcAndPrintRatio(10, 10, 0);
-            this.CalcAndPrintRatio(10, 10, 0.01);
-            this.CalcAndPrintRatio(10, 10, 0.2);
-            this.CalcAndPrintRatio(10, 10, 0.5);
-            this.CalcAndPrintRatio(10, 10, 0.7);
-            this.CalcAndPrintRatio(10, 10, 0.99);
+            this.CalcAndPrintRatio(10, 10, 0.01M);
+            this.CalcAndPrintRatio(10, 10, 0.2M);
+            this.CalcAndPrintRatio(10, 10, 0.5M);
+            this.CalcAndPrintRatio(10, 10, 0.7M);
+            this.CalcAndPrintRatio(10, 10, 0.99M);
             this.CalcAndPrintRatio(10, 10, 1);
             Console.WriteLine();
 
             this.CalcAndPrintRatio(10, 20, 0);
-            this.CalcAndPrintRatio(10, 20, 0.01);
-            this.CalcAndPrintRatio(10, 20, 0.2);
-            this.CalcAndPrintRatio(10, 20, 0.5);
-            this.CalcAndPrintRatio(10, 20, 0.7);
-            this.CalcAndPrintRatio(10, 20, 0.99);
+            this.CalcAndPrintRatio(10, 20, 0.01M);
+            this.CalcAndPrintRatio(10, 20, 0.2M);
+            this.CalcAndPrintRatio(10, 20, 0.5M);
+            this.CalcAndPrintRatio(10, 20, 0.7M);
+            this.CalcAndPrintRatio(10, 20, 0.99M);
             this.CalcAndPrintRatio(10, 20, 1);
             Console.WriteLine();
 
             this.CalcAndPrintRatio(20, 10, 0);
-            this.CalcAndPrintRatio(20, 10, 0.01);
-            this.CalcAndPrintRatio(20, 10, 0.2);
-            this.CalcAndPrintRatio(20, 10, 0.5);
-            this.CalcAndPrintRatio(20, 10, 0.7);
-            this.CalcAndPrintRatio(20, 10, 0.99);
+            this.CalcAndPrintRatio(20, 10, 0.01M);
+            this.CalcAndPrintRatio(20, 10, 0.2M);
+            this.CalcAndPrintRatio(20, 10, 0.5M);
+            this.CalcAndPrintRatio(20, 10, 0.7M);
+            this.CalcAndPrintRatio(20, 10, 0.99M);
             this.CalcAndPrintRatio(20, 10, 1);
             Console.WriteLine();
 
             this.CalcAndPrintRatio(10, 1000, 0);
-            this.CalcAndPrintRatio(10, 1000, 0.01);
-            this.CalcAndPrintRatio(10, 1000, 0.2);
-            this.CalcAndPrintRatio(10, 1000, 0.5);
-            this.CalcAndPrintRatio(10, 1000, 0.7);
-            this.CalcAndPrintRatio(10, 1000, 0.99);
+            this.CalcAndPrintRatio(10, 1000, 0.01M);
+            this.CalcAndPrintRatio(10, 1000, 0.2M);
+            this.CalcAndPrintRatio(10, 1000, 0.5M);
+            this.CalcAndPrintRatio(10, 1000, 0.7M);
+            this.CalcAndPrintRatio(10, 1000, 0.99M);
             this.CalcAndPrintRatio(10, 1000, 1);
             Console.WriteLine();
             
             this.CalcAndPrintRatio(1000, 10, 0);
-            this.CalcAndPrintRatio(1000, 10, 0.01);
-            this.CalcAndPrintRatio(1000, 10, 0.2);
-            this.CalcAndPrintRatio(1000, 10, 0.5);
-            this.CalcAndPrintRatio(1000, 10, 0.7);
-            this.CalcAndPrintRatio(1000, 10, 0.99);
+            this.CalcAndPrintRatio(1000, 10, 0.01M);
+            this.CalcAndPrintRatio(1000, 10, 0.2M);
+            this.CalcAndPrintRatio(1000, 10, 0.5M);
+            this.CalcAndPrintRatio(1000, 10, 0.7M);
+            this.CalcAndPrintRatio(1000, 10, 0.99M);
             this.CalcAndPrintRatio(1000, 10, 1);
             Console.WriteLine();
 
             this.CalcAndPrintRatio(10000, 10, 0);
-            this.CalcAndPrintRatio(10000, 10, 0.01);
-            this.CalcAndPrintRatio(10000, 10, 0.2);
-            this.CalcAndPrintRatio(10000, 10, 0.5);
-            this.CalcAndPrintRatio(10000, 10, 0.7);
-            this.CalcAndPrintRatio(10000, 10, 0.99);
+            this.CalcAndPrintRatio(10000, 10, 0.01M);
+            this.CalcAndPrintRatio(10000, 10, 0.2M);
+            this.CalcAndPrintRatio(10000, 10, 0.5M);
+            this.CalcAndPrintRatio(10000, 10, 0.7M);
+            this.CalcAndPrintRatio(10000, 10, 0.99M);
             this.CalcAndPrintRatio(10000, 10, 1);
             Console.WriteLine();
 
             Assert.AreEqual(true, true);                                
         }
 
-        private double CalcAndPrintRatio(int numberOfFields, int numberOfObjects, double fieldSelectionRatio)
+        private decimal CalcAndPrintRatio(int numberOfFields, int numberOfObjects, decimal fieldSelectionRatio)
         {
-            double result = PermutationGeneratorFieldObject.CalcSelectionRatio(numberOfFields, numberOfObjects, fieldSelectionRatio);
+            decimal result = PermutationGeneratorFieldObject.CalcSelectionRatio(numberOfFields, numberOfObjects, fieldSelectionRatio);
             Console.WriteLine("{0} {1} {2} {3}", numberOfFields, numberOfObjects, fieldSelectionRatio, result);
             return result;
         }

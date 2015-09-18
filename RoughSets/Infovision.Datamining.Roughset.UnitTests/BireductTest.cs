@@ -65,14 +65,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RelativeMeasureTest()
         {
-            Dictionary<int, double> elementWeights = new Dictionary<int, double>(dataStoreTrain.NumberOfRecords);
-            double sumWeights = 0;
+            Dictionary<int, decimal> elementWeights = new Dictionary<int, decimal>(dataStoreTrain.NumberOfRecords);
+            decimal sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
 
             foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
             {
-                double p = 1 / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(dataStoreTrain.GetDecisionValue(objectIdx));
+                decimal p = 1 / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(dataStoreTrain.GetDecisionValue(objectIdx));
                 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -81,13 +81,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
 
-            double r = roughMeasure.Calc(reduct);
-            double u = sumWeights / dataStoreTrainInfo.NumberOfRecords;
+            decimal r = roughMeasure.Calc(reduct);
+            decimal u = sumWeights / dataStoreTrainInfo.NumberOfRecords;
 
-            //Assert.AreEqual(r, u);
-            Assert.GreaterOrEqual(r, u - (0.00001 / dataStoreTrain.DataStoreInfo.NumberOfRecords));
-            Assert.LessOrEqual(r, u + (0.00001 / dataStoreTrain.DataStoreInfo.NumberOfRecords));            
-
+            Assert.AreEqual(r, u);            
         }
 
         [Test]
@@ -160,22 +157,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             */
 
             PermutationCollection permutations = new PermutationCollection();
-            permutations.Add(new Permutation(new int[] { -1, 8, -4, 1, 4, 7, 2, 14, 10, 12, 9, -2, 6, 3, 13, 5, 11, -3 }));
-            permutations.Add(new Permutation(new int[] { -3, 13, -2, 8, -4, 6, 11, 3, 14, 10, -1, 5, 7, 9, 2, 1, 4, 12 }));
-            permutations.Add(new Permutation(new int[] { 3, 8, -2, 1, -4, 11, 9, -1, 14, 12, 6, 4, 7, -3, 10, 13, 2, 5 }));
-            permutations.Add(new Permutation(new int[] { 2, 13, 5, 14, 11, 7, 12, 4, 3, 1, 9, 6, 8, 10, -3, -1, -4, -2 }));
-            permutations.Add(new Permutation(new int[] { 9, 4, 12, 14, 1, 8, 7, 3, 10, 13, 6, 11, 2, 5, -4, -2, -3, -1 }));
-            permutations.Add(new Permutation(new int[] { 11, -1, 2, -3, 1, 10, 5, 7, 9, 8, 3, 13, -2, 6, 14, 12, 4, -4 }));
-            permutations.Add(new Permutation(new int[] { -2, 2, 5, -3, 10, 11, -4, 14, 1, 12, 7, 9, 13, 6, 4, 8, 3, -1 }));
-            permutations.Add(new Permutation(new int[] { -4, 6, -3, -1, 5, 8, 4, 7, 3, 2, 10, 9, 12, 11, 13, 14, 1, -2 }));
-            permutations.Add(new Permutation(new int[] { -1, 2, 3, 13, 1, -3, 4, -2, -4, 6, 12, 14, 5, 8, 9, 10, 11, 7 }));
-            permutations.Add(new Permutation(new int[] { -1, -3, 14, 1, 10, 7, 4, 3, 12, 13, 5, -4, 9, -2, 11, 8, 2, 6 }));
-            permutations.Add(new Permutation(new int[] { 6, 5, 10, 9, -3, -1, 12, -2, 8, -4, 4, 2, 13, 3, 7, 1, 14, 11 }));
-            permutations.Add(new Permutation(new int[] { 11, 14, 9, 13, 3, 7, 8, 2, 5, 1, 12, -4, 6, 4, 10, -3, -1, -2 }));
-            permutations.Add(new Permutation(new int[] { 13, 8, 6, -3, 7, -4, 9, -2, 5, 3, 4, 12, -1, 2, 10, 14, 11, 1 }));
-            permutations.Add(new Permutation(new int[] { 9, -3, 2, 4, 6, 13, 14, 7, -2, 11, 10, -1, -4, 3, 5, 1, 8, 12 }));
-            permutations.Add(new Permutation(new int[] { -4, 5, 3, -1, 12, 4, -2, -3, 7, 2, 13, 11, 10, 6, 8, 1, 14, 9 }));
-
+            permutations.Add(new Permutation(new int[] { -1, 7, -4, 0, 3, 6, 1, 13, 9, 11, 8, -2, 5, 2, 12, 4, 10, -3 }));
+            permutations.Add(new Permutation(new int[] { -3, 12, -2, 7, -4, 5, 10, 2, 13, 9, -1, 4, 6, 8, 1, 0, 3, 11 }));
+            permutations.Add(new Permutation(new int[] { 2, 7, -2, 0, -4, 10, 8, -1, 13, 11, 5, 3, 6, -3, 9, 12, 1, 4 }));
+            permutations.Add(new Permutation(new int[] { 1, 12, 4, 13, 10, 6, 11, 3, 2, 0, 8, 4, 7, 9, -3, -1, -4, -2 }));
+            permutations.Add(new Permutation(new int[] { 8, 3, 11, 13, 0, 7, 6, 2, 9, 12, 5, 10, 1, 4, -4, -2, -3, -1 }));
+            permutations.Add(new Permutation(new int[] { 10, -1, 1, -3, 0, 9, 4, 6, 8, 7, 2, 12, -2, 5, 13, 11, 3, -4 }));
+            permutations.Add(new Permutation(new int[] { -2, 1, 4, -3, 9, 10, -4, 13, 0, 11, 6, 8, 12, 5, 3, 7, 2, -1 }));
+            permutations.Add(new Permutation(new int[] { -4, 5, -3, -1, 4, 8, 3, 6, 2, 1, 9, 8, 11, 10, 12, 13, 0, -2 }));
+            permutations.Add(new Permutation(new int[] { -1, 1, 2, 12, 0, -3, 3, -2, -4, 5, 11, 13, 4, 7, 8, 9, 10, 6 }));
+            permutations.Add(new Permutation(new int[] { -1, -3, 13, 0, 9, 6, 3, 2, 11, 12, 4, -4, 8, -2, 10, 7, 1, 5 }));
+            permutations.Add(new Permutation(new int[] { 5, 4, 9, 8, -3, -1, 11, -2, 7, -4, 3, 1, 12, 2, 6, 0, 13, 10 }));
+            permutations.Add(new Permutation(new int[] { 10, 13, 8, 12, 2, 6, 7, 1, 4, 0, 11, -4, 5, 3, 9, -3, -1, -2 }));
+            permutations.Add(new Permutation(new int[] { 12, 7, 5, -3, 6, -4, 8, -2, 4, 2, 3, 11, -1, 1, 9, 13, 10, 0 }));
+            permutations.Add(new Permutation(new int[] { 8, -3, 1, 3, 5, 12, 13, 6, -2, 10, 9, -1, -4, 2, 4, 0, 7, 11 }));
+            permutations.Add(new Permutation(new int[] { -4, 4, 2, -1, 11, 3, -2, -3, 6, 1, 12, 10, 9, 5, 7, 0, 13, 8 }));
             Args parms;            
 
             parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
@@ -190,8 +186,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
-                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0M, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0M, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++ )
@@ -383,21 +379,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             */
 
             PermutationCollection permutations = new PermutationCollection();
-            permutations.Add(new Permutation(new int[] { -1, 8, -4, 1, 4, 7, 2, 14, 10, 12, 9, -2, 6, 3, 13, 5, 11, -3 }));
-            permutations.Add(new Permutation(new int[] { -3, 13, -2, 8, -4, 6, 11, 3, 14, 10, -1, 5, 7, 9, 2, 1, 4, 12 }));
-            permutations.Add(new Permutation(new int[] { 3, 8, -2, 1, -4, 11, 9, -1, 14, 12, 6, 4, 7, -3, 10, 13, 2, 5 }));
-            permutations.Add(new Permutation(new int[] { 2, 13, 5, 14, 11, 7, 12, 4, 3, 1, 9, 6, 8, 10, -3, -1, -4, -2 }));
-            permutations.Add(new Permutation(new int[] { 9, 4, 12, 14, 1, 8, 7, 3, 10, 13, 6, 11, 2, 5, -4, -2, -3, -1 }));
-            permutations.Add(new Permutation(new int[] { 11, -1, 2, -3, 1, 10, 5, 7, 9, 8, 3, 13, -2, 6, 14, 12, 4, -4 }));
-            permutations.Add(new Permutation(new int[] { -2, 2, 5, -3, 10, 11, -4, 14, 1, 12, 7, 9, 13, 6, 4, 8, 3, -1 }));
-            permutations.Add(new Permutation(new int[] { -4, 6, -3, -1, 5, 8, 4, 7, 3, 2, 10, 9, 12, 11, 13, 14, 1, -2 }));
-            permutations.Add(new Permutation(new int[] { -1, 2, 3, 13, 1, -3, 4, -2, -4, 6, 12, 14, 5, 8, 9, 10, 11, 7 }));
-            permutations.Add(new Permutation(new int[] { -1, -3, 14, 1, 10, 7, 4, 3, 12, 13, 5, -4, 9, -2, 11, 8, 2, 6 }));
-            permutations.Add(new Permutation(new int[] { 6, 5, 10, 9, -3, -1, 12, -2, 8, -4, 4, 2, 13, 3, 7, 1, 14, 11 }));
-            permutations.Add(new Permutation(new int[] { 11, 14, 9, 13, 3, 7, 8, 2, 5, 1, 12, -4, 6, 4, 10, -3, -1, -2 }));
-            permutations.Add(new Permutation(new int[] { 13, 8, 6, -3, 7, -4, 9, -2, 5, 3, 4, 12, -1, 2, 10, 14, 11, 1 }));
-            permutations.Add(new Permutation(new int[] { 9, -3, 2, 4, 6, 13, 14, 7, -2, 11, 10, -1, -4, 3, 5, 1, 8, 12 }));
-            permutations.Add(new Permutation(new int[] { -4, 5, 3, -1, 12, 4, -2, -3, 7, 2, 13, 11, 10, 6, 8, 1, 14, 9 }));
+            permutations.Add(new Permutation(new int[] { -1, 7, -4, 0, 3, 6, 1, 13, 9, 11, 8, -2, 5, 2, 12, 4, 10, -3 }));
+            permutations.Add(new Permutation(new int[] { -3, 12, -2, 7, -4, 5, 10, 2, 13, 9, -1, 4, 6, 8, 1, 0, 3, 11 }));
+            permutations.Add(new Permutation(new int[] { 2, 7, -2, 0, -4, 10, 8, -1, 13, 11, 5, 3, 6, -3, 9, 12, 1, 4 }));
+            permutations.Add(new Permutation(new int[] { 1, 12, 4, 13, 10, 6, 11, 3, 2, 0, 8, 4, 7, 9, -3, -1, -4, -2 }));
+            permutations.Add(new Permutation(new int[] { 8, 3, 11, 13, 0, 7, 6, 2, 9, 12, 5, 10, 1, 4, -4, -2, -3, -1 }));
+            permutations.Add(new Permutation(new int[] { 10, -1, 1, -3, 0, 9, 4, 6, 8, 7, 2, 12, -2, 5, 13, 11, 3, -4 }));
+            permutations.Add(new Permutation(new int[] { -2, 1, 4, -3, 9, 10, -4, 13, 0, 11, 6, 8, 12, 5, 3, 7, 2, -1 }));
+            permutations.Add(new Permutation(new int[] { -4, 5, -3, -1, 4, 8, 3, 6, 2, 1, 9, 8, 11, 10, 12, 13, 0, -2 }));
+            permutations.Add(new Permutation(new int[] { -1, 1, 2, 12, 0, -3, 3, -2, -4, 5, 11, 13, 4, 7, 8, 9, 10, 6 }));
+            permutations.Add(new Permutation(new int[] { -1, -3, 13, 0, 9, 6, 3, 2, 11, 12, 4, -4, 8, -2, 10, 7, 1, 5 }));
+            permutations.Add(new Permutation(new int[] { 5, 4, 9, 8, -3, -1, 11, -2, 7, -4, 3, 1, 12, 2, 6, 0, 13, 10 }));
+            permutations.Add(new Permutation(new int[] { 10, 13, 8, 12, 2, 6, 7, 1, 4, 0, 11, -4, 5, 3, 9, -3, -1, -2 }));
+            permutations.Add(new Permutation(new int[] { 12, 7, 5, -3, 6, -4, 8, -2, 4, 2, 3, 11, -1, 1, 9, 13, 10, 0 }));
+            permutations.Add(new Permutation(new int[] { 8, -3, 1, 3, 5, 12, 13, 6, -2, 10, 9, -1, -4, 2, 4, 0, 7, 11 }));
+            permutations.Add(new Permutation(new int[] { -4, 4, 2, -1, 11, 3, -2, -3, 6, 1, 12, 10, 9, 5, 7, 0, 13, 8 }));
 
             Args parms;
 
@@ -413,8 +409,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
-                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), Decimal.Zero, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), Decimal.Zero, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++)

@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             for (int i = 0; i < this.NumberOfInstances - 1; i++)
             {
-                double minDistance = Double.MaxValue;
+                double minDistance = double.MaxValue;
                 for (int j = 0; j < this.NumberOfInstances; j++)
                 {
                     int sizeJ = this.GetClusterSize(j);

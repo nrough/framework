@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
 		private IReduct[] reducts;		
 		private int reductCounter;
 		private bool reductsCalculated;
-		private double[] weights;
+		private decimal[] weights;
 		private HierarchicalClustering hCluster;
 		
 		public Func<double[], double[], double> Distance { get; set; }
@@ -66,8 +66,8 @@ namespace Infovision.Datamining.Roughset
 			hCluster = new HierarchicalClustering();
 			hCluster.Distance = this.Distance;
 			hCluster.Linkage = this.Linkage;
-			
-			Dictionary<int, double[]> instances = new Dictionary<int,double[]>(this.MaxIterations);
+
+			Dictionary<int, double[]> instances = new Dictionary<int, double[]>(this.MaxIterations);
 			for (int i = 0; i < reducts.Length; i++)
 				instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights));
 
@@ -79,9 +79,9 @@ namespace Infovision.Datamining.Roughset
 		{            
 			reductsCalculated = false;
 
-			weights = new double[this.DataStore.NumberOfRecords];
+			weights = new decimal[this.DataStore.NumberOfRecords];
 			for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-				weights[i] = 1.0 / this.DataStore.NumberOfRecords;
+				weights[i] = 1.0M / this.DataStore.NumberOfRecords;
 
 			this.reducts = new IReduct[this.MaxIterations];				
 			for (int i = 0; i < this.MaxIterations; i++)
@@ -93,14 +93,14 @@ namespace Infovision.Datamining.Roughset
 
 			for (int i = 1; i < this.MaxIterations; i++)
 			{
-				double d = Double.MinValue;
+				decimal d = Decimal.MinValue;
 				int bestIndex = -1;
 
 				for (int j = i + 1; j < this.MaxIterations; j++)
 				{                                        
 					oneElementCluster[0] = j;
 					
-					double reductDistance = hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
+					decimal reductDistance = (decimal)hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
 					if (d < reductDistance)
 					{
 						d = reductDistance;
@@ -119,7 +119,7 @@ namespace Infovision.Datamining.Roughset
 			reductsCalculated = true;
 		}
 
-		public override IReduct GetNextReduct(double[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
 		{
 			if (reductsCalculated)								
 				return reducts[reductCounter++];

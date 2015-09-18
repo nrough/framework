@@ -4,12 +4,12 @@ namespace Infovision.Datamining.Roughset
 {
     public interface IReductGenerator
     {                        
-        double Epsilon { get; set; }        
+        decimal Epsilon { get; set; }        
         void InitFromArgs(Args args);
         void Generate();
         IReductStore ReductPool { get; }        
         IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles);
         //IReduct CreateReduct(Permutation permutation);
-        IReduct CreateReduct(int[] permutation, double epsilon, double[] weights);
+        IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);
     }
 }

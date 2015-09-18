@@ -72,10 +72,10 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public static EquivalenceClassCollection Create(DataStore dataStore, int[] attributes, double epsilon, double[] weights = null)
+        public static EquivalenceClassCollection Create(DataStore dataStore, int[] attributes, decimal epsilon, decimal[] weights = null)
         {
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
-                throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of recors in dataStore");
+                throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of records in dataStore");
 
             EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(attributes);
 
@@ -87,14 +87,14 @@ namespace Infovision.Datamining.Roughset
                 eqClassCollection.AddRecordInitial(attributes, 
                                                    attributeValues, 
                                                    decision, 
-                                                   weights != null ? weights[i] : 1.0,
+                                                   weights != null ? weights[i] : 1.0M,
                                                    dataStore);
             }            
 
             return eqClassCollection;
         }
 
-        protected void AddRecordInitial(int[] attributes, long[] attributeValues, long decision, double weight, DataStore dataStore)
+        protected void AddRecordInitial(int[] attributes, long[] attributeValues, long decision, decimal weight, DataStore dataStore)
         {            
             AttributeValueVector vector = new AttributeValueVector(attributes, attributeValues);
             EquivalenceClass eq = null;
@@ -123,28 +123,27 @@ namespace Infovision.Datamining.Roughset
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
-
             foreach (int objectIndex in dataStore.GetObjectIndexes())
-                this.UpdateStatistic(this.attributes, dataStore, objectIndex, 1.0 / dataStore.NumberOfRecords);
+                this.UpdateStatistic(this.attributes, dataStore, objectIndex, Decimal.Divide(Decimal.One, dataStore.NumberOfRecords));
         }
 
-        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, double[] objectWeights)
+        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
         {
             this.InitPartitions();
-            int[] attributeArray = attributeSet.ToArray();
+            this.attributes = attributeSet.ToArray();
             foreach (int objectIndex in dataStore.GetObjectIndexes())
-                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);
+                this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);
         }
 
-        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
+        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             this.InitPartitions();
-            int[] attributeArray = attributeSet.ToArray();
+            this.attributes = attributeSet.ToArray();
             foreach (int objectIndex in objectSet)
-                this.UpdateStatistic(attributeArray, dataStore, objectIndex, objectWeights[objectIndex]);            
+                this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);            
         }
 
-        private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, double objectWeight)
+        private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, decimal objectWeight)
         {
             AttributeValueVector record = dataStore.GetDataVector(objectIndex, attributeArray);
             EquivalenceClass reductStatistic = null;
@@ -162,16 +161,16 @@ namespace Infovision.Datamining.Roughset
 
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet)
         {
-            double[] weights = new double[dataStore.NumberOfRecords];
+            decimal[] weights = new decimal[dataStore.NumberOfRecords];
             for (int i = 0; i < weights.Length; i++)
             {
-                weights[i] = 1.0 / dataStore.NumberOfRecords;
+                weights[i] = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
             }
 
             return EquivalenceClassCollection.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
         }
-        
-        public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
+
+        public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             Dictionary<AttributeValueVector, EquivalenceClass> localPartitions = new Dictionary<AttributeValueVector, EquivalenceClass>();
             int[] attributeArray = attributeSet.ToArray();

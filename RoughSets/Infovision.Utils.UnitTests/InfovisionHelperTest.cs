@@ -10,7 +10,7 @@ namespace Infovision.Utils.UnitTests
         public void IntArray2String()
         {
             int[] array = new int[] { 1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 15, 16, 18, 19, 20, 21, 22, 23 };
-            Assert.AreEqual("1..4 6..8 10..12 15..16 18..23", InfovisionHelper.IntArray2Ranges(array));
+            Assert.AreEqual("1..4 6..8 10..12 15 16 18..23", InfovisionHelper.IntArray2Ranges(array));
 
             array = new int[] { 1 };
             Assert.AreEqual("1", InfovisionHelper.IntArray2Ranges(array));

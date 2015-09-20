@@ -108,7 +108,7 @@ namespace Infovision.RunTest.UnitTests
             DeleteFiles();
             
             TestRunner testRunner = new TestRunner(resultFilename, test);
-            testRunner.OpenLog(resultFilename);
+            testRunner.OpenLog(Path.ChangeExtension(resultFilename, "res01"));
             RunNTests(testRunner, 4);
             testRunner.SaveResults(autoSaveFilename);
             testRunner.CloseLog();
@@ -165,7 +165,7 @@ namespace Infovision.RunTest.UnitTests
             DeleteFiles();
 
             TestRunner testRunner = new TestRunner(resultFilename, test);
-            testRunner.OpenLog(resultFilename);
+            testRunner.OpenLog(Path.ChangeExtension(resultFilename, "res02"));
             RunNTests(testRunner, 1);
             testRunner.SaveResults(autoSaveFilename);
             testRunner.CloseLog();
@@ -178,7 +178,7 @@ namespace Infovision.RunTest.UnitTests
             string[] fields = lastLine.Split(new Char[] { ' ', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
             testRunner = new TestRunner(resultFilename, null, autoSaveFilename);
-            testRunner.OpenLog(resultFilename);
+            testRunner.OpenLog(Path.ChangeExtension(resultFilename, "res03"));
             
             CompareFileRecordWithParms(testRunner.LastSavedParameterVector, fields);
 
@@ -201,7 +201,7 @@ namespace Infovision.RunTest.UnitTests
         {
             DeleteFiles();
             TestRunner testRunner = new TestRunner(resultFilename, test);
-            testRunner.OpenLog(resultFilename);
+            testRunner.OpenLog(Path.ChangeExtension(resultFilename, "res04"));
             RunNTests(testRunner, 3);
             testRunner.SaveResults(autoSaveFilename);
             testRunner.CloseLog();

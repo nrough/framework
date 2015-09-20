@@ -161,6 +161,7 @@
     <None Include="Data\dna_modified.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Data\german.data" />
     <None Include="Data\letter.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

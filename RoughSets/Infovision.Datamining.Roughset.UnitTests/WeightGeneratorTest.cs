@@ -320,7 +320,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IInformationMeasure infoMeasureWeights = InformationMeasureBase.Construct(InformationMeasureType.ObjectWeights);
             decimal infoMeasureWeightsResult = infoMeasureWeights.Calc(reduct);
 
-            Assert.AreEqual(infoMeasureResult, infoMeasureWeightsResult);
+            Assert.AreEqual(Decimal.Round(infoMeasureResult, 17), Decimal.Round(infoMeasureWeightsResult, 17));
         }
 
         public void CompareReductResult(string reductGeneratorKey1, string reductGeneratorKey2)

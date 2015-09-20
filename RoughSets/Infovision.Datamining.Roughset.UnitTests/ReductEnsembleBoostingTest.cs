@@ -367,7 +367,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                      "TST_ERROR",
                                      "AVG_REDUCT");
             */
-            List<int> iterList = new List<int>(new int[] { 1, 2, 5, 10, 20, 50, 100 });            
+            //List<int> iterList = new List<int>(new int[] { 1, 2, 5, 10, 20, 50, 100 });
+
+            List<int> iterList = new List<int>(new int[] { 1, 2, 5, 10 });
 
             //for (int iter = 1; iter <= maxNumberOfIterations; iter++)
             foreach(int iter in iterList)

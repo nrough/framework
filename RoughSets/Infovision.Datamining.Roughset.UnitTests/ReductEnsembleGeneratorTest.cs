@@ -45,10 +45,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
 
             //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;
-            Func<IReduct, double[], double[]> reconWeights = (r, w) =>
+            Func<IReduct, decimal[], double[]> reconWeights = (r, w) =>
                 {
                     double[] result = new double[w.Length];
-                    Array.Copy(w, result, w.Length);
+                    //Array.Copy(w, result, w.Length);
+                    for (int i = 0; i < w.Length; i++)
+                        result[i] = (double)w[i];
                     foreach (EquivalenceClass e in r.EquivalenceClasses)
                         foreach (int i in e.GetObjectIndexes(e.MajorDecision))
                             result[i] *= -1;

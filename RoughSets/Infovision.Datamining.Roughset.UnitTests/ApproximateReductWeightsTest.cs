@@ -230,7 +230,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, Decimal.One);
+            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, Decimal.One);
+            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
         }
 
         [Test]

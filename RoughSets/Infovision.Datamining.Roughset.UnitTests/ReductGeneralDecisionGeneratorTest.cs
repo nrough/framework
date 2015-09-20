@@ -61,7 +61,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                 }
             }            
-        }                
+        }
+
+        public Dictionary<string, BenchmarkData> GetDataFiles()
+        {
+            return BenchmarkDataHelper.GetDataFiles();
+        }
         
         [Test, TestCaseSource("GetDataFiles")]
         public void ExperimentAvgReductLength(KeyValuePair<string, BenchmarkData> fileName)
@@ -69,7 +74,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 1000;
+            int numberOfPermutations = 2;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
@@ -107,7 +112,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
 
-            string fn = String.Format("F:\\Temp\\{0}_ReductGeneralDecisionGeneratorTest_ExperimentAvgReductLength.txt", fileName.Key);
+            string fn = String.Format("{0}_ReductGeneralDecisionGeneratorTest_ExperimentAvgReductLength.txt", fileName.Key);
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fn))
             {
                 foreach (KeyValuePair<int, List<int>> kvp in results)
@@ -168,7 +173,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {                
                 InformationMeasureWeights m_Weights = new InformationMeasureWeights();                
                 decimal result_W = m_Weights.Calc(reduct);                                
-                rGen2.Epsilon = 1.0M - result_W;
+                rGen2.Epsilon = Decimal.One - result_W;
 
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;

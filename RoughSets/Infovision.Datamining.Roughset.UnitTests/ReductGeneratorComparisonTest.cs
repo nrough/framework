@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductGeneratorComparisonTest Seed: {0}", seed);
+            //Console.WriteLine("class ReductGeneratorComparisonTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -40,9 +40,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
-            double[] epsilons;            
+            decimal[] epsilons;            
 
-            epsilons = new double[numberOfPermutations];
+            epsilons = new decimal[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
                 epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
 
@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
-            Console.WriteLine(weightGenerator.GetType().Name);
+            //Console.WriteLine(weightGenerator.GetType().Name);
         }
 
         [Test, TestCaseSource("GetComparisonTestArgs")]
@@ -90,15 +90,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore testData = (DataStore)args["_TestData"];
             int numberOfClusters = (int)args[ReductGeneratorParamHelper.NumberOfClusters];
 
-            Console.WriteLine("Generator: {0}", (string)args[ReductGeneratorParamHelper.FactoryKey]);
-            Func<double[], double[], decimal> distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance];
-            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+            //Console.WriteLine("Generator: {0}", (string)args[ReductGeneratorParamHelper.FactoryKey]);
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
+            //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
-            Func<int[], int[], DistanceMatrix, double[][], decimal> linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage];
-            Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
+            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
+            //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
                      
             Func<IReduct, decimal[], double[]> recognition = (Func<IReduct, decimal[], double[]>) args[ReductGeneratorParamHelper.ReconWeights];
-            Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
+            //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
             
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)

@@ -181,7 +181,7 @@ namespace Infovision.Datamining.Roughset
         private bool HasConverged()
         {
             //TODO Add Stop criteria
-            if(this.NextReductId >= this.permEpsilon.Length)            
+            if(this.NextReductId >= this.permEpsilon.Length)
             //if (this.ReductPool.Count() >= 20)
                 return true;
             return false;

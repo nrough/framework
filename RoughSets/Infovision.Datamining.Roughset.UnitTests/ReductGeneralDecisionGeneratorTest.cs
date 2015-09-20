@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductGeneralDecisionGeneratorTest Seed: {0}", seed);
+            //Console.WriteLine("class ReductGeneralDecisionGeneratorTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -61,13 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                 }
             }            
-        }
-
-        public Dictionary<string, BenchmarkData> GetDataFiles()
-        {
-            return BenchmarkDataHelper.GetDataFiles();
-        }
-        
+        }                
         
         [Test, TestCaseSource("GetDataFiles")]
         public void ExperimentAvgReductLength(KeyValuePair<string, BenchmarkData> fileName)
@@ -179,7 +173,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;
 
-                Console.WriteLine("{0} M(C)={1} eps={2}", approxReduct, result_W, rGen2.Epsilon);
+                //Console.WriteLine("{0} M(C)={1} eps={2}", approxReduct, result_W, rGen2.Epsilon);
                                 
                 //if(rGen2.CheckIsReduct(approxReduct) == false)
                 Assert.IsTrue(rGen2.CheckIsReduct(approxReduct), String.Format("{0} is not a reduct for eps={1}", approxReduct, rGen2.Epsilon));                
@@ -234,7 +228,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;
 
-                Console.WriteLine("{0} M(C)={1} eps={2}", approxReduct, result_W, rGen2.Epsilon);
+                //Console.WriteLine("{0} M(C)={1} eps={2}", approxReduct, result_W, rGen2.Epsilon);
 
                 //if(rGen2.CheckIsReduct(approxReduct) == false)
                 Assert.IsTrue(rGen2.CheckIsReduct(approxReduct), String.Format("{0} is not a reduct for eps={1}", approxReduct, rGen2.Epsilon));

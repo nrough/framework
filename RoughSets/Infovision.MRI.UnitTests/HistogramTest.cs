@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {
-    [TestFixture]
+    [TestFixture, Ignore]
     public class HistogramTest
     {
         private uint width = 181;

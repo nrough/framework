@@ -20,16 +20,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductEnsembleExperiment Seed: {0}", seed);
+            //Console.WriteLine("class ReductEnsembleExperiment Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
         [Test, TestCaseSource("GetDataFiles")]
         public void RunExperimentIncremental(KeyValuePair<string, BenchmarkData> kvp)
         {
-            Console.WriteLine("Data: {0}", kvp.Key);
+            //Console.WriteLine("Data: {0}", kvp.Key);
 
-            int numberOfPermutations = 500;
+            int numberOfPermutations = 10;
             DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
             data.Name = kvp.Key;
 
@@ -94,7 +94,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //for (int testNo = 1; testNo <= 100; testNo++)
             for (int testNo = 1; testNo <= 1; testNo++)
             {
-                Console.WriteLine("Test {0}", testNo);
+                //Console.WriteLine("Test {0}", testNo);
 
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
@@ -140,7 +140,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                         RoughClassifier rc = new RoughClassifier();
                         rc.ReductStore = reductEnsemble;
+                        rc.ReductStoreCollection = reductStoreCollection;
+
                         rc.Classify(testData);
+
                         ClassificationResult classificationResult = rc.Vote(testData, identificationType, voteType, weightGenerator.Weights);
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
@@ -153,11 +156,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = reductEnsemble.Count,
-                            Distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
                             WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
+                            DiscernibiltyVector = (Func<IReduct, decimal[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
                             PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
 
                             Accuracy = classificationResult.Accuracy,
@@ -194,11 +197,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = randomReductGroup.Count,
-                            Distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], decimal>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
                             Dataset = data,
                             WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
+                            DiscernibiltyVector = (Func<IReduct, decimal[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
                             PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
 
                             Accuracy = classificationResult2.Accuracy,
@@ -231,11 +234,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public int MaxEpsilon { get; set; }
         public int NumberOfPermuations { get; set; }
         public int NumberOfReducts { get; set; }
-        public Func<double[], double[], decimal> Distance { get; set; }
-        public Func<int[], int[], DistanceMatrix, double[][], decimal> Linkage { get; set; }
+        public Func<double[], double[], double> Distance { get; set; }
+        public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
         public DataStore Dataset { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
-        public Func<IReduct, double[], double[]> DiscernibiltyVector { get; set; }
+        public Func<IReduct, decimal[], double[]> DiscernibiltyVector { get; set; }
         public PermutationCollection PermutationCollection { get; set; }
 
         public double Accuracy { get; set; }

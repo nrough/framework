@@ -386,22 +386,25 @@ namespace Infovision.Datamining.Roughset
         {
             IReductStore localReductStore;
             IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
-            
-            if (String.IsNullOrEmpty(reductMeasureKey) == false)
+
+            if (reductStoreCollection != null)
             {
-                foreach (IReductStore rs in reductStoreCollection)
+                if (String.IsNullOrEmpty(reductMeasureKey) == false)
                 {
-                    if (rs.IsActive)
+                    foreach (IReductStore rs in reductStoreCollection)
                     {
-                        Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
-                        localReductStore = rs.FilterReducts(numberOfReducts, reductComparer);
-                        localReductStoreCollection.AddStore(localReductStore);
+                        if (rs.IsActive)
+                        {
+                            Comparer<IReduct> reductComparer = ReductFactory.GetReductComparer(reductMeasureKey);
+                            localReductStore = rs.FilterReducts(numberOfReducts, reductComparer);
+                            localReductStoreCollection.AddStore(localReductStore);
+                        }
                     }
                 }
-            }
-            else
-            {
-                localReductStoreCollection = reductStoreCollection;
+                else
+                {
+                    localReductStoreCollection = reductStoreCollection;
+                }
             }
                         
             //this.objectReductDescriptorMap = new Dictionary<long, ReductRuleDescriptor>(dataStore.NumberOfRecords);

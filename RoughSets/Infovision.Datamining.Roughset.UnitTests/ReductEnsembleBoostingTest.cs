@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductEnsembleBoostingTest Seed: {0}", seed);
+            //Console.WriteLine("class ReductEnsembleBoostingTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -233,22 +233,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
             classifierTrn.Classify(data);
             ClassificationResult resultTrn = classifierTrn.Vote(data, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);            
 
-            Console.WriteLine("{0} {1} {2}",
-                              reductGenerator.MaxIterations,
-                              resultTrn.WeightMisclassified + resultTrn.WeightUnclassified);
+            //Console.WriteLine("{0} {1} {2}",
+            //                  reductGenerator.MaxIterations,
+            //                  resultTrn.WeightMisclassified + resultTrn.WeightUnclassified);
         }
         
         [Test]
         public void GenerateExperimentBoostingStandard()
         {
-            Console.WriteLine("GenerateExperimentBoostingStandard");
+            //Console.WriteLine("GenerateExperimentBoostingStandard");
             
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
             WeightingSchema weightingSchema = WeightingSchema.Majority;
-            int numberOfTests = 20;
-            int maxNumberOfIterations = 100;
+            int numberOfTests = 2;
+            int maxNumberOfIterations = 2;
 
+            /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                      "METHOD",
                                      "IDENTYFICATION",
@@ -264,6 +265,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                      "TRN_ERROR",
                                      "TST_ERROR",
                                      "AVG_REDUCT");
+            */
 
             for (int iter = 1; iter <= maxNumberOfIterations; iter++)
             {
@@ -312,6 +314,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classifierTst.Classify(tstData);
                     ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+                    /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                       parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
@@ -327,6 +330,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                       resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                    */
                 }
             }
         }
@@ -334,7 +338,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateExperimentBoostingVarEps()
         {
-            Console.WriteLine("GenerateExperimentBoostingStandard");
+            //Console.WriteLine("GenerateExperimentBoostingStandard");
 
             //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             //DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
@@ -343,9 +347,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore tstData = DataStore.Load(@"Data\optdigits.tst", FileFormat.Rses1, trnData.DataStoreInfo);
 
             WeightingSchema weightingSchema = WeightingSchema.Majority;
-            int numberOfTests = 20;
+            int numberOfTests = 2;
             //int maxNumberOfIterations = 100;
 
+            /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                      "METHOD",
                                      "IDENTYFICATION",
@@ -361,7 +366,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                      "TRN_ERROR",
                                      "TST_ERROR",
                                      "AVG_REDUCT");
-
+            */
             List<int> iterList = new List<int>(new int[] { 1, 2, 5, 10, 20, 50, 100 });            
 
             //for (int iter = 1; iter <= maxNumberOfIterations; iter++)
@@ -408,6 +413,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classifierTst.Classify(tstData);
                     ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+                    /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                       parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
@@ -423,6 +429,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                       resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                    */
                 }
             }
         }
@@ -430,11 +437,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, Ignore]
         public void GenerateExperimentBoostingWithDiversity()
         {
-            Console.WriteLine("GenerateExperimentBoostingWithDiversity");
+            //Console.WriteLine("GenerateExperimentBoostingWithDiversity");
 
             DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
 
+            /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
                                       "TESTID",
                                       "MAXITER",
@@ -443,10 +451,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       "TRN_ERROR",
                                       "TST_ERROR",
                                       "AVG_REDUCT");
+            */
 
-            for (int iter = 1; iter <= 100; iter++)
+            for (int iter = 1; iter <= 2; iter++)
             {
-                for (int t = 0; t < 10; t++)
+                for (int t = 0; t < 2; t++)
                 {
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
@@ -478,6 +487,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classifierTst.Classify(tstData);
                     ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+                    /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
                                       t + 1,
                                       reductGenerator.MaxIterations,
@@ -486,6 +496,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                       resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                    */
                 }
             }
         }
@@ -493,15 +504,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenerateExperimentBoostingWithAttributeDiversity()
         {
-            Console.WriteLine("GenerateExperimentBoostingWithAttributeDiversity");
+            //Console.WriteLine("GenerateExperimentBoostingWithAttributeDiversity");
 
             DataStore trnData = DataStore.Load(@"Data\pendigits.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\pendigits.tst", FileFormat.Rses1, trnData.DataStoreInfo);            
 
             WeightingSchema weightingSchema = WeightingSchema.Majority;
             int numberOfTests = 1;
-            int maxNumberOfIterations = 100;
+            int maxNumberOfIterations = 2;
 
+            /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                      "METHOD",
                                      "IDENTYFICATION",
@@ -517,6 +529,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                      "TRN_ERROR",
                                      "TST_ERROR",
                                      "AVG_REDUCT");
+            */
 
             for (int iter = 1; iter <= maxNumberOfIterations; iter++)
             {
@@ -564,6 +577,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classifierTst.Classify(tstData);
                     ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+                    /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                       parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
@@ -579,6 +593,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                       resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                       resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+                    */
                 }
             }
         }        

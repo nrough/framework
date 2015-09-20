@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
+                //Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
                 i++;
             }
 
@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2} {3}", parms[0], parms[1], parms[2], parms[3]);
+                //Console.WriteLine("{0} {1} {2} {3}", parms[0], parms[1], parms[2], parms[3]);
                 i++;
             }
 
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
+                //Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
                 i++;
             }
 
@@ -90,7 +90,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
+                //Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
                 i++;
             }
 
@@ -111,7 +111,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
+                //Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
                 i++;
             }
 

@@ -35,11 +35,11 @@ namespace Infovision.Datamining.Experimenter.Test
             parmList.AddExclusion(new string[] { "A", "B", "C" }, new IParameter[] { parmAx1, parmBx1, parmCx1 });
             parmList.AddExclusion(new string[] { "A", "C" }, new IParameter[] { parmAx2, parmCx2 });
             parmList.AddExclusion(new string[] { "A" }, new IParameter[] { parmAx3 });
-
+            
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
+                //Console.WriteLine("{0} {1} {2}", parms[0], parms[1], parms[2]);
                 i++;
             }
 
@@ -49,7 +49,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void CreateExclusionListOnRanges()
         {
-            Console.WriteLine("*** CreateExclusionListOnRanges ****");
+            //Console.WriteLine("*** CreateExclusionListOnRanges ****");
 
             IParameter parmA = new ParameterNumericRange<int>("A", 0, 9, 1);
             IParameter parmB = new ParameterNumericRange<double>("B", 0, 0.9, 0.1);
@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Experimenter.Test
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
-                Console.WriteLine("{0} {1}", parms[0], parms[1]);
+                //Console.WriteLine("{0} {1}", parms[0], parms[1]);
                 i++;
             }
 

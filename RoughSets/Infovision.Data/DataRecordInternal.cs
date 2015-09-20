@@ -61,9 +61,8 @@ namespace Infovision.Data
         #region System.Object Methods
 
         public override int GetHashCode()
-        {
-            //TODO to be optimized
-            return HashHelper.GetHashCode<long>(fields.Values.Concat(fields.Keys.Cast<long>()));
+        {           
+            return HashHelper.GetHashCode<long>(fields.Values.Concat(fields.Keys.Select( i => (long) i)));
         }
         
         public override bool Equals(object obj)

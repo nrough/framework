@@ -161,7 +161,7 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void DataRecordInternal()
         {
-            Dictionary<DataRecordInternal, Int32> dict = new Dictionary<DataRecordInternal, Int32>();
+            Dictionary<DataRecordInternal, int> dict = new Dictionary<DataRecordInternal, int>(dataStoreTestInfo.NumberOfRecords);
             int count = 0;
 
             for (int i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
@@ -175,7 +175,7 @@ namespace Infovision.Data.UnitTests
                 dict[dataRecord1] = dict.TryGetValue(dataRecord1, out count) ? ++count : 1;
             }
 
-            foreach (KeyValuePair<DataRecordInternal, Int32> kvp in dict)
+            foreach (KeyValuePair<DataRecordInternal, int> kvp in dict)
             {
                 Assert.AreEqual(1, kvp.Value);
                 DataRecordInternal record = kvp.Key;
@@ -246,7 +246,7 @@ namespace Infovision.Data.UnitTests
                     int result = comparer.Compare(sortedArray[j - 1], sortedArray[j]);
                     Assert.AreNotEqual(1, result);
                     
-                    Console.WriteLine(record);
+                    //Console.WriteLine(record);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Experimenter.Parms
                     || type == typeof(short)
                     || type == typeof(byte)
                     || type == typeof(long)
-                    || type == typeof(decimal)
+                    || type == typeof(double)
                     || type == typeof(float)
                     || type == typeof(uint)
                     || type == typeof(ushort)

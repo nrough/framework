@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductMajority, 0, 10);
-            Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
+            //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
         }
 
 
@@ -202,7 +202,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                 }
 
-                Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
+                //Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
             }                                                            
         }
 
@@ -425,6 +425,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                 }
 
+                /*
                 Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
 
                 Console.WriteLine("Bireduct rules");
@@ -435,7 +436,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
-
+                
                 Console.WriteLine();
 
                 Console.WriteLine("Gamma Bireduct rules");
@@ -448,6 +449,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
 
                 Console.WriteLine();
+                */
             }
         }
 

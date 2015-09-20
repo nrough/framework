@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
                 Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
 
-                Console.WriteLine("{0} | {1}", r1, r2);
+                //Console.WriteLine("{0} | {1}", r1, r2);
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
                 Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
 
-                Console.WriteLine("{0} | {1}", r1, r2);
+                //Console.WriteLine("{0} | {1}", r1, r2);
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
@@ -212,7 +212,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
                 Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
 
-                Console.WriteLine("{0} | {1}", r1, r2);
+                //Console.WriteLine("{0} | {1}", r1, r2);
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
@@ -242,7 +242,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
                 Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
 
-                Console.WriteLine("{0} | {1}", r1, r2);
+                //Console.WriteLine("{0} | {1}", r1, r2);
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);

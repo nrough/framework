@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10, 10, 0.7M);
             this.CalcAndPrintRatio(10, 10, 0.99M);
             this.CalcAndPrintRatio(10, 10, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
 
             this.CalcAndPrintRatio(10, 20, 0);
             this.CalcAndPrintRatio(10, 20, 0.01M);
@@ -146,7 +146,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10, 20, 0.7M);
             this.CalcAndPrintRatio(10, 20, 0.99M);
             this.CalcAndPrintRatio(10, 20, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
 
             this.CalcAndPrintRatio(20, 10, 0);
             this.CalcAndPrintRatio(20, 10, 0.01M);
@@ -155,7 +155,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(20, 10, 0.7M);
             this.CalcAndPrintRatio(20, 10, 0.99M);
             this.CalcAndPrintRatio(20, 10, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
 
             this.CalcAndPrintRatio(10, 1000, 0);
             this.CalcAndPrintRatio(10, 1000, 0.01M);
@@ -164,7 +164,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10, 1000, 0.7M);
             this.CalcAndPrintRatio(10, 1000, 0.99M);
             this.CalcAndPrintRatio(10, 1000, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
             
             this.CalcAndPrintRatio(1000, 10, 0);
             this.CalcAndPrintRatio(1000, 10, 0.01M);
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(1000, 10, 0.7M);
             this.CalcAndPrintRatio(1000, 10, 0.99M);
             this.CalcAndPrintRatio(1000, 10, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
 
             this.CalcAndPrintRatio(10000, 10, 0);
             this.CalcAndPrintRatio(10000, 10, 0.01M);
@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10000, 10, 0.7M);
             this.CalcAndPrintRatio(10000, 10, 0.99M);
             this.CalcAndPrintRatio(10000, 10, 1);
-            Console.WriteLine();
+            //Console.WriteLine();
 
             Assert.AreEqual(true, true);                                
         }
@@ -190,7 +190,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private decimal CalcAndPrintRatio(int numberOfFields, int numberOfObjects, decimal fieldSelectionRatio)
         {
             decimal result = PermutationGeneratorFieldObject.CalcSelectionRatio(numberOfFields, numberOfObjects, fieldSelectionRatio);
-            Console.WriteLine("{0} {1} {2} {3}", numberOfFields, numberOfObjects, fieldSelectionRatio, result);
+            //Console.WriteLine("{0} {1} {2} {3}", numberOfFields, numberOfObjects, fieldSelectionRatio, result);
             return result;
         }
 
@@ -207,7 +207,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permList)
             {
-                Console.WriteLine(perm);
+                //Console.WriteLine(perm);
 
                 Assert.AreEqual(fields.Length + objects.Length, perm.Length);
                 for (int i = 0; i < perm.Length; i++)
@@ -314,7 +314,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             PermutationGeneratorEnsemble permutationEnsemble = new PermutationGeneratorEnsemble(attribute, selectedAttributes);
             Permutation perm = permutationEnsemble.Generate(1)[0];
-            Console.WriteLine(perm);
+            //Console.WriteLine(perm);
         }
     }
 }

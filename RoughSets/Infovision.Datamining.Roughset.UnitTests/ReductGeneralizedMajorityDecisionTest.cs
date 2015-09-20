@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductGeneralizedMajorityDecisionTest Seed: {0}", seed);
+            //Console.WriteLine("class ReductGeneralizedMajorityDecisionTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -48,7 +48,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (Permutation permutation in permList)
             {
                 ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(permutation.ToArray());
-                Console.WriteLine("{0} {1}", reduct, reduct.Attributes.Count);
+                Assert.NotNull(reduct);
+                Assert.GreaterOrEqual(reduct.Attributes.Count, 0);
+                //Console.WriteLine("{0} {1}", reduct, reduct.Attributes.Count);
             }
         }
 
@@ -107,10 +109,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal reductQuality = new InformationMeasureWeights().Calc(reduct);
 
             //Show reduction result
-            for (int i = 0; i < attributeSubset.Length; i++)
-                Console.Write("{0} ", attributeSubset[i]);
-            Console.Write("({0}) -> ", attributeSubset.Length);
-            Console.WriteLine("{0} (size:{1}) Quality: {2}", reduct, reduct.Attributes.Count, reductQuality);
+            //for (int i = 0; i < attributeSubset.Length; i++)
+            //    Console.Write("{0} ", attributeSubset[i]);
+            //Console.Write("({0}) -> ", attributeSubset.Length);
+            //Console.WriteLine("{0} (size:{1}) Quality: {2}", reduct, reduct.Attributes.Count, reductQuality);
 
             return reduct;
         }
@@ -135,18 +137,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal reductQuality = new InformationMeasureWeights().Calc(reduct);
 
             //Show reduction result
-            for (int i = 0; i < attributeSubset.Length; i++)
-                Console.Write("{0} ", attributeSubset[i]);
-            Console.Write("({0}) -> ", attributeSubset.Length);
-            Console.WriteLine("{0} (size:{1}) Quality: {2}", reduct, reduct.Attributes.Count, reductQuality);
+            //for (int i = 0; i < attributeSubset.Length; i++)
+            //    Console.Write("{0} ", attributeSubset[i]);
+            //Console.Write("({0}) -> ", attributeSubset.Length);
+            //Console.WriteLine("{0} (size:{1}) Quality: {2}", reduct, reduct.Attributes.Count, reductQuality);
 
             return reduct;
         }
 
-        [Test]
+        [Test, Ignore]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()
         {
-            Console.WriteLine("CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()");
+            //Console.WriteLine("CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()");
             string fileName = @"data\SPECT.train";
             int numberOfPermutations = 100;
             DataStore data = DataStore.Load(fileName, FileFormat.Rses1);
@@ -211,7 +213,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine("Is not superset");
         }
 
-        [Test]
+        [Test, Ignore]
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct()
         {
             Console.WriteLine("CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()");
@@ -306,10 +308,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test]
+        [Test, Ignore]
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2()
         {
-            Console.WriteLine("CheckIfApproximateReductASupersetOGeneralizedDecisionReduct()");
+            Console.WriteLine("CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2()");
             
             string fileName = @"data\dna_modified.trn";
             int numberOfPermutations = 5;

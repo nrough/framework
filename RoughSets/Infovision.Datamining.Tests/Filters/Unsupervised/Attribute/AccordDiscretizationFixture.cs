@@ -384,7 +384,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 			for (int i = 0; i < continuesAttributes.Length; i++ )
 			{
-				double[] values = symbols.AsEnumerable().Select(r => r.Field<decimal>(continuesAttributes[i])).ToArray();
+				double[] values = symbols.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
 				histograms[i] = new Histogram("hist" + continuesAttributes[i]);
 				histograms[i].AutoAdjustmentRule = BinAdjustmentRule.None;
 				histograms[i].InclusiveUpperBound = false;
@@ -403,7 +403,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			{
 				for (int i = 0; i < continuesAttributes.Length; i++ )
 				{
-					row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((decimal)row[continuesAttributes[i]]);
+					row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
 				}
 
 				tmp.ImportRow(row);

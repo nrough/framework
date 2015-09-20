@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {    
-    [TestFixture]
+    [TestFixture, Ignore]
     //[Ignore("Temporary turned off")]
     public class ITKSimpleTest
     {

@@ -195,7 +195,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, localDataStore.DataStoreInfo.NumberOfDecisionValues);
+
+            Assert.AreEqual(Decimal.Round(result, 17), localDataStore.DataStoreInfo.NumberOfDecisionValues);
         }
 
         [Test]
@@ -207,7 +208,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, 1.0M);
+            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
         }
 
         [Test]
@@ -222,7 +223,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, 1.0M);
+            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
         }
 
         [Test]

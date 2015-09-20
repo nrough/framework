@@ -145,7 +145,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test]        
+        [Test, Ignore]        
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -163,7 +163,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Multi-thread timing is {0}", stop - start);
         }
 
-        [Test]        
+        [Test, Ignore]        
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -181,7 +181,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("Single-thread timing is {0}", stop - start);
         }
 
-        [Test]        
+        [Test, Ignore]
         public void ThreadPoolTest()
         {
             PascalSet[] resource = new PascalSet[10000];

@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
-            Console.WriteLine("class ReductEnsembleGeneratorTest Seed: {0}", seed);
+            //Console.WriteLine("class ReductEnsembleGeneratorTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
         
@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 20;
+            int numberOfPermutations = 2;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
@@ -80,8 +80,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GenerateTest(Dictionary<string, object> args)
         {
             
-            Func<double[], double[], decimal> distance = (Func<double[], double[], decimal>)args[ReductGeneratorParamHelper.Distance];            
-            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];            
+            //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
                         
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
@@ -109,17 +109,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
             File.WriteAllText((string)parms.GetParameter("ReductWeightFileName"), sb.ToString());
 
             
-            Console.WriteLine("All reducts");            
+            //Console.WriteLine("All reducts");            
             for(int j=0; j<reductGenerator.ReductPool.Count; j++)
-            {                
-                Console.WriteLine("{0}: {1}", j, reductGenerator.ReductPool.GetReduct(j));
+            {
+                IReduct r = reductGenerator.ReductPool.GetReduct(j);
+                //Console.WriteLine("{0}: {1}", j, r);
             }
 
-            Console.WriteLine("Reduct distances");
-            Console.WriteLine(reductGenerator.Dendrogram.DistanceMatrix);
+            //Console.WriteLine("Reduct distances");
+            DistanceMatrix d = reductGenerator.Dendrogram.DistanceMatrix;
+            //Console.WriteLine(d);
 
-            Console.WriteLine("Dendrogram");
-            Console.WriteLine(reductGenerator.Dendrogram);
+            //Console.WriteLine("Dendrogram");
+            HierarchicalClusteringBase hc = reductGenerator.Dendrogram;
+            //Console.WriteLine(hc);
 
             /*
             Console.WriteLine("Reduct groups");
@@ -140,12 +143,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int k=1;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
-                Console.WriteLine("Reduct Group Alias {0}:", k++);
-                Console.WriteLine("======================");
+                //Console.WriteLine("Reduct Group Alias {0}:", k++);
+                //Console.WriteLine("======================");
                 
                 foreach (IReduct reduct in reductStore)
                 {
-                    Console.WriteLine("{0}", reduct);                    
+                    //Console.WriteLine("{0}", reduct);                    
                 }
             }
             

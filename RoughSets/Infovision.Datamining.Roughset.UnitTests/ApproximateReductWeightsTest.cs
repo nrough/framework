@@ -39,17 +39,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
             parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms.AddParameter(ReductGeneratorParamHelper.NumberOfPermutations, 100);
+            parms.AddParameter(ReductGeneratorParamHelper.NumberOfPermutations, 1);
             
             ReductGeneratorWeightsMajority reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
             reductGenerator.Generate();
 
-            string fn = String.Format("{0}_ApproximateReductWeightsTest_GenerateZeroEpsilonTest.txt", fileName.Key);
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fn))
-            {
-                foreach (IReduct reduct in reductGenerator.ReductPool)
-                    file.WriteLine(String.Format("{0} {1}", reduct, reduct.Attributes.Count));
-            }
+            Assert.NotNull(reductGenerator.GetReductStoreCollection());
+            Assert.NotNull(reductGenerator.ReductPool);
+            Assert.AreEqual(1, reductGenerator.ReductPool.Count);
+            
+            //string fn = String.Format("{0}_ApproximateReductWeightsTest_GenerateZeroEpsilonTest.txt", fileName.Key);
+            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(fn))
+            //{
+            //    foreach (IReduct reduct in reductGenerator.ReductPool)
+            //        file.WriteLine(String.Format("{0} {1}", reduct, reduct.Attributes.Count));
+            //}
         }
         
         [Test]
@@ -226,7 +230,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, 1.0M);
+            Assert.AreEqual(result, Decimal.One);
         }
 
         [Test]
@@ -239,7 +243,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             decimal result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(result, 1.0M);
+            Assert.AreEqual(result, Decimal.One);
         }
 
         [Test]

@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {
-    [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
+    [TestFixture, Ignore, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     //[Ignore("Temporary turned off")]
     public class FeatureExtractorTest
     {

@@ -52,6 +52,16 @@ namespace Infovision.Data
 
         #region Properties
 
+        public long[] Values
+        {
+            get { return values; }
+        }
+
+        public int[] Attributes
+        {
+            get { return attributes; }
+        }
+
         private long this[int index]
         {
             get { return this.values[index]; }
@@ -60,23 +70,10 @@ namespace Infovision.Data
 
         #endregion
 
-        #region Methods
-
-        public long[] GetValues()
-        {
-            return values;
-        }
-
-        public int[] GetAttributes()
-        {
-            return attributes;
-        }
+        #region Methods        
 
         public AttributeValueVector RemoveAttribute(int attributeId)
         {
-            int[] attributes = this.GetAttributes();
-            long[] values = this.GetValues();
-
             int[] newAttributes = new int[attributes.Length - 1];
             long[] newValues = new long[values.Length - 1];
 
@@ -94,28 +91,11 @@ namespace Infovision.Data
             return new AttributeValueVector(newAttributes, newValues, false);
         }
 
-        public AttributeValueVector RemoveAttributeAtPosition(int index)
-        {
-            int[] attributes = this.GetAttributes();
-            long[] values = this.GetValues();
-
-            int[] newAttributes = new int[attributes.Length - 1];
-            long[] newValues = new long[values.Length - 1];
-
-            //TODO copy twice
-            
-            int k = 0;
-            for (int i = 0; i < attributes.Length; i++)
-            {
-                if (i != index)
-                {
-                    newAttributes[k] = attributes[i];
-                    newValues[k] = values[i];
-                    k++;
-                }
-            }
-
-            return new AttributeValueVector(newAttributes, newValues, false);
+        public AttributeValueVector RemoveAt(int index)
+        {            
+            return new AttributeValueVector(
+                attributes.RemoveAt<int>(index), 
+                values.RemoveAt<long>(index), false);
         }
 
         #region System.Object Methods
@@ -180,7 +160,7 @@ namespace Infovision.Data
         /// <returns>A new instance of a RoughPartitionMap, using a deep copy.</returns>
         public virtual object Clone()
         {
-            return new AttributeValueVector(this.GetAttributes(), this.GetValues());
+            return new AttributeValueVector(attributes, values);
         }
         #endregion
         #endregion

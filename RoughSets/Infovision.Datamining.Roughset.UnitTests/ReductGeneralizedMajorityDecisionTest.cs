@@ -89,32 +89,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
 
         public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
-        {
-            //Console.WriteLine("Filename: {0}", data.Name);
-            //Console.WriteLine("Epsilon: {0}", epsilon);
-            
-            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
-
+        {                                    
             Args parms = new Args();
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
             parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, epsilon);
 
-            ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
-                   
-            //Calculate reduct
-            ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(attributeSubset);
-            decimal reductQuality = new InformationMeasureWeights().Calc(reduct);
-
-            //Show reduction result
-            //for (int i = 0; i < attributeSubset.Length; i++)
-            //    Console.Write("{0} ", attributeSubset[i]);
-            //Console.Write("({0}) -> ", attributeSubset.Length);
-            //Console.WriteLine("{0} (size:{1}) Quality: {2}", reduct, reduct.Attributes.Count, reductQuality);
-
-            return reduct;
+            ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;                               
+            return reductGenerator.CalculateReduct(attributeSubset);                                    
         }
 
         public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)

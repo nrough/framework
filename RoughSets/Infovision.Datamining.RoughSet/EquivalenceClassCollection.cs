@@ -61,11 +61,11 @@ namespace Infovision.Datamining.Roughset
             this.InitDecisionCount(data.DataStoreInfo);            
         }
 
-        private EquivalenceClassCollection(EquivalenceClassCollection equivalenceClassMap)
+        private EquivalenceClassCollection(EquivalenceClassCollection eqClassCollection)
         {
-            this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)equivalenceClassMap.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>(equivalenceClassMap.DecisionCount);
-            this.attributes = equivalenceClassMap.Attributes;
+            this.partitions = (Dictionary<AttributeValueVector, EquivalenceClass>)eqClassCollection.Partitions.CloneDictionaryCloningValues<AttributeValueVector, EquivalenceClass>();
+            this.decisionCount = new Dictionary<long, int>(eqClassCollection.DecisionCount);
+            this.attributes = eqClassCollection.Attributes;
         }        
 
         #endregion
@@ -87,7 +87,7 @@ namespace Infovision.Datamining.Roughset
                 eqClassCollection.AddRecordInitial(attributes, 
                                                    attributeValues, 
                                                    decision, 
-                                                   weights != null ? weights[i] : 1.0M,
+                                                   weights != null ? weights[i] : Decimal.One,
                                                    dataStore);
             }            
 

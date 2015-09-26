@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Roughset
 
         private EquivalenceClass(EquivalenceClass eqClass)
         {            
-            this.dataVector = new AttributeValueVector(eqClass.dataVector.GetAttributes(), eqClass.dataVector.GetValues(), true);
+            this.dataVector = new AttributeValueVector(eqClass.dataVector.Attributes, eqClass.dataVector.Values, true);
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.isStatCalculated = eqClass.isStatCalculated;            
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(eqClass.decisionObjectIndexes.Count);            
@@ -147,10 +147,10 @@ namespace Infovision.Datamining.Roughset
 
         public decimal GetDecisionWeigth(long decision)
         {
-            decimal result = 0.0M;
+            decimal result = Decimal.Zero;
             if (this.decisionWeigthSums.TryGetValue(decision, out result))
                 return result;
-            return 0.0M;
+            return Decimal.Zero;
         }
 
         private void CalcStatistics()
@@ -202,7 +202,9 @@ namespace Infovision.Datamining.Roughset
         {            
             int decisionValueInt = Convert.ToInt32(decisionValue);
             this.DecisionSet.AddElement(decisionValueInt);
-            decimal weightSum = 0.0M;
+            
+            decimal weightSum = Decimal.Zero;
+            
             if (!this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
                 this.decisionWeigthSums.Add(decisionValue, weight);
             else
@@ -300,7 +302,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    if (pair.Value < (1.0M - epsilon) * max)
+                    if (pair.Value < ((Decimal.One - epsilon) * max))
                     {
                         decisionsToRemove.Add(pair.Key);
                         totalWeightToRemove += pair.Value;

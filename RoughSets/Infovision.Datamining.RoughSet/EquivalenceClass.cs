@@ -203,13 +203,12 @@ namespace Infovision.Datamining.Roughset
             int decisionValueInt = Convert.ToInt32(decisionValue);
             this.DecisionSet.AddElement(decisionValueInt);
             
-            decimal weightSum = Decimal.Zero;
-            
-            if (!this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
-                this.decisionWeigthSums.Add(decisionValue, weight);
-            else
+            decimal weightSum = Decimal.Zero;            
+            if (this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
                 this.decisionWeigthSums[decisionValue] = weightSum + weight;
-
+            else    
+                this.decisionWeigthSums.Add(decisionValue, weight);
+                
             totalWeightSum += weight;
         }
 
@@ -267,11 +266,9 @@ namespace Infovision.Datamining.Roughset
             if (!this.isStatCalculated && this.ManualStatCalculation == false)
                 this.CalcStatistics();
 
-            //DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0001 / this.dataStore.NumberOfRecords);
-
             foreach (KeyValuePair<long, decimal> kvp in this.decisionWeigthSums)
             {
-                if (kvp.Value != this.majorDecisionWeightSum)
+                if (Decimal.Round(kvp.Value, 17) != Decimal.Round(this.majorDecisionWeightSum, 17))
                 {
                     foreach (int objectIdx in decisionObjectIndexes[kvp.Key])
                         this.instances.Remove(objectIdx);
@@ -285,13 +282,16 @@ namespace Infovision.Datamining.Roughset
 
         public void KeepMajorDecisions(decimal epsilon)
         {
+            if (this.DecisionSet.Count <= 1)
+                return;
+
             bool isFirst = true;
             var items = from pair in decisionWeigthSums
                                     orderby pair.Value descending
                                         select pair;
 
             HashSet<long> decisionsToRemove = new HashSet<long>();
-            decimal totalWeightToRemove = 0.0M;
+            decimal totalWeightToRemove = Decimal.Zero;
             decimal max = Decimal.MinValue;
             foreach (KeyValuePair<long, decimal> pair in items)
             {
@@ -302,7 +302,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    if (pair.Value < ((Decimal.One - epsilon) * max))
+                    if (Decimal.Round(pair.Value, 17) < Decimal.Round(((Decimal.One - epsilon) * max), 17))
                     {
                         decisionsToRemove.Add(pair.Key);
                         totalWeightToRemove += pair.Value;
@@ -323,38 +323,6 @@ namespace Infovision.Datamining.Roughset
 
                     decisionObjectIndexes.Remove(decision);
                 }
-            }
-
-            this.totalWeightSum -= totalWeightToRemove;
-        }
-
-        public void KeepMajorDecisions2(decimal epsilon)
-        {
-            if (this.DecisionSet.Count <= 1)
-                return;
-            
-            HashSet<long> decisionsToRemove = new HashSet<long>();
-            decimal totalWeightToRemove = 0.0M;
-            foreach (KeyValuePair<long, decimal> kvp in this.decisionWeigthSums)
-                if ((kvp.Value / this.totalWeightSum) < (1.0M - epsilon))
-                {
-                    decisionsToRemove.Add(kvp.Key);
-                    totalWeightToRemove += kvp.Value;                    
-                }
-
-            foreach (long decision in decisionsToRemove)
-            {
-                this.DecisionSet.RemoveElement(Convert.ToInt32(decision));
-                this.decisionWeigthSums.Remove(decision);
-
-                if (this.decisionObjectIndexes != null
-                    && this.decisionObjectIndexes.ContainsKey(decision))
-                {
-                    foreach (int objectIdx in this.decisionObjectIndexes[decision])
-                        this.instances.Remove(objectIdx);
-
-                    decisionObjectIndexes.Remove(decision);                    
-                }                
             }
 
             this.totalWeightSum -= totalWeightToRemove;

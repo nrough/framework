@@ -16,7 +16,7 @@ namespace Infovision.Utils
             if (idx >= array.Length)
                 throw new ArgumentOutOfRangeException("idx");
 
-            T[] newArray = new T[array.Length];
+            T[] newArray = new T[array.Length - 1];
 
             if (idx > 0)
                 Array.Copy(array, 0, newArray, 0, idx);                            

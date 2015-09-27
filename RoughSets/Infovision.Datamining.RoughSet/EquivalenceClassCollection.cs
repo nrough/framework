@@ -50,9 +50,10 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
-        public EquivalenceClassCollection(int[] attributes)
+        public EquivalenceClassCollection(int[] attr)
         {
-            this.attributes = attributes;
+            this.attributes = new int[attr.Length];
+            Array.Copy(attr, this.attributes, attr.Length);
             this.InitPartitions();
         }
         

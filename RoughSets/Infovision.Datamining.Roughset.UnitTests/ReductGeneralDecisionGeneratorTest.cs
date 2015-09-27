@@ -17,9 +17,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public ReductGeneralDecisionGeneratorTest()
         {
             Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            //Console.WriteLine("class ReductGeneralDecisionGeneratorTest Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
         
         [Test]

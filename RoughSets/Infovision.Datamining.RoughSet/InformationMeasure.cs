@@ -70,18 +70,6 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            /*
-            int result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                if (e.NumberOfDecisions == 1)
-                {
-                    result += e.NumberOfObjects;
-                }
-            }
-            return reduct.ObjectSetInfo.NumberOfRecords != 0 ? (decimal)result / (decimal)reduct.ObjectSetInfo.NumberOfRecords : 0;
-            */
-
             decimal result = 0;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
                 if (e.NumberOfDecisions == 1)
@@ -112,31 +100,6 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            /*
-            decimal result = 0;
-            decimal maxDecisionProbability = -1;
-            decimal decProbability;
-            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
-
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                maxDecisionProbability = Decimal.MinValue;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decProbability = e.GetDecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
-
-                    if ( decProbability > maxDecisionProbability + tinyDouble)
-                    {
-                        maxDecisionProbability = decProbability;
-                    }
-                }
-
-                result += e.NumberOfObjects * maxDecisionProbability;
-            }
-
-            return result / reduct.ObjectSetInfo.NumberOfRecords;
-            */
-
             decimal result = 0;
             decimal maxDecisionProbability = Decimal.MinValue;
             decimal decProbability;
@@ -177,25 +140,6 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            /*
-            decimal result = 0;
-            decimal maxDecisionProbability = -1;
-            decimal decProbability;
-            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                maxDecisionProbability = Decimal.MinValue;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decProbability = e.GetDecisionProbability(decisionValue);
-                    if (decProbability > maxDecisionProbability + tinyDouble)
-                        maxDecisionProbability = decProbability;
-                }
-                result += e.NumberOfObjects * maxDecisionProbability;
-            }
-            return result / reduct.ObjectSetInfo.NumberOfRecords;
-            */
-
             decimal result = 0.0M;
             decimal maxDecisionProbability = Decimal.MinValue;
             decimal decProbability;
@@ -205,7 +149,7 @@ namespace Infovision.Datamining.Roughset
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     decProbability = e.GetDecisionProbability(decisionValue);
-                    if (decProbability > maxDecisionProbability)
+                    if (Decimal.Round(decProbability, 17) > Decimal.Round(maxDecisionProbability, 17))
                         maxDecisionProbability = decProbability;
                 }
                 result += e.NumberOfObjects * maxDecisionProbability;
@@ -233,46 +177,16 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            /*
-            decimal result = 0;
-            decimal tinydecimal = 0.0001 / reduct.ObjectSetInfo.NumberOfRecords;
+            decimal result = Decimal.Zero;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 decimal maxValue = Decimal.MinValue;
                 long maxDecision = -1;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decimal sum = 0;
+                    decimal sum = Decimal.Zero;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                    {
                         sum += reduct.Weights[objectIdx];
-                    }
-
-                    if (sum + tinydecimal > maxValue)
-                    {
-                        maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
-                } 
-                                                
-                result += maxValue;
-            }
-
-            return result;
-            */
-
-            decimal result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decimal sum = 0.0M;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                    {
-                        sum += reduct.Weights[objectIdx];
-                    }
 
                     if (sum > maxValue)
                     {

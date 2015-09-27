@@ -401,97 +401,65 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
                 this.DataStore, attributes, this.Epsilon, this.WeightGenerator.Weights);
             
-            //?
             foreach (EquivalenceClass eq in eqClasses)
-                if (eq.DecisionSet.Count > 1)
-                    eq.KeepMajorDecisions(this.Epsilon);
- 
-            for (int i = 0; i < attributes.Length; i++)
-                eqClasses = this.Reduce(eqClasses, i, this.Epsilon, this.DataStore);
+                eq.KeepMajorDecisions(this.Epsilon);
 
+            int len = attributes.Length;
+            for (int i = 0; i < len; i++)
+            {
+                EquivalenceClassCollection newEqClasses = 
+                    this.Reduce(eqClasses, i, this.Epsilon, this.DataStore);
+                
+                if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                {
+                    eqClasses = newEqClasses;
+                    len--;
+                    i--;
+                }
+            }
             return (ReductGeneralizedMajorityDecision)this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
 
-        private EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, decimal epsilon, DataStore dataStore)
+        private EquivalenceClassCollection Reduce(
+            EquivalenceClassCollection eqClasses, 
+            int attributeIdx, 
+            decimal epsilon, 
+            DataStore dataStore)
         {            
             EquivalenceClassCollection newEqClasses 
                 = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
 
             foreach (EquivalenceClass eq in eqClasses)
             {
-                AttributeValueVector values = eq.Instance.RemoveAt(attributeIdx);
-
-                EquivalenceClass tmpClass = new EquivalenceClass(values, dataStore, true);
-                
+                AttributeValueVector values = eq.Instance.RemoveAt(attributeIdx);                
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(values, out newEqClass))
                 {                    
-                    tmpClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
-                    
-                    foreach (long decision in tmpClass.DecisionSet)
-                    {
-                        tmpClass.AddDecision(decision, newEqClass.GetDecisionWeigth(decision) + eq.GetDecisionWeigth(decision));
-                    }
+                    newEqClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
+                    foreach (long decision in newEqClass.DecisionSet)
+                        newEqClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
                 }
                 else
                 {
-                    foreach (long decision in eq.DecisionSet)
-                    {
-                        tmpClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
-                    }
-                }
+                    newEqClass = new EquivalenceClass(values, dataStore, true);
+                    newEqClasses.Partitions[values] = newEqClass;
                     
-                newEqClasses.Partitions[values] = tmpClass;
+                    foreach (long decision in eq.DecisionSet)
+                        newEqClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
+                }
+
+                if (newEqClass.DecisionSet.Count == 0)
+                    return eqClasses;
             }
 
             foreach (EquivalenceClass eq in newEqClasses)
             {
                 eq.KeepMajorDecisions(epsilon);
                 if (eq.DecisionSet.Count == 0)
-                {
                     return eqClasses;
-                }
             }
 
             return newEqClasses;
-        }
-
-        private EquivalenceClassCollection Reduce2(EquivalenceClassCollection eqClasses, int attributeIdToReduce, decimal epsilon, DataStore dataStore)
-        {
-            int[] newAttr = new int[eqClasses.Attributes.Length - 1];
-            int j = 0;
-            for (int i = 0; i < eqClasses.Attributes.Length; i++)
-            {
-                if (eqClasses.Attributes[i] != attributeIdToReduce)
-                    newAttr[j++] = eqClasses.Attributes[j];
-            }
-
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(newAttr);            
-
-            foreach (EquivalenceClass eq in eqClasses)
-            {
-                AttributeValueVector values = eq.Instance.RemoveAttribute(attributeIdToReduce);
-
-                EquivalenceClass tmpClass = new EquivalenceClass(values, dataStore, true);
-                foreach (long decision in eq.DecisionSet)
-                    tmpClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
-
-                EquivalenceClass eqNew = null;
-                if (eqClassCollection.Partitions.TryGetValue(values, out eqNew))
-                    foreach (long decision in eqNew.DecisionSet)
-                        tmpClass.AddDecision(decision, eqNew.GetDecisionWeigth(decision));
-
-                eqClassCollection.Partitions[values] = tmpClass;
-            }
-
-            foreach (EquivalenceClass eq in eqClassCollection)
-            {
-                eq.KeepMajorDecisions2(epsilon);
-                if (eq.DecisionSet.Count == 0)
-                    return eqClasses;
-            }
-
-            return eqClassCollection;
         }  
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)

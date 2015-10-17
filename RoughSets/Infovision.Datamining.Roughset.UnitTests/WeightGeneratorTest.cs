@@ -330,7 +330,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);            
-            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.1m);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey1);
 
             PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(10);
@@ -344,7 +344,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args args2 = new Args();
             args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
             args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            args2.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, 0.1m);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
             args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey2);
             
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);

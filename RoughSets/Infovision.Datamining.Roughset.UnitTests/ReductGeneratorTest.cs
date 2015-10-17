@@ -70,7 +70,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-                args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)(i / 100.0));
+                args.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
                 IPermutationGenerator permGen = ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
 
@@ -184,10 +184,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, Ignore]
         public void ThreadPoolTest()
         {
-            PascalSet[] resource = new PascalSet[10000];
+            PascalSet<int>[] resource = new PascalSet<int>[10000];
             for (int i = 0; i < 10000; i++)
             {
-                resource[i] = new PascalSet(0, 1000);
+                resource[i] = new PascalSet<int>(0, 1000);
                 for (int j = 0; j < 1000; j++)
                 {
                     resource[i].AddElement(j);
@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private class WorkerTaskInfo
         {
-            public WorkerTaskInfo(int threadIndex, int numberOfThreads, PascalSet[] array, ManualResetEvent resetEvent)
+            public WorkerTaskInfo(int threadIndex, int numberOfThreads, PascalSet<int>[] array, ManualResetEvent resetEvent)
             {
                 this.ThreadIndex = threadIndex;
                 this.NumberOfThreads = numberOfThreads;
@@ -237,7 +237,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             public int ThreadIndex { get; set; }
             public int NumberOfThreads { get; set; }
-            public PascalSet[] Array { get; set; }
+            public PascalSet<int>[] Array { get; set; }
             public ManualResetEvent ResetEvent { get; set; }
         }
 

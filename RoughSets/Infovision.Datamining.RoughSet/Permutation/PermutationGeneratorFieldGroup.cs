@@ -53,18 +53,9 @@ namespace Infovision.Datamining.Roughset
 
             int[] randomGroups = new int[this.fieldGroups.Length];
             for(int i = 0; i<this.fieldGroups.Length; i++)
-            {
                 randomGroups[i] = i;
-            }
 
-            //create a permutation of groups
-            for (int i = randomGroups.Length - 1; i > 0; i--)
-            {
-                int k = RandomSingleton.Random.Next() % (i + 1);
-                int element = randomGroups[k];
-                randomGroups[k] = randomGroups[i];
-                randomGroups[i] = element;
-            }
+            randomGroups.Shuffle();
 
             int[] result = new int[size];
 

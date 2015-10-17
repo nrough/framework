@@ -218,7 +218,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the BiReduct, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a BiReduct, using a deep copy.</returns>
+        /// <returns>A new newInstance of a BiReduct, using a deep copy.</returns>
         public override object Clone()
         {
             return new Bireduct(this);

@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
 
             return (reduct.ObjectSetInfo.NumberOfRecords != 0) 
                 ? result / (decimal)reduct.ObjectSetInfo.NumberOfRecords 
-                : 0.0M;
+                : Decimal.Zero;
         }
 
         public override string Description()
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            decimal result = 0.0M;
+            decimal result = Decimal.Zero;
             decimal maxDecisionProbability = Decimal.MinValue;
             decimal decProbability;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
@@ -178,27 +178,21 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
+            decimal maxValue, sum;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
+                maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decimal sum = Decimal.Zero;
+                    sum = Decimal.Zero;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
                         sum += reduct.Weights[objectIdx];
-
                     if (sum > maxValue)
-                    {
                         maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
                 }
-
                 result += maxValue;
             }
-
-            return result;
+            return Decimal.Round(result, 17);
         }
 
         public override string Description()

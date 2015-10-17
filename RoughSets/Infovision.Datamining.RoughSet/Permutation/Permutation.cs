@@ -75,7 +75,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the Permutation, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a Permutation, using a deep copy.</returns>
+        /// <returns>A new newInstance of a Permutation, using a deep copy.</returns>
         public object Clone()
         {
             Permutation p = new Permutation(this.elements);

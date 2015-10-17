@@ -9,11 +9,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 {
     public class BenchmarkDataHelper
     {
-        public static Dictionary<string, BenchmarkData> GetDataFiles()
+        public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles(params string[] names)
         {
             Dictionary<string, BenchmarkData> dataFiles = new Dictionary<string, BenchmarkData>();
 
-            dataFiles.Add("golf", new BenchmarkData("golf", @"Data\playgolf.train", @"Data\playgolf.train"));
+            BenchmarkData benchmark = new BenchmarkData("golf", @"Data\playgolf.train", @"Data\playgolf.train");
+            
+            benchmark.AddFieldAlias(1, "O");
+            benchmark.AddFieldAlias(2, "T");
+            benchmark.AddFieldAlias(3, "H");
+            benchmark.AddFieldAlias(4, "W");
+
+            dataFiles.Add("golf", benchmark);
+
             dataFiles.Add("opt", new BenchmarkData("opt", @"Data\optdigits.trn", @"Data\optdigits.tst"));
             dataFiles.Add("dna", new BenchmarkData("dna", @"Data\dna_modified.trn", @"Data\dna_modified.tst"));
             dataFiles.Add("letter", new BenchmarkData("letter", @"Data\letter.trn", @"Data\letter.tst"));
@@ -24,7 +32,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataFiles.Add("spect", new BenchmarkData("spect", @"Data\SPECT.train", @"Data\SPECT.test"));
             dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.data", 5));
             dataFiles.Add("pen", new BenchmarkData("pen", @"Data\pendigits.trn", @"Data\pendigits.tst"));
-            
+
+            if (names != null && names.Length > 0)
+                return dataFiles.Where(item => names.Contains(item.Key));
+
             return dataFiles;
         }
     }

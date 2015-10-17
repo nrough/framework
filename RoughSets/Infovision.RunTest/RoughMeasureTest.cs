@@ -223,7 +223,7 @@ namespace Infovision.RunTest
                     new string[] { 
                         ReductGeneratorParamHelper.FactoryKey, 
                         ReductGeneratorParamHelper.DataStore, 
-                        ReductGeneratorParamHelper.ApproximationRatio }, 
+                        ReductGeneratorParamHelper.Epsilon }, 
                     new object[] { 
                         reductFactoryKey, 
                         localDataStoreTrain, 

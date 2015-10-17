@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
     {                        
         private decimal[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
-        private decimal dataSetQuality = 1.0M;        
+        private decimal dataSetQuality = Decimal.One;        
         private WeightGenerator weightGenerator;
         private Func<IReduct, decimal[], double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
@@ -228,16 +228,9 @@ namespace Infovision.Datamining.Roughset
         {            
             if (reductStore.IsSuperSet(reduct))            
                 return true;            
-                        
-            /*
-            decimal partitionQuality = this.GetPartitionQuality(reduct);
-            decimal tinydecimal = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0M - reduct.Epsilon) * this.DataSetQuality) - tinyDouble))             
-                return true;            
-            */
 
             decimal partitionQuality = this.GetPartitionQuality(reduct);
-            if (partitionQuality >= ((1.0M - reduct.Epsilon) * this.DataSetQuality))
+            if (Decimal.Round(partitionQuality, 17) >= Decimal.Round((Decimal.One - reduct.Epsilon) * this.DataSetQuality, 17))
                 return true;
 
             return false;
@@ -245,56 +238,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual decimal GetPartitionQuality(IReduct reduct)
         {
-            //TODO Consider changing to information measure
-            //return this.InformationMeasure.Calc(reduct);
-
-            /*
-            decimal tinydecimal = (0.0001 / (decimal)this.DataStore.NumberOfRecords);
-            decimal result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {                                               
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decimal sum = 0;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                    {
-                        sum += reduct.Weights[objectIdx];
-                    }
-                    if (sum > (maxValue + tinyDouble))
-                    {
-                        maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
-                }
-
-                result += maxValue;
-            }
-            */
-
-            decimal result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decimal sum = 0;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        sum += reduct.Weights[objectIdx];
-
-                    if (sum > maxValue)
-                    {
-                        maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
-                }
-
-                result += maxValue;
-            }
-
-            return result;
+            return new InformationMeasureWeights().Calc(reduct);
         }
 
         protected virtual void CalcDataSetQuality()

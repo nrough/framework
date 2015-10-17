@@ -65,15 +65,13 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             int[] keys = data.Keys.ToArray();
             for (int t = 0; t < 10; t++)
             {
-                int[] tmp = keys.Shuffle();
+                int[] tmp = keys.ShuffleDuplicate();
 
                 HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
                 sihc.MinimumNumberOfInstances = 5;
                 
                 for (int i = 0; i < tmp.Length; i++)
-                {
                     sihc.AddToCluster(tmp[i], data[tmp[i]]);
-                }
                 
                 DendrogramChart dc2 = new DendrogramChart(sihc, 640, 480);
                 Bitmap b2 = dc2.GetAsBitmap();

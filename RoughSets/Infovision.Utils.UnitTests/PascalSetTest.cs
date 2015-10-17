@@ -13,13 +13,13 @@ namespace Infovision.Utils.UnitTests
         [Test]
         public void GetCardinalityTest()
         {
-            PascalSet set1 = new PascalSet(0, 10, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            PascalSet set2 = new PascalSet(0, 10, new int[] { 5, 6, 7, 8, 9 });
+            PascalSet<int> set1 = new PascalSet<int>(0, 10, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+            PascalSet<int> set2 = new PascalSet<int>(0, 10, new int[] { 5, 6, 7, 8, 9 });
 
             Assert.AreEqual(10, set1.GetCardinality());
             Assert.AreEqual(5, set2.GetCardinality());
 
-            PascalSet set3 = set1.Union(set2);
+            PascalSet<int> set3 = set1.Union(set2);
             Assert.AreEqual(10, set3.GetCardinality());
 
             set3 = set1 - 9;

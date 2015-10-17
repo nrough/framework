@@ -75,7 +75,7 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void ExternalFieldEncoding()
         {
-            //First instance
+            //First newInstance
             //1 1 1 1 3 1 1 
 
             long internalValue = dataStoreTrain.GetObjectField(0, 1);
@@ -90,7 +90,7 @@ namespace Infovision.Data.UnitTests
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
 
-            //Last instance
+            //Last newInstance
             //3 3 2 3 4 2 1
             
             internalValue = dataStoreTrain.GetObjectField(dataStoreTrainInfo.NumberOfRecords - 1, 1);
@@ -105,7 +105,7 @@ namespace Infovision.Data.UnitTests
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
 
-            //60th instance
+            //60th newInstance
             //2 1 2 3 4 1 0 
 
             internalValue = dataStoreTrain.GetObjectField(60, 1);
@@ -237,7 +237,7 @@ namespace Infovision.Data.UnitTests
             for (int i = 0; i < orderBy.Length; i++)
             {
                 DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(data, orderBy[i]);
-                int[] sortedArray = data.OrderBy(orderBy[i], comparer);
+                int[] sortedArray = data.Sort(comparer);
 
                 for (int j = 1; j < data.NumberOfRecords; j++)
                 {

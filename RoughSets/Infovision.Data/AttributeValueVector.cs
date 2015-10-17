@@ -128,13 +128,15 @@ namespace Infovision.Data
 
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (long element in values)
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < attributes.Length; i++)
             {
-                stringBuilder.Append(element).Append(' ');
+                sb.AppendFormat("{0}={1}", attributes[i], values[i]);
+                if(i < attributes.Length - 1)
+                    sb.Append(" & ");
             }
 
-            return stringBuilder.ToString();
+            return sb.ToString();
         }
 
         public string ToString2(DataStoreInfo dataStoreInfo)

@@ -90,7 +90,7 @@ namespace Infovision.Datamining.Roughset
 
         public XDocument GetXDocument()
         {
-            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-newInstance");
             XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
 
             XDocument xmlDoc = new XDocument(
@@ -368,7 +368,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Returns an IEnumerator to enumerate through the reduct store.
         /// </summary>
-        /// <returns>An IEnumerator instance.</returns>
+        /// <returns>An IEnumerator newInstance.</returns>
         public override IEnumerator<IReduct> GetEnumerator()
         {
             return reducts.GetEnumerator();

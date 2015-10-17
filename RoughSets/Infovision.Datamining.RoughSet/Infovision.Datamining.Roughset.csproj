@@ -96,7 +96,7 @@
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
-    <Compile Include="PermutationGeneratorEnsemble.cs" />
+    <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="ReductEnsembleBoostingGenerator.cs" />
     <Compile Include="ReductEnsembleBoostingVarEpsGenerator.cs" />
     <Compile Include="ReductEnsembleBoostingVarEpsWithAttributeDiversity.cs" />
@@ -112,7 +112,7 @@
     <Compile Include="ReductGeneratorWeights.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="IReductStoreMeasure.cs" />
-    <Compile Include="PermutationGeneratorFieldGroup.cs" />
+    <Compile Include="Permutation\PermutationGeneratorFieldGroup.cs" />
     <Compile Include="ReductComparer.cs" />
     <Compile Include="Bireduct.cs" />
     <Compile Include="BireductStore.cs" />
@@ -121,14 +121,14 @@
     <Compile Include="IReductGenerator.cs" />
     <Compile Include="IReductMeasure.cs" />
     <Compile Include="IReductStore.cs" />
-    <Compile Include="Permutation.cs" />
-    <Compile Include="PermutationGenerator.cs" />
-    <Compile Include="PermutationGeneratorFieldObject.cs" />
-    <Compile Include="PermutationGeneratorFieldObjectRelative.cs" />
-    <Compile Include="PermutationGeneratorReverse.cs" />
-    <Compile Include="PermutationGeneratorTwin.cs" />
-    <Compile Include="PermutationGeneratorTwinReverse.cs" />
-    <Compile Include="PermutationCollection.cs" />
+    <Compile Include="Permutation\Permutation.cs" />
+    <Compile Include="Permutation\PermutationGenerator.cs" />
+    <Compile Include="Permutation\PermutationGeneratorFieldObject.cs" />
+    <Compile Include="Permutation\PermutationGeneratorFieldObjectRelative.cs" />
+    <Compile Include="Permutation\PermutationGeneratorReverse.cs" />
+    <Compile Include="Permutation\PermutationGeneratorTwin.cs" />
+    <Compile Include="Permutation\PermutationGeneratorTwinReverse.cs" />
+    <Compile Include="Permutation\PermutationCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IReduct.cs" />
     <Compile Include="Reduct.cs" />
@@ -149,8 +149,8 @@
     <Compile Include="InformationMeasure.cs" />
     <Compile Include="EquivalenceClassCollection.cs" />
     <Compile Include="RuleMeasure.cs" />
-    <Compile Include="WeightBoostingGenerator.cs" />
-    <Compile Include="WeightGenerator.cs" />
+    <Compile Include="Weight\WeightBoostingGenerator.cs" />
+    <Compile Include="Weight\WeightGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">

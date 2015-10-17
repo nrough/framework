@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset
     public class WeightGeneratorMajority : WeightGeneratorConstant
     {
         public WeightGeneratorMajority(DataStore dataStore)
-            : base(dataStore, 1.0M / dataStore.NumberOfRecords)
+            : base(dataStore, Decimal.One / dataStore.NumberOfRecords)
         {
         }        
     }
@@ -161,7 +161,7 @@ namespace Infovision.Datamining.Roughset
             base.Generate();          
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                this.Weights[i] = 1.0M
+                this.Weights[i] = Decimal.One
                     / (decimal)(this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
                         * this.DataStore.DataStoreInfo.NumberOfDecisionValues);                 
             }

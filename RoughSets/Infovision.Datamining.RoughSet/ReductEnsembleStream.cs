@@ -283,56 +283,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual decimal GetPartitionQuality(IReduct reduct)
         {
-            //TODO Consider changing to information measue
-            //return this.InformationMeasure.Calc(reduct);
-
-            /*
-            decimal tinydecimal = (0.0001 / (decimal)this.DataStore.NumberOfRecords);
-            decimal result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decimal sum = 0;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                    {
-                        sum += reduct.Weights[objectIdx];
-                    }
-                    if (sum > (maxValue + tinyDouble))
-                    {
-                        maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
-                }
-
-                result += maxValue;
-            }
-            */
-
-            decimal result = 0;
-            foreach (EquivalenceClass e in reduct.EquivalenceClasses)
-            {
-                decimal maxValue = Decimal.MinValue;
-                long maxDecision = -1;
-                foreach (long decisionValue in e.DecisionValues)
-                {
-                    decimal sum = 0;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        sum += reduct.Weights[objectIdx];
-                    
-                    if (sum > maxValue)
-                    {
-                        maxValue = sum;
-                        maxDecision = decisionValue;
-                    }
-                }
-
-                result += maxValue;
-            }
-
-            return result;
+            return new InformationMeasureWeights().Calc(reduct);
         }
 
         protected virtual void CalcDataSetQuality()

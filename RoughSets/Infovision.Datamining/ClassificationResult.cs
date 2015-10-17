@@ -138,9 +138,25 @@ namespace Infovision.Datamining
             }
         }
 
-        //TODO Implement Precision and Recall
-        //https://en.wikipedia.org/wiki/Accuracy_and_precision
         //http://en.wikipedia.org/wiki/Precision_and_recall
+        public double Recall
+        {
+            get
+            {
+                //TODO Implement Recall
+                return 0.0;
+            }
+        }
+
+        //https://en.wikipedia.org/wiki/Accuracy_and_precision
+        public double Precision
+        {
+            get
+            {
+                //TODO Implement Precision
+                return 0.0;
+            }
+        }
 
         public double Coverage
         {

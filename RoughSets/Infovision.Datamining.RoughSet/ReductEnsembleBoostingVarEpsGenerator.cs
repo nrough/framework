@@ -88,21 +88,10 @@ namespace Infovision.Datamining.Roughset
 		/// <returns></returns>
 		public virtual bool CheckIsReduct(IReduct reduct)
 		{            
-			/*
-			decimal tinydecimal = 0.0001 / this.DataStore.NumberOfRecords;
 			decimal mB = this.GetPartitionQuality(reduct);
 			decimal mA = this.GetDataSetQuality(reduct);
 
-			if( (mB - this.m0) >= ((1.0M - this.Epsilon) * (mA - m0) - tinyDouble))
-				return true;
-			
-			return false;
-			*/
-
-			decimal mB = this.GetPartitionQuality(reduct);
-			decimal mA = this.GetDataSetQuality(reduct);
-
-			if ((mB - this.m0) >= ((1.0M - this.Epsilon) * (mA - m0)))
+			if (Decimal.Round(mB - this.m0, 17) >= Decimal.Round((Decimal.One - this.Epsilon) * (mA - m0), 17))
 				return true;
 
 			return false;
@@ -135,7 +124,6 @@ namespace Infovision.Datamining.Roughset
 			base.SetDefaultParameters();
 						
 			this.Epsilon = (decimal) (0.5 * this.Threshold);
-
 		}
 
 		public override void InitFromArgs(Args args)
@@ -145,10 +133,10 @@ namespace Infovision.Datamining.Roughset
 			IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
 			this.M0 = this.GetPartitionQuality(emptyReduct);
 
-			if (!args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
+			if (!args.Exist(ReductGeneratorParamHelper.Epsilon))
 			{
 				int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
-				this.Epsilon = (1.0M / (decimal)K) * (decimal)this.Threshold;
+				this.Epsilon = (Decimal.One / (decimal)K) * (decimal)this.Threshold;
 			}
 		}
 	}

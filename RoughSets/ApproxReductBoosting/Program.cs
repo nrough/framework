@@ -56,7 +56,7 @@ namespace ApproxReductBoosting
 			if (trnDataOrig.DataStoreInfo.HasMissingData)
 			{				
 				trnDataReplaced = new ReplaceMissingValues().Compute(trnDataOrig);
-				Console.WriteLine("Missing values replacing...DONE");
+				Console.WriteLine("Missing newInstance replacing...DONE");
 			}            
 
 			int numOfAttr = trnDataOrig.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
@@ -121,14 +121,13 @@ namespace ApproxReductBoosting
 				else
 					parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnDataOrig);
 
-				parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 				parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
 				parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 				parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-				parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)epsilon / 100.0M);
+				parms.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon / 100.0M);
 
 				WeightGenerator weightGenerator;
 				switch (weightingSchema)

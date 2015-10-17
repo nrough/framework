@@ -384,11 +384,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 			for (int i = 0; i < continuesAttributes.Length; i++ )
 			{
-				double[] values = symbols.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
+				double[] newInstance = symbols.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
 				histograms[i] = new Histogram("hist" + continuesAttributes[i]);
 				histograms[i].AutoAdjustmentRule = BinAdjustmentRule.None;
 				histograms[i].InclusiveUpperBound = false;
-				histograms[i].Compute(values, numberOfBins: 3);
+				histograms[i].Compute(newInstance, numberOfBins: 3);
 
 				Console.WriteLine("{0} was discretized into {1} bins", continuesAttributes[i], histograms[i].Bins.NumberOfPartitions);
 				foreach (HistogramBin bin in histograms[i].Bins)

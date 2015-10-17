@@ -157,14 +157,13 @@ namespace ApproxReductBoostingCV
                         }
                     }                    
                     
-                    parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                     parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
                     parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-                    parms.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, (decimal)epsilon / 100.0M);
+                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon / 100.0M);
                     parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 

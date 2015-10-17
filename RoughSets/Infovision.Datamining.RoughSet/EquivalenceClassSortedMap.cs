@@ -24,13 +24,11 @@ namespace Infovision.Datamining.Roughset
         {
             this.InitPartitions();
             int[] orderByTmp = attributeSet.ToArray();
-            int[] orderBy = new int[orderByTmp.Length + 1];
-            Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
-            orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
+            int[] orderBy = orderByTmp.Union(new int[1] { dataStore.DataStoreInfo.DecisionFieldId }).ToArray();
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
-            int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
-            decimal weight = 1.0M / dataStore.NumberOfRecords;
+            int[] sortedObjIdx = dataStore.Sort(comparer);
+            decimal weight = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
@@ -60,7 +58,7 @@ namespace Infovision.Datamining.Roughset
             orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
-            int[] sortedObjIdx = dataStore.OrderBy(orderBy, comparer);
+            int[] sortedObjIdx = dataStore.Sort(comparer);
 
             comparer = new DataStoreOrderByComparer(dataStore, orderByTmp);
 
@@ -98,7 +96,9 @@ namespace Infovision.Datamining.Roughset
             orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
-            int[] sortedObjIdx = dataStore.OrderBy(orderBy, objectSet, comparer);
+            
+            //TODO code smell: Do I sort dataStore or objectSet?
+            int[] sortedObjIdx = dataStore.Sort(objectSet, comparer);
 
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)

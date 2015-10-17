@@ -28,20 +28,5 @@ namespace Infovision.Utils
             Array.Copy(tmp, result, n);
             return result;
         }
-
-        public static int[] Shuffle(this int[] array)
-        {
-            int[] tmp = new int[array.Length];
-            Array.Copy(array, tmp, array.Length);
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                int k = RandomSingleton.Random.Next(0, array.Length);
-                int t = tmp[i];
-                tmp[i] = tmp[k];
-                tmp[k] = t;
-            }
-            return tmp;
-        }
     }
 }

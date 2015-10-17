@@ -45,6 +45,8 @@ namespace Infovision.Datamining.Roughset
         {
             get { return this.attributes; }
         }
+
+        public decimal EqWeightSum { get; set; }
         
         #endregion
 
@@ -95,7 +97,12 @@ namespace Infovision.Datamining.Roughset
             return eqClassCollection;
         }
 
-        protected void AddRecordInitial(int[] attributes, long[] attributeValues, long decision, decimal weight, DataStore dataStore)
+        protected void AddRecordInitial(
+            int[] attributes, 
+            long[] attributeValues, 
+            long decision, 
+            decimal weight, 
+            DataStore dataStore)
         {            
             AttributeValueVector vector = new AttributeValueVector(attributes, attributeValues);
             EquivalenceClass eq = null;
@@ -104,6 +111,7 @@ namespace Infovision.Datamining.Roughset
                 eq = new EquivalenceClass(vector, dataStore, true);
                 this.partitions.Add(vector, eq);
             }
+
             eq.AddDecision(decision, weight);
         }              
 
@@ -217,13 +225,13 @@ namespace Infovision.Datamining.Roughset
                 return count;
             }
             return 0;
-        }        
+        }
 
         #region IEnumerable Members
         /// <summary>
         /// Returns an IEnumerator to enumerate through the partition map.
         /// </summary>
-        /// <returns>An IEnumerator instance.</returns>
+        /// <returns>An IEnumerator newInstance.</returns>
         public IEnumerator<EquivalenceClass> GetEnumerator()
         {
             return partitions.Values.GetEnumerator();
@@ -239,7 +247,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the EquivalenceClassCollection, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a EquivalenceClassCollection, using a deep copy.</returns>
+        /// <returns>A new newInstance of a EquivalenceClassCollection, using a deep copy.</returns>
         public virtual object Clone()
         {
             return new EquivalenceClassCollection(this);
@@ -251,7 +259,6 @@ namespace Infovision.Datamining.Roughset
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-
             foreach (KeyValuePair<AttributeValueVector, EquivalenceClass> kvp in this.partitions)
             {
                 stringBuilder.AppendLine(kvp.Value.ToString());
@@ -269,6 +276,11 @@ namespace Infovision.Datamining.Roughset
             foreach (KeyValuePair<AttributeValueVector, EquivalenceClass> kvp in this.partitions)
                 stringBuilder.AppendLine(kvp.Value.ToString2());
             return stringBuilder.ToString();
+        }
+
+        public string ToString3()
+        {
+            return this.Attributes.ToStr();
         }
 
         #endregion

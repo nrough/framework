@@ -7,7 +7,7 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 { 
     [Serializable]
-    public class Reduct : IReduct
+    public class Reduct : IReduct, IFormattable
     {
         #region Members
         
@@ -196,7 +196,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the Reduct, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a FieldSet, using a deep copy.</returns>
+        /// <returns>A new newInstance of a FieldSet, using a deep copy.</returns>
         public virtual object Clone()
         {
             return new Reduct(this);
@@ -247,7 +247,34 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return String.Format("[Id:{0}] {1} (eps:{2})", this.Id, this.attributeSet.Count > 1 ? this.attributeSet.ToString() : "empty", this.Epsilon);
+            return String.Format(
+                "[Id:{0}] {1} (eps:{2})", 
+                this.Id, 
+                this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty", 
+                this.Epsilon);
+        }
+
+        public virtual string ToString(string format, IFormatProvider fp)
+        {
+            if (format.Equals("ext"))
+            {
+                StringBuilder sb = new StringBuilder();
+                int[] fieldIds = this.attributeSet.ToArray();
+                for (int i = 0; i < this.attributeSet.Count; i++)
+                {
+                    if (i != 0)
+                        sb.Append(' ');
+                    sb.Append(this.DataStore.DataStoreInfo.GetFieldInfo(fieldIds[i]).Alias);
+                }
+
+                return String.Format(
+                    "[Id:{0}] {1} (eps:{2})",
+                    this.Id,
+                    this.attributeSet.Count > 0 ? sb.ToString() : "empty",
+                    this.Epsilon);
+            }
+            else
+                return this.ToString();
         }
 
         public override int GetHashCode()

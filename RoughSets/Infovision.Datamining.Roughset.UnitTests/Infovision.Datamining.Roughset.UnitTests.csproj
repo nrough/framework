@@ -108,6 +108,7 @@
     <Compile Include="ReductEnsembleGeneratorTest.cs" />
     <Compile Include="ReductFactoryTest.cs" />
     <Compile Include="ReductGeneralDecisionGeneratorTest.cs" />
+    <Compile Include="ReductGeneralizedMajorityDecisionApproximateTest.cs" />
     <Compile Include="ReductGeneralizedMajorityDecisionTest.cs" />
     <Compile Include="ReductGeneratorComparisonTest.cs" />
     <Compile Include="ReductGeneratorTest.cs" />

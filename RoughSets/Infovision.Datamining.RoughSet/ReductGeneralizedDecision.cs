@@ -16,13 +16,7 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         public ReductGeneralizedMajorityDecision(DataStore dataStore)
-            : base(dataStore, 0.0M)
-        {
-            this.Init();
-        }
-
-        public ReductGeneralizedMajorityDecision(DataStore dataStore, decimal epsilon)
-            : base(dataStore, epsilon)
+            : base(dataStore, Decimal.Zero)
         {
             this.Init();
         }
@@ -50,7 +44,7 @@ namespace Infovision.Datamining.Roughset
                 w Infovision.Datamining.Roughset.ReductGeneralizedMajorityDecision.Clone() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralizedMajorityDecision.cs:wiersz 105
                 w Infovision.Datamining.Roughset.ReductStore..ctor(ReductStore reductStore) w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 121
                 w Infovision.Datamining.Roughset.ReductStore.RemoveDuplicates() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductStore.cs:wiersz 157
-                w Infovision.Datamining.Roughset.ReductGeneralDecisionGenerator.Generate() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralDecisionGenerator.cs:wiersz 56
+                w Infovision.Datamining.Roughset.ReductGeneralizedDecisionGenerator.Generate() w f:\Projects\Infovision\Infovision.Datamining.RoughSet\ReductGeneralizedDecisionGenerator.cs:wiersz 56
                 w Infovision.Datamining.Roughset.UnitTests.ReductGeneralDecisionGeneratorTest.GenerateTest(Dictionary`2 args) w f:\Projects\Infovision\Infovision.Datamining.Roughset.UnitTests\ReductGeneralDecisionGeneratorTest.cs:wiersz 87
             */
 
@@ -73,9 +67,10 @@ namespace Infovision.Datamining.Roughset
 
         protected override void InitEquivalenceMap()
         {
-            if (isEqMapCreated)
-                throw new InvalidOperationException("EquicalenceClassMap can only be initialized once.");
-            this.EquivalenceClasses = new EquivalenceClassSortedMap(this.DataStore);
+            //if (isEqMapCreated)
+            //    throw new InvalidOperationException("EquicalenceClassMap can only be initialized once.");
+            //this.EquivalenceClasses = new EquivalenceClassSortedMap(this.DataStore);
+            this.EquivalenceClasses = new EquivalenceClassCollection(this.DataStore);
         }
 
         public override void BuildEquivalenceMap()
@@ -121,16 +116,16 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClassSortedMap newEqMap = new EquivalenceClassSortedMap(this.DataStore);
                 foreach (EquivalenceClass eq in this.EquivalenceClassCollection)
                 {                    
-                    AttributeValueVector instance = eq.Instance;
+                    AttributeValueVector newInstance = eq.Instance;
                     foreach (int removedAttribute in this.removedAttributes)
-                        instance = instance.RemoveAttribute(removedAttribute);
+                        newInstance = newInstance.RemoveAttribute(removedAttribute);
 
-                    EquivalenceClass existingEqClass = newEqMap.GetEquivalenceClass(instance);
+                    EquivalenceClass existingEqClass = newEqMap.GetEquivalenceClass(newInstance);
 
                     if (existingEqClass == null)
                     {
-                        existingEqClass = new EquivalenceClass(instance, this.DataStore);
-                        newEqMap.Partitions.Add(instance, existingEqClass);
+                        existingEqClass = new EquivalenceClass(newInstance, this.DataStore);
+                        newEqMap.Partitions.Add(newInstance, existingEqClass);
                     }
 
                     existingEqClass.Merge(eq);					
@@ -185,18 +180,18 @@ namespace Infovision.Datamining.Roughset
             FieldSet newFieldSet = (FieldSet)(this.Attributes - attributeId);
 
             //new temporary equivalence class map with decision set intersection  (data vector --> generalized decision)
-            Dictionary<AttributeValueVector, PascalSet> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet>();
+            Dictionary<AttributeValueVector, PascalSet<long>> generalDecisionMap = new Dictionary<AttributeValueVector, PascalSet<long>>();
             DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();
 
             foreach (EquivalenceClass eq in this.EquivalenceClasses)
             {
-                //instance of a record belonging to equivalence class
+                //newInstance of a record belonging to equivalence class
                 AttributeValueVector instance = eq.Instance.RemoveAttribute(attributeId);
                 foreach (int removedAttribute in this.removedAttributes)
                     instance = instance.RemoveAttribute(removedAttribute);
 
                 //add EQ class to map and calculate intersection of decisions
-                PascalSet existingGeneralDecisions = null;
+                PascalSet<long> existingGeneralDecisions = null;
 
                 if (generalDecisionMap.TryGetValue(instance, out existingGeneralDecisions))
                     existingGeneralDecisions = existingGeneralDecisions.Intersection(eq.DecisionSet);
@@ -216,7 +211,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the Reduct, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a FieldSet, using a deep copy.</returns>
+        /// <returns>A new newInstance of a FieldSet, using a deep copy.</returns>
         public override object Clone()
         {
             return new ReductGeneralizedMajorityDecision(this);
@@ -247,7 +242,7 @@ namespace Infovision.Datamining.Roughset
         #endregion
     }
 
-    public class ReductGeneralDecisionGenerator : ReductGenerator
+    public class ReductGeneralizedDecisionGenerator : ReductGenerator
     {
         private WeightGenerator weightGenerator;
 
@@ -304,29 +299,24 @@ namespace Infovision.Datamining.Roughset
 
         public ReductGeneralizedMajorityDecision CalculateReduct(int[] attributes)
         {
-            ReductGeneralizedMajorityDecision reduct = (ReductGeneralizedMajorityDecision)this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());
+            ReductGeneralizedMajorityDecision reduct 
+                = (ReductGeneralizedMajorityDecision)this.CreateReductObject(
+                    attributes, this.Epsilon, this.GetNextReductId().ToString());   
             reduct.Reduce(attributes, 0);
-
-            /*
-            foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
-                eq.RemoveObjectsWithMinorDecisions();
-
-            for (int i = attributes.Length - 1; i >= 0; i--)
-                reduct.TryRemoveAttribute(attributes[i]);
-            */
-
             return reduct;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
-            ReductGeneralizedMajorityDecision r = new ReductGeneralizedMajorityDecision(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
+            ReductGeneralizedMajorityDecision r 
+                = new ReductGeneralizedMajorityDecision(
+                    this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
             r.Id = id;
             return r;
         }
     }
 
-    public class ReductGeneralDecisionFactory : IReductFactory
+    public class ReductGeneralizedDecisionFactory : IReductFactory
     {
         public virtual string FactoryKey
         {
@@ -335,7 +325,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IReductGenerator GetReductGenerator(Args args)
         {
-            ReductGeneralDecisionGenerator rGen = new ReductGeneralDecisionGenerator();
+            ReductGeneralizedDecisionGenerator rGen = new ReductGeneralizedDecisionGenerator();
             rGen.InitFromArgs(args);
             return rGen;
         }
@@ -349,6 +339,7 @@ namespace Infovision.Datamining.Roughset
 
     public class ReductGeneralizedMajorityDecisionGenerator : ReductGenerator
     {
+        private decimal dataSetQuality = Decimal.One;
         private WeightGenerator weightGenerator;
 
         public WeightGenerator WeightGenerator
@@ -356,10 +347,7 @@ namespace Infovision.Datamining.Roughset
             get
             {
                 if (this.weightGenerator == null)
-                {
                     this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
-                }
-
                 return this.weightGenerator;
             }
 
@@ -369,13 +357,50 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
+        protected decimal DataSetQuality
+        {
+            get
+            {
+                if (!this.IsQualityCalculated)
+                {
+                    this.CalcDataSetQuality();
+                    this.IsQualityCalculated = true;
+                }
+
+                return this.dataSetQuality;
+            }
+
+            set
+            {
+                this.dataSetQuality = value;
+                this.IsQualityCalculated = true;
+            }
+        }
+
+        protected bool IsQualityCalculated
+        {
+            get;
+            set;
+        }
+
         public override void InitFromArgs(Args args)
         {
             base.InitFromArgs(args);
 
             if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
-        }               
+        }
+
+        protected virtual void CalcDataSetQuality()
+        {
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, "");
+            this.DataSetQuality = this.GetPartitionQuality(reduct);
+        }
+
+        protected virtual decimal GetPartitionQuality(IReduct reduct)
+        {
+            return new InformationMeasureWeights().Calc(reduct);
+        }
 
         public override void Generate()
         {
@@ -393,23 +418,30 @@ namespace Infovision.Datamining.Roughset
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
 
-        public ReductGeneralizedMajorityDecision CalculateReduct(int[] attributes)
+        protected virtual void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
+        {
+            foreach (EquivalenceClass eq in eqClasses)
+                eq.KeepMajorDecisions(epsilon);
+        }
+
+        public virtual ReductGeneralizedMajorityDecision CalculateReduct(int[] attributes)
         {
             if (attributes.Length < 1)
                 throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");
             
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
                 this.DataStore, attributes, this.Epsilon, this.WeightGenerator.Weights);
-            
-            foreach (EquivalenceClass eq in eqClasses)
-                eq.KeepMajorDecisions(this.Epsilon);
+
+            eqClasses.EqWeightSum = this.DataSetQuality;
+
+            this.KeepMajorDecisions(eqClasses, this.Epsilon);            
 
             int len = attributes.Length;
             for (int i = 0; i < len; i++)
             {
-                EquivalenceClassCollection newEqClasses = 
-                    this.Reduce(eqClasses, i, this.Epsilon, this.DataStore);
+                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i);
                 
+                //reduction was made
                 if (!Object.ReferenceEquals(newEqClasses, eqClasses))
                 {
                     eqClasses = newEqClasses;
@@ -417,50 +449,41 @@ namespace Infovision.Datamining.Roughset
                     i--;
                 }
             }
-            return (ReductGeneralizedMajorityDecision)this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
+            return (ReductGeneralizedMajorityDecision)this.CreateReductObject(
+                eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
 
-        private EquivalenceClassCollection Reduce(
-            EquivalenceClassCollection eqClasses, 
-            int attributeIdx, 
-            decimal epsilon, 
-            DataStore dataStore)
-        {            
+        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx)
+        {
             EquivalenceClassCollection newEqClasses 
                 = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
 
             foreach (EquivalenceClass eq in eqClasses)
             {
-                AttributeValueVector values = eq.Instance.RemoveAt(attributeIdx);                
+                AttributeValueVector newInstance = eq.Instance.RemoveAt(attributeIdx);
+                 
                 EquivalenceClass newEqClass = null;
-                if (newEqClasses.Partitions.TryGetValue(values, out newEqClass))
+                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {                    
                     newEqClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
-                    foreach (long decision in newEqClass.DecisionSet)
-                        newEqClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
+
+                    //stop criteria
+                    if (newEqClass.DecisionSet.Count == 0)
+                        return eqClasses;
+
+                    newEqClass.WeightSum += eq.WeightSum;
                 }
                 else
                 {
-                    newEqClass = new EquivalenceClass(values, dataStore, true);
-                    newEqClasses.Partitions[values] = newEqClass;
-                    
-                    foreach (long decision in eq.DecisionSet)
-                        newEqClass.AddDecision(decision, eq.GetDecisionWeigth(decision));
+                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, true);
+                    newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
+                    newEqClass.WeightSum += eq.WeightSum;
+                    newEqClasses.Partitions[newInstance] = newEqClass;
                 }
-
-                if (newEqClass.DecisionSet.Count == 0)
-                    return eqClasses;
-            }
-
-            foreach (EquivalenceClass eq in newEqClasses)
-            {
-                eq.KeepMajorDecisions(epsilon);
-                if (eq.DecisionSet.Count == 0)
-                    return eqClasses;
             }
 
             return newEqClasses;
-        }  
+        }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
@@ -483,6 +506,79 @@ namespace Infovision.Datamining.Roughset
         public virtual IReductGenerator GetReductGenerator(Args args)
         {
             ReductGeneralizedMajorityDecisionGenerator rGen = new ReductGeneralizedMajorityDecisionGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+
+        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            return new PermutationGenerator(dataStore);
+        }
+    }
+
+    public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
+    {
+        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx)
+        {
+            EquivalenceClassCollection newEqClasses
+                = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
+            newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
+   
+            EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
+            eqArray.Shuffle();
+            foreach(EquivalenceClass eq in eqArray)            
+            {
+                AttributeValueVector newInstance = eq.Instance.RemoveAt(attributeIdx);
+
+                EquivalenceClass newEqClass = null;
+                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
+                {
+                    PascalSet<long> newDecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
+
+                    if (newDecisionSet.Count > 0)
+                    {
+                        newEqClass.DecisionSet = newDecisionSet;
+                        newEqClass.WeightSum += eq.WeightSum;
+                    }
+                    else
+                    {
+                        //TODO Add exception rule
+                        newEqClasses.EqWeightSum -= eq.WeightSum;
+                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
+                            return eqClasses;
+                    }
+
+                }
+                else
+                {
+                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, true);
+                    newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
+                    newEqClass.WeightSum += eq.WeightSum;
+
+                    newEqClasses.Partitions[newInstance] = newEqClass;
+                }
+            }
+
+            return newEqClasses;
+        }
+
+        protected override void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
+        {
+            base.KeepMajorDecisions(eqClasses, Decimal.Zero);
+        }
+    }
+
+    public class ReductGeneralizedMajorityDecisionApproximateFactory : IReductFactory
+    {
+        public virtual string FactoryKey
+        {
+            get { return ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate; }
+        }
+
+        public virtual IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductGeneralizedMajorityDecisionApproximateGenerator rGen = new ReductGeneralizedMajorityDecisionApproximateGenerator();
             rGen.InitFromArgs(args);
             return rGen;
         }

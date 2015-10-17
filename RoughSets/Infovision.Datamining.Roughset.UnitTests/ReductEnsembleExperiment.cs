@@ -64,9 +64,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductGenerator.Generate();
 
             } //test No
-        } 
+        }
 
-        public Dictionary<string, BenchmarkData> GetDataFiles()
+        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles();
         }

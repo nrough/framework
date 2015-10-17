@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
         }
 
-        public Dictionary<string, BenchmarkData> GetDataFiles()
+        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles();
         }
@@ -37,7 +37,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             Args parms = new Args();
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.AddParameter(ReductGeneratorParamHelper.NumberOfPermutations, 1);
             
@@ -47,13 +46,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.NotNull(reductGenerator.GetReductStoreCollection());
             Assert.NotNull(reductGenerator.ReductPool);
             Assert.AreEqual(1, reductGenerator.ReductPool.Count);
-            
-            //string fn = String.Format("{0}_ApproximateReductWeightsTest_GenerateZeroEpsilonTest.txt", fileName.Key);
-            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(fn))
-            //{
-            //    foreach (IReduct reduct in reductGenerator.ReductPool)
-            //        file.WriteLine(String.Format("{0} {1}", reduct, reduct.Attributes.Count));
-            //}
         }
         
         [Test]
@@ -260,9 +252,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
 
-            for (int epsilon = 0; epsilon < 100; epsilon+= 11)
+            for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon+= 0.11m)
             {
-                reductGenerator.Epsilon = epsilon / 100.0M;
+                reductGenerator.Epsilon = epsilon;
 
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.ReductPool;
@@ -284,7 +276,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
                         EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
                         Assert.AreEqual(partitionEqClass.GetNumberOfObjectsWithDecision(partitionEqClass.MajorDecision),
-                                        reductEqClass.GetNumberOfObjectsWithDecision(reductEqClass.MajorDecision), "Number of objects with major decision");
+                            reductEqClass.GetNumberOfObjectsWithDecision(
+                                reductEqClass.MajorDecision), 
+                            "Number of objects with major decision");
 
                         foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {

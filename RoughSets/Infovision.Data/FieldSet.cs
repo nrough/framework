@@ -5,7 +5,7 @@ using Infovision.Utils;
 namespace Infovision.Data
 {
     [Serializable]
-    public class FieldSet : PascalSet
+    public class FieldSet : PascalSet<int>
     {        
 
         #region Properties
@@ -72,16 +72,6 @@ namespace Infovision.Data
         
         #region System.Object Methods
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -91,7 +81,7 @@ namespace Infovision.Data
             if (attr == null)
                 return false;
 
-            return base.Equals((PascalSet) obj);
+            return base.Equals((PascalSet<int>) obj);
         }
         #endregion
 

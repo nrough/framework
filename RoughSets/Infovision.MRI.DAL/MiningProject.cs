@@ -212,7 +212,7 @@ namespace Infovision.MRI.DAL
 
         public XDocument GetXDocument()
         {
-            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-newInstance");
             XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
             //XNamespace ns = XNamespace.Get("http://schema.infovision.pl/MRI");
             

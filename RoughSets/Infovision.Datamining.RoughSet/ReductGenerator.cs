@@ -60,10 +60,10 @@ namespace Infovision.Datamining.Roughset
             get { return epsilon; }
             set
             {
-                if (value < 0.0M)
-                    epsilon = 0.0M;
-                else if (value > 1.0M)
-                    epsilon = 1.0M;                    
+                if (value < Decimal.Zero)
+                    epsilon = Decimal.Zero;
+                else if (value > Decimal.One)
+                    epsilon = Decimal.One;                    
                 else
                     epsilon = value;
             }
@@ -190,8 +190,8 @@ namespace Infovision.Datamining.Roughset
             if (args.Exist("USECACHE"))
                 this.useCache = true;
 
-            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
-                this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio);
+            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
+                this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
 
             //TODO FieldGroups
         }

@@ -12,9 +12,9 @@ using NUnit.Framework;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    public class ReductGeneralDecisionGeneratorTest
+    public class ReductGeneralizedDecisionGeneratorTest
     {
-        public ReductGeneralDecisionGeneratorTest()
+        public ReductGeneralizedDecisionGeneratorTest()
         {
             Random randSeed = new Random();
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
 
-            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            ReductGeneralizedDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedDecisionGenerator;
 
             foreach (Permutation permutation in permList)
             {
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }            
         }
 
-        public Dictionary<string, BenchmarkData> GetDataFiles()
+        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles();
         }
@@ -86,7 +86,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Dictionary<int, List<int>> results = new Dictionary<int, List<int>>();
 
-            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            ReductGeneralizedDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedDecisionGenerator;
 
             foreach (Permutation permutation in permList)
             {
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);                                                                       
 
-            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            ReductGeneralizedDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedDecisionGenerator;
             reductGenerator.Generate();
                         
             Args parms2 = new Args();
@@ -208,7 +208,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
-            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            ReductGeneralizedDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedDecisionGenerator;
             reductGenerator.Generate();
 
             Args parms2 = new Args();
@@ -263,7 +263,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
-            ReductGeneralDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralDecisionGenerator;
+            ReductGeneralizedDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedDecisionGenerator;
             reductGenerator.Generate();
 
             Assert.True(true);

@@ -62,7 +62,7 @@ namespace Infovision.Data
 
         #region Methods
 
-        public int[] OrderBy(int[] orderBy, IComparer<int> comparer)
+        public int[] Sort(IComparer<int> comparer)
         {
             int[] sortedArray = new int[this.NumberOfRecords];
             for (int i = 0; i < sortedArray.Length; i++)            
@@ -72,7 +72,7 @@ namespace Infovision.Data
             return sortedArray;
         }
 
-        public int[] OrderBy(int[] orderBy, ObjectSet objectSet, IComparer<int> comparer)
+        public int[] Sort(ObjectSet objectSet, IComparer<int> comparer)
         {
             int[] objects = objectSet.ToArray();
             int[] sortedArray = new int[objects.Length];
@@ -314,7 +314,7 @@ namespace Infovision.Data
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
-                //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                //sb.AppendFormat("{0}: ", objectIndex + 1);
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
@@ -338,7 +338,7 @@ namespace Infovision.Data
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex);
-                //stringBuilder.AppendFormat("{0}: ", objectIndex + 1);
+                //sb.AppendFormat("{0}: ", objectIndex + 1);
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {

@@ -99,8 +99,8 @@ namespace Infovision.Datamining.Roughset
         {
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
 
-            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
-                return new PermutationGeneratorFieldObject(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio));
+            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
+                return new PermutationGeneratorFieldObject(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
 
             return new PermutationGeneratorFieldObject(dataStore);
         }
@@ -146,8 +146,8 @@ namespace Infovision.Datamining.Roughset
         {
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
 
-            if (args.Exist(ReductGeneratorParamHelper.ApproximationRatio))
-                return new PermutationGeneratorFieldObjectRelative(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.ApproximationRatio));
+            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
 
             return new PermutationGeneratorFieldObjectRelative(dataStore);
         }

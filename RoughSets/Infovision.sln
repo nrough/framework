@@ -142,6 +142,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoostingCV", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Statistics", "Infovision.Statistics\Infovision.Statistics.csproj", "{D26B9D87-E914-44BE-9381-73460214B7E4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiscUtil", "MiscUtil", "{56A080A0-CDFF-4888-AC1E-B40F0438929D}"
+	ProjectSection(SolutionItems) = preProject
+		external\MiscUtil\MiscUtil.dll = external\MiscUtil\MiscUtil.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 24
@@ -424,7 +429,6 @@ Global
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|x64.ActiveCfg = Debug|x64
 		{3E09373E-33C7-4119-9FC9-068A141668E1}.Debug|x64.Build.0 = Debug|x64
@@ -439,7 +443,6 @@ Global
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|x64.ActiveCfg = Debug|x64
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Debug|x64.Build.0 = Debug|x64
@@ -453,7 +456,6 @@ Global
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}.Release|x86.ActiveCfg = Release|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|x64.ActiveCfg = Debug|x64
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -465,7 +467,6 @@ Global
 		{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|x64.ActiveCfg = Debug|x64
 		{CE1A029C-63C1-4B26-BAD9-C62D64DC089E}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -626,5 +627,6 @@ Global
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{9C213D37-3249-453F-BA30-460255EA955D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{9FE417F8-022C-40E7-9574-BA7014339B6D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{56A080A0-CDFF-4888-AC1E-B40F0438929D} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 	EndGlobalSection
 EndGlobal

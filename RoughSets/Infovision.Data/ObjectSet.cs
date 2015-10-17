@@ -5,7 +5,7 @@ using Infovision.Utils;
 
 namespace Infovision.Data
 {
-    public class ObjectSet : PascalSet, IObjectSetInfo
+    public class ObjectSet : PascalSet<int>, IObjectSetInfo
     {
         DataStore dataStore = null;
         Dictionary<long, int> decisionCount = new Dictionary<long, int>();
@@ -152,7 +152,7 @@ namespace Infovision.Data
             if (o == null)
                 return false;
 
-            return base.Equals((PascalSet)obj);
+            return base.Equals((PascalSet<int>)obj);
         }
         #endregion
 

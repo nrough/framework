@@ -119,7 +119,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         /// <summary>
-        /// Converts the combination of <c>RuleVoteConseqentRating</c> and <c>RuleVoteAntecedentRating</c> enum value to <c>VoteType</c> enum values
+        /// Converts the combination of <c>RuleVoteConseqentRating</c> and <c>RuleVoteAntecedentRating</c> enum value to <c>VoteType</c> enum newInstance
         /// </summary>
         /// <param name="consequentRating"></param>
         /// <param name="antecedentRating"></param>

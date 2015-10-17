@@ -15,8 +15,11 @@ namespace Infovision.Datamining.Roughset
         public ReductWeights(DataStore dataStore, int[] fieldIds, decimal[] objectWeights, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
-            this.Weights = new decimal[objectWeights.Length];
-            Array.Copy(objectWeights, this.Weights, objectWeights.Length);
+            if (objectWeights != null)
+            {
+                this.Weights = new decimal[objectWeights.Length];
+                Array.Copy(objectWeights, this.Weights, objectWeights.Length);
+            }
         }
 
         public ReductWeights(DataStore dataStore, int[] fieldIds, decimal epsilon)
@@ -40,7 +43,7 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         /// Clones the Reduct, performing a deep copy.
         /// </summary>
-        /// <returns>A new instance of a FieldSet, using a deep copy.</returns>
+        /// <returns>A new newInstance of a FieldSet, using a deep copy.</returns>
         public override object Clone()
         {
             return new ReductWeights(this);
@@ -65,14 +68,17 @@ namespace Infovision.Datamining.Roughset
                 if (reduct.Weights[i] != this.Weights[i])
                     return false;
 
-            return true;            
+            return true;
         }
 
         public override int GetHashCode()
         {
-            //TODO w should also be checked what is optimal way of calculating hash, and not scanning the whole array of w
-
-            return HashHelper.GetHashCode(HashHelper.GetHashCode(this.Attributes.Data), HashHelper.GetHashCode(this.Weights));
+            return HashHelper.GetHashCode(
+                HashHelper.GetHashCode(this.Attributes.Data),
+                HashHelper.GetHashCode(
+                    this.Weights[0], 
+                    this.Weights[(int)(this.Weights.Length - 1) / 2], 
+                    this.Weights[this.Weights.Length - 1]));
         }
 
         #endregion

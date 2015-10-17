@@ -168,7 +168,7 @@ namespace Infovision.Datamining.Roughset
                                         null);
 
                 if (reductFactory == null)
-                    throw new InvalidOperationException("Null factory instance. Unable to create necessary reduct factory class.");
+                    throw new InvalidOperationException("Null factory newInstance. Unable to create necessary reduct factory class.");
 
                 IReductFactory iReductFactory = (IReductFactory) reductFactory;
                 return iReductFactory;
@@ -214,7 +214,7 @@ namespace Infovision.Datamining.Roughset
                                         null);
 
                 if (reductMeasure == null)
-                    throw new InvalidOperationException("Null reduct measure instance. Unable to create necessary reduct measure class.");
+                    throw new InvalidOperationException("Null reduct measure newInstance. Unable to create necessary reduct measure class.");
 
                 IReductMeasure iReductMeasure = (IReductMeasure)reductMeasure;
                 return iReductMeasure;

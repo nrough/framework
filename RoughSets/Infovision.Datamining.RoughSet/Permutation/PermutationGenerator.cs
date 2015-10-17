@@ -54,15 +54,7 @@ namespace Infovision.Datamining.Roughset
         {
             int[] localElements = new int[this.elements.Length];
             Buffer.BlockCopy(this.elements, 0, localElements, 0, this.elements.Length * sizeof(int));
-
-            for (int i = elements.Length - 1; i > 0; i--)
-            {
-                int k = RandomSingleton.Random.Next() % (i + 1);
-                int element = localElements[k];
-                localElements[k] = localElements[i];
-                localElements[i] = element;
-            }
-
+            localElements.Shuffle();
             Permutation permutation = new Permutation(localElements);
             return permutation;
         }

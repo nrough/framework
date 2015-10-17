@@ -281,7 +281,7 @@ namespace Infovision.Datamining.Roughset
             /// <summary>
             /// Returns an IEnumerator to enumerate through the reduct rule descriptor.
             /// </summary>
-            /// <returns>An IEnumerator instance.</returns>
+            /// <returns>An IEnumerator newInstance.</returns>
             public IEnumerator<DecisionRuleDescriptor> GetEnumerator()
             {
                 return reductDescriptorMap.Values.GetEnumerator();
@@ -344,7 +344,7 @@ namespace Infovision.Datamining.Roughset
         {
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, epsilon);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             args.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);            
@@ -363,7 +363,7 @@ namespace Infovision.Datamining.Roughset
         {
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.ApproximationRatio, epsilon);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             //args.AddParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
@@ -380,7 +380,30 @@ namespace Infovision.Datamining.Roughset
             localReductStoreCollection.AddStore(reductStore);
 
             this.reductStoreCollection = localReductStoreCollection;
-        }        
+        }
+
+        public void Classify(DataStore dataStore, IReduct reduct)
+        {
+            ReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
+            ReductStore localReductStore = new ReductStore();
+            localReductStore.AddReduct(reduct);
+            localReductStoreCollection.AddStore(localReductStore);
+
+            this.ReductStore = localReductStore;
+            this.ReductStoreCollection = localReductStoreCollection;
+            
+            this.Classify(dataStore);
+        }
+
+        public void Classify(DataStore dataStore, ReductStoreCollection reductStoreCollection)
+        {
+            this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
+            foreach (int objectIndex in dataStore.GetObjectIndexes())
+            {
+                DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
+                this.objectReductDescriptorMap.Add(record.ObjectId, this.CalcReductDescriptiors(record, reductStoreCollection));
+            }
+        }
 
         public IReductStoreCollection Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStoreCollection reductStoreCollection)
         {
@@ -389,7 +412,7 @@ namespace Infovision.Datamining.Roughset
 
             if (reductStoreCollection != null)
             {
-                if (String.IsNullOrEmpty(reductMeasureKey) == false)
+                if (!String.IsNullOrEmpty(reductMeasureKey))
                 {
                     foreach (IReductStore rs in reductStoreCollection)
                     {

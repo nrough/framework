@@ -395,7 +395,8 @@ namespace Infovision.Datamining.Roughset
             this.Classify(dataStore);
         }
 
-        public void Classify(DataStore dataStore, ReductStoreCollection reductStoreCollection)
+        //TODO 
+        public void Classify(DataStore dataStore, IReductStoreCollection reductStoreCollection, IReductStoreCollection exceptionRules = null)
         {
             this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
@@ -408,6 +409,7 @@ namespace Infovision.Datamining.Roughset
         public IReductStoreCollection Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStoreCollection reductStoreCollection)
         {
             IReductStore localReductStore;
+            //TODO Code smell!
             IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
 
             if (reductStoreCollection != null)
@@ -429,8 +431,7 @@ namespace Infovision.Datamining.Roughset
                     localReductStoreCollection = reductStoreCollection;
                 }
             }
-                        
-            //this.objectReductDescriptorMap = new Dictionary<long, ReductRuleDescriptor>(dataStore.NumberOfRecords);
+                                    
             this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {

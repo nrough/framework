@@ -9,6 +9,34 @@ namespace Infovision.Statistics
     public static class Tools
     {
         /// <summary>
+        /// Finds minimum value
+        /// </summary>
+        /// <param name="sample"></param>
+        /// <returns></returns>
+        public static double Min(double[] sample)
+        {
+            double min = Double.MaxValue;
+            for (int i = 0; i < sample.Length; i++)
+                if (min > sample[i])
+                    min = sample[i];
+            return min;
+        }
+
+        /// <summary>
+        /// Finds minimum value
+        /// </summary>
+        /// <param name="sample"></param>
+        /// <returns></returns>
+        public static double Max(double[] sample)
+        {
+            double max = Double.MinValue;
+            for (int i = 0; i < sample.Length; i++)
+                if (max < sample[i])
+                    max = sample[i];
+            return max;
+        }
+
+        /// <summary>
         /// Calculated a mean
         /// </summary>
         /// <param name="sample"></param>

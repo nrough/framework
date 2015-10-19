@@ -7,12 +7,22 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using Common.Logging;
+using Common.Logging.Configuration;
+using Infovision.Statistics;
+using Common.Logging.NLog;
+using NLog;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductGeneralizedMajorityDecisionApproximateTest
     {
+        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
+        {
+            return BenchmarkDataHelper.GetDataFiles(new string[] { });
+        }
+
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
@@ -23,7 +33,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
             
-            Console.WriteLine(data.Name);
+            log.InfoFormat(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 100;
@@ -39,20 +49,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(Decimal.Round(dataQuality, 17), Decimal.Round(dataQuality_2, 17));
 
-            for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
-            //for (decimal eps = 0.15m; eps <= Decimal.One; eps += 0.01m)
+            for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)            
             {
                 long elapsed_sum_1 = 0;
                 long elapsed_sum_2 = 0;
+                
                 int len_sum_1 = 0;
                 int len_sum_2 = 0;
+                
                 decimal avg_quality_1 = Decimal.Zero;
-                decimal avg_quality_2 = Decimal.Zero;
-                decimal avg_accuracy_1 = Decimal.Zero;
-                decimal avg_coverage_1 = Decimal.Zero;
-                decimal avg_accuracy_2 = Decimal.Zero;
-                decimal avg_coverage_2 = Decimal.Zero;
+                decimal avg_quality_2 = Decimal.Zero;                                          
+                
+                double[] accuracyResults_1 = new double[permList.Count];
+                double[] accuracyResults_2 = new double[permList.Count];
 
+
+                int i = 0;
                 foreach (Permutation permutation in permList)
                 {
                     int[] attributes = permutation.ToArray();
@@ -79,16 +91,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         VoteType.WeightConfidence, 
                         reduct_1.Weights);
 
-                    avg_accuracy_1 += (decimal)result_1.Accuracy;
-                    avg_coverage_1 += (decimal)result_1.Coverage;
+                    accuracyResults_1[i] = result_1.Accuracy;                    
                     
-                    Console.WriteLine("A: {0} |A|={3} M(B)={1} T={2}ms Acc={4} Cov={5}",
+                    log.InfoFormat("|A|{0}|{3}|{1}|{2}|{4}|",
                         reduct_1.ToString(),
                         reductQuality_1,
                         watch_1.ElapsedMilliseconds,
                         reduct_1.Attributes.Count,
-                        result_1.Accuracy,
-                        result_1.Coverage);
+                        result_1.Accuracy);
 
                     var watch_2 = Stopwatch.StartNew();
                     IReduct reduct_2 = CalculateApproximateReductFromSubset(data, eps, attributes);
@@ -110,47 +120,105 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         VoteType.WeightConfidence,
                         reduct_2.Weights);
 
-                    avg_accuracy_2 += (decimal)result_2.Accuracy;
-                    avg_coverage_2 += (decimal)result_2.Coverage;
+                    accuracyResults_2[i] = result_2.Accuracy;                    
 
-                    Console.WriteLine("B: {0} |A|={3} M(B)={1} T={2}ms Acc={4} Cov={5} {6}",
+                    log.InfoFormat("|B|{0}|{3}|{1}|{2}|{4}|",
                         reduct_2.ToString(),
                         reductQuality_2,
                         watch_2.ElapsedMilliseconds,
                         reduct_2.Attributes.Count,
-                        result_2.Accuracy,
-                        result_2.Coverage,
-                    reductQuality_1 < reductQuality_2 ? "*" : String.Empty);
+                        result_2.Accuracy);
+
+                    i++;
                 }
 
-                Console.WriteLine("==========================================");
-                Console.WriteLine("Average reduct lenght of method A: {0}", (double)len_sum_1 / (double)permList.Count);
-                Console.WriteLine("Average reduct lenght of method B: {0}", (double)len_sum_2 / (double)permList.Count);
-                Console.WriteLine("Average computation time method A: {0}", (double)elapsed_sum_1 / (double)permList.Count);
-                Console.WriteLine("Average computation time method B: {0}", (double)elapsed_sum_2 / (double)permList.Count);
-                Console.WriteLine("Average reduct quality of method A: {0}", avg_quality_1 / (decimal)permList.Count);
-                Console.WriteLine("Average reduct quality of method B: {0}", avg_quality_2 / (decimal)permList.Count);
-                Console.WriteLine("Average accuracy of method A: {0}", avg_accuracy_1 / (decimal)permList.Count);
-                Console.WriteLine("Average accuracy of method B: {0}", avg_accuracy_2 / (decimal)permList.Count);
-                Console.WriteLine("Average coverage of method A: {0}", avg_coverage_1 / (decimal)permList.Count);
-                Console.WriteLine("Average coverage of method B: {0}", avg_coverage_2 / (decimal)permList.Count);
-                Console.WriteLine("==========================================");
+                log.InfoFormat(Environment.NewLine);
+                
+                log.InfoFormat("==========================================");
+                log.InfoFormat("Average reduct lenght of method A: {0}", (double)len_sum_1 / (double)permList.Count);
+                log.InfoFormat("Average reduct lenght of method B: {0}", (double)len_sum_2 / (double)permList.Count);
+                log.InfoFormat("Average computation time method A: {0}", (double)elapsed_sum_1 / (double)permList.Count);
+                log.InfoFormat("Average computation time method B: {0}", (double)elapsed_sum_2 / (double)permList.Count);
+                log.InfoFormat("Average reduct quality of method A: {0}", avg_quality_1 / (decimal)permList.Count);
+                log.InfoFormat("Average reduct quality of method B: {0}", avg_quality_2 / (decimal)permList.Count);                
+                                                             
+                log.InfoFormat("Accuracy A Min: {0} Max: {1} Mean: {2} StdDev: {3}", 
+                    Tools.Min(accuracyResults_1), Tools.Max(accuracyResults_1), Tools.Mean(accuracyResults_1), Tools.StdDev(accuracyResults_1));
+                log.InfoFormat("Accuracy B Min: {0} Max: {1} Mean: {2} StdDev: {3}",
+                    Tools.Min(accuracyResults_2), Tools.Max(accuracyResults_2), Tools.Mean(accuracyResults_2), Tools.StdDev(accuracyResults_2));
 
-                Console.WriteLine();
+                log.InfoFormat("==========================================");
+
+                log.InfoFormat(Environment.NewLine);
             }
         }
+
+        [Test, TestCaseSource("GetDataFiles")]
+        public void ExceptionRulesTest(KeyValuePair<string, BenchmarkData> kvp)
+        { 
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+
+            foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+                data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
+
+            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
+
+            log.InfoFormat(data.Name);
+
+            PermutationGenerator permGenerator = new PermutationGenerator(data);
+            int numberOfPermutations = 10;
+            int numberOfTests = 10;
+            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+
+            for (int t = 0; t < numberOfTests; t++)
+            {
+                for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
+                {                   
+                    Args parms = new Args();
+                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
+                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+                    parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                    parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+
+                    ReductGeneralizedMajorityDecisionApproximateGenerator generator =
+                        ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
+
+                    generator.Generate();
+
+
+                    RoughClassifier classifier = new RoughClassifier();
+                    classifier.Classify(test, generator.ReductPool, generator.ExceptionRules);
+                    ClassificationResult result = classifier.Vote(
+                        test, IdentificationType.WeightConfidence, VoteType.WeightConfidence, weightGenerator.Weights);
+                                                                                
+                }
+            }
+        }
+
+        private ILog log;
         
         
         public ReductGeneralizedMajorityDecisionApproximateTest()
         {
             Random randSeed = new Random();
-            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
-        }
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();            
 
-        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
-        {
-            return BenchmarkDataHelper.GetDataFiles(new string[] {"dna"});
-        }
+            NameValueCollection properties = new NameValueCollection();
+            properties["showDateTime"] = "false";
+            properties["showLogName"] = "false";
+            properties["level"] = "All";
+
+            properties["configType"] = "FILE";
+            properties["configFile"] = "~/NLog.config";
+
+            //Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
+            Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
+
+            log = Common.Logging.LogManager.GetLogger(this.GetType());            
+        }        
 
         public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, decimal epsilon, int[] attributeSubset)
         {

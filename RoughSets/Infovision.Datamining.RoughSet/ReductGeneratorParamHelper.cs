@@ -36,6 +36,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string CheckEnsembleErrorDuringTraining = "CheckEnsembleErrorDuringTraining";
         public static readonly string UpdateWeights = "UpdateWeights";
         public static readonly string CalcModelConfidence = "CalcModelConfidence";
+        public static readonly string UseExceptionRules = "UseExceptionRules";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

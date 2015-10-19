@@ -122,16 +122,16 @@ namespace Infovision.Datamining.Roughset
 
         public abstract void Generate();                
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
-        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);
-
-        protected virtual IReductStore CreateReductStore()
-        {
-            return new ReductStore();
-        }
+        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);        
 
         protected virtual IReductStore CreateReductStore(int capacity)
         {
             return new ReductStore(capacity);
+        }
+
+        protected virtual IReductStore CreateReductStore()
+        {
+            return new ReductStore();
         }
 
         public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue)

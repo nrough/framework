@@ -11,11 +11,11 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
         
+        //TODO Add object list? - This is Bireduct...
         private decimal[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
-        private EquivalenceClassCollection eqClassMap;
-        //private int[] attributeOrder;
+        private EquivalenceClassCollection eqClassMap;        
 
         #endregion
 

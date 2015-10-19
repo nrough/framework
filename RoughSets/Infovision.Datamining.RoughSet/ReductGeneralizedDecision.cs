@@ -340,7 +340,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductGeneralizedMajorityDecisionGenerator : ReductGenerator
     {
         private decimal dataSetQuality = Decimal.One;
-        private WeightGenerator weightGenerator;
+        private WeightGenerator weightGenerator;        
 
         public WeightGenerator WeightGenerator
         {
@@ -381,7 +381,7 @@ namespace Infovision.Datamining.Roughset
         {
             get;
             set;
-        }
+        }        
 
         public override void InitFromArgs(Args args)
         {
@@ -404,7 +404,8 @@ namespace Infovision.Datamining.Roughset
 
         public override void Generate()
         {
-            ReductStore localReductPool = new ReductStore();
+            ReductStore localReductPool = new ReductStore();            
+
             foreach (Permutation permutation in this.Permutations)
             {
                 localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray()));
@@ -434,7 +435,7 @@ namespace Infovision.Datamining.Roughset
 
             eqClasses.EqWeightSum = this.DataSetQuality;
 
-            this.KeepMajorDecisions(eqClasses, this.Epsilon);            
+            this.KeepMajorDecisions(eqClasses, this.Epsilon);
 
             int len = attributes.Length;
             for (int i = 0; i < len; i++)
@@ -519,14 +520,24 @@ namespace Infovision.Datamining.Roughset
 
     public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
     {
+        public IReductStoreCollection ExceptionRules { get; set; }
+        public bool UseExceptionRules { get; set; }
+        
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx)
-        {
+        {                        
             EquivalenceClassCollection newEqClasses
                 = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
    
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
             eqArray.Shuffle();
+
+            ReductStore exceptionStore = null;
+            if (this.UseExceptionRules)
+            {
+                exceptionStore = new ReductStore();
+            }
+
             foreach(EquivalenceClass eq in eqArray)            
             {
                 AttributeValueVector newInstance = eq.Instance.RemoveAt(attributeIdx);
@@ -539,14 +550,21 @@ namespace Infovision.Datamining.Roughset
                     if (newDecisionSet.Count > 0)
                     {
                         newEqClass.DecisionSet = newDecisionSet;
-                        newEqClass.WeightSum += eq.WeightSum;
+                        newEqClass.WeightSum += eq.WeightSum;                        
                     }
                     else
                     {
-                        //TODO Add exception rule
+                        
                         newEqClasses.EqWeightSum -= eq.WeightSum;
                         if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                             return eqClasses;
+
+                        //TODO Add exception rule
+                        if (this.UseExceptionRules)
+                        {
+                            Bireduct exceptionReduct = new Bireduct(this.DataStore, newInstance.Attributes.ToArray(), eq.ObjectIndexes.ToArray(), this.Epsilon);
+                            exceptionStore.DoAddReduct(exceptionReduct);
+                        }
                     }
 
                 }
@@ -560,7 +578,28 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
+            if (this.UseExceptionRules && exceptionStore != null && exceptionStore.Count > 0)
+            {
+                this.ExceptionRules.AddStore(exceptionStore);
+            }
+
             return newEqClasses;
+        }
+
+        public override void Generate()
+        {
+            if(this.UseExceptionRules)
+                this.ExceptionRules = new ReductStoreCollection();
+
+            base.Generate();
+        }
+
+        public override void InitFromArgs(Args args)
+        {
+            base.InitFromArgs(args);
+
+            if (args.Exist(ReductGeneratorParamHelper.UseExceptionRules))
+                this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
         }
 
         protected override void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)

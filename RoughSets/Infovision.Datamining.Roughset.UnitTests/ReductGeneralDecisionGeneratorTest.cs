@@ -164,21 +164,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
-            ReductGeneratorWeightsRelative rGen2 = ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsRelative;            
+            ReductGeneratorWeightsRelative rGen2 = ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsRelative;
+
+            InformationMeasureWeights m_Weights = new InformationMeasureWeights();
 
             IReductStore reductPool = reductGenerator.ReductPool;
             foreach (IReduct reduct in reductPool)
-            {                
-                InformationMeasureWeights m_Weights = new InformationMeasureWeights();                
-                decimal result_W = m_Weights.Calc(reduct);                                
-                rGen2.Epsilon = Decimal.One - result_W;
+            {                                                
+                rGen2.Epsilon = Decimal.One - m_Weights.Calc(reduct);
 
                 ReductWeights approxReduct = new ReductWeights(data, reduct.Attributes.ToArray(), weightGenerator.Weights, rGen2.Epsilon);
                 approxReduct.Id = reduct.Id;
-
-                //Console.WriteLine("{0} M(C)={1} eps={2}", approxReduct, result_W, rGen2.Epsilon);
-                                
-                //if(rGen2.CheckIsReduct(approxReduct) == false)
+                
                 Assert.IsTrue(rGen2.CheckIsReduct(approxReduct), String.Format("{0} is not a reduct for eps={1}", approxReduct, rGen2.Epsilon));                
                 
                 foreach (int attributeId in approxReduct.Attributes)

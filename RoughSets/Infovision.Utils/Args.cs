@@ -3,34 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Infovision.Utils
-{
-    /*
-    public class LogDictionary: IDictionary<String, object>
-    {
-        private IDictionary<String, object> _dte;
-
-        public LogDictionary(DynamicTableEntity dte)
-        {
-            _dte = (IDictionary<String, object>)dte;
-        }
-
-        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
-        {
-            return _dte.Remove(item.Key);
-        }
-
-        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
-        {
-            return _dte.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-    */
-    
+{       
     [Serializable]
     public class Args
         : IEnumerable<KeyValuePair<string, object>>
@@ -47,14 +20,8 @@ namespace Infovision.Utils
 
         public object this[string id]
         {
-            get
-            {
-                return this.GetParameter(id);
-            }
-            set
-            {
-                this.AddParameter(id, value);
-            }
+            get { return this.GetParameter(id); }
+            set { this.AddParameter(id, value); }
         }
         
         public Args()
@@ -81,9 +48,7 @@ namespace Infovision.Utils
         public Args(string[] keys, object[] values)
         {
             if (keys.Length != values.Length)
-            {
                 throw new ArgumentException("Value array must have the same length as the array of keys", "values");
-            }
 
             this.parameters = new Dictionary<string, object>(keys.Length);
             this.index2parameter = new Dictionary<int, string>(keys.Length);
@@ -117,9 +82,7 @@ namespace Infovision.Utils
         public object GetParameter(string key)
         {
             if (this.Exist(key))
-            {
                 return this.parameters[key];
-            }
 
             return null;
         }
@@ -128,10 +91,7 @@ namespace Infovision.Utils
         {
             string key;
             if (this.index2parameter.TryGetValue(index, out key))
-            {
                 return this.parameters[key];
-            }
-
             return null;
         }
 
@@ -148,20 +108,7 @@ namespace Infovision.Utils
         public string GetParameterName(int index)
         {
             return this.parameterOrder[index];
-        }
-
-        /*
-        public bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
-        {
-            return this.parameters.Remove(item.Key);
-        }
-
-        public void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
-        {
-            this.AddParameter(item.Key, item.Value);
-        }
-        
-        */
+        }        
 
         IEnumerator IEnumerable.GetEnumerator()
         {

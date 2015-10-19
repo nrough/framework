@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                if (this.dataSetQuality < -1.0M)
+                if (this.dataSetQuality < -Decimal.One)
                     this.CalcDataSetQuality();
 
                 return this.dataSetQuality;
@@ -118,11 +118,8 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < permutation.Length; i++)
             {
                 reduct.AddAttribute(permutation[i]);
-
                 if (this.IsReduct(reduct, reductStore, useCache))
-                {
                     return;
-                }
             }
         }
 
@@ -150,26 +147,16 @@ namespace Infovision.Datamining.Roughset
                 if (reduct.TryRemoveAttribute(attributeId))
                 {
                     if (!this.IsReduct(reduct, reductStore, useCache))
-                    {
                         reduct.AddAttribute(attributeId);
-                    }
                 }
             }
         }
 
         public virtual bool CheckIsReduct(IReduct reduct)
-        {
-            /*
+        {           
             decimal partitionQuality = this.GetPartitionQuality(reduct);
-            decimal tinydecimal = 0.0001 / this.DataStore.NumberOfRecords;
-            if (partitionQuality >= (((1.0M - this.Epsilon) * this.DataSetQuality) - tinyDouble))
+            if (Decimal.Round(partitionQuality, 17) >= Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                 return true;
-            */
-
-            decimal partitionQuality = this.GetPartitionQuality(reduct);
-            if (partitionQuality >= ((1.0M - this.Epsilon) * this.DataSetQuality))
-                return true;
-
             return false;
         }
 

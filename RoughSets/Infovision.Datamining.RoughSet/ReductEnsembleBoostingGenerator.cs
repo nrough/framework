@@ -9,8 +9,8 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-    public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError);
-    public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
+	public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError);
+	public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
 	
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
 	{								
@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
 
 		public int MaxReductLength { get; set; }
 		public int MinReductLength { get; set; }
-        public double Threshold { get; set; }
+		public double Threshold { get; set; }
 		public IdentificationType IdentyficationType { get; set;} 
 		public VoteType VoteType {get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
@@ -145,10 +145,10 @@ namespace Infovision.Datamining.Roughset
 			
 			this.Models = new ReductStoreCollection(this.MaxIterations);
 
-            double alphaSum = 0.0;
+			double alphaSum = 0.0;
 			iterPassed = 0;
 			this.NumberOfWeightResets = 0;
-            double error = -1.0;
+			double error = -1.0;
 			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 			this.WeightGenerator.Generate();
 
@@ -171,8 +171,7 @@ namespace Infovision.Datamining.Roughset
 				error = result.WeightUnclassified + result.WeightMisclassified;				
 
 				//clear objects and memory
-				classifier = null;
-				//GC.Collect();
+				classifier = null;				
 				
 				if (error >= this.Threshold)
 				{
@@ -245,7 +244,7 @@ namespace Infovision.Datamining.Roughset
 								// Normalize weights for models confidence
 								foreach (IReductStore rs in this.Models)
 									if (rs.IsActive)
-                                        rs.Weight /= ((decimal)alphaSum - model.Weight);
+										rs.Weight /= ((decimal)alphaSum - model.Weight);
 
 								RoughClassifier localClassifierEnsemble = new RoughClassifier();
 								localClassifierEnsemble.ReductStoreCollection = this.Models;
@@ -255,7 +254,7 @@ namespace Infovision.Datamining.Roughset
 								// De-normalize weights for models confidence
 								foreach (IReductStore rs in this.Models)
 									if (rs.IsActive)
-                                        rs.Weight *= ((decimal)alphaSum - model.Weight);
+										rs.Weight *= ((decimal)alphaSum - model.Weight);
 
 								model.IsActive = true;
 
@@ -280,12 +279,12 @@ namespace Infovision.Datamining.Roughset
 						
 			// Normalize weights for models confidence
 			foreach (IReductStore rs in this.Models)
-                rs.Weight /= (decimal)alphaSum;
+				rs.Weight /= (decimal)alphaSum;
 		}		
 
 		protected virtual void AddModel(IReductStore model, double modelWeight)
 		{
-            model.Weight = (decimal)modelWeight;
+			model.Weight = (decimal)modelWeight;
 			this.Models.AddStore(model);
 		}
 
@@ -329,7 +328,7 @@ namespace Infovision.Datamining.Roughset
 
 		#region Delegate implementations
 
-        public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{            
 			if (actualOutput == predictedOutput)
 				return 1.0;
@@ -337,7 +336,7 @@ namespace Infovision.Datamining.Roughset
 			return currentWeight * System.Math.Exp(alpha); 
 		}
 
-        public static double UpdateWeightsAdaBoost_All(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoost_All(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			if (actualOutput == predictedOutput)
@@ -345,7 +344,7 @@ namespace Infovision.Datamining.Roughset
 			return currentWeight * System.Math.Exp(alpha);
 		}
 
-        public static double UpdateWeightsAdaBoost_OnlyCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoost_OnlyCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			if (actualOutput == predictedOutput)

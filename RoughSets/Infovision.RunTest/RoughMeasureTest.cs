@@ -52,7 +52,7 @@ namespace Infovision.RunTest
 
         private DataStore localDataStoreTest = null;
         private DataStore localDataStoreTrain = null;
-        //private IReductStore localReductStore = null;
+        //private IReductStore exceptionStore = null;
         private IReductStoreCollection localReductStoreCollection = null;
 
         #endregion

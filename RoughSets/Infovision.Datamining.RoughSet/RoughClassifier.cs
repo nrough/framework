@@ -304,24 +304,14 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private Dictionary<long, List<ReductRuleDescriptor>> objectReductDescriptorMap;
-        private IReductStore reductStore;
-        private IReductStoreCollection reductStoreCollection;
-
+        
         #endregion        
 
         #region Properties
 
-        public IReductStore ReductStore
-        {
-            get { return this.reductStore; }
-            set { this.reductStore = value; }                        
-        }
+        public IReductStore ReductStore { get; set; }
+        public IReductStoreCollection ReductStoreCollection { get; set; }       
 
-        public IReductStoreCollection ReductStoreCollection
-        {
-            get { return this.reductStoreCollection; }
-            set { this.reductStoreCollection = value; }
-        }
         #endregion
 
         #region Constructors
@@ -353,7 +343,7 @@ namespace Infovision.Datamining.Roughset
 
             reductGenerator.Epsilon = epsilon;            
             reductGenerator.Generate();
-            this.ReductStore = reductGenerator.ReductPool;
+            this.ReductStore = reductGenerator.ReductPool;            
             
             //TODO number of groups should be passed in a different way
             this.ReductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
@@ -374,12 +364,12 @@ namespace Infovision.Datamining.Roughset
 
         public void Train(DataStore trainingtData, IReductStore reductStore)
         {
-            this.reductStore = reductStore;
+            this.ReductStore = reductStore;
 
             IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
             localReductStoreCollection.AddStore(reductStore);
 
-            this.reductStoreCollection = localReductStoreCollection;
+            this.ReductStoreCollection = localReductStoreCollection;
         }
 
         public void Classify(DataStore dataStore, IReduct reduct)
@@ -395,8 +385,9 @@ namespace Infovision.Datamining.Roughset
             this.Classify(dataStore);
         }
 
-        //TODO 
-        public void Classify(DataStore dataStore, IReductStoreCollection reductStoreCollection, IReductStoreCollection exceptionRules = null)
+        public void Classify(
+            DataStore dataStore, 
+            IReductStoreCollection reductStoreCollection)
         {
             this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
@@ -406,7 +397,11 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public IReductStoreCollection Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts, IReductStoreCollection reductStoreCollection)
+        public IReductStoreCollection Classify(
+            DataStore dataStore, 
+            string reductMeasureKey, 
+            int numberOfReducts, 
+            IReductStoreCollection reductStoreCollection)
         {
             IReductStore localReductStore;
             //TODO Code smell!
@@ -441,7 +436,10 @@ namespace Infovision.Datamining.Roughset
             return localReductStoreCollection;
         }
 
-        public IReductStoreCollection Classify(DataStore dataStore, string reductMeasureKey, int numberOfReducts)
+        public IReductStoreCollection Classify(
+            DataStore dataStore, 
+            string reductMeasureKey, 
+            int numberOfReducts)
         {
             return this.Classify(dataStore, reductMeasureKey, numberOfReducts, this.ReductStoreCollection);
         }
@@ -453,8 +451,8 @@ namespace Infovision.Datamining.Roughset
         
         private List<ReductRuleDescriptor> CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
         {
-            List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);
-
+            List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);                        
+            
             foreach (IReductStore rs in reductStoreCollection)
             {
                 if (rs.IsActive)
@@ -469,13 +467,19 @@ namespace Infovision.Datamining.Roughset
                             values[i] = record[attributes[i]];
 
                         AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
-                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);                        
                         DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
-                        foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
-                            decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
+                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
+                        if (eqClass != null)
+                        {                            
+                            foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                                decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
+                        }
 
                         decisionRuleDescriptor.IdentifyDecision();
                         reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
+
+                        if (eqClass != null && reduct.IsException)
+                            break;
                     }
 
                     result.Add(reductRuleDescriptor);
@@ -528,7 +532,7 @@ namespace Infovision.Datamining.Roughset
             foreach (ReductRuleDescriptor reductDescriptor in list)
             {
                 long result = -1;
-                decimal maxWeight = 0;
+                decimal maxWeight = Decimal.Zero;
                 Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();                
                 foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
                 {
@@ -564,7 +568,7 @@ namespace Infovision.Datamining.Roughset
                             throw new ArgumentException("Unknown value", "identificationType");
                     }
 
-                    decimal voteWeight = 0.0M;
+                    decimal voteWeight = Decimal.Zero;
                     switch (voteType)
                     {
                         case VoteType.Support:
@@ -619,7 +623,7 @@ namespace Infovision.Datamining.Roughset
                             throw new ArgumentException("Unknown value", "voteType");
                     }
 
-                    decimal voteWeightSum = 0.0M;
+                    decimal voteWeightSum = Decimal.Zero;
                     if (decisionVotes.TryGetValue(decision, out voteWeightSum))
                     {
                         voteWeightSum += voteWeight;
@@ -638,7 +642,7 @@ namespace Infovision.Datamining.Roughset
                     }                    
                 }
 
-                decimal ensembleWeightSum = 0.0M;
+                decimal ensembleWeightSum = Decimal.Zero;
                 if (ensebleVotes.TryGetValue(result, out ensembleWeightSum))
                 {
                     ensembleWeightSum += reductDescriptor.Weight;
@@ -705,7 +709,7 @@ namespace Infovision.Datamining.Roughset
                         throw new ArgumentException("Unknown value", "identificationType");
                 }
 
-                decimal voteSum = 0.0M;
+                decimal voteSum = Decimal.Zero;
                 if (votes.TryGetValue(identifiedDecision, out voteSum))
                 {
                     voteSum += reductDescriptor.Weight;

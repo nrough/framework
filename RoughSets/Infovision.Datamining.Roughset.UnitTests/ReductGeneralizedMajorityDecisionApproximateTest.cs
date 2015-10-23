@@ -49,7 +49,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(Decimal.Round(dataQuality, 17), Decimal.Round(dataQuality_2, 17));
 
-            for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)            
+            for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
             {
                 long elapsed_sum_1 = 0;
                 long elapsed_sum_2 = 0;
@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         test, 
                         IdentificationType.WeightConfidence, 
                         VoteType.WeightConfidence, 
-                        reduct_1.Weights);
+                        null);
 
                     accuracyResults_1[i] = result_1.Accuracy;                    
                     
@@ -118,7 +118,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         test,
                         IdentificationType.WeightConfidence,
                         VoteType.WeightConfidence,
-                        reduct_2.Weights);
+                        null);
 
                     accuracyResults_2[i] = result_2.Accuracy;                    
 
@@ -155,25 +155,22 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         [Test, TestCaseSource("GetDataFiles")]
         public void ExceptionRulesTest(KeyValuePair<string, BenchmarkData> kvp)
-        { 
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+        {
+            int numberOfPermutations = 10;
+            int numberOfTests = 10;            
 
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
-
             DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
-
-            log.InfoFormat(data.Name);
-
-            PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 10;
-            int numberOfTests = 10;
-            PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
-
+            log.InfoFormat(data.Name);                        
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
             for (int t = 0; t < numberOfTests; t++)
             {
+                PermutationGenerator permGenerator = new PermutationGenerator(data);
+                PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
                 for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
                 {                   
                     Args parms = new Args();
@@ -185,22 +182,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     ReductGeneralizedMajorityDecisionApproximateGenerator generator =
                         ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-
                     generator.Generate();
 
-
                     RoughClassifier classifier = new RoughClassifier();
-                    classifier.Classify(test, generator.ReductPool, generator.ExceptionRules);
+                    classifier.Classify(test, generator.GetReductStoreCollection());
                     ClassificationResult result = classifier.Vote(
-                        test, IdentificationType.WeightConfidence, VoteType.WeightConfidence, weightGenerator.Weights);
+                        test, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
                                                                                 
                 }
             }
         }
 
         private ILog log;
-        
-        
+                
         public ReductGeneralizedMajorityDecisionApproximateTest()
         {
             Random randSeed = new Random();

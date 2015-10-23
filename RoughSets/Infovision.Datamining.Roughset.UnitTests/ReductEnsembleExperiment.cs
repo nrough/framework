@@ -185,7 +185,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         RoughClassifier rc2 = new RoughClassifier();
                         rc2.ReductStore = randomReductGroup;
                         rc2.Classify(testData);
-                        ClassificationResult classificationResult2 = rc2.Vote(testData, identificationType, voteType, weightGenerator.Weights);
+                        ClassificationResult classificationResult2 = rc2.Vote(testData, identificationType, voteType, weightGenerator.Weights); 
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
                         {

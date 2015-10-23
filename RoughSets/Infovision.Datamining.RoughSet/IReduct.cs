@@ -7,10 +7,13 @@ namespace Infovision.Datamining.Roughset
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
-        FieldSet Attributes { get; }        
-        
-        //TODO Move to Bireduct Interface
+        FieldSet Attributes { get; }
+        bool IsException { get; }
+        bool IsLocal { get; }
+
+        //TODO Move to Bireduct Interface? (Exceptions?)
         ObjectSet ObjectSet { get; }
+        
         
         //TODO decide should this be stored in reduct or in dataStore object
         decimal[] Weights { get; }

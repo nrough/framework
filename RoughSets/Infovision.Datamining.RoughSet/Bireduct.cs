@@ -8,7 +8,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class Bireduct : Reduct
     {
-        #region Globals
+        #region Members
 
         private ObjectSet objectSet;
 
@@ -49,6 +49,11 @@ namespace Infovision.Datamining.Roughset
         public override IObjectSetInfo ObjectSetInfo
         {
             get { return this.ObjectSet; }
+        }
+
+        public override bool IsLocal
+        {
+            get { return true; }
         }
 
         #endregion

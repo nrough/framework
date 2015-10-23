@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductGeneralizedMajorityDecision : ReductWeights
     {
         private HashSet<int> removedAttributes;
-        private bool isEqMapCreated;
+        private bool isEqMapCreated;        
 
         #region Constructors
 
@@ -246,6 +246,8 @@ namespace Infovision.Datamining.Roughset
     {
         private WeightGenerator weightGenerator;
 
+
+
         public WeightGenerator WeightGenerator
         {
             get
@@ -381,7 +383,14 @@ namespace Infovision.Datamining.Roughset
         {
             get;
             set;
-        }        
+        }
+
+        public IReductStoreCollection ReductStoreCollection
+        {
+            get;
+            private set;
+        }
+
 
         public override void InitFromArgs(Args args)
         {
@@ -404,14 +413,14 @@ namespace Infovision.Datamining.Roughset
 
         public override void Generate()
         {
-            ReductStore localReductPool = new ReductStore();            
-
+            this.ReductStoreCollection = new ReductStoreCollection();
             foreach (Permutation permutation in this.Permutations)
             {
-                localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray()));
-            }
-
-            this.ReductPool = localReductPool;
+                ReductStore localReductPool = new ReductStore();
+                localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray(), localReductPool));
+                
+                this.ReductStoreCollection.AddStore(localReductPool);
+            }               
         }
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
@@ -425,10 +434,10 @@ namespace Infovision.Datamining.Roughset
                 eq.KeepMajorDecisions(epsilon);
         }
 
-        public virtual ReductGeneralizedMajorityDecision CalculateReduct(int[] attributes)
+        public virtual ReductGeneralizedMajorityDecision CalculateReduct(int[] attributes, IReductStore reductStore = null)
         {
             if (attributes.Length < 1)
-                throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");
+                throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");           
             
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
                 this.DataStore, attributes, this.Epsilon, this.WeightGenerator.Weights);
@@ -440,7 +449,7 @@ namespace Infovision.Datamining.Roughset
             int len = attributes.Length;
             for (int i = 0; i < len; i++)
             {
-                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i);
+                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, reductStore);
                 
                 //reduction was made
                 if (!Object.ReferenceEquals(newEqClasses, eqClasses))
@@ -454,7 +463,7 @@ namespace Infovision.Datamining.Roughset
                 eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
 
-        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx)
+        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
         {
             EquivalenceClassCollection newEqClasses 
                 = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
@@ -495,6 +504,17 @@ namespace Infovision.Datamining.Roughset
             r.Id = id;
             return r;
         }
+
+        public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue)
+        {
+            if (this.ReductStoreCollection == null)
+            {
+                this.ReductStoreCollection = new ReductStoreCollection();
+                this.ReductStoreCollection.AddStore(this.ReductPool);
+            }
+
+            return this.ReductStoreCollection;
+        }
     }
 
     public class ReductGeneralizedMajorityDecisionFactory : IReductFactory
@@ -520,23 +540,16 @@ namespace Infovision.Datamining.Roughset
 
     public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
     {
-        public IReductStoreCollection ExceptionRules { get; set; }
         public bool UseExceptionRules { get; set; }
         
-        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx)
+        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
         {                        
             EquivalenceClassCollection newEqClasses
                 = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
    
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
-            eqArray.Shuffle();
-
-            ReductStore exceptionStore = null;
-            if (this.UseExceptionRules)
-            {
-                exceptionStore = new ReductStore();
-            }
+            eqArray.Shuffle();                        
 
             foreach(EquivalenceClass eq in eqArray)            
             {
@@ -559,14 +572,13 @@ namespace Infovision.Datamining.Roughset
                         if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                             return eqClasses;
 
-                        //TODO Add exception rule
                         if (this.UseExceptionRules)
                         {
                             Bireduct exceptionReduct = new Bireduct(this.DataStore, newInstance.Attributes.ToArray(), eq.ObjectIndexes.ToArray(), this.Epsilon);
-                            exceptionStore.DoAddReduct(exceptionReduct);
+                            exceptionReduct.IsException = true;
+                            reductStore.AddReduct(exceptionReduct);
                         }
                     }
-
                 }
                 else
                 {
@@ -576,21 +588,13 @@ namespace Infovision.Datamining.Roughset
 
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
-            }
-
-            if (this.UseExceptionRules && exceptionStore != null && exceptionStore.Count > 0)
-            {
-                this.ExceptionRules.AddStore(exceptionStore);
-            }
+            }            
 
             return newEqClasses;
         }
 
         public override void Generate()
-        {
-            if(this.UseExceptionRules)
-                this.ExceptionRules = new ReductStoreCollection();
-
+        {            
             base.Generate();
         }
 
@@ -605,7 +609,7 @@ namespace Infovision.Datamining.Roughset
         protected override void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
         {
             base.KeepMajorDecisions(eqClasses, Decimal.Zero);
-        }
+        }        
     }
 
     public class ReductGeneralizedMajorityDecisionApproximateFactory : IReductFactory

@@ -142,7 +142,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             */
 
              
-            int k=1;
+            //int k=1;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 //Console.WriteLine("Reduct Group Alias {0}:", k++);

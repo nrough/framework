@@ -31,13 +31,13 @@ namespace Infovision.Datamining.Roughset
 
         public ReductStoreBase()
         {
-            this.Weight = 1.0M;
+            this.Weight = Decimal.One;
             this.IsActive = true;
         }
 
         public ReductStoreBase(int capacity)
         {
-            this.Weight = 1.0M;
+            this.Weight = Decimal.One;
             this.IsActive = true;
         }
 

@@ -26,7 +26,7 @@ namespace ExceptionRulesTest
             dataFiles.Add("dna", new BenchmarkData("dna", @"Data\dna_modified.trn", @"Data\dna_modified.tst"));
             dataFiles.Add("zoo", new BenchmarkData("zoo", @"Data\zoo.dta", 5));
             dataFiles.Add("spect", new BenchmarkData("spect", @"Data\SPECT.train", @"Data\SPECT.test"));
-            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.train", 5));
+            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.data", 5));
 
             dataFiles.Add("monks-1", new BenchmarkData("monks-1", @"Data\monks-1.train", @"Data\monks-1.test"));
             dataFiles.Add("monks-2", new BenchmarkData("monks-2", @"Data\monks-2.train", @"Data\monks-2.test"));

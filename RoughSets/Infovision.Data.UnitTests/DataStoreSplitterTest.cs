@@ -67,7 +67,7 @@ namespace Infovision.Data.UnitTests
 
             DataStoreSplitter dataStoreSplitter = new DataStoreSplitter(dataStore, 10);
 
-            for (int i = 1; i <= 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 dataStoreSplitter.ActiveFold = i;
                 dataStoreSplitter.Split(ref dataStore1, ref dataStore2);

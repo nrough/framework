@@ -106,7 +106,7 @@ namespace ApproxReductBoostingCV
                 //int minLen = (int)p[6];
                 int epsilon = (int)p[6];
                 
-                for (int f = 1; f <= cvfolds; f++)
+                for (int f = 0; f < cvfolds; f++)
                 {
                     DataStore trnFoldOrig = null;
                     DataStore tstFoldOrig = null;

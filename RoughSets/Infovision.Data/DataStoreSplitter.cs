@@ -36,7 +36,13 @@ namespace Infovision.Data
         public int ActiveFold
         {
             get { return activeFold; }
-            set { this.activeFold = value; }
+            set 
+            {
+                if (value < 0 || value > this.nfold - 1)
+                    throw new IndexOutOfRangeException(String.Format("ActiveFold must have value from {0} to {1}", 0, this.nfold - 1));
+                
+                this.activeFold = value; 
+            }
         }
 
         public DataStore DataStore
@@ -73,14 +79,14 @@ namespace Infovision.Data
 
             DataStoreInfo dataStoreInfo1 = new DataStoreInfo();
             dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
-            dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[this.ActiveFold - 1];
+            dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[this.ActiveFold];
 
             dataStore1 = new DataStore(dataStoreInfo1);
             dataStore1.Name = dataStore.Name + "-" + this.ActiveFold.ToString();
             
             DataStoreInfo dataStoreInfo2 = new DataStoreInfo();
             dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
-            dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold - 1];
+            dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold];
            
             dataStore2 = new DataStore(dataStoreInfo2);
             dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;

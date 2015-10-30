@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataFiles.Add("monks-3", new BenchmarkData("monks-3", @"Data\monks-3.train", @"Data\monks-3.test"));
             dataFiles.Add("zoo", new BenchmarkData("zoo", @"Data\zoo.dta", 5));
             dataFiles.Add("spect", new BenchmarkData("spect", @"Data\SPECT.train", @"Data\SPECT.test"));
-            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.train", 5));
+            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.data", 5));
             dataFiles.Add("pen", new BenchmarkData("pen", @"Data\pendigits.trn", @"Data\pendigits.tst"));
 
             if (names != null && names.Length > 0)

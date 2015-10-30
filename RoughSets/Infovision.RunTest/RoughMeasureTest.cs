@@ -193,7 +193,7 @@ namespace Infovision.RunTest
         {
             this.SetParameters(args);
             
-            if (nfold > 1)
+            if (nfold > 0)
             {
                 if (this.CheckGenerateSplit())
                 {

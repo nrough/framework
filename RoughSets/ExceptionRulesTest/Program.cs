@@ -33,7 +33,7 @@ namespace ExceptionRulesTest
                 name = data.Name;
                 DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
 
-                for (int f = 0; f <= kvp.Value.CrossValidationFolds; f++)
+                for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
                 {
                     splitter.ActiveFold = f;
                     splitter.Split(ref trainData, ref testData);
@@ -49,13 +49,13 @@ namespace ExceptionRulesTest
                             var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
 
                             results[t, i, f] = accuracy.Item1;
-                            results2[t, i, f] = accuracy.Item2;
-
-                            log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                            log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
+                            results2[t, i, f] = accuracy.Item2;                            
                         }
                         );
                     }
+
+                    trainData = null;
+                    testData = null;
                 }
             }
             else
@@ -79,10 +79,7 @@ namespace ExceptionRulesTest
                         var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
 
                         results[t, i, f] = accuracy.Item1;
-                        results2[t, i, f] = accuracy.Item2;
-
-                        log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                        log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
+                        results2[t, i, f] = accuracy.Item2;                        
                     }
                     );
                 }
@@ -102,8 +99,8 @@ namespace ExceptionRulesTest
                     {
                         for (int f = 0; f < res1.GetLength(2); f++)
                         {
-                            outputFile.WriteLine("A|{0}|{1}|{2}|{3}", f, t, i, res1[t, i, f]);
-                            outputFile.WriteLine("B|{0}|{1}|{2}|{3}", f, t, i, res1[t, i, f]);
+                            outputFile.WriteLine("A|{0}|{1}|{2}|{3}", f+1, t, i, res1[t, i, f]);
+                            outputFile.WriteLine("B|{0}|{1}|{2}|{3}", f+1, t, i, res2[t, i, f]);
                         }
                     }
                 }
@@ -163,14 +160,15 @@ namespace ExceptionRulesTest
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
 
             NameValueCollection properties = new NameValueCollection();
-            properties["showDateTime"] = "false";
+            properties["showDateTime"] = "true";
             properties["showLogName"] = "false";
             properties["level"] = "All";
 
             properties["configType"] = "FILE";
             properties["configFile"] = "~/NLog.config";
             
-            Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
+            //Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
+            Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
             
             foreach(var kvp in BenchmarkDataHelper.GetDataFiles(

@@ -51,7 +51,10 @@ namespace Infovision.Datamining.Roughset
 
 		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
 		{
-			ReductWeights reduct = new ReductWeights(this.DataStore, new int[]{}, weights, this.Epsilon);
+			decimal[] weightsCopy = new decimal[weights.Length];
+			Array.Copy(weights, weightsCopy, weights.Length);
+
+			ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, weightsCopy, this.Epsilon);
 			reduct.Id = this.GetNextReductId().ToString();
 			this.Reach(reduct, permutation, null);
 			this.Reduce(reduct, permutation, null);
@@ -115,7 +118,12 @@ namespace Infovision.Datamining.Roughset
 		
 		protected virtual decimal GetDataSetQuality(IReduct reduct)
 		{
-			ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), reduct.Weights, reduct.Epsilon);
+			ReductWeights allAttributesReduct = new ReductWeights(
+				this.DataStore, 
+				this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
+				reduct.Weights, 
+				reduct.Epsilon);
+
 			return this.GetPartitionQuality(allAttributesReduct);
 		}
 

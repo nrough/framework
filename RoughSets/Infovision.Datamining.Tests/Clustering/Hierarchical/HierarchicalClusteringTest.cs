@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             //DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             //Bitmap bitmap = dc.GetAsBitmap();
-            //string fileName = @"F:\Dendrogram\Dendrogram_LCA.bmp";
+            //string fileName = @"Dendrogram\Dendrogram_LCA.bmp";
             //bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             Assert.AreEqual(8, hClustering.GetLeafDistance(1, 5));
@@ -122,12 +122,12 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             DendrogramChart dc1 = new DendrogramChart(aggregativeVersion, 640, 480);
             Bitmap bitmap = dc1.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\Dndr_{0}_A.bmp", id);
+            string fileName = String.Format(@"Dendrogram\Dndr_{0}_A.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             DendrogramChart dc2 = new DendrogramChart(simpleVersion, 640, 480);
             bitmap = dc2.GetAsBitmap();
-            fileName = String.Format(@"F:\Dendrogram\Dndr_{0}_S.bmp", id);
+            fileName = String.Format(@"Dendrogram\Dndr_{0}_S.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             Dictionary<int, DendrogramNode> nodesSimple = simpleVersion.Nodes;
@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             Bitmap bitmap = dc.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\Dendrogram_{0}.bmp", id);
+            string fileName = String.Format(@"Dendrogram\Dendrogram_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }       
@@ -245,7 +245,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             dc.Colors = new List<Color>(new Color[] { Color.Blue, Color.Red, Color.Green, Color.Yellow });
             Bitmap bitmap = dc.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\HierarchicalClusteringTest_GetClusterMembershipTest.bmp");
+            string fileName = String.Format(@"Dendrogram\HierarchicalClusteringTest_GetClusterMembershipTest.bmp");
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             
             Assert.AreEqual(membership.Count, membership2.Count);

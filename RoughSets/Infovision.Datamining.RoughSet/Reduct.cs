@@ -11,7 +11,6 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
         
-        //TODO Add object list? - This is Bireduct...
         private decimal[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
@@ -90,6 +89,14 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
+        public Reduct(DataStore dataStore, int[] fieldIds, decimal epsilon, decimal[] weights)
+        {
+            this.dataStore = dataStore;
+            this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
+            this.Epsilon = epsilon;
+            this.objectWeights = weights;
+        }
+        
         public Reduct(DataStore dataStore, int [] fieldIds, decimal epsilon)
         {
             this.dataStore = dataStore;
@@ -99,7 +106,7 @@ namespace Infovision.Datamining.Roughset
             this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
                 this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);            
-        }       
+        }
 
         public Reduct(DataStore dataStore, decimal epsilon)
             : this(dataStore, new int[] { }, epsilon)
@@ -107,7 +114,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public Reduct(DataStore dataStore)
-            : this(dataStore, new int[] { }, 0.0M)
+            : this(dataStore, new int[] { }, Decimal.Zero)
         {            
         }
 
@@ -259,7 +266,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual string ToString(string format, IFormatProvider fp)
         {
-            if (format.Equals("ext"))
+            if (format != null && format.Equals("ext"))
             {
                 StringBuilder sb = new StringBuilder();
                 int[] fieldIds = this.attributeSet.ToArray();

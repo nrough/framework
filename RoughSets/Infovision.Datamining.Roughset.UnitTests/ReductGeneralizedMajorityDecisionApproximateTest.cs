@@ -20,7 +20,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
     {
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
-            return BenchmarkDataHelper.GetDataFiles(new string[] { });
+            return BenchmarkDataHelper.GetDataFiles(
+                new string[] { 
+                    "opt", 
+                    "dna", 
+                    "letter", 
+                    "monks-1", 
+                    "monks-2", 
+                    "monks-3", 
+                    "spect", 
+                    "pen" 
+                });
         }
 
         [Test, TestCaseSource("GetDataFiles")]
@@ -154,10 +164,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
         [Test, TestCaseSource("GetDataFiles")]
-        public void ExceptionRulesTest(KeyValuePair<string, BenchmarkData> kvp)
+        public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            int numberOfTests = 10;            
+            int numberOfTests = 10;
 
             DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
@@ -166,19 +176,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
             log.InfoFormat(data.Name);                        
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
+            double[,] results = new double[numberOfTests, 100];
+
             for (int t = 0; t < numberOfTests; t++)
             {
                 PermutationGenerator permGenerator = new PermutationGenerator(data);
                 PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
-                for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
-                {                   
+                for (int i = 0; i<100; i++)
+                {
+                    decimal eps = Decimal.Divide(i, 100);
+                    
                     Args parms = new Args();
                     parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
                     parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
                     parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
                     parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+                    parms.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
 
                     ReductGeneralizedMajorityDecisionApproximateGenerator generator =
                         ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -188,7 +203,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classifier.Classify(test, generator.GetReductStoreCollection());
                     ClassificationResult result = classifier.Vote(
                         test, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
-                                                                                
+
+                    results[t, i] = result.Accuracy;
+                    log.InfoFormat("{0}|{1}|{2}", t, eps, result.Accuracy);
                 }
             }
         }

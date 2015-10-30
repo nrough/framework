@@ -81,7 +81,7 @@ namespace Infovision.Datamining.Roughset
 
 			weights = new decimal[this.DataStore.NumberOfRecords];
 			for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-				weights[i] = 1.0M / this.DataStore.NumberOfRecords;
+				weights[i] = Decimal.One / this.DataStore.NumberOfRecords;
 
 			this.reducts = new IReduct[this.MaxIterations];				
 			for (int i = 0; i < this.MaxIterations; i++)

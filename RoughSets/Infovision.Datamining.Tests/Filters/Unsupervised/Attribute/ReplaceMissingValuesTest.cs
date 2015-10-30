@@ -24,15 +24,15 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             trnData.SetDecisionFieldId(1);
             tstData.SetDecisionFieldId(1);
 
-            trnData.WriteToCSVFileExt(@"f:\temp\missingvalsorig.trn", ",");
-            tstData.WriteToCSVFileExt(@"f:\temp\missingvalsorig.tst", ",");
+            trnData.WriteToCSVFileExt(@"temp\missingvalsorig.trn", ",");
+            tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
 
             DataStore trnCompleteData = new ReplaceMissingValues().Compute(trnData);
             //DataStore tstCompleteDate = new ReplaceMissingValues().Compute(tstData, trnData);
             DataStore tstCompleteDate = tstData;
 
-            trnCompleteData.WriteToCSVFileExt(@"f:\temp\missingvals.trn", ",");
-            tstCompleteDate.WriteToCSVFileExt(@"f:\temp\missingvals.tst", ",");
+            trnCompleteData.WriteToCSVFileExt(@"temp\missingvals.trn", ",");
+            tstCompleteDate.WriteToCSVFileExt(@"temp\missingvals.tst", ",");
 
             Args parms = new Args();
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);

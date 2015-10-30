@@ -16,6 +16,12 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
+        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon, decimal[] weights)
+            : base(dataStore, fieldIds, epsilon, weights)
+        {
+            objectSet = new ObjectSet(dataStore, objectIndexes);
+        }
+
         public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {

@@ -51,7 +51,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Assert.LessOrEqual(eq.DecisionValues.Count(), origNumberOfDecisionValues);
 
                     Assert.GreaterOrEqual(eq.DecisionValues.Count(), 1);
-                    Assert.AreEqual(origMajorDecision, eq.MajorDecision);
+                    //Assert.AreEqual(origMajorDecision, eq.MajorDecision);
+
+                    Assert.IsTrue(eq.DecisionSet.ContainsElement(eq.MajorDecision));
 
                     if (eq.DecisionValues.Count() > 1)
                     {

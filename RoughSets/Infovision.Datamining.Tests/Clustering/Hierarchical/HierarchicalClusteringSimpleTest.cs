@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             Bitmap bitmap = dc.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\DendrogramSimple_{0}.bmp", id);
+            string fileName = String.Format(@"Dendrogram\DendrogramSimple_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }
@@ -114,7 +114,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             Bitmap bitmap = dc.GetAsBitmap();
-            string fileName = String.Format(@"F:\Dendrogram\DendrogramSimple_{0}.bmp", id);
+            string fileName = String.Format(@"Dendrogram\DendrogramSimple_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
         }

@@ -459,6 +459,7 @@ namespace Infovision.Datamining.Roughset
                     i--;
                 }
             }
+
             return (ReductGeneralizedMajorityDecision)this.CreateReductObject(
                 eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
@@ -563,18 +564,25 @@ namespace Infovision.Datamining.Roughset
                     if (newDecisionSet.Count > 0)
                     {
                         newEqClass.DecisionSet = newDecisionSet;
-                        newEqClass.WeightSum += eq.WeightSum;                        
+                        newEqClass.WeightSum += eq.WeightSum;
+                        
+                        if(this.UseExceptionRules)
+                            newEqClass.AddObjectInstances(eq.Instances);
                     }
                     else
                     {
-                        
                         newEqClasses.EqWeightSum -= eq.WeightSum;
                         if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                             return eqClasses;
 
                         if (this.UseExceptionRules)
                         {
-                            Bireduct exceptionReduct = new Bireduct(this.DataStore, newInstance.Attributes.ToArray(), eq.ObjectIndexes.ToArray(), this.Epsilon);
+                            Bireduct exceptionReduct = new Bireduct(this.DataStore, 
+                                newInstance.Attributes.ToArray(), 
+                                eq.ObjectIndexes.ToArray(), 
+                                this.Epsilon,
+                                this.WeightGenerator.Weights);
+
                             exceptionReduct.IsException = true;
                             reductStore.AddReduct(exceptionReduct);
                         }
@@ -585,17 +593,15 @@ namespace Infovision.Datamining.Roughset
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore, true);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;
+                    
+                    if (this.UseExceptionRules)
+                        newEqClass.AddObjectInstances(eq.Instances);
 
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
             }            
 
             return newEqClasses;
-        }
-
-        public override void Generate()
-        {            
-            base.Generate();
         }
 
         public override void InitFromArgs(Args args)

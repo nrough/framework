@@ -109,7 +109,9 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            return (decimal)reduct.ObjectSetInfo.NumberOfRecords / (decimal)reduct.DataStore.NumberOfRecords;
+            return Decimal.Divide(
+                reduct.ObjectSetInfo.NumberOfRecords, 
+                reduct.DataStore.NumberOfRecords);
         }
 
         public override string ToString()
@@ -145,7 +147,9 @@ namespace Infovision.Datamining.Roughset
             foreach (int objectIdx in reduct.ObjectSet)
             {
                 long decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
-                result += (decimal)reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
+                result += Decimal.Divide(
+                    reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue),
+                    reduct.ObjectSetInfo.NumberOfRecords);
             }
 
             return result;

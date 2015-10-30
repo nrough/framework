@@ -75,7 +75,6 @@ namespace Infovision.TestAssembly
             this.ReductPool = new ReductStore();            
         }
 
-        //public virtual IReduct CreateReduct(Permutation permutation)
         public virtual IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");

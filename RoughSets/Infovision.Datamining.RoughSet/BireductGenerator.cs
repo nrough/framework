@@ -44,7 +44,6 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = reductStore;                        
         }
 
-        //public override IReduct CreateReduct(Permutation permutation)
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             IReductStore localReductStore = this.CreateReductStore();

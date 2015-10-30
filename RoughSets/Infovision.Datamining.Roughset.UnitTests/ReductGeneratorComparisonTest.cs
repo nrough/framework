@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
             argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"F:\reducts.bmp");
+            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 
             //for (int i = 0; i < numberOfPermutations; i++)
@@ -116,8 +116,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             if (reductPool != null)
             {
-                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"F:\reducts_r.csv");
-                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"F:\reducts_weka.csv");
+                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv");
+                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv");
             }
 
             Console.WriteLine("------------------------ Reduct Pool ------------------------");

@@ -95,6 +95,11 @@ namespace Infovision.Datamining.Roughset
 
         public bool ManualStatCalculation { get; set; }
 
+        public Dictionary<int, decimal> Instances 
+        { 
+            get { return this.instances; } 
+        }
+
         #endregion
 
         #region Constructors        
@@ -212,10 +217,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public void AddDecision(long decisionValue, decimal weight)
-        {            
-            int decisionValueInt = Convert.ToInt32(decisionValue);
-            this.DecisionSet.AddElement(decisionValueInt);
-            
+        {
+            this.DecisionSet += decisionValue;
             decimal weightSum = Decimal.Zero;            
             if (this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
                 this.decisionWeigthSums[decisionValue] = weightSum + weight;
@@ -225,31 +228,33 @@ namespace Infovision.Datamining.Roughset
             totalWeightSum += weight;
         }
 
-        public void AddObject(int objectIndex, long decisionValue, decimal weight)
+        public void AddObject(int objectIndex, long decisionValue, decimal weight, bool updateDecisionObjectSet = true)
         {
             this.instances.Add(objectIndex, weight);
-                            
-            HashSet<int> localObjectSet = null;
-            if (!this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectSet))
+            if (updateDecisionObjectSet)
             {
-                localObjectSet = new HashSet<int>();
-                this.decisionObjectIndexes[decisionValue] = localObjectSet;
+                HashSet<int> localObjectSet = null;
+                if (!this.decisionObjectIndexes.TryGetValue(decisionValue, out localObjectSet))
+                {
+                    localObjectSet = new HashSet<int>();
+                    this.decisionObjectIndexes[decisionValue] = localObjectSet;
+                }
+                localObjectSet.Add(objectIndex);
             }
-            localObjectSet.Add(objectIndex);
 
-            this.totalWeightSum += weight;
-            
-            decimal decisionWeightSum = Decimal.Zero;
-            if (this.decisionWeigthSums.TryGetValue(decisionValue, out decisionWeightSum))
-                this.decisionWeigthSums[decisionValue] = decisionWeightSum + weight;
-            else
-                this.decisionWeigthSums.Add(decisionValue, weight);
-
-            this.decisionSet += decisionValue;
+            this.AddDecision(decisionValue, weight);
 
             //TODO Do we need this flag?
             this.isStatCalculated = false;
-        }        
+        }
+
+        public void AddObjectInstances(Dictionary<int, decimal> instancesToAdd)
+        {
+            foreach (var kvp in instancesToAdd)
+            {
+                this.instances.Add(kvp.Key, kvp.Value);
+            }
+        }
         
         public void RemoveObject(int objectIndex)
         {

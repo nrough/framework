@@ -91,7 +91,8 @@ namespace Infovision.Datamining.Roughset
                                                    attributeValues, 
                                                    decision, 
                                                    weights != null ? weights[i] : Decimal.One,
-                                                   dataStore);
+                                                   dataStore,
+                                                   i);
             }            
 
             return eqClassCollection;
@@ -102,7 +103,8 @@ namespace Infovision.Datamining.Roughset
             long[] attributeValues, 
             long decision, 
             decimal weight, 
-            DataStore dataStore)
+            DataStore dataStore,
+            int idx = -1)
         {            
             AttributeValueVector vector = new AttributeValueVector(attributes, attributeValues);
             EquivalenceClass eq = null;
@@ -112,8 +114,11 @@ namespace Infovision.Datamining.Roughset
                 this.partitions.Add(vector, eq);
             }
 
-            eq.AddDecision(decision, weight);
-        }              
+            if (idx != -1)
+                eq.AddObject(idx, decision, weight, false);
+            else
+                eq.AddDecision(decision, weight);
+        }
 
         protected void InitPartitions()
         {

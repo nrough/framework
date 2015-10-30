@@ -321,22 +321,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal infoMeasureWeightsResult = infoMeasureWeights.Calc(reduct);
 
             Assert.AreEqual(Decimal.Round(infoMeasureResult, 17), Decimal.Round(infoMeasureWeightsResult, 17));
-        }
+        }        
 
-        public void CompareReductResult(string reductGeneratorKey1, string reductGeneratorKey2)
-        {
-            string localFileName = @"Data\dna.train";
+        [Test]
+        public void ReductMajorityTest()
+        {            
+            string localFileName = @"Data\dna_modified.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
-            
-            Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);            
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey1);
+            int numberOfPermutations = 10;
 
-            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(10);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+
+            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
 
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            
+
             IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(args);
             reductGenerator1.Generate();
             IReductStore reductStore1 = reductGenerator1.ReductPool;
@@ -345,38 +347,71 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
             args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
             args2.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
-            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey2);
-            
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
             reductGenerator2.Generate();
             IReductStore reductStore2 = reductGenerator2.ReductPool;
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 
+            Console.WriteLine(permutationList);
+            Console.WriteLine(reductStore1);
+            Console.WriteLine(reductStore2);
+
+            for (int i = 0; i < reductStore1.Count; i++)
+            {
+                IReduct reduct1 = reductStore1.GetReduct(i);
+                IReduct reduct2 = reductStore2.GetReduct(i);                
+                Assert.AreEqual(reduct1, reduct2);
+            }
+        }
+
+        [Test]
+        public void ReductRelativeTest()
+        {            
+            string localFileName = @"Data\dna_modified.trn";
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            int numberOfPermutations = 20;
+
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+
+            PermutationCollection permutationList = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
+
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+
+            IReductGenerator reductGenerator1 = ReductFactory.GetReductGenerator(args);
+            reductGenerator1.Generate();
+            IReductStore reductStore1 = reductGenerator1.ReductPool;
+
+            Args args2 = new Args();
+            args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+            args2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(localDataStore));
+
+
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.ReductPool;
+
+            Assert.AreEqual(reductStore1.Count, reductStore2.Count);
+
+            Console.WriteLine(permutationList);
+            Console.WriteLine(reductStore1);
+            Console.WriteLine(reductStore2);
+
             for (int i = 0; i < reductStore1.Count; i++)
             {
                 IReduct reduct1 = reductStore1.GetReduct(i);
                 IReduct reduct2 = reductStore2.GetReduct(i);
 
-                //Console.WriteLine("Reduct A: {0}", reduct1);
-                //Console.WriteLine("Reduct B: {0}", reduct2);
-
-                Assert.AreEqual(reduct1, reduct2);             
+                Assert.AreEqual(reduct1, reduct2);
             }
-        }
-
-        [Test]
-        public void ReductMajorityTest()
-        {
-            this.CompareReductResult(ReductFactoryKeyHelper.ApproximateReductMajority, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-        }
-
-        [Test]
-        public void ReductRelativeTest()
-        {
-            this.CompareReductResult(
-                ReductFactoryKeyHelper.ApproximateReductRelative, 
-                ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
         }
     }
 }

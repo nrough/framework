@@ -12,6 +12,7 @@ using Common.Logging.Configuration;
 using Infovision.Statistics;
 using Common.Logging.NLog;
 using NLog;
+using System.IO;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -21,7 +22,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles(
-                new string[] { 
+                new string[] {                     
+                    "zoo",
+                    "semeion",
                     "opt", 
                     "dna", 
                     "letter", 
@@ -29,7 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     "monks-2", 
                     "monks-3", 
                     "spect", 
-                    "pen" 
+                    "pen"                     
                 });
         }
 
@@ -167,47 +170,135 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            int numberOfTests = 10;
+            int numberOfTests = 10;            
 
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
-            foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
-                data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
-            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
-            log.InfoFormat(data.Name);                        
-            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+            DataStore trainData = null, testData = null, data = null;
 
-            double[,] results = new double[numberOfTests, 100];
+            double[, ,] results = new double[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            double[, ,] results2 = new double[numberOfTests, 100, kvp.Value.CrossValidationFolds];
 
-            for (int t = 0; t < numberOfTests; t++)
-            {
-                PermutationGenerator permGenerator = new PermutationGenerator(data);
-                PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+            string name;
 
-                for (int i = 0; i<100; i++)
+            if (kvp.Value.CrossValidationActive)
+            {                
+                data = DataStore.Load(kvp.Value.DataFile, FileFormat.Rses1);
+                name = data.Name;
+                DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                                
+                
+                for (int f = 0; f <= kvp.Value.CrossValidationFolds; f++)
                 {
-                    decimal eps = Decimal.Divide(i, 100);
-                    
-                    Args parms = new Args();
-                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-                    parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                    parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                    parms.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+                    splitter.ActiveFold = f;
+                    splitter.Split(ref trainData, ref testData);
 
-                    ReductGeneralizedMajorityDecisionApproximateGenerator generator =
-                        ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-                    generator.Generate();
+                    for (int t = 0; t < numberOfTests; t++)
+                    {
+                        PermutationGenerator permGenerator = new PermutationGenerator(trainData);
+                        PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+                        
+                        Parallel.For(0, 100, i =>
+                        {
+                            var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
+                            
+                            results[t, i, f] = accuracy.Item1;
+                            results2[t, i, f] = accuracy.Item2;
 
-                    RoughClassifier classifier = new RoughClassifier();
-                    classifier.Classify(test, generator.GetReductStoreCollection());
-                    ClassificationResult result = classifier.Vote(
-                        test, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
-
-                    results[t, i] = result.Accuracy;
-                    log.InfoFormat("{0}|{1}|{2}", t, eps, result.Accuracy);
+                            log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
+                            log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2); 
+                        });
+                    }
                 }
             }
+            else
+            {
+                int f = 0;                
+                trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+                foreach (int fieldId in trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+                    trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
+                testData = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, trainData.DataStoreInfo);
+                name = trainData.Name;
+                log.InfoFormat(trainData.Name);
+
+                for (int t = 0; t < numberOfTests; t++)
+                {
+                    PermutationGenerator permGenerator = new PermutationGenerator(trainData);
+                    PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+
+                    Parallel.For(0, 100, i =>
+                    {
+                        var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
+
+                        results[t, i, f] = accuracy.Item1;
+                        results2[t, i, f] = accuracy.Item2;
+
+                        log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
+                        log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2); 
+                    });
+                }
+            }
+
+            string filename = name + ".result";
+            SaveResults(filename, results, results2);
+        }
+
+        private void SaveResults(string filename, double[,,] res1, double[,,] res2)
+        {
+            using (StreamWriter outputFile = new StreamWriter(filename))
+            {
+                for (int t = 0; t < res1.GetLength(0); t++)
+                {
+                    for (int i = 0; i < res1.GetLength(1); i++)
+                    {
+                        for (int f = 0; f < res1.GetLength(2); f++)
+                        {
+                            outputFile.WriteLine("A|{0}|{1}|{2}|{3}", f, t, i, res1[t, i, f]);
+                            outputFile.WriteLine("B|{0}|{1}|{2}|{3}", f, t, i, res1[t, i, f]);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private Tuple<double, double> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int test, int fold)
+        {
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
+            decimal eps = Decimal.Divide(epsilon, 100);
+
+            Args parms = new Args();
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+
+            ReductGeneralizedMajorityDecisionApproximateGenerator generator =
+                ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
+            generator.Generate();
+
+            Args parms2 = new Args();
+            parms2.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms2.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms2.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+
+            ReductGeneratorWeightsMajority generator2 =
+                ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
+            generator2.Generate();
+
+            RoughClassifier classifier = new RoughClassifier();
+            classifier.Classify(testData, generator.GetReductStoreCollection());
+            ClassificationResult result = classifier.Vote(
+                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                        
+            RoughClassifier classifier2 = new RoughClassifier();
+            classifier2.Classify(testData, generator2.GetReductStoreCollection());
+            ClassificationResult result2 = classifier2.Vote(
+                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+
+            return new Tuple<double, double>(result.Accuracy, result2.Accuracy);                                                                        
         }
 
         private ILog log;

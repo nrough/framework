@@ -71,8 +71,7 @@ namespace Infovision.Datamining.Roughset
                 if (!this.isStatCalculated && this.ManualStatCalculation == false)
                     this.CalcStatistics();
 
-                //return this.majorDecision;
-                return decisionSet.FirstOrDefault();                
+                return this.majorDecision;                
             }            
         }                
 

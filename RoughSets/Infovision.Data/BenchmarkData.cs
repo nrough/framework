@@ -39,7 +39,8 @@ namespace Infovision.Data
             this.Alias = alias;
             this.TrainFile = trainFile;
             this.TestFile = testFile;
-            this.CrossValidationActive = false;            
+            this.CrossValidationActive = false;
+            this.CrossValidationFolds = 1;
         }
 
         public void AddFieldAlias(int fieldId, string alias)

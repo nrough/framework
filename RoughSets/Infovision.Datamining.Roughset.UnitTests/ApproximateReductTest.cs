@@ -30,13 +30,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductStore reductStore = new ReductStore();
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0);
             reductStore.AddReduct(reduct);
-            
+            AttributeValueVector dataVector;
+
             foreach (Reduct localReduct in reductStore)
             {
                 EquivalenceClassCollection result = localReduct.EquivalenceClasses;
+                               
+                dataVector = new AttributeValueVector(new int[] { 1, 2 },
+                                                      new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1), 
+                                                                   dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) });
                 
-                AttributeValueVector dataVector = new AttributeValueVector(new int[] {1, 2}, new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1), 
-                                                                     dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) });
                 EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(9, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
@@ -45,8 +48,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Assert.AreEqual(9, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
-                dataVector = new AttributeValueVector(new int[] { 1, 2 }, new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1), 
-                                                          dataStoreTrainInfo.GetFieldInfo(2).External2Internal(2) });
+                dataVector = new AttributeValueVector(new int[] { 1, 2 }, 
+                                                      new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1), 
+                                                                   dataStoreTrainInfo.GetFieldInfo(2).External2Internal(2) });
+
                 reductStat = result.GetEquivalenceClass(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);

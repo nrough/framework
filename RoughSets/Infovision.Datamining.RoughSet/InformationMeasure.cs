@@ -100,24 +100,25 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            decimal result = 0;
-            decimal maxDecisionProbability = Decimal.MinValue;
-            decimal decProbability;
+            decimal result = Decimal.Zero;
+            decimal maxValue, decProbability;            
 
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                maxDecisionProbability = Decimal.MinValue;
+                maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decProbability = e.GetDecisionProbability(decisionValue) / reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue);
-                    if (decProbability > maxDecisionProbability)
-                        maxDecisionProbability = decProbability;
+                    decProbability = Decimal.Divide(e.GetDecisionProbability(decisionValue), 
+                                                    reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue));
+                    
+                    if (Decimal.Round(decProbability, 17) > Decimal.Round(maxValue, 17))
+                        maxValue = decProbability;
                 }
 
-                result += e.NumberOfObjects * maxDecisionProbability;
+                result += e.NumberOfObjects * maxValue;
             }
 
-            return result / reduct.ObjectSetInfo.NumberOfRecords;
+            return Decimal.Round(result / (decimal)reduct.ObjectSetInfo.NumberOfRecords, 17);
         }
 
         public override string Description()
@@ -154,7 +155,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 result += e.NumberOfObjects * maxDecisionProbability;
             }
-            return result / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
+            return Decimal.Round(result / (decimal)reduct.ObjectSetInfo.NumberOfRecords, 17);
         }
 
         public override string Description()
@@ -179,6 +180,7 @@ namespace Infovision.Datamining.Roughset
         {
             decimal result = Decimal.Zero;
             decimal maxValue, sum;
+            
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 maxValue = Decimal.MinValue;
@@ -192,7 +194,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 result += maxValue;
             }
-            return Decimal.Round(result, 17);
+            return Decimal.Round(result, 17);            
         }
 
         public override string Description()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using Infovision.Utils;
 using Newtonsoft.Json.Linq;
 
@@ -152,6 +153,14 @@ namespace Infovision.Datamining.Roughset
         public IEnumerator<Permutation> GetEnumerator()
         {
             return internalList.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var permutation in this)
+                sb.AppendLine(permutation.ToString());
+            return sb.ToString();
         }
 
         #region ICloneable Members

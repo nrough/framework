@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
             {
-                decimal p = 1 / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(dataStoreTrain.GetDecisionValue(objectIdx));
+                decimal p = Decimal.One / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(dataStoreTrain.GetDecisionValue(objectIdx));
                 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal r = roughMeasure.Calc(reduct);
             decimal u = sumWeights / dataStoreTrainInfo.NumberOfRecords;
 
-            Assert.AreEqual(r, u);            
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));            
         }
 
         [Test]

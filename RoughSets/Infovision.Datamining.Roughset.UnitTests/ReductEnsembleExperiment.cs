@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRandom(data));
-                //args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
+                //args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trainData));
                 args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
                 args.AddParameter(ReductGeneratorParamHelper.ReductSize, reductSize);
                 args.AddParameter(ReductGeneratorParamHelper.MinimumNumberOfInstances, 10);
@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
                 reductGenerator.Generate();
 
-            } //test No
+            } //testData No
         }
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
@@ -222,7 +222,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 experimentResults.SaveToFile(resultFileName, true, false);
                 experimentResults = new List<ReductEnsembleExperimentResult>();
-            } //test No            
+            } //testData No            
         }
     }
 

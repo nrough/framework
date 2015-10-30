@@ -13,8 +13,8 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         public ReductWeights(DataStore dataStore, int[] fieldIds, decimal[] objectWeights, decimal epsilon)
-            //: base(dataStore, fieldIds, epsilon, objectWeights)
-            : base(dataStore, fieldIds, epsilon)
+            : base(dataStore, fieldIds, epsilon, objectWeights)
+            //: base(dataStore, fieldIds, epsilon)
         {
             /*
             if (objectWeights != null)

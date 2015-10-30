@@ -62,10 +62,7 @@ namespace Infovision.Datamining.Roughset
         {
             StringBuilder stringBuilder = new StringBuilder();
             foreach (int i in elements)
-            {
                 stringBuilder.Digits(i).Append(' ');
-            }
-
             return stringBuilder.ToString();
         }
 

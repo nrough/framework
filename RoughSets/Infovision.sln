@@ -147,9 +147,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiscUtil", "MiscUtil", "{56
 		external\MiscUtil\MiscUtil.dll = external\MiscUtil\MiscUtil.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTest", "ExceptionRulesTest\ExceptionRulesTest.csproj", "{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 24
+		SccNumberOfProjects = 25
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -236,6 +238,9 @@ Global
 		SccProjectUniqueName23 = Infovision.Statistics\\Infovision.Statistics.csproj
 		SccProjectName23 = Infovision.Statistics
 		SccLocalPath23 = Infovision.Statistics
+		SccProjectUniqueName24 = ExceptionRulesTest\\ExceptionRulesTest.csproj
+		SccProjectName24 = ExceptionRulesTest
+		SccLocalPath24 = ExceptionRulesTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -602,6 +607,22 @@ Global
 		{D26B9D87-E914-44BE-9381-73460214B7E4}.Release|x64.ActiveCfg = Release|x64
 		{D26B9D87-E914-44BE-9381-73460214B7E4}.Release|x64.Build.0 = Release|x64
 		{D26B9D87-E914-44BE-9381-73460214B7E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|x64.ActiveCfg = Debug|x64
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|x64.Build.0 = Debug|x64
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|Win32.ActiveCfg = Release|Any CPU
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|x64.ActiveCfg = Release|x64
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|x64.Build.0 = Release|x64
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

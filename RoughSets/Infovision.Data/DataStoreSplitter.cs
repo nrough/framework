@@ -17,7 +17,7 @@ namespace Infovision.Data
         private int[] foldSize;
         private int nfold;
 
-        private int activeFold = 1;
+        private int activeFold = 0;
         private bool splitCalculated = false;
         
         public DataStoreSplitter(DataStore dataStore, int nfold)
@@ -58,16 +58,26 @@ namespace Infovision.Data
 
         protected virtual int RandomSplit()
         {
-            return (RandomSingleton.Random.Next() % nfold) + 1;
+            return (RandomSingleton.Random.Next() % nfold);
         }
 
         private void GenerateSplit()
         {
+            /*
             for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
             {
                 folds[i] = RandomSplit();
-                foldSize[folds[i] - 1]++;
+                foldSize[folds[i]]++;
             }
+            */
+
+            for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
+            {
+                folds[i] = i % nfold;
+                foldSize[folds[i]]++;
+            }
+
+            folds.Shuffle();
 
             splitCalculated = true;
         }

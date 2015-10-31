@@ -46,10 +46,13 @@ namespace ExceptionRulesTest
                         Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
                         //for(int i = 0; i<100; i++)
                         {
-                            var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
+                            var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i);
 
                             results[t, i, f] = accuracy.Item1;
-                            results2[t, i, f] = accuracy.Item2;                            
+                            results2[t, i, f] = accuracy.Item2;
+
+                            Console.WriteLine("A|{0}|{1}|{2}|{3}", f, t, i, results[t, i, f]);
+                            Console.WriteLine("B|{0}|{1}|{2}|{3}", f, t, i, results2[t, i, f]);
                         }
                         );
                     }
@@ -76,10 +79,13 @@ namespace ExceptionRulesTest
                     Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
                     //for(int i = 0; i<100; i++)
                     {
-                        var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
+                        var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i);
 
                         results[t, i, f] = accuracy.Item1;
-                        results2[t, i, f] = accuracy.Item2;                        
+                        results2[t, i, f] = accuracy.Item2;
+
+                        Console.WriteLine("A|{0}|{1}|{2}|{3}", f, t, i, results[t, i, f]);
+                        Console.WriteLine("B|{0}|{1}|{2}|{3}", f, t, i, results2[t, i, f]);
                     }
                     );
                 }
@@ -99,8 +105,8 @@ namespace ExceptionRulesTest
                     {
                         for (int f = 0; f < res1.GetLength(2); f++)
                         {
-                            outputFile.WriteLine("A|{0}|{1}|{2}|{3}", f+1, t, i, res1[t, i, f]);
-                            outputFile.WriteLine("B|{0}|{1}|{2}|{3}", f+1, t, i, res2[t, i, f]);
+                            outputFile.WriteLine("A|{0}|{1}|{2}|{3}", f, t, i, res1[t, i, f]);
+                            outputFile.WriteLine("B|{0}|{1}|{2}|{3}", f, t, i, res2[t, i, f]);
                         }
                     }
                 }
@@ -108,7 +114,7 @@ namespace ExceptionRulesTest
 
         }
 
-        private Tuple<double, double> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int test, int fold)
+        private Tuple<double, double> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon)
         {
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
             decimal eps = Decimal.Divide(epsilon, 100);
@@ -176,12 +182,12 @@ namespace ExceptionRulesTest
                     "zoo",
                     "semeion",
                     "opt", 
-                    "dna", 
+                    //"dna", 
                     "letter", 
                     "monks-1", 
                     "monks-2", 
                     "monks-3", 
-                    "spect", 
+                    //"spect", 
                     "pen"                     
                 }))
             {

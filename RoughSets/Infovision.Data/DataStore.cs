@@ -19,7 +19,9 @@ namespace Infovision.Data
         private Dictionary<int, long> index2ObjectId;
         private DataStoreInfo dataStoreInfo;
         private Dictionary<long, List<int>> decisionValue2ObjectIndex;
-        private bool isDecisionMapCalculated = false;        
+        private bool isDecisionMapCalculated = false;
+        
+        public static object syncRoot = new object();
 
         #endregion        
 
@@ -100,7 +102,7 @@ namespace Infovision.Data
         }
 
         private void Resize()
-        {
+        {             
             long newCapacity = capacity != 0 ? Convert.ToInt32((decimal)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
@@ -238,22 +240,28 @@ namespace Infovision.Data
 
         public int[] GetObjectIndexes(long decisionValue)
         {
-            List<int> result = null;
+            List<int> result;
             if (this.isDecisionMapCalculated == false)
             {
-                this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
-                foreach (int objectIdx in this.GetObjectIndexes())
+                lock (syncRoot)
                 {
-                    long decision = this.GetDecisionValue(objectIdx);
-                    result = null;
-                    if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+                    if (this.isDecisionMapCalculated == false)
                     {
-                        result = new List<int>();
-                        this.decisionValue2ObjectIndex[decisionValue] = result;
+                        this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
+                        foreach (int objectIdx in this.GetObjectIndexes())
+                        {
+                            long decision = this.GetDecisionValue(objectIdx);
+                            result = null;
+                            if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+                            {
+                                result = new List<int>();
+                                this.decisionValue2ObjectIndex.Add(decisionValue, result);
+                            }
+                            result.Add(objectIdx);
+                        }
+                        this.isDecisionMapCalculated = true;
                     }
-                    result.Add(objectIdx);                    
                 }
-                this.isDecisionMapCalculated = true;
             }
 
             result = null;

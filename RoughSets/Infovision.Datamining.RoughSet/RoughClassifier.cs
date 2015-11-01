@@ -252,7 +252,7 @@ namespace Infovision.Datamining.Roughset
             public ReductRuleDescriptor()
             {
                 reductDescriptorMap = new Dictionary<IReduct, DecisionRuleDescriptor>();
-                this.Weight = 1.0M;
+                this.Weight = Decimal.One;
             }
 
             public ReductRuleDescriptor(decimal weight)
@@ -310,7 +310,8 @@ namespace Infovision.Datamining.Roughset
         #region Properties
 
         public IReductStore ReductStore { get; set; }
-        public IReductStoreCollection ReductStoreCollection { get; set; }       
+        public IReductStoreCollection ReductStoreCollection { get; set; }
+        public bool UseExceptionRules { get; set; }
 
         #endregion
 
@@ -318,6 +319,7 @@ namespace Infovision.Datamining.Roughset
 
         public RoughClassifier()
         {
+            this.UseExceptionRules = true;
         }
 
         #endregion
@@ -461,6 +463,9 @@ namespace Infovision.Datamining.Roughset
                     reductRuleDescriptor.Weight = rs.Weight;
                     foreach (IReduct reduct in rs)
                     {
+                        if (UseExceptionRules == false && reduct.IsException)
+                            continue;                        
+                        
                         int[] attributes = reduct.Attributes.ToArray();
                         long[] values = new long[attributes.Length];
                         for (int i = 0; i < attributes.Length; i++)
@@ -478,7 +483,7 @@ namespace Infovision.Datamining.Roughset
                         decisionRuleDescriptor.IdentifyDecision();
                         reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
 
-                        if (eqClass != null && reduct.IsException)
+                        if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
                             break;
                     }
 
@@ -592,7 +597,7 @@ namespace Infovision.Datamining.Roughset
                             break;
 
                         case VoteType.MajorDecision:
-                            voteWeight = 1.0M;
+                            voteWeight = Decimal.One;
                             break;
 
                         case VoteType.WeightSupport:

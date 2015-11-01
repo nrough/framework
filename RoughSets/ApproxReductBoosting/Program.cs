@@ -64,18 +64,18 @@ namespace ApproxReductBoosting
 			ParameterCollection parmList = new ParameterCollection(
 				new IParameter[] {
 					//new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
-					//ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
-					ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100, 50, 20, 10, 5, 2, 1),
+					//ParameterValueCollection<int>.CreateFromElements("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
+					ParameterValueCollection<int>.CreateFromElements("NumberOfIterations", 100, 50, 20, 10, 5, 2, 1),
 					new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
-					ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
+					ParameterValueCollection<string>.CreateFromElements("ReductFactory"
 																				 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
 																				 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
 																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
 																				 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
-					ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),
-					ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
-					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),					
+					ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
+					ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
+					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),					
 					new ParameterNumericRange<int>("Epsilon", 0, 50, 5)
 				}
 			);

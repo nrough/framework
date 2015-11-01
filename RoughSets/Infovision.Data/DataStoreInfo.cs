@@ -93,10 +93,8 @@ namespace Infovision.Data
         }
 
         public int[] GetFieldIds(FieldTypes fieldTypeFlags)
-        {
-            int size = this.GetNumberOfFields(fieldTypeFlags);
-
-            int[] fieldIds = new int[size];
+        {            
+            int[] fieldIds = new int[this.GetNumberOfFields(fieldTypeFlags)];
             int i = 0;
             foreach (DataFieldInfo field in this.Fields)
             {

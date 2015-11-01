@@ -219,7 +219,7 @@ namespace Infovision.Datamining.Roughset
                 return reductStatstic;
             }
 
-            return null; //TODO create special object return new EquivalenceClassNull();
+            return null;
         }
 
         public int GetDecisionValueCount(long decisionValue)

@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         #region Methods
 
-        public static ParameterValueCollection<T> CreateFromElements<T>(string name, params T[] elements)           
+        public static ParameterValueCollection<T> CreateFromElements(string name, params T[] elements)           
         {
             return new ParameterValueCollection<T>(name, elements);
         }        

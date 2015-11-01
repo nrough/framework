@@ -52,19 +52,19 @@ namespace ApproxReductBoostingCV
                 new IParameter[] {
                     //new ParameterNumericRange<int>("NumberOfIterations", startIteration, maxNumberOfIterations, iterationStep),
                     //ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 1, 2, 5, 10, 20, 50, 100),
-                    ParameterValueCollection<int>.CreateFromElements<int>("NumberOfIterations", 100, 50, 20),
+                    ParameterValueCollection<int>.CreateFromElements("NumberOfIterations", 100, 50, 20),
                     new ParameterNumericRange<int>("NumberOfTests", 0, numberOfTests-1, 1),
-                    ParameterValueCollection<string>.CreateFromElements<string>("ReductFactory"
+                    ParameterValueCollection<string>.CreateFromElements("ReductFactory"
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
                                                                                 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
                                                                                 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
                                                                                ),
-                    ParameterValueCollection<WeightingSchema>.CreateFromElements<WeightingSchema>("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
-                    ParameterValueCollection<bool>.CreateFromElements<bool>("CheckEnsembleErrorDuringTraining", false),
-                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements<UpdateWeightsDelegate>("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
-                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", (int) System.Math.Floor(System.Math.Log((decimal)numOfAttr + 1.0M, 2.0)))
-                    //ParameterValueCollection<int>.CreateFromElements<int>("MinLenght", 1)
+                    ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
+                    ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
+                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
+                    //ParameterValueCollection<int>.CreateFromElements("MinLenght", (int) System.Math.Floor(System.Math.Log((decimal)numOfAttr + 1.0M, 2.0)))
+                    //ParameterValueCollection<int>.CreateFromElements("MinLenght", 1)
                     new ParameterNumericRange<int>("Epsilon", 0, 50, 5)
                 }
             );

@@ -83,6 +83,11 @@ namespace Infovision.Data
 
             return base.Equals((PascalSet<int>) obj);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         #endregion
 
         #region ICloneable Members

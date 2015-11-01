@@ -355,33 +355,33 @@ namespace Infovision.Datamining
             return total;
         }
 
-        public string ResultHeader()
+        public static string ResultHeader()
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("Classified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("Misclassified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("Unclassified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
 
             stringBuilder.Append("WeightClassified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("WeightMisclassified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("WeightUnclassified");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
 
             stringBuilder.Append("Accuracy");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("BalancedAccuracy");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("Confidence");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("Coverage");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
             stringBuilder.Append("AverageReductLength");
-            stringBuilder.Append('\t');
+            stringBuilder.Append('|');
 
             return stringBuilder.ToString();
         }
@@ -389,30 +389,30 @@ namespace Infovision.Datamining
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Digits(this.Classified);
-            stringBuilder.Append('\t');
-            stringBuilder.Digits(this.Misclassified);
-            stringBuilder.Append('\t');
-            stringBuilder.Digits(this.Unclassified);
-            stringBuilder.Append('\t');
+            stringBuilder.AppendFormat("{0,5}", this.Classified);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,5}", this.Misclassified);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,5}", this.Unclassified);
+            stringBuilder.Append('|');            
 
-            stringBuilder.Append(this.WeightClassified);
-            stringBuilder.Append('\t');
-            stringBuilder.Append(this.WeightMisclassified);
-            stringBuilder.Append('\t');
-            stringBuilder.Append(this.WeightUnclassified);
-            stringBuilder.Append('\t');
+            stringBuilder.AppendFormat("{0:0.000000}", this.WeightClassified);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.000000}", this.WeightMisclassified);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.000000}", this.WeightUnclassified);
+            stringBuilder.Append('|');
 
-            stringBuilder.AppendFormat("{0:0.0000}", this.Accuracy);
-            stringBuilder.Append('\t');
-            stringBuilder.AppendFormat("{0:0.0000}", this.BalancedAccuracy);
-            stringBuilder.Append('\t');
-            stringBuilder.AppendFormat("{0:0.0000}", this.Confidence);
-            stringBuilder.Append('\t');
-            stringBuilder.AppendFormat("{0:0.0000}", this.Coverage);
-            stringBuilder.Append('\t');
-            stringBuilder.AppendFormat("{0:0.0000}", this.QualityRatio);
-            stringBuilder.Append('\t');
+            stringBuilder.AppendFormat("{0:0.00000}", this.Accuracy);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00000}", this.BalancedAccuracy);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00000}", this.Confidence);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00000}", this.Coverage);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,9:0.00000}", this.QualityRatio);
+            stringBuilder.Append('|');
 
             return stringBuilder.ToString();
         }

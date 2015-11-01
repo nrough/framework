@@ -157,7 +157,7 @@ namespace Infovision.Data
         public DataRecordInternal GetRecordByIndex(int objectIndex)
         {
             int[] fieldId = new int[this.dataStoreInfo.NumberOfFields];
-            long[] fieldValue = new Int64[this.dataStoreInfo.NumberOfFields];
+            long[] fieldValue = new long[this.dataStoreInfo.NumberOfFields];
 
             if (objectIndex < 0 || objectIndex > this.dataStoreInfo.NumberOfRecords)
                 throw new ArgumentOutOfRangeException("objectIndex", "Index out of range.");

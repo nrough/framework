@@ -11,6 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         void AddStore(IReductStore reductStore);
         int Count { get; }
+        double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         //List<IReductStore> ActiveModels();
     }
 
@@ -48,6 +49,29 @@ namespace Infovision.Datamining.Roughset
         public List<IReductStore> ActiveModels()
         {
             return stores.FindAll(x => x.IsActive == true);
+        }
+
+        public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        {
+            if (reductMeasure == null)
+                return 0.0;
+
+            double measureSum = 0.0;
+            int count = 0;
+            foreach(IReductStore reducts in this)
+                foreach (IReduct reduct in reducts)
+                {
+                    if (reduct.IsException && includeExceptions == false)
+                        continue;
+
+                    measureSum += (double)reductMeasure.Calc(reduct);
+                    count++;
+                }
+
+            if (count > 0)
+                return measureSum / (double)count;
+
+            return 0;
         }
     }
 }

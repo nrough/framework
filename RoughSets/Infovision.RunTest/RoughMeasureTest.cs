@@ -321,7 +321,7 @@ namespace Infovision.RunTest
             parms.Append("RuleVoteCenseqentRating").Append('\t');
             parms.Append("RuleVoteAntecedentRating").Append('\t');
 
-            parms.Append(result.ResultHeader());
+            parms.Append(ClassificationResult.ResultHeader());
 
             return parms.ToString();
         }

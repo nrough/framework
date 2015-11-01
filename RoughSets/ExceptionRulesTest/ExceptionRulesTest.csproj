@@ -108,6 +108,9 @@
     <None Include="Data\letter.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Data\letter.tst">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\monks-1.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

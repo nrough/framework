@@ -18,88 +18,62 @@ namespace ExceptionRulesTest
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations)
         {            
             DataStore trainData = null, testData = null, data = null;
+            string filename = null;
+            DataStoreSplitter splitter = null;
 
             ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
             ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-                        
-            string filename;
+            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];                                    
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, FileFormat.Rses1);               
-                filename = data.Name + String.Format("-{0}", numberOfPermutations) + ".result";
-                DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
+                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);
+                filename = Path.Combine(@"\log", data.Name + String.Format("-{0}", numberOfPermutations) + ".result");
+                splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
+            }
 
-                for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
+            for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
+            {
+                if (kvp.Value.CrossValidationActive)
                 {
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref trainData, ref testData);
-
-                    for (int t = 0; t < numberOfTests; t++)
-                    {
-                        PermutationGenerator permGenerator = new PermutationGenerator(trainData);
-                        PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
-
-                        log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
-                        
-                        Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                        //for(int i = 0; i<100; i++)
-                        {
-                            var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i);
-
-                            results1[t, i, f] = accuracy.Item1;
-                            results2[t, i, f] = accuracy.Item2;
-                            results3[t, i, f] = accuracy.Item3;
-
-                            Console.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                            Console.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                            Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}|", f, t, i, results3[t, i, f]);
-                            Console.WriteLine();
-                        }
-                        );
-
-                        SaveResults(filename, results1, results2, results3);
-                    }
-
                     trainData = null;
                     testData = null;
+                    splitter.ActiveFold = f;
+                    splitter.Split(ref trainData, ref testData);
                 }
-            }
-            else
-            {
-                int f = 0;
-                trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);                
-                testData = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, trainData.DataStoreInfo);                
-                filename = trainData.Name + String.Format("-{0}", numberOfPermutations) + ".result";                
-                
+                else if(f == 0)
+                {
+                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);                
+                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);
+                    filename = Path.Combine(@"\log", trainData.Name + String.Format("-{0}", numberOfPermutations) + ".result"); ;
+                }
+
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     PermutationGenerator permGenerator = new PermutationGenerator(trainData);
                     PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
-                    log.InfoFormat("{0} Test:{1}/{2} ", trainData.Name, t, numberOfTests-1);
-                    log.InfoFormat("{0}", ClassificationResult.ResultHeader());
-                    
+                    log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
+                        
                     Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                    //for(int i = 0; i<100; i++)                    
+                    //for(int i = 0; i<100; i++)
                     {
-                        var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i);
+                        var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
 
                         results1[t, i, f] = accuracy.Item1;
                         results2[t, i, f] = accuracy.Item2;
                         results3[t, i, f] = accuracy.Item3;
 
-                        Console.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);                        
+                        Console.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
                         Console.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                        Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                        Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}|", f, t, i, results3[t, i, f]);
                         Console.WriteLine();
                     }
                     );
 
-                    SaveResults(filename, results1, results2, results3);
-                }
-            }                        
+                    this.SaveResults(filename, results1, results2, results3);
+                }                
+            }            
         }
 
         private void SaveResults(string filename,
@@ -109,6 +83,8 @@ namespace ExceptionRulesTest
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {
+                outputFile.WriteLine("Method|Fold|Test|Epsilon|{0}", ClassificationResult.ResultHeader());
+                
                 for (int t = 0; t < results1.GetLength(0); t++)
                 {
                     for (int i = 0; i < results1.GetLength(1); i++)

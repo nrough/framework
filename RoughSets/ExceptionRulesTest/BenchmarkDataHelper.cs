@@ -11,6 +11,8 @@ namespace ExceptionRulesTest
     {
         public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles(params string[] names)
         {
+            int cvFolds = 5;
+            
             Dictionary<string, BenchmarkData> dataFiles = new Dictionary<string, BenchmarkData>();
 
             BenchmarkData benchmark = new BenchmarkData("golf", @"Data\playgolf.train", @"Data\playgolf.train");
@@ -23,7 +25,7 @@ namespace ExceptionRulesTest
             dataFiles.Add("golf", benchmark);
             
             dataFiles.Add("dna", new BenchmarkData("dna", @"Data\dna_modified.trn", @"Data\dna_modified.tst"));
-            dataFiles.Add("zoo", new BenchmarkData("zoo", @"Data\zoo.dta", 5));
+            dataFiles.Add("zoo", new BenchmarkData("zoo", @"Data\zoo.dta", cvFolds));
             dataFiles.Add("monks-1", new BenchmarkData("monks-1", @"Data\monks-1.train", @"Data\monks-1.test"));
             dataFiles.Add("monks-2", new BenchmarkData("monks-2", @"Data\monks-2.train", @"Data\monks-2.test"));
             dataFiles.Add("monks-3", new BenchmarkData("monks-3", @"Data\monks-3.train", @"Data\monks-3.test"));            
@@ -31,7 +33,17 @@ namespace ExceptionRulesTest
             dataFiles.Add("letter", new BenchmarkData("letter", @"Data\letter.trn", @"Data\letter.tst"));                                    
             dataFiles.Add("pen", new BenchmarkData("pen", @"Data\pendigits.trn", @"Data\pendigits.tst"));
             dataFiles.Add("opt", new BenchmarkData("opt", @"Data\optdigits.trn", @"Data\optdigits.tst"));
-            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.data", 5));
+            dataFiles.Add("semeion", new BenchmarkData("semeion", @"Data\semeion.data", cvFolds));
+
+            dataFiles.Add("chess", new BenchmarkData("chess", @"Data\chess.dta", cvFolds));
+            dataFiles.Add("nursery", new BenchmarkData("nursery", @"Data\nursery.2.data", cvFolds));
+            dataFiles.Add("breast", new BenchmarkData("breast", @"Data\breast-cancer-wisconsin.2.data", cvFolds));
+            dataFiles.Add("soybean-small", new BenchmarkData("soybean-small", @"Data\soybean-small.2.data", cvFolds));
+            dataFiles.Add("soybean-large", new BenchmarkData("soybean-large", @"Data\soybean-large.data", @"Data\soybean-large.test"));
+            dataFiles.Add("house", new BenchmarkData("house", @"Data\house-votes-84.2.data", cvFolds));
+            dataFiles.Add("audiology", new BenchmarkData("audiology", @"Data\audiology.standardized.data", @"Data\audiology.standardized.test"));
+            dataFiles.Add("promoters", new BenchmarkData("promoters", @"Data\promoters.2.data", cvFolds));
+            dataFiles.Add("mashroom", new BenchmarkData("mashroom", @"Data\agaricus-lepiota.2.data", cvFolds));
 
             if (names != null && names.Length > 0)
                 return dataFiles.Where(item => names.Contains(item.Key));

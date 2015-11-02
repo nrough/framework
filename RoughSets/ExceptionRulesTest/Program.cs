@@ -18,7 +18,7 @@ namespace ExceptionRulesTest
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations)
         {            
             DataStore trainData = null, testData = null, data = null;
-            string filename = null;
+            string filename = Path.Combine(@"\log", kvp.Value.Alias + String.Format("-{0}", numberOfPermutations) + ".result"); ;
             DataStoreSplitter splitter = null;
 
             ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
@@ -27,8 +27,7 @@ namespace ExceptionRulesTest
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);
-                filename = Path.Combine(@"\log", data.Name + String.Format("-{0}", numberOfPermutations) + ".result");
+                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);                
                 splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
             }
 
@@ -44,14 +43,13 @@ namespace ExceptionRulesTest
                 else if(f == 0)
                 {
                     trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);                
-                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);
-                    filename = Path.Combine(@"\log", trainData.Name + String.Format("-{0}", numberOfPermutations) + ".result"); ;
+                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);                    
                 }
 
                 for (int t = 0; t < numberOfTests; t++)
                 {
-                    PermutationGenerator permGenerator = new PermutationGenerator(trainData);
-                    PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
+                    var permGenerator = new PermutationGenerator(trainData);
+                    var permList = permGenerator.Generate(numberOfPermutations);
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
                         

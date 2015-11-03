@@ -17,10 +17,14 @@ namespace Infovision.Data
         public virtual string NamesFile { get; set; }
         public virtual bool CrossValidationActive { get; set; }
         public virtual int CrossValidationFolds { get; set; }
+        public virtual FileFormat FileFormat { get; set; }
 
         protected BenchmarkData()
         {
             fieldNames = new Dictionary<int, string>();
+            this.CrossValidationActive = false;
+            this.CrossValidationFolds = 1;
+            this.FileFormat = FileFormat.Rses1;
         }
         
         public BenchmarkData(string alias, string dataFile, int folds)
@@ -39,8 +43,7 @@ namespace Infovision.Data
             this.Alias = alias;
             this.TrainFile = trainFile;
             this.TestFile = testFile;
-            this.CrossValidationActive = false;
-            this.CrossValidationFolds = 1;
+            
         }
 
         public void AddFieldAlias(int fieldId, string alias)

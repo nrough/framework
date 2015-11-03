@@ -18,12 +18,13 @@ namespace ExceptionRulesTest
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations)
         {            
             DataStore trainData = null, testData = null, data = null;
-            string filename = Path.Combine(@"\log", kvp.Value.Alias + String.Format("-{0}", numberOfPermutations) + ".result"); ;
+            string filename = Path.Combine(@"log", kvp.Value.Alias + String.Format("-{0}", numberOfPermutations) + ".result"); ;
             DataStoreSplitter splitter = null;
 
             ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
             ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];                                    
+            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
 
             if (kvp.Value.CrossValidationActive)
             {
@@ -53,23 +54,25 @@ namespace ExceptionRulesTest
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
                         
-                    Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                    //for(int i = 0; i<100; i++)
+                    //Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                    for(int i = 0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
 
                         results1[t, i, f] = accuracy.Item1;
                         results2[t, i, f] = accuracy.Item2;
                         results3[t, i, f] = accuracy.Item3;
+                        results4[t, i, f] = accuracy.Item4;
 
                         Console.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
                         Console.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                        Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}|", f, t, i, results3[t, i, f]);
+                        Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                        Console.WriteLine("D|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         Console.WriteLine();
                     }
-                    );
+                    //);
 
-                    this.SaveResults(filename, results1, results2, results3);
+                    this.SaveResults(filename, results1, results2, results3, results4);
                 }                
             }            
         }
@@ -77,7 +80,8 @@ namespace ExceptionRulesTest
         private void SaveResults(string filename,
             ClassificationResult[, ,] results1,
             ClassificationResult[, ,] results2,
-            ClassificationResult[, ,] results3)
+            ClassificationResult[, ,] results3,
+            ClassificationResult[, ,] results4)
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {
@@ -92,13 +96,15 @@ namespace ExceptionRulesTest
                             outputFile.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
                             outputFile.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
                             outputFile.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                            outputFile.WriteLine("D|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         }
                     }
                 }
             }
-        }        
+        }
 
-        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon)
+        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult> 
+            ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon)
         {
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
             decimal eps = Decimal.Divide(epsilon, 100);
@@ -139,7 +145,7 @@ namespace ExceptionRulesTest
 
             ReductGeneratorWeightsMajority generator2 =
                 ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
-            generator2.Generate();            
+            generator2.Generate();
 
             RoughClassifier classifier2 = new RoughClassifier();
             classifier2.UseExceptionRules = false;
@@ -148,10 +154,32 @@ namespace ExceptionRulesTest
                 testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
             result2.QualityRatio = generator2.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
-            return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult>
+            Args parms4 = new Args();
+            parms4.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms4.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
+            parms4.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms4.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms4.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms4.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms4.AddParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+            parms4.AddParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+
+            ReductRandomSubsetGenerator generator4 =
+                ReductFactory.GetReductGenerator(parms4) as ReductRandomSubsetGenerator;
+            generator4.Generate();
+
+            RoughClassifier classifier4 = new RoughClassifier();
+            classifier4.UseExceptionRules = false;
+            classifier4.Classify(testData, generator4.GetReductStoreCollection());
+            ClassificationResult result4 = classifier4.Vote(
+                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+            result4.QualityRatio = generator4.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
+
+            return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
                 (result, 
                 result2, 
-                resultEx);                
+                resultEx,
+                result4);
         }
 
         private static ILog log;

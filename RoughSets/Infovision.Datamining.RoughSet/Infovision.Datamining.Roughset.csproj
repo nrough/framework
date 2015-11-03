@@ -154,6 +154,7 @@
     <Compile Include="ReductGenerator.cs" />
     <Compile Include="ReductMeasure.cs" />
     <Compile Include="EquivalenceClass.cs" />
+    <Compile Include="ReductRandomSubsetGenerator.cs" />
     <Compile Include="ReductStore.cs" />
     <Compile Include="ReductStoreCollection.cs" />
     <Compile Include="ReductStoreMulti.cs" />

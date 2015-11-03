@@ -61,5 +61,6 @@ namespace Infovision.Datamining.Roughset
         public const string ReductEnsembleBoostingVarEpsWithAttributeDiversity = "ReductEnsembleBoostingVarEpsWithAttributeDiversity";
         public const string GeneralizedMajorityDecision = "GeneralizedMajorityDecision";
         public const string GeneralizedMajorityDecisionApproximate = "GeneralizedMajorityDecisionApproximate";
+        public const string RandomSubset = "RandomSubset";
     }
 }

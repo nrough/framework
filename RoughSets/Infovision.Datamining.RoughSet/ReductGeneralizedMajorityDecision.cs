@@ -15,6 +15,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
+        /*
         public ReductGeneralizedMajorityDecision(DataStore dataStore)
             : base(dataStore, Decimal.Zero)
         {
@@ -26,6 +27,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.Init();
         }
+        */
 
         public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, decimal[] weights, decimal epsilon)
             : base(dataStore, fieldIds, weights, epsilon)

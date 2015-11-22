@@ -94,7 +94,18 @@ namespace Infovision.Datamining.Roughset
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
             this.Epsilon = epsilon;
-            this.objectWeights = weights;
+
+            if (weights != null)
+            {
+                this.objectWeights = weights;
+            }
+            else
+            {
+                this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
+                for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                    this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
+            }
+
         }
         
         public Reduct(DataStore dataStore, int [] fieldIds, decimal epsilon)

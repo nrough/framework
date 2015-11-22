@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
-    [TestFixture]
+    [TestFixture, Ignore]
     class ReductGeneralizedMajorityDecisionTest
     {
         public ReductGeneralizedMajorityDecisionTest()

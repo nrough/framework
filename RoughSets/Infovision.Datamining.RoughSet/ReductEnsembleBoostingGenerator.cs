@@ -278,8 +278,11 @@ namespace Infovision.Datamining.Roughset
 			} while (iterPassed < this.MaxIterations);
 						
 			// Normalize weights for models confidence
-			foreach (IReductStore rs in this.Models)
-				rs.Weight /= (decimal)alphaSum;
+			if (alphaSum != 0.0)
+			{
+				foreach (IReductStore rs in this.Models)
+					rs.Weight /= (decimal)alphaSum;
+			}
 		}		
 
 		protected virtual void AddModel(IReductStore model, double modelWeight)
@@ -318,9 +321,9 @@ namespace Infovision.Datamining.Roughset
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
 
-            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
+			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();
-            reduct.Reduce(permutation, this.MinReductLength);
+			reduct.Reduce(permutation, this.MinReductLength);
 
 			return reduct;
 		}

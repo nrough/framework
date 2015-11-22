@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     if (fieldInfo.HasMissingValues == false)
                         continue;
 
-                    long internalValue = dataStore.GetObjectField(i, fieldId);
+                    long internalValue = dataStore.GetFieldValue(i, fieldId);
                     long decisionValue = dataStore.GetDecisionValue(i);
 
                     Dictionary<long, Dictionary<long, int>> decisionMap = null;

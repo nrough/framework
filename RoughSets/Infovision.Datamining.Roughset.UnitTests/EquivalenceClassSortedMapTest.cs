@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(data, attributes, weightGenerator.Weights, 0.0M);                                                    
+                IReduct reduct = new ReductWeights(data, attributes, weightGenerator.Weights, 0.0M);                                                    
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {

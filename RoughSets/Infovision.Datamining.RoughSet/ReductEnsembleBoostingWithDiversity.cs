@@ -76,10 +76,10 @@ namespace Infovision.Datamining.Roughset
 			int[] attributes = new int[cutoff + 1];
 			for (int i = 0; i <= cutoff; i++)
 				attributes[i] = permutation[i];
-
-			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attributes, weights, 0);
+			
+            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attributes, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();
-			reduct.Reduce(attributes, this.MinReductLength);
+            reduct.Reduce(attributes, this.MinReductLength);
 
 			if (reduct.Attributes.Count < minimumLength)
 				throw new InvalidProgramException("Reduct length is less than minimum length");

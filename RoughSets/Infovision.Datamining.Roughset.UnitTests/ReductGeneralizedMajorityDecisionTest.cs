@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 foreach (Permutation permutation in permList)
                 {
-                    ReductGeneralizedMajorityDecision reduct = reductGenerator.CalculateReduct(permutation.ToArray());
+                    IReduct reduct = reductGenerator.CalculateReduct(permutation.ToArray());
                     Assert.NotNull(reduct);
                     Assert.GreaterOrEqual(reduct.Attributes.Count, 0);
 

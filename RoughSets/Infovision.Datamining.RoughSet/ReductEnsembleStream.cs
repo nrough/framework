@@ -160,15 +160,14 @@ namespace Infovision.Datamining.Roughset
             this.Epsilon = this.permEpsilon[idx - 1];
             Permutation permutation = this.Permutations[idx - 1];
             int cutoff = RandomSingleton.Random.Next(0, permutation.Length - 1);
-
-            //IReduct reduct = this.CreateReductObject(new int[] { }, this.permEpsilon[idx - 1], idx.ToString());
+            
             this.WeightGenerator.Generate();
             
             int[] attributes = new int[cutoff + 1];
             for (int i = 0; i <= cutoff; i++)
                 attributes[i] = permutation[i];
             
-            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
+            ReductWeights reduct = new ReductWeights(this.DataStore, attributes, this.WeightGenerator.Weights, this.Epsilon);
             reduct.Id = idx.ToString();
             foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 eq.RemoveObjectsWithMinorDecisions();

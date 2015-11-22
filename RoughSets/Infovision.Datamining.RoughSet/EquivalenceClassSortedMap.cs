@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderByTmp);
+                var dataVector = dataStore.GetFieldValues(i, orderByTmp);
                 EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
                 j = i;
                 while (comparer.Compare(i, j) == 0)
@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Roughset
             int i = 0, j = 0, sum = 0;                        
             while(i < sortedObjIdx.Length)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(sortedObjIdx[i], orderByTmp);
+                var dataVector = dataStore.GetFieldValues(sortedObjIdx[i], orderByTmp);
                 EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
                 long dec = dataStore.GetDecisionValue(sortedObjIdx[i]);
                 eq.AddObject(sortedObjIdx[i], dec, objectWeights[sortedObjIdx[i]]);
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
             int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
-                AttributeValueVector dataVector = dataStore.GetDataVector(i, orderByTmp);
+                var dataVector = dataStore.GetFieldValues(i, orderByTmp);
                 EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
                 j = i;
                 while (comparer.Compare(i, j) == 0)

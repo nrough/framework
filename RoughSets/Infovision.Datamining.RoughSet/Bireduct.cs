@@ -91,7 +91,7 @@ namespace Infovision.Datamining.Roughset
             if (this.ObjectSet.ContainsElement(objectIndex))
                 return false;
             
-            AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIndex, this.Attributes);
+            var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
             EquivalenceClass reductStatistics = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
             if (reductStatistics == null)
@@ -114,8 +114,8 @@ namespace Infovision.Datamining.Roughset
         public virtual bool TryAddObject(int objectIdx)
         {
             if (this.CheckAddObject(objectIdx))
-            {                
-                AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
+            {                                
+                var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
                 EquivalenceClass eq = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
                 
                 if (eq == null)
@@ -152,7 +152,7 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckRemoveObject(objectIdx))
             {
                 objectSet.RemoveElement(objectIdx);
-                AttributeValueVector dataVector = this.DataStore.GetDataVector(objectIdx, this.Attributes);
+                var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
                 this.EquivalenceClasses.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
                 return true;
             }

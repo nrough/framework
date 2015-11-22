@@ -464,16 +464,18 @@ namespace Infovision.Datamining.Roughset
                     foreach (IReduct reduct in rs)
                     {
                         if (UseExceptionRules == false && reduct.IsException)
-                            continue;                        
-                        
-                        int[] attributes = reduct.Attributes.ToArray();
-                        long[] values = new long[attributes.Length];
-                        for (int i = 0; i < attributes.Length; i++)
-                            values[i] = record[attributes[i]];
+                            continue;
 
-                        AttributeValueVector dataVector = new AttributeValueVector(attributes, values, false);
+                        long[] values = new long[reduct.Attributes.Count];
+                        int i = 0;
+                        foreach (int attribute in reduct.Attributes)
+                        {
+                            values[i] = record[attribute];
+                            i++;
+                        }
+                        
                         DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
-                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
+                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
                         if (eqClass != null)
                         {                            
                             foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
@@ -757,12 +759,26 @@ namespace Infovision.Datamining.Roughset
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
-                    sb.AppendLine(String.Format("{0} => {1}={2}", 
-                                    eq.Instance.ToString2(dataStoreInfo), 
+                    sb.AppendLine(String.Format("{0} => {1}={2}",
+                                    this.PrintDecisionRuleCondition(reduct.EquivalenceClasses.Attributes, eq.Instance, dataStoreInfo),
                                     dataStoreInfo.GetDecisionFieldInfo().Alias,
                                     dataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
                 sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+
+        private string PrintDecisionRuleCondition(int[] attributes, long[] values, DataStoreInfo dataStoreInfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                sb.Append(String.Format("{0}={1}",
+                        dataStoreInfo.GetFieldInfo(attributes[i]).Alias,
+                        dataStoreInfo.GetFieldInfo(attributes[i]).Internal2External(values[i])));
+                if (i != attributes.Length - 1)
+                    sb.Append(" & ");
             }
             return sb.ToString();
         }

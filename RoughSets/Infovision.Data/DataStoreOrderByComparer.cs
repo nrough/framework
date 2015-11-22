@@ -24,7 +24,7 @@ namespace Infovision.Data
             int result;            
             for (int i = 0; i < orderBy.Length; i++)
             {
-                result = dataStore.GetObjectField(x, orderBy[i]).CompareTo(dataStore.GetObjectField(y, orderBy[i]));
+                result = dataStore.GetFieldValue(x, orderBy[i]).CompareTo(dataStore.GetFieldValue(y, orderBy[i]));
                 if (result != 0)                                  
                     return result;                
             }            

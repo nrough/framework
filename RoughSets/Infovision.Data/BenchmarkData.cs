@@ -18,7 +18,7 @@ namespace Infovision.Data
         public virtual bool CrossValidationActive { get; set; }
         public virtual int CrossValidationFolds { get; set; }
         public virtual FileFormat FileFormat { get; set; }
-        public virtual bool MissingValues { get; set; }        
+        public virtual int DecisionFieldId { get; set; }
 
         protected BenchmarkData()
         {
@@ -27,7 +27,7 @@ namespace Infovision.Data
             this.CrossValidationActive = false;
             this.CrossValidationFolds = 1;
             this.FileFormat = FileFormat.Rses1;
-            this.MissingValues = false;
+            this.DecisionFieldId = -1;
         }
         
         public BenchmarkData(string alias, string dataFile, int folds)

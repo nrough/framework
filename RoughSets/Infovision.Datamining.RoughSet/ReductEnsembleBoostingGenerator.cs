@@ -318,12 +318,10 @@ namespace Infovision.Datamining.Roughset
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
 
-			ReductGeneralizedMajorityDecision reduct 
-				= new ReductGeneralizedMajorityDecision(
-					this.DataStore, permutation, weights, 0);
-
+            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();
-			reduct.Reduce(permutation, this.MinReductLength);
+            reduct.Reduce(permutation, this.MinReductLength);
+
 			return reduct;
 		}
 

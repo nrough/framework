@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset
         private decimal[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
-        private EquivalenceClassCollection eqClassMap;        
+        private EquivalenceClassCollection eqClassMap;
 
         #endregion
 

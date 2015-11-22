@@ -39,9 +39,9 @@ namespace ExceptionRulesTest
             dataFiles.Add("nursery", new BenchmarkData("nursery", @"Data\nursery.2.data", cvFolds));
             dataFiles.Add("breast", new BenchmarkData("breast", @"Data\breast-cancer-wisconsin.2.data", cvFolds));
             dataFiles.Add("soybean-small", new BenchmarkData("soybean-small", @"Data\soybean-small.2.data", cvFolds));
-            dataFiles.Add("soybean-large", new BenchmarkData("soybean-large", @"Data\soybean-large.data", @"Data\soybean-large.test"));
-            dataFiles.Add("house", new BenchmarkData("house", @"Data\house-votes-84.2.data", cvFolds));
-            dataFiles.Add("audiology", new BenchmarkData("audiology", @"Data\audiology.standardized.data", @"Data\audiology.standardized.test"));
+            dataFiles.Add("soybean-large", new BenchmarkData("soybean-large", @"Data\soybean-large.data", @"Data\soybean-large.test") { FileFormat = FileFormat.Csv, DecisionFieldId = 1});
+            dataFiles.Add("house", new BenchmarkData("house", @"Data\house-votes-84.2.data", cvFolds) { FileFormat = FileFormat.Rses1_1});
+            dataFiles.Add("audiology", new BenchmarkData("audiology", @"Data\audiology.standardized.data", @"Data\audiology.standardized.test") { FileFormat = FileFormat.Csv});
             dataFiles.Add("promoters", new BenchmarkData("promoters", @"Data\promoters.2.data", cvFolds));
             dataFiles.Add("mashroom", new BenchmarkData("mashroom", @"Data\agaricus-lepiota.2.data", cvFolds));
 

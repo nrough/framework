@@ -165,7 +165,7 @@ namespace Infovision.Data
             for (int i = 0; i < this.dataStoreInfo.NumberOfFields; i++)
             {
                 fieldId[i] = i + 1;
-                fieldValue[i] = this.GetObjectField(objectIndex, fieldId[i]);
+                fieldValue[i] = this.GetFieldValue(objectIndex, fieldId[i]);
             }
 
             DataRecordInternal ret = new DataRecordInternal(fieldId, fieldValue);
@@ -184,37 +184,35 @@ namespace Infovision.Data
 
         public AttributeValueVector GetDataVector(int objectIndex, int[] fieldIds)
         {
-            return new AttributeValueVector(fieldIds, this.GetObjectFields(objectIndex, fieldIds), false);
+            return new AttributeValueVector(fieldIds, this.GetFieldValues(objectIndex, fieldIds), false);
         }
 
         public AttributeValueVector GetDataVector(int objectIndex, FieldSet fieldSet)
         {
-            return new AttributeValueVector(fieldSet.ToArray(), this.GetObjectFields(objectIndex, fieldSet), false);
+            return new AttributeValueVector(fieldSet.ToArray(), this.GetFieldValues(objectIndex, fieldSet), false);
         }
 
-        public long[] GetObjectFields(int objectIndex, int[] fieldIds)
+        public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
             long[] data = new long[fieldIds.Length];
             for (int i = 0; i < fieldIds.Length; i++)
-            {
-                data[i] = this.GetObjectField(objectIndex, fieldIds[i]);
-            }
+                data[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
             return data;
         }
 
-        public long[] GetObjectFields(int objectIndex, FieldSet fieldSet)
+        public long[] GetFieldValues(int objectIndex, FieldSet fieldSet)
         {
             long[] data = new long[fieldSet.Count];
             int j = 0;
             for (int i = 0; i < fieldSet.Data.Length; i++)
             {
                 if(fieldSet.Data.Get(i))
-                    data[j++] = this.GetObjectField(objectIndex, i + fieldSet.LowerBound); 
+                    data[j++] = this.GetFieldValue(objectIndex, i + fieldSet.LowerBound); 
             }
             return data;
         }
 
-        public long GetObjectField(int objectIndex, int fieldId)
+        public long GetFieldValue(int objectIndex, int fieldId)
         {
             if(fieldId < this.DataStoreInfo.MinFieldId)
                 throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
@@ -284,7 +282,7 @@ namespace Infovision.Data
 
         public long GetDecisionValue(int objectIndex)
         {
-            return this.GetObjectField(objectIndex, this.DataStoreInfo.DecisionFieldId);
+            return this.GetFieldValue(objectIndex, this.DataStoreInfo.DecisionFieldId);
         }
 
         public long ObjectIndex2ObjectId(int objectIndex)

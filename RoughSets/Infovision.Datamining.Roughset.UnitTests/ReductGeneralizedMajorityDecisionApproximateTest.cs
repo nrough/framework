@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
             
             Decimal dataQuality = new InformationMeasureWeights().Calc(
-                new ReductGeneralizedMajorityDecision(
+                new ReductWeights(
                     data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero));
 
             Decimal dataQuality_2 = new InformationMeasureWeights().Calc(

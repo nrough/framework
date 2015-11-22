@@ -35,5 +35,16 @@ namespace Infovision.Utils
             return newMap;
         }
 
+        public static Dictionary<TKey, TValue> CloneDictionaryCloningValues<TKey, TValue>
+            (this Dictionary<TKey, TValue> original)
+            where TKey : ICloneable
+            where TValue : ICloneable
+        {
+            Dictionary<TKey, TValue> ret = new Dictionary<TKey, TValue>(original.Count, original.Comparer);
+            foreach (KeyValuePair<TKey, TValue> entry in original)
+                ret.Add((TKey)entry.Key.Clone(), (TValue)entry.Value.Clone());
+            return ret;
+        }
+
     }
 }

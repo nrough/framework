@@ -28,7 +28,11 @@ namespace ExceptionRulesTest
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);                
+                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);
+
+                if (kvp.Value.DecisionFieldId != -1)
+                    data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
+
                 splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
             }
 
@@ -43,8 +47,13 @@ namespace ExceptionRulesTest
                 }
                 else if(f == 0)
                 {
-                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);                
+                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+                    if (kvp.Value.DecisionFieldId != -1)
+                        trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
+
                     testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);                    
+                    if (kvp.Value.DecisionFieldId != -1)
+                        testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
                 }
 
                 for (int t = 0; t < numberOfTests; t++)
@@ -54,8 +63,8 @@ namespace ExceptionRulesTest
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
                         
-                    //Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                    for(int i = 0; i<100; i++)
+                    Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                    //for(int i = 0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
 
@@ -70,7 +79,7 @@ namespace ExceptionRulesTest
                         Console.WriteLine("D|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         Console.WriteLine();
                     }
-                    //);
+                    );
 
                     this.SaveResults(filename, results1, results2, results3, results4);
                 }                

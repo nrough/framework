@@ -335,7 +335,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
-					AttributeValueVector dataVector = localDataStoreTrain.GetDataVector(j, reduct.Attributes);
+					var dataVector = localDataStoreTrain.GetFieldValues(j, reduct.Attributes);
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
 					long mostFrequentDecisionValue = eqClass.MajorDecision;
 

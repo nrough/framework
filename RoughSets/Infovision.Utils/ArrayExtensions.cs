@@ -84,6 +84,6 @@ namespace Infovision.Utils
                     sb.Append('|');
             }
             return sb.ToString();
-        }
+        }        
     }
 }

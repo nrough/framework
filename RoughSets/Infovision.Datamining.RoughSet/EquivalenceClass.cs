@@ -13,8 +13,8 @@ namespace Infovision.Datamining.Roughset
     public class EquivalenceClass : ICloneable
     {
         #region Members
-
-        private AttributeValueVector dataVector; //attributes and values for this class
+        
+        private long[] dataVector;
         private Dictionary<int, decimal> instances;  //map: objectId -> object weight
         private bool isStatCalculated; //flags if statistics have been calculated
         private decimal totalWeightSum; //sum of object weights belonging to this class
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset
             set { this.instances = value; }
         }
 
-        public AttributeValueVector Instance
+        public long[] Instance
         {
             get { return this.dataVector; }
         }
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
-        public EquivalenceClass(AttributeValueVector dataVector, DataStore data, bool manualStatCalculation = false)
+        public EquivalenceClass(long[] dataVector, DataStore data, bool manualStatCalculation = false)
         {
             this.dataStore = data;
             int numberOfDecisions = data.DataStoreInfo.GetDecisionFieldInfo().InternalValues().Count;
@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset
             this.ManualStatCalculation = manualStatCalculation;
         }
 
-        public EquivalenceClass(AttributeValueVector dataVector, bool manualStatCalculation = false)
+        public EquivalenceClass(long[] dataVector, bool manualStatCalculation = false)
         {
             this.dataVector = dataVector;
             this.instances = new Dictionary<int, decimal>();
@@ -128,8 +128,10 @@ namespace Infovision.Datamining.Roughset
         }
 
         private EquivalenceClass(EquivalenceClass eqClass)
-        {            
-            this.dataVector = new AttributeValueVector(eqClass.dataVector.Attributes, eqClass.dataVector.Values, true);
+        {                        
+            this.dataVector = new long[eqClass.dataVector.Length];
+            Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);
+
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.isStatCalculated = eqClass.isStatCalculated;            
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(eqClass.decisionObjectIndexes.Count);            
@@ -400,7 +402,7 @@ namespace Infovision.Datamining.Roughset
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("{0} ", this.Instance);
+            stringBuilder.AppendFormat("{0} ", this.Instance.ToStr());
             stringBuilder.AppendFormat("d=[{0}] ", this.DecisionSet);
             return stringBuilder.ToString();
         }

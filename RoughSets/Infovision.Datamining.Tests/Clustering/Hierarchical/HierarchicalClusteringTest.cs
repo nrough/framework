@@ -78,7 +78,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             //DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             //Bitmap bitmap = dc.GetAsBitmap();
-            //string fileName = @"Dendrogram\Dendrogram_LCA.bmp";
+            //string fileName = @"Dendrogram_LCA.bmp";
             //bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
 
             Assert.AreEqual(8, hClustering.GetLeafDistance(1, 5));
@@ -178,11 +178,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             int[] leaves = hClustering.GetLeaves();
             Assert.IsTrue(true);
-            foreach (int i in leaves)
-            {
-                Console.Write("{0} ", i);
-            }
-            Console.WriteLine();    
+            //foreach (int i in leaves)
+            //    Console.Write("{0} ", i);
+            //Console.WriteLine();    
         }
 
         [Test]
@@ -204,11 +202,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             int[] leaves = hClustering.GetLeaves();
             Assert.IsTrue(true);
-            foreach (int i in leaves)
-            {
-                Console.Write("{0} ", i);
-            }
-            Console.WriteLine();            
+            //foreach (int i in leaves)
+            //    Console.Write("{0} ", i);
+            //Console.WriteLine();            
         }
 
 
@@ -223,8 +219,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
             
-            Console.Write(hClustering.ToString());
-            Console.WriteLine();
+            //Console.Write(hClustering.ToString());
+            //Console.WriteLine();
 
             DendrogramChart dc = new DendrogramChart(hClustering, 640, 480);
             Bitmap bitmap = dc.GetAsBitmap();

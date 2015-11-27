@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		[TestCase(2, 7, 20)]
 		public void LoadDataTable(int cvFolds, int numberOfReducts, int epsilon)
 		{
-			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
+			//Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
 			permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
 			
 			DataTable rawData;
@@ -230,20 +230,20 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				{
 					var reduct = roughClassifier.ReductStore.GetReduct(i);
 					var measure = new InformationMeasureMajority().Calc(reduct);
-					Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
+					//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
 					double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
-					for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
-					{
-						Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVerctor[j]);
-					}
-					Console.Write(Environment.NewLine);
+					//for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
+					//{
+					//	Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVector[j]);
+					//}
+					//Console.Write(Environment.NewLine);
 				}
 
 				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
 				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);				
 
-				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
+				//Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
 				return new CrossValidationValues<RoughClassifier>(roughClassifier,
 																	classificationResultTrn.Accuracy,
@@ -252,7 +252,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 			var result = val.Compute();
 
-			Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
+			//Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
 		}
 
 		public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
@@ -274,10 +274,10 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 		
 
-		[TestCase(7, 20)]
-		public void DiscernibilityVectorTest(int numberOfReducts, int epsilon)
+		[TestCase(7, 0.1)]
+		public void DiscernibilityVectorTest(int numberOfReducts, decimal epsilon)
 		{
-			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
+			//Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
 
 			string testFile = @"Data\DiscernibilityVectorTest.csv";
 
@@ -331,13 +331,13 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			{
 				var reduct = roughClassifier.ReductStore.GetReduct(i);
 				var measure = new InformationMeasureMajority().Calc(reduct);
-				Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
+				//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
-				double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
+				double[] discernVector = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
 				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 				{
 					long objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);
-					Console.Write("({0} {1}) ", objectId, discernVerctor[j]);
+					//Console.Write("({0} {1}) ", objectId, discernVector[j]);
 
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
@@ -349,16 +349,16 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					if (decisionValue == mostFrequentDecisionValue)
 					{
 						if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
-							Assert.Greater(discernVerctor[j], 0);                                                   
+							Assert.Greater(discernVector[j], 0);                                                   
 					}
 					else
 					{
 						if (eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
-							Assert.AreEqual(0, discernVerctor[j]);
+							Assert.AreEqual(0, discernVector[j]);
 					}
 					
 				}
-				Console.Write(Environment.NewLine);
+				//Console.Write(Environment.NewLine);
 			}
 								
 		}

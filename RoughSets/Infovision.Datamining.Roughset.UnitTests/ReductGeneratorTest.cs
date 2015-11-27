@@ -49,8 +49,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             bool showInfo = false;
             
-            if (showInfo)
-                Console.WriteLine(factoryKey);
+            //if (showInfo)
+            //    Console.WriteLine(factoryKey);
 
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
 
@@ -63,10 +63,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int i = 0; i <= 100; i += 1)
             {
-                if (showInfo)
-                {
-                    Console.WriteLine("Epsilon: {0}", i);
-                }
+                //if (showInfo)
+                //    Console.WriteLine("Epsilon: {0}", i);
 
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
@@ -102,10 +100,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     foreach (IReduct reduct in roughClassifier.ReductStore)
                     {
-                        if (showInfo)
-                        {
-                            Console.WriteLine(reduct);
-                        }
+                        //if (showInfo)
+                        //    Console.WriteLine(reduct);
 
                         EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);
                         partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
@@ -160,7 +156,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             int stop = Environment.TickCount;
 
-            Console.WriteLine("Multi-thread timing is {0}", stop - start);
+            //Console.WriteLine("Multi-thread timing is {0}", stop - start);
         }
 
         [Test, Ignore]        
@@ -178,7 +174,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             int stop = Environment.TickCount;
 
-            Console.WriteLine("Single-thread timing is {0}", stop - start);
+            //Console.WriteLine("Single-thread timing is {0}", stop - start);
         }
 
         [Test, Ignore]
@@ -219,10 +215,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
 
-            for (int numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
-            {
-                Console.WriteLine("{0}: {1}", numberOfThreads, results[numberOfThreads] / 100);
-            }
+            //for (int numberOfThreads = 1; numberOfThreads < 64; numberOfThreads++)
+            //    Console.WriteLine("{0}: {1}", numberOfThreads, results[numberOfThreads] / 100);
         }
 
         private class WorkerTaskInfo

@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 newClustering.Compute();
 
                 double correlation = newClustering.BakersGammaIndex(this);
-                Console.WriteLine("{0} {1}", this.NumberOfInstances, correlation);
+                //Console.WriteLine("{0} {1}", this.NumberOfInstances, correlation);
 
                 this.Root = newClustering.Root;
                 this.NextClusterId = newClustering.NextClusterId;

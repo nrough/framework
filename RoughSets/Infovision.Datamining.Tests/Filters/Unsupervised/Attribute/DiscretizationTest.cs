@@ -18,19 +18,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
             Discretization disc = new Discretization();
             disc.Compute(data, numberOfBins: 3);
 
-            Console.WriteLine(disc.ToStringCuts());
+            //Console.WriteLine(disc.ToStringCuts());
             
-            for (int i = 0; i < data.Length; i++)
-            {
-                Console.WriteLine("{0} {1}", data[i], disc.Search(data[i]));
-            }
+            //for (int i = 0; i < data.Length; i++)
+            //    Console.WriteLine("{0} {1}", data[i], disc.Search(data[i]));
 
             double[] dataNotExisting = { 0, 1, 2, 3, 4, 5, 6, 11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34, 50, 60, 70, 80 };
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Console.WriteLine("{0} {1}", dataNotExisting[i], disc.Search(dataNotExisting[i]));
-            }
+            //for (int i = 0; i < data.Length; i++)
+            //    Console.WriteLine("{0} {1}", dataNotExisting[i], disc.Search(dataNotExisting[i]));
         }    
     }
 }

@@ -212,7 +212,7 @@ namespace Infovision.Test
                     testLoop++;
 
                     ParameterValueVector parameterVector = (ParameterValueVector)testObject.Current;
-                    Console.WriteLine("{0}", parameterVector);
+                    //Console.WriteLine("{0}", parameterVector);
 
                     testObject.Run();
 
@@ -244,9 +244,7 @@ namespace Infovision.Test
             {
                 runFlag = RunSingleTest();
                 if (this.testLoop > 0 && this.testLoop % 100 == 0)
-                {
                     this.SaveResults();
-                }
             }
 
             this.SaveResults();

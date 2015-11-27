@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
-            Console.WriteLine(data.Name);
+            //Console.WriteLine(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 1;
@@ -47,7 +47,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Assert.NotNull(reduct);
                     Assert.GreaterOrEqual(reduct.Attributes.Count, 0);
 
-                    Console.WriteLine(reduct);
+                    //Console.WriteLine(reduct);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace Infovision.Math.Tests
             DistanceMatrix distance = new DistanceMatrix(Accord.Math.Distance.SquareEuclidean);
             distance.Initialize(data);
 
-            Console.Write(distance.ToString());
+            //Console.Write(distance.ToString());
             Assert.IsTrue(true);
 
             /*

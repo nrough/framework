@@ -57,7 +57,6 @@ namespace Infovision.Data
 
                 if (i == decisionIdx)
                 {
-                    dataStoreInfo.DecisionFieldId = fieldInfo.Id;
                     dataStoreInfo.AddFieldInfo(fieldInfo, FieldTypes.Decision);
                 }
                 else if (i == idIdx)

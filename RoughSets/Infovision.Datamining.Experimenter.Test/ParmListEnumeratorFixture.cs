@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ParameterValueEnumerator_GenerateIntegerList()
         {
-            Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerList ****");
+            //Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerList ****");
             
             IParameter parmA = new ParameterValueCollection<int>("A", new int[] {0, 1});
             IParameter parmB = new ParameterValueCollection<int>("B", new int[] {0, 1});
@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ParameterValueEnumerator_GenerateStringList()
         {
-            Console.WriteLine("*** ParameterValueEnumerator_GenerateStringList ****");
+            //Console.WriteLine("*** ParameterValueEnumerator_GenerateStringList ****");
             
             IParameter parmA = new ParameterValueCollection<string>("A", new string[] { "1", "2", "3" });
             IParameter parmB = new ParameterValueCollection<string>("B", new string[] { "1", "2", "3" });
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ParameterValueEnumerator_GenerateMixedList()
         {
-            Console.WriteLine("*** ParameterValueEnumerator_GenerateMixedList ****");
+            //Console.WriteLine("*** ParameterValueEnumerator_GenerateMixedList ****");
 
             IParameter parmA = new ParameterValueCollection<int>("A", new int[] { 1, 2, 3 });
             IParameter parmB = new ParameterValueCollection<string>("B", new string[] { "A", "B", "C" });
@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ParameterValueEnumerator_GenerateIntegerRangeList()
         {
-            Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerRangeList ****");
+            //Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerRangeList ****");
 
             IParameter parmA = new ParameterNumericRange<int>("RangeA", 1, 3, 1);
             IParameter parmB = new ParameterNumericRange<int>("RangeB", 1, 3, 1);
@@ -100,7 +100,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void ParameterValueEnumerator_GenerateDoubleRangeList()
         {
-            Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerRangeList ****");
+            //Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerRangeList ****");
 
             IParameter parmA = new ParameterNumericRange<double>("RangeA", 2.05, 3.07, 0.15);
             IParameter parmB = new ParameterNumericRange<double>("RangeB", 0.05, 3.46, 0.15);

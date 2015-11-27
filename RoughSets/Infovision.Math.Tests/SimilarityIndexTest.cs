@@ -89,7 +89,7 @@ namespace Infovision.Math.Tests
             ShowVector(vec2);
             double result = Similarity.Tversky(vec1, vec2, alpha, beta);
             Assert.That(result, Is.Not.NaN);
-            Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
+            //Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
 
@@ -98,7 +98,7 @@ namespace Infovision.Math.Tests
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < vector.Length; i++)
                 sb.Append(String.Format("{0:f2}", vector[i])).Append(" ");
-            Console.WriteLine(sb.ToString());
+            //Console.WriteLine(sb.ToString());
         }
 
         [TestCase(1.0, 1.0)]
@@ -117,7 +117,7 @@ namespace Infovision.Math.Tests
         private void RunTverskySymetric(double[] vec1, double[] vec2, double alpha, double beta)
         {
             double result = Similarity.TverskySymetric(vec1, vec2, alpha, beta);
-            Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
+            //Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
         
@@ -207,7 +207,7 @@ namespace Infovision.Math.Tests
         [Test, TestCaseSource("GetSimilarityWeightedFunctions")]
         public void WeightedFunctionsTest(Func<double[], double[], double[], double> distance)
         {                        
-            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+            //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
             double[][] v = SimilarityTest.GetBinaryVectors();
             double[] w = SimilarityTest.GetWeights();
 
@@ -253,10 +253,8 @@ namespace Infovision.Math.Tests
             CalcDistanceWeighted("(31, 31)", distance, v[31], v[31], w, testResults);//35
 
             testResults.Sort(new DistanceFunctionResultComparer());
-            foreach (DistanceFunctionResult result in testResults)
-            {
-                Console.WriteLine(result);
-            }
+            //foreach (DistanceFunctionResult result in testResults)
+            //    Console.WriteLine(result);
                      
         }
 
@@ -309,7 +307,7 @@ namespace Infovision.Math.Tests
         [Test, TestCaseSource("GetSimilarityNotWeightedFunctions")]
         public void NotWeightedFunctionsTest(Func<double[], double[], double> distance)
         {
-            Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
+            //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
             double[][] v = SimilarityTest.GetBinaryVectors();
 
             List<DistanceFunctionResult> testResults = new List<DistanceFunctionResult>();
@@ -354,10 +352,8 @@ namespace Infovision.Math.Tests
             CalcDistanceNotWeighted("(31, 31)", distance, v[31], v[31], testResults);//35 
 
             testResults.Sort(new DistanceFunctionResultComparer());
-            foreach (DistanceFunctionResult result in testResults)
-            {
-                Console.WriteLine(result);
-            }
+            //foreach (DistanceFunctionResult result in testResults)
+            //    Console.WriteLine(result);
         }
 
         private double CalcDistanceNotWeighted(string id, Func<double[], double[], double> distance, double[] v1, double[] v2, List<DistanceFunctionResult> resultList)

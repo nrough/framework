@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             engine.SetSymbol("greetings", charVec);
             engine.Evaluate("str(greetings)"); // print out in the console
             string[] a = engine.Evaluate("'Hi there .NET, from the R engine'").AsCharacter().ToArray();
-            Console.WriteLine("R answered: '{0}'", a[0]);
+            //Console.WriteLine("R answered: '{0}'", a[0]);
             //Console.WriteLine("Press any key to exit the program");            
             //Console.ReadKey();
             engine.Dispose();

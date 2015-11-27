@@ -191,9 +191,7 @@ namespace Infovision.RunTest.UnitTests
         private void RunNTests(TestRunner testRunner, int n)
         {
             for (int i = 0; i < n; i++)
-            {
                 testRunner.RunSingleTest();
-            }
         }
 
         [Test]

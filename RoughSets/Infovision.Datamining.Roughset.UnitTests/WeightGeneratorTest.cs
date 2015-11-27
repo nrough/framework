@@ -85,7 +85,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int i = 0;
             foreach (IReduct reduct in redStore)
             {
-                Console.WriteLine(reduct);
+                //Console.WriteLine(reduct);
                 IReduct redW = redStoreW.GetReduct(i);
                 i++;
 
@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int i = 0;
             foreach (IReduct reduct in redStore)
             {
-                Console.WriteLine(reduct);
+                //Console.WriteLine(reduct);
                 IReduct redW = redStoreW.GetReduct(i);
                 i++;
 
@@ -355,9 +355,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 
-            Console.WriteLine(permutationList);
-            Console.WriteLine(reductStore1);
-            Console.WriteLine(reductStore2);
+            //Console.WriteLine(permutationList);
+            //Console.WriteLine(reductStore1);
+            //Console.WriteLine(reductStore2);
 
             for (int i = 0; i < reductStore1.Count; i++)
             {
@@ -401,9 +401,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 
-            Console.WriteLine(permutationList);
-            Console.WriteLine(reductStore1);
-            Console.WriteLine(reductStore2);
+            //Console.WriteLine(permutationList);
+            //Console.WriteLine(reductStore1);
+            //Console.WriteLine(reductStore2);
 
             for (int i = 0; i < reductStore1.Count; i++)
             {

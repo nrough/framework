@@ -469,7 +469,7 @@ namespace Infovision.Datamining.Roughset
             long result = -1;
             foreach (var kvp in votes)
             {
-                if (maxValue > kvp.Value)
+                if (maxValue < kvp.Value)
                 {
                     maxValue = kvp.Value;
                     result = kvp.Key;

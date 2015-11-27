@@ -120,20 +120,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv");
             }
 
-            Console.WriteLine("------------------------ Reduct Pool ------------------------");
-            Console.WriteLine(reductGenerator.ReductPool);
+            //Console.WriteLine("------------------------ Reduct Pool ------------------------");
+            //Console.WriteLine(reductGenerator.ReductPool);
 
             ReductEnsembleGenerator rEnsembleGen = reductGenerator as ReductEnsembleGenerator;
             if (rEnsembleGen != null)
             {
-                Console.WriteLine("------------------------ Distances ------------------------");
-                Console.WriteLine(rEnsembleGen.Dendrogram.DistanceMatrix);
+                //Console.WriteLine("------------------------ Distances ------------------------");
+                //Console.WriteLine(rEnsembleGen.Dendrogram.DistanceMatrix);
 
-                Console.WriteLine("------------------------ Linkages ------------------------");
-                Console.WriteLine(rEnsembleGen.Dendrogram);
+                //Console.WriteLine("------------------------ Linkages ------------------------");
+                //Console.WriteLine(rEnsembleGen.Dendrogram);
             }
 
-            Console.WriteLine("------------------------ Reduct Groups ------------------------");
+            //Console.WriteLine("------------------------ Reduct Groups ------------------------");
             
             foreach (IReductStore reductStore in reductStoreCollection)
             {
@@ -147,7 +147,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             //return;
 
-            Console.WriteLine("------------------------ Ensembles ------------------------");
+            //Console.WriteLine("------------------------ Ensembles ------------------------");
             
             ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);
             int counter = 0;
@@ -190,8 +190,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void PrintResult(IReductStore reductStore, ClassificationResult classificationResult)
         {
-            Console.WriteLine(reductStore);            
-            Console.WriteLine(classificationResult.ToString2());
+            //Console.WriteLine(reductStore);            
+            //Console.WriteLine(classificationResult.ToString2());
         }
     }
 }

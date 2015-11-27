@@ -42,8 +42,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             Assert.IsTrue(true);
 
-            Console.Write(matrix.ToString());
-            Console.WriteLine();
+            //Console.Write(matrix.ToString());
+            //Console.WriteLine();
 
         }
 

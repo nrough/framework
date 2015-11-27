@@ -50,9 +50,13 @@ namespace Infovision.Data
             {
                 if (this.decisionFieldId != value)
                 {
-                    int prevDecisionFieldId = this.decisionFieldId;
+                    if (this.decisionFieldId != 0)
+                    {
+                        int prevDecisionFieldId = this.decisionFieldId;
+                        fieldTypes[prevDecisionFieldId] = FieldTypes.Standard;
+                    }
+                    
                     this.decisionFieldId = value;
-                    fieldTypes[prevDecisionFieldId] = FieldTypes.Standard;
                     fieldTypes[this.decisionFieldId] = FieldTypes.Decision;                    
                 }
             }
@@ -127,7 +131,7 @@ namespace Infovision.Data
                     numberOfNotIncludedFields += this.fieldTypeCount[ft];
                 }
             }                       
-
+             
             return numberOfFields - numberOfNotIncludedFields;
         }
 
@@ -140,7 +144,7 @@ namespace Infovision.Data
 
             if (fieldType == FieldTypes.Decision)
             {
-                this.decisionFieldId = fieldInfo.Id;
+                this.DecisionFieldId = fieldInfo.Id;
             }
 
             if (fieldInfo.HasMissingValues)

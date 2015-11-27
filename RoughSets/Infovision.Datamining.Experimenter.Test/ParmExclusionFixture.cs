@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Experimenter.Test
         [Test]
         public void CreateExclusionList()
         {
-            Console.WriteLine("*** CreateExclusionList ****");
+            //Console.WriteLine("*** CreateExclusionList ****");
 
             IParameter parmA = new ParameterValueCollection<int>("A", new int[] { 1, 2, 3 });
             IParameter parmB = new ParameterValueCollection<int>("B", new int[] { 1, 2, 3 });

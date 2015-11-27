@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
         [Test]
         public void ComputeTest()
         {
-            Console.WriteLine("ReplaceMissingValuesTest.ComputeTest()");
+            //Console.WriteLine("ReplaceMissingValuesTest.ComputeTest()");
 
             DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.Csv);            
             DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.Csv, trnData.DataStoreInfo);
@@ -60,6 +60,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
             ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
+            /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
                                       parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
@@ -75,6 +76,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
                                       resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
                                       resultTst.WeightMisclassified + resultTst.WeightUnclassified,
                                       reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
+            */
         }
     }
 }

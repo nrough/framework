@@ -18,6 +18,7 @@ using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using System.IO;
 
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
@@ -32,8 +33,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		private int numberOfAttributes;
 		private int[] attributes;
 		private PermutationCollection permutationList;
-		private IdentificationType identificationType;
-		private VoteType voteType;
+		private RuleQualityFunction identificationType;
+		private RuleQualityFunction voteType;
 		private int decisionIdx;
 		private int idIdx;
 		private string filename;
@@ -61,8 +62,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			decisionIdx = 21;
 			idIdx = 0;
 			
-			identificationType = IdentificationType.Confidence;
-			voteType = VoteType.MajorDecision;
+			identificationType = RuleQuality.Confidence;
+			voteType = RuleQuality.SingleVote;
 
 			nominalAttributes = new string[] { "a1", "a3", "a4", "a6", "a7", "a9", "a10", "a12", "a14", "a15", "a17", "a19", "a20", "d" };
 			continuesAttributes = new string[] { "a2", "a5", "a8", "a11", "a13", "a16", "a18" };
@@ -222,7 +223,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				RoughClassifier roughClassifier = new RoughClassifier();
 				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
 
-				roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+				roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts, identificationType, voteType);
 				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);				
 
 				for(int i=0; i<roughClassifier.ReductStore.Count; i++)
@@ -231,7 +232,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					var measure = new InformationMeasureMajority().Calc(reduct);
 					Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
-					double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
+					double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
 					for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 					{
 						Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVerctor[j]);
@@ -239,7 +240,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					Console.Write(Environment.NewLine);
 				}
 
-				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
 				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);				
 
 				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
@@ -277,15 +278,20 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		public void DiscernibilityVectorTest(int numberOfReducts, int epsilon)
 		{
 			Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
+
+            string testFile = @"Data\DiscernibilityVectorTest.csv";
+
 			permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
+            Assert.True(File.Exists(testFile));            
+            DataTable rawData;
 			
-			DataTable rawData;
-			using (GenericParserAdapter gpa = new GenericParserAdapter(@"Data\DiscernibilityVectorTest.csv"))
+            using (GenericParserAdapter gpa = new GenericParserAdapter(testFile))
 			{
-				gpa.ColumnDelimiter = " ".ToCharArray()[0];
+				gpa.ColumnDelimiter = ' ';
 				gpa.FirstRowHasHeader = true;
 				gpa.IncludeFileLineNumber = false;
 				gpa.TrimResults = true;
+                gpa.SkipEmptyRows = true;                
 
 				rawData = gpa.GetDataTable();
 			}
@@ -318,7 +324,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			
 			RoughClassifier roughClassifier = new RoughClassifier();
 			roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permList);
-			roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts);
+            roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts, identificationType, voteType);
 			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);
 
 			for(int i=0; i<roughClassifier.ReductStore.Count; i++)
@@ -327,7 +333,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				var measure = new InformationMeasureMajority().Calc(reduct);
 				Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
-				double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
+				double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
 				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 				{
 					long objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);

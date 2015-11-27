@@ -163,9 +163,10 @@
     <Compile Include="ReductStoreWorkerTaskInfo.cs" />
     <Compile Include="ReductEnsembleStream.cs" />
     <Compile Include="ReductWeight.cs" />
-    <Compile Include="RoughClassifier.cs" />
+    <Compile Include="RoughClassifier_OLD.cs" />
     <Compile Include="InformationMeasure.cs" />
     <Compile Include="EquivalenceClassCollection.cs" />
+    <Compile Include="RoughClassifier.cs" />
     <Compile Include="RuleMeasure.cs" />
     <Compile Include="Weight\WeightBoostingGenerator.cs" />
     <Compile Include="Weight\WeightGenerator.cs" />

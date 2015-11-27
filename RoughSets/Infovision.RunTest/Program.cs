@@ -43,21 +43,21 @@ namespace Infovision.RunTest
             ITestParameter parmReductMeasure = new ParameterValueList<string>("ReductMeasure",
                                                                               new string[] { "ReductMeasureLength" });
 
-            ITestParameter parmIdentification = new ParameterValueList<IdentificationType>(ReductGeneratorParamHelper.IdentificationType, new IdentificationType[] { IdentificationType.Confidence,
-                                                                                                                                            IdentificationType.Coverage,
-                                                                                                                                            IdentificationType.WeightConfidence,
-                                                                                                                                            IdentificationType.WeightCoverage});
-            ITestParameter parmVote = new ParameterValueList<VoteType>(ReductGeneratorParamHelper.VoteType, new VoteType[] { VoteType.Confidence,
-                                                                                                    VoteType.Support,
-                                                                                                    VoteType.Ratio,
-                                                                                                    VoteType.Coverage,                                                                                                                                                                                                        
-                                                                                                    VoteType.Strength,
-                                                                                                    VoteType.WeightConfidence,
-                                                                                                    VoteType.WeightSupport, 
-                                                                                                    VoteType.WeightRatio,
-                                                                                                    VoteType.WeightCoverage,                                                                                                    
-                                                                                                    VoteType.MajorDecision,
-                                                                                                    VoteType.WeightStrength});
+            ITestParameter parmIdentification = new ParameterValueList<RuleQualityFunction>(ReductGeneratorParamHelper.IdentificationType, new RuleQualityFunction[] { RuleQuality.Confidence,
+                                                                                                                                            RuleQuality.Coverage,
+                                                                                                                                            RuleQuality.ConfidenceW,
+                                                                                                                                            RuleQuality.CoverageW});
+
+            ITestParameter parmVote = new ParameterValueList<RuleQualityFunction>(ReductGeneratorParamHelper.VoteType, new RuleQualityFunction[] { RuleQuality.Confidence,
+                                                                                                    RuleQuality.Support,
+                                                                                                    RuleQuality.Ratio,
+                                                                                                    RuleQuality.Coverage,                                                                                                                                                                                                        
+                                                                                                    RuleQuality.Strength,
+                                                                                                    RuleQuality.ConfidenceW,                                                                                                    
+                                                                                                    RuleQuality.RatioW,
+                                                                                                    RuleQuality.CoverageW,
+                                                                                                    RuleQuality.SingleVote,
+                                                                                                    RuleQuality.StrengthW});
  
             ParameterCollection parameterList = new ParameterCollection(new ITestParameter[] { parmDataStoreTraining,//0
                                                                                    parmDataStoreTest,//1
@@ -91,8 +91,8 @@ namespace Infovision.RunTest
             */
 
             /*
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { IdentificationType.WeightConfidence, ReductFactoryKeyHelper.ApproximateReductMajority }));
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { IdentificationType.WeightConfidence, ReductFactoryKeyHelper.ApproximateReductRelative }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { RuleQuality.ConfidenceW, ReductFactoryKeyHelper.ApproximateReductMajority }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { RuleQuality.ConfidenceW, ReductFactoryKeyHelper.ApproximateReductRelative }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { IdentificationType.WeightCoverage, ReductFactoryKeyHelper.ApproximateReductMajority }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { IdentificationType.WeightCoverage, ReductFactoryKeyHelper.ApproximateReductRelative }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.IdentificationType, "ReductType" }, new object[] { IdentificationType.WeightSupport, ReductFactoryKeyHelper.ApproximateReductMajority }));
@@ -100,8 +100,8 @@ namespace Infovision.RunTest
 
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightSupport, ReductFactoryKeyHelper.ApproximateReductMajority }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightSupport, ReductFactoryKeyHelper.ApproximateReductRelative }));
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightConfidence, ReductFactoryKeyHelper.ApproximateReductMajority }));
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightConfidence, ReductFactoryKeyHelper.ApproximateReductRelative }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { RuleQuality.ConfidenceW, ReductFactoryKeyHelper.ApproximateReductMajority }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { RuleQuality.ConfidenceW, ReductFactoryKeyHelper.ApproximateReductRelative }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightCoverage, ReductFactoryKeyHelper.ApproximateReductMajority }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightCoverage, ReductFactoryKeyHelper.ApproximateReductRelative }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightRatio, ReductFactoryKeyHelper.ApproximateReductMajority }));
@@ -109,9 +109,9 @@ namespace Infovision.RunTest
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightStrenght, ReductFactoryKeyHelper.ApproximateReductMajority }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, "ReductType" }, new object[] { VoteType.WeightStrenght, ReductFactoryKeyHelper.ApproximateReductRelative }));
 
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightConfidence, IdentificationType.Confidence }));
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightConfidence, IdentificationType.Coverage }));
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightConfidence, IdentificationType.Support }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { RuleQuality.ConfidenceW, IdentificationType.Confidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { RuleQuality.ConfidenceW, IdentificationType.Coverage }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { RuleQuality.ConfidenceW, IdentificationType.Support }));
 
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightCoverage, IdentificationType.Confidence }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightCoverage, IdentificationType.Coverage }));
@@ -130,23 +130,23 @@ namespace Infovision.RunTest
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightSupport, IdentificationType.Support }));  
 
  
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Confidence, IdentificationType.WeightConfidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Confidence, RuleQuality.ConfidenceW }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Confidence, IdentificationType.WeightCoverage }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Confidence, IdentificationType.WeightSupport }));
 
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Coverage, IdentificationType.WeightConfidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Coverage, RuleQuality.ConfidenceW }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Coverage, IdentificationType.WeightCoverage }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Coverage, IdentificationType.WeightSupport }));
 
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Ratio, IdentificationType.WeightConfidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Ratio, RuleQuality.ConfidenceW }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Ratio, IdentificationType.WeightCoverage }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Ratio, IdentificationType.WeightSupport }));
 
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Strenght, IdentificationType.WeightConfidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Strenght, RuleQuality.ConfidenceW }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Strenght, IdentificationType.WeightCoverage }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Strenght, IdentificationType.WeightSupport }));
 
-            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Support, IdentificationType.WeightConfidence }));
+            parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Support, RuleQuality.ConfidenceW }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.Support, IdentificationType.WeightCoverage }));
             parameterList.AddExclusion(new ParameterExclusion(new string[] { ReductGeneratorParamHelper.VoteType, ReductGeneratorParamHelper.IdentificationType }, new object[] { VoteType.WeightSupport, IdentificationType.WeightSupport }));
             */

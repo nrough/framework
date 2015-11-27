@@ -316,8 +316,7 @@ namespace Infovision.Test
     [CLSCompliant(false)]
     [Serializable]
     public class ParameterValue<T>
-        : TestParameter
-        where T : IConvertible
+        : TestParameter        
     {
         #region Globals
 
@@ -430,8 +429,7 @@ namespace Infovision.Test
     [CLSCompliant(false)] 
     [Serializable]
     public class ParameterValueList<T> 
-        : TestParameter
-        where T : IConvertible
+        : TestParameter        
     {
         #region Globals
         

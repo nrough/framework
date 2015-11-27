@@ -35,8 +35,8 @@ namespace Infovision.RunTest
         private string reductFactoryKey = String.Empty;
         private string reductMeasureKey = String.Empty;
         
-        private IdentificationType identificationType;
-        private VoteType voteType;
+        private RuleQualityFunction identificationType;
+        private RuleQualityFunction voteType;
 
         private DataStore lastDataStoreTrain = null;
         private DataStore lastDataStoreTest = null;
@@ -251,7 +251,7 @@ namespace Infovision.RunTest
 
             if (this.CheckReclassify())
             {
-                roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts);
+                roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
             }
 
             result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);            
@@ -316,10 +316,7 @@ namespace Infovision.RunTest
             parms.Append("InformationMeasure").Append('\t');
 
             parms.Append(ReductGeneratorParamHelper.IdentificationType).Append('\t');
-            parms.Append(ReductGeneratorParamHelper.VoteType).Append('\t');
-
-            parms.Append("RuleVoteCenseqentRating").Append('\t');
-            parms.Append("RuleVoteAntecedentRating").Append('\t');
+            parms.Append(ReductGeneratorParamHelper.VoteType).Append('\t');            
 
             parms.Append(ClassificationResult.ResultHeader());
 
@@ -346,10 +343,7 @@ namespace Infovision.RunTest
             parms.Digits(epsilon).Append('\t');
             parms.Append(reductFactoryKey).Append('\t');
             parms.Append(identificationType).Append('\t');
-            parms.Append(voteType).Append('\t');
-
-            parms.Append(Infovision.Datamining.Roughset.EnumHelper.VoteType2RuleVoteConseqentRating(voteType)).Append('\t');
-            parms.Append(Infovision.Datamining.Roughset.EnumHelper.VoteType2RuleVoteAntecedentRating(voteType)).Append('\t');
+            parms.Append(voteType).Append('\t');            
             
             parms.Append(result.ToString()).Append('\t');
 
@@ -368,8 +362,8 @@ namespace Infovision.RunTest
             reductFactoryKey = (string)args.GetParameter("ReductType");
             epsilon = (int)args.GetParameter("Epsilon");
             reductMeasureKey = (string)args.GetParameter("ReductMeasure");
-            identificationType = (IdentificationType)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
-            voteType = (VoteType)args.GetParameter(ReductGeneratorParamHelper.VoteType);
+            identificationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
+            voteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);
         }
 
         public bool MoveNext()

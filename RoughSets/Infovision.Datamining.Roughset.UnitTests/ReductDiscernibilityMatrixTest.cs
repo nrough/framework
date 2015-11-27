@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(dataStoreTrain, ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 20, permutationList);
-            IReductStoreCollection reductStoreCollection = classifier.Classify(dataStoreTrain);
+            IReductStoreCollection reductStoreCollection = classifier.Classify(dataStoreTrain, RuleQuality.CoverageW, RuleQuality.CoverageW);
             
             using (FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         {
                             foreach (IReduct red in rs)
                             {
-                                resultFile.Write(" {0,5}", classifier.IsObjectRecognizable(dataStoreTrain, objectId, red, IdentificationType.WeightCoverage));
+                                resultFile.Write(" {0,5}", classifier.IsObjectRecognizable(dataStoreTrain, objectId, red));
                             }
                         }
                         resultFile.Write(Environment.NewLine);

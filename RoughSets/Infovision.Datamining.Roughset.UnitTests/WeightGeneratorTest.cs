@@ -28,11 +28,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string localFileNameTest = @"Data\dna_modified.tst";
             DataStore dataStoreTest = DataStore.Load(localFileNameTest, FileFormat.Rses1);
 
-            classifier.Classify(dataStoreTest);
+            classifier.Classify(dataStoreTest, RuleQuality.Confidence, RuleQuality.SingleVote);
 
             ClassificationResult classificationResult = classifier.Vote(dataStoreTest,
-                                                                        IdentificationType.Confidence,
-                                                                        VoteType.MajorDecision,
+                                                                        RuleQuality.Confidence,
+                                                                        RuleQuality.SingleVote,
                                                                         null);
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Count);

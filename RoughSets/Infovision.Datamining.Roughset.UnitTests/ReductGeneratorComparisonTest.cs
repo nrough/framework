@@ -139,8 +139,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 RoughClassifier rc = new RoughClassifier();
                 rc.ReductStore = reductStore;
-                rc.Classify(testData);
-                ClassificationResult classificationResult = rc.Vote(testData, IdentificationType.Confidence, VoteType.MajorDecision, null);
+                rc.Classify(testData, RuleQuality.Confidence, RuleQuality.SingleVote);
+                ClassificationResult classificationResult = rc.Vote(testData, RuleQuality.Confidence, RuleQuality.SingleVote, null);
 
                 PrintResult(reductStore, classificationResult);
             }
@@ -169,10 +169,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 RoughClassifier rc = new RoughClassifier();
                 rc.ReductStore = tmpReductStore;
-                rc.Classify(testData);
+                rc.Classify(testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
                 ClassificationResult classificationResult = rc.Vote(testData, 
-                                                                    IdentificationType.WeightConfidence, 
-                                                                    VoteType.WeightConfidence,
+                                                                    RuleQuality.ConfidenceW, 
+                                                                    RuleQuality.ConfidenceW,
                                                                     null);
 
                 PrintResult(tmpReductStore, classificationResult);    

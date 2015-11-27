@@ -16,218 +16,54 @@ namespace Infovision.Datamining.Roughset
         private class DecisionRuleDescriptor
         {
             #region Members
-
-            private Dictionary<long, decimal> decisionSupport;
-            private Dictionary<long, decimal> decisionConfidence;
-            private Dictionary<long, decimal> decisionCoverage;
-            private Dictionary<long, decimal> decisionRatio;
-            private Dictionary<long, decimal> decisionStrenght;
-
-            private Dictionary<long, decimal> decisionWeightSupport;
-            private Dictionary<long, decimal> decisionWeightConfidence;
-            private Dictionary<long, decimal> decisionWeightCoverage;
-            private Dictionary<long, decimal> decisionWeightRatio;
-            private Dictionary<long, decimal> decisionWeightStrenght;
-
-            private Dictionary<long, decimal> decisionConfidenceRelative;
-
-            private readonly IRuleMeasure support = new RuleMeasureSupport();
-            private readonly IRuleMeasure confidence = new RuleMeasureConfidence();
-            private readonly IRuleMeasure coverage = new RuleMeasureCoverage();
-            private readonly IRuleMeasure ratio = new RuleMeasureRatio();
-            private readonly IRuleMeasure strenght = new RuleMeasureStrenght();
-
-            private readonly IRuleMeasure weightSupport = new RuleMeasureWeightSupport();
-            private readonly IRuleMeasure weightConfidence = new RuleMeasureWeightConfidence();
-            private readonly IRuleMeasure weightCoverage = new RuleMeasureWeightCoverage();
-            private readonly IRuleMeasure weightRatio = new RuleMeasureWeightRatio();
-            private readonly IRuleMeasure weightStrenght = new RuleMeasureWeightStrenght();
-
-            private readonly IRuleMeasure confidenceRelative = new RuleMeasureConfidenceRelative();
-
-            private Dictionary<string, long> identifiedDecision;
+            
+            private Dictionary<long, decimal> decisionQuality;
+            private Dictionary<long, decimal> decisionVotes;
 
             #endregion
 
             #region Constructors
-
-            public DecisionRuleDescriptor(int numberOfDecisionValues)
-            {
-                decisionSupport = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionConfidence = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionCoverage = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionRatio = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionStrenght = new Dictionary<long, decimal>(numberOfDecisionValues);
-
-                decisionWeightSupport = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionWeightConfidence = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionWeightCoverage = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionWeightRatio = new Dictionary<long, decimal>(numberOfDecisionValues);
-                decisionWeightStrenght = new Dictionary<long, decimal>(numberOfDecisionValues);
-
-                decisionConfidenceRelative = new Dictionary<long, decimal>(numberOfDecisionValues);
-
-                identifiedDecision = new Dictionary<string, long>(6);
-            }            
-
-            #endregion
-
-            #region Properties
             
-            public IRuleMeasure Support { get { return support; } }
-            public IRuleMeasure Confidence { get { return confidence; } }
-            public IRuleMeasure Coverage { get { return coverage; } }
-            public IRuleMeasure WeightSupport { get { return weightSupport; } }
-            public IRuleMeasure WeightConfidence { get { return weightConfidence; } }
-            public IRuleMeasure WeightCoverage { get { return weightCoverage; } }
-            public IRuleMeasure ConfidenceRelative { get { return confidenceRelative; } }
+            public DecisionRuleDescriptor()
+            {                
+                this.decisionQuality = new Dictionary<long, decimal>();
+                this.decisionVotes = new Dictionary<long, decimal>();
+            }
 
-            #endregion
+            #endregion            
 
             #region Methods
 
-            public void AddDescription(long decision, IReduct reduct, EquivalenceClass eqClass)
+            public void AddDescription(long decision, IReduct reduct, EquivalenceClass eqClass, RuleQualityFunction identifyFunction, RuleQualityFunction voteFunction)
             {                
-                decisionSupport.Add(decision, support.Calc(decision, reduct, eqClass));
-                decisionConfidence.Add(decision, confidence.Calc(decision, reduct, eqClass));
-                decisionCoverage.Add(decision, coverage.Calc(decision, reduct, eqClass));
-                
-                decisionRatio.Add(decision, ratio.Calc(decision, reduct, eqClass));
-                decisionStrenght.Add(decision, strenght.Calc(decision, reduct, eqClass));
-
-                decisionWeightSupport.Add(decision, weightSupport.Calc(decision, reduct, eqClass));
-                decisionWeightConfidence.Add(decision, weightConfidence.Calc(decision, reduct, eqClass));
-                decisionWeightCoverage.Add(decision, weightCoverage.Calc(decision, reduct, eqClass));
-                
-                decisionWeightRatio.Add(decision, weightRatio.Calc(decision, reduct, eqClass));
-                decisionWeightStrenght.Add(decision, weightStrenght.Calc(decision, reduct, eqClass));
-
-                decisionConfidenceRelative.Add(decision, confidenceRelative.Calc(decision, reduct, eqClass));
+                this.decisionQuality.Add(decision, identifyFunction(decision, reduct, eqClass));
+                this.decisionVotes.Add(decision, voteFunction(decision, reduct, eqClass));
             }
 
-            public void IdentifyDecision()
+            public long IdentifyDecision()
             {
-                identifiedDecision.Add(support.Description(), FindMaxValue(decisionSupport));
-                identifiedDecision.Add(confidence.Description(), FindMaxValue(decisionConfidence));
-                identifiedDecision.Add(coverage.Description(), FindMaxValue(decisionCoverage));
-
-                identifiedDecision.Add(weightSupport.Description(), FindMaxValue(decisionWeightSupport));
-                identifiedDecision.Add(weightConfidence.Description(), FindMaxValue(decisionWeightConfidence));
-                identifiedDecision.Add(weightCoverage.Description(), FindMaxValue(decisionWeightCoverage));
+                return decisionQuality.Count > 0 ? decisionQuality.FindMaxValue() : -1;
             }
 
-            private long FindMaxValue(Dictionary<long, decimal> dictionary)
+            public decimal GetDecisionQuality(long decision)
             {
-                long decision = -1;
-                decimal maxValue = Decimal.MinValue;
-
-                foreach (KeyValuePair<Int64, decimal> kvp in dictionary)
-                {                    
-                    if (kvp.Value > maxValue)
-                    {
-                        maxValue = kvp.Value;
-                        decision = kvp.Key;
-                    }
-                }
-                return decision;
-            }
-
-            public long GetIdentifiedDecision(string measureKey)
-            {
-                return identifiedDecision[measureKey];
-            }            
-
-            public decimal GetSupport(long decisionValue)
-            {
-                decimal result = 0;
-                if(decisionSupport.TryGetValue(decisionValue, out result))
+                decimal result = Decimal.Zero;
+                if (decisionQuality.TryGetValue(decision, out result))
                     return result;
-                return 0;
+                return Decimal.Zero;
             }
 
-            public decimal GetCoverage(long decisionValue)
+            public decimal GetRuleVote(long decision)
             {
-                decimal result = 0;
-                if (decisionCoverage.TryGetValue(decisionValue, out result))
+                decimal result = Decimal.Zero;
+                if (decisionVotes.TryGetValue(decision, out result))
                     return result;
-                return 0;
-            }
-
-            public decimal GetConfidence(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionConfidence.TryGetValue(decisionValue, out result))
-                    return result;               
-                return 0;
-            }
-
-            public decimal GetRatio(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionRatio.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetStrenght(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionStrenght.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetWeightSupport(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionWeightSupport.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetWeightCoverage(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionWeightCoverage.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetWeightConfidence(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionWeightConfidence.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetWeightRatio(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionWeightRatio.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetWeightStrenght(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionWeightStrenght.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
-            }
-
-            public decimal GetConfidenceRelative(long decisionValue)
-            {
-                decimal result = 0;
-                if (decisionConfidenceRelative.TryGetValue(decisionValue, out result))
-                    return result;
-                return 0;
+                return Decimal.Zero; 
             }
 
             #endregion
         }
-        
+
         #endregion
 
         #region ReductRuleDescriptor
@@ -304,8 +140,8 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private Dictionary<long, List<ReductRuleDescriptor>> objectReductDescriptorMap;
-        
-        #endregion        
+
+        #endregion
 
         #region Properties
 
@@ -339,14 +175,14 @@ namespace Infovision.Datamining.Roughset
             args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             args.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);            
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
-            reductGenerator.Epsilon = epsilon;            
+            reductGenerator.Epsilon = epsilon;
             reductGenerator.Generate();
-            this.ReductStore = reductGenerator.ReductPool;            
-            
+            this.ReductStore = reductGenerator.ReductPool;
+
             //TODO number of groups should be passed in a different way
             this.ReductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
         }
@@ -360,7 +196,7 @@ namespace Infovision.Datamining.Roughset
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
             PermutationCollection permutations = permGen.Generate(numberOfPermutations);
-            
+
             Train(trainingData, reductFactoryKey, epsilon, permutations);
         }
 
@@ -374,7 +210,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductStoreCollection = localReductStoreCollection;
         }
 
-        public void Classify(DataStore dataStore, IReduct reduct)
+        public void Classify(DataStore dataStore, IReduct reduct, RuleQualityFunction identifyFunction, RuleQualityFunction voteFunction)
         {
             ReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
             ReductStore localReductStore = new ReductStore();
@@ -383,27 +219,31 @@ namespace Infovision.Datamining.Roughset
 
             this.ReductStore = localReductStore;
             this.ReductStoreCollection = localReductStoreCollection;
-            
-            this.Classify(dataStore);
+
+            this.Classify(dataStore, identifyFunction, voteFunction);
         }
 
         public void Classify(
-            DataStore dataStore, 
-            IReductStoreCollection reductStoreCollection)
+            DataStore dataStore,
+            IReductStoreCollection reductStoreCollection,
+            RuleQualityFunction identifyFunction,
+            RuleQualityFunction voteFunction)
         {
             this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
-                this.objectReductDescriptorMap.Add(record.ObjectId, this.CalcReductDescriptiors(record, reductStoreCollection));
+                this.objectReductDescriptorMap.Add(record.ObjectId, this.CalcReductDescriptiors(record, reductStoreCollection, identifyFunction, voteFunction));
             }
         }
 
         public IReductStoreCollection Classify(
-            DataStore dataStore, 
-            string reductMeasureKey, 
-            int numberOfReducts, 
-            IReductStoreCollection reductStoreCollection)
+            DataStore dataStore,
+            string reductMeasureKey,
+            int numberOfReducts,
+            IReductStoreCollection reductStoreCollection,
+            RuleQualityFunction identifyFunction,
+            RuleQualityFunction voteFunction)
         {
             IReductStore localReductStore;
             //TODO Code smell!
@@ -428,33 +268,41 @@ namespace Infovision.Datamining.Roughset
                     localReductStoreCollection = reductStoreCollection;
                 }
             }
-                                    
+
             this.objectReductDescriptorMap = new Dictionary<long, List<ReductRuleDescriptor>>(dataStore.NumberOfRecords);
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
-                this.objectReductDescriptorMap.Add(record.ObjectId, this.CalcReductDescriptiors(record, localReductStoreCollection));
+                this.objectReductDescriptorMap.Add(record.ObjectId, this.CalcReductDescriptiors(record, localReductStoreCollection, identifyFunction, voteFunction));
             }
             return localReductStoreCollection;
         }
 
         public IReductStoreCollection Classify(
-            DataStore dataStore, 
-            string reductMeasureKey, 
-            int numberOfReducts)
+            DataStore dataStore,
+            string reductMeasureKey,
+            int numberOfReducts,
+            RuleQualityFunction identifyFunction,
+            RuleQualityFunction voteFunction)
         {
-            return this.Classify(dataStore, reductMeasureKey, numberOfReducts, this.ReductStoreCollection);
+            return this.Classify(dataStore, reductMeasureKey, numberOfReducts, this.ReductStoreCollection, identifyFunction, voteFunction);
         }
 
-        public IReductStoreCollection Classify(DataStore dataStore)
+        public IReductStoreCollection Classify(DataStore dataStore,
+            RuleQualityFunction identifyFunction,
+            RuleQualityFunction voteFunction)
         {
-            return this.Classify(dataStore, null, 0);
+            return this.Classify(dataStore, null, 0, identifyFunction, voteFunction);
         }
-        
-        private List<ReductRuleDescriptor> CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
+
+        private List<ReductRuleDescriptor> CalcReductDescriptiors(
+            DataRecordInternal record, 
+            IReductStoreCollection reductStoreCollection, 
+            RuleQualityFunction identifyFunction, 
+            RuleQualityFunction voteFunction)
         {
-            List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);                        
-            
+            List<ReductRuleDescriptor> result = new List<ReductRuleDescriptor>(reductStoreCollection.Count);
+
             foreach (IReductStore rs in reductStoreCollection)
             {
                 if (rs.IsActive)
@@ -473,13 +321,13 @@ namespace Infovision.Datamining.Roughset
                             values[i] = record[attribute];
                             i++;
                         }
-                        
-                        DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
+
+                        DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor();
                         EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
                         if (eqClass != null)
-                        {                            
+                        {
                             foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
-                                decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
+                                decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass, identifyFunction, voteFunction);
                         }
 
                         decisionRuleDescriptor.IdentifyDecision();
@@ -495,43 +343,43 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public double[] GetDiscernibilityVector(DataStore data, decimal[] weights, IReduct reduct, IdentificationType decisionIdentificationType)
+        public double[] GetDiscernibilityVector(DataStore data, decimal[] weights, IReduct reduct)
         {
             double[] result = new double[data.NumberOfRecords];
-            foreach(long objectId in data.GetObjectIds())
-            {                
+            foreach (long objectId in data.GetObjectIds())
+            {
                 int objectIdx = data.ObjectId2ObjectIndex(objectId);
-                if(this.IsObjectRecognizable(data, objectId, reduct, decisionIdentificationType))
+                if (this.IsObjectRecognizable(data, objectId, reduct))
                 {
                     result[objectIdx] = (double)weights[objectIdx];
-                }                                                
+                }
             }
 
             return result;
-            
+
         }
 
-        public ClassificationResult Vote(DataStore dataStore, IdentificationType identificationType, VoteType voteType, decimal[] weights)
+        public ClassificationResult Vote(DataStore dataStore, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction, decimal[] weights)
         {
             ClassificationResult classificationResult = new ClassificationResult(dataStore);
 
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
-                
-                long result = this.VoteObject(record, identificationType, voteType);                
+
+                long result = this.VoteObject(record, identificationFunction, voteFunction);
                 classificationResult.AddResult(dataStore.ObjectIndex2ObjectId(objectIndex), //objectId
                                                result,//predicted class
                                                dataStore.GetDecisionValue(objectIndex), //actual class
-                                               weights != null 
-                                                ? (double)weights[objectIndex] 
+                                               weights != null
+                                                ? (double)weights[objectIndex]
                                                 : 1.0 / dataStore.NumberOfRecords); //object weight from model
             }
 
             return classificationResult;
         }
-                
-        private long VoteObject(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
+
+        private long VoteObject(DataRecordInternal record, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction)
         {
             Dictionary<long, decimal> ensebleVotes = new Dictionary<long, decimal>();
             List<ReductRuleDescriptor> list = this.objectReductDescriptorMap[record.ObjectId];
@@ -540,95 +388,11 @@ namespace Infovision.Datamining.Roughset
             {
                 long result = -1;
                 decimal maxWeight = Decimal.Zero;
-                Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();                
+                Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();
                 foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
                 {
-                    long decision = -1;
-
-                    switch (identificationType)
-                    {
-                        case IdentificationType.Support:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.Support.Description());
-                            break;
-
-                        case IdentificationType.Confidence:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.Confidence.Description());
-                            break;
-
-                        case IdentificationType.Coverage:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.Coverage.Description());
-                            break;
-
-                        case IdentificationType.WeightSupport:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.WeightSupport.Description());
-                            break;
-
-                        case IdentificationType.WeightConfidence:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.WeightConfidence.Description());
-                            break;
-
-                        case IdentificationType.WeightCoverage:
-                            decision = decisionRuleDescriptor.GetIdentifiedDecision(decisionRuleDescriptor.WeightCoverage.Description());
-                            break;
-
-                        default:
-                            throw new ArgumentException("Unknown value", "identificationType");
-                    }
-
-                    decimal voteWeight = Decimal.Zero;
-                    switch (voteType)
-                    {
-                        case VoteType.Support:
-                            voteWeight = decisionRuleDescriptor.GetSupport(decision);
-                            break;
-
-                        case VoteType.Confidence:
-                            voteWeight = decisionRuleDescriptor.GetConfidence(decision);
-                            break;
-
-                        case VoteType.Coverage:
-                            voteWeight = decisionRuleDescriptor.GetCoverage(decision);
-                            break;
-
-                        case VoteType.Ratio:
-                            voteWeight = decisionRuleDescriptor.GetRatio(decision);
-                            break;
-
-                        case VoteType.Strength:
-                            voteWeight = decisionRuleDescriptor.GetStrenght(decision);
-                            break;
-
-                        case VoteType.MajorDecision:
-                            voteWeight = Decimal.One;
-                            break;
-
-                        case VoteType.WeightSupport:
-                            voteWeight = decisionRuleDescriptor.GetWeightSupport(decision);
-                            break;
-
-                        case VoteType.WeightConfidence:
-                            voteWeight = decisionRuleDescriptor.GetWeightConfidence(decision);
-                            break;
-
-                        case VoteType.WeightCoverage:
-                            voteWeight = decisionRuleDescriptor.GetWeightCoverage(decision);
-                            break;
-
-                        case VoteType.WeightRatio:
-                            voteWeight = decisionRuleDescriptor.GetWeightRatio(decision);
-                            break;
-
-                        case VoteType.WeightStrength:
-                            voteWeight = decisionRuleDescriptor.GetWeightStrenght(decision);
-                            break;
-
-                        case VoteType.ConfidenceRelative:
-                            voteWeight = decisionRuleDescriptor.GetConfidenceRelative(decision);
-                            break;
-
-                        default:
-                            throw new ArgumentException("Unknown value", "voteType");
-                    }
+                    long decision = decisionRuleDescriptor.IdentifyDecision();
+                    decimal voteWeight = decisionRuleDescriptor.GetRuleVote(decision);                   
 
                     decimal voteWeightSum = Decimal.Zero;
                     if (decisionVotes.TryGetValue(decision, out voteWeightSum))
@@ -640,13 +404,13 @@ namespace Infovision.Datamining.Roughset
                     {
                         voteWeightSum = voteWeight;
                         decisionVotes.Add(decision, voteWeightSum);
-                    }                    
+                    }
 
                     if (voteWeightSum > maxWeight)
                     {
                         maxWeight = voteWeightSum;
                         result = decision;
-                    }                    
+                    }
                 }
 
                 decimal ensembleWeightSum = Decimal.Zero;
@@ -658,7 +422,7 @@ namespace Infovision.Datamining.Roughset
                 else
                 {
                     ensebleVotes.Add(result, reductDescriptor.Weight);
-                }                
+                }
             }
 
             long ensembleResult = -1;
@@ -676,45 +440,17 @@ namespace Infovision.Datamining.Roughset
             return ensembleResult;
         }
 
-        public bool IsObjectRecognizable(DataStore dataStore, long objectId, IReduct reduct, IdentificationType identificationType)
-        {            
+        public bool IsObjectRecognizable(DataStore dataStore, long objectId, IReduct reduct)
+        {
             List<ReductRuleDescriptor> list = this.objectReductDescriptorMap[objectId];
             Dictionary<long, decimal> votes = new Dictionary<long, decimal>();
 
             foreach (ReductRuleDescriptor reductDescriptor in list)
             {
                 long identifiedDecision = -1;
-                
-                DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);                
-                switch (identificationType)
-                {
-                    case IdentificationType.Support:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Support.Description());
-                        break;
 
-                    case IdentificationType.Confidence:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Confidence.Description());
-                        break;
-
-                    case IdentificationType.Coverage:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.Coverage.Description());
-                        break;
-
-                    case IdentificationType.WeightSupport:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightSupport.Description());
-                        break;
-
-                    case IdentificationType.WeightConfidence:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightConfidence.Description());
-                        break;
-
-                    case IdentificationType.WeightCoverage:
-                        identifiedDecision = ruleDescriptor.GetIdentifiedDecision(ruleDescriptor.WeightCoverage.Description());
-                        break;
-
-                    default:
-                        throw new ArgumentException("Unknown value", "identificationType");
-                }
+                DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
+                identifiedDecision = ruleDescriptor.IdentifyDecision();
 
                 decimal voteSum = Decimal.Zero;
                 if (votes.TryGetValue(identifiedDecision, out voteSum))
@@ -728,7 +464,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
             }
-            
+
             decimal maxValue = Decimal.MinValue;
             long result = -1;
             foreach (var kvp in votes)

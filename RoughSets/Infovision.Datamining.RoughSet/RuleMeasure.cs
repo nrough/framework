@@ -2,6 +2,157 @@
 
 namespace Infovision.Datamining.Roughset
 {
+    public delegate decimal RuleQualityFunction(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
+    
+    public static class RuleQuality
+    {
+        //P(X,E)
+        public static decimal Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass != null && reduct.ObjectSetInfo.NumberOfRecords > 0)
+                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
+            return 0;
+        }
+
+        // P(X|E) = P(X,E)/P(E)
+        public static decimal Confidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass != null && eqClass.NumberOfObjects > 0)            
+                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects;
+            return 0;
+        }
+
+        // Pw(X|E) = Pw(X,E)/Pw(E)
+        public static decimal ConfidenceW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass != null)
+            {
+                decimal weightSum_XE = eqClass.GetWeight(decisionValue);
+                decimal weightSum_E = eqClass.GetWeight();
+                return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
+            }
+            return 0;
+        }
+
+        //P(E|X) = P(X,E)/P(X)
+        public static decimal Coverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {            
+            if (eqClass != null && reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0)
+            {
+                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue)
+                     / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue);
+            }
+            return 0;
+        }
+
+        //Pw(E|X) = Pw(X,E)/Pw(X)
+        public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+
+            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
+            decimal weightSum_X = 0;
+
+            if (weightSum_XE != 0)
+                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                    weightSum_X += reduct.Weights[objectIndex];
+
+            return (weightSum_X != 0) ? weightSum_XE / weightSum_X : 0;
+        }
+
+        //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
+        public static decimal Ratio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+
+            decimal result = 0;
+            if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0
+                && eqClass.NumberOfObjects > 0
+                && reduct.ObjectSetInfo.NumberOfRecords > 0)
+            {
+                result = ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects)
+                     / ((decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.ObjectSetInfo.NumberOfRecords);
+
+                return result;
+            }
+
+            return 0;
+        }
+
+        //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
+        public static decimal RatioW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+
+            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
+            decimal weightSum_E = eqClass.GetWeight();
+            decimal weightSum_X = 0;
+
+            if (weightSum_E != 0)
+                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                    weightSum_X += reduct.Weights[objectIndex];
+
+            return (weightSum_E * weightSum_X) != 0 ? weightSum_XE / (weightSum_E * weightSum_X) : 0;
+        }
+
+        //P(E)
+        public static decimal Strength(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+
+            if (reduct.ObjectSetInfo.NumberOfRecords > 0)
+                return (decimal)eqClass.NumberOfObjects / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
+            return 0;
+        }
+
+        //Pw(E)
+        public static decimal StrengthW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+            decimal weightSum_E = eqClass.GetWeight();
+            return weightSum_E;
+        }
+
+        //P*(X|E) = (|X & E|/|X|) / (sum_{i} |X_{i} & E| / |X_{i}| )
+        public static decimal ConfidenceRelative(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null)
+                return 0;
+
+            decimal sum = 0;
+            foreach (long decision in reduct.ObjectSetInfo.GetDecisionValues())
+            {
+                if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision) > 0)
+                {
+                    sum += (decimal)eqClass.GetNumberOfObjectsWithDecision(decision)
+                            / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision);
+                }
+            }
+
+            if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0
+                && sum > 0)
+            {
+                return ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue)
+                        / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue))
+                        / sum;
+            }
+
+            return 0;
+        }
+
+        //Used for rule voting, returns one
+        public static decimal SingleVote(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            return Decimal.One;
+        }
+    }
+    
+    
     public interface IRuleMeasure
     {
         decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass);        
@@ -36,18 +187,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (eqClass == null)
                 return 0;
-
-            return eqClass.GetWeight(decisionValue);
-
-            /*
-            decimal weightSum = 0;            
-            foreach (int objectIndex in eqClass.GetObjectIndexes(decisionValue))
-            {
-                weightSum += reduct.Weights[objectIndex];
-            }
-
-            return weightSum;
-            */
+            return eqClass.GetWeight(decisionValue);            
         }
 
         public string Description()
@@ -230,17 +370,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (eqClass == null)
                 return 0;
-
-            decimal weightSum_E = eqClass.GetWeight();
-            
-            /*
-            decimal weightSum_E = 0;
-            foreach (int objectIndex in eqClass.ObjectIndexes)
-            {
-                weightSum_E += reduct.Weights[objectIndex];
-            }
-            */
-
+            decimal weightSum_E = eqClass.GetWeight();                        
             return weightSum_E;
         }
 

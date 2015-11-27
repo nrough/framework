@@ -83,8 +83,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);            
 
-            IdentificationType identificationType = IdentificationType.WeightConfidence;
-            VoteType voteType = VoteType.WeightConfidence;
+            RuleQualityFunction identificationType = RuleQuality.ConfidenceW;
+            RuleQualityFunction voteType = RuleQuality.ConfidenceW;
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
@@ -142,7 +142,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         rc.ReductStore = reductEnsemble;
                         rc.ReductStoreCollection = reductStoreCollection;
 
-                        rc.Classify(testData);
+                        rc.Classify(testData, identificationType, voteType);
 
                         ClassificationResult classificationResult = rc.Vote(testData, identificationType, voteType, weightGenerator.Weights);
 
@@ -171,8 +171,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             NumberOfMisclassified = classificationResult.Misclassified,
                             NumberOfUnclassifed = classificationResult.Unclassified,
 
-                            IdentificationType = identificationType,
-                            VoteType = voteType
+                            IdentificationType = identificationType.Method.Name,
+                            VoteType = voteType.Method.Name
                         });
 
                         ReductStore randomReductGroup = new ReductStore();
@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                         RoughClassifier rc2 = new RoughClassifier();
                         rc2.ReductStore = randomReductGroup;
-                        rc2.Classify(testData);
+                        rc2.Classify(testData, identificationType, voteType);
                         ClassificationResult classificationResult2 = rc2.Vote(testData, identificationType, voteType, weightGenerator.Weights); 
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
@@ -212,8 +212,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             NumberOfMisclassified = classificationResult2.Misclassified,
                             NumberOfUnclassifed = classificationResult2.Unclassified,
 
-                            IdentificationType = identificationType,
-                            VoteType = voteType
+                            IdentificationType = identificationType.Method.Name,
+                            VoteType = voteType.Method.Name
                         });
 
                         ensembleId++;
@@ -252,8 +252,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public int ClusterId { get; set; }
         public string TestType { get; set; }
 
-        public IdentificationType IdentificationType { get; set; }
-        public VoteType VoteType { get; set; }
+        public string IdentificationType { get; set; }
+        public string VoteType { get; set; }
     }
 
     public static class ReductEnsembleExperimentExtensions

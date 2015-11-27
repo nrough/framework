@@ -18,7 +18,7 @@ namespace Infovision.Data
         private int nfold;
 
         private int activeFold = 0;
-        private bool splitCalculated = false;
+        protected bool SplitCalculated {get; set; }
         
         public DataStoreSplitter(DataStore dataStore, int nfold)
         {
@@ -56,35 +56,26 @@ namespace Infovision.Data
             foldSize = new int[this.nfold];
         }
 
-        protected virtual int RandomSplit()
+        protected virtual int RandomSplit(int index)
         {
-            return (RandomSingleton.Random.Next() % nfold);
+            return (index % nfold);
         }
 
-        private void GenerateSplit()
+        protected virtual void GenerateSplit()
         {
-            /*
             for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
             {
-                folds[i] = RandomSplit();
-                foldSize[folds[i]]++;
-            }
-            */
-
-            for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
-            {
-                folds[i] = i % nfold;
+                folds[i] = RandomSplit(i);
                 foldSize[folds[i]]++;
             }
 
             folds.Shuffle();
-
-            splitCalculated = true;
-        }
+            this.SplitCalculated = true;
+        }        
 
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2)
         {
-            if(!splitCalculated)
+            if(!this.SplitCalculated)
                 this.GenerateSplit();
 
             DataStoreInfo dataStoreInfo1 = new DataStoreInfo();
@@ -134,9 +125,9 @@ namespace Infovision.Data
             get { return this.splitRatio; }
         }
 
-        protected override int RandomSplit()
+        protected override int RandomSplit(int index)
         {
-            return (this.splitRatio > RandomSingleton.Random.NextDouble()) ? 2 : 1;
-        }
+            return (this.splitRatio > RandomSingleton.Random.NextDouble()) ? 1 : 0;
+        }        
     }
 }

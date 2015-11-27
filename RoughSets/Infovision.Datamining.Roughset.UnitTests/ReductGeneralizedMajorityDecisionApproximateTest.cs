@@ -98,11 +98,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     avg_quality_1 += reductQuality_1;
 
                     RoughClassifier classifier_1 = new RoughClassifier();
-                    classifier_1.Classify(test, reduct_1);
+                    classifier_1.Classify(test, reduct_1, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
                     ClassificationResult result_1 = classifier_1.Vote(
                         test, 
-                        IdentificationType.WeightConfidence, 
-                        VoteType.WeightConfidence, 
+                        RuleQuality.ConfidenceW, 
+                        RuleQuality.ConfidenceW, 
                         null);
 
                     accuracyResults_1[i] = result_1.Accuracy;                    
@@ -127,11 +127,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     avg_quality_2 += reductQuality_2;
 
                     RoughClassifier classifier_2 = new RoughClassifier();
-                    classifier_2.Classify(test, reduct_2);
+                    classifier_2.Classify(test, reduct_2, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
                     ClassificationResult result_2 = classifier_2.Vote(
                         test,
-                        IdentificationType.WeightConfidence,
-                        VoteType.WeightConfidence,
+                        RuleQuality.ConfidenceW,
+                        RuleQuality.ConfidenceW,
                         null);
 
                     accuracyResults_2[i] = result_2.Accuracy;                    
@@ -290,14 +290,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
             generator2.Generate();
 
             RoughClassifier classifier = new RoughClassifier();
-            classifier.Classify(testData, generator.GetReductStoreCollection());
+            classifier.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult result = classifier.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
                         
             RoughClassifier classifier2 = new RoughClassifier();
-            classifier2.Classify(testData, generator2.GetReductStoreCollection());
+            classifier2.Classify(testData, generator2.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult result2 = classifier2.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
 
             return new Tuple<double, double>(result.Accuracy, result2.Accuracy);                                                                        
         }

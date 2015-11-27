@@ -45,6 +45,18 @@ namespace Infovision.Utils
                 ret.Add((TKey)entry.Key.Clone(), (TValue)entry.Value.Clone());
             return ret;
         }
+        
+        public static TKey FindMaxValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
+        {
+            if (comparer == null)
+                comparer = Comparer<TValue>.Default;
+
+            KeyValuePair<TKey, TValue> result = dictionary.FirstOrDefault();            
+            foreach (var kvp in dictionary)
+                if (comparer.Compare(kvp.Value, result.Value) > 0)                
+                    result = kvp;                    
+            return result.Key;
+        }
 
     }
 }

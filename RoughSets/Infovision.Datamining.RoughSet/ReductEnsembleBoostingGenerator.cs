@@ -19,8 +19,8 @@ namespace Infovision.Datamining.Roughset
 		public int MaxReductLength { get; set; }
 		public int MinReductLength { get; set; }
 		public double Threshold { get; set; }
-		public IdentificationType IdentyficationType { get; set;} 
-		public VoteType VoteType {get; set; }
+		public RuleQualityFunction IdentyficationType { get; set;} 
+		public RuleQualityFunction VoteType {get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
 		public int MaxIterations { get; set; }
 		public int IterationsPassed { get { return this.iterPassed; } }
@@ -41,8 +41,8 @@ namespace Infovision.Datamining.Roughset
 			this.MinReductLength = 1;
 			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
-			this.IdentyficationType = IdentificationType.WeightConfidence;
-			this.VoteType = VoteType.WeightCoverage;
+			this.IdentyficationType = RuleQuality.ConfidenceW;
+            this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -64,8 +64,8 @@ namespace Infovision.Datamining.Roughset
 			this.MinReductLength = 1;
 			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
-			this.IdentyficationType = IdentificationType.WeightConfidence;
-			this.VoteType = VoteType.WeightCoverage;
+			this.IdentyficationType = RuleQuality.ConfidenceW;
+            this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -114,10 +114,10 @@ namespace Infovision.Datamining.Roughset
 				this.Threshold = (double)args.GetParameter(ReductGeneratorParamHelper.Threshold);
 
 			if (args.Exist(ReductGeneratorParamHelper.IdentificationType))
-				this.IdentyficationType = (IdentificationType)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
+				this.IdentyficationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
 
 			if (args.Exist(ReductGeneratorParamHelper.VoteType))
-				this.VoteType = (VoteType)args.GetParameter(ReductGeneratorParamHelper.VoteType);
+                this.VoteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);
 
 			if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier))
 				this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier);
@@ -166,7 +166,7 @@ namespace Infovision.Datamining.Roughset
 				classifier.ReductStore = localReductStore;
 				classifier.ReductStoreCollection = new ReductStoreCollection(1);
 				classifier.ReductStoreCollection.AddStore(localReductStore);
-				classifier.Classify(this.DataStore);
+                classifier.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
 				ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, this.WeightGenerator.Weights);
 				error = result.WeightUnclassified + result.WeightMisclassified;				
 
@@ -226,7 +226,7 @@ namespace Infovision.Datamining.Roughset
 						
 						RoughClassifier classifierEnsemble = new RoughClassifier();
 						classifierEnsemble.ReductStoreCollection = this.Models;
-						classifierEnsemble.Classify(this.DataStore);
+                        classifierEnsemble.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
 						ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
 						// De-normalize weights for models confidence
@@ -248,7 +248,7 @@ namespace Infovision.Datamining.Roughset
 
 								RoughClassifier localClassifierEnsemble = new RoughClassifier();
 								localClassifierEnsemble.ReductStoreCollection = this.Models;
-								localClassifierEnsemble.Classify(this.DataStore);
+                                localClassifierEnsemble.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
 								ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
 								// De-normalize weights for models confidence

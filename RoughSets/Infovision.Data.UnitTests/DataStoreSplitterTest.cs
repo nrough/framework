@@ -105,7 +105,7 @@ namespace Infovision.Data.UnitTests
         }
 
         [Test]
-        public void Ratio()
+        public void  Ratio()
         {
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;

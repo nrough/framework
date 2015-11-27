@@ -457,11 +457,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             RoughClassifier classifier = new RoughClassifier();
             classifier.Train(dataStoreTrain, reductGeneratorKey, 50, 10);
-            classifier.Classify(dataStoreTest);
+            classifier.Classify(dataStoreTest, RuleQuality.Confidence, RuleQuality.SingleVote);
             
             ClassificationResult classificationResult = classifier.Vote(dataStoreTest,
-                                                                        IdentificationType.Confidence,
-                                                                        VoteType.MajorDecision,
+                                                                        RuleQuality.Confidence,
+                                                                        RuleQuality.SingleVote,
                                                                         null);
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Classified

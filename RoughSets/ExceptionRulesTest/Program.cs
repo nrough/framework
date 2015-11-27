@@ -132,16 +132,16 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifier = new RoughClassifier();
             classifier.UseExceptionRules = true;
-            classifier.Classify(testData, generator.GetReductStoreCollection());
+            classifier.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult result = classifier.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
             result.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), true);
 
             RoughClassifier classifierEx = new RoughClassifier();
             classifierEx.UseExceptionRules = false;
-            classifierEx.Classify(testData, generator.GetReductStoreCollection());
+            classifierEx.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult resultEx = classifierEx.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
             resultEx.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms2 = new Args();
@@ -158,9 +158,9 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifier2 = new RoughClassifier();
             classifier2.UseExceptionRules = false;
-            classifier2.Classify(testData, generator2.GetReductStoreCollection());
+            classifier2.Classify(testData, generator2.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult result2 = classifier2.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
             result2.QualityRatio = generator2.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms4 = new Args();
@@ -179,9 +179,9 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifier4 = new RoughClassifier();
             classifier4.UseExceptionRules = false;
-            classifier4.Classify(testData, generator4.GetReductStoreCollection());
+            classifier4.Classify(testData, generator4.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
             ClassificationResult result4 = classifier4.Vote(
-                testData, IdentificationType.WeightConfidence, VoteType.WeightConfidence, null);
+                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
             result4.QualityRatio = generator4.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>

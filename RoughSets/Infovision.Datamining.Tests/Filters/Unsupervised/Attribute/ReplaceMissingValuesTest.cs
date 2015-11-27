@@ -37,8 +37,8 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             Args parms = new Args();
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnData);
             parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-            parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, IdentificationType.WeightConfidence);
-            parms.AddParameter(ReductGeneratorParamHelper.VoteType, VoteType.WeightConfidence);
+            parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.AddParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
             parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, 1);            
             parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
@@ -48,12 +48,12 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
 
             RoughClassifier classifierTrn = new RoughClassifier();
             classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-            classifierTrn.Classify(trnData);
+            classifierTrn.Classify(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
             ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
             RoughClassifier classifierTst = new RoughClassifier();
             classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-            classifierTst.Classify(tstData);
+            classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
             ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",

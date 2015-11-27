@@ -74,11 +74,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (yMajorScalePx <= 1)
                 yMajorScalePx = 100;
 
-            
-            
-
             Bitmap bitmap = new Bitmap(this.Width, this.Height);
-
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 g.Clear(background);
@@ -123,8 +119,6 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
-
-                
                 
                 Dictionary<int, DendrogramChartNode> dendrogramChartData = new Dictionary<int, DendrogramChartNode>(this.HCluster.NumberOfInstances - 1);
                 int xAxisOffset = 10;
@@ -242,10 +236,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 font.Dispose();
 
                 g.Flush();
-                Bitmap result = new Bitmap(bitmap);
             }
 
-            return bitmap;
+            Bitmap result = new Bitmap(bitmap);
+            bitmap.Dispose();
+            bitmap = null;
+
+            return result;
         }
     }
 }

@@ -342,8 +342,8 @@ namespace Infovision.RunTest
             
             parms.Digits(epsilon).Append('\t');
             parms.Append(reductFactoryKey).Append('\t');
-            parms.Append(identificationType).Append('\t');
-            parms.Append(voteType).Append('\t');            
+            parms.Append(identificationType.Method.Name).Append('\t');
+            parms.Append(voteType.Method.Name).Append('\t');            
             
             parms.Append(result.ToString()).Append('\t');
 

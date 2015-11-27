@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,9 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             trnData.SetDecisionFieldId(1);
             tstData.SetDecisionFieldId(1);
 
+            if (!Directory.Exists(@"temp"))
+                Directory.CreateDirectory(@"temp");
+            
             trnData.WriteToCSVFileExt(@"temp\missingvalsorig.trn", ",");
             tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
 

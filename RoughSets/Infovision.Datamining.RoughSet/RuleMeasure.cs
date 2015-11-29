@@ -14,6 +14,12 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
+        //Pw(X,E)
+        public static decimal SupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {            
+            return eqClass.GetWeight(decisionValue);            
+        }
+
         // P(X|E) = P(X,E)/P(E)
         public static decimal Confidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {

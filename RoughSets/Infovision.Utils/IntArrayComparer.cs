@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
+    [Serializable]
     public class Int64ArrayEqualityComparer : IEqualityComparer<long[]>
     {
         public bool Equals(long[] x, long[] y)

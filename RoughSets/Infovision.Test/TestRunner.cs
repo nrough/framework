@@ -219,12 +219,12 @@ namespace Infovision.Test
                     this.LogHeader();
                     this.LogResult();
 
-                    /*
-                    if (this.autoSaveTime == 0)
-                    {
-                        this.AutoSave(this.autoSaveFilename, false);
-                    }
-                    */
+                    
+                    //if (this.autoSaveTime == 0)
+                    //{
+                    //    this.AutoSave(this.autoSaveFilename, false);
+                    //}
+                    
 
                     this.lastParameterVector = new ParameterValueVector((ParameterValueVector)this.testObject.Current);
 

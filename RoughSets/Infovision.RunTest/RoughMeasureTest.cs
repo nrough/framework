@@ -248,12 +248,9 @@ namespace Infovision.RunTest
                 roughClassifier = new RoughClassifier();
                 roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
             }
+            
 
-            if (this.CheckReclassify())
-            {
-                roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
-            }
-
+            roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
             result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);            
 
             this.SaveLast();

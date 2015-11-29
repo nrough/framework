@@ -15,6 +15,7 @@ namespace Infovision.Datamining.Roughset
         //List<IReductStore> ActiveModels();
     }
 
+    [Serializable]
     public class ReductStoreCollection : IReductStoreCollection
     {
         List<IReductStore> stores;

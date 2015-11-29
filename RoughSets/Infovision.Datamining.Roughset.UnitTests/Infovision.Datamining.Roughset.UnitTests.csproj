@@ -128,6 +128,7 @@
     <Compile Include="ReductGeneratorComparisonTest.cs" />
     <Compile Include="ReductGeneratorTest.cs" />
     <Compile Include="RNetTest.cs" />
+    <Compile Include="RoughClassifierTest.cs" />
     <Compile Include="WeightGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -166,14 +167,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Data\agaricus-lepiota.2.data" />
-    <None Include="Data\agaricus-lepiota.2.names" />
-    <None Include="Data\audiology.standardized.2.data" />
-    <None Include="Data\audiology.standardized.2.names" />
-    <None Include="Data\audiology.standardized.2.test" />
-    <None Include="Data\breast-cancer-wisconsin.2.data" />
-    <None Include="Data\breast-cancer-wisconsin.2.names" />
-    <None Include="Data\chess.data" />
+    <None Include="Data\agaricus-lepiota.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\agaricus-lepiota.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\audiology.standardized.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\audiology.standardized.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\audiology.standardized.2.test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\breast-cancer-wisconsin.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\breast-cancer-wisconsin.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\chess.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\chess.dta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -189,17 +206,27 @@
     <None Include="Data\dna_modified.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\german.data" />
-    <None Include="Data\house-votes-84.2.data" />
-    <None Include="Data\house-votes-84.2.names" />
-    <None Include="Data\kr-vs-kp.names" />
+    <None Include="Data\german.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\house-votes-84.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\house-votes-84.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\kr-vs-kp.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\letter.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\letter.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\letter_dta.tab" />
+    <None Include="Data\letter_dta.tab">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\monks-1.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -218,8 +245,12 @@
     <None Include="Data\monks-3.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\nursery.2.data" />
-    <None Include="Data\nursery.2.names" />
+    <None Include="Data\nursery.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\nursery.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\optdigits.trn">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -232,16 +263,30 @@
     <None Include="Data\pendigits.tst">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\promoters.2.data" />
-    <None Include="Data\promoters.2.names" />
-    <None Include="Data\promoters.2.theory" />
-    <None Include="Data\sat.dta" />
-    <None Include="Data\sat.trn" />
-    <None Include="Data\sat.tst" />
+    <None Include="Data\promoters.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\promoters.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\promoters.2.theory">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\sat.dta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\sat.trn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\sat.tst">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\semeion.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\semeion.names" />
+    <None Include="Data\semeion.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\soybean-large.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -251,22 +296,30 @@
     <None Include="Data\soybean-large.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\soybean-small.2.data" />
-    <None Include="Data\soybean-small.2.names" />
+    <None Include="Data\soybean-small.2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\soybean-small.2.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\SPECT.test">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\SPECT.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\vehicle.tab" />
+    <None Include="Data\vehicle.tab">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\zoo.dta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Data\zoo.names" />
+    <None Include="Data\zoo.names">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Data\playgolf.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

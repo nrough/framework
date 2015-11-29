@@ -123,7 +123,7 @@ namespace ApproxReductBoosting
 
 				parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 				parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
-                parms.AddParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+				parms.AddParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
 				parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
 				parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 				parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
@@ -155,14 +155,14 @@ namespace ApproxReductBoosting
 				RoughClassifier classifierTrn = new RoughClassifier();
 				classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
 				classifierTrn.Classify(trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig, 
-                                       reductGenerator.IdentyficationType, reductGenerator.VoteType);
+									   reductGenerator.IdentyficationType, reductGenerator.VoteType);
 				ClassificationResult resultTrn = classifierTrn.Vote(trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig,
 																	reductGenerator.IdentyficationType, reductGenerator.VoteType,
 																	null);
 
 				RoughClassifier classifierTst = new RoughClassifier();
 				classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                classifierTst.Classify(tstDataOrig, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
+				classifierTst.Classify(tstDataOrig, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
 				ClassificationResult resultTst = classifierTst.Vote(tstDataOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
 
 				string updWeightsMethodName = String.Empty;

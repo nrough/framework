@@ -288,7 +288,7 @@ namespace Infovision.RunTest
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
             ITestParameter parmNumberOfReducts = new ParameterValueList<Int32>(ReductGeneratorParamHelper.NumberOfReducts, numberOfReducts);
             ITestParameter parmNumberOfPermutations = new ParameterValue<Int32>(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
-            ITestParameter parmNFold = new ParameterValueList<Int32>("NumberOfFolds", numberOfFolds);
+            ITestParameter parmNFold = new ParameterValueList<int>("NumberOfFolds", numberOfFolds);
             ITestParameter parmFoldNumber = new ParameterNumericRange<Int32>("FoldNumber", 0, 0, 1);
 
             if (numberOfFolds > 1)
@@ -338,10 +338,8 @@ namespace Infovision.RunTest
                                                                                    parmNumberOfReducts,         // 2
                                                                                    parmNumberOfPermutations,    // 3
                                                                                    parmNFold,                   // 4
-
                                                                                    parmTestNumber,              // 5
-                                                                                   parmFoldNumber,              // 6                                                                                   
-                                                                                   
+                                                                                   parmFoldNumber,              // 6                                                                                                                                                                      
                                                                                    parmReductType,              // 7
                                                                                    parmEpsilon,                 // 8
                                                                                    parmReductMeasure,           // 9

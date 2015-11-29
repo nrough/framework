@@ -7,6 +7,13 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
+    //TODO Remove Vote Method ? - problem Classify returns ReductCollection, should return Classification Result
+
+    //TODO Remove IsObjectRecognizable move to ReductGenerator based on Classification Result
+    //TODO Remove RuleDecisionDescriptor ??
+
+    
+    
     [Serializable]
     public class RoughClassifier
     {

@@ -392,58 +392,31 @@ namespace Infovision.Datamining.Roughset
             List<ReductRuleDescriptor> list = this.objectReductDescriptorMap[record.ObjectId];
 
             foreach (ReductRuleDescriptor reductDescriptor in list)
-            {
-                long result = -1;
-                decimal maxWeight = Decimal.Zero;
+            {                               
                 Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();
                 foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
                 {
                     long decision = decisionRuleDescriptor.IdentifyDecision();
                     decimal voteWeight = decisionRuleDescriptor.GetRuleVote(decision);                   
-
-                    decimal voteWeightSum = Decimal.Zero;
-                    if (decisionVotes.TryGetValue(decision, out voteWeightSum))
-                    {
-                        voteWeightSum += voteWeight;
-                        decisionVotes[decision] = voteWeightSum;
-                    }
+                    
+                    if (decisionVotes.ContainsKey(decision))                        
+                        decisionVotes[decision] += voteWeight;
                     else
-                    {
-                        voteWeightSum = voteWeight;
-                        decisionVotes.Add(decision, voteWeightSum);
-                    }
-
-                    if (voteWeightSum > maxWeight)
-                    {
-                        maxWeight = voteWeightSum;
-                        result = decision;
-                    }
+                        decisionVotes.Add(decision, voteWeight);                    
                 }
 
-                decimal ensembleWeightSum = Decimal.Zero;
-                if (ensebleVotes.TryGetValue(result, out ensembleWeightSum))
+                long result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
+
+                if (result != -1)
                 {
-                    ensembleWeightSum += reductDescriptor.Weight;
-                    ensebleVotes[result] = ensembleWeightSum;
-                }
-                else
-                {
-                    ensebleVotes.Add(result, reductDescriptor.Weight);
+                    if (ensebleVotes.ContainsKey(result))
+                        ensebleVotes[result] = reductDescriptor.Weight;
+                    else
+                        ensebleVotes.Add(result, reductDescriptor.Weight);
                 }
             }
 
-            long ensembleResult = -1;
-            decimal maxValue = Decimal.MinValue;
-            foreach (var kvp in ensebleVotes)
-            {
-                if (maxValue < kvp.Value)
-                {
-                    maxValue = kvp.Value;
-                    ensembleResult = kvp.Key;
-                }
-            }
-
-
+            long ensembleResult = ensebleVotes.Count > 0 ? ensebleVotes.FindMaxValue() : -1;            
             return ensembleResult;
         }
 

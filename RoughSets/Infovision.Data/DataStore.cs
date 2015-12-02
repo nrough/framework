@@ -250,10 +250,10 @@ namespace Infovision.Data
                         {
                             long decision = this.GetDecisionValue(objectIdx);
                             result = null;
-                            if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
+                            if (!this.decisionValue2ObjectIndex.TryGetValue(decision, out result))
                             {
                                 result = new List<int>();
-                                this.decisionValue2ObjectIndex.Add(decisionValue, result);
+                                this.decisionValue2ObjectIndex.Add(decision, result);
                             }
                             result.Add(objectIdx);
                         }

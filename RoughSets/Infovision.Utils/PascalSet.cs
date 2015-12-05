@@ -77,7 +77,7 @@ namespace Infovision.Utils
 		/// <param name="lowerBound">The lower bound for the set.  Can be any legal integer value.</param>
 		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer value.</param>
 		/// <param name="initialData">An integer array that is used as the initial values of the array.</param>
-		public PascalSet(T lowerBound, T upperBound, T[] initialData)
+		public PascalSet(T lowerBound, T upperBound, IEnumerable<T> initialData)
 		{
 			//cardinality is not yet calculated
 			cardinality = 0;
@@ -98,10 +98,8 @@ namespace Infovision.Utils
 			this.Data = new BitArray(size);
 			
 			// Populuate the BitArray with the passed-in initialData array.
-			for (int i = 0; i < initialData.LongLength; i++)
+			foreach(T val in initialData)
 			{
-				T val = initialData[i];
-				//if (val >= this.LowerBound && val <= this.UpperBound)
 				if(val.CompareTo(LowerBound) >= 0 && val.CompareTo(UpperBound) <= 0)
 				{
 					//int index = val - this.LowerBound;

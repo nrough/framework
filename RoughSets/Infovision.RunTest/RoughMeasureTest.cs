@@ -31,7 +31,7 @@ namespace Infovision.RunTest
         private int foldNumber = -1;
         private int nfold = -1;
         private int testNumber = -1;
-        private int epsilon = -1;
+        private decimal epsilon = -1;
         private string reductFactoryKey = String.Empty;
         private string reductMeasureKey = String.Empty;
         
@@ -44,7 +44,7 @@ namespace Infovision.RunTest
         private int lastNumberOfPermutations = -1;
         private int lastFoldNumber = -1;
         private int lastTestNumber = -1;
-        private int lastEpsilon = -1;
+        private decimal lastEpsilon = -1;
         private string lastReductMeasureKey = String.Empty;
         private string lastReductFactoryKey = String.Empty;
         
@@ -227,7 +227,7 @@ namespace Infovision.RunTest
                     new object[] { 
                         reductFactoryKey, 
                         localDataStoreTrain, 
-                        (decimal)(epsilon / 100.0) });
+                        epsilon});
 
                 this.permutationList = ReductFactory.GetPermutationGenerator(parms).Generate(numberOfPermutations);
                 this.ForceTraining(true);
@@ -247,7 +247,7 @@ namespace Infovision.RunTest
             {
                 Args localArgs = new Args();
                 localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
-                localArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon/100.0m);
+                localArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 localArgs.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
                 localArgs.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
                 localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
@@ -322,8 +322,8 @@ namespace Infovision.RunTest
             
             parms.Append("TestNumber").Append('\t');
             parms.Append("FoldNumber").Append('\t');
-            
-            parms.Append("Epsilon").Append('\t');
+
+            parms.Append(ReductGeneratorParamHelper.Epsilon).Append('\t');
             parms.Append("InformationMeasure").Append('\t');
 
             parms.Append(ReductGeneratorParamHelper.IdentificationType).Append('\t');
@@ -351,7 +351,7 @@ namespace Infovision.RunTest
             parms.Digits(testNumber).Append('\t');
             parms.Digits(foldNumber).Append('\t');
             
-            parms.Digits(epsilon).Append('\t');
+            parms.Append(epsilon).Append('\t');
             parms.Append(reductFactoryKey).Append('\t');
             parms.Append(identificationType.Method.Name).Append('\t');
             parms.Append(voteType.Method.Name).Append('\t');            
@@ -363,7 +363,7 @@ namespace Infovision.RunTest
 
         protected void SetParameters(Args args)
         {
-            dataStoreTrain = (DataStore)args.GetParameter("DataStoreTraining");
+            dataStoreTrain = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
             dataStoreTest = (DataStore)args.GetParameter("DataStoreTest");
             numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
             numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
@@ -371,7 +371,7 @@ namespace Infovision.RunTest
             foldNumber = (int)args.GetParameter("FoldNumber");
             testNumber = (int)args.GetParameter("NumberOfTests");
             reductFactoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
-            epsilon = (int)args.GetParameter("Epsilon");
+            epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
             reductMeasureKey = (string)args.GetParameter("ReductMeasure");
             identificationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
             voteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);

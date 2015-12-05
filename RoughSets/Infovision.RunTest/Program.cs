@@ -18,7 +18,7 @@ namespace Infovision.RunTest
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
             DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
-            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
+            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>(ReductGeneratorParamHelper.DataStore, dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
             ITestParameter parmNumberOfReducts = new ParameterValueList<int>(ReductGeneratorParamHelper.NumberOfReducts, numberOfReducts);
             ITestParameter parmNumberOfPermutations = new ParameterValue<int>(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
@@ -31,7 +31,7 @@ namespace Infovision.RunTest
             }
 
             ITestParameter parmTestNumber = new ParameterNumericRange<int>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", 0, 99, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<int>(ReductGeneratorParamHelper.Epsilon, 0, 99, 1);
 
             ITestParameter parmReductType = new ParameterValueList<string>(ReductGeneratorParamHelper.FactoryKey,
                                                                             new string[] { 
@@ -166,7 +166,7 @@ namespace Infovision.RunTest
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
             DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
-            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
+            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>(ReductGeneratorParamHelper.DataStore, dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
             ITestParameter parmNumberOfReducts = new ParameterValueList<int>(ReductGeneratorParamHelper.NumberOfReducts, numberOfReducts);
             ITestParameter parmNumberOfPermutations = new ParameterValue<int>(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
@@ -179,7 +179,7 @@ namespace Infovision.RunTest
             }
 
             ITestParameter parmTestNumber = new ParameterNumericRange<int>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<int>("Epsilon", 0, 99, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<int>(ReductGeneratorParamHelper.Epsilon, 0, 99, 1);
 
             ITestParameter parmReductType = new ParameterValueList<string>(ReductGeneratorParamHelper.FactoryKey, 
                                                                             new string[] { ReductFactoryKeyHelper.ApproximateReductPositive, 
@@ -284,10 +284,10 @@ namespace Infovision.RunTest
             DataStore dataStoreTraining = DataStore.Load(trainFileName, FileFormat.Rses1);
             DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTraining.DataStoreInfo);
 
-            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>("DataStoreTraining", dataStoreTraining);
+            ITestParameter parmDataStoreTraining = new ParameterObjectReference<DataStore>(ReductGeneratorParamHelper.DataStore, dataStoreTraining);
             ITestParameter parmDataStoreTest = new ParameterObjectReference<DataStore>("DataStoreTest", dataStoreTest);
-            ITestParameter parmNumberOfReducts = new ParameterValueList<Int32>(ReductGeneratorParamHelper.NumberOfReducts, numberOfReducts);
-            ITestParameter parmNumberOfPermutations = new ParameterValue<Int32>(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
+            ITestParameter parmNumberOfReducts = new ParameterValueList<int>(ReductGeneratorParamHelper.NumberOfReducts, numberOfReducts);
+            ITestParameter parmNumberOfPermutations = new ParameterValue<int>(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
             ITestParameter parmNFold = new ParameterValueList<int>("NumberOfFolds", numberOfFolds);
             ITestParameter parmFoldNumber = new ParameterNumericRange<Int32>("FoldNumber", 0, 0, 1);
 
@@ -296,8 +296,8 @@ namespace Infovision.RunTest
                 parmFoldNumber = new ParameterNumericRange<Int32>("FoldNumber", 1, numberOfFolds, 1);
             }
 
-            ITestParameter parmTestNumber = new ParameterNumericRange<Int32>("NumberOfTests", 1, numberOfTests, 1);
-            ITestParameter parmEpsilon = new ParameterNumericRange<Int32>("Epsilon", 0, 99, 1);
+            ITestParameter parmTestNumber = new ParameterNumericRange<int>("NumberOfTests", 1, numberOfTests, 1);
+            ITestParameter parmEpsilon = new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, Decimal.Zero, Decimal.One, 0.01m);
 
             ITestParameter parmReductType = new ParameterValueList<String>(ReductGeneratorParamHelper.FactoryKey,
                                                                             new string[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights,

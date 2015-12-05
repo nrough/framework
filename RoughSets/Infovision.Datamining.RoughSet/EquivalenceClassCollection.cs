@@ -161,6 +161,7 @@ namespace Infovision.Datamining.Roughset
             
             this.attributes = attributeSet.ToArray();
             decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
+            
             Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
             {
                 this.UpdateStatistic(
@@ -181,9 +182,6 @@ namespace Infovision.Datamining.Roughset
             {
                 this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);
             });
-
-            //foreach (int objectIndex in dataStore.GetObjectIndexes())
-            //    this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
@@ -199,7 +197,6 @@ namespace Infovision.Datamining.Roughset
         {            
             long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
             EquivalenceClass eqClass = null;
-            
             lock (syncRoot)
             {
                 if (this.partitions.TryGetValue(record, out eqClass))
@@ -219,10 +216,7 @@ namespace Infovision.Datamining.Roughset
         {
             decimal[] weights = new decimal[dataStore.NumberOfRecords];
             for (int i = 0; i < weights.Length; i++)
-            {
                 weights[i] = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
-            }
-
             return EquivalenceClassCollection.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
         }
 

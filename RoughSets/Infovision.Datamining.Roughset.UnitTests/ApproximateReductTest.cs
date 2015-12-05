@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -238,24 +239,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EquivalenceClassMapTest()
         {
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
-                                                 ReductGeneratorParamHelper.DataStore }, 
-                                  new Object[] { ReductFactoryKeyHelper.ApproximateReductRelative, 
-                                                 dataStoreTrain });
-
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            PermutationCollection permutationList = permGen.Generate(1000);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
-
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-
-            for (int epsilon = 0; epsilon < 100; epsilon+= 11)
+            Args parms = new Args();
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, 
+                ReductFactoryKeyHelper.ApproximateReductRelative);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, 
+                ReductFactory.GetPermutationGenerator(parms).Generate(1000));
+            
+            for (int epsilon = 0; epsilon < 100; epsilon += 11)
             {
+                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
                 reductGenerator.Epsilon = epsilon / 100.0M;
-
                 reductGenerator.Generate();
-                IReductStore reductStore = reductGenerator.ReductPool;
+                IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
 
                 foreach (Reduct reduct in reductStore)
                 {
@@ -270,10 +266,25 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
+
+
+                        if (partitionMap.GetEquivalenceClass(dataVector).MajorDecision != reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision)
+                        {
+                            EquivalenceClass eq1 = partitionMap.GetEquivalenceClass(dataVector);
+                            EquivalenceClass eq2 = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
+
+                            long b = eq2.MajorDecision;
+                            long a = eq1.MajorDecision;
+
+                            Assert.AreEqual(
+                            eq1.GetDecisionWeigth(eq1.MajorDecision),
+                            eq2.GetDecisionWeigth(eq2.MajorDecision), String.Format("Major Decision eps={0}", epsilon));
                         
-                        Assert.AreEqual(
-                            partitionMap.GetEquivalenceClass(dataVector).MajorDecision, 
-                            reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision, "Major Decision");
+                        }
+                        
+                        //Assert.AreEqual(
+                        //    partitionMap.GetEquivalenceClass(dataVector).MajorDecision, 
+                        //    reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision, String.Format("Major Decision eps={0}", epsilon));
                         
                         EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
                         EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);

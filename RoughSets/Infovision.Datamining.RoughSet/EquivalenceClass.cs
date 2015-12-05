@@ -173,48 +173,41 @@ namespace Infovision.Datamining.Roughset
 
         protected void DoCalcStatistics()
         {
-            this.isStatCalculated = false;
-
-            long tmpMajorDecision = -1;
-            decimal maxWeightSum = Decimal.MinValue;
-            this.decisionWeigthSums = new Dictionary<long, decimal>(this.decisionObjectIndexes.Count);
-            this.totalWeightSum = Decimal.Zero;
-            long[] values = new long[this.decisionObjectIndexes.Count];
-
-            decimal minWeight = Decimal.MaxValue;
-
-            int i = 0;
-            foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
+            lock (syncRoot)
             {
-                decimal sum = Decimal.Zero;
-                foreach (int idx in kvp.Value)
+                this.isStatCalculated = false;
+
+                long tmpMajorDecision = -1;
+                decimal maxWeightSum = Decimal.MinValue;
+                this.totalWeightSum = Decimal.Zero;
+                this.decisionWeigthSums = new Dictionary<long, decimal>(this.decisionObjectIndexes.Count);
+
+                foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
                 {
-                    decimal weight = instances[idx];
-                    sum += weight;
-                    if(minWeight > weight)
-                        minWeight = weight;
-                }
-                
-                if (sum > maxWeightSum)
-                {
-                    tmpMajorDecision = kvp.Key;
-                    maxWeightSum = sum;
+                    decimal sum = Decimal.Zero;
+                    foreach (int idx in kvp.Value)
+                        sum += instances[idx];
+
+                    if (sum > maxWeightSum)
+                    {
+                        tmpMajorDecision = kvp.Key;
+                        maxWeightSum = sum;
+                    }
+
+                    this.totalWeightSum += sum;
+                    this.decisionWeigthSums.Add(kvp.Key, sum);
                 }
 
-                this.totalWeightSum += sum;
-                this.decisionWeigthSums.Add(kvp.Key, sum);
-                values[i++] = kvp.Key;                
+                DataFieldInfo decisionField = this.dataStore.DataStoreInfo.DecisionInfo;
+                decisionSet = new PascalSet<long>(decisionField.MinValue,
+                                                  decisionField.MaxValue,
+                                                  this.decisionObjectIndexes.Keys);
+
+                this.majorDecision = tmpMajorDecision;
+                this.majorDecisionWeightSum = maxWeightSum;
+
+                this.isStatCalculated = true;
             }
-
-            //foreach(var kvp in this.)
-            decisionSet = new PascalSet<long>(this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MinValue, 
-                                              this.dataStore.DataStoreInfo.GetDecisionFieldInfo().MaxValue, 
-                                              values);
-
-            this.majorDecision = tmpMajorDecision;
-            this.majorDecisionWeightSum = maxWeightSum;
-
-            this.isStatCalculated = true;
         }
 
         public void AddDecision(long decisionValue, decimal weight)
@@ -237,6 +230,7 @@ namespace Infovision.Datamining.Roughset
             lock (syncRoot)
             {
                 this.instances.Add(objectIndex, weight);
+                
                 if (updateDecisionObjectSet)
                 {
                     HashSet<int> localObjectSet = null;
@@ -250,7 +244,6 @@ namespace Infovision.Datamining.Roughset
 
                 this.AddDecision(decisionValue, weight);
 
-                //TODO Do we need this flag?
                 this.isStatCalculated = false;
             }
         }

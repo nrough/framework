@@ -156,7 +156,7 @@ namespace Infovision.Data
             return fields[fieldId];
         }
 
-        public DataFieldInfo GetDecisionFieldInfo()
+        public DataFieldInfo decisionFieldGetDecisionFieldInfo()
         {
             return this.DecisionInfo;
         }

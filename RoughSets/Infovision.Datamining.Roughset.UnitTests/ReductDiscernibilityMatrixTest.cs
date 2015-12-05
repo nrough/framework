@@ -36,14 +36,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MeasureRelative()
         {
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new Object[] { ReductFactoryKeyHelper.ApproximateReductRelativeWeights, dataStoreTrain });
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            PermutationCollection permutationList = permGen.Generate(10);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            Args parms = new Args();
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
+            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0m);
 
-            RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(dataStoreTrain, ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 20, permutationList);
-            IReductStoreCollection reductStoreCollection = classifier.Classify(dataStoreTrain, RuleQuality.CoverageW, RuleQuality.CoverageW);
+            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            generator.Generate();
+            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
+
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.CoverageW, dataStoreTrain.DataStoreInfo.GetDecisionValues());
+            ClassificationResult result = classifier.Classify(dataStoreTrain, null);
             
             using (FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
@@ -60,14 +64,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     resultFile.WriteLine();
                     
-                    foreach (long objectId in dataStoreTrain.GetObjectIds())
+                    foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
                     {
-                        resultFile.Write("{0,5}:", objectId);
+                        resultFile.Write("{0,5}:", objectIdx);
                         foreach (IReductStore rs in reductStoreCollection)
                         {
                             foreach (IReduct red in rs)
                             {
-                                resultFile.Write(" {0,5}", classifier.IsObjectRecognizable(dataStoreTrain, objectId, red));
+                                resultFile.Write(" {0,5}", classifier.IsObjectRecognizable(dataStoreTrain, objectIdx, red));
                             }
                         }
                         resultFile.Write(Environment.NewLine);

@@ -118,10 +118,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
 
 
-            RoughClassifier roughClassifier = new RoughClassifier();
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
             
-            RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductMajority, 0, 10);
+            RoughClassifier classifier = new RoughClassifier(
+                reductGenerator.GetReductStoreCollection(Int32.MaxValue),
+                RuleQuality.Confidence,
+                RuleQuality.SingleVote,
+                localDataStore.DataStoreInfo.GetDecisionValues());
+            
             //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
         }
 
@@ -455,14 +466,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void Classify(string reductGeneratorKey)
         {
-            RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(dataStoreTrain, reductGeneratorKey, 50, 10);
-            classifier.Classify(dataStoreTest, RuleQuality.Confidence, RuleQuality.SingleVote);
-            
-            ClassificationResult classificationResult = classifier.Vote(dataStoreTest,
-                                                                        RuleQuality.Confidence,
-                                                                        RuleQuality.SingleVote,
-                                                                        null);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.5m);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+
+            RoughClassifier classifier = new RoughClassifier(
+                reductGenerator.GetReductStoreCollection(Int32.MaxValue),
+                RuleQuality.Confidence, 
+                RuleQuality.SingleVote,
+                dataStoreTrain.DataStoreInfo.GetDecisionValues());
+            ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Classified
                                                             + classificationResult.Misclassified

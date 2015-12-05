@@ -171,20 +171,24 @@ namespace ApproxReductBoostingCV
                     reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
                     reductGenerator.Generate();
 
-                    RoughClassifier classifierTrn = new RoughClassifier();
-                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnFoldOrig.DataStoreInfo.HasMissingData ? trnFoldReplaced : trnFoldOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnFoldOrig.DataStoreInfo.HasMissingData 
-                                                                            ? trnFoldReplaced 
-                                                                            : trnFoldOrig, 
-                                                                        reductGenerator.IdentyficationType, 
-                                                                        reductGenerator.VoteType, 
-                                                                        null);
+                    RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType, 
+                        reductGenerator.VoteType,
+                        trnFoldOrig.DataStoreInfo.GetDecisionValues());
 
-                    RoughClassifier classifierTst = new RoughClassifier();
-                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstFoldOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTst = classifierTst.Vote(tstFoldOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    ClassificationResult resultTrn = classifierTrn.Classify(
+                        trnFoldOrig.DataStoreInfo.HasMissingData ? trnFoldReplaced : trnFoldOrig, 
+                        null);
+
+                    RoughClassifier classifierTst = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType, 
+                        reductGenerator.VoteType,
+                        data.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTst = classifierTst.Classify(
+                        tstFoldOrig, 
+                        null);
 
                     string updWeightsMethodName = String.Empty;
                     switch (reductGenerator.UpdateWeights.Method.Name)

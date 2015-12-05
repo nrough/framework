@@ -109,6 +109,7 @@ namespace Infovision.RunTest.UnitTests
             
             TestRunner testRunner = new TestRunner(resultFilename, test);
             testRunner.OpenLog(Path.ChangeExtension(resultFilename, "res01"));
+            
             RunNTests(testRunner, 4);
             testRunner.SaveResults(autoSaveFilename);
             testRunner.CloseLog();

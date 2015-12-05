@@ -130,18 +130,22 @@ namespace ExceptionRulesTest
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
             generator.Generate();
 
-            RoughClassifier classifier = new RoughClassifier();
+            RoughClassifier classifier = new RoughClassifier(
+                generator.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
             classifier.UseExceptionRules = true;
-            classifier.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult result = classifier.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
+            ClassificationResult result = classifier.Classify(testData, null);
             result.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), true);
 
-            RoughClassifier classifierEx = new RoughClassifier();
+            RoughClassifier classifierEx = new RoughClassifier(
+                generator.GetReductStoreCollection(), 
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
             classifierEx.UseExceptionRules = false;
-            classifierEx.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult resultEx = classifierEx.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
+            ClassificationResult resultEx = classifierEx.Classify(testData, null);
             resultEx.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms2 = new Args();
@@ -156,11 +160,13 @@ namespace ExceptionRulesTest
                 ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
             generator2.Generate();
 
-            RoughClassifier classifier2 = new RoughClassifier();
+            RoughClassifier classifier2 = new RoughClassifier(
+                generator2.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
             classifier2.UseExceptionRules = false;
-            classifier2.Classify(testData, generator2.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult result2 = classifier2.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
+            ClassificationResult result2 = classifier2.Classify(testData, null);
             result2.QualityRatio = generator2.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms4 = new Args();
@@ -177,11 +183,13 @@ namespace ExceptionRulesTest
                 ReductFactory.GetReductGenerator(parms4) as ReductRandomSubsetGenerator;
             generator4.Generate();
 
-            RoughClassifier classifier4 = new RoughClassifier();
+            RoughClassifier classifier4 = new RoughClassifier(
+                generator4.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
             classifier4.UseExceptionRules = false;
-            classifier4.Classify(testData, generator4.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult result4 = classifier4.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
+            ClassificationResult result4 = classifier4.Classify(testData, null);
             result4.QualityRatio = generator4.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>

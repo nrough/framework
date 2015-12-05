@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
@@ -42,7 +43,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual ObjectSet ObjectSet
         {
-            get { return new ObjectSet(this.dataStore, this.dataStore.GetObjectIndexes()); }
+            get { return new ObjectSet(this.dataStore, this.dataStore.GetObjectIndexes().ToArray()); }
         }
 
         public virtual IObjectSetInfo ObjectSetInfo

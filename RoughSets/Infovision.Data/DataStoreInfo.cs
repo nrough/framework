@@ -174,17 +174,17 @@ namespace Infovision.Data
 
         /*
 
-        public void SetDecisionField(int fieldId, bool isDecision)
+        public void SetDecisionField(int fieldIds, bool isDecision)
         {
-            if (this.fields.ContainsKey(fieldId))
+            if (this.fields.ContainsKey(fieldIds))
             {
-                DataFieldInfo attribute = fields[fieldId];
+                DataFieldInfo attribute = fields[fieldIds];
                 attribute.IsDecision = isDecision;
-                decisionFieldId = isDecision ? fieldId : 0;
+                decisionFieldId = isDecision ? fieldIds : 0;
             }
             else
             {
-                throw new ArgumentOutOfRangeException("fieldId", String.Format("FieldId {0} does not exist in DataStore", fieldId));
+                throw new ArgumentOutOfRangeException("fieldIds", String.Format("FieldId {0} does not exist in DataStore", fieldIds));
             }
         }
         */

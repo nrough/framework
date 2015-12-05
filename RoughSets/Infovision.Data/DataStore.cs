@@ -144,33 +144,25 @@ namespace Infovision.Data
 
         public DataRecordInternal GetRecordByObjectId(long objectId)
         {
-            int objectIndex = -1;
-            if (!objectId2Index.TryGetValue(objectId, out objectIndex))
-            {
-                //return new DataRecordInternal(fieldId, fieldValue);
+            int objectIndex;
+            if (objectId2Index.TryGetValue(objectId, out objectIndex) == false)
                 throw new ArgumentOutOfRangeException("objectId", "Object with specified Id does not exist.");
-            }
 
-            return this.GetRecordByIndex(objectIndex);
+            DataRecordInternal result = this.GetRecordByIndex(objectIndex, false);
+            result.ObjectId = objectId;
+            return result;
         }
 
-        public DataRecordInternal GetRecordByIndex(int objectIndex)
+        public DataRecordInternal GetRecordByIndex(int objectIndex, bool setObjectId = true)
         {
-            int[] fieldId = new int[this.dataStoreInfo.NumberOfFields];
-            long[] fieldValue = new long[this.dataStoreInfo.NumberOfFields];
-
-            if (objectIndex < 0 || objectIndex > this.dataStoreInfo.NumberOfRecords)
-                throw new ArgumentOutOfRangeException("objectIndex", "Index out of range.");
-
-            for (int i = 0; i < this.dataStoreInfo.NumberOfFields; i++)
-            {
-                fieldId[i] = i + 1;
-                fieldValue[i] = this.GetFieldValue(objectIndex, fieldId[i]);
-            }
-
-            DataRecordInternal ret = new DataRecordInternal(fieldId, fieldValue);
-            ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
+            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.NumberOfRecords);
+            for (int i = 1; i <= this.dataStoreInfo.NumberOfFields; i++)
+                valueMap[i] = this.GetFieldValue(objectIndex, i);
+            DataRecordInternal ret = new DataRecordInternal(valueMap);
             ret.ObjectIdx = objectIndex;
+
+            if(setObjectId)
+                ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
 
             return ret;
         }
@@ -215,9 +207,9 @@ namespace Infovision.Data
         public long GetFieldValue(int objectIndex, int fieldId)
         {
             if(fieldId < this.DataStoreInfo.MinFieldId)
-                throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
+                throw new ArgumentOutOfRangeException("fieldIds", "Value is out of range");
             if(fieldId > this.DataStoreInfo.MaxFieldId)
-                throw new ArgumentOutOfRangeException("fieldId", "Value is out of range");
+                throw new ArgumentOutOfRangeException("fieldIds", "Value is out of range");
             if(objectIndex < 0)
                 throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
             if(objectIndex > this.NumberOfRecords-1)
@@ -226,17 +218,17 @@ namespace Infovision.Data
             return data[objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)];
         }
 
-        public long[] GetObjectIds()
+        public IEnumerable<long> GetObjectIds()
         {
-            return objectId2Index.Keys.ToArray<long>();
+            return objectId2Index.Keys;
         }
 
-        public int[] GetObjectIndexes()
+        public IEnumerable<int> GetObjectIndexes()
         {
-            return index2ObjectId.Keys.ToArray<int>();
+            return index2ObjectId.Keys;
         }
 
-        public int[] GetObjectIndexes(long decisionValue)
+        public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
             List<int> result;
             if (this.isDecisionMapCalculated == false)
@@ -266,7 +258,7 @@ namespace Infovision.Data
             if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
                 return new int[] { };
 
-            return this.decisionValue2ObjectIndex[decisionValue].ToArray();
+            return this.decisionValue2ObjectIndex[decisionValue];
         }
 
         public void DecisionChanged()
@@ -289,9 +281,7 @@ namespace Infovision.Data
         {
             long objectId;
             if (index2ObjectId.TryGetValue(objectIndex, out objectId))
-            {
                 return objectId;
-            }
             return 0;
         }
 
@@ -319,7 +309,7 @@ namespace Infovision.Data
             
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
-                DataRecordInternal record = this.GetRecordByIndex(objectIndex);
+                DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
                 //sb.AppendFormat("{0}: ", objectIndex + 1);
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
@@ -343,7 +333,7 @@ namespace Infovision.Data
 
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
-                DataRecordInternal record = this.GetRecordByIndex(objectIndex);
+                DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
                 //sb.AppendFormat("{0}: ", objectIndex + 1);
                 int position = 0;
                 foreach (int fieldId in record.GetFields())

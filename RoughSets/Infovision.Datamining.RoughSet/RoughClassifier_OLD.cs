@@ -105,48 +105,15 @@ namespace Infovision.Datamining.Roughset
                 decisionConfidenceRelative.Add(decision, confidenceRelative.Calc(decision, reduct, eqClass));
             }
 
-            public string DescriptionToString(IdentificationType identificationType, VoteType voteType)
-            {
-                StringBuilder sb = new StringBuilder();
-
-                switch (voteType)
-                {
-                }
-                
-                switch(identificationType)
-                {
-
-                }
-
-
-                return sb.ToString();
-            }
-
             public void IdentifyDecision()
             {
-                identifiedDecision.Add(support.Description(), FindMaxValue(decisionSupport));
-                identifiedDecision.Add(confidence.Description(), FindMaxValue(decisionConfidence));
-                identifiedDecision.Add(coverage.Description(), FindMaxValue(decisionCoverage));
+                identifiedDecision.Add(support.Description(), decisionSupport.Count > 0 ? decisionSupport.FindMaxValue() : -1);
+                identifiedDecision.Add(confidence.Description(), decisionConfidence.Count > 0 ? decisionConfidence.FindMaxValue() : -1);
+                identifiedDecision.Add(coverage.Description(), decisionCoverage.Count > 0 ? decisionCoverage.FindMaxValue() : -1);
 
-                identifiedDecision.Add(weightSupport.Description(), FindMaxValue(decisionWeightSupport));
-                identifiedDecision.Add(weightConfidence.Description(), FindMaxValue(decisionWeightConfidence));
-                identifiedDecision.Add(weightCoverage.Description(), FindMaxValue(decisionWeightCoverage));                
-            }
-            
-            private long FindMaxValue(Dictionary<long, decimal> dictionary)
-            {
-                long decision = -1;
-                decimal maxValue = Decimal.MinValue;
-
-                foreach (KeyValuePair<Int64, decimal> kvp in dictionary)
-                {                    
-                    if (kvp.Value > maxValue)
-                    {
-                        maxValue = kvp.Value;
-                        decision = kvp.Key;
-                    }
-                }
-                return decision;
+                identifiedDecision.Add(weightSupport.Description(), decisionWeightSupport.Count > 0 ? decisionWeightSupport.FindMaxValue() : -1);
+                identifiedDecision.Add(weightConfidence.Description(), decisionWeightConfidence.Count > 0 ? decisionWeightConfidence.FindMaxValue() : -1);
+                identifiedDecision.Add(weightCoverage.Description(), decisionWeightCoverage.Count > 0 ? decisionWeightCoverage.FindMaxValue() : -1);                
             }
 
             public long GetIdentifiedDecision(string measureKey)
@@ -749,7 +716,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
         
-        public ClassificationPrediction Classify(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
+        public Dictionary<long, decimal> Classify(DataRecordInternal record, IdentificationType identificationType, VoteType voteType)
         {
 
             List<ReductRuleDescriptor> localReductDecriptor = new List<ReductRuleDescriptor>();
@@ -891,22 +858,13 @@ namespace Infovision.Datamining.Roughset
 
                 result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
 
-                if (result != -1)
-                {
-                    if (localEnsemblesVotes.ContainsKey(result))
-                        localEnsemblesVotes[result] += reductDescriptor.Weight;
-                    else
-                        localEnsemblesVotes.Add(result, reductDescriptor.Weight);
-                }
+                if (localEnsemblesVotes.ContainsKey(result))
+                    localEnsemblesVotes[result] += reductDescriptor.Weight;
+                else
+                    localEnsemblesVotes.Add(result, reductDescriptor.Weight);
             }
 
-            long ensembleResult = localEnsemblesVotes.Count > 0 ? localEnsemblesVotes.FindMaxValue() : - 1;
-            
-            return new ClassificationPrediction()
-            {
-                DecisionProbability = localEnsemblesVotes,
-                IsRecognized = ensembleResult == -1 ? false : true
-            };            
+            return localEnsemblesVotes;
         }
         
         private List<ReductRuleDescriptor> CalcReductDescriptiors(DataRecordInternal record, IReductStoreCollection reductStoreCollection)
@@ -932,7 +890,7 @@ namespace Infovision.Datamining.Roughset
                         DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor(reduct.ObjectSetInfo.NumberOfDecisionValues);
                         EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
                         if (eqClass != null)
-                        {                            
+                        {
                             foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
                                 decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass);
                         }
@@ -968,14 +926,14 @@ namespace Infovision.Datamining.Roughset
 
         public ClassificationResult Vote(DataStore dataStore, IdentificationType identificationType, VoteType voteType, decimal[] weights)
         {
-            ClassificationResult classificationResult = new ClassificationResult(dataStore);
+            ClassificationResult classificationResult = new ClassificationResult(dataStore, dataStore.DataStoreInfo.GetDecisionValues());
 
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
                 
                 long result = this.VoteObject(record, identificationType, voteType);                
-                classificationResult.AddResult(dataStore.ObjectIndex2ObjectId(objectIndex), //objectId
+                classificationResult.AddResultNoLock(dataStore.ObjectIndex2ObjectId(objectIndex), //objectId
                                                result,//predicted class
                                                dataStore.GetDecisionValue(objectIndex), //actual class
                                                weights != null 
@@ -1091,13 +1049,10 @@ namespace Infovision.Datamining.Roughset
 
                 result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
 
-                if (result != -1)
-                {
-                    if (ensebleVotes.ContainsKey(result))                    
-                        ensebleVotes[result] += reductDescriptor.Weight;
-                    else
-                        ensebleVotes.Add(result, reductDescriptor.Weight);
-                }
+                if (ensebleVotes.ContainsKey(result))                    
+                    ensebleVotes[result] += reductDescriptor.Weight;
+                else
+                    ensebleVotes.Add(result, reductDescriptor.Weight);
             }
 
             long ensembleResult = ensebleVotes.Count > 0 ? ensebleVotes.FindMaxValue() : -1;            

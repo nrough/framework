@@ -126,7 +126,7 @@ namespace Infovision.Data.UnitTests
         {
             for (int i = 0; i < dataStoreTrainInfo.NumberOfRecords; i++)
             {
-                DataRecordInternal dataRecord = dataStoreTrain.GetRecordByIndex(i);
+                DataRecordInternal dataRecord = dataStoreTrain.GetRecordByIndex(i, false);
 
                 foreach (int fieldId in dataRecord.GetFields())
                 {
@@ -143,7 +143,7 @@ namespace Infovision.Data.UnitTests
         {
             for (int i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
             {
-                DataRecordInternal dataRecord = dataStoreTest.GetRecordByIndex(i);
+                DataRecordInternal dataRecord = dataStoreTest.GetRecordByIndex(i, false);
 
                 foreach (int fieldId in dataRecord.GetFields())
                 {
@@ -216,7 +216,6 @@ namespace Infovision.Data.UnitTests
         {
             FieldTypes fieldTypeFlags = FieldTypes.All;
             Assert.IsTrue(fieldTypeFlags.HasFlag(FieldTypes.All));
-            
         }
 
         [Test]

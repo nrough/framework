@@ -7,15 +7,8 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-    //TODO Remove Vote Method ? - problem Classify returns ReductCollection, should return Classification Result
-
-    //TODO Remove IsObjectRecognizable move to ReductGenerator based on Classification Result
-    //TODO Remove RuleDecisionDescriptor ??
-
-    
-    
     [Serializable]
-    public class RoughClassifier
+    public class RoughClassifier2_OLD
     {
         #region RuleDecisionDescriptor
 
@@ -60,12 +53,22 @@ namespace Infovision.Datamining.Roughset
                 return Decimal.Zero;
             }
 
+            public Dictionary<long, decimal> GetDecisionQualityDict()
+            {
+                return decisionQuality;
+            }
+
             public decimal GetRuleVote(long decision)
             {
                 decimal result = Decimal.Zero;
                 if (decisionVotes.TryGetValue(decision, out result))
                     return result;
                 return Decimal.Zero; 
+            }
+
+            public Dictionary<long, decimal> GetDecisionVoteDict()
+            {
+                return decisionVotes;
             }
 
             #endregion
@@ -160,7 +163,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public RoughClassifier()
+        public RoughClassifier2_OLD()
         {
             this.UseExceptionRules = true;
         }
@@ -180,18 +183,14 @@ namespace Infovision.Datamining.Roughset
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
             args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-
-            reductGenerator.Epsilon = epsilon;
             reductGenerator.Generate();
-            this.ReductStore = reductGenerator.ReductPool;
 
-            //TODO number of groups should be passed in a different way
             this.ReductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+            this.ReductStore = reductGenerator.ReductPool;
         }
 
         public void Train(DataStore trainingData, string reductFactoryKey, decimal epsilon, int numberOfPermutations)
@@ -199,12 +198,8 @@ namespace Infovision.Datamining.Roughset
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
             args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            //args.AddParameter("USECACHE", null);
 
-            IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
-            PermutationCollection permutations = permGen.Generate(numberOfPermutations);
-
-            Train(trainingData, reductFactoryKey, epsilon, permutations);
+            Train(trainingData, reductFactoryKey, epsilon, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
         }
 
         public void Train(DataStore trainingtData, IReductStore reductStore)
@@ -253,7 +248,6 @@ namespace Infovision.Datamining.Roughset
             RuleQualityFunction voteFunction)
         {
             IReductStore localReductStore;
-            //TODO Code smell!
             IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
 
             if (reductStoreCollection != null)
@@ -324,10 +318,7 @@ namespace Infovision.Datamining.Roughset
                         long[] values = new long[reduct.Attributes.Count];
                         int i = 0;
                         foreach (int attribute in reduct.Attributes)
-                        {
-                            values[i] = record[attribute];
-                            i++;
-                        }
+                            values[i++] = record[attribute];
 
                         DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor();
                         EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
@@ -336,8 +327,11 @@ namespace Infovision.Datamining.Roughset
                             foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
                                 decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass, identifyFunction, voteFunction);
                         }
+                        else
+                        {
+                            decisionRuleDescriptor.AddDescription(-1, reduct, null, identifyFunction, voteFunction);
+                        }
 
-                        decisionRuleDescriptor.IdentifyDecision();
                         reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
 
                         if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
@@ -368,7 +362,7 @@ namespace Infovision.Datamining.Roughset
 
         public ClassificationResult Vote(DataStore dataStore, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction, decimal[] weights)
         {
-            ClassificationResult classificationResult = new ClassificationResult(dataStore);
+            ClassificationResult classificationResult = new ClassificationResult(dataStore, dataStore.DataStoreInfo.GetDecisionValues());
 
             foreach (int objectIndex in dataStore.GetObjectIndexes())
             {
@@ -407,17 +401,137 @@ namespace Infovision.Datamining.Roughset
 
                 long result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
 
-                if (result != -1)
-                {
-                    if (ensebleVotes.ContainsKey(result))
-                        ensebleVotes[result] = reductDescriptor.Weight;
-                    else
-                        ensebleVotes.Add(result, reductDescriptor.Weight);
-                }
+                if (ensebleVotes.ContainsKey(result))
+                    ensebleVotes[result] += reductDescriptor.Weight;
+                else
+                    ensebleVotes.Add(result, reductDescriptor.Weight);
             }
 
             long ensembleResult = ensebleVotes.Count > 0 ? ensebleVotes.FindMaxValue() : -1;            
             return ensembleResult;
+        }
+
+        public void PrintClassification(DataRecordInternal record, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction)
+        {
+            List<ReductRuleDescriptor> localReductDecriptor = new List<ReductRuleDescriptor>();
+            foreach (IReductStore rs in this.ReductStoreCollection)
+            {
+                if (rs.IsActive)
+                {
+                    ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
+                    reductRuleDescriptor.Weight = rs.Weight;
+                    foreach (IReduct reduct in rs)
+                    {
+                        if (UseExceptionRules == false && reduct.IsException)
+                            continue;
+
+                        long[] values = new long[reduct.Attributes.Count];
+                        int i = 0;
+                        foreach (int attribute in reduct.Attributes)
+                            values[i++] = record[attribute];
+
+                        DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor();
+                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
+                        if (eqClass != null)
+                        {
+                            foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                                decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass, identificationFunction, voteFunction);
+                        }
+
+                        Console.Write(identificationFunction.Method.Name);
+                        foreach (var kvp in decisionRuleDescriptor.GetDecisionQualityDict())
+                            Console.Write("{0}->{1} ", kvp.Key, kvp.Value);
+                        Console.Write(Environment.NewLine);
+
+                        long decision = decisionRuleDescriptor.IdentifyDecision();
+                        Console.WriteLine("Identified decision {0}", decision);
+
+                        reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
+
+                        if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
+                            break;
+                    }
+
+                    localReductDecriptor.Add(reductRuleDescriptor);
+                }
+            }
+
+            Dictionary<long, decimal> localEnsemblesVotes = new Dictionary<long, decimal>();
+            foreach (ReductRuleDescriptor reductDescriptor in localReductDecriptor)
+            {
+                Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();
+                foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
+                {
+                    long decision = decisionRuleDescriptor.IdentifyDecision();
+                    decimal voteWeight = decisionRuleDescriptor.GetRuleVote(decision);
+                    Console.WriteLine("Vote weight = {0}", voteWeight);
+                }
+            }
+        }
+
+        public Dictionary<long, decimal> Classify(DataRecordInternal record, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction)
+        {
+            List<ReductRuleDescriptor> localReductDecriptor = new List<ReductRuleDescriptor>();
+            foreach (IReductStore rs in this.ReductStoreCollection)
+            {
+                if (rs.IsActive)
+                {
+                    ReductRuleDescriptor reductRuleDescriptor = new ReductRuleDescriptor();
+                    reductRuleDescriptor.Weight = rs.Weight;
+                    foreach (IReduct reduct in rs)
+                    {
+                        if (UseExceptionRules == false && reduct.IsException)
+                            continue;
+
+                        long[] values = new long[reduct.Attributes.Count];
+                        int i = 0;
+                        foreach (int attribute in reduct.Attributes)
+                            values[i++] = record[attribute];
+
+                        DecisionRuleDescriptor decisionRuleDescriptor = new DecisionRuleDescriptor();
+                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(values);
+                        if (eqClass != null)
+                        {
+                            foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                                decisionRuleDescriptor.AddDescription(decisionValue, reduct, eqClass, identificationFunction, voteFunction);
+                        }
+
+                        reductRuleDescriptor.AddDecisionRuleDescriptor(reduct, decisionRuleDescriptor);
+
+                        if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
+                            break;
+                    }
+
+                    localReductDecriptor.Add(reductRuleDescriptor);
+                }
+            }
+
+            Dictionary<long, decimal> localEnsemblesVotes = new Dictionary<long, decimal>();
+            Dictionary<long, decimal> decisionVotes = new Dictionary<long, decimal>();
+            foreach (ReductRuleDescriptor reductDescriptor in localReductDecriptor)
+            {
+                long result = -1;
+                decisionVotes = new Dictionary<long, decimal>();
+                foreach (DecisionRuleDescriptor decisionRuleDescriptor in reductDescriptor)
+                {
+                    long decision = decisionRuleDescriptor.IdentifyDecision();
+                    decimal voteWeight = decisionRuleDescriptor.GetRuleVote(decision);
+                    
+                    if (decisionVotes.ContainsKey(decision))
+                        decisionVotes[decision] += voteWeight;
+                    else
+                        decisionVotes.Add(decision, voteWeight);
+                }
+
+                result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
+
+                if (localEnsemblesVotes.ContainsKey(result))
+                    localEnsemblesVotes[result] += reductDescriptor.Weight;
+                else
+                    localEnsemblesVotes.Add(result, reductDescriptor.Weight);
+            }
+
+            return localEnsemblesVotes;
         }
 
         public bool IsObjectRecognizable(DataStore dataStore, long objectId, IReduct reduct)
@@ -432,30 +546,13 @@ namespace Infovision.Datamining.Roughset
                 DecisionRuleDescriptor ruleDescriptor = reductDescriptor.GetDecisionRuleDescriptor(reduct);
                 identifiedDecision = ruleDescriptor.IdentifyDecision();
 
-                decimal voteSum = Decimal.Zero;
-                if (votes.TryGetValue(identifiedDecision, out voteSum))
-                {
-                    voteSum += reductDescriptor.Weight;
-                    votes[identifiedDecision] = voteSum;
-                }
+                if (votes.ContainsKey(identifiedDecision))
+                    votes[identifiedDecision] += reductDescriptor.Weight;
                 else
-                {
                     votes.Add(identifiedDecision, reductDescriptor.Weight);
-                }
-
             }
 
-            decimal maxValue = Decimal.MinValue;
-            long result = -1;
-            foreach (var kvp in votes)
-            {
-                if (maxValue < kvp.Value)
-                {
-                    maxValue = kvp.Value;
-                    result = kvp.Key;
-                }
-            }
-
+            long result = votes.Count > 0 ? votes.FindMaxValue() : -1;
             int objectIdx = dataStore.ObjectId2ObjectIndex(objectId);
             if (dataStore.GetDecisionValue(objectIdx) == result)
                 return true;

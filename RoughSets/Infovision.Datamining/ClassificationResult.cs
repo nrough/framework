@@ -75,6 +75,7 @@ namespace Infovision.Datamining
         private Dictionary<long, long> classificationMap;
         private Dictionary<ConfusionMatrixKey, int> confusionMatrix = new Dictionary<ConfusionMatrixKey, int>();
         private Dictionary<long, int> decisionActualCount;
+        private DataStore testData = null;
         
         private int numberOfClassified = 0;
         private int numberOfMisclassified = 0;
@@ -86,6 +87,8 @@ namespace Infovision.Datamining
 
         //TODO use classificationInfo instead
         private double qualityRatio = 0.0;
+        
+        public readonly object syncRoot = new object();
 
         #endregion        
 
@@ -97,6 +100,12 @@ namespace Infovision.Datamining
         public int Count
         {
             get { return classificationMap.Count; }
+        }
+
+        public DataStore TestData
+        {
+            get { return this.testData; }
+            set { this.testData = value; }
         }
 
         public double Error
@@ -204,14 +213,13 @@ namespace Infovision.Datamining
 
         #region Constructors
 
-        public ClassificationResult(DataStore dataStore)
+        public ClassificationResult(DataStore dataStore, IEnumerable<long> decisionValues)
         {
+            this.TestData = dataStore;
             classificationMap = new Dictionary<long, long>(dataStore.DataStoreInfo.NumberOfRecords);
-            decisionActualCount = new Dictionary<long, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
-            foreach (long decisionValue in dataStore.DataStoreInfo.GetDecisionValues())
-            {
+            decisionActualCount = new Dictionary<long, int>();
+            foreach (long decisionValue in decisionValues)
                 decisionActualCount[decisionValue] = 0;
-            }
         }
 
         #endregion
@@ -225,9 +233,17 @@ namespace Infovision.Datamining
 
         public virtual void AddResult(long objectId, long prediction, long actual, double weight = 1.0)
         {
+            lock (syncRoot)
+            {
+                this.AddResultNoLock(objectId, prediction, actual, weight);
+            }
+        }
+
+        public virtual void AddResultNoLock(long objectId, long prediction, long actual, double weight = 1.0)
+        {
             this.AddResult(objectId, prediction, weight);
             this.AddConfusionMatrix(prediction, actual);
-            
+
             if (prediction == actual)
             {
                 this.numberOfClassified++;
@@ -257,7 +273,8 @@ namespace Infovision.Datamining
                 confusionMatrix[key] = 1;
             }
 
-            decisionActualCount[actual] = decisionActualCount.ContainsKey(actual) ? decisionActualCount[actual] + 1: 1;
+            //decisionActualCount[actual] = decisionActualCount.ContainsKey(actual) ? decisionActualCount[actual] + 1: 1;
+            decisionActualCount[actual]++;
         }
 
         public long GetResult(long objectId)

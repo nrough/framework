@@ -16,7 +16,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RoughClassifierNewTest()
         {
-
             for (IdentificationType identType = IdentificationType.Support; identType <= IdentificationType.WeightCoverage; identType++)
             {
                 for (VoteType vType = VoteType.Support; vType <= VoteType.ConfidenceRelative; vType++)
@@ -88,59 +87,75 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             voteType,
                             null);
 
-                        RoughClassifier classifier = new RoughClassifier();
-                        classifier.ReductStoreCollection = reductStoreCollection;
-                        classifier.Classify(testData, identificationFunc, voteFunc);
-                        ClassificationResult classificationResult = classifier.Vote(
+                        RoughClassifier2_OLD classifier2 = new RoughClassifier2_OLD();
+                        classifier2.ReductStoreCollection = reductStoreCollection;
+                        classifier2.Classify(testData, identificationFunc, voteFunc);
+                        ClassificationResult classificationResult2 = classifier2.Vote(
                             testData,
                             identificationFunc,
                             voteFunc,
                             null);
 
-                        RoughClassifierNew classifierNew = new RoughClassifierNew(
+                        RoughClassifier classifier = new RoughClassifier(
                             reductStoreCollection,
                             identificationFunc,
                             voteFunc,
                             trainData.DataStoreInfo.DecisionInfo.InternalValues());
-                        ClassificationResult classificationResultNew = classifierNew.Classify(
+                        ClassificationResult classificationResult = classifier.Classify(
                             testData);
 
 
-                        //Assert.AreEqual(classificationResultOld.Accuracy, classificationResultNew.Accuracy);
-                        //Assert.AreEqual(classificationResultOld.Confidence, classificationResultNew.Confidence);
-                        //Assert.AreEqual(classificationResultOld.Coverage, classificationResultNew.Coverage);
+                        Assert.AreEqual(classificationResultOld.Accuracy, classificationResult.Accuracy);
+                        Assert.AreEqual(classificationResultOld.Confidence, classificationResult.Confidence);
+                        Assert.AreEqual(classificationResultOld.Coverage, classificationResult.Coverage);
 
-                        //Assert.AreEqual(classificationResultOld.Accuracy, classificationResult.Accuracy);
-                        //Assert.AreEqual(classificationResultOld.Confidence, classificationResult.Confidence);
-                        //Assert.AreEqual(classificationResultOld.Coverage, classificationResult.Coverage);
+                        Assert.AreEqual(classificationResultOld.Accuracy, classificationResult2.Accuracy);
+                        Assert.AreEqual(classificationResultOld.Confidence, classificationResult2.Confidence);
+                        Assert.AreEqual(classificationResultOld.Coverage, classificationResult2.Coverage);
 
                         foreach (long objectId in testData.GetObjectIds())
                         {
                             long predictionOld = classificationResultOld.GetResult(objectId);
+                            long prediction2 = classificationResult2.GetResult(objectId);
                             long prediction = classificationResult.GetResult(objectId);
-                            long predictionNew = classificationResultNew.GetResult(objectId);
 
-                            if (predictionOld != predictionNew)
+                            if (predictionOld != prediction)
                             {
                                 DataRecordInternal record = testData.GetRecordByObjectId(objectId);
 
                                 classifierOld.PrintClassification(record, identificationType, voteType);
                                 Console.WriteLine();
                                 Console.WriteLine();
-                                classifierNew.PrintClassification(record);
+                                classifier.PrintClassification(record);
 
                                 Console.Beep();
 
-                                long a = classifierOld.Classify(record, identificationType, voteType).GetPrediction();
-                                long b = classifierNew.Classify(record).GetPrediction();
+                                long a = classifierOld.Classify(record, identificationType, voteType).FindMaxValue();
+                                long b = classifier.Classify(record).FindMaxValue();
                             }
 
-                            Assert.AreEqual(predictionOld, predictionNew,
+                            if (predictionOld != prediction)
+                            {
+                                DataRecordInternal record = testData.GetRecordByObjectId(objectId);
+
+                                classifierOld.PrintClassification(record, identificationType, voteType);
+                                Console.WriteLine();
+                                Console.WriteLine();
+                                classifier2.PrintClassification(record, identificationFunc, voteFunc);
+
+                                Console.Beep();
+
+                                long a = classifierOld.Classify(record, identificationType, voteType).FindMaxValue();
+                                long b = classifier2.Classify(record, identificationFunc, voteFunc).FindMaxValue();
+                            }
+
+
+                            Assert.AreEqual(predictionOld, prediction,
                                 String.Format(
                                 "Old vs New objectid: {0} objectIdx: {1} ident {2} vote {3}", 
                                 objectId, testData.ObjectId2ObjectIndex(objectId),
                                 identType, vType));
-                            Assert.AreEqual(predictionOld, prediction,
+                            Assert.AreEqual(predictionOld, prediction2,
                                 String.Format(
                                 "Old vs Current objectid: {0} objectIdx: {1} ident {2} vote {3}",
                                 objectId, testData.ObjectId2ObjectIndex(objectId),
@@ -155,42 +170,41 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RoughClassifierNewPerformanceTest()
         {
-            UInt64 sum_1 = 0, sum_2 = 0;
+            UInt64 sum_1 = 0, sum_2 = 0, sum_3 = 0;
             int loops = 100;
+            int numberOfPerm = 10;
+
+            decimal epsilon = 0.05m;
+            string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+
+            string trainFileName = @"Data\dna_modified.trn";
+            string testFileName = @"Data\dna_modified.tst";
+
+            RuleQualityFunction identificationFunc = RuleQuality.ConfidenceW;
+            RuleQualityFunction voteFunc = RuleQuality.ConfidenceW;
+
+            IdentificationType identificationType = IdentificationType.WeightConfidence;
+            VoteType voteType = VoteType.WeightConfidence;
+
+            DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
+
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+
             for (int i = 0; i < loops; i++)
-            {
-                decimal epsilon = 0.1m;
-                string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
-
-                string trainFileName    = @"Data\dna_modified.trn";
-                string testFileName     = @"Data\dna_modified.tst";
-
-                RuleQualityFunction identificationFunc = RuleQuality.ConfidenceW;
-                RuleQualityFunction voteFunc = RuleQuality.ConfidenceW;
-
-                IdentificationType identificationType = IdentificationType.WeightConfidence;
-                VoteType voteType = VoteType.WeightConfidence;
-
-                DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);
-                DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
-
-                Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-                args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);                
+            {    
+                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection,
+                            ReductFactory.GetPermutationGenerator(args).Generate(numberOfPerm));
                 
-                PermutationCollection permutations = new PermutationCollection();
-                permutations.Add(new Permutation(new int[] { 9, 17, 15, 6, 8, 2, 4, 5, 13, 12, 3, 7, 10, 20, 14, 18, 11, 19, 1, 16 }));
-                permutations.Add(new Permutation(new int[] { 16, 1, 19, 11, 18, 14, 20, 10, 7, 3, 12, 13, 5, 4, 2, 8, 6, 15, 17, 9 }));
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);                
-
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
 
                 IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
 
                 var watch_1 = Stopwatch.StartNew();
-
                 RoughClassifier_OLD classifierOld = new RoughClassifier_OLD();
                 classifierOld.ReductStoreCollection = reductStoreCollection;
                 classifierOld.Classify(testData, null, 0, reductStoreCollection);
@@ -199,34 +213,43 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     identificationType,
                     voteType,
                     null);
-
                 foreach (long objectId in testData.GetObjectIds())
-                {
-                    long predictionOld = classificationResultOld.GetResult(objectId);                                       
-                }
-
+                    classificationResultOld.GetResult(objectId);                                       
+                watch_1.Stop();
                 sum_1 += (ulong) watch_1.ElapsedMilliseconds;
 
                 var watch_2 = Stopwatch.StartNew();
-                
-                RoughClassifierNew classifierNew = new RoughClassifierNew(
+                RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection,
                     identificationFunc,
                     voteFunc,
-                    trainData.DataStoreInfo.DecisionInfo.InternalValues());
-                ClassificationResult classificationResultNew = classifierNew.Classify(
-                    testData);                
-
+                    trainData.DataStoreInfo.GetDecisionValues());
+                ClassificationResult classificationResult = classifier.Classify(testData, null);
                 foreach (long objectId in testData.GetObjectIds())
-                {                                    
-                    long predictionNew = classificationResultNew.GetResult(objectId);                                       
-                }
-
+                    classificationResult.GetResult(objectId);
+                watch_2.Stop();
                 sum_2 += (ulong) watch_2.ElapsedMilliseconds;
+
+                /*
+                var watch_3 = Stopwatch.StartNew();
+                RoughClassifier2_OLD classifier2 = new RoughClassifier2_OLD();
+                classifier2.ReductStoreCollection = reductStoreCollection;
+                classifier2.Classify(testData, null, 0, reductStoreCollection, identificationFunc, voteFunc);
+                ClassificationResult classificationResult2 = classifier2.Vote(
+                    testData,
+                    identificationFunc,
+                    voteFunc,
+                    null);
+                foreach (long objectId in testData.GetObjectIds())
+                    classificationResult2.GetResult(objectId);
+                watch_3.Stop();
+                sum_3 += (ulong)watch_3.ElapsedMilliseconds;
+                */
             }
 
             Console.WriteLine("Classifier 1: {0}", (decimal)sum_1 / (decimal)loops);
             Console.WriteLine("Classifier 2: {0}", (decimal)sum_2 / (decimal)loops);
+            Console.WriteLine("Classifier 3: {0}", (decimal)sum_3 / (decimal)loops);
         }
     }
 }

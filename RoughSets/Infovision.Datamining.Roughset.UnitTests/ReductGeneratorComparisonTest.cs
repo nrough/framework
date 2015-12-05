@@ -137,10 +137,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             foreach (IReductStore reductStore in reductStoreCollection)
             {
-                RoughClassifier rc = new RoughClassifier();
-                rc.ReductStore = reductStore;
-                rc.Classify(testData, RuleQuality.Confidence, RuleQuality.SingleVote);
-                ClassificationResult classificationResult = rc.Vote(testData, RuleQuality.Confidence, RuleQuality.SingleVote, null);
+                IReductStoreCollection localStoreCollection = new ReductStoreCollection(1);
+                localStoreCollection.AddStore(reductStore);
+                
+                RoughClassifier rc = new RoughClassifier(
+                    localStoreCollection,
+                    RuleQuality.Confidence, 
+                    RuleQuality.SingleVote, 
+                    data.DataStoreInfo.GetDecisionValues());
+                ClassificationResult classificationResult = rc.Classify(testData, null);
 
                 PrintResult(reductStore, classificationResult);
             }
@@ -167,13 +172,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     tmpReductStore.DoAddReduct((IReduct)ensemble[i]);
                 }
 
-                RoughClassifier rc = new RoughClassifier();
-                rc.ReductStore = tmpReductStore;
-                rc.Classify(testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-                ClassificationResult classificationResult = rc.Vote(testData, 
-                                                                    RuleQuality.ConfidenceW, 
-                                                                    RuleQuality.ConfidenceW,
-                                                                    null);
+                IReductStoreCollection tmpReductStoreCollection = new ReductStoreCollection(1);
+                reductStoreCollection.AddStore(tmpReductStore);
+
+                RoughClassifier rc = new RoughClassifier(
+                    tmpReductStoreCollection, 
+                    RuleQuality.ConfidenceW, 
+                    RuleQuality.ConfidenceW, 
+                    data.DataStoreInfo.GetDecisionValues());
+                ClassificationResult classificationResult = rc.Classify(testData, null);
 
                 PrintResult(tmpReductStore, classificationResult);    
             }

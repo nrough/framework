@@ -220,11 +220,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             reductGenerator.Generate();
 
             DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.DataStore);
-            RoughClassifier classifierTrn = new RoughClassifier();
-            classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-            classifierTrn.Classify(data, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-            ClassificationResult resultTrn 
-                = classifierTrn.Vote(data, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+            RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        data.DataStoreInfo.GetDecisionValues());
+            ClassificationResult resultTrn = classifierTrn.Classify(data, null);
         }
         
         [Test]
@@ -291,15 +293,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     
                     reductGenerator.Generate();
 
-                    RoughClassifier classifierTrn = new RoughClassifier();
-                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTrn = classifierTrn.Classify(trnData, null);
 
-                    RoughClassifier classifierTst = new RoughClassifier();
-                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    RoughClassifier classifierTst = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTst = classifierTst.Classify(tstData, null);
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
@@ -392,15 +399,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
                     reductGenerator.Generate();
 
-                    RoughClassifier classifierTrn = new RoughClassifier();
-                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTrn = classifierTrn.Classify(trnData, null);
 
-                    RoughClassifier classifierTst = new RoughClassifier();
-                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    RoughClassifier classifierTst = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTst = classifierTst.Classify(tstData, null);
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
@@ -466,15 +478,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     ReductEnsembleBoostingWithDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithDiversityGenerator;
                     reductGenerator.Generate();
 
-                    RoughClassifier classifierTrn = new RoughClassifier();
-                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(), 
+                        reductGenerator.IdentyficationType, 
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTrn = classifierTrn.Classify(trnData);
 
-                    RoughClassifier classifierTst = new RoughClassifier();
-                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    RoughClassifier classifierTst = new RoughClassifier(
+                        reductGenerator.GetReductGroups(), 
+                        reductGenerator.IdentyficationType, 
+                        reductGenerator.VoteType, 
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTst = classifierTst.Classify(tstData, null);
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
@@ -556,15 +572,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     ReductEnsembleBoostingWithAttributeDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithAttributeDiversityGenerator;
                     reductGenerator.Generate();
 
-                    RoughClassifier classifierTrn = new RoughClassifier();
-                    classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTrn.Classify(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTrn = classifierTrn.Vote(trnData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+                    RoughClassifier classifierTrn = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTrn = classifierTrn.Classify(trnData, null);
 
-                    RoughClassifier classifierTst = new RoughClassifier();
-                    classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-                    classifierTst.Classify(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType);
-                    ClassificationResult resultTst = classifierTst.Vote(tstData, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+
+                    RoughClassifier classifierTst = new RoughClassifier(
+                        reductGenerator.GetReductGroups(),
+                        reductGenerator.IdentyficationType,
+                        reductGenerator.VoteType,
+                        trnData.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult resultTst = classifierTst.Classify(tstData, null);
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",

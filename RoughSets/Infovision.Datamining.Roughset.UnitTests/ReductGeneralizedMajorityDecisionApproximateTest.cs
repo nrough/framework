@@ -84,10 +84,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     int[] attributes = permutation.ToArray();
 
                     var watch_1 = Stopwatch.StartNew();
-
                     IReduct reduct_1 = CalculateGeneralizedMajorityApproximateDecisionReduct(data, eps, attributes);
-
                     watch_1.Stop();
+                    
+                    IReductStore store = new ReductStore();
+                    store.AddReduct(reduct_1);
+                    IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
+                    reductStoreCollection.AddStore(store);
 
                     Assert.NotNull(reduct_1);
                     Decimal reductQuality_1 = new InformationMeasureWeights().Calc(reduct_1);
@@ -97,13 +100,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     len_sum_1 += reduct_1.Attributes.Count;
                     avg_quality_1 += reductQuality_1;
 
-                    RoughClassifier classifier_1 = new RoughClassifier();
-                    classifier_1.Classify(test, reduct_1, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-                    ClassificationResult result_1 = classifier_1.Vote(
-                        test, 
+                    RoughClassifier classifier_1 = new RoughClassifier(
+                        reductStoreCollection, 
                         RuleQuality.ConfidenceW, 
                         RuleQuality.ConfidenceW, 
-                        null);
+                        data.DataStoreInfo.GetDecisionValues());
+
+                    ClassificationResult result_1 = classifier_1.Classify(test, null);
 
                     accuracyResults_1[i] = result_1.Accuracy;                    
                     
@@ -118,6 +121,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReduct reduct_2 = CalculateApproximateReductFromSubset(data, eps, attributes);
                     watch_2.Stop();
 
+                    IReductStore store2 = new ReductStore();
+                    store2.AddReduct(reduct_2);
+                    IReductStoreCollection reductStoreCollection2 = new ReductStoreCollection(1);
+                    reductStoreCollection2.AddStore(store2);
+
+
                     Assert.NotNull(reduct_2);
                     Decimal reductQuality_2 = new InformationMeasureWeights().Calc(reduct_2);
                     Assert.GreaterOrEqual(reductQuality_2, Decimal.Round(dataQuality * (Decimal.One - eps), 17));
@@ -126,13 +135,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     len_sum_2 += reduct_2.Attributes.Count;
                     avg_quality_2 += reductQuality_2;
 
-                    RoughClassifier classifier_2 = new RoughClassifier();
-                    classifier_2.Classify(test, reduct_2, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-                    ClassificationResult result_2 = classifier_2.Vote(
-                        test,
+                    RoughClassifier classifier_2 = new RoughClassifier(
+                        reductStoreCollection2, 
+                        RuleQuality.ConfidenceW, 
                         RuleQuality.ConfidenceW,
-                        RuleQuality.ConfidenceW,
-                        null);
+                        data.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult result_2 = classifier_2.Classify(test, null); 
 
                     accuracyResults_2[i] = result_2.Accuracy;                    
 
@@ -289,16 +297,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
             generator2.Generate();
 
-            RoughClassifier classifier = new RoughClassifier();
-            classifier.Classify(testData, generator.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult result = classifier.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
+            RoughClassifier classifier = new RoughClassifier(
+                generator.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
+            ClassificationResult result = classifier.Classify(testData, null);
                         
-            RoughClassifier classifier2 = new RoughClassifier();
-            classifier2.Classify(testData, generator2.GetReductStoreCollection(), RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-            ClassificationResult result2 = classifier2.Vote(
-                testData, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, null);
-
+            RoughClassifier classifier2 = new RoughClassifier(
+                generator2.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
+            ClassificationResult result2 = classifier2.Classify(testData, null);
+            
             return new Tuple<double, double>(result.Accuracy, result2.Accuracy);                                                                        
         }
 

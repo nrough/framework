@@ -44,6 +44,11 @@ namespace Infovision.Data
                 fields.Add(fieldIds[i], fieldValues[i]);
         }
 
+        public DataRecordInternal(Dictionary<int, long> valueMap)
+        {
+            this.fields = valueMap;
+        }
+
         #endregion
 
         #region Methods

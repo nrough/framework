@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset
 
         public override bool IsSuperSet(IReduct reduct)
         {
-            lock (this.SyncRoot)
+            lock (syncRoot)
             {
                 if (this.Count < this.numberOfThreads)
                 {

@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		#region Member fields
 		
 		private string reductFactoryKey;
-		private string reductMeasureKey;		
+		private Comparer<IReduct> filterReductComparer;		
 		private int numberOfAttributes;
 		private int[] attributes;
 		private PermutationCollection permutationList;
@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		{
 			filename = @"Data\german.data";			
 			reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajority;
-			reductMeasureKey = "ReductMeasureLength";
+			filterReductComparer = new ReductLenghtComparer();
 
 			numberOfAttributes = 20;
 			attributes = new int[numberOfAttributes];
@@ -86,8 +86,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		//[TestCase(2, 7, 5)]
 		//[TestCase(2, 7, 10)]
 		
-		[TestCase(2, 7, 20)]
-		public void LoadDataTable(int cvFolds, int numberOfReducts, int epsilon)
+		[TestCase(2, 7, 0.2)]
+		public void LoadDataTable(int cvFolds, int numberOfReducts, decimal epsilon)
 		{
 			//Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);            
 			permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
@@ -220,15 +220,30 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				//Console.WriteLine(localDataStoreTrain.DataStoreInfo.ToStringInfo());
 				//Console.WriteLine(localDataStoreTest.DataStoreInfo.ToStringInfo());
 
-				RoughClassifier roughClassifier = new RoughClassifier();
-				roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
+				Args args = new Args();
+				args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+				args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+				args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+				args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
-				roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts, identificationType, voteType);
-				ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);				
+				IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+				reductGenerator.Generate();
 
-				for(int i=0; i<roughClassifier.ReductStore.Count; i++)
+				IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+				IReductStoreCollection filteredStoreCollection = storeCollection.Filter(numberOfReducts, filterReductComparer);
+
+				RoughClassifier roughClassifier = new RoughClassifier(
+					filteredStoreCollection,
+					identificationType, 
+					voteType,
+					localDataStoreTrain.DataStoreInfo.GetDecisionValues());
+
+				ClassificationResult classificationResultTrn = roughClassifier.Classify(localDataStoreTrain, null);
+
+				IReductStore localReductStore = filteredStoreCollection.FirstOrDefault();
+				for(int i=0; i < localReductStore.Count; i++)
 				{
-					var reduct = roughClassifier.ReductStore.GetReduct(i);
+					var reduct = localReductStore.GetReduct(i);
 					var measure = new InformationMeasureMajority().Calc(reduct);
 					//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
@@ -238,10 +253,9 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					//	Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVector[j]);
 					//}
 					//Console.Write(Environment.NewLine);
-				}
+				} 
 
-				roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
-				ClassificationResult classificationResultTst = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);				
+				ClassificationResult classificationResultTst = roughClassifier.Classify(localDataStoreTest, null);;				
 
 				//Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
@@ -321,15 +335,33 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			//permList = new PermutationCollection(permutation);
 			permList = this.permutationList;
 
-			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);			
-			RoughClassifier roughClassifier = new RoughClassifier();
-			roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permList);
-			roughClassifier.Classify(localDataStoreTrain, reductMeasureKey, numberOfReducts, identificationType, voteType);
-			ClassificationResult classificationResultTrn = roughClassifier.Vote(localDataStoreTrain, identificationType, voteType, null);
+			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);
 
-			for(int i=0; i<roughClassifier.ReductStore.Count; i++)
+			Args args = new Args();
+			args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+			args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+			args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+			args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+
+			IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+			reductGenerator.Generate();
+
+			IReductStoreCollection localStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+			IReductStore localReductStore = localStoreCollection.FirstOrDefault();
+			//TODO reductMeasureKey, numberOfReducts
+
+			localReductStore.FilterReducts(numberOfReducts, filterReductComparer);
+			
+			RoughClassifier roughClassifier = new RoughClassifier(
+				localStoreCollection,
+				identificationType, 
+				voteType, 
+				localDataStoreTrain.DataStoreInfo.GetDecisionValues());
+			//ClassificationResult classificationResultTrn = roughClassifier.Classify(localDataStoreTrain, null);
+
+			for (int i = 0; i < localReductStore.Count; i++)
 			{
-				var reduct = roughClassifier.ReductStore.GetReduct(i);
+				var reduct = localReductStore.GetReduct(i);
 				var measure = new InformationMeasureMajority().Calc(reduct);
 				//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 

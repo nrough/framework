@@ -12,6 +12,7 @@ namespace Infovision.Datamining.Roughset
         void AddStore(IReductStore reductStore);
         int Count { get; }
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+        IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
         //List<IReductStore> ActiveModels();
     }
 
@@ -74,5 +75,26 @@ namespace Infovision.Datamining.Roughset
 
             return 0;
         }
+
+        public IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer)
+        {
+            ReductStoreCollection result = new ReductStoreCollection(this.Count);
+            foreach (IReductStore reductStore in this)
+            {
+                IReductStore filteredStore = reductStore.FilterReducts(numberOfReducts, comparer);
+                result.AddStore(filteredStore);
+            }
+            return result;
+        }
     }
+
+    public static class ReductStoreCollectionExtensions
+    {
+        //
+        public static void Filters()
+        {
+        }
+    }
+
+
 }

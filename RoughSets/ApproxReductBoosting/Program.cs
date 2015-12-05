@@ -152,18 +152,21 @@ namespace ApproxReductBoosting
 				reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
 				reductGenerator.Generate();
 
-				RoughClassifier classifierTrn = new RoughClassifier();
-				classifierTrn.ReductStoreCollection = reductGenerator.GetReductGroups();
-				classifierTrn.Classify(trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig, 
-									   reductGenerator.IdentyficationType, reductGenerator.VoteType);
-				ClassificationResult resultTrn = classifierTrn.Vote(trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig,
-																	reductGenerator.IdentyficationType, reductGenerator.VoteType,
-																	null);
+				RoughClassifier classifierTrn = new RoughClassifier(
+                    reductGenerator.GetReductGroups(),
+                    reductGenerator.IdentyficationType, 
+                    reductGenerator.VoteType,
+                    trnDataOrig.DataStoreInfo.GetDecisionValues());
+				ClassificationResult resultTrn = classifierTrn.Classify(
+                    trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig, 
+                    null);
 
-				RoughClassifier classifierTst = new RoughClassifier();
-				classifierTst.ReductStoreCollection = reductGenerator.GetReductGroups();
-				classifierTst.Classify(tstDataOrig, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW);
-				ClassificationResult resultTst = classifierTst.Vote(tstDataOrig, reductGenerator.IdentyficationType, reductGenerator.VoteType, null);
+				RoughClassifier classifierTst = new RoughClassifier(
+                    reductGenerator.GetReductGroups(),
+                    RuleQuality.ConfidenceW, 
+                    RuleQuality.ConfidenceW,
+                    trnDataOrig.DataStoreInfo.GetDecisionValues());
+				ClassificationResult resultTst = classifierTst.Classify(tstDataOrig, null);
 
 				string updWeightsMethodName = String.Empty;
 				switch (reductGenerator.UpdateWeights.Method.Name)

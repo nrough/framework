@@ -15,12 +15,11 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public abstract class ReductStoreBase : IReductStore
     {
-        private readonly object syncRoot = new Object();
+        protected object syncRoot = new object();
 
         #region Properties
 
         public abstract int Count { get; }
-        public object SyncRoot { get { return syncRoot; } }
         public decimal Weight { get; set; }
         public bool AllowDuplicates { get; set; }
         public bool IsActive { get; set; }
@@ -168,7 +167,7 @@ namespace Infovision.Datamining.Roughset
         public override bool IsSuperSet(IReduct reduct)
         {
             bool ret = false;
-            lock (this.SyncRoot)
+            lock (syncRoot)
             {
                 foreach (IReduct localReduct in reducts)
                 {
@@ -244,53 +243,6 @@ namespace Infovision.Datamining.Roughset
         public virtual void DoAddReduct(IReduct reduct)
         {
             reducts.Add(reduct);
-        }
-
-        public IReductStore FilterReducts(int numberOfReducts, IReductMeasure reductMeasure)
-        {
-            if (numberOfReducts == 0 || numberOfReducts >= this.Count)
-            {
-                return new ReductStore(this);
-            }
-            
-            Dictionary<IReduct, decimal> reductOrderMap = new Dictionary<IReduct, decimal>(reducts.Count);
-            foreach (IReduct reduct in reducts)
-            {
-                reductOrderMap[reduct] = reductMeasure.Calc(reduct);
-            }
-
-            IOrderedEnumerable<KeyValuePair<IReduct, decimal>> sortedReducts;
-            switch (reductMeasure.SortDirection)
-            {
-                case SortDirection.Ascending:
-                    sortedReducts = reductOrderMap.OrderBy(kvp => kvp.Value);
-                    break;
-
-                case SortDirection.Descending:
-                    sortedReducts = reductOrderMap.OrderByDescending(kvp => kvp.Value);
-                    break;
-                
-                default :
-                    sortedReducts = reductOrderMap.OrderBy(kvp => kvp.Value);
-                    break;
-            }
-
-            ReductStore result = new ReductStore();
-            int i = 0;
-            foreach (KeyValuePair<IReduct, decimal> kvp in sortedReducts)
-            {
-                IReduct reductClone = (IReduct)kvp.Key.Clone();
-
-                result.AddReduct(reductClone);
-                
-                i++;
-                if (i >= numberOfReducts)
-                {
-                    break;
-                }
-            }
-
-            return result;
         }
 
         public override IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer)

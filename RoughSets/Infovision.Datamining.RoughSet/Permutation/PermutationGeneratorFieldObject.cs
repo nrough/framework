@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
@@ -28,12 +29,12 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGeneratorFieldObject(DataStore dataSet)
-            : this(dataSet.GetObjectIndexes(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+            : this(dataSet.GetObjectIndexes().ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
         {
         }
 
         public PermutationGeneratorFieldObject(DataStore dataSet, decimal fieldSelectionRatio)
-            : this(dataSet.GetObjectIndexes(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard), fieldSelectionRatio)
+            : this(dataSet.GetObjectIndexes().ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard), fieldSelectionRatio)
         {
         }
 

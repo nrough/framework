@@ -11,8 +11,8 @@ namespace Infovision.Datamining.Roughset
     {        
         #region Constructors
 
-        public EquivalenceClassSortedMap(DataStore data)
-            : base(data)
+        public EquivalenceClassSortedMap(DataStore dataStore)
+            : base(dataStore)
         {   
         }        
 
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             
-            //TODO code smell: Do I sort dataStore or objectSet?
+            //TODO code smell: Do I sort data or objectSet?
             int[] sortedObjIdx = dataStore.Sort(objectSet, comparer);
 
             int i, j;

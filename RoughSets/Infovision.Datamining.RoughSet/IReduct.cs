@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset
         //TODO Move to Bireduct Interface? (Exceptions?)
         ObjectSet ObjectSet { get; }
         
-        //TODO decide should this be stored in reduct or in dataStore object
+        //TODO decide should this be stored in reduct or in data object
         decimal[] Weights { get; }
         decimal Epsilon { get; }
         string Id { get; }

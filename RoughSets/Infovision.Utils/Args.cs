@@ -68,10 +68,14 @@ namespace Infovision.Utils
 
         public void AddParameter(string key, object value)
         {
+            if (this.parameters.ContainsKey(key) == false)
+            {
+                this.parameterOrder.Add(key);
+                this.index2parameter[this.nextIndex] = key;
+                this.nextIndex++;
+            }
+
             this.parameters[key] = value;
-            this.parameterOrder.Add(key);
-            this.index2parameter[this.nextIndex] = key;
-            this.nextIndex++;
         }
         
         public void RemoveParameter(string key)

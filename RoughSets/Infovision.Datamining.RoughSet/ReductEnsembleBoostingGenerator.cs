@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset
 			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = RuleQuality.ConfidenceW;
-            this.VoteType = RuleQuality.CoverageW;
+			this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Roughset
 			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = RuleQuality.ConfidenceW;
-            this.VoteType = RuleQuality.CoverageW;
+			this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset
 				this.IdentyficationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
 
 			if (args.Exist(ReductGeneratorParamHelper.VoteType))
-                this.VoteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);
+				this.VoteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);
 
 			if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier))
 				this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier);
@@ -160,14 +160,13 @@ namespace Infovision.Datamining.Roughset
 					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights, this.MinReductLength, this.MaxReductLength);
 					localReductStore.AddReduct(reduct);					
 					this.ReductPool.AddReduct(reduct);
-				}				
+				}
 
-				RoughClassifier classifier = new RoughClassifier();
-				classifier.ReductStore = localReductStore;
-				classifier.ReductStoreCollection = new ReductStoreCollection(1);
-				classifier.ReductStoreCollection.AddStore(localReductStore);
-                classifier.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
-				ClassificationResult result = classifier.Vote(this.DataStore, this.IdentyficationType, this.VoteType, this.WeightGenerator.Weights);
+				IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
+				reductStoreCollection.AddStore(localReductStore);
+
+				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, this.DataStore.DataStoreInfo.GetDecisionValues());
+				ClassificationResult result = classifier.Classify(this.DataStore);
 				error = result.WeightUnclassified + result.WeightMisclassified;				
 
 				//clear objects and memory
@@ -223,12 +222,13 @@ namespace Infovision.Datamining.Roughset
 						foreach (IReductStore rs in this.Models)
 							if (rs.IsActive)
 								rs.Weight /= (decimal)alphaSum;
-						
-						RoughClassifier classifierEnsemble = new RoughClassifier();
-						classifierEnsemble.ReductStoreCollection = this.Models;
-                        classifierEnsemble.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
-						ClassificationResult resultEnsemble = classifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
 
+						RoughClassifier classifierEnsemble = new RoughClassifier(
+							this.Models,
+							this.IdentyficationType, this.VoteType,
+							this.DataStore.DataStoreInfo.GetDecisionValues());
+						ClassificationResult resultEnsemble = classifierEnsemble.Classify(this.DataStore);
+						
 						// De-normalize weights for models confidence
 						foreach (IReductStore rs in this.Models)
 							if (rs.IsActive)
@@ -246,10 +246,12 @@ namespace Infovision.Datamining.Roughset
 									if (rs.IsActive)
 										rs.Weight /= ((decimal)alphaSum - model.Weight);
 
-								RoughClassifier localClassifierEnsemble = new RoughClassifier();
-								localClassifierEnsemble.ReductStoreCollection = this.Models;
-                                localClassifierEnsemble.Classify(this.DataStore, this.IdentyficationType, this.VoteType);
-								ClassificationResult localResultEnsemble = localClassifierEnsemble.Vote(this.DataStore, this.IdentyficationType, this.VoteType, null);
+								RoughClassifier localClassifierEnsemble = new RoughClassifier(
+									this.Models, 
+									this.IdentyficationType, 
+									this.VoteType, 
+									this.DataStore.DataStoreInfo.GetDecisionValues());
+								ClassificationResult localResultEnsemble = localClassifierEnsemble.Classify(this.DataStore);
 
 								// De-normalize weights for models confidence
 								foreach (IReductStore rs in this.Models)

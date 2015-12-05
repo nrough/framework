@@ -741,8 +741,8 @@ namespace Infovision.Utils
 			for (int i = 0; i < this.Data.Length; i++)
 				if (this.Data.Get(i))
 					sb.Append(Operator<T>.Add(
-					    (T)Convert.ChangeType(i, typeof(T)), 
-					    LowerBound)).Append(' ');
+						(T)Convert.ChangeType(i, typeof(T)), 
+						LowerBound)).Append(' ');
 			sb.Remove(sb.Length - 1, 1);
 			return sb.ToString();
 		}

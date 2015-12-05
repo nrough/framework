@@ -138,13 +138,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             reductEnsemble.DoAddReduct((IReduct)ensemble[i]);
                         }
 
-                        RoughClassifier rc = new RoughClassifier();
-                        rc.ReductStore = reductEnsemble;
-                        rc.ReductStoreCollection = reductStoreCollection;
-
-                        rc.Classify(testData, identificationType, voteType);
-
-                        ClassificationResult classificationResult = rc.Vote(testData, identificationType, voteType, weightGenerator.Weights);
+                        RoughClassifier rc = new RoughClassifier(
+                            reductStoreCollection,
+                            identificationType, 
+                            voteType,
+                            data.DataStoreInfo.GetDecisionValues());
+                        ClassificationResult classificationResult = rc.Classify(testData, weightGenerator.Weights);
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
                         {
@@ -182,10 +181,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomReductIndices[i]));
                         }
 
-                        RoughClassifier rc2 = new RoughClassifier();
-                        rc2.ReductStore = randomReductGroup;
-                        rc2.Classify(testData, identificationType, voteType);
-                        ClassificationResult classificationResult2 = rc2.Vote(testData, identificationType, voteType, weightGenerator.Weights); 
+                        IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
+                        localReductStoreCollection.AddStore(randomReductGroup);
+
+                        RoughClassifier rc2 = new RoughClassifier(
+                            localReductStoreCollection,
+                            identificationType, 
+                            voteType, 
+                            data.DataStoreInfo.GetDecisionValues());
+                        ClassificationResult classificationResult2 = rc2.Classify(testData, null); 
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
                         {

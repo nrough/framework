@@ -16,14 +16,14 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         /*
-        public ReductGeneralizedMajorityDecision(DataStore dataStore)
-            : base(dataStore, Decimal.Zero)
+        public ReductGeneralizedMajorityDecision(DataStore data)
+            : base(data, Decimal.Zero)
         {
             this.Init();
         }
 
-        public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, decimal epsilon)
-            : base(dataStore, fieldIds, epsilon)
+        public ReductGeneralizedMajorityDecision(DataStore data, int[] fieldIds, decimal epsilon)
+            : base(data, fieldIds, epsilon)
         {
             this.Init();
         }

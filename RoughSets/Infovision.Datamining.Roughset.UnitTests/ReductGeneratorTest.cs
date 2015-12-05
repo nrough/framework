@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Infovision.Data;
 using Infovision.Utils;
@@ -59,8 +60,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
 
-            RoughClassifier roughClassifier = new RoughClassifier();
-
             for (int i = 0; i <= 100; i += 1)
             {
                 //if (showInfo)
@@ -69,8 +68,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Args args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
                 args.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
-                IPermutationGenerator permGen = ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
+                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
+                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations); 
 
                 for (int j = 0; j < 100; j++)
                 {
@@ -96,9 +97,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Console.Write(" & ");
                     }
 
-                    roughClassifier.Train(localDataStore, factoryKey, i, new PermutationCollection(permutations[j]));
+                    Args parms = new Args();
+                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0m);
+                    parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
+                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 
-                    foreach (IReduct reduct in roughClassifier.ReductStore)
+                    IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
+                    reductGenerator.Generate();
+
+                    IReductStoreCollection reductStoreCollction = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                    IReductStore reductStore = reductStoreCollction.FirstOrDefault();
+                    foreach (IReduct reduct in reductStore)
                     {
                         //if (showInfo)
                         //    Console.WriteLine(reduct);
@@ -119,17 +129,26 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TestBireductGolf_2()
         {
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            RoughClassifier roughClassifier = new RoughClassifier();
-
+            
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { -3, 1, 6, 8, 0, -4, 12, 11, 5, 4, 7, 3, 10, 2, 13, 9, -1, -2 }));
             permutationList.Add(new Permutation(new int[] { 6, 10, -3, 4, -4, 11, 2, 12, 3, 8, 0, 9, 5, 13, 7, 1, -2, -1 }));
             permutationList.Add(new Permutation(new int[] { -4, -3, 9, 1, 7, 10, -1, 6, 0, 4, 8, 12, 11, -2, 3, 5, 2, 13 }));
             permutationList.Add(new Permutation(new int[] { 1, -3, 12, 8, 2, -4, 9, 13, 10, 11, 0, 3, 7, 4, 6, 5, -1, -2 }));
             permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
-            
-            roughClassifier.Train(localDataStore, ReductFactoryKeyHelper.Bireduct, 0, permutationList);
-            foreach (IReduct reduct in roughClassifier.ReductStore)
+
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
+
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            foreach (IReduct reduct in reductStore)
             {
                 EquivalenceClassCollection eqClasses = new EquivalenceClassCollection(localDataStore);
                 eqClasses.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
@@ -145,36 +164,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
-            int start = Environment.TickCount;
-
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGeneratorMulti.Epsilon = epsilon / 100.0M;
                 reductGeneratorMulti.Generate();
                 IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
-
-            int stop = Environment.TickCount;
-
-            //Console.WriteLine("Multi-thread timing is {0}", stop - start);
         }
 
         [Test, Ignore]        
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
-            int start = Environment.TickCount;
-
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGenerator.Epsilon = epsilon / 100.0M;
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.ReductPool;
             }
-
-            int stop = Environment.TickCount;
-
-            //Console.WriteLine("Single-thread timing is {0}", stop - start);
         }
 
         [Test, Ignore]

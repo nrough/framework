@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -22,18 +23,26 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string localFileName = @"Data\dna_modified.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
-            RoughClassifier classifier = new RoughClassifier();
-            classifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductRelative, 20, 10);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, 
+                ReductFactory.GetPermutationGenerator(args).Generate(10));
+
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+
+            RoughClassifier classifier = new RoughClassifier(
+                reductGenerator.GetReductStoreCollection(Int32.MaxValue),
+                RuleQuality.Confidence,
+                RuleQuality.SingleVote,
+                localDataStore.DataStoreInfo.GetDecisionValues());
 
             string localFileNameTest = @"Data\dna_modified.tst";
             DataStore dataStoreTest = DataStore.Load(localFileNameTest, FileFormat.Rses1);
 
-            classifier.Classify(dataStoreTest, RuleQuality.Confidence, RuleQuality.SingleVote);
-
-            ClassificationResult classificationResult = classifier.Vote(dataStoreTest,
-                                                                        RuleQuality.Confidence,
-                                                                        RuleQuality.SingleVote,
-                                                                        null);
+            ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 
             Assert.AreEqual(dataStoreTest.NumberOfRecords, classificationResult.Count);
 
@@ -139,21 +148,33 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
-            RoughClassifier roughClassifier = new RoughClassifier();
-
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
             PermutationCollection permutationList = permGen.Generate(5);
 
-            roughClassifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductRelative, 20, permutationList);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
-            RoughClassifier roughClassifierWeight = new RoughClassifier();
-            roughClassifierWeight.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 20, permutationList);
-            for (int i = 0; i < roughClassifier.ReductStore.Count; i++)
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            Args args2 = new Args();
+            args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+            args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
-                Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
-
-                //Console.WriteLine("{0} | {1}", r1, r2);
+                Reduct r1 = reductStore.GetReduct(i) as Reduct;
+                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
@@ -167,22 +188,34 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
-            
-            RoughClassifier roughClassifier = new RoughClassifier();
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
             PermutationCollection permutationList = permGen.Generate(5);
 
-            roughClassifier.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductMajority, 20, permutationList);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
 
-            RoughClassifier roughClassifierWeight = new RoughClassifier();
-            roughClassifierWeight.Train(localDataStore, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 20, permutationList);
-            for (int i = 0; i < roughClassifier.ReductStore.Count; i++)
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            Args args2 = new Args();
+            args2.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+            args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
-                Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
-
-                //Console.WriteLine("{0} | {1}", r1, r2);
+                Reduct r1 = reductStore.GetReduct(i) as Reduct;
+                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
@@ -194,8 +227,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductRelative()
         {
-            RoughClassifier roughClassifier = new RoughClassifier();
-
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
@@ -203,46 +234,71 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 4, 2, 3, 1 }));
 
-            roughClassifier.Train(dataStore, ReductFactoryKeyHelper.ApproximateReductRelative, 0, permutationList);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, dataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
-            RoughClassifier roughClassifierWeight = new RoughClassifier();
-            roughClassifierWeight.Train(dataStore, ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 0, permutationList);
-            for (int i = 0; i < roughClassifier.ReductStore.Count; i++)
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            Args args2 = new Args();
+            args2.AddParameter(ReductGeneratorParamHelper.DataStore, dataStore);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
-                Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
-
-                //Console.WriteLine("{0} | {1}", r1, r2);
+                Reduct r1 = reductStore.GetReduct(i) as Reduct;
+                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);
                 Assert.AreEqual(r1, r2);
             }
-
         }
 
         [Test]
         public void WeightReductMajority()
         {
-            RoughClassifier roughClassifier = new RoughClassifier();
-
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
             permutationList.Add(new Permutation(new int[] { 4, 3, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 4, 2, 3, 1 }));
-            
-            roughClassifier.Train(dataStore, ReductFactoryKeyHelper.ApproximateReductMajority, 0, permutationList);
 
-            RoughClassifier roughClassifierWeight = new RoughClassifier();
-            roughClassifierWeight.Train(dataStore, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 0, permutationList);
-            for (int i = 0; i < roughClassifier.ReductStore.Count; i++)
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, dataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+
+            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+            reductGenerator.Generate();
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            Args args2 = new Args();
+            args2.AddParameter(ReductGeneratorParamHelper.DataStore, dataStore);
+            args2.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+
+            IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
+            reductGenerator2.Generate();
+            IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+
+            for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = roughClassifier.ReductStore.GetReduct(i) as Reduct;
-                Reduct r2 = roughClassifierWeight.ReductStore.GetReduct(i) as Reduct;
-
-                //Console.WriteLine("{0} | {1}", r1, r2);
+                Reduct r1 = reductStore.GetReduct(i) as Reduct;
+                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
 
                 Assert.NotNull(r1);
                 Assert.NotNull(r2);

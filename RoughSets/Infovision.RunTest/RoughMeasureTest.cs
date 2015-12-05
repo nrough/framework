@@ -245,13 +245,27 @@ namespace Infovision.RunTest
 
             if (this.CheckRetrain())
             {
-                roughClassifier = new RoughClassifier();
-                roughClassifier.Train(localDataStoreTrain, reductFactoryKey, epsilon, permutationList);
-            }
-            
+                Args localArgs = new Args();
+                localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+                localArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon/100.0m);
+                localArgs.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+                localArgs.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+                localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
 
-            roughClassifier.Classify(localDataStoreTest, reductMeasureKey, numberOfReducts, identificationType, voteType);
-            result = roughClassifier.Vote(localDataStoreTest, identificationType, voteType, null);            
+                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
+                reductGenerator.Generate();
+
+                localReductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+
+                //TODO reductMeasureKey, numberOfReducts
+            }
+
+            roughClassifier = new RoughClassifier(
+                    localReductStoreCollection,
+                    identificationType,
+                    voteType,
+                    localDataStoreTrain.DataStoreInfo.GetDecisionValues());
+            result = roughClassifier.Classify(localDataStoreTest, null);            
 
             this.SaveLast();
         }
@@ -356,7 +370,7 @@ namespace Infovision.RunTest
             nfold = (int)args.GetParameter("NumberOfFolds");
             foldNumber = (int)args.GetParameter("FoldNumber");
             testNumber = (int)args.GetParameter("NumberOfTests");
-            reductFactoryKey = (string)args.GetParameter("ReductType");
+            reductFactoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
             epsilon = (int)args.GetParameter("Epsilon");
             reductMeasureKey = (string)args.GetParameter("ReductMeasure");
             identificationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);

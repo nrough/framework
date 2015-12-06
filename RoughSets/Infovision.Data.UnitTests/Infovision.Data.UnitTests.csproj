@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStoreInfoTest.cs" />
     <Compile Include="DataStoreSplitterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataStoreTest.cs" />

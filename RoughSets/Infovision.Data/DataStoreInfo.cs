@@ -97,8 +97,7 @@ namespace Infovision.Data
             return this.DecisionInfo.InternalValues();
         }
 
-        /*
-        public int[] GetFieldIds(FieldTypes fieldTypeFlags)
+        public int[] GetFieldIds_OLD(FieldTypes fieldTypeFlags)
         {            
             int[] fieldIds = new int[this.GetNumberOfFields(fieldTypeFlags)];
             int i = 0;
@@ -113,7 +112,6 @@ namespace Infovision.Data
             }
             return fieldIds;
         }
-        */
 
         public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags)
         {
@@ -128,7 +126,8 @@ namespace Infovision.Data
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)
         {
 
-            if (fieldTypeFlags == FieldTypes.All)
+            if (fieldTypeFlags == FieldTypes.All
+                || fieldTypeFlags == FieldTypes.None)
                 return this.NumberOfFields;
 
             if (fieldTypeFlags == FieldTypes.Decision)

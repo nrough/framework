@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using Infovision.Data;
 using Infovision.Utils;
@@ -29,7 +30,7 @@ namespace Infovision.Datamining.Roughset
 
         public PermutatioGeneratorFieldGroup(DataStore dataStore)
         {
-            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {

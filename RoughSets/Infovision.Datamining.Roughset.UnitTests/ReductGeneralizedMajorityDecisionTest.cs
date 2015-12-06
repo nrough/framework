@@ -105,9 +105,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
             return reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
         }
-
-        /*
-        [Test, TestCaseSource("GetDataFiles")]
+        
+        [Test, TestCaseSource("GetDataFiles"), Ignore]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 20;
@@ -120,15 +119,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 foreach (Permutation permutation in permutations)
                 {
                     int[] gd_attributes = CalculateGeneralizedDecisionReductFromSubset(
-                        trainData, eps, permutation.ToArray()).Attributes.ToArray();
+                        trainData, eps, (int[])permutation.ToArray().Clone()).Attributes.ToArray();
                     int[] ar_attributes = CalculateApproximateReductFromSubset(
-                        trainData, eps, permutation.ToArray()).Attributes.ToArray();
+                        trainData, eps, (int[])permutation.ToArray().Clone()).Attributes.ToArray();
 
                     Assert.IsTrue(IsSupersetOf(trainData, gd_attributes, ar_attributes), String.Format("{0} is not superset of {1} (eps={2})", gd_attributes.ToStr(), ar_attributes.ToStr(), eps));
                 }
             }
         }
-        */
 
         public bool IsSupersetOf(DataStore data, int[] setToCheck, int[] set)
         {

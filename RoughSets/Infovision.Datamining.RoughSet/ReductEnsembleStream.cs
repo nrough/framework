@@ -287,9 +287,9 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, "");
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
-        }        
+        }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {

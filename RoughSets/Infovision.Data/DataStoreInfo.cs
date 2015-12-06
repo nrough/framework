@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -96,6 +97,7 @@ namespace Infovision.Data
             return this.DecisionInfo.InternalValues();
         }
 
+        /*
         public int[] GetFieldIds(FieldTypes fieldTypeFlags)
         {            
             int[] fieldIds = new int[this.GetNumberOfFields(fieldTypeFlags)];
@@ -110,6 +112,17 @@ namespace Infovision.Data
                 }
             }
             return fieldIds;
+        }
+        */
+
+        public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags)
+        {
+            if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
+                return this.Fields.Select(f => f.Id);
+            
+            return this.Fields
+                .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
+                .Select(f => f.Id);
         }
 
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)

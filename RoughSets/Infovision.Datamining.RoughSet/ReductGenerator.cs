@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -155,7 +157,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void initFromDataStore(DataStore data)
         {
-            int[] fieldIds = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            int[] fieldIds = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {

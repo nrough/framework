@@ -1,10 +1,10 @@
-﻿using Infovision.Data;
-using Infovision.Utils;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Data;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset
         }
         
         public PermutationGeneratorEnsemble(DataStore dataStore, int[][] attributes)
-            : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), attributes)
+            : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), attributes)
         {
         }
 
@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset
                         foreach (IReduct r in rs)
                             selectedAttributes[k++] = r.Attributes.ToArray();
 
-                this.Setup(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), selectedAttributes);
+                this.Setup(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), selectedAttributes);
             }
         }
 
@@ -123,8 +123,7 @@ namespace Infovision.Datamining.Roughset
                 pds = newPds;
             }
 
-            Permutation permutation = new Permutation(result);
-            return permutation;
+            return new Permutation(result);            
         }
     }
 }

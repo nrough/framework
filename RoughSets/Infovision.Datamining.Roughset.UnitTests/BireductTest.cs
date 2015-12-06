@@ -115,7 +115,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
+            localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
 
 
             Args args = new Args();
@@ -146,7 +146,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
+            localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
             
             
             /*
@@ -267,7 +267,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
+            localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
 
             int[][] attributesBireducts = new int[][]
             {
@@ -368,7 +368,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
-            localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias = "d";
+            localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
 
 
             /*

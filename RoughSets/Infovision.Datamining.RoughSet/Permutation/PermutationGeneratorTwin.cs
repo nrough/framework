@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -14,7 +15,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGeneratorTwin(DataStore dataStore)
-            : base(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+            : base(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray())
         {
         }
 

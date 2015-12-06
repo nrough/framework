@@ -167,7 +167,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
 
-        [Test]
+        [Test, Ignore]
         public void RoughClassifierNewPerformanceTest()
         {
             UInt64 sum_1 = 0, sum_2 = 0, sum_3 = 0;
@@ -229,8 +229,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classificationResult.GetResult(objectId);
                 watch_2.Stop();
                 sum_2 += (ulong) watch_2.ElapsedMilliseconds;
-
-                /*
+                
                 var watch_3 = Stopwatch.StartNew();
                 RoughClassifier2_OLD classifier2 = new RoughClassifier2_OLD();
                 classifier2.ReductStoreCollection = reductStoreCollection;
@@ -244,7 +243,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     classificationResult2.GetResult(objectId);
                 watch_3.Stop();
                 sum_3 += (ulong)watch_3.ElapsedMilliseconds;
-                */
             }
 
             Console.WriteLine("Classifier 1: {0}", (decimal)sum_1 / (decimal)loops);

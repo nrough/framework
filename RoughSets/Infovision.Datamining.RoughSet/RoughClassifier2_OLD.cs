@@ -574,8 +574,8 @@ namespace Infovision.Datamining.Roughset
                 {
                     sb.AppendLine(String.Format("{0} => {1}={2}",
                                     this.PrintDecisionRuleCondition(reduct.EquivalenceClasses.Attributes, eq.Instance, dataStoreInfo),
-                                    dataStoreInfo.GetDecisionFieldInfo().Alias,
-                                    dataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
+                                    dataStoreInfo.DecisionInfo.Alias,
+                                    dataStoreInfo.DecisionInfo.Internal2External(eq.MajorDecision)));
                 }
                 sb.AppendLine();
             }

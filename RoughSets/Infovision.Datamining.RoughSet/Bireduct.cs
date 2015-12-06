@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
@@ -16,19 +17,19 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon, decimal[] weights)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon, decimal[] weights)
             : base(dataStore, fieldIds, epsilon, weights)
         {
             objectSet = new ObjectSet(dataStore, objectIndexes);
         }
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
             objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
-        public Bireduct(DataStore dataStore, int[] fieldIds, decimal epsilon)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
             : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }

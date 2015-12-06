@@ -26,8 +26,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore, 0.5M);
             PermutationCollection permList = permGen.Generate(100);
-            this.CheckPermutationCompletness(permList, 
-                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
+            this.CheckPermutationCompletness(permList,
+                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
                 dataStore.GetObjectIndexes().ToArray());
         }
 
@@ -36,8 +36,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore, 0.5M);
             PermutationCollection permList = permGen.Generate(100);
-            this.CheckPermutationCompletness(permList, 
-                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
+            this.CheckPermutationCompletness(permList,
+                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
                 dataStore.GetObjectIndexes().ToArray());
         }
 
@@ -46,8 +46,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutationGeneratorFieldObject permGen = new PermutationGeneratorFieldObject(dataStore);
             PermutationCollection permList = permGen.Generate(100);
-            this.CheckPermutationCompletness(permList, 
-                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
+            this.CheckPermutationCompletness(permList,
+                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
                 dataStore.GetObjectIndexes().ToArray());
         }
 
@@ -56,8 +56,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutationGeneratorFieldObjectRelative permGen = new PermutationGeneratorFieldObjectRelative(dataStore);
             PermutationCollection permList = permGen.Generate(100);
-            this.CheckPermutationCompletness(permList, 
-                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
+            this.CheckPermutationCompletness(permList,
+                dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
                 dataStore.GetObjectIndexes().ToArray());
         }
 
@@ -66,7 +66,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutatioGeneratorFieldGroup permGen = new PermutatioGeneratorFieldGroup(dataStore);
             PermutationCollection permList = permGen.Generate(10);
-            this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { });
+            this.CheckPermutationCompletness(permList, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), new int[] { });
         }
 
         private void CheckPermutationCompletness(PermutationCollection permList, int[] fields, int[] objects)
@@ -208,7 +208,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             PermutationGeneratorFieldObject permGen;
             PermutationCollection permList;
-            int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             int[] objects = dataStore.GetObjectIndexes().ToArray();
 
             permGen = new PermutationGeneratorFieldObject(objects, fields, 0);
@@ -287,7 +287,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void PermutationFieldGroup()
         {
 
-            int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
             PermutatioGeneratorFieldGroup generator = new PermutatioGeneratorFieldGroup(new int[][] { 
                                                                                                         new int[] {},

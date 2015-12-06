@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Infovision.Utils;
 
 namespace Infovision.Data
@@ -24,7 +25,7 @@ namespace Infovision.Data
         {
         }
 
-        public FieldSet(DataStoreInfo dataStoreInfo, int[] initialData)
+        public FieldSet(DataStoreInfo dataStoreInfo, IEnumerable<int> initialData)
             : base(dataStoreInfo.MinFieldId, dataStoreInfo.MaxFieldId, initialData)
         {
         }
@@ -39,7 +40,7 @@ namespace Infovision.Data
         {
         }
 
-        public FieldSet(int lowerBound, int upperBound, int[] data)
+        public FieldSet(int lowerBound, int upperBound, IEnumerable<int> data)
             : base(lowerBound, upperBound, data)
         {
         }

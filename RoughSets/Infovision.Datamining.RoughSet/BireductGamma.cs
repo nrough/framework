@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
@@ -8,12 +9,12 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductGamma(DataStore dataStore, int[] fieldIds, int[] objectIndexes, decimal epsilon)
+        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, objectIndexes, epsilon)
         {
         }
 
-        public BireductGamma(DataStore dataStore, int[] fieldIds, decimal epsilon)
+        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
             : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }

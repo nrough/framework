@@ -267,18 +267,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
 
+                        EquivalenceClass eq1 = partitionMap.GetEquivalenceClass(dataVector);
+                        EquivalenceClass eq2 = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
-                        if (partitionMap.GetEquivalenceClass(dataVector).MajorDecision != reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision)
-                        {
-                            EquivalenceClass eq1 = partitionMap.GetEquivalenceClass(dataVector);
-                            EquivalenceClass eq2 = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
-
-                            long b = eq2.MajorDecision;
-                            long a = eq1.MajorDecision;
-
+                        if (eq1.MajorDecision != eq2.MajorDecision)
+                        {                                                        
                             Assert.AreEqual(
                             eq1.GetDecisionWeigth(eq1.MajorDecision),
-                            eq2.GetDecisionWeigth(eq2.MajorDecision), String.Format("Major Decision eps={0}", epsilon));
+                            eq2.GetDecisionWeigth(eq2.MajorDecision), String.Format("Major Decision Weights eps={0}", epsilon));
                         
                         }
                         

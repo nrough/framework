@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
@@ -249,23 +250,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EquivalenceClassMapTest()
         {
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, 
-                                                 ReductGeneratorParamHelper.DataStore }, 
-                                  new Object[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights, dataStoreTrain });
-
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            PermutationCollection permutationList = permGen.Generate(1000);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-
-            IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-
+            Args parms = new Args();
+            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);            
+            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(1000));
+                        
             for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon+= 0.11m)
             {
-                reductGenerator.Epsilon = epsilon;
 
+                parms.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);                
                 reductGenerator.Generate();
-                IReductStore reductStore = reductGenerator.ReductPool;
+                IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                IReductStore reductStore = storeCollection.FirstOrDefault();
 
                 foreach (ReductWeights reduct in reductStore)
                 {
@@ -280,13 +277,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
                         Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).MajorDecision, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision, "Major Decision");
+                        
                         EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
                         EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
-                        Assert.AreEqual(partitionEqClass.GetNumberOfObjectsWithDecision(partitionEqClass.MajorDecision),
-                            reductEqClass.GetNumberOfObjectsWithDecision(
-                                reductEqClass.MajorDecision), 
-                            "Number of objects with major decision");
+
+                        if (partitionEqClass.MajorDecision != reductEqClass.MajorDecision)
+                        {
+                            long a = partitionEqClass.MajorDecision;
+                            long b = reductEqClass.MajorDecision;
+                            
+                            Assert.AreEqual(partitionEqClass.GetDecisionWeigth(partitionEqClass.MajorDecision),
+                                reductEqClass.GetDecisionWeigth(reductEqClass.MajorDecision), "Major Decision Weights");
+                        }                                                
 
                         foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {

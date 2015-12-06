@@ -30,8 +30,8 @@ namespace Infovision.Datamining.Roughset
                 if (this.weightGenerator == null)
                 {
                     WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
-                    wGen.Value = 1.0M;
-                    this.weightGenerator = wGen;                    
+                    wGen.Value = Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords);
+                    this.weightGenerator = wGen;
                 }
 
                 return this.weightGenerator;

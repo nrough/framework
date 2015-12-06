@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
@@ -49,7 +51,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, this.GetNextReductId().ToString());
+            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, this.GetNextReductId().ToString());
             this.dataSetQuality = this.informationMeasure.Calc(reduct);            
         }        
         
@@ -100,9 +102,8 @@ namespace Infovision.Datamining.Roughset
             //IReduct reduct = this.CreateReductObject(new int[] { },
             //                                         this.Epsilon,
             //                                         this.GetNextReductId().ToString());
-
-            int[] localAttr = (int[]) attributes.Clone();
-            IReduct reduct = this.CreateReductObject(localAttr,
+                        
+            IReduct reduct = this.CreateReductObject(attributes,
                                                      this.Epsilon,
                                                      this.GetNextReductId().ToString());
 

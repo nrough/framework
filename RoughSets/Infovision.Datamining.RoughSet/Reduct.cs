@@ -90,7 +90,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Reduct(DataStore dataStore, int[] fieldIds, decimal epsilon, decimal[] weights)
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights)
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
@@ -108,8 +108,8 @@ namespace Infovision.Datamining.Roughset
             }
 
         }
-        
-        public Reduct(DataStore dataStore, int [] fieldIds, decimal epsilon)
+
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
         {
             this.dataStore = dataStore;
             this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);

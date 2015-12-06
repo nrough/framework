@@ -183,7 +183,7 @@ namespace Infovision.Datamining.Roughset
 
             //new temporary equivalence class map with decision set intersection  (data vector --> generalized decision)
             Dictionary<long[], PascalSet<long>> generalDecisionMap = new Dictionary<long[], PascalSet<long>>(new Int64ArrayEqualityComparer());
-            DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.GetDecisionFieldInfo();
+            DataFieldInfo decisionFieldInfo = this.DataStore.DataStoreInfo.DecisionInfo;
 
             foreach (EquivalenceClass eq in this.EquivalenceClasses)
             {

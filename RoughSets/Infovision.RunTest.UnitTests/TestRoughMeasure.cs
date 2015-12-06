@@ -93,8 +93,11 @@ namespace Infovision.RunTest.UnitTests
         {
             try
             {
-                File.Delete(resultFilename);
-                File.Delete(autoSaveFilename);
+                if (File.Exists(resultFilename))
+                    File.Delete(resultFilename);
+                
+                if (File.Exists(autoSaveFilename))
+                    File.Delete(autoSaveFilename);
             }
             catch(Exception ex)
             {

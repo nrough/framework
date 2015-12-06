@@ -29,9 +29,7 @@ namespace Infovision.Datamining.Roughset
             {
                 if (this.weightGenerator == null)
                 {
-                    WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
-                    wGen.Value = Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords);
-                    this.weightGenerator = wGen;
+                    this.weightGenerator = CreateWeightGenerator();
                 }
 
                 return this.weightGenerator;
@@ -62,6 +60,13 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
+        protected virtual WeightGenerator CreateWeightGenerator()
+        {
+            WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
+            wGen.Value = Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords);
+            return wGen;
+        }
+
         #endregion
     }
 
@@ -73,7 +78,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        protected WeightGenerator CreateWeightGenerator()
+        protected override WeightGenerator CreateWeightGenerator()
         {
             return new WeightGeneratorMajority(this.DataStore);
         }
@@ -102,7 +107,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        protected WeightGenerator CreateWeightGenerator()
+        protected override WeightGenerator CreateWeightGenerator()
         {
             return new WeightGeneratorRelative(this.DataStore);
         }        

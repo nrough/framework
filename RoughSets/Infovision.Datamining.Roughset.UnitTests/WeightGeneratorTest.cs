@@ -106,38 +106,48 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CompareRelativeWeightVsRelative()
         {
+            PermutationCollection permutationList = new PermutationCollection();
+            permutationList.Add(new Permutation(new int[] { 34, 54, 4, 27, 29, 39, 33, 35, 10, 30, 36, 13, 49, 38, 8, 42, 1, 41, 19, 3, 7, 25, 2, 43, 31, 44, 14, 18, 32, 46, 48, 20, 17, 16, 55, 52, 53, 47, 45, 58, 28, 57, 6, 11, 26, 64, 12, 15, 59, 5, 51, 23, 61, 22, 62, 24, 40, 21, 63, 60, 37, 9, 50, 56 }));
+            permutationList.Add(new Permutation(new int[] { 56, 50, 9, 37, 60, 63, 21, 40, 24, 62, 22, 61, 23, 51, 5, 59, 15, 12, 64, 26, 11, 6, 57, 28, 58, 45, 47, 53, 52, 55, 16, 17, 20, 48, 46, 32, 18, 14, 44, 31, 43, 2, 25, 7, 3, 19, 41, 1, 42, 8, 38, 49, 13, 36, 30, 10, 35, 33, 39, 29, 27, 4, 54, 34 }));
+            permutationList.Add(new Permutation(new int[] { 38, 18, 48, 13, 59, 5, 52, 23, 16, 53, 9, 37, 33, 57, 42, 1, 56, 47, 14, 22, 34, 29, 19, 12, 11, 27, 43, 30, 24, 39, 51, 20, 17, 2, 40, 50, 28, 21, 4, 55, 44, 60, 10, 32, 58, 35, 8, 45, 62, 54, 49, 41, 46, 6, 7, 36, 25, 3, 63, 61, 31, 15, 64, 26 }));
+            permutationList.Add(new Permutation(new int[] { 26, 64, 15, 31, 61, 63, 3, 25, 36, 7, 6, 46, 41, 49, 54, 62, 45, 8, 35, 58, 32, 10, 60, 44, 55, 4, 21, 28, 50, 40, 2, 17, 20, 51, 39, 24, 30, 43, 27, 11, 12, 19, 29, 34, 22, 14, 47, 56, 1, 42, 57, 33, 37, 9, 53, 16, 23, 52, 5, 59, 13, 48, 18, 38 }));
+            permutationList.Add(new Permutation(new int[] { 57, 1, 34, 12, 23, 29, 45, 38, 5, 11, 4, 26, 33, 58, 43, 61, 42, 8, 53, 47, 36, 13, 50, 15, 40, 25, 30, 19, 55, 46, 22, 7, 14, 21, 27, 16, 49, 24, 9, 37, 51, 64, 20, 54, 32, 62, 28, 6, 59, 63, 48, 2, 17, 44, 56, 35, 52, 10, 60, 3, 31, 39, 18, 41 }));
+                        
+
             string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
-            IReductGenerator redGenStd = new ReductGeneratorRelative();
-            redGenStd.Epsilon = 0.1M;
-
-            IReductGenerator redGenWgh = new ReductGeneratorWeightsRelative();
-            redGenWgh.Epsilon = 0.1M;
-
-            Args args = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new object[] { ReductFactoryKeyHelper.ApproximateReductRelative, localDataStore });
-
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
-            PermutationCollection permutationList = permGen.Generate(5);
+            Args args = new Args();
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);            
+            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1M);            
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
 
-            redGenStd.InitFromArgs(args);
+
+            IReductGenerator redGenStd = ReductFactory.GetReductGenerator(args);
             redGenStd.Generate();
 
-            redGenWgh.InitFromArgs(args);
+            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+
+            IReductGenerator redGenWgh = ReductFactory.GetReductGenerator(args);
             redGenWgh.Generate();
 
-            IReductStore redStore = redGenStd.ReductPool;
-            IReductStore redStoreW = redGenWgh.ReductPool;
+            IReductStore redStore = redGenStd.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+            IReductStore redStoreW = redGenWgh.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
 
             int i = 0;
             foreach (IReduct reduct in redStore)
-            {
-                //Console.WriteLine(reduct);
+            {                
                 IReduct redW = redStoreW.GetReduct(i);
                 i++;
 
-                Assert.AreEqual(reduct, redW);
+                if (!reduct.Attributes.Equals(redW.Attributes))
+                {
+                    FieldSet f1 = reduct.Attributes;
+                    FieldSet f2 = redW.Attributes;
+                }
+
+                Assert.AreEqual(reduct.Attributes, redW.Attributes);
             }
 
         }

@@ -14,7 +14,7 @@ namespace Infovision.Data
         private long[] data;
         private long capacity;
         private int lastIndex;
-        private decimal capacityFactor;
+        private double capacityFactor;
         private Dictionary<long, int> objectId2Index;
         private Dictionary<int, long> index2ObjectId;
         private DataStoreInfo dataStoreInfo;
@@ -47,10 +47,10 @@ namespace Infovision.Data
         public DataStore(DataStoreInfo dataStoreInfo)
         {
             this.dataStoreInfo = dataStoreInfo;
-            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.2M);            
+            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.1);            
         }
 
-        private void InitStorage(int capacity, int attributeSize, decimal capacityFactor)
+        private void InitStorage(int capacity, int attributeSize, double capacityFactor)
         {
             data = new long[capacity * attributeSize];
             this.capacity = capacity;
@@ -102,10 +102,10 @@ namespace Infovision.Data
         }
 
         private void Resize()
-        {             
-            long newCapacity = capacity != 0 ? Convert.ToInt32((decimal)capacity * (1 + capacityFactor)) + 1 : 1;
+        {
+            long newCapacity = capacity != 0 ? Convert.ToInt64((double)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
-            Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(Int64));
+            Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(long));
             this.capacity = newCapacity;
             data = newStorage;
         }
@@ -175,7 +175,7 @@ namespace Infovision.Data
             return result;
         }
 
-        public T[] GetColumnInternal<T>(int fieldId)
+        public T[] GetColumn<T>(int fieldId)
         {
             T[] result = new T[this.NumberOfRecords];
             for (int i = 0; i < this.NumberOfRecords; i++)
@@ -184,6 +184,33 @@ namespace Infovision.Data
                     .Internal2External(
                     this.GetFieldValue(i, fieldId));
             return result;
+        }
+
+        public object[] GetColumn(int fieldId)
+        {
+            object[] result = new object[this.NumberOfRecords];
+            for (int i = 0; i < this.NumberOfRecords; i++)
+                result[i] = this.DataStoreInfo
+                    .GetFieldInfo(fieldId)
+                    .Internal2External(
+                    this.GetFieldValue(i, fieldId));
+            return result;
+        }
+
+        public void UpdateColumn(int fieldId, object[] data, DataFieldInfo referenceFieldInfo = null)
+        {
+            DataFieldInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldId);
+            fieldInfo.Reset();            
+            
+            for (int i = 0; i < this.NumberOfRecords; i++)
+            {
+                bool isMissing = this.DataStoreInfo.HasMissingData && String.Equals(data[i], fieldInfo.MissingValue);
+                long internalValue = referenceFieldInfo != null ? referenceFieldInfo.Add(data[i], isMissing) : fieldInfo.Add(data[i], isMissing);                
+                
+                fieldInfo.AddInternal(internalValue, data[i], isMissing);
+                this.data[i * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
+                fieldInfo.IncreaseHistogramCount(internalValue);
+            }
         }
 
         public bool Exists(long objectId)

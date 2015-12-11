@@ -183,7 +183,7 @@ namespace Infovision.Datamining.Roughset
                         else
                             ruleVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
 
-                        if (this.UseExceptionRules == true && reduct.IsException && eqClass.NumberOfObjects > 0)
+                        if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
                             break;
                     }
                 }

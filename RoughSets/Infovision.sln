@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Infovision.FxCop = Infovision.FxCop
 		Infovision.nunit = Infovision.nunit
 		Infovision.pfx = Infovision.pfx
+		Performance1.psess = Performance1.psess
 		runme.bat = runme.bat
 		TODO.txt = TODO.txt
 	EndProjectSection
@@ -645,5 +646,8 @@ Global
 		{9C213D37-3249-453F-BA30-460255EA955D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{9FE417F8-022C-40E7-9574-BA7014339B6D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{56A080A0-CDFF-4888-AC1E-B40F0438929D} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="DataStoreInfoTest.cs" />
     <Compile Include="DataStoreSplitterTest.cs" />
+    <Compile Include="DiscretizeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataStoreTest.cs" />
   </ItemGroup>
@@ -107,21 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Data\chess.dta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\dna_modified.trn">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\dna_modified.tst">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\monks-1.test">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\monks-1.train">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

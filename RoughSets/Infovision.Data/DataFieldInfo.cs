@@ -12,7 +12,7 @@ namespace Infovision.Data
         private Dictionary<long, object> indexDictionary;
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
-        private Histogram histogram;
+        private Histogram histogram;        
 
         #region Constructors
 
@@ -64,10 +64,20 @@ namespace Infovision.Data
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
         public bool IsNumeric { get; set; }
+        public int[] Cuts { get; set; }
 
         #endregion
 
         #region Methods
+
+        public void Reset()
+        {            
+            this.maxValueInternalId = 0;
+            this.valueDictionary = new Dictionary<object, long>();
+            this.indexDictionary = new Dictionary<long, object>();            
+            this.histogram = new Histogram();
+            this.HasMissingValues = false;            
+        }
 
         public void InitFromDataFieldInfo(DataFieldInfo dataFieldInfo, bool initValues, bool initMissingValues)
         {

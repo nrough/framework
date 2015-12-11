@@ -90,38 +90,37 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
             T min = values[0];
             T max = values[0];
-            T binWidth = Operator<T>.Zero;
+            double binWidth = 0.0;
             double entropy;
             double bestEntropy = Double.MaxValue;
-            int bestNumOfBins = 1;
-            T currentValue;
+            int bestNumOfBins = 1;            
             double[] distribution;
 
             //Find min and max
             for (int i = 0; i < values.Length; i++)
-            {
-                currentValue = values[i];
-                if (currentValue.CompareTo(max) > 0)
-                    max = currentValue;
-                if (currentValue.CompareTo(min) < 0)
-                    min = currentValue;
+            {                
+                if (values[i].CompareTo(max) > 0)
+                    max = values[i];
+                if (values[i].CompareTo(min) < 0)
+                    min = values[i];
             }
+
+            double minD = Operator.Convert<T, double>(min);
+            double maxD = Operator.Convert<T, double>(max);
 
             //Find best bin number
             for (int i = 0; i < this.NumberOfBuckets; i++)
             {
                 distribution = new double[i + 1];
-                binWidth = Operator.DivideInt32(Operator<T>.Subtract(max, min), i + 1);
+                binWidth = (maxD - minD) / (double)(i + 1);
  
                 //Compute distribution
                 for(int j = 0; j < values.Length; j++)
-                {
-                    currentValue = values[j];
+                {                    
                     //TODO if missing
                     for (int k = 0; k < i + 1; k++)
-                    {
-                        if(currentValue.CompareTo(
-                            Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, k + 1))) <= 0)
+                    {                                                
+                        if( Operator.Convert<T, double>(values[j]) <= (minD + (((double)k + 1) * binWidth)) )
                         {
                             distribution[k] += (weights != null) ? weights[j] : 1.0;
                             break;
@@ -139,7 +138,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         entropy = Double.MaxValue;
                         break;
                     }
-                    entropy -= distribution[k] * System.Math.Log(Operator.DivideAlternative<double, T>(distribution[k] - 1, binWidth));
+                    entropy -= (distribution[k] * System.Math.Log((distribution[k] - 1) / binWidth));
                 }
 
                 if(entropy < bestEntropy)
@@ -151,12 +150,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 
             //Calculate custs
             T[] cutPoints = null;
-            if((bestNumOfBins > 1) && (binWidth.CompareTo(Operator<T>.Zero) > 0))
-            {
+            //Fix?
+            binWidth = bestNumOfBins > 0 ? (maxD - minD) / bestNumOfBins : 0.0;
+            if((bestNumOfBins > 1) && (binWidth > 0))
+            {                                
                 cutPoints = new T[bestNumOfBins - 1];
                 for(int i = 1; i < bestNumOfBins; i++)
                 {
-                    cutPoints[i - 1] = Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, i));
+                    cutPoints[i - 1] = Operator.Convert<double, T>(minD + (binWidth * i));
                 }
             }
             this.cuts = cutPoints;
@@ -185,13 +186,16 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 }
             }
 
-            T binWidth = Operator.DivideInt32(Operator<T>.Subtract(max, min), this.NumberOfBuckets);
+            double minD = Operator.Convert<T, double>(min);
+            double maxD = Operator.Convert<T, double>(max);
+
+            double binWidth = (maxD - minD) / (double)this.NumberOfBuckets;
             T[] cutPoints = null;
-            if((this.NumberOfBuckets > 1) && (binWidth.CompareTo(Operator<T>.Zero) > 0))
+            if((this.NumberOfBuckets > 1) && (binWidth > 0))
             {
                 cutPoints = new T[this.NumberOfBuckets - 1];
                 for (int i = 1; i < this.NumberOfBuckets; i++)
-                    cutPoints[i - 1] = Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, i));
+                    cutPoints[i - 1] = Operator.Convert<double, T> (minD + (binWidth * i));                        
             }
 
             this.cuts = cutPoints;
@@ -307,9 +311,13 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         
         public int Search(T value)
         {
+            if (this.cuts == null)
+                return 1;
+            
             for (int i = 0; i < cuts.Length; i++)
                 if (value.CompareTo(cuts[i]) <= 0)
                     return i;
+
             return cuts.Length;
         }
 

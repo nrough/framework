@@ -17,7 +17,7 @@ namespace Infovision.Data
         private int[] foldSize;
         private int nfold;
 
-        private int activeFold = 0;
+        private int activeFold = -1;
         protected bool SplitCalculated {get; set; }
         
         public DataStoreSplitter(DataStore dataStore, int nfold)
@@ -75,6 +75,9 @@ namespace Infovision.Data
 
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2)
         {
+            if (ActiveFold < 0)
+                throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
+
             if(!this.SplitCalculated)
                 this.GenerateSplit();
 

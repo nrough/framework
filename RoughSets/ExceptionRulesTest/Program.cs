@@ -64,7 +64,7 @@ namespace ExceptionRulesTest
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
                         
-                    Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                    Parallel.For(0, 100, i =>
                     //for(int i = 0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);

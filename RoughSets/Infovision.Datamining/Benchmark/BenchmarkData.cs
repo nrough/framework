@@ -18,6 +18,10 @@ namespace Infovision.Datamining.Benchmark
         public virtual int CrossValidationFolds { get; set; }
         public virtual FileFormat FileFormat { get; set; }
         public virtual int DecisionFieldId { get; set; }
+        
+        public virtual bool DiscretizeUsingEntropy { get; set; }
+        public virtual bool DiscretizeUsingEqualFreq { get; set; }
+        public virtual bool DiscretizeUsingEqualWidth { get; set; }
            
         private Dictionary<int, DataFieldInfo> fieldMetadata;
 
@@ -65,6 +69,16 @@ namespace Infovision.Datamining.Benchmark
                 return fieldMetadata[fieldId].Alias;
             else
                 return fieldId.ToString();
+        }
+
+        public bool CheckDiscretize()
+        {
+            return this.DiscretizeUsingEntropy || this.DiscretizeUsingEqualFreq || this.DiscretizeUsingEqualWidth;
+        }
+
+        public IEnumerable<DataFieldInfo> GetNumericFields()
+        {
+            return this.fieldMetadata.Values.Where(f => f.IsNumeric);
         }
     }
 }

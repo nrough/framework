@@ -188,6 +188,7 @@ namespace Infovision.Data
 
                         object[] typedFieldValues = new Object[fields.Length];                        
 
+                        //TODO Iterate over datafieldinfo with foreach loop
                         for (int i = 0; i < fields.Length; i++)
                         {
                             if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
@@ -231,33 +232,24 @@ namespace Infovision.Data
                                 }
                             }
                         }
-
+                        
                         for (int i = 0; i < dataStoreInfo.NumberOfFields; i++)
                         {
-                            fieldId[i] = i + 1;                            
-                            
+                            fieldId[i] = i + 1;
+
                             long internalValue;
+                            bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);                            
+
                             if (this.ReferenceDataStoreInfo != null)
                             {
-                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
-                                {
-                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], true);
-                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], true);
-                                }
-                                else
-                                {
-                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], false);
-                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], false);
-                                }
+                                internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], isMissing);
+                                dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], isMissing);
                             }
                             else
                             {
-                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
-                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], true);
-                                else
-                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], false);
-                            }
-
+                                internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], isMissing);
+                            }                            
+                            
                             fieldValue[i] = internalValue;
                         }
 
@@ -388,8 +380,19 @@ namespace Infovision.Data
         protected override void DecodeFileInfo(string fileInfo)
         {
             string[] fields = fileInfo.Split(this.GetFieldDelimiter(), StringSplitOptions.RemoveEmptyEntries);
-            this.ExpectedColumns = Int32.Parse(fields[1], CultureInfo.InvariantCulture);
-            this.ExpectedRows = Int32.Parse(fields[0], CultureInfo.InvariantCulture);
+
+            int tmp;
+            if (!Int32.TryParse(fields[1], out tmp))
+                throw new InvalidDataException("FileFormat error");
+            this.ExpectedColumns = tmp;
+
+            if (!Int32.TryParse(fields[0], out tmp))
+                throw new InvalidDataException("FileFormat error");
+            this.ExpectedRows = tmp;
+
+            //this.ExpectedColumns = Int32.Parse(fields[1], CultureInfo.InvariantCulture);
+            //this.ExpectedRows = Int32.Parse(fields[0], CultureInfo.InvariantCulture);
+
             this.DecisionId = this.ExpectedColumns;
         }
     }

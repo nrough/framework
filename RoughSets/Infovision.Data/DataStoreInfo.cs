@@ -182,24 +182,7 @@ namespace Infovision.Data
         {
             DataFieldInfo attributeInfo = this.GetFieldInfo(fieldId);
             attributeInfo.AddInternal(internalValue, externalValue, isMissing);
-        }
-
-        /*
-
-        public void SetDecisionField(int fieldIds, bool isDecision)
-        {
-            if (this.fields.ContainsKey(fieldIds))
-            {
-                DataFieldInfo attribute = fields[fieldIds];
-                attribute.IsDecision = isDecision;
-                decisionFieldId = isDecision ? fieldIds : 0;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("fieldIds", String.Format("FieldId {0} does not exist in DataStore", fieldIds));
-            }
-        }
-        */
+        }        
 
         private void SetFieldMinMaxId(int fieldId)
         {

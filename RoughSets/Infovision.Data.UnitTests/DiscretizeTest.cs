@@ -27,9 +27,8 @@ namespace Infovision.Data.UnitTests
         [Test, TestCaseSource("GetDataFiles")]
         public void UpdateColumnTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-
-            decimal epsilon = 0m;
-            int numberOfPermutations = 10;
+            decimal epsilon = 0.05m;
+            int numberOfPermutations = 20;
             
             BenchmarkData benchmark = kvp.Value;
             DataStore data = null, train = null, test = null;
@@ -44,7 +43,7 @@ namespace Infovision.Data.UnitTests
             else
             {
                 train = DataStore.Load(benchmark.TrainFile, benchmark.FileFormat);
-                test = DataStore.Load(benchmark.TestFile, benchmark.FileFormat);
+                test = DataStore.Load(benchmark.TestFile, benchmark.FileFormat, train.DataStoreInfo);
             }
             
             for (int i = 0; i < benchmark.CrossValidationFolds; i++)
@@ -62,7 +61,8 @@ namespace Infovision.Data.UnitTests
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
                 args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+                PermutationCollection permutations = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
+                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
@@ -126,7 +126,7 @@ namespace Infovision.Data.UnitTests
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
                 args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();

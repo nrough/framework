@@ -233,21 +233,35 @@ namespace Infovision.Data
                             }
                         }
                         
+                        //TODO implement foreach 
                         for (int i = 0; i < dataStoreInfo.NumberOfFields; i++)
                         {
                             fieldId[i] = i + 1;
 
+                            object externalValue = typedFieldValues[i];
                             long internalValue;
-                            bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);                            
+                            bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);
+                            
 
                             if (this.ReferenceDataStoreInfo != null)
                             {
-                                internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], isMissing);
-                                dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, typedFieldValues[i], isMissing);
+                                DataFieldInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);                                                                
+                                if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
+                                {                                    
+                                    for(int j=0; j<localFieldInfo.Cuts.Length; j++)
+                                    {
+                                        //TODO We need to provide a way to dynamically convert types
+                                        if ((int)externalValue <= localFieldInfo.Cuts[j])
+                                            externalValue = (object)j;
+                                    }
+                                }
+
+                                internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, externalValue, isMissing);
                             }
                             else
                             {
-                                internalValue = dataStoreInfo.AddFieldValue(fieldId[i], typedFieldValues[i], isMissing);
+                                internalValue = dataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
                             }                            
                             
                             fieldValue[i] = internalValue;

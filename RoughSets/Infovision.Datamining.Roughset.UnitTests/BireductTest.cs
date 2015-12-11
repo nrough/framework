@@ -444,7 +444,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),
-                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Name,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
                 
@@ -455,7 +455,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     Console.WriteLine(String.Format("{0} => {1}={2}",
                                     eq.Instance.ToString2(localDataStore.DataStoreInfo),
-                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Alias,
+                                    localDataStore.DataStoreInfo.GetDecisionFieldInfo().Name,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
 

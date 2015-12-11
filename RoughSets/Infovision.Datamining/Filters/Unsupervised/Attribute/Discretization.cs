@@ -3,137 +3,242 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MiscUtil;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 {
     
-    public class Discretization
+    public class Discretization<T>
+        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
     {
-        private double[] cuts;
+        #region Members
+
+        private T[] cuts;
+        private double weightPerInterval;
+        private bool useWeightPerInterval;
+
+        #endregion
+
+        #region Constructors
 
         public Discretization()
         {
+            this.useWeightPerInterval = false;
+            this.weightPerInterval = 0.0;
+            this.NumberOfBuckets = 10;
         }
 
-        public double[] Cuts
+        #endregion
+
+        #region Properties
+
+        public double WeightPerInterval
+        {
+            get { return this.weightPerInterval; }
+            set 
+            {
+                if (value <= 0.0)
+                    throw new InvalidOperationException("Weight per interval must be positive");
+
+                this.weightPerInterval = value;
+                this.useWeightPerInterval = true;
+
+            }
+        }
+
+        public bool UseWeightPerInterval
+        {
+            get { return this.useWeightPerInterval; }
+            set
+            {
+                if (value == true)
+                {
+                    if (this.weightPerInterval == 0)
+                        throw new InvalidOperationException("Weight value must be set first");
+                }
+                else
+                {
+                    this.weightPerInterval = 0.0;
+                }
+
+                this.useWeightPerInterval = value;
+            }
+        }
+
+        public int NumberOfBuckets { get; set; }
+
+        public bool UseEqualFrequency { get; set; }
+
+        public bool UseEntropy { get; set; }
+
+        public T[] Cuts
         {
             get { return cuts; }
         }
 
+        #endregion
 
-        /*
-    protected void calculateCutPointsByEqualFrequencyBinning(int index) {
+        #region Methods
 
-    // Copy data so that it can be sorted
-    Instances data = new Instances(getInputFormat());
-
-    // Sort input data
-    data.sort(index);
-
-    // Compute weight of instances without missing values
-    double sumOfWeights = 0;
-    for (int i = 0; i < data.numInstances(); i++) {
-      if (data.instance(i).isMissing(index)) {
-    break;
-      } else {
-    sumOfWeights += data.instance(i).weight();
-      }
-    }
-    double freq;
-    double[] cutPoints = new double[m_NumBins - 1];
-    if (getDesiredWeightOfInstancesPerInterval() > 0) {
-      freq = getDesiredWeightOfInstancesPerInterval();
-      cutPoints = new double[(int)(sumOfWeights / freq)];
-    } else {
-      freq = sumOfWeights / m_NumBins;
-      cutPoints = new double[m_NumBins - 1];
-    }
-
-    // Compute break points
-    double counter = 0, last = 0;
-    int cpindex = 0, lastIndex = -1;
-    for (int i = 0; i < data.numInstances() - 1; i++) {
-
-      // Stop if value missing
-      if (data.instance(i).isMissing(index)) {
-    break;
-      }
-      counter += data.instance(i).weight();
-      sumOfWeights -= data.instance(i).weight();
-
-      // Do we have a potential breakpoint?
-      if (data.instance(i).value(index) < 
-      data.instance(i + 1).value(index)) {
-
-    // Have we passed the ideal size?
-    if (counter >= freq) {
-
-      // Is this break point worse than the last one?
-      if (((freq - last) < (counter - freq)) && (lastIndex != -1)) {
-        cutPoints[cpindex] = (data.instance(lastIndex).value(index) +
-                  data.instance(lastIndex + 1).value(index)) / 2;
-        counter -= last;
-        last = counter;
-        lastIndex = i;
-      } else {
-        cutPoints[cpindex] = (data.instance(i).value(index) +
-                  data.instance(i + 1).value(index)) / 2;
-        counter = 0;
-        last = 0;
-        lastIndex = -1;
-      }
-      cpindex++;
-      freq = (sumOfWeights + counter) / ((cutPoints.length + 1) - cpindex);
-    } else {
-      lastIndex = i;
-      last = counter;
-    }
-      }
-    }
-
-    // Check whether there was another possibility for a cut point
-    if ((cpindex < cutPoints.length) && (lastIndex != -1)) {
-      cutPoints[cpindex] = (data.instance(lastIndex).value(index) +
-                data.instance(lastIndex + 1).value(index)) / 2;      
-      cpindex++;
-    }
-
-    // Did we find any cutpoints?
-    if (cpindex == 0) {
-      m_CutPoints[index] = null;
-    } else {
-      double[] cp = new double[cpindex];
-      for (int i = 0; i < cpindex; i++) {
-    cp[i] = cutPoints[i];
-      }
-      m_CutPoints[index] = cp;
-    }
-  }
-  */
-        protected void CalculateCutPointsByEqualFrequencyBinning(double[] values, int numberOfBins)
+        protected void CalculateCutPointsByEntropy(T[] values, double[] weights)
         {
-            //copy the data so it can be sorted
-            double[] data = (double[])values.Clone();
+            if (values == null)
+                throw new ArgumentException("Value array cannot be null", "values");
 
-            //sort the data
-            Array.Sort<double>(data);
+            if(values.Length == 0)
+                throw new ArgumentException("Value array does not contain any elements", "values");
 
-            // Compute weight of instances without missing values
-            double sumOfWeights = data.Length;
-            double freq = sumOfWeights / numberOfBins;
-            double[] cutPoints = new double[numberOfBins - 1];
+            T min = values[0];
+            T max = values[0];
+            T binWidth = Operator<T>.Zero;
+            double entropy;
+            double bestEntropy = Double.MaxValue;
+            int bestNumOfBins = 1;
+            T currentValue;
+            double[] distribution;
 
-            // Compute break points
+            //Find min and max
+            for (int i = 0; i < values.Length; i++)
+            {
+                currentValue = values[i];
+                if (currentValue.CompareTo(max) > 0)
+                    max = currentValue;
+                if (currentValue.CompareTo(min) < 0)
+                    min = currentValue;
+            }
+
+            //Find best bin number
+            for (int i = 0; i < this.NumberOfBuckets; i++)
+            {
+                distribution = new double[i + 1];
+                binWidth = Operator.DivideInt32(Operator<T>.Subtract(max, min), i + 1);
+ 
+                //Compute distribution
+                for(int j = 0; j < values.Length; j++)
+                {
+                    currentValue = values[j];
+                    //TODO if missing
+                    for (int k = 0; k < i + 1; k++)
+                    {
+                        if(currentValue.CompareTo(
+                            Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, k + 1))) <= 0)
+                        {
+                            distribution[k] += (weights != null) ? weights[j] : 1.0;
+                            break;
+                        }
+
+                    }
+                }
+
+                //Compute entropy
+                entropy = 0;
+                for (int k = 0; k < i + 1; k++)
+                {
+                    if (distribution[k] < 2)
+                    {
+                        entropy = Double.MaxValue;
+                        break;
+                    }
+                    entropy -= distribution[k] * System.Math.Log(Operator.DivideAlternative<double, T>(distribution[k] - 1, binWidth));
+                }
+
+                if(entropy < bestEntropy)
+                {
+                    bestEntropy = entropy;
+                    bestNumOfBins = i + 1;
+                }
+            }
+                
+            //Calculate custs
+            T[] cutPoints = null;
+            if((bestNumOfBins > 1) && (binWidth.CompareTo(Operator<T>.Zero) > 0))
+            {
+                cutPoints = new T[bestNumOfBins - 1];
+                for(int i = 1; i < bestNumOfBins; i++)
+                {
+                    cutPoints[i - 1] = Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, i));
+                }
+            }
+            this.cuts = cutPoints;
+        }
+
+        protected void CalculateCutPointsByEqualWidthBinning(T[] values, double[] weights = null)
+        {
+            T max = Operator<T>.Zero;
+            T min = Operator<T>.One;
+            T currentValue;
+            for(int i = 0; i<values.Length; i++)
+            {
+                currentValue = values[i];
+                if (max.CompareTo(min) < 0)
+                {
+                    min = currentValue;
+                    max = min;
+                }
+                if (currentValue.CompareTo(max) > 0)
+                {
+                    max = currentValue;
+                }
+                if(currentValue.CompareTo(min) < 0)
+                {
+                    min = currentValue;
+                }
+            }
+
+            T binWidth = Operator.DivideInt32(Operator<T>.Subtract(max, min), this.NumberOfBuckets);
+            T[] cutPoints = null;
+            if((this.NumberOfBuckets > 1) && (binWidth.CompareTo(Operator<T>.Zero) > 0))
+            {
+                cutPoints = new T[this.NumberOfBuckets - 1];
+                for (int i = 1; i < this.NumberOfBuckets; i++)
+                    cutPoints[i - 1] = Operator<T>.Add(min, Operator.MultiplyAlternative<T, int>(binWidth, i));
+            }
+
+            this.cuts = cutPoints;
+        }
+
+        protected void CalculateCutPointsByEqualFrequencyBinning(T[] values, double[] weights = null)
+        {           
+            T[] data = (T[])values.Clone();
+            Array.Sort<T>(data);
+
+            double tmpSum = 0;
+            if (weights != null)
+                for (int i = 0; i < data.Length; i++)
+                    tmpSum += weights[i];
+
+            double sumOfWeights = (weights == null) ? data.Length : tmpSum;
+
+            double freq = 0;
+            T[] cutPoints = null;
+            if (this.UseWeightPerInterval)
+            {
+                freq = this.WeightPerInterval;
+                cutPoints = new T[(int)(sumOfWeights / freq)];
+            }
+            else
+            {
+                freq = sumOfWeights / this.NumberOfBuckets;
+                cutPoints = new T[this.NumberOfBuckets - 1];
+            }
+
             double counter = 0, last = 0;
             int cpindex = 0, lastIndex = -1;
 
             for (int i = 0; i < data.Length - 1; i++)
             {
-                counter += 1;
-                sumOfWeights -= 1;
+                if (weights == null)
+                {
+                    counter += 1;
+                    sumOfWeights -= 1;
+                }
+                else
+                {
+                    counter += weights[i];
+                    sumOfWeights -= weights[i];
+                }
 
-                // Do we have a potential breakpoint?
-                if (data[i] < data[i + 1])
+                if (data[i].CompareTo(data[i + 1]) < 0)
                 {
                     // Have we passed the ideal size?
                     if (counter >= freq)
@@ -141,14 +246,18 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         // Is this break point worse than the last one?
                         if (((freq - last) < (counter - freq)) && (lastIndex != -1))
                         {
-                            cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
+
+                            cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[lastIndex], data[lastIndex + 1]), 2);
+
+                            //cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
                             counter -= last;
                             last = counter;
                             lastIndex = i;
                         }
                         else
                         {
-                            cutPoints[cpindex] = (data[i] + data[i + 1]) / 2;
+                            cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[i], data[i + 1]), 2);
+                            //cutPoints[cpindex] = (data[i] + data[i + 1]) / 2;
                             counter = 0;
                             last = 0;
                             lastIndex = -1;
@@ -168,7 +277,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             // Check whether there was another possibility for a cut point
             if ((cpindex < cutPoints.Length) && (lastIndex != -1))
             {
-                cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
+                cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[lastIndex], data[lastIndex + 1]), 2);
+                //cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
                 cpindex++;
             }
 
@@ -179,74 +289,52 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             }
             else
             {
-                double[] cp = new double[cpindex];
-                for (int i = 0; i < cpindex; i++)
-                {
-                    cp[i] = cutPoints[i];
-                }
-
+                T[] cp = new T[cpindex];
+                Array.Copy(cutPoints, cp, cpindex);
                 cuts = cp;
             }
         }
 
-        public void Compute(double[] values, int numberOfBins)
+        public void Compute(T[] values, double[] weights = null)
         {
-            this.CalculateCutPointsByEqualFrequencyBinning(values, numberOfBins);
+            if(this.UseEntropy)
+                this.CalculateCutPointsByEntropy(values, weights);
+            else if (this.UseEqualFrequency)
+                this.CalculateCutPointsByEqualFrequencyBinning(values, weights);
+            else
+                this.CalculateCutPointsByEqualWidthBinning(values, weights);
         }
         
-        public int Search(double value)
+        public int Search(T value)
         {
-            int ret = -1;
-
-            for (int i = 0; i <= cuts.Length; i++)
-            {
-                if (i != 0 && i != cuts.Length)
-                {
-                    if (cuts[i - 1] < value
-                        && cuts[i] >= value)
-                    {
-                        return i;
-                    }
-                }
-                else if(i == 0)
-                {
-                    if(cuts[i] > value)
-                    {
-                        return i;
-                    }
-                }
-                else if (i == cuts.Length)
-                {
-                    if (cuts[i-1] < value)
-                        return i;
-                }
-            }
-
-            return ret;
-        }
-
-        public string ToStringCuts()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            if(cuts.Length > 0)
-                sb.AppendLine(String.Format("{0}: {1} {2}", 0, "-Inf", cuts[0]));
-
-            for (int i = 1; i < cuts.Length; i++)
-            {
-                sb.AppendLine(String.Format("{0}: {1} {2}", i, cuts[i - 1], cuts[i]));                
-            }
-
-            if (cuts.Length > 0)
-                sb.AppendLine(String.Format("{0}: {1} {2}", cuts.Length, cuts[cuts.Length-1], "+Inf"));
-
-            return sb.ToString();
+            for (int i = 0; i < cuts.Length; i++)
+                if (value.CompareTo(cuts[i]) <= 0)
+                    return i;
+            return cuts.Length;
         }
 
         public void WriteToCSVFile(string filePath)
         {
-            System.IO.File.WriteAllText(filePath, ToStringCuts());
+            System.IO.File.WriteAllText(filePath, this.ToString());
         }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (cuts.Length > 0)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", 0, "-Inf", cuts[0]));
+
+            for (int i = 1; i < cuts.Length; i++)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", i, cuts[i - 1], cuts[i]));
+
+            if (cuts.Length > 0)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", cuts.Length, cuts[cuts.Length - 1], "+Inf"));
+
+            return sb.ToString();
+        }
+
+        #endregion
     }
 }
 

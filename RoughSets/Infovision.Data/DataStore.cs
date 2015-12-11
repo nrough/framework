@@ -167,6 +167,25 @@ namespace Infovision.Data
             return ret;
         }
 
+        public long[] GetColumnInternal(int fieldId)
+        {
+            long[] result = new long[this.NumberOfRecords];
+            for (int i = 0; i < this.NumberOfRecords; i++)
+                result[i] = this.GetFieldValue(i, fieldId);
+            return result;
+        }
+
+        public T[] GetColumnInternal<T>(int fieldId)
+        {
+            T[] result = new T[this.NumberOfRecords];
+            for (int i = 0; i < this.NumberOfRecords; i++)
+                result[i] = (T)this.DataStoreInfo
+                    .GetFieldInfo(fieldId)
+                    .Internal2External(
+                    this.GetFieldValue(i, fieldId));
+            return result;
+        }
+
         public bool Exists(long objectId)
         {
             if (objectId2Index.ContainsKey(objectId))
@@ -261,7 +280,7 @@ namespace Infovision.Data
             return this.decisionValue2ObjectIndex[decisionValue];
         }
 
-        public void DecisionChanged()
+        protected void DecisionChanged()
         {
             this.isDecisionMapCalculated = false;
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using Infovision.Datamining.Benchmark;
 
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -28,7 +29,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
-            return BenchmarkDataHelper.GetDataFiles();
+            return BenchmarkDataHelper.GetDataFiles("Data");
         }
 
         [Test, TestCaseSource("GetDataFiles")]

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
+using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Math;
@@ -68,7 +69,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
-            return BenchmarkDataHelper.GetDataFiles();
+            return BenchmarkDataHelper.GetDataFiles("Data");
         }
 
         [Test]

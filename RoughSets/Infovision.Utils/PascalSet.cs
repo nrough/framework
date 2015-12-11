@@ -9,7 +9,7 @@ namespace Infovision.Utils
 {
 	[Serializable]
 	public class PascalSet<T> : ICloneable, ICollection, IEnumerable<T>
-		where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T> 
+		where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T> 
 	{
 		// Private member variables
 		private int cardinality;
@@ -58,7 +58,7 @@ namespace Infovision.Utils
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
 			if(lowerBound.CompareTo(upperBound) > 0)
-				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
+				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.", "lowerBound");
 
 			this.LowerBound = lowerBound;
 			this.UpperBound = upperBound;
@@ -85,7 +85,7 @@ namespace Infovision.Utils
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
 			if (lowerBound.CompareTo(upperBound) > 0)
-				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
+				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.", "lowerBound");
 
 			this.LowerBound = lowerBound;
 			this.UpperBound = upperBound;
@@ -110,12 +110,9 @@ namespace Infovision.Utils
 					cardinality++;
 				}
 				else
-					throw new ArgumentException("Attempting to add an element with value " 
-												+ val.ToString(CultureInfo.InvariantCulture) 
-												+ " that is outside of the set's universe.  Value must be between "
-												+ this.LowerBound.ToString(CultureInfo.InvariantCulture) 
-												+ " and "
-												+ this.UpperBound.ToString(CultureInfo.InvariantCulture));
+				{
+					throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "initialData");
+				}
 			}
 
 			this.IsCardinalityCalculated = true;
@@ -129,7 +126,7 @@ namespace Infovision.Utils
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
 			if (lowerBound.CompareTo(upperBound) > 0)
-				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.");
+				throw new ArgumentException("The set's lower bound cannot be greater than its upper bound.", "lowerBound");
 
 			this.LowerBound = lowerBound;
 			this.UpperBound = upperBound;
@@ -141,7 +138,7 @@ namespace Infovision.Utils
 				Operator<T>.One), typeof(int));
 			this.Data = new BitArray(size);
 			if (this.Data.Length != data.Length)
-				throw new ArgumentException("data length does not match the upper and lower bound settings");            
+				throw new ArgumentException("data length does not match the upper and lower bound settings", "data");            
 
 			// Populuate the BitArray with the passed-in data array.
 			for (int i = 0; i < data.Length; i++)
@@ -222,12 +219,7 @@ namespace Infovision.Utils
 				}
 				else
 				{
-					throw new ArgumentException("Attempting to add an element with value " 
-												+ val.ToString(CultureInfo.InvariantCulture) 
-												+ " that is outside of the set's universe.  Value must be between "
-												+ this.LowerBound.ToString(CultureInfo.InvariantCulture) 
-												+ " and "
-												+ this.UpperBound.ToString(CultureInfo.InvariantCulture));
+					throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "list"); 
 				}
 			}
 
@@ -243,7 +235,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Union(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to union two dissimilar sets.  Union can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to union two dissimilar sets.  Union can only occur between two sets with the same universe.", "pascalSet");
 
 			// do a bit-wise OR to union together this.data and s.data
 			PascalSet<T> result = (PascalSet<T>)Clone();
@@ -294,12 +286,7 @@ namespace Infovision.Utils
 			}
 			else
 			{
-				throw new ArgumentException("Attempting to add an element with value " 
-											+ element.ToString(CultureInfo.InvariantCulture) 
-											+ " that is outside of the set's universe.  Value must be between "
-											+ this.LowerBound.ToString(CultureInfo.InvariantCulture) 
-											+ " and "
-											+ this.UpperBound.ToString(CultureInfo.InvariantCulture));
+				throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "element"); 
 			}
 		}
 
@@ -321,12 +308,7 @@ namespace Infovision.Utils
 			}
 			else
 			{
-				throw new ArgumentException("Attempting to remove an element with value " 
-											+ element.ToString(CultureInfo.InvariantCulture) 
-											+ " that is outside of the set's universe.  Value must be between "
-											+ this.LowerBound.ToString(CultureInfo.InvariantCulture) 
-											+ " and "
-											+ this.UpperBound.ToString(CultureInfo.InvariantCulture));
+				throw new ArgumentException("Attempting to remove an element with value that is outside of the set's universe.", "element"); 
 			}
 		}
 
@@ -373,7 +355,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Intersection(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to intersect two dissimilar sets.  Intersection can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to intersect two dissimilar sets. Intersection can only occur between two sets with the same universe.", "pascalSet");
 
 			// do a bit-wise AND to intersect this.data and s.data
 			PascalSet<T> result = (PascalSet<T>)Clone();
@@ -417,7 +399,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Difference(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to apply set difference to two dissimilar sets.  Set difference can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to apply set difference to two dissimilar sets.  Set difference can only occur between two sets with the same universe.", "pascalSet");
 
 			// do a bit-wise XOR and then an AND to achieve set difference
 			PascalSet<T> result = (PascalSet<T>)Clone();
@@ -508,7 +490,7 @@ namespace Infovision.Utils
 		public virtual bool Subset(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to compare two dissimilar sets.  Subset comparisons can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to compare two dissimilar sets. Subset comparisons can only occur between two sets with the same universe.", "pascalSet");
 
 			// Get the BitArray's underlying array
 			const int INT_SIZE = 32;
@@ -552,7 +534,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSubset(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to compare two dissimilar sets.  Subset comparisons can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to compare two dissimilar sets. Subset comparisons can only occur between two sets with the same universe.", "pascalSet");
 
 			return Subset(pascalSet) && !pascalSet.Subset(this);
 		}
@@ -579,7 +561,7 @@ namespace Infovision.Utils
 		public virtual bool Superset(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to compare two dissimilar sets.  Superset comparisons can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to compare two dissimilar sets.  Superset comparisons can only occur between two sets with the same universe.", "pascalSet");
 
 			return pascalSet.Subset(this);
 		}
@@ -604,7 +586,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSuperset(PascalSet<T> pascalSet)
 		{
 			if (!AreSimilar(pascalSet))
-				throw new ArgumentException("Attempting to compare two dissimilar sets.  Superset comparisons can only occur between two sets with the same universe.");
+				throw new ArgumentException("Attempting to compare two dissimilar sets.  Superset comparisons can only occur between two sets with the same universe.", "pascalSet");
 
 			return Superset(pascalSet) && !pascalSet.Superset(this);
 		}

@@ -8,6 +8,7 @@ using Common.Logging;
 using Common.Logging.Configuration;
 using Infovision.Data;
 using Infovision.Datamining;
+using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
 
@@ -18,7 +19,7 @@ namespace ExceptionRulesTest
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations)
         {            
             DataStore trainData = null, testData = null, data = null;
-            string filename = Path.Combine(@"log", kvp.Value.Alias + String.Format("-{0}", numberOfPermutations) + ".result"); ;
+            string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", numberOfPermutations) + ".result"); ;
             DataStoreSplitter splitter = null;
 
             ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
@@ -229,7 +230,7 @@ namespace ExceptionRulesTest
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
 
-            foreach (var kvp in BenchmarkDataHelper.GetDataFiles(datasets))
+            foreach (var kvp in BenchmarkDataHelper.GetDataFiles("Data", datasets))
             {
                 program.ExceptiodnRulesTest(kvp, numberOfTests, ensembleSize);
             }

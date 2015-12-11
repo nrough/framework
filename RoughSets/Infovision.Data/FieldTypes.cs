@@ -17,6 +17,14 @@ namespace Infovision.Data
         All = 31
     }
 
+    public enum DataCharacterType
+    {
+        None = 0,
+        Unique = 1,
+        Continues = 2,
+        Discreet = 3
+    }
+
     public static class FieldTypesHelper
     {
         public static List<FieldTypes> basicTypes = null;

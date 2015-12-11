@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             ReductStore reductStore = new ReductStore();
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0);
-            reductStore.AddReduct(reduct);            
+            reductStore.AddReduct(reduct);
 
             foreach (Reduct localReduct in reductStore)
             {
@@ -134,7 +134,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Assert.AreEqual(17, reductStat.GetNumberOfObjectsWithDecision(reductStat.MajorDecision));
                 Assert.AreEqual(17, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
-
             }
         }
 
@@ -246,10 +245,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, 
                 ReductFactory.GetPermutationGenerator(parms).Generate(1000));
             
-            for (int epsilon = 0; epsilon < 100; epsilon += 11)
+            for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon += 0.01m)
             {
+                parms.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-                reductGenerator.Epsilon = epsilon / 100.0M;
                 reductGenerator.Generate();
                 IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
 
@@ -273,14 +273,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         if (eq1.MajorDecision != eq2.MajorDecision)
                         {                                                        
                             Assert.AreEqual(
-                            eq1.GetDecisionWeigth(eq1.MajorDecision),
-                            eq2.GetDecisionWeigth(eq2.MajorDecision), String.Format("Major Decision Weights eps={0}", epsilon));
+                                eq1.GetDecisionWeigth(eq1.MajorDecision),
+                                eq2.GetDecisionWeigth(eq2.MajorDecision), 
+                                    String.Format("Major Decision Weights eps = {0}", epsilon));
                         
                         }
-                        
-                        //Assert.AreEqual(
-                        //    partitionMap.GetEquivalenceClass(dataVector).MajorDecision, 
-                        //    reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).MajorDecision, String.Format("Major Decision eps={0}", epsilon));
                         
                         EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
                         EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
@@ -336,6 +333,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                  ReductGeneratorParamHelper.DataStore }, 
                                   new Object[] { ReductFactoryKeyHelper.ApproximateReductMajority, 
                                                  dataStoreTrain });
+            
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);

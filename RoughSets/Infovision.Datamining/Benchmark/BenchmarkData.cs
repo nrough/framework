@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Data;
 
-namespace Infovision.Data
+namespace Infovision.Datamining.Benchmark
 {
     public class BenchmarkData
-    {
-        private Dictionary<int, string> fieldNames;
-        
-        public virtual string Alias { get; set; }
+    {        
+        public virtual string Name { get; set; }
         public virtual string TestFile { get; set; }
         public virtual string TrainFile { get; set; }
         public virtual string DataFile { get; set; }
@@ -19,44 +18,51 @@ namespace Infovision.Data
         public virtual int CrossValidationFolds { get; set; }
         public virtual FileFormat FileFormat { get; set; }
         public virtual int DecisionFieldId { get; set; }
+           
+        private Dictionary<int, DataFieldInfo> fieldMetadata;
 
         protected BenchmarkData()
         {
-            this.fieldNames = new Dictionary<int, string>();
-
             this.CrossValidationActive = false;
             this.CrossValidationFolds = 1;
             this.FileFormat = FileFormat.Rses1;
             this.DecisionFieldId = -1;
+
+            this.fieldMetadata = new Dictionary<int, DataFieldInfo>();
         }
         
-        public BenchmarkData(string alias, string dataFile, int folds)
+        public BenchmarkData(string name, string dataFile, int folds)
             : this()
         {
-            this.Alias = alias;
+            this.Name = name;
             this.DataFile = dataFile;
             this.TrainFile = dataFile;
             this.CrossValidationActive = true;
             this.CrossValidationFolds = folds;
         }
 
-        public BenchmarkData(string alias, string trainFile, string testFile)
+        public BenchmarkData(string name, string trainFile, string testFile)
             : this()
         {
-            this.Alias = alias;
+            this.Name = name;
             this.TrainFile = trainFile;
             this.TestFile = testFile;                        
         }
 
-        public void AddFieldAlias(int fieldId, string fieldAlias)
+        public void AddFieldInfo(int fieldId, DataFieldInfo fieldInfo)
         {
-            fieldNames.Add(fieldId, fieldAlias);
+            this.fieldMetadata.Add(fieldId, fieldInfo);
+        }
+
+        public DataFieldInfo GetFieldinfo(int fieldId)
+        {
+            return this.fieldMetadata[fieldId];
         }
 
         public string GetFieldAlias(int fieldId)
         {
-            if (fieldNames.ContainsKey(fieldId))
-                return fieldNames[fieldId];
+            if (this.fieldMetadata.ContainsKey(fieldId))
+                return fieldMetadata[fieldId].Alias;
             else
                 return fieldId.ToString();
         }

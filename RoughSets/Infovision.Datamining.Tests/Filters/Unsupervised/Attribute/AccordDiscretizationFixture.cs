@@ -75,17 +75,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 		#region Test Methods        
 	
-
-		//[TestCase(2, 1, 20)]
-		//[TestCase(2, 1, 5)]
-		//[TestCase(2, 1, 10)]
-		//[TestCase(2, 3, 5)]
-		//[TestCase(2, 3, 10)]
-		//[TestCase(2, 5, 5)]
-		//[TestCase(2, 5, 10)]
-		//[TestCase(2, 7, 5)]
-		//[TestCase(2, 7, 10)]
-		
+		//[TestCase(2, 1, 0.20)]
+		//[TestCase(2, 1, 0.5)]
+		//[TestCase(2, 1, 0.10)]
+		//[TestCase(2, 3, 0.5)]
+		//[TestCase(2, 3, 0.10)]
+		//[TestCase(2, 5, 0.5)]
+		//[TestCase(2, 5, 0.10)]
+		//[TestCase(2, 7, 0.5)]
+		//[TestCase(2, 7, 0.10)]
 		[TestCase(2, 7, 0.2)]
 		public void LoadDataTable(int cvFolds, int numberOfReducts, decimal epsilon)
 		{
@@ -107,7 +105,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				rawData.Columns[i].ColumnName = "a" + i.ToString();
 			rawData.Columns[decisionIdx].ColumnName = "d";
 
-			//rawData.WriteToCSVFile(String.Format("{0}.csv", "RawData"), " ");
+			rawData.WriteToCSVFile(String.Format("{0}.csv", "RawData"), " ");
 
 			// Create a new codification codebook to
 			// convert strings into integer symbols
@@ -141,10 +139,10 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 				DataTable validationSet = symbols.Subtable(indicesValidation);
 				validationSet.TableName = "Test-" + k.ToString();
-				validationSet.WriteToCSVFile(String.Format("{0}.csv", validationSet.TableName), " ");				
-				
-				Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization[] discretizations
-					= new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization[continuesAttributes.Length];
+				validationSet.WriteToCSVFile(String.Format("{0}.csv", validationSet.TableName), " ");
+
+				Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[] discretizations
+					= new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[continuesAttributes.Length];
 
 				DataTable tmp = trainingSet.Clone();
 
@@ -152,8 +150,9 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				{
 					double[] values = trainingSet.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
 
-					discretizations[i] = new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization();
-					discretizations[i].Compute(values, numberOfHistBins);
+					discretizations[i] = new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>();
+					discretizations[i].NumberOfBuckets = numberOfHistBins;
+					discretizations[i].Compute(values);
 					discretizations[i].WriteToCSVFile(String.Format("{0}-{1}.cut", trainingSet.TableName, continuesAttributes[i]));
 
 					tmp.Columns[continuesAttributes[i]].DataType = typeof(int);					                    										
@@ -188,9 +187,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 				tmp = validationSet.Clone();
 				for (int i = 0; i < continuesAttributes.Length; i++)
-				{
 					tmp.Columns[continuesAttributes[i]].DataType = typeof(int);
-				}
 
 				foreach (DataRow row in validationSet.Rows)
 				{
@@ -205,17 +202,17 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 				validationSet = tmp;
 
-				//trainingSet.WriteToCSVFile(String.Format("{0}-Disc.csv", trainingSet.TableName), " ");
-				//validationSet.WriteToCSVFile(String.Format("{0}-Disc.csv", validationSet.TableName), " ");
+				trainingSet.WriteToCSVFile(String.Format("{0}-Disc.csv", trainingSet.TableName), " ");
+				validationSet.WriteToCSVFile(String.Format("{0}-Disc.csv", validationSet.TableName), " ");
 
 				DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
 				DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);
 
 				localDataStoreTrain.WriteToCSVFile(String.Format("{0}-Store.csv", trainingSet.TableName), " ");
-				//localDataStoreTest.WriteToCSVFile(String.Format("{0}-Store.csv", validationSet.TableName), " ");
+				localDataStoreTest.WriteToCSVFile(String.Format("{0}-Store.csv", validationSet.TableName), " ");
 
-				//localDataStoreTrain.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", trainingSet.TableName), " ");
-				//localDataStoreTest.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", validationSet.TableName), " ");
+				localDataStoreTrain.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", trainingSet.TableName), " ");
+				localDataStoreTest.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", validationSet.TableName), " ");
 
 				//Console.WriteLine(localDataStoreTrain.DataStoreInfo.ToStringInfo());
 				//Console.WriteLine(localDataStoreTest.DataStoreInfo.ToStringInfo());
@@ -237,7 +234,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					identificationType, 
 					voteType,
 					localDataStoreTrain.DataStoreInfo.GetDecisionValues());
-
 				ClassificationResult classificationResultTrn = roughClassifier.Classify(localDataStoreTrain, null);
 
 				IReductStore localReductStore = filteredStoreCollection.FirstOrDefault();
@@ -245,19 +241,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				{
 					var reduct = localReductStore.GetReduct(i);
 					var measure = new InformationMeasureMajority().Calc(reduct);
-					//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
-
-					double[] discernVerctor = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
-					//for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
-					//{
-					//	Console.Write("({0} {1}) ", localDataStoreTrain.ObjectIndex2ObjectId(j), discernVector[j]);
-					//}
-					//Console.Write(Environment.NewLine);
+					Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 				} 
 
 				ClassificationResult classificationResultTst = roughClassifier.Classify(localDataStoreTest, null);;				
-
-				//Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
+				Console.WriteLine("CV: {0} Training: {1} Testing: {2}", k, classificationResultTrn.Accuracy, classificationResultTst.Accuracy);
 				
 				return new CrossValidationValues<RoughClassifier>(roughClassifier,
 																	classificationResultTrn.Accuracy,
@@ -266,7 +254,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 			var result = val.Compute();
 
-			//Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
+			Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
 		}
 
 		public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
@@ -377,7 +365,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
 					long mostFrequentDecisionValue = eqClass.MajorDecision;
 
-					
 					if (decisionValue == mostFrequentDecisionValue)
 					{
 						if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
@@ -388,11 +375,9 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 						if (eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
 							Assert.AreEqual(0, discernVector[j]);
 					}
-					
 				}
 				//Console.Write(Environment.NewLine);
-			}
-								
+			}			
 		}
 
 
@@ -428,8 +413,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				histograms[i].InclusiveUpperBound = false;
 				histograms[i].Compute(newInstance, numberOfBins: 3);
 
-				Console.WriteLine("{0} was discretized into {1} bins", continuesAttributes[i], histograms[i].Bins.NumberOfPartitions);
-				foreach (HistogramBin bin in histograms[i].Bins)
+				Console.WriteLine("{0} was discretized into {1} bins", continuesAttributes[i], histograms[i].NumberOfBuckets.NumberOfPartitions);
+				foreach (HistogramBin bin in histograms[i].NumberOfBuckets)
 				{
 					Console.WriteLine("{0}-{1} ({2})", bin.Range.Single, bin.Range.Complete, bin.Value);
 				}
@@ -441,7 +426,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			{
 				for (int i = 0; i < continuesAttributes.Length; i++ )
 				{
-					row[continuesAttributes[i]] = histograms[i].Bins.SearchIndex((double)row[continuesAttributes[i]]);
+					row[continuesAttributes[i]] = histograms[i].NumberOfBuckets.SearchIndex((double)row[continuesAttributes[i]]);
 				}
 
 				tmp.ImportRow(row);

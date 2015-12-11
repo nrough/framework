@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
+using Infovision.Datamining.Benchmark;
 using Infovision.Utils;
 using NUnit.Framework;
 

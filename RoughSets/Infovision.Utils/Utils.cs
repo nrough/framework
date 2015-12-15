@@ -169,17 +169,22 @@ namespace Infovision.Utils
         {
             int intResult;
             decimal decimalResult;
+            double doubleResult;
 
             if (Int32.TryParse(value, out intResult))
             {
                 return typeof(int);
+            }
+            else if (Double.TryParse(value, out doubleResult))
+            {
+                return typeof(double);
             }
             else if (Decimal.TryParse(value, out decimalResult))
             {
                 return typeof(decimal);
             }
 
-            return typeof(String);
+            return typeof(string);
         }
 
         public static string IntArray2Ranges(long[] array, string rangeSeparator = "..", string elementSeparator = " ")

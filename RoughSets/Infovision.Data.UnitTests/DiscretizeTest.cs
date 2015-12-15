@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Infovision.Data.UnitTests
         {
             decimal epsilon = 0.05m;
             int numberOfPermutations = 20;
-            
+
             BenchmarkData benchmark = kvp.Value;
             DataStore data = null, train = null, test = null;
             DataStoreSplitter splitter = null;
@@ -69,6 +70,7 @@ namespace Infovision.Data.UnitTests
 
                 IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
                 Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
+                IReductStore reductStore = reductStoreCollection.FirstOrDefault();
 
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection,
@@ -79,49 +81,94 @@ namespace Infovision.Data.UnitTests
                 ClassificationResult classificationResult = classifier.Classify(test);
                 Console.WriteLine("Accuracy: {0}", classificationResult.Accuracy);
 
-
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-
                 
                 if (benchmark.CheckDiscretize())
                 {
                     foreach (DataFieldInfo field in benchmark.GetNumericFields())
-                    {                                                                        
-                        //Console.WriteLine("FieldId: {0}", field.Id);
-                        Discretization<int> discretize = new Discretization<int>();
-                        discretize.UseEntropy = benchmark.DiscretizeUsingEntropy;
-                        discretize.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
-
-                        int[] oldColumnValues = train.GetColumn<int>(field.Id);
-                        discretize.Compute(oldColumnValues);
-
-                        //Console.WriteLine(discretize.ToString());
-
+                    {
                         localFieldInfoTrain = train.DataStoreInfo.GetFieldInfo(field.Id);
                         localFieldInfoTrain.IsNumeric = false;
-                        localFieldInfoTrain.Cuts = discretize.Cuts;
 
-                        int[] newColumnValues = new int[oldColumnValues.Length];
-                        for (int j = 0; j < oldColumnValues.Length; j++)
-                            newColumnValues[j] = discretize.Search(oldColumnValues[j]);
+                        int[] newValues = new int[train.NumberOfRecords];
 
-                        train.UpdateColumn(field.Id, Array.ConvertAll(newColumnValues, x => (object)x));
+                        switch (Type.GetTypeCode(localFieldInfoTrain.FieldValueType))
+                        {
+                            case TypeCode.Decimal:
+                                Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
+                                discretizeDecimal.UseEntropy = benchmark.DiscretizeUsingEntropy;
+                                discretizeDecimal.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
+                                decimal[] oldValuesDecimal = train.GetColumn<decimal>(field.Id);
+                                discretizeDecimal.Compute(oldValuesDecimal);
+                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeDecimal.Cuts, x => (IComparable)x);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
+                                break;
+
+                            case TypeCode.Int32:
+                                Discretization<int> discretizeInt = new Discretization<int>();
+                                discretizeInt.UseEntropy = benchmark.DiscretizeUsingEntropy;
+                                discretizeInt.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
+                                int[] oldValuesInt = train.GetColumn<int>(field.Id);
+                                discretizeInt.Compute(oldValuesInt);
+                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeInt.Cuts, x => (IComparable)x);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeInt.Search(oldValuesInt[j]);
+                                break;
+
+                            case TypeCode.Double:
+                                Discretization<double> discretizeDouble = new Discretization<double>();
+                                discretizeDouble.UseEntropy = benchmark.DiscretizeUsingEntropy;
+                                discretizeDouble.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
+                                double[] oldValuesDouble = train.GetColumn<double>(field.Id);
+                                discretizeDouble.Compute(oldValuesDouble);
+                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeDouble.Cuts, x => (IComparable)x);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
+                                break;
+                        }
+
+                        localFieldInfoTrain.FieldValueType = typeof(int);
+                        train.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x));
                         
-                        oldColumnValues = test.GetColumn<int>(field.Id);
-                        newColumnValues = new int[oldColumnValues.Length];
-                        for (int j = 0; j < oldColumnValues.Length; j++)
-                            newColumnValues[j] = discretize.Search(oldColumnValues[j]);
-
-                        test.UpdateColumn(field.Id, Array.ConvertAll(newColumnValues, x => (object)x), localFieldInfoTrain);
-
                         localFieldInfoTest = test.DataStoreInfo.GetFieldInfo(field.Id);
                         localFieldInfoTest.IsNumeric = false;
-                        localFieldInfoTest.Cuts = discretize.Cuts;
 
+                        newValues = new int[train.NumberOfRecords];
+
+                        switch (Type.GetTypeCode(localFieldInfoTest.FieldValueType))
+                        {
+                            case TypeCode.Int32:
+                                Discretization<int> discretizeInt = new Discretization<int>();
+                                discretizeInt.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (int) x);
+                                int[] oldValuesInt = test.GetColumn<int>(field.Id);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeInt.Search(oldValuesInt[j]);
+                                break;
+
+                            case TypeCode.Decimal:
+                                Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
+                                discretizeDecimal.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (decimal)x);
+                                decimal[] oldValuesDecimal = test.GetColumn<decimal>(field.Id);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
+                                break;
+
+                            case TypeCode.Double:
+                                Discretization<double> discretizeDouble = new Discretization<double>();
+                                discretizeDouble.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (double)x);
+                                double[] oldValuesDouble = test.GetColumn<double>(field.Id);
+                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                    newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
+                                break;
+                        }
+                        
+                        localFieldInfoTest.FieldValueType = typeof(int);
+                        localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
+                        test.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
                     }
                 }
                 
-
                 args = new Args();
                 args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
                 args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
@@ -132,7 +179,13 @@ namespace Infovision.Data.UnitTests
                 reductGenerator.Generate();
 
                 reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
-                Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));                
+                Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
+
+                reductStore = reductStoreCollection.FirstOrDefault();
+                foreach (IReduct reduct in reductStore)
+                {
+                    reduct.EquivalenceClasses.ToString2();
+                }
                 
                 classifier = new RoughClassifier(
                     reductStoreCollection,
@@ -149,5 +202,35 @@ namespace Infovision.Data.UnitTests
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
             }                        
         }
+
+        [Test]
+        public void DisesorDataStoreLoadTest()
+        {
+            int nFold = 5;
+            string trainfile = @"c:\data\disesor\trainingData.csv";
+            string labelfile = @"c:\data\disesor\trainingLabels.csv";
+            //string testfile = @"c:\data\disesor\testData.csv";
+            //string columnfile = @"c:\data\disesor\testData.csv";
+
+            DataStore data = DataStore.Load(trainfile, FileFormat.Csv);
+            DataStore labels = DataStore.Load(labelfile, FileFormat.Csv);
+
+            int decisionFieldId = data.AddColumn<string>(labels.GetColumn<string>(1));
+            data.SetDecisionFieldId(decisionFieldId);
+ 
+            //data.WriteToCSVFileExt(@"c:\data\disesor\trainingData2.csv", ",");
+
+            DataStore train = null, test = null;
+            DataStoreSplitter splitter = new DataStoreSplitter(data, nFold);
+
+            for (int n = 0; n < nFold; n++)
+            {
+                splitter.ActiveFold = n;
+                splitter.Split(ref train, ref test);
+            }
+           
+        }
+
+        
     }
 }

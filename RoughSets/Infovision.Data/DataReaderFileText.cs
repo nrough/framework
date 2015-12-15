@@ -170,14 +170,7 @@ namespace Infovision.Data
             using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
             {
                 using (StreamReader streamReader = new StreamReader(fileStream))
-                {
-                    Dictionary<Type, int> typeDict = new Dictionary<Type, int>
-                    {
-                        {typeof(int),  0},
-                        {typeof(decimal), 1},
-                        {typeof(string), 2}
-                    };
-                    
+                {                    
                     this.SkipHeader(streamReader);        
                     while ((line = streamReader.ReadLine()) != null)
                     {
@@ -186,24 +179,28 @@ namespace Infovision.Data
                         if (fields.Length != dataStoreInfo.NumberOfFields)
                             throw new System.InvalidOperationException();
 
-                        object[] typedFieldValues = new Object[fields.Length];                        
+                        IComparable[] typedFieldValues = new IComparable[fields.Length];                        
 
                         //TODO Iterate over datafieldinfo with foreach loop
                         for (int i = 0; i < fields.Length; i++)
                         {
                             if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
                             {                                                                                                
-                                switch (typeDict[dataStoreInfo.GetFieldInfo(i + 1).FieldValueType])
+                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                 {
-                                    case 0:
+                                    case TypeCode.Int32:
                                         typedFieldValues[i] = Int32.MinValue;
                                         break;
 
-                                    case 1:
+                                    case TypeCode.Decimal:
                                         typedFieldValues[i] = Decimal.MinValue;
                                         break;
 
-                                    case 2:
+                                    case TypeCode.Double:
+                                        typedFieldValues[i] = Double.MinValue;
+                                        break;
+
+                                    case TypeCode.String:
                                         typedFieldValues[i] = this.MissingValue;
                                         break;
 
@@ -213,18 +210,22 @@ namespace Infovision.Data
                             }
                             else
                             {
-                                switch (typeDict[dataStoreInfo.GetFieldInfo(i + 1).FieldValueType])
+                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                 {
-                                    case 0:
+                                    case TypeCode.Int32:
                                         typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
                                         break;
 
-                                    case 1:
+                                    case TypeCode.Decimal:
                                         typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
                                         break;
 
-                                    case 2:
-                                        typedFieldValues[i] = fields[i].Clone();
+                                    case TypeCode.Double:
+                                        typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        break;
+
+                                    case TypeCode.String:
+                                        typedFieldValues[i] = (string) fields[i].Clone();
                                         break;
 
                                     default:
@@ -238,7 +239,7 @@ namespace Infovision.Data
                         {
                             fieldId[i] = i + 1;
 
-                            object externalValue = typedFieldValues[i];
+                            IComparable externalValue = typedFieldValues[i];
                             long internalValue;
                             bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);
                             
@@ -251,8 +252,8 @@ namespace Infovision.Data
                                     for(int j=0; j<localFieldInfo.Cuts.Length; j++)
                                     {
                                         //TODO We need to provide a way to dynamically convert types
-                                        if ((int)externalValue <= localFieldInfo.Cuts[j])
-                                            externalValue = (object)j;
+                                        if (externalValue.CompareTo(localFieldInfo.Cuts[j]) <= 0)
+                                            externalValue = j;
                                     }
                                 }
 

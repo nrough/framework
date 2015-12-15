@@ -74,6 +74,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         public T[] Cuts
         {
             get { return cuts; }
+            set { cuts = value; }
         }
 
         #endregion

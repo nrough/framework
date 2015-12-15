@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Infovision.Data
 {
@@ -211,6 +212,42 @@ namespace Infovision.Data
                 this.data[i * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
                 fieldInfo.IncreaseHistogramCount(internalValue);
             }
+        }
+
+        public int AddColumn<T>(T[] columnData, DataFieldInfo referenceFieldInfo = null)
+        {
+            if (columnData.Length != this.NumberOfRecords)
+                throw new InvalidOperationException("Column data have different size than this dataset");
+
+            long internalValue;
+            bool isMissing;
+            long[] newData = new long[this.data.Length + columnData.Length];
+            Parallel.For(0, this.NumberOfRecords, row =>
+            {
+                for (int col = 0; col < this.DataStoreInfo.NumberOfFields; col++)
+                {
+                    newData[(row * (this.dataStoreInfo.NumberOfFields + 1)) + col] = this.data[(row * this.dataStoreInfo.NumberOfFields) + col];
+                }
+            });
+
+            int newFieldId = this.DataStoreInfo.MaxFieldId + 1;
+            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T));
+            for (int row = 0; row < this.NumberOfRecords; row++)
+            {
+                isMissing = this.DataStoreInfo.HasMissingData && String.Equals(columnData[row], newFieldInfo.MissingValue);
+                internalValue = referenceFieldInfo != null
+                    ? referenceFieldInfo.Add(columnData[row], isMissing)
+                    : newFieldInfo.Add(columnData[row], isMissing);
+                newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
+                newFieldInfo.IncreaseHistogramCount(internalValue);
+                newData[row * (this.dataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
+            }
+
+            this.data = newData;
+            this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldTypes.Standard);
+            this.DataStoreInfo.NumberOfFields++;
+            
+            return newFieldInfo.Id;
         }
 
         public bool Exists(long objectId)

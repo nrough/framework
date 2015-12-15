@@ -43,6 +43,7 @@ namespace Infovision.Data
         public Type FieldValueType
         {
             get { return fieldValueType; }
+            set { fieldValueType = value; }
         }
 
         public Histogram Histogram
@@ -64,7 +65,7 @@ namespace Infovision.Data
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
         public bool IsNumeric { get; set; }
-        public int[] Cuts { get; set; }
+        public IComparable[] Cuts { get; set; }
 
         #endregion
 

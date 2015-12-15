@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Utils;
 
 namespace Infovision.Data
@@ -63,13 +64,31 @@ namespace Infovision.Data
 
         protected virtual void GenerateSplit()
         {
-            for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
+            
+            if (this.dataStore.DataStoreInfo.DecisionFieldId > 0)
             {
-                folds[i] = RandomSplit(i);
-                foldSize[folds[i]]++;
+                foreach (long decisionValue in this.dataStore.DataStoreInfo.GetDecisionValues())
+                {
+                    int[] objectsTmp = this.DataStore.GetObjectIndexes(decisionValue).ToArray();
+                    objectsTmp.Shuffle();
+                    for (int i = 0; i < objectsTmp.Length; i++)
+                    {
+                        folds[objectsTmp[i]] = i % nfold;
+                        foldSize[folds[objectsTmp[i]]]++;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
+                {
+                    folds[i] = RandomSplit(i);
+                    foldSize[folds[i]]++;
+                }
+
+                folds.Shuffle();
             }
 
-            folds.Shuffle();
             this.SplitCalculated = true;
         }        
 

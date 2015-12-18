@@ -134,7 +134,7 @@ namespace Infovision.Data.UnitTests
                         localFieldInfoTest = test.DataStoreInfo.GetFieldInfo(field.Id);
                         localFieldInfoTest.IsNumeric = false;
 
-                        newValues = new int[train.NumberOfRecords];
+                        newValues = new int[test.NumberOfRecords];
 
                         switch (Type.GetTypeCode(localFieldInfoTest.FieldValueType))
                         {
@@ -142,7 +142,7 @@ namespace Infovision.Data.UnitTests
                                 Discretization<int> discretizeInt = new Discretization<int>();
                                 discretizeInt.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (int) x);
                                 int[] oldValuesInt = test.GetColumn<int>(field.Id);
-                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                                 break;
 
@@ -150,7 +150,7 @@ namespace Infovision.Data.UnitTests
                                 Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
                                 discretizeDecimal.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (decimal)x);
                                 decimal[] oldValuesDecimal = test.GetColumn<decimal>(field.Id);
-                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
                                 break;
 
@@ -158,7 +158,7 @@ namespace Infovision.Data.UnitTests
                                 Discretization<double> discretizeDouble = new Discretization<double>();
                                 discretizeDouble.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (double)x);
                                 double[] oldValuesDouble = test.GetColumn<double>(field.Id);
-                                for (int j = 0; j < train.NumberOfRecords; j++)
+                                for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
                                 break;
                         }
@@ -206,7 +206,8 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void DisesorDataStoreLoadTest()
         {
-            int nFold = 5;
+            int nFold = 4;
+            int numberOfPermutations = 1;
             string trainfile = @"c:\data\disesor\trainingData.csv";
             string labelfile = @"c:\data\disesor\trainingLabels.csv";
             //string testfile = @"c:\data\disesor\testData.csv";
@@ -214,11 +215,9 @@ namespace Infovision.Data.UnitTests
 
             DataStore data = DataStore.Load(trainfile, FileFormat.Csv);
             DataStore labels = DataStore.Load(labelfile, FileFormat.Csv);
-
             int decisionFieldId = data.AddColumn<string>(labels.GetColumn<string>(1));
+            labels = null;
             data.SetDecisionFieldId(decisionFieldId);
- 
-            //data.WriteToCSVFileExt(@"c:\data\disesor\trainingData2.csv", ",");
 
             DataStore train = null, test = null;
             DataStoreSplitter splitter = new DataStoreSplitter(data, nFold);
@@ -227,10 +226,41 @@ namespace Infovision.Data.UnitTests
             {
                 splitter.ActiveFold = n;
                 splitter.Split(ref train, ref test);
-            }
-           
-        }
 
-        
+                new DataStoreDiscretizer().Discretize(ref train, ref test);
+
+                train.WriteToCSVFileExt(String.Format("c:\\data\\disesor\\disesor-{0}.trn", n), ",");
+                test.WriteToCSVFileExt(String.Format("c:\\data\\disesor\\disesor-{0}.tst", n), ",");
+            }
+
+            train = null; test = null; data = null;
+
+            for (int n = 0; n < nFold; n++)
+            {
+                train = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.trn", n), FileFormat.Csv);
+                test = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.tst", n), FileFormat.Csv);
+
+                Args args = new Args();
+                args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+                args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+
+                IReductGenerator generator = ReductFactory.GetReductGenerator(args);
+                generator.Generate();
+
+                IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
+
+                RoughClassifier classifier = new RoughClassifier(
+                    reductStoreCollection, 
+                    RuleQuality.Coverage, 
+                    RuleQuality.Coverage, 
+                    data.DataStoreInfo.GetDecisionValues());
+
+                ClassificationResult result = classifier.Classify(test);
+
+                Console.WriteLine(result.Accuracy);
+            }
+        }
     }
 }

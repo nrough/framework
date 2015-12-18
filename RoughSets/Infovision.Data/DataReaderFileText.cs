@@ -166,111 +166,120 @@ namespace Infovision.Data
             int[] fieldId = new int[numberOfFields];
             long[] fieldValue = new long[numberOfFields];
             string line = String.Empty;
+            int linenum = 0; int i = 0;
 
-            using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
+            try
             {
-                using (StreamReader streamReader = new StreamReader(fileStream))
-                {                    
-                    this.SkipHeader(streamReader);        
-                    while ((line = streamReader.ReadLine()) != null)
+                using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    using (StreamReader streamReader = new StreamReader(fileStream))
                     {
-                        string[] fields = line.Split(fieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (fields.Length != dataStoreInfo.NumberOfFields)
-                            throw new System.InvalidOperationException();
-
-                        IComparable[] typedFieldValues = new IComparable[fields.Length];                        
-
-                        //TODO Iterate over datafieldinfo with foreach loop
-                        for (int i = 0; i < fields.Length; i++)
+                        this.SkipHeader(streamReader);
+                        while ((line = streamReader.ReadLine()) != null)
                         {
-                            if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
-                            {                                                                                                
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
+                            linenum++;
+
+                            string[] fields = line.Split(fieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                            if (fields.Length != dataStoreInfo.NumberOfFields)
+                                throw new System.InvalidOperationException();
+
+                            IComparable[] typedFieldValues = new IComparable[fields.Length];
+
+                            //TODO Iterate over datafieldinfo with foreach loop
+                            for (i = 0; i < fields.Length; i++)
+                            {                                
+                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
                                 {
-                                    case TypeCode.Int32:
-                                        typedFieldValues[i] = Int32.MinValue;
-                                        break;
-
-                                    case TypeCode.Decimal:
-                                        typedFieldValues[i] = Decimal.MinValue;
-                                        break;
-
-                                    case TypeCode.Double:
-                                        typedFieldValues[i] = Double.MinValue;
-                                        break;
-
-                                    case TypeCode.String:
-                                        typedFieldValues[i] = this.MissingValue;
-                                        break;
-
-                                    default:
-                                        throw new System.InvalidOperationException();
-                                }
-                            }
-                            else
-                            {
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
-                                {
-                                    case TypeCode.Int32:
-                                        typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.Decimal:
-                                        typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.Double:
-                                        typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.String:
-                                        typedFieldValues[i] = (string) fields[i].Clone();
-                                        break;
-
-                                    default:
-                                        throw new System.InvalidOperationException();
-                                }
-                            }
-                        }
-                        
-                        //TODO implement foreach 
-                        for (int i = 0; i < dataStoreInfo.NumberOfFields; i++)
-                        {
-                            fieldId[i] = i + 1;
-
-                            IComparable externalValue = typedFieldValues[i];
-                            long internalValue;
-                            bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);
-                            
-
-                            if (this.ReferenceDataStoreInfo != null)
-                            {
-                                DataFieldInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);                                                                
-                                if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
-                                {                                    
-                                    for(int j=0; j<localFieldInfo.Cuts.Length; j++)
+                                    switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                     {
-                                        //TODO We need to provide a way to dynamically convert types
-                                        if (externalValue.CompareTo(localFieldInfo.Cuts[j]) <= 0)
-                                            externalValue = j;
+                                        case TypeCode.Int32:
+                                            typedFieldValues[i] = Int32.MinValue;
+                                            break;
+
+                                        case TypeCode.Decimal:
+                                            typedFieldValues[i] = Decimal.MinValue;
+                                            break;
+
+                                        case TypeCode.Double:
+                                            typedFieldValues[i] = Double.MinValue;
+                                            break;
+
+                                        case TypeCode.String:
+                                            typedFieldValues[i] = this.MissingValue;
+                                            break;
+
+                                        default:
+                                            throw new System.InvalidOperationException();
                                     }
                                 }
+                                else
+                                {
+                                    switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
+                                    {
+                                        case TypeCode.Int32:
+                                            typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
+                                            break;
 
-                                internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
-                                dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, externalValue, isMissing);
+                                        case TypeCode.Decimal:
+                                            typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
+                                            break;
+
+                                        case TypeCode.Double:
+                                            typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
+                                            break;
+
+                                        case TypeCode.String:
+                                            typedFieldValues[i] = (string)fields[i].Clone();
+                                            break;
+
+                                        default:
+                                            throw new System.InvalidOperationException();
+                                    }
+                                }
                             }
-                            else
-                            {
-                                internalValue = dataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
-                            }                            
-                            
-                            fieldValue[i] = internalValue;
-                        }
 
-                        dataStore.Insert(new DataRecordInternal(fieldId, fieldValue));
+                            //TODO implement foreach 
+                            for (i = 0; i < dataStoreInfo.NumberOfFields; i++)
+                            {
+                                fieldId[i] = i + 1;
+
+                                IComparable externalValue = typedFieldValues[i];
+                                long internalValue;
+                                bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);
+
+                                if (this.ReferenceDataStoreInfo != null)
+                                {
+                                    DataFieldInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);
+                                    if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
+                                    {
+                                        for (int j = 0; j < localFieldInfo.Cuts.Length; j++)
+                                        {
+                                            //TODO We need to provide a way to dynamically convert types
+                                            if (externalValue.CompareTo(localFieldInfo.Cuts[j]) <= 0)
+                                                externalValue = j;
+                                        }
+                                    }
+
+                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, externalValue, isMissing);
+                                }
+                                else
+                                {
+                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                }
+
+                                fieldValue[i] = internalValue;
+                            }
+
+                            dataStore.Insert(new DataRecordInternal(fieldId, fieldValue));
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidProgramException(String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message));
             }
         }
 
@@ -336,7 +345,7 @@ namespace Infovision.Data
         }
 
         private void AddValue2TypePool(int fieldIndex, string value)
-        {
+        {            
             Type type = InfovisionHelper.String2Type(value);
             Type previousType = null;
             typePool.TryGetValue(fieldIndex, out previousType);
@@ -359,7 +368,7 @@ namespace Infovision.Data
                 return;
             }
 
-            if (type == typeof(decimal))
+            if (type == typeof(decimal) || type == typeof(double))
             {
                 this.typePool[fieldIndex] = type;
                 return;

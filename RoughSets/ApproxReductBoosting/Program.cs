@@ -153,19 +153,19 @@ namespace ApproxReductBoosting
 				reductGenerator.Generate();
 
 				RoughClassifier classifierTrn = new RoughClassifier(
-                    reductGenerator.GetReductGroups(),
-                    reductGenerator.IdentyficationType, 
-                    reductGenerator.VoteType,
-                    trnDataOrig.DataStoreInfo.GetDecisionValues());
+					reductGenerator.GetReductGroups(),
+					reductGenerator.IdentyficationType, 
+					reductGenerator.VoteType,
+					trnDataOrig.DataStoreInfo.GetDecisionValues());
 				ClassificationResult resultTrn = classifierTrn.Classify(
-                    trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig, 
-                    null);
+					trnDataOrig.DataStoreInfo.HasMissingData ? trnDataReplaced : trnDataOrig, 
+					null);
 
 				RoughClassifier classifierTst = new RoughClassifier(
-                    reductGenerator.GetReductGroups(),
-                    RuleQuality.ConfidenceW, 
-                    RuleQuality.ConfidenceW,
-                    trnDataOrig.DataStoreInfo.GetDecisionValues());
+					reductGenerator.GetReductGroups(),
+					RuleQuality.ConfidenceW, 
+					RuleQuality.ConfidenceW,
+					trnDataOrig.DataStoreInfo.GetDecisionValues());
 				ClassificationResult resultTst = classifierTst.Classify(tstDataOrig, null);
 
 				string updWeightsMethodName = String.Empty;

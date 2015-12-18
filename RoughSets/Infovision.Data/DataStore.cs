@@ -171,44 +171,57 @@ namespace Infovision.Data
         public long[] GetColumnInternal(int fieldId)
         {
             long[] result = new long[this.NumberOfRecords];
-            for (int i = 0; i < this.NumberOfRecords; i++)
+            Parallel.For(0, this.NumberOfRecords, i =>
+            {
                 result[i] = this.GetFieldValue(i, fieldId);
+            });
             return result;
         }
 
         public T[] GetColumn<T>(int fieldId)
         {
             T[] result = new T[this.NumberOfRecords];
-            for (int i = 0; i < this.NumberOfRecords; i++)
+            Parallel.For(0, this.NumberOfRecords, i =>
+            {
                 result[i] = (T)this.DataStoreInfo
                     .GetFieldInfo(fieldId)
                     .Internal2External(
                     this.GetFieldValue(i, fieldId));
+            });
             return result;
         }
 
         public object[] GetColumn(int fieldId)
         {
             object[] result = new object[this.NumberOfRecords];
-            for (int i = 0; i < this.NumberOfRecords; i++)
+            Parallel.For(0, this.NumberOfRecords, i =>
+            {
                 result[i] = this.DataStoreInfo
                     .GetFieldInfo(fieldId)
                     .Internal2External(
                     this.GetFieldValue(i, fieldId));
+            });
             return result;
         }
 
         public void UpdateColumn(int fieldId, object[] data, DataFieldInfo referenceFieldInfo = null)
         {
             DataFieldInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldId);
-            fieldInfo.Reset();            
-            
+            fieldInfo.Reset();
+            long internalValue;
+            bool isMissing;
             for (int i = 0; i < this.NumberOfRecords; i++)
             {
-                bool isMissing = this.DataStoreInfo.HasMissingData && String.Equals(data[i], fieldInfo.MissingValue);
-                long internalValue = referenceFieldInfo != null ? referenceFieldInfo.Add(data[i], isMissing) : fieldInfo.Add(data[i], isMissing);                
-                
-                fieldInfo.AddInternal(internalValue, data[i], isMissing);
+                isMissing = this.DataStoreInfo.HasMissingData && String.Equals(data[i], fieldInfo.MissingValue);                
+                if (referenceFieldInfo != null)
+                {
+                    internalValue = referenceFieldInfo.Add(data[i], isMissing);
+                    fieldInfo.AddInternal(internalValue, data[i], isMissing);
+                }
+                else
+                {
+                    internalValue = fieldInfo.Add(data[i], isMissing);
+                }
                 this.data[i * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
                 fieldInfo.IncreaseHistogramCount(internalValue);
             }
@@ -267,12 +280,19 @@ namespace Infovision.Data
             return new AttributeValueVector(fieldSet.ToArray(), this.GetFieldValues(objectIndex, fieldSet), false);
         }
 
+        public AttributeValueVector GetDataVector(int objectIdx)
+        {
+            return new AttributeValueVector(this.DataStoreInfo.GetFieldIds(FieldTypes.All).ToArray(), this.GetFieldValues(objectIdx), false);
+        }
+
         public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
-            long[] data = new long[fieldIds.Length];
-            for (int i = 0; i < fieldIds.Length; i++)
-                data[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
-            return data;
+            long[] result = new long[fieldIds.Length];
+            Parallel.For(0, fieldIds.Length, i =>
+            {
+                result[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
+            });
+            return result;
         }
 
         public long[] GetFieldValues(int objectIndex, FieldSet fieldSet)
@@ -285,6 +305,16 @@ namespace Infovision.Data
                     data[j++] = this.GetFieldValue(objectIndex, i + fieldSet.LowerBound); 
             }
             return data;
+        }
+
+        public long[] GetFieldValues(int objectIdx)
+        {
+            long[] result = new long[this.DataStoreInfo.NumberOfFields];
+            Parallel.For(0, this.DataStoreInfo.NumberOfFields, i =>
+            {
+                result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
+            });
+            return result;
         }
 
         public long GetFieldValue(int objectIndex, int fieldId)
@@ -397,6 +427,7 @@ namespace Infovision.Data
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
+                    position++;
                     if (position == this.DataStoreInfo.NumberOfFields)
                         stringBuilder.AppendFormat("{0}", record[fieldId]);
                     else
@@ -417,7 +448,6 @@ namespace Infovision.Data
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
-                //sb.AppendFormat("{0}: ", objectIndex + 1);
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
@@ -482,14 +512,71 @@ namespace Infovision.Data
             return DataStore.Load(fileName, fileFormat, null);
         }
 
-        public void WriteToCSVFile(string filePath, string separator)
+        public void WriteToCSVFile(string filePath, string separator, bool includeHeader = false)
         {            
-            System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
+            //System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
+
+            StringBuilder sb;
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
+            {
+                for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
+                {
+                    if (objectIndex == 0 && includeHeader)
+                        file.WriteLine(this.ToStringHeader(separator));
+
+                    DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
+                    int position = 0;
+                    sb = new StringBuilder();
+                    foreach (int fieldId in record.GetFields())
+                    {
+                        position++;
+                        if (position == this.DataStoreInfo.NumberOfFields)
+                            sb.AppendFormat("{0}", record[fieldId]);
+                        else
+                            sb.AppendFormat("{0}{1}", record[fieldId], separator);
+                    }
+
+                    file.WriteLine(sb.ToString());
+                }
+            }
         }
 
-        public void WriteToCSVFileExt(string filePath, string separator)
+        public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false)
         {
-            System.IO.File.WriteAllText(filePath, this.ToStringExternal(separator));
+            //System.IO.File.WriteAllText(filePath, this.ToStringExternal(separator));
+            
+            StringBuilder sb;
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
+            {
+                for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
+                {
+                    if (objectIndex == 0 && includeHeader)
+                        file.WriteLine(this.ToStringHeader(separator));
+
+                    DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
+                    int position = 0;
+                    sb = new StringBuilder();
+                    foreach (int fieldId in record.GetFields())
+                    {
+                        position++;
+                        DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                        object externalVal = attr.Internal2External(record[fieldId]);
+                        string externalValStr = String.Empty;
+
+                        if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
+                            externalValStr = this.DataStoreInfo.MissingValue;
+                        else
+                            externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
+
+                        if (position == this.DataStoreInfo.NumberOfFields)
+                            sb.AppendFormat("{0}", externalValStr);
+                        else
+                            sb.AppendFormat("{0}{1}", externalValStr, separator);
+                    }
+
+                    file.WriteLine(sb.ToString());
+                }
+            }
         }
 
         #region System.Object Methods

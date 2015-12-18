@@ -184,6 +184,21 @@ namespace Infovision.Utils
                 return typeof(decimal);
             }
 
+            if (Convert.ToChar(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator) != '.'
+                && value.Contains('.'))
+            {
+                string valueTmp = value.Replace('.', ',');
+
+                if (Double.TryParse(valueTmp, out doubleResult))
+                {
+                    return typeof(double);
+                }
+                else if (Decimal.TryParse(valueTmp, out decimalResult))
+                {
+                    return typeof(decimal);
+                }
+            }
+
             return typeof(string);
         }
 

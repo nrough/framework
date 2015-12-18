@@ -80,6 +80,25 @@ namespace Infovision.Data
             this.HasMissingValues = false;            
         }
 
+        public bool CanDiscretize()
+        {
+            //TODO IsUnique IsIdentifier  --> return false
+
+            if (this.HasMissingValues)
+                return false;
+            
+            if((this.IsNumeric
+                    || Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
+                    || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
+            return true;
+
+            if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32
+                && this.Values().Count > 20)
+                return true;
+
+            return false;
+        }
+
         public void InitFromDataFieldInfo(DataFieldInfo dataFieldInfo, bool initValues, bool initMissingValues)
         {
             if (initValues)

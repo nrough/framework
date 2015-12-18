@@ -42,7 +42,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
                 this.weightPerInterval = value;
                 this.useWeightPerInterval = true;
-
             }
         }
 
@@ -126,7 +125,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             distribution[k] += (weights != null) ? weights[j] : 1.0;
                             break;
                         }
-
                     }
                 }
 
@@ -161,6 +159,12 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     cutPoints[i - 1] = Operator.Convert<double, T>(minD + (binWidth * i));
                 }
             }
+
+            if (cutPoints == null)
+            {
+                cutPoints = new T[0];
+            }
+
             this.cuts = cutPoints;
         }
 
@@ -197,6 +201,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 cutPoints = new T[this.NumberOfBuckets - 1];
                 for (int i = 1; i < this.NumberOfBuckets; i++)
                     cutPoints[i - 1] = Operator.Convert<double, T> (minD + (binWidth * i));                        
+            }
+
+            if (cutPoints == null)
+            {
+                cutPoints = new T[0];
             }
 
             this.cuts = cutPoints;
@@ -251,9 +260,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         // Is this break point worse than the last one?
                         if (((freq - last) < (counter - freq)) && (lastIndex != -1))
                         {
-
                             cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[lastIndex], data[lastIndex + 1]), 2);
-
                             //cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
                             counter -= last;
                             last = counter;
@@ -297,6 +304,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 T[] cp = new T[cpindex];
                 Array.Copy(cutPoints, cp, cpindex);
                 cuts = cp;
+            }
+
+            if (cuts == null)
+            {
+                cuts = new T[0];
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Infovision.Utils;
 
 namespace Infovision.Data
@@ -64,18 +65,21 @@ namespace Infovision.Data
 
         protected virtual void GenerateSplit()
         {
-            
             if (this.dataStore.DataStoreInfo.DecisionFieldId > 0)
             {
                 foreach (long decisionValue in this.dataStore.DataStoreInfo.GetDecisionValues())
                 {
                     int[] objectsTmp = this.DataStore.GetObjectIndexes(decisionValue).ToArray();
                     objectsTmp.Shuffle();
-                    for (int i = 0; i < objectsTmp.Length; i++)
+                    Parallel.For(0, objectsTmp.Length, i =>
                     {
                         folds[objectsTmp[i]] = i % nfold;
-                        foldSize[folds[objectsTmp[i]]]++;
-                    }
+                    });
+                }
+
+                for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
+                {
+                    foldSize[folds[i]]++;
                 }
             }
             else
@@ -127,6 +131,53 @@ namespace Infovision.Data
             }
         }
 
+        public virtual void GetTrainingData(ref DataStore dataStore1)
+        {
+            if (ActiveFold < 0)
+                throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
+
+            if (!this.SplitCalculated)
+                this.GenerateSplit();
+
+            DataStoreInfo dataStoreInfo1 = new DataStoreInfo();
+            dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
+            dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[this.ActiveFold];
+
+            dataStore1 = new DataStore(dataStoreInfo1);
+            dataStore1.Name = dataStore.Name + "-" + this.ActiveFold.ToString();
+
+            for (int i = 0; i < folds.Length; i++)
+            {
+                if (folds[i] != this.ActiveFold)
+                {
+                    dataStore1.Insert(dataStore.GetRecordByIndex(i));
+                }
+            }
+        }
+
+        public virtual void GetTestData(ref DataStore dataStore2)
+        {
+            if (ActiveFold < 0)
+                throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
+
+            if (!this.SplitCalculated)
+                this.GenerateSplit();
+
+            DataStoreInfo dataStoreInfo2 = new DataStoreInfo();
+            dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
+            dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold];
+
+            dataStore2 = new DataStore(dataStoreInfo2);
+            dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;
+
+            for (int i = 0; i < folds.Length; i++)
+            {
+                if (folds[i] == this.ActiveFold)
+                {
+                    dataStore2.Insert(dataStore.GetRecordByIndex(i)); 
+                }
+            }
+        }
     }
 
     public class DataStoreSplitterRatio : DataStoreSplitter

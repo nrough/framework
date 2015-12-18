@@ -1,4 +1,5 @@
-﻿using Infovision.Utils;
+﻿using System;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -7,8 +8,8 @@ namespace Infovision.Datamining.Roughset
         decimal Epsilon { get; set; }        
         void InitFromArgs(Args args);
         void Generate();
-        IReductStore ReductPool { get; }        
-        IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles);
+        IReductStore ReductPool { get; }
+        IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue);
         //IReduct CreateReduct(Permutation permutation);
         IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);
     }

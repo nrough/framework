@@ -459,7 +459,7 @@ namespace Infovision.Data
                     if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
                         externalValStr = this.DataStoreInfo.MissingValue;
                     else
-                        externalValStr = (externalVal != null) ? externalVal.ToString() : "N/A";
+                        externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
                     
                     if(position == this.DataStoreInfo.NumberOfFields)
                         stringBuilder.AppendFormat("{0}", externalValStr);

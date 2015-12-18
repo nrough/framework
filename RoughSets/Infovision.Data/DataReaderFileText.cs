@@ -311,8 +311,10 @@ namespace Infovision.Data
             else if (!this.CheckNumberOfColumns(fields.Length))
             {
                 throw new System.MissingFieldException(String.Format(CultureInfo.InvariantCulture,
-                                                                     "Wrong fields number in row {0}",
-                                                                     lineNum));
+                                                                     "Wrong fields number in row {0} (Was: {1} Expected: {2}",
+                                                                     lineNum,
+                                                                     fields.Length,
+                                                                     this.ExpectedColumns));
             }
 
             for (int i = 0; i < fields.Length; i++)

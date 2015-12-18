@@ -510,12 +510,15 @@ namespace Infovision.Utils
 
     public static class DataTableExtensions
     {
-        public static void WriteToCSVFile(this DataTable dataTable, string filePath, string separator)
+        public static void WriteToCSVFile(this DataTable dataTable, string filePath, string separator, bool includeHeader = false)
         {
-            StringBuilder sb = new StringBuilder(); 
-            IEnumerable<string> columnNames = dataTable.Columns.Cast<DataColumn>().
-                                              Select(column => column.ColumnName);
-            sb.AppendLine(string.Join(separator, columnNames));
+            StringBuilder sb = new StringBuilder();
+            if (includeHeader)
+            {
+                IEnumerable<string> columnNames = dataTable.Columns.Cast<DataColumn>().
+                                                  Select(column => column.ColumnName);
+                sb.AppendLine(string.Join(separator, columnNames));
+            }
 
             foreach (DataRow row in dataTable.Rows)
             {

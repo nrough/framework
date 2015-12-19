@@ -274,6 +274,8 @@ namespace Infovision.Data.UnitTests
             labels = null;
             data.SetDecisionFieldId(decisionFieldId);
 
+            long[] decisionValues = data.DataStoreInfo.GetDecisionValues().ToArray();
+
             DataStore train = null, test = null;
             DataStoreSplitter splitter = new DataStoreSplitter(data, nFold);
 
@@ -309,8 +311,8 @@ namespace Infovision.Data.UnitTests
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection, 
                     RuleQuality.Coverage, 
-                    RuleQuality.Coverage, 
-                    data.DataStoreInfo.GetDecisionValues());
+                    RuleQuality.Coverage,
+                    decisionValues);
 
                 ClassificationResult result = classifier.Classify(test);
 

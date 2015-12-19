@@ -26,13 +26,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             foreach (int fieldId in trainingData.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
             {
                 localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);
+                TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
 
                 if (localFieldInfoTrain.CanDiscretize())
                 {
                     localFieldInfoTrain.IsNumeric = false;
 
                     int[] newValues = new int[trainingData.NumberOfRecords];
-                    switch (Type.GetTypeCode(localFieldInfoTrain.FieldValueType))
+                    switch (trainFieldTypeCode)
                     {
                         case TypeCode.Decimal:
                             
@@ -79,11 +80,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
 
                     localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);
-                    localFieldInfoTest.IsNumeric = false;
+                    //TypeCode testFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
+                    localFieldInfoTest.IsNumeric = false;                    
 
                     newValues = new int[testData.NumberOfRecords];
-
-                    switch (Type.GetTypeCode(localFieldInfoTest.FieldValueType))
+                    switch (trainFieldTypeCode)
                     {
                         case TypeCode.Int32:
                             Discretization<int> discretizeInt = new Discretization<int>();

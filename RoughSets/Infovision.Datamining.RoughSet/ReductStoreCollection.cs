@@ -20,6 +20,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductStoreCollection : IReductStoreCollection
     {
         List<IReductStore> stores;
+        protected object syncRoot = new object();
 
         public int Count { get { return this.stores.Count; } }
 
@@ -29,13 +30,16 @@ namespace Infovision.Datamining.Roughset
         }
 
         public ReductStoreCollection(int capacity)
-        {
+        {            
             this.stores = new List<IReductStore>(capacity);
         }
         
         public void AddStore(IReductStore reductStore)
         {
-            this.stores.Add(reductStore);            
+            lock (syncRoot)
+            {
+                this.stores.Add(reductStore);
+            }
         }        
 
         public IEnumerator<IReductStore> GetEnumerator()
@@ -50,25 +54,33 @@ namespace Infovision.Datamining.Roughset
 
         public List<IReductStore> ActiveModels()
         {
-            return stores.FindAll(x => x.IsActive == true);
+            lock (syncRoot)
+            {
+                return stores.FindAll(x => x.IsActive == true);
+            }
         }
 
         public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
         {
             if (reductMeasure == null)
                 return 0.0;
-
             double measureSum = 0.0;
             int count = 0;
-            foreach(IReductStore reducts in this)
-                foreach (IReduct reduct in reducts)
-                {
-                    if (reduct.IsException && includeExceptions == false)
-                        continue;
 
-                    measureSum += (double)reductMeasure.Calc(reduct);
-                    count++;
+            lock (syncRoot)
+            {
+                foreach (IReductStore reducts in this)
+                {
+                    foreach (IReduct reduct in reducts)
+                    {
+                        if (reduct.IsException && includeExceptions == false)
+                            continue;
+
+                        measureSum += (double)reductMeasure.Calc(reduct);
+                        count++;
+                    }
                 }
+            }
 
             if (count > 0)
                 return measureSum / (double)count;
@@ -79,22 +91,16 @@ namespace Infovision.Datamining.Roughset
         public IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer)
         {
             ReductStoreCollection result = new ReductStoreCollection(this.Count);
-            foreach (IReductStore reductStore in this)
+            lock (syncRoot)
             {
-                IReductStore filteredStore = reductStore.FilterReducts(numberOfReducts, comparer);
-                result.AddStore(filteredStore);
+                foreach (IReductStore reductStore in this)
+                {
+                    IReductStore filteredStore = reductStore.FilterReducts(numberOfReducts, comparer);
+                    result.AddStore(filteredStore);
+                }
             }
+
             return result;
         }
-    }
-
-    public static class ReductStoreCollectionExtensions
-    {
-        //
-        public static void Filters()
-        {
-        }
-    }
-
-
+    } 
 }

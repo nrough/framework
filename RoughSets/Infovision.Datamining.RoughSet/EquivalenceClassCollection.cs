@@ -125,9 +125,9 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore,
             int idx = -1)
         {
+            EquivalenceClass eq = null;
             lock (syncRoot)
-            {
-                EquivalenceClass eq = null;
+            {                
                 if (!this.partitions.TryGetValue(attributeValues, out eq))
                 {
                     eq = new EquivalenceClass(attributeValues, dataStore, true);

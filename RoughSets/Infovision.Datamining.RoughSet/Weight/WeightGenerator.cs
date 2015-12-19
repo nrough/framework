@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -159,12 +160,12 @@ namespace Infovision.Datamining.Roughset
                 return;
 
             base.Generate();          
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+            Parallel.For(0, this.DataStore.NumberOfRecords, i =>
             {
                 this.Weights[i] = Decimal.One
                     / (decimal)(this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
                         * this.DataStore.DataStoreInfo.NumberOfDecisionValues);                 
-            }
+            });            
         }
     }    
 }

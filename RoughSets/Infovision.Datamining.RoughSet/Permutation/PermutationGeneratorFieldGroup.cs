@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             int[] randomGroups = new int[this.fieldGroups.Length];
-            for(int i = 0; i<this.fieldGroups.Length; i++)
+            for(int i = 0; i < this.fieldGroups.Length; i++)
                 randomGroups[i] = i;
 
             randomGroups.Shuffle();

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 using MiscUtil;
 
 namespace Infovision.Utils
@@ -594,15 +595,17 @@ namespace Infovision.Utils
 
 		public T[] ToArray()
 		{
-			int size = this.Count;
+			
+            int size = this.Count;
 			T[] array = new T[size];
 			if (size == 0)
-				return array;
+				return array;            
 			int j = 0;
-			for (int i = 0; i < Data.Length; i++)
-				if (Data.Get(i))
-					//array[j++] =  i + this.LowerBound;
-					array[j++] = Operator<T>.Add((T)Convert.ChangeType(i, typeof(T)), LowerBound);
+            for (int i = 0; i < this.Data.Length; i++)
+            {
+                if (this.Data.Get(i))
+                    array[j++] = Operator.AddAlternative<T, int>(this.LowerBound, i);
+            }
 			return array;
 		}
 

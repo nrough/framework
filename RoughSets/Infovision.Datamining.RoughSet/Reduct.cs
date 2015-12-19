@@ -16,6 +16,7 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassCollection eqClassMap;
+        private object syncRoot = new Object();
 
         #endregion
 
@@ -56,7 +57,15 @@ namespace Infovision.Datamining.Roughset
             get 
             {
                 if (this.eqClassMap == null)
-                    this.BuildEquivalenceMap();
+                {
+                    lock (syncRoot)
+                    {
+                        if (this.eqClassMap == null)
+                        {
+                            this.BuildEquivalenceMap();
+                        }
+                    }
+                }
 
                 return this.eqClassMap; 
             }

@@ -20,7 +20,7 @@ namespace Infovision.Data
         private int nfold;
 
         private int activeFold = -1;
-        protected bool SplitCalculated {get; set; }
+        protected bool SplitCalculated { get; set; }
         
         public DataStoreSplitter(DataStore dataStore, int nfold)
         {
@@ -33,6 +33,17 @@ namespace Infovision.Data
         public int NFold
         {
             get { return this.nfold; }
+            set 
+            {
+                if (value <= 1)
+                    throw new InvalidOperationException("Number of folds must be greater that one.");
+
+                if (value != this.nfold)
+                {
+                    this.SplitCalculated = false;
+                    this.nfold = value;
+                }
+            }
         }
 
         public int ActiveFold

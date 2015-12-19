@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Infovision.Utils;
+using System.Threading.Tasks;
 
 namespace Infovision.Data
 {
@@ -58,7 +59,9 @@ namespace Infovision.Data
                     }
                     
                     this.decisionFieldId = value;
-                    fieldTypes[this.decisionFieldId] = FieldTypes.Decision;                    
+
+                    if (this.decisionFieldId > 0)
+                        fieldTypes[this.decisionFieldId] = FieldTypes.Decision;                    
                 }
             }
         }
@@ -116,16 +119,15 @@ namespace Infovision.Data
         public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags)
         {
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
-                return this.Fields.Select(f => f.Id);
-            
-            return this.Fields
+                return this.Fields.Select(f => f.Id);                       
+                        
+            return this.Fields.AsParallel()
                 .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
                 .Select(f => f.Id);
         }
 
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)
         {
-
             if (fieldTypeFlags == FieldTypes.All
                 || fieldTypeFlags == FieldTypes.None)
                 return this.NumberOfFields;
@@ -164,7 +166,7 @@ namespace Infovision.Data
         }
 
         public DataFieldInfo GetFieldInfo(int fieldId)
-        {
+        {            
             return fields[fieldId];
         }
 
@@ -268,10 +270,6 @@ namespace Infovision.Data
             if (initMissingValues)
                 this.HasMissingData = dataStoreInfo.HasMissingData;
         }        
-
-        public void RecordInserted(DataRecordInternal record)
-        {            
-        }
 
         #endregion
 

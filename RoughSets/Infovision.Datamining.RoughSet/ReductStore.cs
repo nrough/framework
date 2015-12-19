@@ -210,30 +210,36 @@ namespace Infovision.Datamining.Roughset
 
         public override void AddReduct(IReduct reduct)
         {
-            if (this.CanAddReduct(reduct))
+            lock (syncRoot)
             {
-                this.DoAddReduct(reduct);
-            }            
+                if (this.CanAddReduct(reduct))
+                {
+                    this.DoAddReduct(reduct);
+                }
+            }
         }
 
         protected virtual bool CanAddReduct(IReduct reduct)
         {
-            foreach (IReduct localReduct in reducts)
+            lock (syncRoot)
             {
-                /*
-                if (this.AllowDuplicates == false
-                    && DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
-                    && reduct.Attributes.Superset(localReduct.Attributes))
-                {                    
-                    return false;                    
-                }
-                */
-
-                if (this.AllowDuplicates == false
-                    && localReduct.Epsilon == reduct.Epsilon
-                    && reduct.Attributes.Superset(localReduct.Attributes))
+                foreach (IReduct localReduct in reducts)
                 {
-                    return false;
+                    /*
+                    if (this.AllowDuplicates == false
+                        && DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
+                        && reduct.Attributes.Superset(localReduct.Attributes))
+                    {                    
+                        return false;                    
+                    }
+                    */
+
+                    if (this.AllowDuplicates == false
+                        && localReduct.Epsilon == reduct.Epsilon
+                        && reduct.Attributes.Superset(localReduct.Attributes))
+                    {
+                        return false;
+                    }
                 }
             }
             
@@ -242,7 +248,10 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void DoAddReduct(IReduct reduct)
         {
-            reducts.Add(reduct);
+            lock (syncRoot)
+            {
+                reducts.Add(reduct);
+            }
         }
 
         public override IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer)
@@ -252,10 +261,14 @@ namespace Infovision.Datamining.Roughset
                 return new ReductStore(this);
             }
 
-            reducts.Sort(comparer);
+            lock (syncRoot)
+            {
+                reducts.Sort(comparer);
+            }
 
             ReductStore result = new ReductStore(System.Math.Min(numberOfReducts, reducts.Count));
             int i = 0;
+            
             foreach (IReduct reduct in reducts)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();

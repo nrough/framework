@@ -120,10 +120,11 @@ namespace Infovision.Datamining.Roughset
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
                     var prediction = this.Classify(record);
+                    var max = prediction.FindMaxValuePair();
 
                     result.AddResult(
                         record.ObjectId,
-                        prediction.FindMaxValue(),
+                        max.Key,
                         record[testData.DataStoreInfo.DecisionFieldId],
                         w);
                 });
@@ -134,10 +135,11 @@ namespace Infovision.Datamining.Roughset
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
                     var prediction = this.Classify(record);
+                    var max = prediction.FindMaxValuePair();
 
                     result.AddResult(
                         record.ObjectId,
-                        prediction.FindMaxValue(),
+                        max.Key,
                         record[testData.DataStoreInfo.DecisionFieldId],
                         (double)weights[objectIndex]);
                 });

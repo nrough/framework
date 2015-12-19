@@ -69,7 +69,7 @@ namespace Infovision.Data
         {
             int[] sortedArray = new int[this.NumberOfRecords];
             for (int i = 0; i < sortedArray.Length; i++)            
-                sortedArray[i] = i;            
+                sortedArray[i] = i;
 
             Array.Sort(sortedArray, comparer);
             return sortedArray;
@@ -138,9 +138,7 @@ namespace Infovision.Data
 
             index2ObjectId.Add(lastIndex, record.ObjectId);
             objectId2Index.Add(record.ObjectId, lastIndex);
-            record.ObjectIdx = lastIndex;
-
-            this.dataStoreInfo.RecordInserted(record);
+            record.ObjectIdx = lastIndex;            
         }
 
         public DataRecordInternal GetRecordByObjectId(long objectId)
@@ -181,25 +179,43 @@ namespace Infovision.Data
         public T[] GetColumn<T>(int fieldId)
         {
             T[] result = new T[this.NumberOfRecords];
-            Parallel.For(0, this.NumberOfRecords, i =>
+            DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
+            try
+            {                
+                Parallel.For(0, this.NumberOfRecords, i =>
+                {
+                    result[i] = (T)field.Internal2External(this.GetFieldValue(i, fieldId));
+                });
+            }
+            catch (InvalidCastException castException)
             {
-                result[i] = (T)this.DataStoreInfo
-                    .GetFieldInfo(fieldId)
-                    .Internal2External(
-                    this.GetFieldValue(i, fieldId));
-            });
+                throw new InvalidCastException(
+                    String.Format("Invalid cast exception for field {0} (Discovered type was: {1}, Expected type was {2}", 
+                        fieldId,
+                        field.FieldValueType.ToString(), 
+                        typeof(T).ToString()),
+                    castException);
+            }
+            catch(System.AggregateException aggregateException)
+            {
+                throw new AggregateException(
+                    String.Format("Exception was thrown for field {0} (Discovered type was: {1}, Expected type was {2}",
+                        fieldId,
+                        field.FieldValueType.ToString(),
+                        typeof(T).ToString()),
+                    aggregateException);
+            }
+
             return result;
         }
 
         public object[] GetColumn(int fieldId)
         {
             object[] result = new object[this.NumberOfRecords];
+            DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             Parallel.For(0, this.NumberOfRecords, i =>
             {
-                result[i] = this.DataStoreInfo
-                    .GetFieldInfo(fieldId)
-                    .Internal2External(
-                    this.GetFieldValue(i, fieldId));
+                result[i] = field.Internal2External(this.GetFieldValue(i, fieldId));
             });
             return result;
         }
@@ -319,6 +335,7 @@ namespace Infovision.Data
 
         public long GetFieldValue(int objectIndex, int fieldId)
         {
+            /*
             if(fieldId < this.DataStoreInfo.MinFieldId)
                 throw new ArgumentOutOfRangeException("fieldIds", "Value is out of range");
             if(fieldId > this.DataStoreInfo.MaxFieldId)
@@ -327,6 +344,7 @@ namespace Infovision.Data
                 throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
             if(objectIndex > this.NumberOfRecords-1)
                 throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
+            */ 
 
             return data[objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)];
         }

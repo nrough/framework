@@ -48,14 +48,19 @@ namespace Infovision.Utils
         
         public static TKey FindMaxValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
         {
+            return dictionary.FindMaxValuePair(comparer).Key;
+        }
+
+        public static KeyValuePair<TKey, TValue> FindMaxValuePair<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
+        {
             if (comparer == null)
                 comparer = Comparer<TValue>.Default;
 
-            KeyValuePair<TKey, TValue> result = dictionary.FirstOrDefault();            
+            KeyValuePair<TKey, TValue> result = dictionary.FirstOrDefault();
             foreach (var kvp in dictionary)
-                if (comparer.Compare(kvp.Value, result.Value) > 0)                
-                    result = kvp;                    
-            return result.Key;
+                if (comparer.Compare(kvp.Value, result.Value) > 0)
+                    result = kvp;
+            return result;
         }
 
     }

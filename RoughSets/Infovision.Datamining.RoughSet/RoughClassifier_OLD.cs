@@ -1133,19 +1133,20 @@ namespace Infovision.Datamining.Roughset
         public string PrintDecisionRules(DataStoreInfo dataStoreInfo)
         {
             StringBuilder sb = new StringBuilder();
+            DataFieldInfo decisionInfo = dataStoreInfo.DecisionInfo;
             foreach (IReduct reduct in this.ReductStore)
             {
                 int[] attr = reduct.Attributes.ToArray();
                 for (int i = 0; i < attr.Length; i++)
                     sb.Append(dataStoreInfo.GetFieldInfo(attr[i]).Alias).Append(' ');
-                sb.AppendLine();
+                sb.AppendLine();              
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
                     sb.AppendLine(String.Format("{0} => {1}={2}",
                                     this.PrintDecisionRuleCondition(reduct.EquivalenceClasses.Attributes, eq.Instance, dataStoreInfo),
-                                    dataStoreInfo.DecisionInfo.Alias,
-                                    dataStoreInfo.DecisionInfo.Internal2External(eq.MajorDecision)));
+                                    decisionInfo.Alias,
+                                    decisionInfo.Internal2External(eq.MajorDecision)));
                 }
                 sb.AppendLine();
             }

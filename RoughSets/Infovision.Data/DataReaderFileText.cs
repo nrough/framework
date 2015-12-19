@@ -109,7 +109,7 @@ namespace Infovision.Data
                     fieldType = FieldTypes.Decision;
                 }
 
-                DataFieldInfo fieldInfo = new DataFieldInfo(i, this.AttributeType(i-1));
+                DataFieldInfo fieldInfo = new DataFieldInfo(i, (this.ReferenceDataStoreInfo == null) ? this.AttributeType(i-1) : this.ReferenceDataStoreInfo.GetFieldInfo(i).FieldValueType);
                 if (this.missingValuesCount.ContainsKey(i - 1))
                 {
                     fieldInfo.HasMissingValues = true;                   
@@ -328,8 +328,8 @@ namespace Infovision.Data
                     else
                         missingValuesCount[i] = 1;
                 }
-                else
-                {
+                else if (this.ReferenceDataStoreInfo == null)
+                {                    
                     this.AddValue2TypePool(i, value);
                 }
             }
@@ -414,10 +414,7 @@ namespace Infovision.Data
 
             if (!Int32.TryParse(fields[0], out tmp))
                 throw new InvalidDataException("FileFormat error");
-            this.ExpectedRows = tmp;
-
-            //this.ExpectedColumns = Int32.Parse(fields[1], CultureInfo.InvariantCulture);
-            //this.ExpectedRows = Int32.Parse(fields[0], CultureInfo.InvariantCulture);
+            this.ExpectedRows = tmp;            
 
             this.DecisionId = this.ExpectedColumns;
         }

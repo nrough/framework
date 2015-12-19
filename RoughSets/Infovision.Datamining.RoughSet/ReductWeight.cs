@@ -17,18 +17,6 @@ namespace Infovision.Datamining.Roughset
         {            
         }
 
-        /*
-        public ReductWeights(DataStore data, int[] fieldIds, decimal epsilon)
-            : this(data, fieldIds, null, epsilon)
-        {
-        }
-
-        public ReductWeights(DataStore data, decimal epsilon)
-            : this(data, new int[] { }, epsilon)
-        {
-        }
-        */
-
         public ReductWeights(ReductWeights reduct)
             : base(reduct)
         {

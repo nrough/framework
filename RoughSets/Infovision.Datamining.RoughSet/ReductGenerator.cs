@@ -19,6 +19,7 @@ namespace Infovision.Datamining.Roughset
         private int[][] fieldGroups;
         private int reductIdSequence;
         private bool useCache;
+        private int attributeReductionStep;
 
         protected object syncRoot = new object();
 
@@ -69,7 +70,19 @@ namespace Infovision.Datamining.Roughset
                 else
                     epsilon = value;
             }
-        }        
+        }
+
+        public int AttributeReductionStep
+        {
+            get { return this.attributeReductionStep; }
+            set 
+            {
+                if (value <= 0)
+                    throw new InvalidOperationException("Attribute reduction step must be greater than zero");                
+
+                this.attributeReductionStep = value;
+            }
+        }
 
         public int[][] FieldGroups
         {
@@ -153,6 +166,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.useCache = false;
             this.epsilon = 0;
+            this.attributeReductionStep = 1;
         }
 
         public virtual void initFromDataStore(DataStore data)
@@ -194,6 +208,9 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
                 this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
+
+            if(args.Exist(ReductGeneratorParamHelper.AttributeReductionStep))
+                this.attributeReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.AttributeReductionStep);
 
             //TODO FieldGroups
         }

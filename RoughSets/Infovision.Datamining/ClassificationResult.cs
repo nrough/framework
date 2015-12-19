@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
@@ -72,7 +73,7 @@ namespace Infovision.Datamining
 
         #region Members
 
-        private Dictionary<long, long> classificationMap;
+        private Dictionary<long, long> classificationMap;        
         private Dictionary<ConfusionMatrixKey, int> confusionMatrix = new Dictionary<ConfusionMatrixKey, int>();
         private Dictionary<long, int> decisionActualCount;
         private DataStore testData = null;
@@ -88,7 +89,7 @@ namespace Infovision.Datamining
         //TODO use classificationInfo instead
         private double qualityRatio = 0.0;
         
-        public readonly object syncRoot = new object();
+        public object syncRoot = new object();
 
         #endregion        
 
@@ -225,10 +226,10 @@ namespace Infovision.Datamining
         #endregion
 
         #region Methods
-        
+
         public virtual void AddResult(long objectId, long prediction, double weight = 1.0)
         {
-            classificationMap[objectId] = prediction;
+            classificationMap[objectId] = prediction;            
         }
 
         public virtual void AddResult(long objectId, long prediction, long actual, double weight = 1.0)

@@ -85,7 +85,7 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                CalcStatistics();
+                CalcStatistics(); //flag is checked inside
                 return decisionSet;
             }
 
@@ -106,10 +106,10 @@ namespace Infovision.Datamining.Roughset
         public EquivalenceClass(long[] dataVector, DataStore data, bool manualStatCalculation = false)
         {
             this.dataStore = data;
-            int numberOfDecisions = data.DataStoreInfo.DecisionInfo.InternalValues().Count;
+            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
+            int numberOfDecisions = decisionField.InternalValues().Count;
             this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);
-            this.decisionSet = new PascalSet<long>(this.dataStore.DataStoreInfo.DecisionInfo.MinValue,
-                                                   this.dataStore.DataStoreInfo.DecisionInfo.MaxValue);
+            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
             this.decisionWeigthSums = new Dictionary<long, decimal>(numberOfDecisions);
 
             this.dataVector = dataVector;

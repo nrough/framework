@@ -83,13 +83,16 @@ namespace Infovision.Datamining.Roughset
         public override void Generate()
         {
             this.ReductStoreCollection = new ReductStoreCollection();
-            foreach (Permutation permutation in this.Permutations)
+            ParallelOptions options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = 2;            
+
+            //foreach (Permutation permutation in this.Permutations)
+            Parallel.ForEach(this.Permutations, options, permutation =>
             {
                 ReductStore localReductPool = new ReductStore();
                 localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray(), localReductPool));
-                
                 this.ReductStoreCollection.AddStore(localReductPool);
-            }               
+            });               
         }
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
@@ -239,7 +242,7 @@ namespace Infovision.Datamining.Roughset
                         if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                             return eqClasses;
 
-                        if (this.UseExceptionRules)
+                        if (this.UseExceptionRules && reductStore != null)
                         {
                             Bireduct exceptionReduct = new Bireduct(this.DataStore,
                                 newAttributes, 

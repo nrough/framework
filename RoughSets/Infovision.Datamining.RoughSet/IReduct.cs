@@ -24,7 +24,8 @@ namespace Infovision.Datamining.Roughset
         bool AddAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);
         bool ContainsObject(int objectIndex);
-        bool TryRemoveAttribute(int attributeId);        
+        bool TryRemoveAttribute(int attributeId);
+        //bool TryRemoveAttributes(int[] attributeId);        
 
         //TODO We want to display Reducts statistics
         //Cardinality

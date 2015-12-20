@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore;
         private FieldSet attributeSet;
         private EquivalenceClassCollection eqClassMap;
-        private object syncRoot = new Object();
+        protected object syncRoot = new Object();
 
         #endregion
 
@@ -71,8 +71,11 @@ namespace Infovision.Datamining.Roughset
             }
             
             protected set 
-            { 
-                this.eqClassMap = value; 
+            {
+                lock (syncRoot)
+                {
+                    this.eqClassMap = value;
+                }
             }
         }
 
@@ -161,7 +164,7 @@ namespace Infovision.Datamining.Roughset
         }
         
         public virtual void BuildEquivalenceMap()
-        {
+        {            
             if (!this.UseGlobalCache)
             {               
                 this.InitEquivalenceMap();
@@ -188,8 +191,11 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.CheckAddAttribute(attributeId))
             {
-                this.attributeSet.AddElement(attributeId);
-                this.BuildEquivalenceMap();
+                lock (syncRoot)
+                {
+                    this.attributeSet.AddElement(attributeId);
+                    this.BuildEquivalenceMap();
+                }
                 return true;
             }
 
@@ -205,8 +211,11 @@ namespace Infovision.Datamining.Roughset
         {
             if(this.CheckRemoveAttribute(attributeId))
             {
-                this.attributeSet.RemoveElement(attributeId);
-                this.BuildEquivalenceMap();
+                lock (syncRoot)
+                {
+                    this.attributeSet.RemoveElement(attributeId);
+                    this.BuildEquivalenceMap();
+                }
                 return true;
             }
 

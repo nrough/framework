@@ -158,8 +158,11 @@ namespace Infovision.Datamining.Roughset
         
         protected int GetNextReductId()
         {
-            reductIdSequence++;
-            return reductIdSequence;
+            lock (syncRoot)
+            {
+                reductIdSequence++;
+                return reductIdSequence;
+            }
         }
 
         public virtual void SetDefaultParameters()

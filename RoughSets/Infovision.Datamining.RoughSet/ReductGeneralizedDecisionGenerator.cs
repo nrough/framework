@@ -18,13 +18,24 @@ namespace Infovision.Datamining.Roughset
             get
             {
                 if (this.weightGenerator == null)
-                    this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                {
+                    lock (syncRoot)
+                    {
+                        if (this.weightGenerator == null)
+                        {
+                            this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                        }
+                    }
+                }
                 return this.weightGenerator;
             }
 
             set
             {
-                this.weightGenerator = value;
+                lock (syncRoot)
+                {
+                    this.weightGenerator = value;
+                }
             }
         }
 
@@ -34,8 +45,14 @@ namespace Infovision.Datamining.Roughset
             {
                 if (!this.IsQualityCalculated)
                 {
-                    this.CalcDataSetQuality();
-                    this.IsQualityCalculated = true;
+                    lock (syncRoot)
+                    {
+                        if (!this.IsQualityCalculated)
+                        {
+                            this.CalcDataSetQuality();
+                            this.IsQualityCalculated = true;
+                        }
+                    }
                 }
 
                 return this.dataSetQuality;
@@ -43,8 +60,11 @@ namespace Infovision.Datamining.Roughset
 
             set
             {
-                this.dataSetQuality = value;
-                this.IsQualityCalculated = true;
+                lock (syncRoot)
+                {
+                    this.dataSetQuality = value;
+                    this.IsQualityCalculated = true;
+                }
             }
         }
 

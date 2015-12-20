@@ -13,21 +13,7 @@ namespace Infovision.Datamining.Roughset
         private HashSet<int> removedAttributes;
         private bool isEqMapCreated;
 
-        #region Constructors
-
-        /*
-        public ReductGeneralizedMajorityDecision(DataStore data)
-            : base(data, Decimal.Zero)
-        {
-            this.Init();
-        }
-
-        public ReductGeneralizedMajorityDecision(DataStore data, int[] fieldIds, decimal epsilon)
-            : base(data, fieldIds, epsilon)
-        {
-            this.Init();
-        }
-        */
+        #region Constructors        
 
         public ReductGeneralizedMajorityDecision(DataStore dataStore, int[] fieldIds, decimal[] weights, decimal epsilon)
             : base(dataStore, fieldIds, weights, epsilon)
@@ -80,9 +66,15 @@ namespace Infovision.Datamining.Roughset
             //base.BuildEquivalenceMap();
             if (isEqMapCreated == false)
             {
-                this.InitEquivalenceMap();
-                this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);
-                this.isEqMapCreated = true;
+                lock (syncRoot)
+                {
+                    if (isEqMapCreated == false)
+                    {
+                        this.InitEquivalenceMap();
+                        this.EquivalenceClasses.Calc(this.Attributes, this.DataStore, this.Weights);
+                        this.isEqMapCreated = true;
+                    }
+                }
             }
         }
 

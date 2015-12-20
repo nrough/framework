@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace Infovision.Datamining.Roughset
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);				
 				
 				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
-				this.MinReductLength = 1;				
+				this.MinReductLength = 1;
 
 				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights, 0, 0);
 
@@ -94,7 +95,7 @@ namespace Infovision.Datamining.Roughset
 					throw new InvalidOperationException("Empty reduct must be of zero length");
 
 				decimal m0 = new InformationMeasureWeights().Calc(emptyReduct);
-				this.Threshold = (double)(1.0M - m0);
+				this.Threshold = (double)(Decimal.Zero - m0);
 			}
 
 			if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
@@ -151,6 +152,8 @@ namespace Infovision.Datamining.Roughset
 			double error = -1.0;
 			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
 			this.WeightGenerator.Generate();
+			long[] decisionValues = this.DataStore.DataStoreInfo.GetDecisionValues().ToArray();
+			object tmpLock = new object();                
 
 			do
 			{
@@ -161,11 +164,11 @@ namespace Infovision.Datamining.Roughset
 					localReductStore.AddReduct(reduct);					
 					this.ReductPool.AddReduct(reduct);
 				}
-
 				IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
 				reductStoreCollection.AddStore(localReductStore);
 
-				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, this.DataStore.DataStoreInfo.GetDecisionValues());
+				RoughClassifier classifier = new RoughClassifier(
+					reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				ClassificationResult result = classifier.Classify(this.DataStore);
 				error = result.WeightUnclassified + result.WeightMisclassified;				
 
@@ -193,22 +196,52 @@ namespace Infovision.Datamining.Roughset
 
 				double alpha = this.CalcModelConfidence(K, error);
 				this.AddModel(localReductStore, alpha);
-				double sum = 0.0;
-				for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+				
+				double sum = 0.0d;
+				var rangePrtitioner = Partitioner.Create(0, this.WeightGenerator.Weights.Length);
+				Parallel.ForEach(
+					rangePrtitioner,
+					() => 0.0,
+					(range, loopState, initialValue) =>
+					{
+						double partialSum = initialValue;
+						for (int i = range.Item1; i < range.Item2; i++)
+						{
+							this.WeightGenerator.Weights[i] = (decimal)this.UpdateWeights((double)this.WeightGenerator.Weights[i],
+																		 K,
+																		 this.DataStore.GetDecisionValue(i),
+																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
+																		 error);
+							partialSum += (double)this.WeightGenerator.Weights[i];
+						}
+						return partialSum;
+					},                    
+					(localPartialSum) =>
+					{                        
+						lock (tmpLock)
+						{
+							sum += localPartialSum;
+						}
+					});
+					
+				/*
+				for(int i = 0; i < this.DataStore.NumberOfRecords; i++)
 				{
-					this.WeightGenerator.Weights[i] = (decimal)this.UpdateWeights((double)this.WeightGenerator.Weights[i], 
-																		 K, 
-																		 this.DataStore.GetDecisionValue(i), 
-																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)), 
-																		 error);                    
+					this.WeightGenerator.Weights[i] = (decimal)this.UpdateWeights((double)this.WeightGenerator.Weights[i],
+																		 K,
+																		 this.DataStore.GetDecisionValue(i),
+																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
+																		 error);				
 					sum += (double)this.WeightGenerator.Weights[i];
 				}
+				*/
 
 				result = null;
-
 				//Normalize object weights
-				for (int i = 0; i < this.DataStore.NumberOfRecords; i++ )
+				Parallel.For(0, this.DataStore.NumberOfRecords, i =>
+				{
 					this.WeightGenerator.Weights[i] /= (decimal)sum;
+				});
 				
 				alphaSum += alpha;
 				
@@ -219,20 +252,20 @@ namespace Infovision.Datamining.Roughset
 					if (this.Models.Count > 1)
 					{
 						// Normalize weights for models confidence
-						foreach (IReductStore rs in this.Models)
-							if (rs.IsActive)
-								rs.Weight /= (decimal)alphaSum;
+						Parallel.ForEach(this.Models.Where( r => r.IsActive), rs =>
+						{
+							rs.Weight /= (decimal)alphaSum;
+						});
 
 						RoughClassifier classifierEnsemble = new RoughClassifier(
-							this.Models,
-							this.IdentyficationType, this.VoteType,
-							this.DataStore.DataStoreInfo.GetDecisionValues());
+							this.Models, this.IdentyficationType, this.VoteType, decisionValues);
 						ClassificationResult resultEnsemble = classifierEnsemble.Classify(this.DataStore);
 						
 						// De-normalize weights for models confidence
-						foreach (IReductStore rs in this.Models)
-							if (rs.IsActive)
-								rs.Weight *= (decimal)alphaSum;
+						Parallel.ForEach(this.Models.Where(r => r.IsActive), rs =>
+						{
+							rs.Weight *= (decimal)alphaSum;
+						});
 
 						if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified <= 0.0001)
 						{
@@ -242,21 +275,20 @@ namespace Infovision.Datamining.Roughset
 								model.IsActive = false;
 
 								// Normalize weights for models confidence
-								foreach (IReductStore rs in this.Models)
-									if (rs.IsActive)
-										rs.Weight /= ((decimal)alphaSum - model.Weight);
+								Parallel.ForEach(this.Models.Where(r => r.IsActive), rs =>                                
+								{                                    
+									rs.Weight /= ((decimal)alphaSum - model.Weight);
+								});
 
 								RoughClassifier localClassifierEnsemble = new RoughClassifier(
-									this.Models, 
-									this.IdentyficationType, 
-									this.VoteType, 
-									this.DataStore.DataStoreInfo.GetDecisionValues());
+									this.Models, this.IdentyficationType, this.VoteType, decisionValues);
 								ClassificationResult localResultEnsemble = localClassifierEnsemble.Classify(this.DataStore);
 
 								// De-normalize weights for models confidence
-								foreach (IReductStore rs in this.Models)
-									if (rs.IsActive)
-										rs.Weight *= ((decimal)alphaSum - model.Weight);
+								Parallel.ForEach(this.Models.Where(r => r.IsActive), rs =>                                
+								{                                    
+									rs.Weight *= ((decimal)alphaSum - model.Weight);
+								});
 
 								model.IsActive = true;
 
@@ -282,8 +314,10 @@ namespace Infovision.Datamining.Roughset
 			// Normalize weights for models confidence
 			if (alphaSum != 0.0)
 			{
-				foreach (IReductStore rs in this.Models)
+				Parallel.ForEach(this.Models, rs =>				
+				{
 					rs.Weight /= (decimal)alphaSum;
+				});
 			}
 		}		
 

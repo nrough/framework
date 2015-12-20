@@ -11,6 +11,7 @@ namespace Infovision.Datamining.Roughset
     {
         private DataStore dataStore = null;
         protected decimal[] w;
+        protected object syncRoot = new object();
         
         protected WeightGenerator(DataStore dataStore)
         {
@@ -33,7 +34,15 @@ namespace Infovision.Datamining.Roughset
             get 
             {
                 if (!this.CalcFlag)
-                    this.Generate();
+                {
+                    lock (syncRoot)
+                    {
+                        if (!this.CalcFlag)
+                        {
+                            this.Generate();
+                        }
+                    }
+                }
                 return this.w; 
             }
             

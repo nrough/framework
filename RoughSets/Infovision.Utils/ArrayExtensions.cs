@@ -36,11 +36,11 @@ namespace Infovision.Utils
         
         public static T[] RemoveAt<T>(this T[] array, int idx)
         {            
-            if (idx < 0)
-                throw new ArgumentOutOfRangeException("idx");
+            //if (idx < 0)
+            //    throw new ArgumentOutOfRangeException("idx");
 
-            if (idx >= array.Length)
-                throw new ArgumentOutOfRangeException("idx");
+            //if (idx >= array.Length)
+            //    throw new ArgumentOutOfRangeException("idx");
 
             T[] newArray = new T[array.Length - 1];
 

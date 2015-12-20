@@ -33,25 +33,46 @@ namespace DisesorTest
             
             //p.DisesorDataStoreLoadTest();
                                                 
-            string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+            string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;            
             int numberOfPermutations = 200;
-            decimal epsilon = 0.45m;
+            decimal epsilon = 0.5m;
             RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
-            RuleQualityFunction voteFunction = RuleQuality.SingleVote;
+            RuleQualityFunction voteFunction = RuleQuality.ConfidenceW;
+            WeightGeneratorType weightGeneratorType = WeightGeneratorType.Majority;
+            DiscretizationType discretizationType = DiscretizationType.Entropy;
+                        
+            //TODO Boosting && CV
+            //TODO Tunning
 
-            p.FinalTest(factoryKey, numberOfPermutations, epsilon, identificationFunction, voteFunction);
+            p.FinalTest(
+                factoryKey, 
+                numberOfPermutations, 
+                epsilon, 
+                identificationFunction, 
+                voteFunction, 
+                weightGeneratorType, 
+                discretizationType);
             
             Console.Beep();
             Console.ReadKey();
         }
 
-        private void FinalTest(string factoryKey, int numberOfPermutations, decimal epsilon, RuleQualityFunction identificationFunction, RuleQualityFunction voteFunction)
+        private void FinalTest(
+            string factoryKey, 
+            int numberOfPermutations, 
+            decimal epsilon, 
+            RuleQualityFunction identificationFunction, 
+            RuleQualityFunction voteFunction, 
+            WeightGeneratorType weightGeneratorType, 
+            DiscretizationType discretizationType)
         {
             Console.WriteLine("Algorithm: {0}", factoryKey);
             Console.WriteLine("Number of permutations: {0}", numberOfPermutations);
             Console.WriteLine("Epsilon: {0}", epsilon);
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
+            Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
+            Console.WriteLine("Discretization method: {0}", discretizationType);
             Console.WriteLine();
             
             this.LoadMetadata();
@@ -128,12 +149,7 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Discretizing data...");
-            new DataStoreDiscretizer()
-            {
-                DiscretizeUsingEntropy = true,
-                DiscretizeUsingEqualWidth = false,
-                DiscretizeUsingEqualFreq = false,
-            }.Discretize(ref train, ref test);
+            DataStoreDiscretizer.Construct(discretizationType).Discretize(ref train, ref test);
             Console.WriteLine("Done");
 
             Args args = new Args();
@@ -141,7 +157,7 @@ namespace DisesorTest
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);            
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
-            args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(train));
+            args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, WeightGenerator.Construct(weightGeneratorType, train));
 
             Console.Write("Reduct generation...");
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
@@ -157,8 +173,7 @@ namespace DisesorTest
                 }
             }
 
-            Console.Write("Classification...");
-            
+            Console.Write("Classification...");            
             RoughClassifier classifier = new RoughClassifier(
                 reductStoreCollection,
                 identificationFunction,
@@ -179,10 +194,11 @@ namespace DisesorTest
                     foreach (var kvp in prediction)
                     {
                         if (kvp.Key != -1)
-                            sum += kvp.Value;
-                        else
-                            unclassified++;
+                            sum += kvp.Value;                        
                     }
+
+                    if(prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
+                        unclassified++;
 
                     decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
                     decimal result = sum > 0 ? warning / sum : 0;

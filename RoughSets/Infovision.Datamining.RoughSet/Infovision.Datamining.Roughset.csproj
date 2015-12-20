@@ -171,6 +171,7 @@
     <Compile Include="RuleMeasure.cs" />
     <Compile Include="Weight\WeightBoostingGenerator.cs" />
     <Compile Include="Weight\WeightGenerator.cs" />
+    <Compile Include="Weight\WeightGeneratorType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">

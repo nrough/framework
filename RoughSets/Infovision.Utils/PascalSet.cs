@@ -13,7 +13,7 @@ namespace Infovision.Utils
 		where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T> 
 	{
 		// Private member variables
-		private int cardinality;
+		//private int cardinality;
 		
 		#region PascalSet<int> Properties
 		/// <summary>
@@ -53,8 +53,8 @@ namespace Infovision.Utils
 		public PascalSet(T lowerBound, T upperBound)
 		{
 			//cardinality is not yet calculated
-			cardinality = 0;
-			this.IsCardinalityCalculated = true;
+			//cardinality = 0;
+			//this.IsCardinalityCalculated = true;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
@@ -81,7 +81,7 @@ namespace Infovision.Utils
 		public PascalSet(T lowerBound, T upperBound, IEnumerable<T> initialData)
 		{
 			//cardinality is not yet calculated
-			cardinality = 0;
+			//cardinality = 0;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
@@ -108,7 +108,7 @@ namespace Infovision.Utils
 						Operator<T>.Subtract(val, LowerBound),
 						typeof(int));
 					Data.Set(index, true);
-					cardinality++;
+					//cardinality++;
 				}
 				else
 				{
@@ -116,13 +116,13 @@ namespace Infovision.Utils
 				}
 			}
 
-			this.IsCardinalityCalculated = true;
+			//this.IsCardinalityCalculated = true;
 		}
 
 		public PascalSet(T lowerBound, T upperBound, BitArray data)
 		{
 			//cardinality is not yet calculated
-			this.cardinality = 0;
+			//this.cardinality = 0;
 			
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
@@ -145,11 +145,11 @@ namespace Infovision.Utils
 			for (int i = 0; i < data.Length; i++)
 			{
 				this.Data[i] = data[i];
-				if (data[i])
-					this.cardinality++;
+				//if (data[i])
+				//	this.cardinality++;
 			}
 
-			this.IsCardinalityCalculated = true;
+			//this.IsCardinalityCalculated = true;
 		}
 
 		public PascalSet(PascalSet<T> set) : this(set.LowerBound, set.UpperBound, set.Data) {}
@@ -281,7 +281,7 @@ namespace Infovision.Utils
 
 				if (this.Data.Get(index) == false)
 				{
-					cardinality++;
+					//cardinality++;
 					this.Data.Set(index, true);
 				}
 			}
@@ -303,7 +303,7 @@ namespace Infovision.Utils
 					typeof(int));
 				if (this.Data.Get(index) == true)
 				{
-					this.cardinality--;
+					//this.cardinality--;
 					this.Data.Set(index, false);
 				}
 			}
@@ -596,16 +596,16 @@ namespace Infovision.Utils
 		public T[] ToArray()
 		{
 			
-            int size = this.Count;
+			int size = this.Count;
 			T[] array = new T[size];
 			if (size == 0)
 				return array;            
 			int j = 0;
-            for (int i = 0; i < this.Data.Length; i++)
-            {
-                if (this.Data.Get(i))
-                    array[j++] = Operator.AddAlternative<T, int>(this.LowerBound, i);
-            }
+			for (int i = 0; i < this.Data.Length; i++)
+			{
+				if (this.Data.Get(i))
+					array[j++] = Operator.AddAlternative<T, int>(this.LowerBound, i);
+			}
 			return array;
 		}
 

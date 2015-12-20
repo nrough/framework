@@ -19,6 +19,8 @@ namespace Infovision.Datamining.Roughset
             this.CalcFlag = false;
         }
 
+
+
         #region Properties
 
         protected DataStore DataStore
@@ -60,6 +62,29 @@ namespace Infovision.Datamining.Roughset
         }
 
         #endregion
+
+        public static WeightGenerator Construct(WeightGeneratorType generatorType, DataStore dataStore)
+        {
+            switch (generatorType)
+            {
+                case WeightGeneratorType.Majority:
+                    return new WeightGeneratorMajority(dataStore);
+                
+                case WeightGeneratorType.Relative:
+                    return new WeightGeneratorRelative(dataStore);
+                
+                case WeightGeneratorType.Random:
+                    return new WeightGeneratorRandom(dataStore);
+                
+                case WeightGeneratorType.Constant:
+                    return new WeightGeneratorConstant(dataStore, Decimal.Divide(Decimal.One, dataStore.NumberOfRecords));
+
+                case WeightGeneratorType.Boosting:
+                    return new WeightBoostingGenerator(dataStore);
+            }
+
+            return null;
+        }
         
     }
 

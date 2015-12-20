@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private T[] cuts;
         private double weightPerInterval;
-        private bool useWeightPerInterval;
+        private bool useWeightPerInterval;        
 
         #endregion
 

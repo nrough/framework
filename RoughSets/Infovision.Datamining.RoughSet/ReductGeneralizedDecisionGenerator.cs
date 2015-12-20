@@ -212,12 +212,13 @@ namespace Infovision.Datamining.Roughset
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx);
-            EquivalenceClassCollection newEqClasses
-                = new EquivalenceClassCollection(newAttributes);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
    
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
-            eqArray.Shuffle();                        
+            eqArray.Shuffle();
+
+            decimal threshold = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
 
             foreach(EquivalenceClass eq in eqArray)            
             {
@@ -239,7 +240,7 @@ namespace Infovision.Datamining.Roughset
                     else
                     {
                         newEqClasses.EqWeightSum -= eq.WeightSum;
-                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
+                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < threshold)
                             return eqClasses;
 
                         if (this.UseExceptionRules && reductStore != null)

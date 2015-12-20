@@ -12,12 +12,45 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         public virtual bool DiscretizeUsingEntropy { get; set; }
         public virtual bool DiscretizeUsingEqualFreq { get; set; }
         public virtual bool DiscretizeUsingEqualWidth { get; set; }
+        public virtual int NumberOfBins {get; set;}        
 
         public DataStoreDiscretizer()
         {
             this.DiscretizeUsingEntropy = true;
             this.DiscretizeUsingEqualFreq = false;
             this.DiscretizeUsingEqualWidth = false;
+        }
+
+        public static DataStoreDiscretizer Construct(DiscretizationType discretizationType)
+        {
+            switch (discretizationType)
+            {
+                case DiscretizationType.Entropy :
+                    return new DataStoreDiscretizer()
+                    {
+                        DiscretizeUsingEntropy = true,
+                        DiscretizeUsingEqualFreq = false,
+                        DiscretizeUsingEqualWidth = false
+                    };
+
+                case DiscretizationType.EqualFrequency:
+                    return new DataStoreDiscretizer()
+                    {
+                        DiscretizeUsingEntropy = false,
+                        DiscretizeUsingEqualFreq = true,
+                        DiscretizeUsingEqualWidth = false
+                    };
+
+                case DiscretizationType.EqualWidth:
+                    return new DataStoreDiscretizer()
+                    {
+                        DiscretizeUsingEntropy = false,
+                        DiscretizeUsingEqualFreq = false,
+                        DiscretizeUsingEqualWidth = true
+                    };
+            }
+
+            return null;
         }
         
         public virtual void Discretize(ref DataStore trainingData, ref DataStore testData)

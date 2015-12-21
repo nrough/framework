@@ -348,34 +348,31 @@ namespace Infovision.Data
 
         private void AddValue2TypePool(int fieldIndex, string value)
         {            
-            Type type = InfovisionHelper.String2Type(value);
+            //TODO change == to Equals
+
             Type previousType = null;
             typePool.TryGetValue(fieldIndex, out previousType);
 
-            if (type == previousType)
-            {
+            if (previousType != null && previousType == typeof(string))
                 return;
-            }
-
+                        
+            Type type = InfovisionHelper.String2Type(value);
+            
             if (previousType == null)
             {
                 this.typePool[fieldIndex] = type;
                 return;
             }
-
-            if (type == typeof(string)
-                || previousType == typeof(string))
-            {
-                this.typePool[fieldIndex] = typeof(string);
-                return;
-            }
-
-            if (type == typeof(decimal) || type == typeof(double))
+            
+            if ((type == typeof(double) 
+                || type == typeof(decimal) 
+                || type == typeof(string))
+                && type != previousType)
             {
                 this.typePool[fieldIndex] = type;
-                return;
+                return;       
             }
-
+            
             return;
         }
 

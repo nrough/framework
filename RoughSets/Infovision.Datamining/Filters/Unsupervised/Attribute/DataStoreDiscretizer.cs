@@ -68,6 +68,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     int[] newValues = new int[trainingData.NumberOfRecords];
                     switch (trainFieldTypeCode)
                     {
+                        /*
                         case TypeCode.Decimal:
                             
                             Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
@@ -80,6 +81,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
                             break;
+                        */
 
                         case TypeCode.Int32:
                             Discretization<int> discretizeInt = new Discretization<int>();
@@ -127,6 +129,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                             break;
 
+                        /*
                         case TypeCode.Decimal:
                             Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
                             discretizeDecimal.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (decimal)x);
@@ -134,6 +137,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             for (int j = 0; j < testData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
                             break;
+                        */ 
 
                         case TypeCode.Double:
                             Discretization<double> discretizeDouble = new Discretization<double>();

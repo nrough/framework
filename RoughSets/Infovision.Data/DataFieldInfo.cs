@@ -90,7 +90,7 @@ namespace Infovision.Data
                 return false;
             
             if((this.IsNumeric
-                    || Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
+                    //|| Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
                     || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
             return true;
 

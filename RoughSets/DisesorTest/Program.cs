@@ -36,13 +36,14 @@ namespace DisesorTest
             string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;            
             int numberOfPermutations = 200;
             decimal epsilon = 0.5m;
-            RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
-            RuleQualityFunction voteFunction = RuleQuality.ConfidenceW;
-            WeightGeneratorType weightGeneratorType = WeightGeneratorType.Majority;
+            RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
+            RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+            WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
             DiscretizationType discretizationType = DiscretizationType.Entropy;
-                        
+
+            //TODO Majority weighting most of objects are unclassified, empty reducts
             //TODO Boosting && CV
-            //TODO Tunning
+            //TODO Tunning            
 
             p.FinalTest(
                 factoryKey, 
@@ -201,7 +202,7 @@ namespace DisesorTest
                         unclassified++;
 
                     decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
-                    decimal result = sum > 0 ? warning / sum : 0;
+                    decimal result = sum > 0 ? warning / sum : Decimal.Zero;
                     file.WriteLine(result.ToString(CultureInfo.InvariantCulture));
                 }
             }

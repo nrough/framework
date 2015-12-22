@@ -197,9 +197,9 @@ namespace Infovision.Data
                                             typedFieldValues[i] = Int32.MinValue;
                                             break;
 
-                                        case TypeCode.Decimal:
-                                            typedFieldValues[i] = Decimal.MinValue;
-                                            break;
+                                        //case TypeCode.Decimal:
+                                        //    typedFieldValues[i] = Decimal.MinValue;
+                                        //    break;
 
                                         case TypeCode.Double:
                                             typedFieldValues[i] = Double.MinValue;
@@ -221,9 +221,9 @@ namespace Infovision.Data
                                             typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
                                             break;
 
-                                        case TypeCode.Decimal:
-                                            typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
-                                            break;
+                                        //case TypeCode.Decimal:
+                                        //    typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        //    break;
 
                                         case TypeCode.Double:
                                             typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
@@ -365,7 +365,7 @@ namespace Infovision.Data
             }
             
             if ((type == typeof(double) 
-                || type == typeof(decimal) 
+                //|| type == typeof(decimal) 
                 || type == typeof(string))
                 && type != previousType)
             {

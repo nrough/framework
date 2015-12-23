@@ -75,7 +75,7 @@ namespace DisesorTest
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
-            Console.WriteLine("Discretization method: {0}", discretizationType);
+            Console.WriteLine("Discretization method: {0}", "FayyadAndIranisMDL");
             Console.WriteLine();
             
             this.LoadMetadata();
@@ -152,7 +152,13 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Discretizing data...");
-            DataStoreDiscretizer discretizer = DataStoreDiscretizer.Construct(discretizationType);
+            //DataStoreDiscretizer discretizer = DataStoreDiscretizer.Construct(discretizationType);
+            var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+            {
+                UseBetterEncoding = true,
+                UseKononenko = false
+            };
+
             discretizer.Discretize(ref train, ref test);
             Console.WriteLine("Done");
 

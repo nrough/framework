@@ -27,11 +27,11 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
 
         //[TestCase(false, false)]
         //[TestCase(false, true)]
-        //[TestCase(true, false)]
-        [TestCase(true, true)]
+        [TestCase(true, false)]
+        //[TestCase(true, true)]
         public void CreateDiscretizedDataTableTest(bool useBetterEncoding, bool useKononenko)
         {
-            int[] numericFields = new int[] { 2, 5, 13 }; //8, 11, 16, 18
+            int[] numericFields = new int[] { 2, 5, 13, 8, 11, 16, 18 }; //8, 11, 16, 18
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             foreach (int fieldId in numericFields)
             {

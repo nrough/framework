@@ -25,6 +25,7 @@ namespace Infovision.Data.UnitTests
             for (int i = 0; i <= 100; i += 10)
             {
                 DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (double)i/(double)100);
+                dataStoreSplitter.ActiveFold = 0;
                 dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
 
                 Assert.AreEqual(dataStore.DataStoreInfo.NumberOfRecords, dataStore1.DataStoreInfo.NumberOfRecords + dataStore2.DataStoreInfo.NumberOfRecords);
@@ -126,6 +127,7 @@ namespace Infovision.Data.UnitTests
             int elementSum2;
 
             DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, 0.75);
+            dataStoreSplitter.ActiveFold = 0;
             dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
 
             foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))

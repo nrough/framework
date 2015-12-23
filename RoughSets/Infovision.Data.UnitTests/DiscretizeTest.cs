@@ -103,7 +103,7 @@ namespace Infovision.Data.UnitTests
                                 discretizeDecimal.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
                                 decimal[] oldValuesDecimal = train.GetColumn<decimal>(field.Id);
                                 discretizeDecimal.Compute(oldValuesDecimal);
-                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeDecimal.Cuts, x => (IComparable)x);
+                                localFieldInfoTrain.Cuts = discretizeDecimal.Cuts;
                                 for (int j = 0; j < train.NumberOfRecords; j++)
                                     newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
                                 break;
@@ -115,7 +115,7 @@ namespace Infovision.Data.UnitTests
                                 discretizeInt.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
                                 int[] oldValuesInt = train.GetColumn<int>(field.Id);
                                 discretizeInt.Compute(oldValuesInt);
-                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeInt.Cuts, x => (IComparable)x);
+                                localFieldInfoTrain.Cuts = discretizeInt.Cuts;
                                 for (int j = 0; j < train.NumberOfRecords; j++)
                                     newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                                 break;
@@ -126,7 +126,7 @@ namespace Infovision.Data.UnitTests
                                 discretizeDouble.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
                                 double[] oldValuesDouble = train.GetColumn<double>(field.Id);
                                 discretizeDouble.Compute(oldValuesDouble);
-                                localFieldInfoTrain.Cuts = Array.ConvertAll(discretizeDouble.Cuts, x => (IComparable)x);
+                                localFieldInfoTrain.Cuts = discretizeDouble.Cuts;
                                 for (int j = 0; j < train.NumberOfRecords; j++)
                                     newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
                                 break;
@@ -144,7 +144,7 @@ namespace Infovision.Data.UnitTests
                         {
                             case TypeCode.Int32:
                                 Discretization<int> discretizeInt = new Discretization<int>();
-                                discretizeInt.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (int) x);
+                                discretizeInt.Cuts = localFieldInfoTrain.Cuts;
                                 int[] oldValuesInt = test.GetColumn<int>(field.Id);
                                 for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeInt.Search(oldValuesInt[j]);
@@ -153,7 +153,7 @@ namespace Infovision.Data.UnitTests
                             /*
                             case TypeCode.Decimal:
                                 Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                                discretizeDecimal.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (decimal)x);
+                                discretizeDecimal.Cuts = localFieldInfoTrain.Cuts;
                                 decimal[] oldValuesDecimal = test.GetColumn<decimal>(field.Id);
                                 for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
@@ -162,7 +162,7 @@ namespace Infovision.Data.UnitTests
 
                             case TypeCode.Double:
                                 Discretization<double> discretizeDouble = new Discretization<double>();
-                                discretizeDouble.Cuts = Array.ConvertAll(localFieldInfoTrain.Cuts, x => (double)x);
+                                discretizeDouble.Cuts = localFieldInfoTrain.Cuts;
                                 double[] oldValuesDouble = test.GetColumn<double>(field.Id);
                                 for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);

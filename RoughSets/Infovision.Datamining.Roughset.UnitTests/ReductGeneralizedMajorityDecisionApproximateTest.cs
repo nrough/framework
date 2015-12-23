@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);

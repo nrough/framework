@@ -123,6 +123,8 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
     <Compile Include="Clustering\KMeans.cs" />
     <Compile Include="Convergence.cs" />
+    <Compile Include="Filters\Supervised\Attribute\DataStoreDiscretizer.cs" />
+    <Compile Include="Filters\Supervised\Attribute\Discretization.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DiscretizationType.cs" />
@@ -138,6 +140,10 @@
     <ProjectReference Include="..\Infovision.Math\Infovision.Math.csproj">
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>Infovision.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infovision.Statistics\Infovision.Statistics.csproj">
+      <Project>{d26b9d87-e914-44be-9381-73460214b7e4}</Project>
+      <Name>Infovision.Statistics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
@@ -302,9 +308,7 @@
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Filters\Supervised\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

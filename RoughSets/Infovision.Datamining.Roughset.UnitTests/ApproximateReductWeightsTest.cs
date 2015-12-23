@@ -34,8 +34,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         [Test, TestCaseSource("GetDataFiles")]
         public void GenerateZeroEpsilonTest(KeyValuePair<string, BenchmarkData> fileName)
-        {            
-            DataStore data = DataStore.Load(fileName.Value.TrainFile, FileFormat.Rses1);            
+        {
+            DataStore data = DataStore.Load(fileName.Value.TrainFile, fileName.Value.FileFormat);
             
             Args parms = new Args();
             parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);

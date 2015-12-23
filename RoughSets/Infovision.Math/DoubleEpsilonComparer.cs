@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
-    public class DoubleEpsilonComparer : EqualityComparer<double>
+    public class DoubleEpsilonComparer 
+        : EqualityComparer<double>, IComparer<double>
     {
         private readonly double epsilon;
 
@@ -16,13 +17,23 @@ namespace Infovision.Math
         }
 
         public DoubleEpsilonComparer()
-            : this (0.00000001)
+            : this(1e-6)
         {             
         }        
 
         public override bool Equals(double a, double b)
         {            
             return NearlyEqual(a, b, this.epsilon);
+        }
+
+        public int Compare(double a, double b)
+        {
+            double dif = a - b;
+            if (dif > this.epsilon)
+                return 1;
+            else if (dif < this.epsilon)
+                return -1;
+            return 0;
         }
 
         public override int GetHashCode(double a)

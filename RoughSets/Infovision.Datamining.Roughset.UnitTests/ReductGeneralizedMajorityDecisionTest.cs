@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             int numberOfPermutations = 1;
             int cutoff = 2;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -111,7 +111,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 20;
-            DataStore trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(trainData);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 100;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2(KeyValuePair<string, BenchmarkData> kvp)
         {   
             int numberOfPermutations = 100;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 

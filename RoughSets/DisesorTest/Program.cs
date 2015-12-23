@@ -18,12 +18,15 @@ namespace DisesorTest
     public class Program
     {
         #region Member variables
+        
         static string trainfile = @"c:\data\disesor\trainingData.csv";
         static string trainfile_merge = @"c:\data\disesor\trainingData_merge.csv";
         static string testfile = @"c:\data\disesor\testData.csv";
         static string testfile_merge = @"c:\data\disesor\testData_merge.csv";
         static string labelfile = @"c:\data\disesor\trainingLabels.csv";
         static string outputfile = @"c:\data\disesor\result.csv";
+        static string weightsoutput = @"c:\data\disesor\weights.csv";                        
+
         private Dictionary<string, string> metadataDict;
         #endregion
 
@@ -35,13 +38,12 @@ namespace DisesorTest
                                                 
             string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;            
             int numberOfPermutations = 200;
-            decimal epsilon = 0.5m;
+            decimal epsilon = 0.4m;
             RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
             RuleQualityFunction voteFunction = RuleQuality.CoverageW;
             WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
             DiscretizationType discretizationType = DiscretizationType.Entropy;
-
-            //TODO Majority weighting most of objects are unclassified, empty reducts
+            
             //TODO Boosting && CV
             //TODO Tunning            
 
@@ -150,16 +152,27 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Discretizing data...");
-            DataStoreDiscretizer.Construct(discretizationType).Discretize(ref train, ref test);
+            DataStoreDiscretizer discretizer = DataStoreDiscretizer.Construct(discretizationType);
+            discretizer.Discretize(ref train, ref test);
             Console.WriteLine("Done");
+
+            WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
 
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);            
+            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
-            args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, WeightGenerator.Construct(weightGeneratorType, train));
+            args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
+            using (StreamWriter f = new StreamWriter(weightsoutput))
+            {
+                for(int i = 0; i < wGen.Weights.Length; i++)
+                {
+                    f.WriteLine(wGen.Weights[i].ToString(CultureInfo.InvariantCulture));
+                }
+            }
+                        
             Console.Write("Reduct generation...");
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Generate();

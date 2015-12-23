@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Console.WriteLine("Data: {0}", kvp.Key);
 
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             data.Name = kvp.Key;
 
             int minEpsilon = 0;

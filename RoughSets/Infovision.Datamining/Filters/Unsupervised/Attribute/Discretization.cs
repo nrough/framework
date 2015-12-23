@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
     {
         #region Members
 
-        private T[] cuts;
+        private double[] cuts;
         private double weightPerInterval;
         private bool useWeightPerInterval;        
 
@@ -70,7 +70,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         public bool UseEntropy { get; set; }
 
-        public T[] Cuts
+        public double[] Cuts
         {
             get { return cuts; }
             set { cuts = value; }
@@ -148,21 +148,21 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             }
                 
             //Calculate custs
-            T[] cutPoints = null;
+            double[] cutPoints = null;
             //Fix?
             binWidth = bestNumOfBins > 0 ? (maxD - minD) / bestNumOfBins : 0.0;
             if((bestNumOfBins > 1) && (binWidth > 0))
             {                                
-                cutPoints = new T[bestNumOfBins - 1];
+                cutPoints = new double[bestNumOfBins - 1];
                 for(int i = 1; i < bestNumOfBins; i++)
                 {
-                    cutPoints[i - 1] = Operator.Convert<double, T>(minD + (binWidth * i));
+                    cutPoints[i - 1] = minD + (binWidth * i);
                 }
             }
 
             if (cutPoints == null)
             {
-                cutPoints = new T[0];
+                cutPoints = new double[0];
             }
 
             this.cuts = cutPoints;
@@ -195,17 +195,17 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             double maxD = Operator.Convert<T, double>(max);
 
             double binWidth = (maxD - minD) / (double)this.NumberOfBuckets;
-            T[] cutPoints = null;
+            double[] cutPoints = null;
             if((this.NumberOfBuckets > 1) && (binWidth > 0))
             {
-                cutPoints = new T[this.NumberOfBuckets - 1];
+                cutPoints = new double[this.NumberOfBuckets - 1];
                 for (int i = 1; i < this.NumberOfBuckets; i++)
-                    cutPoints[i - 1] = Operator.Convert<double, T> (minD + (binWidth * i));                        
+                    cutPoints[i - 1] = minD + (binWidth * i);
             }
 
             if (cutPoints == null)
             {
-                cutPoints = new T[0];
+                cutPoints = new double[0];
             }
 
             this.cuts = cutPoints;
@@ -224,16 +224,16 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             double sumOfWeights = (weights == null) ? data.Length : tmpSum;
 
             double freq = 0;
-            T[] cutPoints = null;
+            double[] cutPoints = null;
             if (this.UseWeightPerInterval)
             {
                 freq = this.WeightPerInterval;
-                cutPoints = new T[(int)(sumOfWeights / freq)];
+                cutPoints = new double[(int)(sumOfWeights / freq)];
             }
             else
             {
                 freq = sumOfWeights / this.NumberOfBuckets;
-                cutPoints = new T[this.NumberOfBuckets - 1];
+                cutPoints = new double[this.NumberOfBuckets - 1];
             }
 
             double counter = 0, last = 0;
@@ -260,7 +260,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         // Is this break point worse than the last one?
                         if (((freq - last) < (counter - freq)) && (lastIndex != -1))
                         {
-                            cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[lastIndex], data[lastIndex + 1]), 2);
+                            cutPoints[cpindex] = Operator.Convert<T, double>(Operator<T>.Add(data[lastIndex], data[lastIndex + 1])) / 2.0;
                             //cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
                             counter -= last;
                             last = counter;
@@ -268,7 +268,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         }
                         else
                         {
-                            cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[i], data[i + 1]), 2);
+                            cutPoints[cpindex] = Operator.Convert<T, double>(Operator<T>.Add(data[i], data[i + 1])) / 2.0;
                             //cutPoints[cpindex] = (data[i] + data[i + 1]) / 2;
                             counter = 0;
                             last = 0;
@@ -289,7 +289,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             // Check whether there was another possibility for a cut point
             if ((cpindex < cutPoints.Length) && (lastIndex != -1))
             {
-                cutPoints[cpindex] = Operator.DivideInt32(Operator<T>.Add(data[lastIndex], data[lastIndex + 1]), 2);
+                cutPoints[cpindex] = Operator.Convert<T, double>(Operator<T>.Add(data[lastIndex], data[lastIndex + 1])) / 2.0;
                 //cutPoints[cpindex] = (data[lastIndex] + data[lastIndex + 1]) / 2;
                 cpindex++;
             }
@@ -301,14 +301,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             }
             else
             {
-                T[] cp = new T[cpindex];
+                double[] cp = new double[cpindex];
                 Array.Copy(cutPoints, cp, cpindex);
                 cuts = cp;
             }
 
             if (cuts == null)
             {
-                cuts = new T[0];
+                cuts = new double[0];
             }
         }
 
@@ -328,7 +328,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 return 1;
             
             for (int i = 0; i < cuts.Length; i++)
-                if (value.CompareTo(cuts[i]) <= 0)
+                if (Operator.Convert<T, double>(value).CompareTo(cuts[i]) <= 0)
                     return i;
 
             return cuts.Length;

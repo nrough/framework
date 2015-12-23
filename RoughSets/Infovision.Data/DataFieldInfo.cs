@@ -67,7 +67,7 @@ namespace Infovision.Data
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
         public bool IsNumeric { get; set; }
-        public IComparable[] Cuts { get; set; }
+        public double[] Cuts { get; set; }
 
         #endregion
 
@@ -135,6 +135,7 @@ namespace Infovision.Data
             this.Name = dataFieldInfo.Name;
             this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
+            this.IsNumeric = dataFieldInfo.IsNumeric;
 
             if (initMissingValues)
             {

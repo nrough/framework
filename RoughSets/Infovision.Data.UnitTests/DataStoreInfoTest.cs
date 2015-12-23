@@ -24,14 +24,15 @@ namespace Infovision.Data.UnitTests
         public void Compare(DataStore data, FieldTypes fieldType)
         {            
             IEnumerable<int> fieldIds = data.DataStoreInfo.GetFieldIds(fieldType);
-            int[] fieldIdsOld = data.DataStoreInfo.GetFieldIds_OLD(fieldType);
-
-            int i = 0;
+            int[] fieldIdsOld = data.DataStoreInfo.GetFieldIds_OLD(fieldType);            
+            int count = 0;
             foreach (int fieldId in fieldIds)
             {
-                Assert.AreEqual(fieldIdsOld[i], fieldId, "Position i");
-                i++;
+                Assert.AreNotEqual(Array.IndexOf(fieldIdsOld, fieldId), -1);
+                count++;
             }
+
+            Assert.AreEqual(fieldIdsOld.Length, count);
         }
 
     }

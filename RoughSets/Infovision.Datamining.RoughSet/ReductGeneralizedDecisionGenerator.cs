@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected decimal DataSetQuality
+        public decimal DataSetQuality
         {
             get
             {

@@ -14,7 +14,7 @@ namespace Infovision.Data
         private long maxValueInternalId;
         private Histogram histogram;
 
-        public static int NumericValueLimit = 20;
+        public static int NumericValueLimit = 10;
 
         #region Constructors
 

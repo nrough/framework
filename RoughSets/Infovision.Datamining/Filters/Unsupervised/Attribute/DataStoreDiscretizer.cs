@@ -56,8 +56,59 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
             return null;
         }
+
+        public virtual double[] GetCuts(DataStore data, int fieldId, double[] weights = null)
+        {
+            DataFieldInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);            
+            double[] cuts = null;
+
+            if (localFieldInfoTrain.CanDiscretize())
+            {
+                TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
+                switch (trainFieldTypeCode)
+                {
+                    /*
+                    case TypeCode.Decimal:
+                            
+                        Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
+                        discretizeDecimal.UseEntropy = this.DiscretizeUsingEntropy;
+                        discretizeDecimal.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
+
+                        decimal[] oldValuesDecimal = data.GetColumn<decimal>(fieldId);
+                        discretizeDecimal.Compute(oldValuesDecimal);
+                        cuts = discretizeDecimal.Cuts;                        
+                        break;
+                    */
+
+                    case TypeCode.Int32:
+                        Discretization<int> discretizeInt = new Discretization<int>();
+                        discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
+                        discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
+                        int[] oldValuesInt = data.GetColumn<int>(fieldId);
+                        discretizeInt.Compute(oldValuesInt);
+                        cuts = discretizeInt.Cuts;                        
+                        break;
+
+                    case TypeCode.Double:
+                        Discretization<double> discretizeDouble = new Discretization<double>();
+                        discretizeDouble.UseEntropy = this.DiscretizeUsingEntropy;
+                        discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
+                        double[] oldValuesDouble = data.GetColumn<double>(fieldId);
+                        discretizeDouble.Compute(oldValuesDouble);
+                        cuts = discretizeDouble.Cuts;                        
+                        break;
+
+                    default:
+                        throw new NotImplementedException(
+                            String.Format("Type {0} is not implemented for discretization",
+                            Type.GetTypeCode(localFieldInfoTrain.FieldValueType)));
+                }
+            }
+
+            return cuts;
+        }
         
-        public virtual void Discretize(ref DataStore trainingData, ref DataStore testData)
+        public virtual void Discretize(ref DataStore trainingData, ref DataStore testData, double[] weights = null)
         {
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
             IEnumerable<int> localFields = Fields2Discretize != null 
@@ -95,7 +146,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
                             discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                             int[] oldValuesInt = trainingData.GetColumn<int>(fieldId);
-                            discretizeInt.Compute(oldValuesInt);
+                            discretizeInt.Compute(oldValuesInt, weights);
                             localFieldInfoTrain.Cuts = discretizeInt.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
@@ -106,7 +157,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             discretizeDouble.UseEntropy = this.DiscretizeUsingEntropy;
                             discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                             double[] oldValuesDouble = trainingData.GetColumn<double>(fieldId);
-                            discretizeDouble.Compute(oldValuesDouble);
+                            discretizeDouble.Compute(oldValuesDouble, weights);
                             localFieldInfoTrain.Cuts = discretizeDouble.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);

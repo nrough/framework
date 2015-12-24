@@ -126,6 +126,23 @@ namespace Infovision.Data
                 .Select(f => f.Id);
         }
 
+        public IEnumerable<DataFieldInfo> GetFields(FieldTypes fieldTypeFlags, bool asParallel = true)
+        {
+            if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
+                return this.Fields;
+
+            if (asParallel)
+            {
+                return this.Fields.AsParallel()
+                    .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));
+            }
+            else
+            {
+                return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));
+            }
+
+        }
+
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)
         {
             if (fieldTypeFlags == FieldTypes.All

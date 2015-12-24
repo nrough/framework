@@ -28,6 +28,23 @@ namespace DisesorTest
         static string weightsoutput = @"c:\data\disesor\weights.csv";                        
 
         private Dictionary<string, string> metadataDict;
+
+        string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+        int numberOfPermutations = 200;
+        decimal epsilon = 0.4m;
+        
+        RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
+        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
+
+        bool useSupervisedDiscetization = true;
+        bool useWeightsInDiscretization = false;
+
+        bool useBetterncoding = true;
+        bool useKokonenkoMDL = true;
+
+        DiscretizationType discretizationType = DiscretizationType.Entropy;        
+
         #endregion
 
         public static void Main(string[] args)
@@ -35,39 +52,18 @@ namespace DisesorTest
             Program p = new Program();
             
             //p.DisesorDataStoreLoadTest();
-                                                
-            string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;            
-            int numberOfPermutations = 200;
-            decimal epsilon = 0.4m;
-            RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
-            RuleQualityFunction voteFunction = RuleQuality.CoverageW;
-            WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
-            DiscretizationType discretizationType = DiscretizationType.Entropy;
-            
+                                                            
+                        
             //TODO Boosting && CV
             //TODO Tunning            
 
-            p.FinalTest(
-                factoryKey, 
-                numberOfPermutations, 
-                epsilon, 
-                identificationFunction, 
-                voteFunction, 
-                weightGeneratorType, 
-                discretizationType);
+            p.FinalTest();
             
             Console.Beep();
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
-        private void FinalTest(
-            string factoryKey, 
-            int numberOfPermutations, 
-            decimal epsilon, 
-            RuleQualityFunction identificationFunction, 
-            RuleQualityFunction voteFunction, 
-            WeightGeneratorType weightGeneratorType, 
-            DiscretizationType discretizationType)
+        private void FinalTest()
         {
             Console.WriteLine("Algorithm: {0}", factoryKey);
             Console.WriteLine("Number of permutations: {0}", numberOfPermutations);
@@ -75,7 +71,15 @@ namespace DisesorTest
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
-            Console.WriteLine("Discretization method: {0}", "FayyadAndIranisMDL");
+            Console.WriteLine();                                    
+            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);
+            Console.WriteLine("Is discretization (S)upervised or (U)nsupervised: {0}", useSupervisedDiscetization ? "S" : "U");
+            Console.WriteLine();
+            Console.WriteLine("(S) Use better encoding: {0}", useSupervisedDiscetization);
+            Console.WriteLine("(S) Use Kononenko MDL criteriaon: {0}", useKokonenkoMDL);
+            Console.WriteLine("(S) Use Fayyad and Iranis MDL criteriaon: {0}", !useKokonenkoMDL);
+            Console.WriteLine();
+            Console.WriteLine("(U) Discretization type: {0}", discretizationType);                        
             Console.WriteLine();
             
             this.LoadMetadata();
@@ -151,18 +155,48 @@ namespace DisesorTest
             long normalLabel = train.DataStoreInfo.DecisionInfo.External2Internal("normal");
             Console.WriteLine("Done");
 
-            Console.Write("Discretizing data...");
-            //DataStoreDiscretizer discretizer = DataStoreDiscretizer.Construct(discretizationType);
-            var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
-            {
-                UseBetterEncoding = true,
-                UseKononenko = false
-            };
-
-            discretizer.Discretize(ref train, ref test);
-            Console.WriteLine("Done");
-
             WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
+
+            Console.Write("Discretizing data...");
+           
+
+            if (!useSupervisedDiscetization)
+            {
+                var discretizer = DataStoreDiscretizer.Construct(discretizationType);
+
+                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+                {
+                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", field.Id, field.FieldValueType, field.Values().Count, field.CanDiscretize() ? "Can" : "Cannot");
+                    if (field.CanDiscretize())
+                    {
+                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                        Console.WriteLine(this.Cuts2Sting(cuts));                        
+                    }
+                }
+
+                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+            }
+            else
+            {
+                var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+                {
+                    UseBetterEncoding = useBetterncoding,
+                    UseKononenko = useKokonenkoMDL
+                };
+
+                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+                {
+                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", field.Id, field.FieldValueType, field.Values().Count, field.CanDiscretize() ? "Can" : "Cannot");
+                    if (field.CanDiscretize())
+                    {
+                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                        Console.WriteLine(this.Cuts2Sting(cuts));
+                    }
+                }
+
+                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+            }            
+            Console.WriteLine("Done");
 
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
@@ -171,6 +205,7 @@ namespace DisesorTest
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
             args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
+            /*
             using (StreamWriter f = new StreamWriter(weightsoutput))
             {
                 for(int i = 0; i < wGen.Weights.Length; i++)
@@ -178,9 +213,18 @@ namespace DisesorTest
                     f.WriteLine(wGen.Weights[i].ToString(CultureInfo.InvariantCulture));
                 }
             }
-                        
-            Console.Write("Reduct generation...");
+            */
+                                    
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
+            ReductGeneralizedMajorityDecisionApproximateGenerator majorityGenerailizedDecisionGen = generator as ReductGeneralizedMajorityDecisionApproximateGenerator;
+            if (majorityGenerailizedDecisionGen != null)
+            {
+                Console.WriteLine("Data measure: {0}", majorityGenerailizedDecisionGen.DataSetQuality);
+            }
+
+            return;
+
+            Console.Write("Reduct generation...");
             generator.Generate();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
             Console.WriteLine("Done");
@@ -389,36 +433,58 @@ namespace DisesorTest
         {
             Console.Write("Loading metadata...");
             metadataDict = new Dictionary<string, string>();
-            metadataDict.Add("146", "146,ściana 5,Partia F,416,ZZ,2,a");
-            metadataDict.Add("149", "149,ściana 5,Partia F,418,ZZ,2.2,b");
-            metadataDict.Add("155", "155,ściana 3,Partia H,502,ZZ,2.7,b");
-            metadataDict.Add("171", "171,ściana 1,Partia F,409,ZZ,2,a");
-            metadataDict.Add("264", "264,sc. i100,Z,405/2,ZZ,3.5,b");
-            metadataDict.Add("373", "373,1_Ściana M-12,G-1,707/2,ZZ,1.6,b");
-            metadataDict.Add("437", "437,1_Ściana M-5,G-1,712/1-2,ZZ,3,b");
-            metadataDict.Add("470", "470,sc. i101,Z,405/2,ZZ,3.8,c");
-            metadataDict.Add("479", "479,2_Ściana W-4,G - 2,505,ZZ,4,a");
-            metadataDict.Add("490", "490,śc.h51,B,405/1,ZZ,1.9,a");
-            metadataDict.Add("508", "508,śc.i61,B,405/2,ZZ,2.8,a");
-            metadataDict.Add("541", "541,KG1 Sc_521,Dz,510,ZZ,4.4,b");
-            metadataDict.Add("575", "575,1_Ściana M-4,G-1,712/1-2,ZZ,3,b");
-            metadataDict.Add("583", "583,KG1 Sc_550,Dw,510,ZZ,4,b");
-            metadataDict.Add("599", "599,3_Ściana C-2a,G-3,505,ZZ,3,a");
-            metadataDict.Add("607", "607,KG2 Sc_510,Az,501,ZZ,3.8,b");
-            metadataDict.Add("641", "641,2_Ściana C-3,G-2,503-504,ZZ,3.8,a");
-            metadataDict.Add("689", "689,KG2 Sc_560,Dw,510,ZZ,3,b");
-            metadataDict.Add("703", "703,1_Ściana M-3,G-1,712/1-2,ZZ,3,a");
-            metadataDict.Add("725", "725,Ściana 2,12,506,ZZ,2.2,b");
-            metadataDict.Add("765", "765,Ściana 713,13,401,ZZ,1.4,a");
-            metadataDict.Add("777", "777,Ściana 003,9,504,ZZ,3.4,b");
-            metadataDict.Add("793", "793,Ściana 839a,0,405,ZZ,3.4,b");
-            metadataDict.Add("799", "799,Ściana 026,9,504,ZZ,3.2,a");
+            metadataDict.Add("146", "_146,ściana 5,Partia F,416,ZZ,2,a");
+            metadataDict.Add("149", "_149,ściana 5,Partia F,418,ZZ,2.2,b");
+            metadataDict.Add("155", "_155,ściana 3,Partia H,502,ZZ,2.7,b");
+            metadataDict.Add("171", "_171,ściana 1,Partia F,409,ZZ,2,a");
+            metadataDict.Add("264", "_264,sc. i100,Z,405/2,ZZ,3.5,b");
+            metadataDict.Add("373", "_373,1_Ściana M-12,G-1,707/2,ZZ,1.6,b");
+            metadataDict.Add("437", "_437,1_Ściana M-5,G-1,712/1-2,ZZ,3,b");
+            metadataDict.Add("470", "_470,sc. i101,Z,405/2,ZZ,3.8,c");
+            metadataDict.Add("479", "_479,2_Ściana W-4,G - 2,505,ZZ,4,a");
+            metadataDict.Add("490", "_490,śc.h51,B,405/1,ZZ,1.9,a");
+            metadataDict.Add("508", "_508,śc.i61,B,405/2,ZZ,2.8,a");
+            metadataDict.Add("541", "_541,KG1 Sc_521,Dz,510,ZZ,4.4,b");
+            metadataDict.Add("575", "_575,1_Ściana M-4,G-1,712/1-2,ZZ,3,b");
+            metadataDict.Add("583", "_583,KG1 Sc_550,Dw,510,ZZ,4,b");
+            metadataDict.Add("599", "_599,3_Ściana C-2a,G-3,505,ZZ,3,a");
+            metadataDict.Add("607", "_607,KG2 Sc_510,Az,501,ZZ,3.8,b");
+            metadataDict.Add("641", "_641,2_Ściana C-3,G-2,503-504,ZZ,3.8,a");
+            metadataDict.Add("689", "_689,KG2 Sc_560,Dw,510,ZZ,3,b");
+            metadataDict.Add("703", "_703,1_Ściana M-3,G-1,712/1-2,ZZ,3,a");
+            metadataDict.Add("725", "_725,Ściana 2,12,506,ZZ,2.2,b");
+            metadataDict.Add("765", "_765,Ściana 713,13,401,ZZ,1.4,a");
+            metadataDict.Add("777", "_777,Ściana 003,9,504,ZZ,3.4,b");
+            metadataDict.Add("793", "_793,Ściana 839a,0,405,ZZ,3.4,b");
+            metadataDict.Add("799", "_799,Ściana 026,9,504,ZZ,3.2,a");
 
             foreach (var id in metadataDict.Keys.ToArray())
             {
                 metadataDict[id] = metadataDict[id].Replace(' ', '_');
             }
             Console.WriteLine("Done");
+        }
+
+        private string Cuts2Sting(double[] cuts)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (cuts == null || cuts.Length == 0)
+            {
+                sb.AppendLine("No Cuts !!!");
+                return sb.ToString();
+            }
+
+            if (cuts.Length > 0)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", 0, "-Inf", cuts[0]));
+
+            for (int i = 1; i < cuts.Length; i++)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", i, cuts[i - 1], cuts[i]));
+
+            if (cuts.Length > 0)
+                sb.AppendLine(String.Format("{0}: <{1} {2})", cuts.Length, cuts[cuts.Length - 1], "+Inf"));
+
+            return sb.ToString();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             this.useWeightPerInterval = false;
             this.weightPerInterval = 0.0;
-            this.NumberOfBuckets = 10;
+            this.NumberOfBuckets = Data.DataFieldInfo.NumericValueLimit;
         }
 
         #endregion

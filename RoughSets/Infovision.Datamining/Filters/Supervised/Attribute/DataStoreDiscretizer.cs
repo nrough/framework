@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
+using Infovision.Datamining.Filters.Unsupervised.Attribute;
 
 namespace Infovision.Datamining.Filters.Supervised.Attribute
 {    
@@ -18,7 +19,92 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
         {
             UseBetterEncoding = false;
             UseKononenko = true;
-        }        
+        }
+
+        public virtual double[] GetCuts(DataStore data, int fieldId, double[] weights = null)
+        {
+            DataFieldInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);
+            long[] labels = data.GetColumnInternal(data.DataStoreInfo.DecisionFieldId);
+            double[] cuts = null;
+
+            if (localFieldInfoTrain.CanDiscretize())
+            {
+                TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
+                switch (trainFieldTypeCode)
+                {
+                    /*
+                    case TypeCode.Decimal:
+                            
+                        Discretization<decimal, long> discretizeDecimal = new Discretization<decimal, long>();
+                        discretizeInt.UseKononenko = this.UseKononenko;
+                        discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
+
+                        decimal[] oldValuesDecimal = data.GetColumn<decimal>(fieldId);
+                        discretizeDecimal.Compute(oldValuesDecimal);
+                        cuts = discretizeDecimal.Cuts;                        
+                        break;
+                    */
+
+                    case TypeCode.Int32:
+                        Discretization<int, long> discretizeInt = new Discretization<int, long>();
+                        discretizeInt.UseKononenko = this.UseKononenko;
+                        discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
+                        int[] oldValuesInt = data.GetColumn<int>(fieldId);
+                        discretizeInt.Compute(oldValuesInt, labels, weights);
+                        cuts = discretizeInt.Cuts;
+
+                        if (cuts == null || cuts.Length == 0)
+                        {
+                            Discretization<int> u_discretizeInt = new Discretization<int>();
+                            u_discretizeInt.UseEntropy = true;                                                        
+                            u_discretizeInt.Compute(oldValuesInt, weights);
+                            cuts = u_discretizeInt.Cuts;
+                        }
+
+                        if (cuts == null || cuts.Length == 0)
+                        {
+                            Discretization<int> u_discretizeInt = new Discretization<int>();
+                            u_discretizeInt.UseEqualFrequency = true;
+                            u_discretizeInt.Compute(oldValuesInt, weights);
+                            cuts = u_discretizeInt.Cuts;
+                        }
+                        break;
+
+                    case TypeCode.Double:
+                        Discretization<double, long> discretizeDouble = new Discretization<double, long>();
+                        discretizeDouble.UseKononenko = this.UseKononenko;
+                        discretizeDouble.UseBetterEncoding = this.UseBetterEncoding;
+                        double[] oldValuesDouble = data.GetColumn<double>(fieldId);
+                        discretizeDouble.Compute(oldValuesDouble, labels, weights);
+                        cuts = discretizeDouble.Cuts;
+
+                        if (cuts == null || cuts.Length == 0)
+                        {
+                            Discretization<double> u_discretizeDouble = new Discretization<double>();
+                            u_discretizeDouble.UseEntropy = true;
+                            u_discretizeDouble.Compute(oldValuesDouble, weights);
+                            cuts = u_discretizeDouble.Cuts;
+                        }
+
+                        if (cuts == null || cuts.Length == 0)
+                        {
+                            Discretization<double> u_discretizeDouble = new Discretization<double>();
+                            u_discretizeDouble.UseEqualFrequency = true;
+                            u_discretizeDouble.Compute(oldValuesDouble, weights);
+                            cuts = u_discretizeDouble.Cuts;
+                        }
+
+                        break;
+
+                    default:
+                        throw new NotImplementedException(
+                            String.Format("Type {0} is not implemented for discretization",
+                            Type.GetTypeCode(localFieldInfoTrain.FieldValueType)));
+                }
+            }
+
+            return cuts;
+        }
         
         public virtual void Discretize(ref DataStore trainingData, ref DataStore testData, double[] weights = null)
         {
@@ -31,7 +117,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
 
             foreach (int fieldId in localFields)
             {
-                localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);                
+                localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
                 {
                     TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
@@ -62,6 +148,23 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                             discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
                             int[] oldValuesInt = trainingData.GetColumn<int>(fieldId);
                             discretizeInt.Compute(oldValuesInt, labels, weights);
+                            
+                            if (discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
+                            {
+                                Discretization<int> u_discretizeInt = new Discretization<int>();
+                                u_discretizeInt.UseEntropy = true;                                                        
+                                u_discretizeInt.Compute(oldValuesInt, weights);
+                                discretizeInt.Cuts = u_discretizeInt.Cuts;
+                            }
+
+                            if (discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
+                            {
+                                Discretization<int> u_discretizeInt = new Discretization<int>();
+                                u_discretizeInt.UseEqualFrequency = true;
+                                u_discretizeInt.Compute(oldValuesInt, weights);
+                                discretizeInt.Cuts = u_discretizeInt.Cuts;
+                            }
+
                             localFieldInfoTrain.Cuts = discretizeInt.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
@@ -73,6 +176,23 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                             discretizeDouble.UseBetterEncoding = this.UseBetterEncoding;
                             double[] oldValuesDouble = trainingData.GetColumn<double>(fieldId);
                             discretizeDouble.Compute(oldValuesDouble, labels, weights);
+
+                            if (discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
+                            {
+                                Discretization<double> u_discretizeDouble = new Discretization<double>();
+                                u_discretizeDouble.UseEntropy = true;
+                                u_discretizeDouble.Compute(oldValuesDouble, weights);
+                                discretizeDouble.Cuts = u_discretizeDouble.Cuts;
+                            }
+
+                            if (discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
+                            {
+                                Discretization<double> u_discretizeDouble = new Discretization<double>();
+                                u_discretizeDouble.UseEqualFrequency = true;
+                                u_discretizeDouble.Compute(oldValuesDouble, weights);
+                                discretizeDouble.Cuts = u_discretizeDouble.Cuts;
+                            }
+
                             localFieldInfoTrain.Cuts = discretizeDouble.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
@@ -85,7 +205,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                     }
 
                     localFieldInfoTrain.FieldValueType = typeof(int);
-                    trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                    trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));                    
 
                     localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);
                     //TypeCode testFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);

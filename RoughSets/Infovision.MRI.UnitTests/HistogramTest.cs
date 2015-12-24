@@ -58,7 +58,7 @@ namespace Infovision.MRI.UnitTests
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUInt32 vector = new VectorUInt32(new uint[] { 0, 0 });
-            Infovision.Utils.Histogram histogram = new Infovision.Utils.Histogram();
+            Infovision.Utils.Histogram<long> histogram = new Infovision.Utils.Histogram<long>();
             for (uint x = 0; x < slice.GetWidth(); x++)
             {
                 for (uint y = 0; y < slice.GetHeight(); y++)
@@ -66,7 +66,7 @@ namespace Infovision.MRI.UnitTests
                     vector[0] = x;
                     vector[1] = y;
 
-                    histogram.IncreaseCount((Int64)slice.GetPixelAsUInt8(vector));
+                    histogram.Increase((long)slice.GetPixelAsUInt8(vector));
                 }
             }
 
@@ -76,7 +76,7 @@ namespace Infovision.MRI.UnitTests
             dt.Columns.Add("Magnitude", typeof(long));
             dt.Columns.Add("Counter", typeof(int));
 
-            for (long i = 0; i < histogram.MaxElement; i++)
+            for (long i = 0; i < histogram.Max; i++)
             {
                 DataRow dataRow = dt.NewRow();
                 dataRow[0] = i;

@@ -4,12 +4,15 @@ using System.Collections.Generic;
 namespace Infovision.Utils
 {
     [Serializable]
-    public class Histogram
+    public class Histogram<T>
+        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>  
     {
         #region Globals
 
-        private Dictionary<Int64, Int32> histogramData;
-        private long minElement, maxElement;
+        protected object syncRoot = new object();
+        private SortedDictionary<T, Int32> histogramData;
+        private T minValue;
+        private T maxValue;
 
         #endregion
 
@@ -17,56 +20,60 @@ namespace Infovision.Utils
 
         public Histogram()
         {
-            histogramData = new Dictionary<Int64, Int32>();
-            minElement = Int64.MaxValue;
-            maxElement = Int64.MinValue;
+            histogramData = new SortedDictionary<T, int>();
+            minValue = default(T);
+            maxValue = default(T);
+        }
+
+        public Histogram(IComparer<T> comparer)
+        {
+            histogramData = new SortedDictionary<T, int>(comparer);
+            minValue = default(T);
+            maxValue = default(T);
         }
 
         #endregion
 
         #region Methods
 
-        public void IncreaseCount(long item)
+        public void Increase(T value)
         {
-            int value;
-            histogramData[item] = histogramData.TryGetValue(item, out value) ? ++value : 1;
-            this.SetMinMaxElement(item);
+            int count;
+            lock (syncRoot)
+            {
+                histogramData[value] = histogramData.TryGetValue(value, out count) ? ++count : 1;
+                this.SetMinMaxElement(value);
+            }
         }
 
-        public int GetBinValue(long item)
+        public int GetBinValue(T value)
         {
-            int value;
-            if (histogramData.TryGetValue(item, out value))
-            {
-                return value;
-            }
+            int count;
+            if (histogramData.TryGetValue(value, out count))
+                return count;
             return 0;
         }
 
-        private void SetMinMaxElement(long item)
+        private void SetMinMaxElement(T value)
         {
-            if (item < minElement)
-                minElement = item;
-            if (item > maxElement)
-                maxElement = item;
+            lock (syncRoot)
+            {
+                if (value.CompareTo(minValue) < 0)
+                    minValue = value;
+                if (value.CompareTo(maxValue) > 0)
+                    maxValue = value;
+            }
         }
+
         #endregion
 
         #region Properties
 
-        public long MinElement
-        {
-            get { return minElement; }
-        }
-        public long MaxElement
-        {
-            get { return maxElement; }
-        }
-        public long Elements
-        {
-            get { return histogramData.Count; }
-        }
-        #endregion
+        public T Min { get { return minValue; } }
+        public T Max { get { return maxValue; } }
+        public int Count { get { return histogramData.Count; } }
+        public int this[T value] { get { return this.histogramData.ContainsKey(value) ? this.histogramData[value] : 0; } }
 
+        #endregion
     }
 }

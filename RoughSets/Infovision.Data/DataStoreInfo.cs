@@ -248,7 +248,7 @@ namespace Infovision.Data
 
                 stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}", "Value", "Internal", "Count");
                 stringBuilder.Append(Environment.NewLine);
-                Histogram histogram = fieldInfo.Histogram;
+                var histogram = fieldInfo.Histogram;
                 foreach (long internalValue in fieldInfo.InternalValues())
                 {
                     stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}",

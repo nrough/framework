@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Infovision.Statistics;
 using MiscUtil;
 
-
 namespace Infovision.Datamining.Filters.Supervised.Attribute
 {
     public class Discretization<A, L>

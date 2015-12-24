@@ -12,7 +12,7 @@ namespace Infovision.Data
         private Dictionary<long, object> indexDictionary;
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
-        private Histogram histogram;
+        private Histogram<long> histogram;
 
         public static int NumericValueLimit = 10;
 
@@ -28,7 +28,7 @@ namespace Infovision.Data
 
             this.Id = attributeId;
             this.Name = String.Format(CultureInfo.InvariantCulture, "a{0}", attributeId);
-            this.histogram = new Histogram();
+            this.histogram = new Histogram<long>();
 
             this.HasMissingValues = false;
             this.MissingValue = null;
@@ -48,21 +48,9 @@ namespace Infovision.Data
             set { fieldValueType = value; }
         }
 
-        public Histogram Histogram
-        {
-            get { return histogram; }
-        }
-
-        public long MinValue
-        {
-            get { return histogram.MinElement; }
-        }
-
-        public long MaxValue
-        {
-            get { return histogram.MaxElement; }
-        }
-
+        public Histogram<long> Histogram { get { return histogram; } }
+        public long MinValue { get { return histogram.Min; } }
+        public long MaxValue { get { return histogram.Max; } }
         public bool HasMissingValues { get; set; }
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
@@ -78,7 +66,7 @@ namespace Infovision.Data
             this.maxValueInternalId = 0;
             this.valueDictionary = new Dictionary<object, long>();
             this.indexDictionary = new Dictionary<long, object>();            
-            this.histogram = new Histogram();
+            this.histogram = new Histogram<long>();
             this.HasMissingValues = false;            
         }
 
@@ -243,7 +231,7 @@ namespace Infovision.Data
 
         public void IncreaseHistogramCount(long value)
         {
-            histogram.IncreaseCount(value);
+            histogram.Increase(value);
         }
 
         public int GetAttribiteValueCount(long value)

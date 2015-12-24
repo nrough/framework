@@ -50,17 +50,8 @@ namespace DisesorTest
         public static void Main(string[] args)
         {
             Program p = new Program();
-            
-            //p.DisesorDataStoreLoadTest();
-                                                            
-                        
-            //TODO Boosting && CV
-            //TODO Tunning            
-
             p.FinalTest();
-            
             Console.Beep();
-            //Console.ReadKey();
         }
 
         private void FinalTest()
@@ -159,14 +150,18 @@ namespace DisesorTest
 
             Console.Write("Discretizing data...");
            
-
             if (!useSupervisedDiscetization)
             {
                 var discretizer = DataStoreDiscretizer.Construct(discretizationType);
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", field.Id, field.FieldValueType, field.Values().Count, field.CanDiscretize() ? "Can" : "Cannot");
+                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", 
+                        field.Id, 
+                        field.FieldValueType, 
+                        field.Values().Count, 
+                        field.CanDiscretize() ? "Can" : "Cannot");
+                    
                     if (field.CanDiscretize())
                     {
                         double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
@@ -186,7 +181,12 @@ namespace DisesorTest
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", field.Id, field.FieldValueType, field.Values().Count, field.CanDiscretize() ? "Can" : "Cannot");
+                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", 
+                        field.Id, 
+                        field.FieldValueType, 
+                        field.Values().Count, 
+                        field.CanDiscretize() ? "Can" : "Cannot");
+
                     if (field.CanDiscretize())
                     {
                         double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);

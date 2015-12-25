@@ -17,7 +17,7 @@ namespace Infovision.Math
         }
 
         public DoubleEpsilonComparer()
-            : this(1e-6)
+            : this(1e-9)
         {             
         }        
 

@@ -222,7 +222,7 @@ namespace DisesorTest
                 Console.WriteLine("Data measure: {0}", majorityGenerailizedDecisionGen.DataSetQuality);
             }
 
-            return;
+            //return;
 
             Console.Write("Reduct generation...");
             generator.Generate();

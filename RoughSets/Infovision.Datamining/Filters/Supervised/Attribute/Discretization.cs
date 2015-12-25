@@ -255,7 +255,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                 - ((numClassesTotal * priorEntropy) - (numClassesRight * entropyRight) - (numClassesLeft * entropyLeft));
 
             // Check if split is to be accepted
-            return (gain > (Tools.Log2(numCutPoints) + delta) / numInstances);
+            return (gain > ((Tools.Log2(numCutPoints) + delta) / numInstances));
         }
 
         public void Compute(A[] values, L[] labels, double[] weights = null)

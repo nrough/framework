@@ -38,6 +38,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string CalcModelConfidence = "CalcModelConfidence";
         public static readonly string UseExceptionRules = "UseExceptionRules";
         public static readonly string AttributeReductionStep = "AttributeReductionStep";
+        public static readonly string InnerParameters = "InnerParameters";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

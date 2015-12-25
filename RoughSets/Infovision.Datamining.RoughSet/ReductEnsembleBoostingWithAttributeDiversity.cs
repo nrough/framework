@@ -32,23 +32,10 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);
 		}
 
-		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights)
 		{
-			if (minimumLength > maximumLength)
-				throw new ArgumentOutOfRangeException();
-
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
-			int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
-			int minLen = System.Math.Max(minimumLength, 0);
-			
-			//int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
-			int cutoff = maxLen;
-
-			int[] attributes = new int[cutoff];
-			for (int i = 0; i < cutoff; i++)
-				attributes[i] = permutation[i];
-
-			return this.CreateReduct(attributes, this.Epsilon, weights);
+			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
 		}				
 	}
 

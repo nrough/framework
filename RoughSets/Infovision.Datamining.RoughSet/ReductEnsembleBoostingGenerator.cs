@@ -17,8 +17,6 @@ namespace Infovision.Datamining.Roughset
 	{								
 		protected int iterPassed;		
 
-		public int MaxReductLength { get; set; }
-		public int MinReductLength { get; set; }
 		public double Threshold { get; set; }
 		public RuleQualityFunction IdentyficationType { get; set;} 
 		public RuleQualityFunction VoteType {get; set; }
@@ -31,6 +29,7 @@ namespace Infovision.Datamining.Roughset
 		public WeightGenerator WeightGenerator { get; set; }				
 		public UpdateWeightsDelegate UpdateWeights { get; set; }		
 		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
+		public Args InnerParameters { get; set; }
 		
 		protected ReductStoreCollection Models { get; set; }
 
@@ -39,8 +38,6 @@ namespace Infovision.Datamining.Roughset
 		public ReductEnsembleBoostingGenerator()
 			: base()
 		{
-			this.MinReductLength = 1;
-			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = RuleQuality.ConfidenceW;
 			this.VoteType = RuleQuality.CoverageW;
@@ -62,8 +59,6 @@ namespace Infovision.Datamining.Roughset
 		{
 			base.SetDefaultParameters();
 
-			this.MinReductLength = 1;
-			this.MaxReductLength = Int32.MaxValue;
 			this.Threshold = 0.5;
 			this.IdentyficationType = RuleQuality.ConfidenceW;
 			this.VoteType = RuleQuality.CoverageW;
@@ -86,10 +81,7 @@ namespace Infovision.Datamining.Roughset
 
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);				
 				
-				this.MaxReductLength = (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
-				this.MinReductLength = 1;
-
-				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights, 0, 0);
+				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights);
 
 				if (emptyReduct.Attributes.Count != 0)
 					throw new InvalidOperationException("Empty reduct must be of zero length");
@@ -97,19 +89,6 @@ namespace Infovision.Datamining.Roughset
 				decimal m0 = new InformationMeasureWeights().Calc(emptyReduct);
 				this.Threshold = (double)(Decimal.Zero - m0);
 			}
-
-			if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
-				this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
-
-			if (args.Exist(ReductGeneratorParamHelper.MaxReductLength))
-				this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);
-
-			if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard))
-				this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
-
-			if (this.MaxReductLength < this.MinReductLength)
-				this.MaxReductLength = this.MinReductLength;
-
 
 			if (args.Exist(ReductGeneratorParamHelper.Threshold))
 				this.Threshold = (double)args.GetParameter(ReductGeneratorParamHelper.Threshold);
@@ -137,6 +116,9 @@ namespace Infovision.Datamining.Roughset
 
 			if (args.Exist(ReductGeneratorParamHelper.CalcModelConfidence))
 				this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);
+
+			if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
+				this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
 		}
 
 		public override void Generate()
@@ -160,7 +142,7 @@ namespace Infovision.Datamining.Roughset
 				IReductStore localReductStore = this.CreateReductStore(this.NumberOfReductsInWeakClassifier);				
 				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
 				{
-					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights, this.MinReductLength, this.MaxReductLength);
+					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights);
 					localReductStore.AddReduct(reduct);					
 					this.ReductPool.AddReduct(reduct);
 				}
@@ -332,24 +314,13 @@ namespace Infovision.Datamining.Roughset
 			return this.Models;
 		}
 
-		public virtual IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
+		public virtual IReduct GetNextReduct(decimal[] weights)
 		{
-			if (minimumLength > maximumLength)
-				throw new ArgumentOutOfRangeException();
-			
-			Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
-			
-			int maxLen = System.Math.Min(maximumLength, this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
-			int minLen = System.Math.Max(minimumLength, 0);
+			Permutation permutation = this.InnerParameters != null 
+									? ReductFactory.GetPermutationGenerator(this.InnerParameters).Generate(1)[0]
+									: new PermutationGenerator(this.DataStore).Generate(1)[0];
 
-			//int cutoff = RandomSingleton.Random.Next(minLen, maxLen + 1);
-			int cutoff = maxLen;
-			
-			int[] attributes = new int[cutoff];
-			for (int i = 0; i < cutoff; i++)
-				attributes[i] = permutation[i];
-
-			return this.CreateReduct(attributes, this.Epsilon, weights);
+			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
 		}        
 
 		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
@@ -357,11 +328,23 @@ namespace Infovision.Datamining.Roughset
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
 
-			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
-			reduct.Id = this.GetNextReductId().ToString();
-			reduct.Reduce(permutation, this.MinReductLength);
+			int[] attr = new int[permutation.Length];
+			Array.Copy(permutation, attr, permutation.Length);
 
-			return reduct;
+			if (this.InnerParameters != null)
+			{
+				IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);
+				IReduct reduct = generator.CreateReduct(permutation, epsilon, weights);
+				reduct.Id = this.GetNextReductId().ToString();
+				return reduct;
+			}
+			else
+			{
+				ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, permutation, weights, 0);
+				reduct.Id = this.GetNextReductId().ToString();
+				reduct.Reduce(permutation);
+				return reduct;
+			}
 		}
 
 		protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)

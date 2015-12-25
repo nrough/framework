@@ -85,8 +85,6 @@ namespace ApproxReductBoosting
 									 "METHOD",
 									 "IDENTYFICATION",
 									 "VOTETYPE",
-									 "MIN_LEN",
-									 "MAX_LEN",
 									 "UPDATE_WEIGHTS",
 									 "WEIGHT_TYPE",
 									 "CHECK_ENSEBLE_ERROR",
@@ -149,7 +147,6 @@ namespace ApproxReductBoosting
 				parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);				
 
 				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
-				reductGenerator.MaxReductLength = (int)System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0, 2.0));
 				reductGenerator.Generate();
 
 				RoughClassifier classifierTrn = new RoughClassifier(
@@ -203,8 +200,6 @@ namespace ApproxReductBoosting
 									factoryKey,
 									reductGenerator.IdentyficationType,
 									reductGenerator.VoteType,
-									reductGenerator.MinReductLength,
-									reductGenerator.MaxReductLength,
 									updWeightsMethodName,
 									weightingSchema,
 									reductGenerator.CheckEnsembleErrorDuringTraining,

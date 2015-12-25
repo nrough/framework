@@ -82,18 +82,15 @@ namespace Infovision.Datamining.Roughset
         /// Method tries to remove attributes from current reduct. Attributes are removed in order passed in attributeOrder array.
         /// </summary>
         /// <param name="attributeOrder">Attributes to be tried to be removed in given order.</param>
-        public virtual void Reduce(int[] attributeOrder, int minimumLength)
+        public virtual void Reduce(int[] attributeOrder)
         {
-            if (minimumLength == this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard))
-                return;
-
             foreach (EquivalenceClass eq in this.EquivalenceClasses)
                 eq.RemoveObjectsWithMinorDecisions();
 
             bool isReduced = false;
             int len = attributeOrder.Length;
             int reduced = 0;
-            for (int i = len - 1; (i >= 0) && (len - minimumLength - reduced > 0); i--)
+            for (int i = len - 1; (i >= 0) && (len - reduced > 0); i--)
             {
                 if (this.TryRemoveAttribute(attributeOrder[i]))
                 {
@@ -132,7 +129,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-
+        /*
         /// <summary>
         /// Method tries to remove attributes from current reduct
         /// </summary>
@@ -141,8 +138,9 @@ namespace Infovision.Datamining.Roughset
         /// </remarks>
         public virtual void Reduce()
         {
-            this.Reduce(this.Attributes.ToArray(), 0);
+            this.Reduce(this.Attributes.ToArray());
         }
+        */
 
         public override bool TryRemoveAttribute(int attributeId)
         {

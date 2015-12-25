@@ -20,11 +20,8 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
+        public override IReduct GetNextReduct(decimal[] weights)
         {
-            if(minimumLength == 0 && maximumLength == 0)
-                return this.CreateReduct(new int[] {}, this.Epsilon, weights);
-            
             Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
             return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
         }

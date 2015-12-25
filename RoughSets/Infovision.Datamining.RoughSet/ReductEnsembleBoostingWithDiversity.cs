@@ -66,31 +66,21 @@ namespace Infovision.Datamining.Roughset
 				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
 		}
 
-		private IReduct GetNextReductLocal(decimal[] weights, int minimumLength, int maximumLength)
+		private IReduct GetNextReductLocal(decimal[] weights)
 		{
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
-			int length = System.Math.Min(maximumLength, permutation.Length - 1);
-			int minLen = System.Math.Max(minimumLength - 1, 0);
-			int cutoff = RandomSingleton.Random.Next(minLen, length);
-
-			int[] attributes = new int[cutoff + 1];
-			for (int i = 0; i <= cutoff; i++)
-				attributes[i] = permutation[i];
-			
-            ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attributes, weights, 0);
+			int[] attr = permutation.ToArray();
+			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attr, weights, 0);
 			reduct.Id = this.GetNextReductId().ToString();
-            reduct.Reduce(attributes, this.MinReductLength);
-
-			if (reduct.Attributes.Count < minimumLength)
-				throw new InvalidProgramException("Reduct length is less than minimum length");
+			reduct.Reduce(attr);
 
 			return reduct;
 		}
 		
-		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights)
 		{
 			if (clusterInstances2.Count == 0 || this.NumberOfReductsToTest == 1)
-				return base.GetNextReduct(weights, minimumLength, maximumLength);
+				return base.GetNextReduct(weights);
 			
 			DistanceMatrix distanceMatrix = new DistanceMatrix(this.Distance);
 
@@ -116,7 +106,7 @@ namespace Infovision.Datamining.Roughset
 									
 			for (int i = 0; i < this.NumberOfReductsToTest; i++)
 			{                                                
-				candidates[i] = base.GetNextReduct(weights, minimumLength, maximumLength);
+				candidates[i] = base.GetNextReduct(weights);
 				double[] condidateVector = this.ReconWeights(candidates[i], weights);
 
 				for (int j = 0; j < this.clusterInstances2.Count; j++)

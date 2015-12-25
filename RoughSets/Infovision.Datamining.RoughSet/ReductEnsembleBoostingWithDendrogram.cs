@@ -85,7 +85,7 @@ namespace Infovision.Datamining.Roughset
 
 			this.reducts = new IReduct[this.MaxIterations];				
 			for (int i = 0; i < this.MaxIterations; i++)
-				this.reducts[i] = this.GetNextReduct(weights, this.MinReductLength, this.MaxReductLength);								
+				this.reducts[i] = this.GetNextReduct(weights);								
 
 			HierarchicalCluster cluster = new HierarchicalCluster(0);
 			cluster.AddMemberObject(0);
@@ -119,12 +119,12 @@ namespace Infovision.Datamining.Roughset
 			reductsCalculated = true;
 		}
 
-		public override IReduct GetNextReduct(decimal[] weights, int minimumLength, int maximumLength)
+		public override IReduct GetNextReduct(decimal[] weights)
 		{
 			if (reductsCalculated)								
 				return reducts[reductCounter++];
 			  
-			return base.GetNextReduct(weights, minimumLength, maximumLength);
+			return base.GetNextReduct(weights);
 		}						
 	}
 

@@ -104,7 +104,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.ReductStoreCollection = new ReductStoreCollection();
             ParallelOptions options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = 2;            
+            options.MaxDegreeOfParallelism = 2;
 
             //foreach (Permutation permutation in this.Permutations)
             Parallel.ForEach(this.Permutations, options, permutation =>
@@ -117,7 +117,28 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
-            throw new NotImplementedException("CreteReduct() method was not implemented.");
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
+                this.DataStore, permutation, epsilon, this.WeightGenerator.Weights);
+
+            eqClasses.EqWeightSum = this.DataSetQuality;
+
+            this.KeepMajorDecisions(eqClasses, epsilon);
+
+            int len = permutation.Length;
+            for (int i = 0; i < len; i++)
+            {
+                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, null);
+
+                //reduction was made
+                if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                {
+                    eqClasses = newEqClasses;
+                    len--;
+                    i--;
+                }
+            }
+
+            return this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString());
         }
 
         protected virtual void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
@@ -129,8 +150,8 @@ namespace Infovision.Datamining.Roughset
         public virtual IReduct CalculateReduct(int[] attributes, IReductStore reductStore = null)
         {
             if (attributes.Length < 1)
-                throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");           
-            
+                throw new ArgumentOutOfRangeException("attributes", "Attribute array length must be greater than 1");
+
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
                 this.DataStore, attributes, this.Epsilon, this.WeightGenerator.Weights);
 
@@ -141,8 +162,8 @@ namespace Infovision.Datamining.Roughset
             int len = attributes.Length;
             for (int i = 0; i < len; i++)
             {
-                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, reductStore);
-                
+                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, null);
+
                 //reduction was made
                 if (!Object.ReferenceEquals(newEqClasses, eqClasses))
                 {
@@ -151,7 +172,7 @@ namespace Infovision.Datamining.Roughset
                     i--;
                 }
             }
-            
+
             return this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
 

@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
         //TODO decide should this be stored in reduct or in data object
         decimal[] Weights { get; }
         decimal Epsilon { get; }
-        string Id { get; }
+        string Id { get; set; }
         
         EquivalenceClassCollection EquivalenceClasses { get; }
 

@@ -327,9 +327,8 @@ namespace Infovision.Datamining.Roughset
             if (this.DecisionSet.Count <= 1)
                 return;
 
-
             lock (syncRoot)
-            {
+            {               
                 bool isFirst = true;
                 var items = from kvp in decisionWeigthSums
                             orderby kvp.Value descending

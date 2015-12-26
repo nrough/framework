@@ -78,8 +78,7 @@ namespace Infovision.Datamining.Roughset
         {
             get;
             private set;
-        }
-
+        }        
 
         public override void InitFromArgs(Args args)
         {
@@ -118,7 +117,7 @@ namespace Infovision.Datamining.Roughset
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
         {
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
-                this.DataStore, permutation, epsilon, this.WeightGenerator.Weights);
+                this.DataStore, permutation, epsilon, weights);
 
             eqClasses.EqWeightSum = this.DataSetQuality;
 
@@ -176,19 +175,19 @@ namespace Infovision.Datamining.Roughset
             return this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
         }
 
-        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
+        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
-            EquivalenceClassCollection newEqClasses 
-                = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx));
+            EquivalenceClassCollection newEqClasses
+                = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx, length));
 
             foreach (EquivalenceClass eq in eqClasses)
-            {                
-                long[] newInstance = eq.Instance.RemoveAt(attributeIdx);                 
+            {
+                long[] newInstance = eq.Instance.RemoveAt(attributeIdx, length);
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
-                {                    
+                {
                     newEqClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
-                    
+
                     if (newEqClass.DecisionSet.Count == 0)
                         return eqClasses;
 
@@ -204,6 +203,11 @@ namespace Infovision.Datamining.Roughset
             }
 
             return newEqClasses;
+        }
+        
+        protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
+        {
+            return this.Reduce(eqClasses, attributeIdx, 1, reductStore);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)

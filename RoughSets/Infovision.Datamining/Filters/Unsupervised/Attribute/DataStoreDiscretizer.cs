@@ -86,6 +86,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                         int[] oldValuesInt = data.GetColumn<int>(fieldId);
                         discretizeInt.Compute(oldValuesInt);
+
+                        if ((discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
+                                && this.DiscretizeUsingEntropy == true)
+                        {
+                            discretizeInt = new Discretization<int>();
+                            discretizeInt.UseEqualFrequency = true;
+                            discretizeInt.Compute(oldValuesInt, weights);
+                        }
+
                         cuts = discretizeInt.Cuts;                        
                         break;
 
@@ -95,7 +104,16 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                         double[] oldValuesDouble = data.GetColumn<double>(fieldId);
                         discretizeDouble.Compute(oldValuesDouble);
-                        cuts = discretizeDouble.Cuts;                        
+
+                        if ((discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
+                                && this.DiscretizeUsingEntropy == true)
+                        {
+                            discretizeDouble = new Discretization<double>();
+                            discretizeDouble.UseEqualFrequency = true;
+                            discretizeDouble.Compute(oldValuesDouble, weights);
+                        }
+
+                        cuts = discretizeDouble.Cuts;
                         break;
 
                     default:
@@ -147,6 +165,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                             int[] oldValuesInt = trainingData.GetColumn<int>(fieldId);
                             discretizeInt.Compute(oldValuesInt, weights);
+
+                            if ((discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
+                                && this.DiscretizeUsingEntropy == true)
+                            {
+                                discretizeInt = new Discretization<int>();
+                                discretizeInt.UseEqualFrequency = true;
+                                discretizeInt.Compute(oldValuesInt, weights);
+                            }
+
                             localFieldInfoTrain.Cuts = discretizeInt.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
@@ -158,6 +185,15 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
                             double[] oldValuesDouble = trainingData.GetColumn<double>(fieldId);
                             discretizeDouble.Compute(oldValuesDouble, weights);
+
+                            if ((discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
+                                && this.DiscretizeUsingEntropy == true)
+                            {
+                                discretizeDouble = new Discretization<double>();
+                                discretizeDouble.UseEqualFrequency = true;
+                                discretizeDouble.Compute(oldValuesDouble, weights);
+                            }
+
                             localFieldInfoTrain.Cuts = discretizeDouble.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);

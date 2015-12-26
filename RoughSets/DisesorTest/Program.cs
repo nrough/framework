@@ -29,21 +29,29 @@ namespace DisesorTest
 
         private Dictionary<string, string> metadataDict;
 
-        string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
-        int numberOfPermutations = 200;
-        decimal epsilon = 0.4m;
+        //string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+        string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+        int numberOfPermutations = 100;
+        decimal epsilon = 0.0m;
         
         RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
         RuleQualityFunction voteFunction = RuleQuality.CoverageW;
         WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
-        bool useSupervisedDiscetization = true;
+        bool useSupervisedDiscetization = false;
         bool useWeightsInDiscretization = false;
 
         bool useBetterncoding = true;
         bool useKokonenkoMDL = true;
 
-        DiscretizationType discretizationType = DiscretizationType.Entropy;        
+        DiscretizationType discretizationType = DiscretizationType.Entropy;
+
+        string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
+        decimal innerEpsilon = 0.0m;
+                       
+        public Program()
+        {            
+        }
 
         #endregion
 
@@ -198,12 +206,20 @@ namespace DisesorTest
             }            
             Console.WriteLine("Done");
 
+            Args innerArgs = new Args();
+            innerArgs.AddParameter(ReductGeneratorParamHelper.DataStore, train);
+            innerArgs.AddParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
+            innerArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
+            innerArgs.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+
             Args args = new Args();
             args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
             args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
             args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+
+            args.AddParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
             /*
             using (StreamWriter f = new StreamWriter(weightsoutput))
@@ -214,17 +230,15 @@ namespace DisesorTest
                 }
             }
             */
-                                    
-            IReductGenerator generator = ReductFactory.GetReductGenerator(args);
-            ReductGeneralizedMajorityDecisionApproximateGenerator majorityGenerailizedDecisionGen = generator as ReductGeneralizedMajorityDecisionApproximateGenerator;
-            if (majorityGenerailizedDecisionGen != null)
-            {
-                Console.WriteLine("Data measure: {0}", majorityGenerailizedDecisionGen.DataSetQuality);
-            }
+
+            InformationMeasureWeights measure = new InformationMeasureWeights();
+            decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
+            Console.WriteLine("Traing dataset quality: {0}", q);
 
             //return;
 
             Console.Write("Reduct generation...");
+            IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Generate();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
             Console.WriteLine("Done");

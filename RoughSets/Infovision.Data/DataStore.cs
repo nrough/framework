@@ -301,13 +301,25 @@ namespace Infovision.Data
             return new AttributeValueVector(this.DataStoreInfo.GetFieldIds(FieldTypes.All).ToArray(), this.GetFieldValues(objectIdx), false);
         }
 
+        public void GetFieldValues(int objectIndex, int[] fieldIds, ref long[] cursor)
+        {            
+            //Parallel.For(0, fieldIds.Length, i =>
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                cursor[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
+            }
+            //);            
+        }
+
         public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
             long[] result = new long[fieldIds.Length];
-            Parallel.For(0, fieldIds.Length, i =>
+            //Parallel.For(0, fieldIds.Length, i =>
+            for(int i = 0; i<fieldIds.Length; i++)
             {
                 result[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
-            });
+            }
+            //);
             return result;
         }
 
@@ -326,10 +338,12 @@ namespace Infovision.Data
         public long[] GetFieldValues(int objectIdx)
         {
             long[] result = new long[this.DataStoreInfo.NumberOfFields];
-            Parallel.For(0, this.DataStoreInfo.NumberOfFields, i =>
+            //Parallel.For(0, this.DataStoreInfo.NumberOfFields, i =>
+            for(int i = 0; i<this.DataStoreInfo.NumberOfFields; i++)
             {
                 result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
-            });
+            }
+            //);
             return result;
         }
 

@@ -27,6 +27,8 @@ namespace Infovision.Datamining.Roughset
         
         #region Properties        
 
+        public Args InnerParameters { get; set; }
+
         public IReductStore ReductPool
         {
             get
@@ -214,6 +216,9 @@ namespace Infovision.Datamining.Roughset
 
             if(args.Exist(ReductGeneratorParamHelper.AttributeReductionStep))
                 this.attributeReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.AttributeReductionStep);
+
+            if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
+                this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
 
             //TODO FieldGroups
         }

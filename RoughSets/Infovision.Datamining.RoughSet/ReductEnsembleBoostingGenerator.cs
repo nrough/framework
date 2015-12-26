@@ -28,8 +28,7 @@ namespace Infovision.Datamining.Roughset
 		public bool CheckEnsembleErrorDuringTraining { get; set; }
 		public WeightGenerator WeightGenerator { get; set; }				
 		public UpdateWeightsDelegate UpdateWeights { get; set; }		
-		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
-		public Args InnerParameters { get; set; }
+		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }		
 		
 		protected ReductStoreCollection Models { get; set; }
 
@@ -75,20 +74,25 @@ namespace Infovision.Datamining.Roughset
 			base.InitFromArgs(args);
 
 			if (this.DataStore != null)
-			{				
-				this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
-				this.WeightGenerator.Generate();
+			{								
+				if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+				{
+					this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+				}
+				else
+				{
+					this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
+					this.WeightGenerator.Generate();
+				}
 
-				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);				
-				
-				IReduct emptyReduct = this.GetNextReduct(this.WeightGenerator.Weights);
 
-				if (emptyReduct.Attributes.Count != 0)
-					throw new InvalidOperationException("Empty reduct must be of zero length");
-
-				decimal m0 = new InformationMeasureWeights().Calc(emptyReduct);
+				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);											
+				decimal m0 = new InformationMeasureWeights().Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
 				this.Threshold = (double)(Decimal.Zero - m0);
 			}
+
+			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+				this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
 			if (args.Exist(ReductGeneratorParamHelper.Threshold))
 				this.Threshold = (double)args.GetParameter(ReductGeneratorParamHelper.Threshold);
@@ -106,19 +110,13 @@ namespace Infovision.Datamining.Roughset
 				this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);
 
 			if (args.Exist(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining))
-				this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);
-
-			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
-				this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+				this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);			
 
 			if (args.Exist(ReductGeneratorParamHelper.UpdateWeights))
 				this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductGeneratorParamHelper.UpdateWeights);
 
 			if (args.Exist(ReductGeneratorParamHelper.CalcModelConfidence))
-				this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);
-
-			if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
-				this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
+				this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);			
 		}
 
 		public override void Generate()
@@ -133,7 +131,10 @@ namespace Infovision.Datamining.Roughset
 			this.NumberOfWeightResets = 0;
 			double error = -1.0;
 			int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+			
 			this.WeightGenerator.Generate();
+			decimal[] weights = this.WeightGenerator.Weights;
+
 			long[] decisionValues = this.DataStore.DataStoreInfo.GetDecisionValues().ToArray();
 			object tmpLock = new object();                
 
@@ -142,7 +143,7 @@ namespace Infovision.Datamining.Roughset
 				IReductStore localReductStore = this.CreateReductStore(this.NumberOfReductsInWeakClassifier);				
 				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
 				{
-					IReduct reduct = this.GetNextReduct(this.WeightGenerator.Weights);
+					IReduct reduct = this.GetNextReduct(weights);
 					localReductStore.AddReduct(reduct);					
 					this.ReductPool.AddReduct(reduct);
 				}
@@ -173,14 +174,14 @@ namespace Infovision.Datamining.Roughset
 					}
 
 					this.WeightGenerator.Reset();
+					weights = this.WeightGenerator.Weights;
 					continue;
 				}
 
 				double alpha = this.CalcModelConfidence(K, error);
-				this.AddModel(localReductStore, alpha);
-				
+				this.AddModel(localReductStore, alpha);				
 				double sum = 0.0d;
-				var rangePrtitioner = Partitioner.Create(0, this.WeightGenerator.Weights.Length);
+				var rangePrtitioner = Partitioner.Create(0, weights.Length);
 				Parallel.ForEach(
 					rangePrtitioner,
 					() => 0.0,
@@ -189,12 +190,12 @@ namespace Infovision.Datamining.Roughset
 						double partialSum = initialValue;
 						for (int i = range.Item1; i < range.Item2; i++)
 						{
-							this.WeightGenerator.Weights[i] = (decimal)this.UpdateWeights((double)this.WeightGenerator.Weights[i],
+							weights[i] = (decimal)this.UpdateWeights((double)weights[i],
 																		 K,
 																		 this.DataStore.GetDecisionValue(i),
 																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
 																		 error);
-							partialSum += (double)this.WeightGenerator.Weights[i];
+							partialSum += (double)weights[i];
 						}
 						return partialSum;
 					},                    
@@ -205,24 +206,13 @@ namespace Infovision.Datamining.Roughset
 							sum += localPartialSum;
 						}
 					});
-					
-				/*
-				for(int i = 0; i < this.DataStore.NumberOfRecords; i++)
-				{
-					this.WeightGenerator.Weights[i] = (decimal)this.UpdateWeights((double)this.WeightGenerator.Weights[i],
-																		 K,
-																		 this.DataStore.GetDecisionValue(i),
-																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
-																		 error);				
-					sum += (double)this.WeightGenerator.Weights[i];
-				}
-				*/
+									
 
 				result = null;
 				//Normalize object weights
 				Parallel.For(0, this.DataStore.NumberOfRecords, i =>
 				{
-					this.WeightGenerator.Weights[i] /= (decimal)sum;
+					weights[i] /= (decimal)sum;
 				});
 				
 				alphaSum += alpha;
@@ -333,7 +323,15 @@ namespace Infovision.Datamining.Roughset
 
 			if (this.InnerParameters != null)
 			{
-				IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);
+				WeightGenerator localWeightGen;
+				if (this.InnerParameters.Exist(ReductGeneratorParamHelper.WeightGenerator))
+					localWeightGen = (WeightGenerator)this.InnerParameters.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+				else
+					localWeightGen = new WeightGenerator(this.DataStore);
+				localWeightGen.Weights = weights;
+				this.InnerParameters.AddParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+				
+				IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);                
 				IReduct reduct = generator.CreateReduct(permutation, epsilon, weights);
 				reduct.Id = this.GetNextReductId().ToString();
 				return reduct;

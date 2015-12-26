@@ -53,6 +53,32 @@ namespace Infovision.Utils
             return newArray;
         }
 
+        public static T[] RemoveAt<T>(this T[] array, int idx, int len)
+        {
+            T[] newArray;
+
+            if (len >= 0)
+            {
+                newArray = new T[array.Length - len];
+                if (idx > 0)
+                    Array.Copy(array, 0, newArray, 0, idx);
+
+                if (idx < array.Length - 1)
+                    Array.Copy(array, idx + len, newArray, idx, array.Length - idx - len);
+            }
+            else
+            {
+                newArray = new T[array.Length + len];                
+                if (idx > 0)
+                    Array.Copy(array, 0, newArray, 0, idx + len + 1);
+                
+                if (idx < array.Length - 1)
+                    Array.Copy(array, idx + 1, newArray, idx + len + 1, array.Length - idx - 1);
+            }
+
+            return newArray;
+        }
+
         /*
         public static void RemoveAt<T>(ref T[] array, int idx)
         {

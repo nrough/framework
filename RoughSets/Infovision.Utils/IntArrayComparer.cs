@@ -23,7 +23,20 @@ namespace Infovision.Utils
 
         public int GetHashCode(long[] array)
         {
-            return HashHelper.GetHashCode<long>(array);    
+            unchecked
+            {
+                int hash = 0;
+                int step = array.Length <= 30
+                         ? 1
+                         : array.Length <= 100 ? 3
+                         : array.Length <= 200 ? 6
+                         : array.Length <= 500 ? 12 : 20;
+
+                for (int i = 0; i < array.Length; i += step)
+                    hash = 31 * hash + array[i].GetHashCode();
+                return hash;
+            }
+            
         }
     }
 }

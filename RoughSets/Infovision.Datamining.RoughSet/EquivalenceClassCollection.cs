@@ -88,7 +88,8 @@ namespace Infovision.Datamining.Roughset
 
             if (weights == null)
             {
-                Parallel.For(0, dataStore.NumberOfRecords, i =>
+                //Parallel.For(0, dataStore.NumberOfRecords, i =>
+                for(int i=0; i < dataStore.NumberOfRecords; i++)
                 {
                     long[] attributeValues = dataStore.GetFieldValues(i, attributes);
                     long decision = dataStore.GetFieldValue(i, dataStore.DataStoreInfo.DecisionFieldId);
@@ -98,11 +99,13 @@ namespace Infovision.Datamining.Roughset
                                                         Decimal.One,
                                                         dataStore,
                                                         i);
-                });
+                }
+                //);
             }
             else
             {
-                Parallel.For(0, dataStore.NumberOfRecords, i =>
+                for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                //Parallel.For(0, dataStore.NumberOfRecords, i =>
                 {
                     long[] attributeValues = dataStore.GetFieldValues(i, attributes);
                     long decision = dataStore.GetFieldValue(i, dataStore.DataStoreInfo.DecisionFieldId);
@@ -112,7 +115,8 @@ namespace Infovision.Datamining.Roughset
                                                         weights[i],
                                                         dataStore,
                                                         i);
-                });
+                }
+                //);
             }
      
             return eqClassCollection;
@@ -162,14 +166,12 @@ namespace Infovision.Datamining.Roughset
             this.attributes = attributeSet.ToArray();
             decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
             
-            Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
+            //Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
+            for(int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
-                this.UpdateStatistic(
-                    this.attributes,
-                    dataStore, 
-                    objectIdx, 
-                    w);
-            });    
+                this.UpdateStatistic(this.attributes, dataStore, objectIdx, w);
+            }
+            //);    
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
@@ -178,36 +180,39 @@ namespace Infovision.Datamining.Roughset
             this.InitDecisionCount(dataStore.DataStoreInfo);
             this.attributes = attributeSet.ToArray();
 
-            Parallel.For(0, dataStore.NumberOfRecords, objectIndex =>
+            //Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
+            for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
-                this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);
-            });
+                this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
+            }
+            //);
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
-            
-            foreach (int objectIndex in objectSet)
-                this.UpdateStatistic(this.attributes, dataStore, objectIndex, objectWeights[objectIndex]);
+
+            foreach (int objectIdx in objectSet)
+                this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
         }
 
         private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, decimal objectWeight)
         {            
             long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
             EquivalenceClass eqClass = null;
+            long decisionValue = dataStore.GetDecisionValue(objectIndex);
             lock (syncRoot)
             {
                 if (this.partitions.TryGetValue(record, out eqClass))
                 {
-                    eqClass.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeight);
+                    eqClass.AddObject(objectIndex, decisionValue, objectWeight);
                 }
                 else
                 {
                     eqClass = new EquivalenceClass(record, dataStore);
-                    eqClass.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeight);
-                    this.partitions[record] = eqClass;
+                    eqClass.AddObject(objectIndex, decisionValue, objectWeight);
+                    this.partitions.Add(record, eqClass);
                 }
             }
         }

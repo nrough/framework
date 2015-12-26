@@ -7,20 +7,18 @@ using Infovision.Utils;
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
-    public abstract class WeightGenerator
+    public class WeightGenerator
     {
         private DataStore dataStore = null;
         protected decimal[] w;
         protected object syncRoot = new object();
         
-        protected WeightGenerator(DataStore dataStore)
+        public WeightGenerator(DataStore dataStore)
         {
             this.dataStore = dataStore;
             this.w = new decimal[dataStore.NumberOfRecords];
             this.CalcFlag = false;
         }
-
-
 
         #region Properties
 
@@ -46,7 +44,14 @@ namespace Infovision.Datamining.Roughset
                 return this.w; 
             }
             
-            set { this.w = value; }
+            set 
+            {
+                if (value != null)
+                {
+                    this.CalcFlag = false;
+                }
+                this.w = value;                
+            }
         }
 
         protected bool CalcFlag

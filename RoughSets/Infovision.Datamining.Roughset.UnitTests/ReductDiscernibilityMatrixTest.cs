@@ -37,10 +37,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void MeasureRelative()
         {
             Args parms = new Args();
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
-            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0m);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
+            parms.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0m);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Generate();

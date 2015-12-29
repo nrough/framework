@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string UpdateWeights = "UpdateWeights";
         public static readonly string CalcModelConfidence = "CalcModelConfidence";
         public static readonly string UseExceptionRules = "UseExceptionRules";
-        public static readonly string AttributeReductionStep = "AttributeReductionStep";
+        public static readonly string ReductionStep = "ReductionStep";
         public static readonly string InnerParameters = "InnerParameters";
     }
 

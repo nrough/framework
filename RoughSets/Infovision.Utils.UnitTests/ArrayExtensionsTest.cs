@@ -27,6 +27,8 @@ namespace Infovision.Utils.UnitTests
 
             Console.WriteLine(array.RemoveAt(5, 3).ToStr());
             Console.WriteLine(array.RemoveAt(5, -3).ToStr());
+
+            Console.WriteLine(array.RemoveAt(12, 7).ToStr());
         }
     }
 }

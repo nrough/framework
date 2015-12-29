@@ -28,9 +28,9 @@ namespace Infovision.Utils
                 int hash = 0;
                 int step = array.Length <= 30
                          ? 1
-                         : array.Length <= 100 ? 3
-                         : array.Length <= 200 ? 6
-                         : array.Length <= 500 ? 12 : 20;
+                         : array.Length <= 100 ? 2
+                         : array.Length <= 200 ? 4
+                         : array.Length <= 500 ? 8 : 16;
 
                 for (int i = 0; i < array.Length; i += step)
                     hash = 31 * hash + array[i].GetHashCode();

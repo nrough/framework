@@ -119,10 +119,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
 
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Generate();
@@ -467,10 +467,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private void Classify(string reductGeneratorKey)
         {
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, 0.5m);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.5m);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Generate();

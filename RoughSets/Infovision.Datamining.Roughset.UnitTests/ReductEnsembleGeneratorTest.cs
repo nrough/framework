@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
             {
-                parms.AddParameter(kvp.Key, kvp.Value);
+                parms.SetParameter(kvp.Key, kvp.Value);
             }                                 
                                                             
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;

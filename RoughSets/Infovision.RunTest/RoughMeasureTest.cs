@@ -246,11 +246,11 @@ namespace Infovision.RunTest
             if (this.CheckRetrain())
             {
                 Args localArgs = new Args();
-                localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
-                localArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                localArgs.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-                localArgs.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
-                localArgs.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+                localArgs.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+                localArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                localArgs.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+                localArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+                localArgs.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();

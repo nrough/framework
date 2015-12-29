@@ -13,10 +13,11 @@ namespace Infovision.Datamining.Roughset
     public class EquivalenceClass : ICloneable
     {
         #region Members
+
+        private bool isStatCalculated; //flags if statistics have been calculated
         
         private long[] dataVector;
-        private Dictionary<int, decimal> instances;  //map: objectId -> object weight
-        private bool isStatCalculated; //flags if statistics have been calculated
+        private Dictionary<int, decimal> instances;  //map: objectId -> object 
         private decimal totalWeightSum; //sum of object weights belonging to this class
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         private DataStore dataStore; //reference to data

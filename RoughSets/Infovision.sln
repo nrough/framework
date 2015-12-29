@@ -242,9 +242,11 @@ Global
 		SccProjectName23 = Infovision.Statistics
 		SccLocalPath23 = Infovision.Statistics
 		SccProjectUniqueName24 = ExceptionRulesTest\\ExceptionRulesTest.csproj
+		SccProjectTopLevelParentUniqueName24 = Infovision.sln
 		SccProjectName24 = ExceptionRulesTest
 		SccLocalPath24 = ExceptionRulesTest
 		SccProjectUniqueName25 = DisesorTest\\DisesorTest.csproj
+		SccProjectTopLevelParentUniqueName25 = Infovision.sln
 		SccProjectName25 = DisesorTest
 		SccLocalPath25 = DisesorTest
 	EndGlobalSection
@@ -668,8 +670,7 @@ Global
 		{9C213D37-3249-453F-BA30-460255EA955D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{9FE417F8-022C-40E7-9574-BA7014339B6D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{56A080A0-CDFF-4888-AC1E-B40F0438929D} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
+		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{5579F5EC-3490-4C36-B2C1-BED348951F06} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 EndGlobal

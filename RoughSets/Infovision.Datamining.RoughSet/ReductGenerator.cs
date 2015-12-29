@@ -10,16 +10,10 @@ namespace Infovision.Datamining.Roughset
     public abstract class ReductGenerator : IReductGenerator
     {
         #region Members
-        
-        private IReductStore reductPool;
+
         private IPermutationGenerator permutationGenerator;
-        private PermutationCollection permutationList;
-        private DataStore dataStore;
-        private decimal epsilon;
         private int[][] fieldGroups;
         private int reductIdSequence;
-        private bool useCache;
-        private int attributeReductionStep;
 
         protected object syncRoot = new object();
 
@@ -28,65 +22,14 @@ namespace Infovision.Datamining.Roughset
         #region Properties        
 
         public Args InnerParameters { get; set; }
+        public virtual IReductStore ReductPool { get; protected set; }
+        public virtual bool UseCache { get; private set; }
+        public virtual PermutationCollection Permutations { get; private set; }
+        public virtual DataStore DataStore { get; private set; }
+        public virtual decimal Epsilon { get; set; }
+        public virtual int ReductionStep { get; set; }
 
-        public IReductStore ReductPool
-        {
-            get
-            {
-                return this.reductPool;
-            }
-
-            protected set
-            {
-                this.reductPool = value;
-            }
-        }
-
-        public bool UseCache
-        {
-            get
-            {
-                return this.useCache;
-            }
-        }
-
-        public PermutationCollection Permutations
-        {
-            get { return this.permutationList; }
-        }
-
-        public DataStore DataStore
-        {
-            get { return dataStore; }
-        }
-
-        public decimal Epsilon
-        {
-            get { return epsilon; }
-            set
-            {
-                if (value < Decimal.Zero)
-                    epsilon = Decimal.Zero;
-                else if (value > Decimal.One)
-                    epsilon = Decimal.One;                    
-                else
-                    epsilon = value;
-            }
-        }
-
-        public int AttributeReductionStep
-        {
-            get { return this.attributeReductionStep; }
-            set 
-            {
-                if (value <= 0)
-                    throw new InvalidOperationException("Attribute reduction step must be greater than zero");                
-
-                this.attributeReductionStep = value;
-            }
-        }
-
-        public int[][] FieldGroups
+        public virtual int[][] FieldGroups
         {
             get { return this.fieldGroups; }
             set
@@ -119,7 +62,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public int NextReductId
+        public virtual int NextReductId
         {
             get { return this.reductIdSequence + 1; }
         }
@@ -169,9 +112,9 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void SetDefaultParameters()
         {
-            this.useCache = false;
-            this.epsilon = 0;
-            this.attributeReductionStep = 1;
+            this.UseCache = false;
+            this.Epsilon = 0;
+            this.ReductionStep = 5;
         }
 
         public virtual void initFromDataStore(DataStore data)
@@ -189,33 +132,33 @@ namespace Infovision.Datamining.Roughset
         {                        
             if (args.Exist(ReductGeneratorParamHelper.DataStore))
             {
-                this.dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
-                this.initFromDataStore(dataStore);
-            }            
+                this.DataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+                this.initFromDataStore(this.DataStore);
+            }
             
             if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))
             {
-                this.permutationList = (PermutationCollection)args.GetParameter(ReductGeneratorParamHelper.PermutationCollection);
+                this.Permutations = (PermutationCollection)args.GetParameter(ReductGeneratorParamHelper.PermutationCollection);
             }
             else if (args.Exist(ReductGeneratorParamHelper.NumberOfReducts))
             {
                 int numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
-                this.permutationList = this.PermutationGenerator.Generate(numberOfReducts);
+                this.Permutations = this.PermutationGenerator.Generate(numberOfReducts);
             }
             else if (args.Exist(ReductGeneratorParamHelper.NumberOfPermutations))
             {
                 int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
-                this.permutationList = this.PermutationGenerator.Generate(numberOfPermutations);
+                this.Permutations= this.PermutationGenerator.Generate(numberOfPermutations);
             }
             
             if (args.Exist("USECACHE"))
-                this.useCache = true;
+                this.UseCache = true;
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
                 this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
 
-            if(args.Exist(ReductGeneratorParamHelper.AttributeReductionStep))
-                this.attributeReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.AttributeReductionStep);
+            if(args.Exist(ReductGeneratorParamHelper.ReductionStep))
+                this.ReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.ReductionStep);
 
             if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
                 this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);

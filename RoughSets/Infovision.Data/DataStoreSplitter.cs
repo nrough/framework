@@ -84,7 +84,7 @@ namespace Infovision.Data
                     objectsTmp.Shuffle();
                     Parallel.For(0, objectsTmp.Length, i =>
                     {
-                        folds[objectsTmp[i]] = i % nfold;
+                        folds[objectsTmp[i]] = RandomSplit(i);
                     });
                 }
 
@@ -202,6 +202,7 @@ namespace Infovision.Data
                 throw new ArgumentOutOfRangeException("splitRatio", "Value must be between 0 and 1");
 
             this.splitRatio = splitRatio;
+            this.ActiveFold = 0;
         }
 
         public double SplitRatio

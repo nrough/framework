@@ -329,7 +329,7 @@ namespace Infovision.Datamining.Roughset
 				else
 					localWeightGen = new WeightGenerator(this.DataStore);
 				localWeightGen.Weights = weights;
-				this.InnerParameters.AddParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
 				
 				IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);                
 				IReduct reduct = generator.CreateReduct(permutation, epsilon, weights);

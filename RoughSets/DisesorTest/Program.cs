@@ -47,10 +47,24 @@ namespace DisesorTest
         DiscretizationType discretizationType = DiscretizationType.Entropy;
 
         string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
-        decimal innerEpsilon = 0.0m;
-                       
+        decimal innerEpsilon = 0.05m;
+
+
+        int boostingNumberOfReductsInWeakClassifier = 2;
+        RuleQualityFunction boostingIdentificationFunction = null;
+        RuleQualityFunction boostingVoteFunction = null;
+        int boostingMaxIterations = 10;
+        UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+        CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+        bool boostingCheckEnsambleErrorDuringTraining = false;
+       
         public Program()
-        {            
+        {
+            if (boostingIdentificationFunction == null)
+                boostingIdentificationFunction = identificationFunction;
+
+            if (boostingVoteFunction == null)
+                boostingVoteFunction = voteFunction;
         }
 
         #endregion
@@ -80,7 +94,14 @@ namespace DisesorTest
             Console.WriteLine();
             Console.WriteLine("(U) Discretization type: {0}", discretizationType);                        
             Console.WriteLine();
-            
+            Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
+            Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
+            Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
+            Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
+            Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
+            Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
+            Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
+
             this.LoadMetadata();
 
             Console.Write("Loading raw train data...");
@@ -207,19 +228,30 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Args innerArgs = new Args();
-            innerArgs.AddParameter(ReductGeneratorParamHelper.DataStore, train);
-            innerArgs.AddParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
-            innerArgs.AddParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
-            innerArgs.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
+            innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+            
 
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
-            args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+            args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
-            args.AddParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
+            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, boostingIdentificationFunction);
+            args.SetParameter(ReductGeneratorParamHelper.VoteType, boostingVoteFunction);
+            args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
+            args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
+            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
+            args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+
+
+            args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
             /*
             using (StreamWriter f = new StreamWriter(weightsoutput))
@@ -396,12 +428,12 @@ namespace DisesorTest
                 WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(train);
 
                 Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.AddParameter(ReductGeneratorParamHelper.AttributeReductionStep, attributeReductionStep); //TODO
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
-                args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                args.SetParameter(ReductGeneratorParamHelper.ReductionStep, attributeReductionStep);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
 
                 Console.Write("Reduct generation {0}/{1}...", n, nFold - 1);                
                 IReductGenerator generator = ReductFactory.GetReductGenerator(args);

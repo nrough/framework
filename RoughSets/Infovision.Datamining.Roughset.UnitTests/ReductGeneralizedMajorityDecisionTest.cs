@@ -34,11 +34,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.1m)
             {
                 Args parms = new Args();
-                parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-                parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-                parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-                parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
+                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
 
                 ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
 
@@ -84,10 +84,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {                                    
             Args parms = new Args();
-            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
             ReductGeneralizedMajorityDecisionGenerator reductGenerator = 
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;                               
@@ -97,10 +97,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {            
             Args parms = new Args();
-            parms.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
             ReductGeneratorWeightsMajority reductGenerator = 
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;

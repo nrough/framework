@@ -59,6 +59,9 @@ namespace Infovision.Utils
 
             if (len >= 0)
             {
+                if (idx + len > array.Length)
+                    len = array.Length - idx - 1;
+                
                 newArray = new T[array.Length - len];
                 if (idx > 0)
                     Array.Copy(array, 0, newArray, 0, idx);
@@ -70,10 +73,10 @@ namespace Infovision.Utils
             {
                 newArray = new T[array.Length + len];                
                 if (idx > 0)
-                    Array.Copy(array, 0, newArray, 0, idx + len + 1);
+                    Array.Copy(array, 0, newArray, 0, idx + len);
                 
                 if (idx < array.Length - 1)
-                    Array.Copy(array, idx + 1, newArray, idx + len + 1, array.Length - idx - 1);
+                    Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
             }
 
             return newArray;

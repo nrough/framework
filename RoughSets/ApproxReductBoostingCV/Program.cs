@@ -120,7 +120,7 @@ namespace ApproxReductBoostingCV
                     if (trnFoldOrig.DataStoreInfo.HasMissingData)
                     {
                         trnFoldReplaced = new ReplaceMissingValues().Compute(trnFoldOrig);
-                        parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFoldReplaced);                        
+                        parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnFoldReplaced);                        
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -138,7 +138,7 @@ namespace ApproxReductBoostingCV
                     }
                     else
                     {
-                        parms.AddParameter(ReductGeneratorParamHelper.DataStore, trnFoldOrig);                        
+                        parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnFoldOrig);                        
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -155,15 +155,15 @@ namespace ApproxReductBoostingCV
                         }
                     }                    
                     
-                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                    parms.AddParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
-                    parms.AddParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
-                    parms.AddParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-                    parms.AddParameter(ReductGeneratorParamHelper.MaxIterations, iter);
-                    parms.AddParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon / 100.0M);
-                    parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.AddParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
+                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
+                    parms.SetParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon / 100.0M);
+                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 
                     ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);
                     reductGenerator.Generate();

@@ -124,17 +124,26 @@ namespace Infovision.Datamining.Roughset
             this.KeepMajorDecisions(eqClasses, epsilon);
 
             int len = permutation.Length;
-            for (int i = 0; i < len; i++)
+            int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
+            while (step >= 1)
             {
-                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, null);
-
-                //reduction was made
-                if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                for (int i = 0; i < len; i += step)
                 {
-                    eqClasses = newEqClasses;
-                    len--;
-                    i--;
+                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step, null);
+
+                    //reduction was made
+                    if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                    {
+                        eqClasses = newEqClasses;
+                        len -= step;
+                        i -= step;
+                    }
                 }
+
+                if (step == 1)
+                    break;
+
+                step /= 2;
             }
 
             return this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString());
@@ -159,17 +168,26 @@ namespace Infovision.Datamining.Roughset
             this.KeepMajorDecisions(eqClasses, this.Epsilon);
 
             int len = attributes.Length;
-            for (int i = 0; i < len; i++)
+            int step = this.ReductionStep;
+            while (step >= 1)
             {
-                EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, null);
-
-                //reduction was made
-                if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                for (int i = 0; i < len; i += step)
                 {
-                    eqClasses = newEqClasses;
-                    len--;
-                    i--;
+                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step, null);
+
+                    //reduction was made
+                    if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                    {
+                        eqClasses = newEqClasses;
+                        len -= step;
+                        i -= step;
+                    }
                 }
+
+                if (step == 1)
+                    break;
+
+                step /= 2;
             }
 
             return this.CreateReductObject(eqClasses.Attributes, this.Epsilon, this.GetNextReductId().ToString());
@@ -254,9 +272,9 @@ namespace Infovision.Datamining.Roughset
     {
         public bool UseExceptionRules { get; set; }
         
-        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, IReductStore reductStore = null)
+        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
-            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx);
+            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
    
@@ -267,7 +285,7 @@ namespace Infovision.Datamining.Roughset
 
             foreach(EquivalenceClass eq in eqArray)            
             {
-                var newInstance = eq.Instance.RemoveAt(attributeIdx);
+                var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
 
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
@@ -307,7 +325,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;
                     
-                    if (this.UseExceptionRules)
+                     if (this.UseExceptionRules)
                         newEqClass.AddObjectInstances(eq.Instances);
 
                     newEqClasses.Partitions[newInstance] = newEqClass;

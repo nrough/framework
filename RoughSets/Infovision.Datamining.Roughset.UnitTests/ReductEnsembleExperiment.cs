@@ -49,17 +49,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     epsilons[i] = (decimal)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
 
                 Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleStream);
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-                args.AddParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Hamming);
-                args.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRandom(data));
-                //args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trainData));
-                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
-                args.AddParameter(ReductGeneratorParamHelper.ReductSize, reductSize);
-                args.AddParameter(ReductGeneratorParamHelper.MinimumNumberOfInstances, 10);
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleStream);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
+                args.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Hamming);
+                args.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRandom(data));
+                //args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trainData));
+                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductGeneratorParamHelper.ReductSize, reductSize);
+                args.SetParameter(ReductGeneratorParamHelper.MinimumNumberOfInstances, 10);
 
                 ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
                 reductGenerator.Generate();
@@ -104,14 +104,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     epsilons[i] = (decimal)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
 
                 Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, data);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-                args.AddParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
-                args.AddParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                args.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                args.AddParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
+                args.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
+                args.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();

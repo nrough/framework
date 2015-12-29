@@ -21,7 +21,7 @@ namespace Infovision.Utils
         public object this[string id]
         {
             get { return this.GetParameter(id); }
-            set { this.AddParameter(id, value); }
+            set { this.SetParameter(id, value); }
         }
         
         public Args()
@@ -64,9 +64,7 @@ namespace Infovision.Utils
             this.nextIndex = keys.Length;
         }
 
-        
-
-        public void AddParameter(string key, object value)
+        public void SetParameter(string key, object value)
         {
             if (this.parameters.ContainsKey(key) == false)
             {
@@ -119,11 +117,19 @@ namespace Infovision.Utils
             return (IEnumerator)GetEnumerator();
         }
 
-        public IEnumerator<KeyValuePair<String, Object>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             return this.parameters.GetEnumerator();
         }
+
+        public bool SetProperty<T>(string key, ref T property)
+        {
+            if (this.Exist(key))
+            {
+                property = (T)this.GetParameter(key);
+                return true;
+            }
+            return false;
+        }
     }
-
-
 }

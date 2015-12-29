@@ -27,20 +27,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
-            parms.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
-            parms.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+            parms.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permGen.Generate(10));
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permGen.Generate(10));
             
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
-            parmsMulti.AddParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
-            parmsMulti.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, InfovisionHelper.NumberOfCores());
-            parmsMulti.AddParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
-            parmsMulti.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, InfovisionHelper.NumberOfCores());
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
             reductGeneratorMulti = ReductFactory.GetReductGenerator(parmsMulti);
         }
@@ -66,12 +66,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 //    Console.WriteLine("Epsilon: {0}", i);
 
                 Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-                args.AddParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                args.SetParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                 IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations); 
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations); 
 
                 for (int j = 0; j < 100; j++)
                 {
@@ -98,10 +98,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
 
                     Args parms = new Args();
-                    parms.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-                    parms.AddParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0m);
-                    parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
-                    parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0m);
+                    parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 
                     IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
                     reductGenerator.Generate();
@@ -138,10 +138,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
 
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Generate();

@@ -379,11 +379,11 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, decimal epsilon, PermutationCollection permutations)
         {
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.AddParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);            
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 32);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);            
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 
@@ -398,9 +398,9 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, decimal epsilon, int numberOfPermutations)
         {
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            //args.AddParameter("USECACHE", null);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            //args.SetParameter("USECACHE", null);
 
             IPermutationGenerator permGen = ReductFactory.GetReductFactory(reductFactoryKey).GetPermutationGenerator(args);
             PermutationCollection permutations = permGen.Generate(numberOfPermutations);

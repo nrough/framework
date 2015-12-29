@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
                 if(kvp.Key.Substring(0, 1) != "_")
-                    parms.AddParameter(kvp.Key, kvp.Value);           
+                    parms.SetParameter(kvp.Key, kvp.Value);           
             
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Generate();

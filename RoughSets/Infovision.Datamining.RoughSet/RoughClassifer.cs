@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,25 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class RoughClassifier
     {
+        private IReductStoreCollection reductStoreCollection { get; set; }
+        private int numberOfModels;
+        private bool allModelsAreEqual;
+        
         public IEnumerable<long> DecisionValues { get; set; }
-        public IReductStoreCollection ReductStoreCollection { get; set; }        
         public bool UseExceptionRules { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
+
+        public IReductStoreCollection ReductStoreCollection 
+        {
+            get { return this.reductStoreCollection; }
+            protected set 
+            {
+                this.reductStoreCollection = value;
+                numberOfModels = this.reductStoreCollection.Where(rs => rs.IsActive).Count();
+                allModelsAreEqual = this.reductStoreCollection.Where(rs => rs.IsActive).GroupBy(rs => rs.Weight).Count() > 1;
+            }
+        }
         
         public RoughClassifier(            
             IReductStoreCollection reductStoreCollection,
@@ -33,51 +48,48 @@ namespace Infovision.Datamining.Roughset
         public void PrintClassification(DataRecordInternal record)
         {
             var ruleVotesSum = new Dictionary<long, decimal>();
-            foreach (IReductStore rs in this.ReductStoreCollection)
+            foreach (IReductStore rs in this.ReductStoreCollection.Where(r => r.IsActive))
             {
-                if (rs.IsActive)
+                foreach (IReduct reduct in rs)
                 {
-                    foreach (IReduct reduct in rs)
+                    if (UseExceptionRules == false && reduct.IsException)
+                        continue;
+
+                    var decisionIdentification = new Dictionary<long, decimal>();
+                    long identifiedDecision = -1;
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                    if (eqClass != null)
                     {
-                        if (UseExceptionRules == false && reduct.IsException)
-                            continue;
-
-                        var decisionIdentification = new Dictionary<long, decimal>();
-                        long identifiedDecision = -1;
-                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
-                        if (eqClass != null)
+                        foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
                         {
-                            foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
-                            {
-                                if (decisionIdentification.ContainsKey(decisionValue))
-                                    decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);
-                                else
-                                    decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
-                            }
-
-                            identifiedDecision = decisionIdentification.FindMaxValue();
-                        }
-                        else
-                        {
-                            identifiedDecision = -1;
+                            if (decisionIdentification.ContainsKey(decisionValue))
+                                decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);
+                            else
+                                decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
                         }
 
-                        if (ruleVotesSum.ContainsKey(identifiedDecision))
-                            ruleVotesSum[identifiedDecision] += (this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
-                        else
-                            ruleVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
-
-                        Console.Write("{0}: ", this.IdentificationFunction.Method.Name);
-                        foreach (var kvp in decisionIdentification)
-                            Console.Write("{0}->{1} ", kvp.Key, kvp.Value);
-                        Console.Write(Environment.NewLine);
-
-                        Console.WriteLine("Identified decision {0}", identifiedDecision);
-                        Console.WriteLine("Vote weight {0}", this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
-
-                        if (this.UseExceptionRules == true && reduct.IsException && eqClass.NumberOfObjects > 0)
-                            break;
+                        identifiedDecision = decisionIdentification.FindMaxValue();
                     }
+                    else
+                    {
+                        identifiedDecision = -1;
+                    }
+
+                    if (ruleVotesSum.ContainsKey(identifiedDecision))
+                        ruleVotesSum[identifiedDecision] += (this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
+                    else
+                        ruleVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
+
+                    Console.Write("{0}: ", this.IdentificationFunction.Method.Name);
+                    foreach (var kvp in decisionIdentification)
+                        Console.Write("{0}->{1} ", kvp.Key, kvp.Value);
+                    Console.Write(Environment.NewLine);
+
+                    Console.WriteLine("Identified decision {0}", identifiedDecision);
+                    Console.WriteLine("Vote weight {0}", this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
+
+                    if (this.UseExceptionRules == true && reduct.IsException && eqClass.NumberOfObjects > 0)
+                        break;
                 }
             }
 
@@ -150,48 +162,64 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record)
         {
-            var ruleVotesSum = new Dictionary<long, decimal>();
-            foreach (IReductStore rs in this.ReductStoreCollection)
+            var globalStoreVoresSum = new Dictionary<long, decimal>();
+            foreach (IReductStore rs in this.ReductStoreCollection.Where(r => r.IsActive))
             {
-                if (rs.IsActive)
+                var reductVotesSum = new Dictionary<long, decimal>();
+                foreach (IReduct reduct in rs)
                 {
-                    foreach (IReduct reduct in rs)
+                    if (UseExceptionRules == false && reduct.IsException)
+                        continue;
+
+                    var decisionIdentification = new Dictionary<long, decimal>();
+                    long identifiedDecision = -1;
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                    if (eqClass != null)
                     {
-                        if (UseExceptionRules == false && reduct.IsException)
-                            continue;
-
-                        var decisionIdentification = new Dictionary<long, decimal>();
-                        long identifiedDecision = -1;
-                        EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
-                        if (eqClass != null)
+                        foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
                         {
-                            foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
-                            {
-                                if (decisionIdentification.ContainsKey(decisionValue))
-                                    decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);
-                                else
-                                    decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
-                            }
-
-                            identifiedDecision = decisionIdentification.FindMaxValue();
-                        }
-                        else
-                        {
-                            identifiedDecision = -1;
+                            if (decisionIdentification.ContainsKey(decisionValue))
+                                decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);
+                            else
+                                decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
                         }
 
-                        if (ruleVotesSum.ContainsKey(identifiedDecision))
-                            ruleVotesSum[identifiedDecision] += (this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
-                        else
-                            ruleVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass) * rs.Weight);
-
-                        if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
-                            break;
+                        identifiedDecision = decisionIdentification.FindMaxValue();
                     }
+                    else
+                    {
+                        identifiedDecision = -1;
+                    }
+
+                    if (reductVotesSum.ContainsKey(identifiedDecision))
+                        reductVotesSum[identifiedDecision] += this.VoteFunction(identifiedDecision, reduct, eqClass);
+                    else
+                        reductVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass));
+
+                    if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
+                        break;
+                }
+
+                if(this.numberOfModels == 1)
+                    return reductVotesSum;
+
+                if(this.allModelsAreEqual)
+                {
+                    foreach(var kvp in reductVotesSum)
+                    {
+                        if(globalStoreVoresSum.ContainsKey(kvp.Key))
+                            globalStoreVoresSum[kvp.Key] += kvp.Value;
+                        else
+                            globalStoreVoresSum.Add(kvp.Key, kvp.Value);
+                    }
+                }
+                else
+                {
+                    globalStoreVoresSum.Add(reductVotesSum.FindMaxValuePair().Key, rs.Weight);
                 }
             }
 
-            return ruleVotesSum;
+            return globalStoreVoresSum;
         }
 
         public Dictionary<long, decimal> IdentifyDecisions(

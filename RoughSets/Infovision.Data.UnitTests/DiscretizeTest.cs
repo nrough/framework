@@ -61,11 +61,11 @@ namespace Infovision.Data.UnitTests
                 //test.WriteToCSVFileExt(String.Format("disc_german_orig_{0}.tst", i), " ");
 
                 Args args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
-                args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
                 PermutationCollection permutations = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
@@ -176,10 +176,10 @@ namespace Infovision.Data.UnitTests
                 }
                 
                 args = new Args();
-                args.AddParameter(ReductGeneratorParamHelper.DataStore, train);
-                args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();

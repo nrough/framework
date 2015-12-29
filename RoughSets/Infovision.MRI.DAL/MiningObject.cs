@@ -88,7 +88,7 @@ namespace Infovision.MRI.DAL
 
         public void AddParameter(string name, object value)
         {
-            parameters.AddParameter(name, value);
+            parameters.SetParameter(name, value);
         }
 
         public object GetParameter(string name)

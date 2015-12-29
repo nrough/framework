@@ -92,9 +92,9 @@ namespace Infovision.Datamining.Benchmark
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("audiology", GetFilePath(dataPath, "audiology.standardized.data"), GetFilePath(dataPath, "audiology.standardized.test"))
+            benchmark = new BenchmarkData("audiology", GetFilePath(dataPath, "audiology.standardized.2.data"), GetFilePath(dataPath, "audiology.standardized.test"))
             {
-                FileFormat = FileFormat.Csv
+                FileFormat = FileFormat.Rses1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 

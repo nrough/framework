@@ -181,10 +181,10 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, decimal epsilon, PermutationCollection permutations)
         {
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Generate();
@@ -196,8 +196,8 @@ namespace Infovision.Datamining.Roughset
         public void Train(DataStore trainingData, string reductFactoryKey, decimal epsilon, int numberOfPermutations)
         {
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainingData);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, trainingData);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
             Train(trainingData, reductFactoryKey, epsilon, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
         }

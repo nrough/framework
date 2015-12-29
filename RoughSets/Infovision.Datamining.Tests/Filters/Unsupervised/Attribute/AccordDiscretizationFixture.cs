@@ -218,10 +218,10 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				//Console.WriteLine(localDataStoreTest.DataStoreInfo.ToStringInfo());
 
 				Args args = new Args();
-				args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
-				args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-				args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-				args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+				args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+				args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+				args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
+				args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
 				IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 				reductGenerator.Generate();
@@ -326,10 +326,10 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);
 
 			Args args = new Args();
-			args.AddParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
-			args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-			args.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-			args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+			args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+			args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+			args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+			args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
 			IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 			reductGenerator.Generate();

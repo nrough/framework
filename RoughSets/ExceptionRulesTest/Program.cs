@@ -120,12 +120,12 @@ namespace ExceptionRulesTest
             decimal eps = Decimal.Divide(epsilon, 100);
 
             Args parms = new Args();
-            parms.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-            parms.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            parms.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parms.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+            parms.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -150,12 +150,12 @@ namespace ExceptionRulesTest
             resultEx.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms2 = new Args();
-            parms2.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-            parms2.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms2.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms2.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parms2.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms2.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms2.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms2.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms2.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms2.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms2.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms2.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneratorWeightsMajority generator2 =
                 ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
@@ -171,14 +171,14 @@ namespace ExceptionRulesTest
             result2.QualityRatio = generator2.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parms4 = new Args();
-            parms4.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-            parms4.AddParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
-            parms4.AddParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms4.AddParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parms4.AddParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms4.AddParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms4.AddParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
-            parms4.AddParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+            parms4.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms4.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
+            parms4.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms4.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms4.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms4.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms4.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+            parms4.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
 
             ReductRandomSubsetGenerator generator4 =
                 ReductFactory.GetReductGenerator(parms4) as ReductRandomSubsetGenerator;

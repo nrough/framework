@@ -66,11 +66,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
 
                         Args args = new Args();
-                        args.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-                        args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                        args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+                        args.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+                        args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+                        args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
-                        args.AddParameter(ReductGeneratorParamHelper.PermutationCollection,
+                        args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                             ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
 
                         IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
@@ -190,13 +190,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
 
             Args args = new Args();
-            args.AddParameter(ReductGeneratorParamHelper.DataStore, trainData);
-            args.AddParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.AddParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
             for (int i = 0; i < loops; i++)
             {    
-                args.AddParameter(ReductGeneratorParamHelper.PermutationCollection,
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                             ReductFactory.GetPermutationGenerator(args).Generate(numberOfPerm));
                 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MiscUtil;
 
 namespace Infovision.Utils
 {
@@ -60,7 +61,7 @@ namespace Infovision.Utils
             if (len >= 0)
             {
                 if (idx + len > array.Length)
-                    len = array.Length - idx - 1;
+                    len = array.Length - idx;
                 
                 newArray = new T[array.Length - len];
                 if (idx > 0)
@@ -78,6 +79,10 @@ namespace Infovision.Utils
                 if (idx < array.Length - 1)
                     Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
             }
+
+            //if (newArray.Contains(Operator<T>.Zero))
+            //    throw new InvalidOperationException();
+
 
             return newArray;
         }

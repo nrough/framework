@@ -125,10 +125,15 @@ namespace Infovision.Datamining.Roughset
         {
             ClassificationResult result = new ClassificationResult(testData, this.DecisionValues);
 
+            ParallelOptions options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = Environment.ProcessorCount;                                  
+
             if (weights == null)
             {
                 double w = 1.0 / testData.NumberOfRecords;
-                Parallel.For(0, testData.NumberOfRecords, objectIndex =>
+                
+                //for(int objectIndex = 0; objectIndex<testData.NumberOfRecords; objectIndex++)
+                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
                     var prediction = this.Classify(record);
@@ -143,7 +148,8 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                Parallel.For(0, testData.NumberOfRecords, objectIndex =>
+                //for (int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
+                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
                     var prediction = this.Classify(record);
@@ -215,7 +221,12 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    globalStoreVoresSum.Add(reductVotesSum.FindMaxValuePair().Key, rs.Weight);
+                    long maxDecision = reductVotesSum.FindMaxValuePair().Key;
+                    
+                    if(globalStoreVoresSum.ContainsKey(maxDecision))
+                        globalStoreVoresSum[maxDecision] += rs.Weight;
+                    else
+                        globalStoreVoresSum.Add(maxDecision, rs.Weight);                    
                 }
             }
 

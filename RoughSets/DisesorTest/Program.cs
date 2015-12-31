@@ -47,13 +47,13 @@ namespace DisesorTest
         DiscretizationType discretizationType = DiscretizationType.Entropy;
 
         string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
-        decimal innerEpsilon = 0.05m;
+        decimal innerEpsilon = 0.4m;
 
 
-        int boostingNumberOfReductsInWeakClassifier = 2;
+        int boostingNumberOfReductsInWeakClassifier = 20;
         RuleQualityFunction boostingIdentificationFunction = null;
         RuleQualityFunction boostingVoteFunction = null;
-        int boostingMaxIterations = 10;
+        int boostingMaxIterations = 200;
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;
@@ -84,23 +84,35 @@ namespace DisesorTest
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
-            Console.WriteLine();                                    
-            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);
+            Console.WriteLine();
+                                    
+            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);            
             Console.WriteLine("Is discretization (S)upervised or (U)nsupervised: {0}", useSupervisedDiscetization ? "S" : "U");
             Console.WriteLine();
-            Console.WriteLine("(S) Use better encoding: {0}", useSupervisedDiscetization);
-            Console.WriteLine("(S) Use Kononenko MDL criteriaon: {0}", useKokonenkoMDL);
-            Console.WriteLine("(S) Use Fayyad and Iranis MDL criteriaon: {0}", !useKokonenkoMDL);
-            Console.WriteLine();
-            Console.WriteLine("(U) Discretization type: {0}", discretizationType);                        
-            Console.WriteLine();
-            Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
-            Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
-            Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
-            Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
-            Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
-            Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
-            Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
+            
+            if (useSupervisedDiscetization)
+            {
+                Console.WriteLine("(S) Use better encoding: {0}", useSupervisedDiscetization);
+                Console.WriteLine("(S) Use Kononenko MDL criteriaon: {0}", useKokonenkoMDL);
+                Console.WriteLine("(S) Use Fayyad and Iranis MDL criteriaon: {0}", !useKokonenkoMDL);
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("(U) Discretization type: {0}", discretizationType);
+                Console.WriteLine();
+            }
+
+            if (factoryKey.Contains("Boosting"))
+            {
+                Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
+                Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
+                Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
+                Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
+                Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
+                Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
+                Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
+            }
 
             this.LoadMetadata();
 

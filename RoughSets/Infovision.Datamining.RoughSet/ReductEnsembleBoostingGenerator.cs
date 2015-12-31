@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset
 
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);											
 				decimal m0 = new InformationMeasureWeights().Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
-				this.Threshold = (double)(Decimal.Zero - m0);
+				this.Threshold = (double)(Decimal.One - m0);
 			}
 
 			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
@@ -140,6 +140,8 @@ namespace Infovision.Datamining.Roughset
 
 			do
 			{
+				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);
+				/*
 				IReductStore localReductStore = this.CreateReductStore(this.NumberOfReductsInWeakClassifier);				
 				for (int i = 0; i < this.NumberOfReductsInWeakClassifier; i++)
 				{
@@ -149,15 +151,13 @@ namespace Infovision.Datamining.Roughset
 				}
 				IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
 				reductStoreCollection.AddStore(localReductStore);
+				*/
 
-				RoughClassifier classifier = new RoughClassifier(
-					reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
+				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				ClassificationResult result = classifier.Classify(this.DataStore);
-				error = result.WeightUnclassified + result.WeightMisclassified;				
+				error = result.WeightUnclassified + result.WeightMisclassified;
+				double alpha = this.CalcModelConfidence(K, error);
 
-				//clear objects and memory
-				classifier = null;				
-				
 				if (error >= this.Threshold)
 				{
 					this.NumberOfWeightResets++;
@@ -166,7 +166,7 @@ namespace Infovision.Datamining.Roughset
 					{
 						if (iterPassed == 0)
 						{
-							this.AddModel(localReductStore, this.CalcModelConfidence(K, error));
+							this.AddModel(reductStoreCollection.First(), alpha);
 							iterPassed = 1;
 						}
 						
@@ -178,8 +178,8 @@ namespace Infovision.Datamining.Roughset
 					continue;
 				}
 
-				double alpha = this.CalcModelConfidence(K, error);
-				this.AddModel(localReductStore, alpha);				
+
+				this.AddModel(reductStoreCollection.First(), alpha);
 				double sum = 0.0d;
 				var rangePrtitioner = Partitioner.Create(0, weights.Length);
 				Parallel.ForEach(
@@ -311,7 +311,35 @@ namespace Infovision.Datamining.Roughset
 									: new PermutationGenerator(this.DataStore).Generate(1)[0];
 
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
-		}        
+		}
+
+		public virtual IReductStoreCollection CreateModel(decimal[] weights, int size = 0)
+		{
+			if (this.InnerParameters == null)
+				throw new InvalidOperationException("Parameters for internal model are not privided. Please use InnerParameters key to provide setup for internal model creation.");
+
+			decimal[] weightsCopy = new decimal[weights.Length];
+			Array.Copy(weights, weightsCopy, weights.Length);
+
+			WeightGenerator localWeightGen = null;
+			if (!this.InnerParameters.SetProperty(ReductGeneratorParamHelper.WeightGenerator, ref localWeightGen))
+				localWeightGen = new WeightGenerator(this.DataStore);
+			localWeightGen.Weights = weights;
+			
+			this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+
+			if (size != 0)
+			{
+				this.InnerParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
+				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
+				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);                
+			}
+
+			IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);
+			generator.Generate();
+
+			return generator.GetReductStoreCollection();
+		}
 
 		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
 		{
@@ -330,9 +358,12 @@ namespace Infovision.Datamining.Roughset
 					localWeightGen = new WeightGenerator(this.DataStore);
 				localWeightGen.Weights = weights;
 				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+
+				decimal localEpsilon = epsilon;
+				this.InnerParameters.SetProperty(ReductGeneratorParamHelper.Epsilon, ref localEpsilon);
 				
 				IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);                
-				IReduct reduct = generator.CreateReduct(permutation, epsilon, weights);
+				IReduct reduct = generator.CreateReduct(permutation, localEpsilon, weights);
 				reduct.Id = this.GetNextReductId().ToString();
 				return reduct;
 			}

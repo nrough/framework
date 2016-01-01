@@ -53,7 +53,7 @@ namespace DisesorTest
         int boostingNumberOfReductsInWeakClassifier = 20;
         RuleQualityFunction boostingIdentificationFunction = null;
         RuleQualityFunction boostingVoteFunction = null;
-        int boostingMaxIterations = 200;
+        int boostingMaxIterations = 100;
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;

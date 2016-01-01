@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -179,8 +182,37 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
+            object tmpLock = new object();
+            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+
+            Parallel.ForEach(reduct.EquivalenceClasses, options,
+                () => Decimal.Zero,
+                (e, loopState, partialSum) =>
+                {
+                    decimal localSum = Decimal.Zero;
+                    decimal max = Decimal.MinValue;
+                    foreach (long decisionValue in e.DecisionValues)
+                    {
+                        localSum = Decimal.Zero;
+                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                            localSum += reduct.Weights[objectIdx];
+                        if (localSum > max)
+                            max = localSum;
+                    }
+                    return partialSum + max;
+                },
+                (localPartialSum) =>
+                {
+                    lock(tmpLock)
+                    {
+                        result += localPartialSum;
+                    }
+                });
+
+
+            /*
+            result = Decimal.Zero;
             decimal maxValue, sum;
-            
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 maxValue = Decimal.MinValue;
@@ -188,12 +220,14 @@ namespace Infovision.Datamining.Roughset
                 {
                     sum = Decimal.Zero;
                     foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        sum += reduct.Weights[objectIdx];
+                        sum += reduct.Weights[objectIdx];                   
                     if (sum > maxValue)
                         maxValue = sum;
                 }
                 result += maxValue;
             }
+            */
+
             return Decimal.Round(result, 17);            
         }
 

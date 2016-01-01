@@ -126,7 +126,8 @@ namespace Infovision.Datamining.Roughset
             ClassificationResult result = new ClassificationResult(testData, this.DecisionValues);
 
             ParallelOptions options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = Environment.ProcessorCount;                                  
+            options.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            //options.MaxDegreeOfParallelism = 1;
 
             if (weights == null)
             {
@@ -178,7 +179,7 @@ namespace Infovision.Datamining.Roughset
                         continue;
 
                     var decisionIdentification = new Dictionary<long, decimal>();
-                    long identifiedDecision = -1;
+                    KeyValuePair<long, decimal> identifiedDecision = new KeyValuePair<long, decimal>(-1, Decimal.Zero);
                     EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
                     if (eqClass != null)
                     {
@@ -190,17 +191,24 @@ namespace Infovision.Datamining.Roughset
                                 decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
                         }
 
-                        identifiedDecision = decisionIdentification.FindMaxValue();
+                        identifiedDecision = decisionIdentification.FindMaxValuePair();
+                    }                    
+
+                    //Voting and Identification is the same method, no need to calculate again the same 
+                    if (this.VoteFunction.Equals(this.IdentificationFunction))
+                    {
+                        if (reductVotesSum.ContainsKey(identifiedDecision.Key))
+                            reductVotesSum[identifiedDecision.Key] += identifiedDecision.Value;
+                        else
+                            reductVotesSum.Add(identifiedDecision.Key, identifiedDecision.Value);
                     }
                     else
                     {
-                        identifiedDecision = -1;
+                        if (reductVotesSum.ContainsKey(identifiedDecision.Key))
+                            reductVotesSum[identifiedDecision.Key] += this.VoteFunction(identifiedDecision.Key, reduct, eqClass);
+                        else
+                            reductVotesSum.Add(identifiedDecision.Key, this.VoteFunction(identifiedDecision.Key, reduct, eqClass));
                     }
-
-                    if (reductVotesSum.ContainsKey(identifiedDecision))
-                        reductVotesSum[identifiedDecision] += this.VoteFunction(identifiedDecision, reduct, eqClass);
-                    else
-                        reductVotesSum.Add(identifiedDecision, this.VoteFunction(identifiedDecision, reduct, eqClass));
 
                     if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
                         break;

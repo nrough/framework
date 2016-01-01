@@ -154,7 +154,7 @@ namespace Infovision.Data
 
         public DataRecordInternal GetRecordByIndex(int objectIndex, bool setObjectId = true)
         {
-            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.NumberOfRecords);
+            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.dataStoreInfo.NumberOfFields);
             for (int i = 1; i <= this.dataStoreInfo.NumberOfFields; i++)
                 valueMap[i] = this.GetFieldValue(objectIndex, i);
             DataRecordInternal ret = new DataRecordInternal(valueMap);
@@ -302,24 +302,20 @@ namespace Infovision.Data
         }
 
         public void GetFieldValues(int objectIndex, int[] fieldIds, ref long[] cursor)
-        {            
-            //Parallel.For(0, fieldIds.Length, i =>
+        {                        
             for (int i = 0; i < fieldIds.Length; i++)
             {
                 cursor[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
             }
-            //);            
         }
 
         public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
-            long[] result = new long[fieldIds.Length];
-            //Parallel.For(0, fieldIds.Length, i =>
+            long[] result = new long[fieldIds.Length];            
             for(int i = 0; i<fieldIds.Length; i++)
             {
                 result[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
-            }
-            //);
+            }            
             return result;
         }
 
@@ -337,13 +333,11 @@ namespace Infovision.Data
 
         public long[] GetFieldValues(int objectIdx)
         {
-            long[] result = new long[this.DataStoreInfo.NumberOfFields];
-            //Parallel.For(0, this.DataStoreInfo.NumberOfFields, i =>
+            long[] result = new long[this.DataStoreInfo.NumberOfFields];            
             for(int i = 0; i<this.DataStoreInfo.NumberOfFields; i++)
             {
                 result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
-            }
-            //);
+            }            
             return result;
         }
 

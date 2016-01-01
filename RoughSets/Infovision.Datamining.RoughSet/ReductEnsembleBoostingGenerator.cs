@@ -178,8 +178,8 @@ namespace Infovision.Datamining.Roughset
 					continue;
 				}
 
-
 				this.AddModel(reductStoreCollection.First(), alpha);
+				
 				double sum = 0.0d;
 				var rangePrtitioner = Partitioner.Create(0, weights.Length);
 				Parallel.ForEach(
@@ -206,7 +206,6 @@ namespace Infovision.Datamining.Roughset
 							sum += localPartialSum;
 						}
 					});
-									
 
 				result = null;
 				//Normalize object weights
@@ -229,8 +228,7 @@ namespace Infovision.Datamining.Roughset
 							rs.Weight /= (decimal)alphaSum;
 						});
 
-						RoughClassifier classifierEnsemble = new RoughClassifier(
-							this.Models, this.IdentyficationType, this.VoteType, decisionValues);
+						RoughClassifier classifierEnsemble = new RoughClassifier(this.Models, this.IdentyficationType, this.VoteType, decisionValues);
 						ClassificationResult resultEnsemble = classifierEnsemble.Classify(this.DataStore);
 						
 						// De-normalize weights for models confidence

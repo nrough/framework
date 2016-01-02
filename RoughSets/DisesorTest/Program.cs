@@ -25,7 +25,7 @@ namespace DisesorTest
         static string testfile_merge = @"c:\data\disesor\testData_merge.csv";
         static string labelfile = @"c:\data\disesor\trainingLabels.csv";
         static string outputfile = @"c:\data\disesor\result.csv";
-        static string weightsoutput = @"c:\data\disesor\weights.csv";                        
+        //static string weightsoutput = @"c:\data\disesor\weights.csv";                        
 
         private Dictionary<string, string> metadataDict;
 
@@ -46,14 +46,15 @@ namespace DisesorTest
 
         DiscretizationType discretizationType = DiscretizationType.Entropy;
 
+        
         string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
         decimal innerEpsilon = 0.4m;
-
-
         int boostingNumberOfReductsInWeakClassifier = 20;
-        RuleQualityFunction boostingIdentificationFunction = null;
-        RuleQualityFunction boostingVoteFunction = null;
         int boostingMaxIterations = 100;
+
+
+        RuleQualityFunction boostingIdentificationFunction = null;
+        RuleQualityFunction boostingVoteFunction = null;        
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;
@@ -284,7 +285,7 @@ namespace DisesorTest
             Console.Write("Reduct generation...");
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Generate();
-            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
+            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             Console.WriteLine("Done");
 
             foreach (IReductStore reductStore in reductStoreCollection)

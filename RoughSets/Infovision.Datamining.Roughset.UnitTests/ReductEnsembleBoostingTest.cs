@@ -228,6 +228,86 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         data.DataStoreInfo.GetDecisionValues());
             ClassificationResult resultTrn = classifierTrn.Classify(data, null);
         }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(0)]
+        public void GenerateBoostingTestNullExceptionError(int i)
+        {
+            DataStore train = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, train.DataStoreInfo);
+
+            //-------------------------------------- Parameters --------------------------
+
+            string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+            int numberOfPermutations = 100;
+            decimal epsilon = 0.0m;
+        
+            RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
+            RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+            WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
+
+            string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
+            decimal innerEpsilon = 0.4m;
+
+            int boostingMaxIterations = 100;
+            int boostingNumberOfReductsInWeakClassifier = 2;
+            RuleQualityFunction boostingIdentificationFunction = null;
+            RuleQualityFunction boostingVoteFunction = null;            
+            UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+            CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+            bool boostingCheckEnsambleErrorDuringTraining = false;
+
+            if (boostingIdentificationFunction == null)
+                boostingIdentificationFunction = identificationFunction;
+
+            if (boostingVoteFunction == null)
+                boostingVoteFunction = voteFunction;
+
+            //----------------------------------------------------------------------------
+
+            WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
+
+            Args innerArgs = new Args();
+            innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+
+            Args args = new Args();
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            args.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
+            args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+
+            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
+            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, boostingIdentificationFunction);
+            args.SetParameter(ReductGeneratorParamHelper.VoteType, boostingVoteFunction);
+            args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
+            args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
+            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
+            args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+            args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+            
+            IReductGenerator generator = ReductFactory.GetReductGenerator(args);
+            generator.Generate();
+            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
+
+            Assert.NotNull(reductStoreCollection);
+
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, identificationFunction, voteFunction, train.DataStoreInfo.GetDecisionValues());
+            ClassificationResult result = classifier.Classify(test);
+            Console.WriteLine(result.Accuracy);            
+        }
         
         [Test]
         public void GenerateExperimentBoostingStandard()

@@ -64,18 +64,7 @@ namespace Infovision.Datamining.Roughset
 
 			if (args.Exist(ReductGeneratorParamHelper.AgregateFunction))
 				this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
-		}
-
-		private IReduct GetNextReductLocal(decimal[] weights)
-		{
-			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
-			int[] attr = permutation.ToArray();
-			ReductGeneralizedMajorityDecision reduct = new ReductGeneralizedMajorityDecision(this.DataStore, attr, weights, 0);
-			reduct.Id = this.GetNextReductId().ToString();
-			reduct.Reduce(attr);
-
-			return reduct;
-		}
+		}		
 		
 		public override IReduct GetNextReduct(decimal[] weights)
 		{

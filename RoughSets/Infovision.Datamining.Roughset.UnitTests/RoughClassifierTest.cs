@@ -125,8 +125,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                                 classifierOld.PrintClassification(record, identificationType, voteType);
                                 Console.WriteLine();
-                                Console.WriteLine();
-                                classifier.PrintClassification(record);
+                                Console.WriteLine();                                
 
                                 Console.Beep();
 

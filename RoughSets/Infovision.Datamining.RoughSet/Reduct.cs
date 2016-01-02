@@ -15,8 +15,8 @@ namespace Infovision.Datamining.Roughset
         private decimal[] objectWeights;                
         private DataStore dataStore;
         private FieldSet attributeSet;
-        private EquivalenceClassCollection eqClassMap;
-        protected object syncRoot = new Object();
+        protected EquivalenceClassCollection eqClassMap;
+        protected object syncRoot = new object();
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Roughset
                     {
                         if (this.eqClassMap == null)
                         {
-                            this.BuildEquivalenceMap();
+                            this.eqClassMap = this.CreateEquivalenceClassCollection();
                         }
                     }
                 }
@@ -156,30 +156,29 @@ namespace Infovision.Datamining.Roughset
 
         #endregion        
 
-        #region Methods
-
-        protected virtual void InitEquivalenceMap()
-        {
-            this.eqClassMap = new EquivalenceClassCollection(this.DataStore);
-        }
+        #region Methods        
         
-        public virtual void BuildEquivalenceMap()
-        {            
-            if (!this.UseGlobalCache)
-            {               
-                this.InitEquivalenceMap();
-                this.eqClassMap.Calc(this.attributeSet, this.dataStore, this.objectWeights);
-                return;
+        public virtual EquivalenceClassCollection CreateEquivalenceClassCollection()
+        {
+            EquivalenceClassCollection result = null;
+            string partitionKey = null;
+
+            if (this.UseGlobalCache)
+            {
+                partitionKey = this.ReductPartitionCacheKey;
+                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;                
             }
 
-            string partitionKey = this.ReductPartitionCacheKey;
-            this.eqClassMap = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
-            if (eqClassMap == null)
+            if (result == null)
             {
-                this.InitEquivalenceMap();
-                this.eqClassMap.Calc(this.attributeSet, this.dataStore, this.objectWeights);
-                ReductCache.Instance.Set(partitionKey, eqClassMap);
+                result = new EquivalenceClassCollection(this.dataStore);
+                result.Calc(this.attributeSet, this.dataStore, this.objectWeights);
             }
+
+            if (this.UseGlobalCache)
+                ReductCache.Instance.Set(partitionKey, result);
+
+            return result;
         }
 
         protected virtual bool CheckAddAttribute(int attributeId)
@@ -194,7 +193,7 @@ namespace Infovision.Datamining.Roughset
                 lock (syncRoot)
                 {
                     this.attributeSet.AddElement(attributeId);
-                    this.BuildEquivalenceMap();
+                    this.eqClassMap = null;
                 }
                 return true;
             }
@@ -214,7 +213,7 @@ namespace Infovision.Datamining.Roughset
                 lock (syncRoot)
                 {
                     this.attributeSet.RemoveElement(attributeId);
-                    this.BuildEquivalenceMap();
+                    this.eqClassMap = null;
                 }
                 return true;
             }

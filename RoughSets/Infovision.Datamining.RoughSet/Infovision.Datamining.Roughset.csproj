@@ -123,7 +123,6 @@
     <Compile Include="ReductEnsembleGenerator.cs" />
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />
     <Compile Include="ReductGeneralizedDecisionGenerator.cs" />
-    <Compile Include="ReductGeneralizedMajorityDecision.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
     <Compile Include="ReductGeneratorParamHelper.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />

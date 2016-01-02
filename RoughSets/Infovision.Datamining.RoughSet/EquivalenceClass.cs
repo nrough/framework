@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         private DataStore dataStore; //reference to data
 
-        private readonly object syncRoot = new object();
+        private readonly object mutex = new object();
 
         //TODO to delete
         private Dictionary<long, HashSet<int>> decisionObjectIndexes; //map: decision -> set of objects with decision
@@ -72,7 +72,6 @@ namespace Infovision.Datamining.Roughset
             get 
             {
                 CalcStatistics();
-
                 return this.majorDecision;                
             }            
         }                
@@ -86,7 +85,7 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                CalcStatistics(); //flag is checked inside
+                CalcStatistics();
                 return decisionSet;
             }
 
@@ -180,7 +179,7 @@ namespace Infovision.Datamining.Roughset
 
         protected void DoCalcStatistics()
         {
-            lock (syncRoot)
+            lock (mutex)
             {                
                 long tmpMajorDecision = -1;
                 decimal maxWeightSum = Decimal.MinValue;
@@ -217,7 +216,7 @@ namespace Infovision.Datamining.Roughset
 
         public void AddDecision(long decisionValue, decimal weight, bool updateStat = true)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 this.decisionSet += decisionValue;
                 totalWeightSum += weight;
@@ -241,7 +240,7 @@ namespace Infovision.Datamining.Roughset
 
         public void AddObject(int objectIndex, long decisionValue, decimal weight, bool updateStat = true)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 this.instances.Add(objectIndex, weight);
                 
@@ -264,7 +263,7 @@ namespace Infovision.Datamining.Roughset
 
         public void AddObjectInstances(Dictionary<int, decimal> instancesToAdd)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 foreach (var kvp in instancesToAdd)
                     this.instances.Add(kvp.Key, kvp.Value);
@@ -273,7 +272,7 @@ namespace Infovision.Datamining.Roughset
         
         public void RemoveObject(int objectIndex)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 if (this.instances.ContainsKey(objectIndex))
                 {
@@ -308,7 +307,7 @@ namespace Infovision.Datamining.Roughset
 
         protected void CalcStatistics()
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 if (!this.isStatCalculated && this.ManualStatCalculation == false)
                     this.DoCalcStatistics();
@@ -317,7 +316,7 @@ namespace Infovision.Datamining.Roughset
 
         public void RemoveObjectsWithMinorDecisions()
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 DoCalcStatistics();
 
@@ -341,7 +340,7 @@ namespace Infovision.Datamining.Roughset
             if (this.DecisionSet.Count <= 1)
                 return;
 
-            lock (syncRoot)
+            lock (mutex)
             {               
                 bool isFirst = true;
                 var items = from kvp in decisionWeigthSums

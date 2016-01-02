@@ -15,8 +15,7 @@ namespace Infovision.Datamining.Roughset
         
         private Dictionary<long[], EquivalenceClass> partitions;
         private Dictionary<long, int> decisionCount;
-        private int[] attributes;
-        
+        private int[] attributes;        
         private object syncRoot = new object();
 
         #endregion
@@ -153,7 +152,7 @@ namespace Infovision.Datamining.Roughset
         protected void InitDecisionCount(DataStoreInfo dataStoreInfo)
         {
             DataFieldInfo decisionInfo = dataStoreInfo.GetFieldInfo(dataStoreInfo.DecisionFieldId);
-            this.decisionCount = new Dictionary<long, int>(decisionInfo.Values().Count);
+            this.decisionCount = new Dictionary<long, int>(decisionInfo.InternalValues().Count);
             foreach (long decisionValue in decisionInfo.InternalValues())
                 this.decisionCount.Add(decisionValue, decisionInfo.Histogram.GetBinValue(decisionValue));
         }

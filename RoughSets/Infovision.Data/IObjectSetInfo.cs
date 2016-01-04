@@ -9,6 +9,6 @@ namespace Infovision.Data
         int NumberOfDecisionValues { get; }
         decimal PriorDecisionProbability(long decisionValue);
         int NumberOfObjectsWithDecision(long decisionValue);
-        ICollection<Int64> GetDecisionValues();
+        ICollection<long> GetDecisionValues();
     }
 }

@@ -133,15 +133,19 @@ namespace Infovision.Datamining.Roughset
 			decimal[] weights = this.WeightGenerator.Weights;
 
 			long[] decisionValues = this.DataStore.DataStoreInfo.GetDecisionValues().ToArray();
-			object tmpLock = new object();                
+			object tmpLock = new object();
+
+			long[] predictions = new long[this.DataStore.NumberOfRecords];
 
 			do
 			{
-				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
+				IReductStoreCollection reductStoreCollection 
+					= this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				ClassificationResult result = classifier.Classify(this.DataStore);
-				error = result.WeightUnclassified + result.WeightMisclassified;
+				//error = result.WeightUnclassified + result.WeightMisclassified;
+				error = result.Error;
 				double alpha = this.CalcModelConfidence(K, error);
 
 				if (error >= this.Threshold)
@@ -179,7 +183,7 @@ namespace Infovision.Datamining.Roughset
 							weights[i] = (decimal)this.UpdateWeights((double)weights[i],
 																		 K,
 																		 this.DataStore.GetDecisionValue(i),
-																		 result.GetResult(this.DataStore.ObjectIndex2ObjectId(i)),
+																		 result.GetPrediction(i),
 																		 error);
 							partialSum += (double)weights[i];
 						}

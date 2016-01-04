@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public abstract class ReductStoreBase : IReductStore
     {
-        protected object syncRoot = new object();
+        protected object mutex = new object();
 
         #region Properties
 
@@ -167,7 +167,7 @@ namespace Infovision.Datamining.Roughset
         public override bool IsSuperSet(IReduct reduct)
         {
             bool ret = false;
-            lock (syncRoot)
+            lock (mutex)
             {
                 foreach (IReduct localReduct in reducts)
                 {
@@ -210,7 +210,7 @@ namespace Infovision.Datamining.Roughset
 
         public override void AddReduct(IReduct reduct)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 if (this.CanAddReduct(reduct))
                 {
@@ -221,7 +221,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CanAddReduct(IReduct reduct)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 foreach (IReduct localReduct in reducts)
                 {
@@ -248,7 +248,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void DoAddReduct(IReduct reduct)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 reducts.Add(reduct);
             }
@@ -261,7 +261,7 @@ namespace Infovision.Datamining.Roughset
                 return new ReductStore(this);
             }
 
-            lock (syncRoot)
+            lock (mutex)
             {
                 reducts.Sort(comparer);
             }

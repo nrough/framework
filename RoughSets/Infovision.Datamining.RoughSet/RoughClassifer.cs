@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         private int numberOfModels;
         private bool allModelsAreEqual;
         
-        public IEnumerable<long> DecisionValues { get; set; }
+        public ICollection<long> DecisionValues { get; set; }
         public bool UseExceptionRules { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset
             IReductStoreCollection reductStoreCollection,
             RuleQualityFunction identificationFunction, 
             RuleQualityFunction voteFunction,
-            IEnumerable<long> decisionValues)
+            ICollection<long> decisionValues)
         {
             this.ReductStoreCollection = reductStoreCollection;
             this.UseExceptionRules = true;
@@ -79,26 +79,22 @@ namespace Infovision.Datamining.Roughset
         {
             ClassificationResult result = new ClassificationResult(testData, this.DecisionValues);
 
-            ParallelOptions options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = Environment.ProcessorCount;
-            //options.MaxDegreeOfParallelism = 1;
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+            options.MaxDegreeOfParallelism = 1;
 
             if (weights == null)
             {
                 double w = 1.0 / testData.NumberOfRecords;
                 
-                //for(int objectIndex = 0; objectIndex<testData.NumberOfRecords; objectIndex++)
+                //for(int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
+                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = this.Classify(record);
-                    var max = prediction.FindMaxValuePair();
-
-                    result.AddResult(
-                        record.ObjectId,
-                        max.Key,
-                        record[testData.DataStoreInfo.DecisionFieldId],
-                        w);
+                    result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], w);
                 });
             }
             else
@@ -106,15 +102,9 @@ namespace Infovision.Datamining.Roughset
                 //for (int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex);
+                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = this.Classify(record);
-                    var max = prediction.FindMaxValuePair();
-
-                    result.AddResult(
-                        record.ObjectId,
-                        max.Key,
-                        record[testData.DataStoreInfo.DecisionFieldId],
-                        (double)weights[objectIndex]);
+                    result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
                 });
             }
 
@@ -123,76 +113,90 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record)
         {
-            var globalStoreVoresSum = new Dictionary<long, decimal>();
+            int decCount = this.DecisionValues.Count;
+            int decCountPlusOne = this.DecisionValues.Count + 1;
+            long[] decisions = new long[decCountPlusOne];
+            decisions[0] = -1;
+            Array.Copy(this.DecisionValues.ToArray(), 0, decisions, 1, decCount);
+            
+            decimal[] globalVotes = new decimal[decCountPlusOne];
+            decimal[] reductsVotes = new decimal[decCountPlusOne];
+            decimal[] identificationWeights = new decimal[decCountPlusOne];
+            int identifiedDecision;
+            decimal identifiedDecisionWeight;
+
             foreach (IReductStore rs in this.ReductStoreCollection.Where(r => r.IsActive))
             {
-                var reductVotesSum = new Dictionary<long, decimal>();
+                for (int k = 0; k < decCountPlusOne; k++)
+                    reductsVotes[k] = Decimal.Zero;
+
                 foreach (IReduct reduct in rs)
                 {
                     if (UseExceptionRules == false && reduct.IsException)
                         continue;
 
-                    var decisionIdentification = new Dictionary<long, decimal>();
-                    KeyValuePair<long, decimal> identifiedDecision = new KeyValuePair<long, decimal>(-1, Decimal.Zero);
+                    for (int k = 0; k < decCountPlusOne; k++)
+                        identificationWeights[k] = Decimal.Zero;
+                    
+                    identifiedDecision = 0; // -1 (unclassified)
+                    identifiedDecisionWeight = Decimal.Zero;
                     EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
                     if (eqClass != null)
                     {
-                        foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
+                        for (int k = 1; k < decCountPlusOne; k++)
                         {
-                            if (decisionIdentification.ContainsKey(decisionValue))
-                                decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);
-                            else
-                                decisionIdentification.Add(decisionValue, this.IdentificationFunction(decisionValue, reduct, eqClass));
+                            identificationWeights[k] = this.IdentificationFunction(decisions[k], reduct, eqClass);
+                            if (identifiedDecisionWeight < identificationWeights[k])
+                            {
+                                identifiedDecisionWeight = identificationWeights[k];
+                                identifiedDecision = k;
+                            }
                         }
-
-                        identifiedDecision = decisionIdentification.FindMaxValuePair();
                     }                    
 
-                    //Voting and Identification is the same method, no need to calculate again the same 
-                    if (this.VoteFunction.Equals(this.IdentificationFunction))
-                    {
-                        if (reductVotesSum.ContainsKey(identifiedDecision.Key))
-                            reductVotesSum[identifiedDecision.Key] += identifiedDecision.Value;
-                        else
-                            reductVotesSum.Add(identifiedDecision.Key, identifiedDecision.Value);
-                    }
-                    else
-                    {
-                        if (reductVotesSum.ContainsKey(identifiedDecision.Key))
-                            reductVotesSum[identifiedDecision.Key] += this.VoteFunction(identifiedDecision.Key, reduct, eqClass);
-                        else
-                            reductVotesSum.Add(identifiedDecision.Key, this.VoteFunction(identifiedDecision.Key, reduct, eqClass));
-                    }
+                    reductsVotes[identifiedDecision] += this.VoteFunction.Equals(this.IdentificationFunction) 
+                        ? identifiedDecisionWeight
+                        : identifiedDecision != 0 ? this.VoteFunction(decisions[identifiedDecision], reduct, eqClass)
+                                                  : Decimal.Zero;
 
                     if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
                         break;
                 }
 
                 if(this.numberOfModels == 1)
-                    return reductVotesSum;
+                {
+                    var result = new Dictionary<long, decimal>(decCountPlusOne);
+                    for(int k = 0; k < decCountPlusOne; k++)
+                        result[decisions[k]] = reductsVotes[k];
+                    return result;
+                }
 
                 if(this.allModelsAreEqual)
                 {
-                    foreach(var kvp in reductVotesSum)
-                    {
-                        if(globalStoreVoresSum.ContainsKey(kvp.Key))
-                            globalStoreVoresSum[kvp.Key] += kvp.Value;
-                        else
-                            globalStoreVoresSum.Add(kvp.Key, kvp.Value);
-                    }
+                    for (int k = 0; k < decCountPlusOne; k++)
+                        globalVotes[k] += reductsVotes[k];
                 }
                 else
                 {
-                    long maxDecision = reductVotesSum.FindMaxValuePair().Key;
-                    
-                    if(globalStoreVoresSum.ContainsKey(maxDecision))
-                        globalStoreVoresSum[maxDecision] += rs.Weight;
-                    else
-                        globalStoreVoresSum.Add(maxDecision, rs.Weight);                    
+                    int maxDec = 0; // -1 (unclassified)
+                    decimal maxDecWeight = Decimal.Zero;
+                    for (int k = 0; k < decCountPlusOne; k++)
+                    {
+                        if (maxDecWeight < reductsVotes[k])
+                        {
+                            maxDecWeight = reductsVotes[k];
+                            maxDec = k;
+                        }
+                    }
+                    globalVotes[maxDec] += rs.Weight;
                 }
             }
 
-            return globalStoreVoresSum;
+            var resultGlobal = new Dictionary<long, decimal>(decCountPlusOne);
+            for(int k = 0; k < decCountPlusOne; k++)
+                resultGlobal[decisions[k]] = globalVotes[k];
+
+            return resultGlobal;
         }
 
         public Dictionary<long, decimal> IdentifyDecisions(DataRecordInternal record, IReduct reduct)
@@ -224,7 +228,7 @@ namespace Infovision.Datamining.Roughset
         {
             DataRecordInternal record = data.GetRecordByIndex(objectIdx, false);
             var decisions = this.IdentifyDecisions(record, reduct);
-            long result = decisions.Count > 0 ? decisions.FindMaxValue() : -1;
+            long result = decisions.Count > 0 ? decisions.FindMaxValueKey() : -1;
             if (record[data.DataStoreInfo.DecisionFieldId] == result)
                 return true;
             return false;

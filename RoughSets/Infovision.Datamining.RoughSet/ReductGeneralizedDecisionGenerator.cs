@@ -101,17 +101,17 @@ namespace Infovision.Datamining.Roughset
 
         public override void Generate()
         {
-            this.ReductStoreCollection = new ReductStoreCollection();
             ParallelOptions options = new ParallelOptions();
             options.MaxDegreeOfParallelism = Environment.ProcessorCount;
-                       
+
+            this.ReductStoreCollection = new ReductStoreCollection(1);
+            ReductStore localReductPool = new ReductStore(this.Permutations.Count);
             //foreach (Permutation permutation in this.Permutations)
             Parallel.ForEach(this.Permutations, options, permutation =>
             {
-                ReductStore localReductPool = new ReductStore();
                 localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray(), localReductPool));
-                this.ReductStoreCollection.AddStore(localReductPool);
-            });               
+            });
+            this.ReductStoreCollection.AddStore(localReductPool);               
         }
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
@@ -240,12 +240,12 @@ namespace Infovision.Datamining.Roughset
 
         public override void Generate()
         {
-            this.ReductStoreCollection = new ReductStoreCollection();
             ParallelOptions options = new ParallelOptions();
             options.MaxDegreeOfParallelism = 2;
 
             if (this.UseExceptionRules)
             {
+                this.ReductStoreCollection = new ReductStoreCollection();
                 //foreach (Permutation permutation in this.Permutations)
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {
@@ -256,7 +256,8 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                ReductStore localReductPool = new ReductStore();
+                this.ReductStoreCollection = new ReductStoreCollection(1);
+                ReductStore localReductPool = new ReductStore(this.Permutations.Count);
                 //foreach (Permutation permutation in this.Permutations)
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {                    

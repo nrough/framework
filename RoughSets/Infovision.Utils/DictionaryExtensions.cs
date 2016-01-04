@@ -46,7 +46,7 @@ namespace Infovision.Utils
             return ret;
         }
         
-        public static TKey FindMaxValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
+        public static TKey FindMaxValueKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
         {
             return dictionary.FindMaxValuePair(comparer).Key;
         }

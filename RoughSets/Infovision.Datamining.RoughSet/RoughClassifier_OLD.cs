@@ -107,13 +107,13 @@ namespace Infovision.Datamining.Roughset
 
             public void IdentifyDecision()
             {
-                identifiedDecision.Add(support.Description(), decisionSupport.Count > 0 ? decisionSupport.FindMaxValue() : -1);
-                identifiedDecision.Add(confidence.Description(), decisionConfidence.Count > 0 ? decisionConfidence.FindMaxValue() : -1);
-                identifiedDecision.Add(coverage.Description(), decisionCoverage.Count > 0 ? decisionCoverage.FindMaxValue() : -1);
+                identifiedDecision.Add(support.Description(), decisionSupport.Count > 0 ? decisionSupport.FindMaxValueKey() : -1);
+                identifiedDecision.Add(confidence.Description(), decisionConfidence.Count > 0 ? decisionConfidence.FindMaxValueKey() : -1);
+                identifiedDecision.Add(coverage.Description(), decisionCoverage.Count > 0 ? decisionCoverage.FindMaxValueKey() : -1);
 
-                identifiedDecision.Add(weightSupport.Description(), decisionWeightSupport.Count > 0 ? decisionWeightSupport.FindMaxValue() : -1);
-                identifiedDecision.Add(weightConfidence.Description(), decisionWeightConfidence.Count > 0 ? decisionWeightConfidence.FindMaxValue() : -1);
-                identifiedDecision.Add(weightCoverage.Description(), decisionWeightCoverage.Count > 0 ? decisionWeightCoverage.FindMaxValue() : -1);                
+                identifiedDecision.Add(weightSupport.Description(), decisionWeightSupport.Count > 0 ? decisionWeightSupport.FindMaxValueKey() : -1);
+                identifiedDecision.Add(weightConfidence.Description(), decisionWeightConfidence.Count > 0 ? decisionWeightConfidence.FindMaxValueKey() : -1);
+                identifiedDecision.Add(weightCoverage.Description(), decisionWeightCoverage.Count > 0 ? decisionWeightCoverage.FindMaxValueKey() : -1);                
             }
 
             public long GetIdentifiedDecision(string measureKey)
@@ -856,7 +856,7 @@ namespace Infovision.Datamining.Roughset
                         decisionVotes.Add(decision, voteWeight);
                 }
 
-                result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
+                result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValueKey() : -1;
 
                 if (localEnsemblesVotes.ContainsKey(result))
                     localEnsemblesVotes[result] += reductDescriptor.Weight;
@@ -932,12 +932,21 @@ namespace Infovision.Datamining.Roughset
             {
                 DataRecordInternal record = dataStore.GetRecordByIndex(objectIndex);
                 
-                long result = this.VoteObject(record, identificationType, voteType);                
+                long result = this.VoteObject(record, identificationType, voteType);
+                /*
                 classificationResult.AddResultNoLock(dataStore.ObjectIndex2ObjectId(objectIndex), //objectId
                                                result,//predicted class
                                                dataStore.GetDecisionValue(objectIndex), //actual class
                                                weights != null 
                                                 ? (double)weights[objectIndex] 
+                                                : 1.0 / dataStore.NumberOfRecords); //object weight from model
+                */
+
+                classificationResult.AddResult(objectIndex, 
+                                               result,//predicted class
+                                               dataStore.GetDecisionValue(objectIndex), //actual class
+                                               weights != null
+                                                ? (double)weights[objectIndex]
                                                 : 1.0 / dataStore.NumberOfRecords); //object weight from model
             }
 
@@ -1047,7 +1056,7 @@ namespace Infovision.Datamining.Roughset
                         decisionVotes.Add(decision, voteWeight);                                                         
                 }
 
-                result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValue() : -1;
+                result = decisionVotes.Count > 0 ? decisionVotes.FindMaxValueKey() : -1;
 
                 if (ensebleVotes.ContainsKey(result))                    
                     ensebleVotes[result] += reductDescriptor.Weight;
@@ -1055,7 +1064,7 @@ namespace Infovision.Datamining.Roughset
                     ensebleVotes.Add(result, reductDescriptor.Weight);
             }
 
-            long ensembleResult = ensebleVotes.Count > 0 ? ensebleVotes.FindMaxValue() : -1;            
+            long ensembleResult = ensebleVotes.Count > 0 ? ensebleVotes.FindMaxValueKey() : -1;            
             return ensembleResult;
         }
 

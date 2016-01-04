@@ -479,10 +479,10 @@ namespace DisesorTest
                 {
                     foreach (long predicted in decisionValues)
                     {
-                        Console.WriteLine("Predicted {0} Actual {1} Count {2}", predicted, actual, result.GetConfusionMatrix(predicted, actual));
+                        Console.WriteLine("Predicted {0} Actual {1} Count {2}", predicted, actual, result.GetConfusionTable(predicted, actual));
                     }
 
-                    Console.WriteLine("Predicted {0} Actual {1} Count {2}", -1, actual, result.GetConfusionMatrix(-1, actual));
+                    Console.WriteLine("Predicted {0} Actual {1} Count {2}", -1, actual, result.GetConfusionTable(-1, actual));
                 }
                 
             }

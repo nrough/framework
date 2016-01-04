@@ -13,14 +13,13 @@ namespace Infovision.Datamining.Roughset
         int Count { get; }
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
-        //List<IReductStore> ActiveModels();
     }
 
     [Serializable]
     public class ReductStoreCollection : IReductStoreCollection
     {
         List<IReductStore> stores;
-        protected object syncRoot = new object();
+        protected object mutex = new object();
 
         public int Count { get { return this.stores.Count; } }
 
@@ -36,7 +35,7 @@ namespace Infovision.Datamining.Roughset
         
         public void AddStore(IReductStore reductStore)
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 this.stores.Add(reductStore);
             }
@@ -54,7 +53,7 @@ namespace Infovision.Datamining.Roughset
 
         public List<IReductStore> ActiveModels()
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 return stores.FindAll(x => x.IsActive == true);
             }
@@ -67,7 +66,7 @@ namespace Infovision.Datamining.Roughset
             double measureSum = 0.0;
             int count = 0;
 
-            lock (syncRoot)
+            lock (mutex)
             {
                 foreach (IReductStore reducts in this)
                 {
@@ -91,7 +90,7 @@ namespace Infovision.Datamining.Roughset
         public IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer)
         {
             ReductStoreCollection result = new ReductStoreCollection(this.Count);
-            lock (syncRoot)
+            lock (mutex)
             {
                 foreach (IReductStore reductStore in this)
                 {

@@ -29,6 +29,7 @@ namespace Infovision.Datamining
     [Serializable]
     public class ClassificationResult
     {
+        /*
         #region ConfusionMatrixKey
 
         [Serializable]
@@ -70,37 +71,30 @@ namespace Infovision.Datamining
         }
 
         #endregion
+        */
 
         #region Members
 
-        private Dictionary<long, long> classificationMap;        
-        private Dictionary<ConfusionMatrixKey, int> confusionMatrix = new Dictionary<ConfusionMatrixKey, int>();
-        private Dictionary<long, int> decisionActualCount;
+        private Dictionary<long, int> value2index;
+        private long[] predictionResults;
+        private int[][] confusionTable;
+        private double[][] confusionTableWeights;
+        private long[] decisions;
+        private int decCount;
+        private int decCountPlusOne;
+        private int counter;
         private DataStore testData = null;
         
-        private int numberOfClassified = 0;
-        private int numberOfMisclassified = 0;
-        private int numberOfUnclassified = 0;
-        
-        private double weightClassified = 0.0;
-        private double weightMisclassfied = 0.0;
-        private double weightUnclassified = 0.0;
-
         //TODO use classificationInfo instead
-        private double qualityRatio = 0.0;
-        
-        public object syncRoot = new object();
+        private double qualityRatio;
 
         #endregion        
 
         #region Properties
 
-        /// <summary>
-        /// Number of elements being classified e.g. total number of objects in the test dataset
-        /// </summary>
         public int Count
         {
-            get { return classificationMap.Count; }
+            get { return this.counter; }
         }
 
         public DataStore TestData
@@ -109,23 +103,11 @@ namespace Infovision.Datamining
             set { this.testData = value; }
         }
 
-        public double Error
-        {
-            get
-            {
-                double weightSum = this.weightMisclassfied + this.weightUnclassified + this.weightClassified;
-                if (weightSum != 0)
-                    return (this.weightMisclassfied + this.weightUnclassified) / weightSum;
-                else
-                    return 1.0;
-            }
-        }
-
         public double Accuracy
         {
             get 
             {
-                return (this.Count != 0) ? (double)numberOfClassified / (double)this.Count : 0;
+                return counter > 0 ? (double)this.Classified / (double)counter : 0;
             }
         }
 
@@ -135,12 +117,16 @@ namespace Infovision.Datamining
             {
                 double sum = 0;
                 int numberOfDecisions = 0;
-                foreach (KeyValuePair<long, int> kvp in this.decisionActualCount)
+
+                for (int i = 1; i < decCountPlusOne; i++)
                 {
-                    if (kvp.Value > 0)
+                    int count = 0;
+                    for (int j = 0; j < decCountPlusOne; j++)
+                        count += confusionTable[i][j];
+
+                    if (count > 0)
                     {
-                        sum += ((double)this.GetConfusionTable(kvp.Key, ConfusionMatrixElement.TruePositive) / (double)kvp.Value);
-                        numberOfDecisions++;
+                        sum += (double) confusionTable[i][i] / (double) count;
                     }
                 }
 
@@ -172,7 +158,7 @@ namespace Infovision.Datamining
         {
             get
             {
-                return (this.Count != 0) ? (double)(numberOfClassified + numberOfMisclassified) / (double)this.Count : 0; ;
+                return this.Count > 0 ? (double)(this.Classified + this.Misclassified) / (double)this.Count: 0;
             }
         }
 
@@ -180,28 +166,94 @@ namespace Infovision.Datamining
         {
             get
             {
-                return ((numberOfClassified + numberOfMisclassified) != 0) ? (double)numberOfClassified / (double)(numberOfClassified + numberOfMisclassified) : 0;
+                int classified = this.Classified;
+                int misclassified = this.Misclassified;
+                return ((classified + misclassified) != 0) ? (double)classified / (double)(classified + misclassified) : 0;
             }
         }
 
         public int Classified
         {
-            get { return numberOfClassified; }
+            get 
+            {
+                int sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    sum += confusionTable[i][i];
+                return sum;
+            }
         }
 
         public int Misclassified
         {
-            get { return numberOfMisclassified; }
+            get 
+            {
+                int sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    for (int j = 0; j < decCountPlusOne; j++)
+                        if (i != j)
+                            sum += confusionTable[i][j];
+                return sum; 
+            }
         }
 
         public int Unclassified
         {
-            get { return numberOfUnclassified; }
+            get 
+            {
+                int sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    sum += confusionTable[i][0];
+                return sum; 
+            }
         }
 
-        public double WeightClassified { get { return weightClassified; } }
-        public double WeightMisclassified { get { return weightMisclassfied; } }
-        public double WeightUnclassified { get { return weightUnclassified; } }        
+        public double WeightClassified
+        {
+            get
+            {
+                double sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    sum += this.confusionTableWeights[i][i];
+                return sum;
+            }
+        }
+
+        public double WeightMisclassified
+        {
+            get
+            {
+                double sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    for (int j = 1; j < decCountPlusOne; j++)
+                        if (i != j)
+                            sum += this.confusionTableWeights[i][j];
+                return sum;
+            }
+        }
+
+        public double WeightUnclassified
+        {
+            get
+            {
+                double sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    sum += confusionTable[i][0];
+                return sum;
+            }
+        }
+
+        public double Error
+        {
+            get
+            {
+                double sum = 0;
+                for (int i = 1; i < decCountPlusOne; i++)
+                    for (int j = 0; j < decCountPlusOne; j++)
+                        if (i != j)
+                            sum += this.confusionTableWeights[i][j];
+                return sum;
+            }
+        }
 
         //TODO use classification info instead
         public double QualityRatio
@@ -214,141 +266,101 @@ namespace Infovision.Datamining
 
         #region Constructors
 
-        public ClassificationResult(DataStore dataStore, IEnumerable<long> decisionValues)
+        public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
         {
             this.TestData = dataStore;
-            classificationMap = new Dictionary<long, long>(dataStore.DataStoreInfo.NumberOfRecords);
-            decisionActualCount = new Dictionary<long, int>();
-            foreach (long decisionValue in decisionValues)
-                decisionActualCount[decisionValue] = 0;
+            this.decCount = decisionValues.Count;
+            this.decCountPlusOne = decisionValues.Count + 1;
+            this.decisions = new long[decCountPlusOne];
+            this.decisions[0] = -1;
+            long[] decArray = decisionValues.ToArray();
+            Array.Copy(decArray, 0, decisions, 1, decCount);
+            value2index = new Dictionary<long, int>(decCountPlusOne);
+            value2index.Add(-1, 0);
+            for (int i = 0; i < decArray.Length; i++)
+                value2index.Add(decArray[i], i + 1);
+            predictionResults = new long[dataStore.NumberOfRecords];
+            confusionTable = new int[decCountPlusOne][];
+            confusionTableWeights = new double[decCountPlusOne][];
+            for (int i = 0; i < decCountPlusOne; i++)
+            {
+                confusionTable[i] = new int[decCountPlusOne];
+                confusionTableWeights[i] = new double[decCountPlusOne];
+            }
+            this.counter = 0;
         }
 
         #endregion
 
         #region Methods
 
-        public virtual void AddResult(long objectId, long prediction, double weight = 1.0)
+        public void Reset()
         {
-            classificationMap[objectId] = prediction;            
+            for (int i = 0; i < predictionResults.Length; i++)
+                predictionResults[i] = 0;
+
+            for (int i = 0; i < decCountPlusOne; i++)
+            {
+                for (int j = 0; j < decCountPlusOne; j++)
+                {
+                    confusionTable[i][j] = 0;
+                    confusionTableWeights[i][j] = 0;
+                }
+            }
+
+            this.counter = 0;
         }
 
-        public virtual void AddResult(long objectId, long prediction, long actual, double weight = 1.0)
+        public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
-            lock (syncRoot)
-            {
-                this.AddResultNoLock(objectId, prediction, actual, weight);
-            }
+            int actualDecIdx = value2index[actual];
+            int predictionDecIdx = value2index[prediction];
+            predictionResults[objectIdx] = prediction;
+            confusionTable[actualDecIdx][predictionDecIdx]++;
+            confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
+            this.counter++;
         }
 
-        public virtual void AddResultNoLock(long objectId, long prediction, long actual, double weight = 1.0)
+        public long GetPrediction(int objectIdx)
         {
-            this.AddResult(objectId, prediction, weight);
-            this.AddConfusionMatrix(prediction, actual);
-
-            if (prediction == actual)
-            {
-                this.numberOfClassified++;
-                this.weightClassified += weight;
-            }
-            else if (prediction != -1)
-            {
-                this.numberOfMisclassified++;
-                this.weightMisclassfied += weight;
-            }
-            else
-            {
-                this.numberOfUnclassified++;
-                this.weightUnclassified += weight;
-            }
+            return predictionResults[objectIdx];
         }
-
-        protected void AddConfusionMatrix(long prediction, long actual)
+        
+        public int GetConfusionTable(long prediction, long actual)
         {
-            ConfusionMatrixKey key = new ConfusionMatrixKey(prediction, actual);
-            if (confusionMatrix.ContainsKey(key))
-            {
-                confusionMatrix[key]++;
-            }
-            else
-            {
-                confusionMatrix[key] = 1;
-            }
-
-            //decisionActualCount[actual] = decisionActualCount.ContainsKey(actual) ? decisionActualCount[actual] + 1: 1;
-            decisionActualCount[actual]++;
-        }
-
-        public long GetResult(long objectId)
-        {
-            return classificationMap[objectId];
-        }
-
-        public int GetDecisionCount(long decisionValue)
-        {
-            int count = 0;
-            if (this.decisionActualCount.TryGetValue(decisionValue, out count))
-            {
-                return count;
-            }
-            return 0;
-        }
-
-        public int GetConfusionMatrix(long prediction, long actual)
-        {
-            int counter = 0;
-            ConfusionMatrixKey key = new ConfusionMatrixKey(prediction, actual);
-            if (confusionMatrix.TryGetValue(key, out counter))
-            {
-                return counter;            
-            }
-            return 0;
+            return confusionTable[value2index[actual]][value2index[prediction]];
         }
 
         public int GetConfusionTable(long decisionValue, ConfusionMatrixElement confusionTableElement)
         {
             int result = 0;
+            int decIdx = value2index[decisionValue];
             switch(confusionTableElement)
             {
                 //actual cats that were correctly classified as cats
                 case ConfusionMatrixElement.TruePositive :
-                    result = this.GetConfusionMatrix(decisionValue, decisionValue);
+                    result = confusionTable[decIdx][decIdx];
                     break;
 
                 //cats that were incorrectly marked as other animals
                 case ConfusionMatrixElement.FalseNegative:
-                    foreach (KeyValuePair<ConfusionMatrixKey, int> kvp in confusionMatrix)
-                    {
-                        if(kvp.Key.Actual == decisionValue 
-                            && kvp.Key.Predicted != decisionValue)
-                        {
-                            result += kvp.Value;
-                        }
-                    }
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTable[decIdx][i]; 
                     break;
 
                 //all the remaining animals that were incorrectly labeled as cats
                 case ConfusionMatrixElement.FalsePositive:
-                    foreach (KeyValuePair<ConfusionMatrixKey, int> kvp in confusionMatrix)
-                    {
-                        if(kvp.Key.Actual != decisionValue 
-                            && kvp.Key.Predicted == decisionValue)
-                        {
-                            result += kvp.Value;
-                        }
-                    }
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTable[i][decIdx]; 
                     break;
 
                 //all the remaining animals, correctly classified as non-cats
                 case ConfusionMatrixElement.TrueNegative:
-                    foreach (KeyValuePair<ConfusionMatrixKey, int> kvp in confusionMatrix)
-                    {
-                        if(kvp.Key.Actual != decisionValue
-                            && kvp.Key.Predicted != decisionValue
-                            && kvp.Key.Actual == kvp.Key.Predicted)
-                        {
-                            result += kvp.Value;
-                        }
-                    }
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTable[i][i];
                     break;
             }
             return result;
@@ -356,20 +368,15 @@ namespace Infovision.Datamining
 
         public double DecisionApriori(long decisionValue)
         {
-            return (double) this.DecisionTotal(decisionValue) / (double) this.Count;
+            return (double) this.DecisionTotal(decisionValue) / (double) this.TestData.NumberOfRecords;
         }
 
         public int DecisionTotal(long decisionValue)
         {
             int total = 0;
-            foreach (KeyValuePair<ConfusionMatrixKey, int> kvp in confusionMatrix)
-            {
-                if(kvp.Key.Actual == decisionValue)
-                {
-                    total += kvp.Value;
-                }
-            }
-
+            int decIdx = value2index[decisionValue];
+            for(int i = 1; i<decCountPlusOne; i++)
+                total += confusionTable[decIdx][i];
             return total;
         }
 
@@ -439,15 +446,15 @@ namespace Infovision.Datamining
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("Number of classified: ");
-            stringBuilder.Digits(this.numberOfClassified);
+            stringBuilder.Digits(this.Classified);
             stringBuilder.Append('\n');
             
             stringBuilder.Append("Number of misclassified: ");
-            stringBuilder.Digits(this.numberOfMisclassified);
+            stringBuilder.Digits(this.Misclassified);
             stringBuilder.Append('\n');
 
             stringBuilder.Append("Number of unclassified: ");
-            stringBuilder.Digits(this.numberOfUnclassified);
+            stringBuilder.Digits(this.Unclassified);
             stringBuilder.Append('\n');
 
             stringBuilder.Append("Accuracy: ");

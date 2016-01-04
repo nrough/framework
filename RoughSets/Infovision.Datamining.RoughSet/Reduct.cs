@@ -128,8 +128,9 @@ namespace Infovision.Datamining.Roughset
             this.Epsilon = epsilon;
 
             this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
+            decimal w = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);            
+                this.objectWeights[i] = w;            
         }
 
         public Reduct(DataStore dataStore, decimal epsilon)

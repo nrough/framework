@@ -14,9 +14,8 @@ namespace Infovision.Datamining.Roughset
         #region Members
         
         private Dictionary<long[], EquivalenceClass> partitions;
-        private Dictionary<long, int> decisionCount;
-        private int[] attributes;        
-        private object syncRoot = new object();
+        private int[] attributes;
+        private object mutex = new object();
 
         #endregion
 
@@ -31,11 +30,6 @@ namespace Infovision.Datamining.Roughset
                 return partitions;
             }
             protected set { this.partitions = value; }
-        }
-
-        private Dictionary<long, int> DecisionCount
-        {
-            get { return decisionCount; }
         }        
 
         public int NumberOfPartitions
@@ -61,15 +55,13 @@ namespace Infovision.Datamining.Roughset
             this.InitPartitions();
         }
 
-        public EquivalenceClassCollection(DataStore dataStore)
+        public EquivalenceClassCollection()
         {
-            this.InitDecisionCount(dataStore.DataStoreInfo);
         }
 
         private EquivalenceClassCollection(EquivalenceClassCollection eqClassCollection)
         {
             this.partitions = (Dictionary<long[], EquivalenceClass>)eqClassCollection.Partitions.CloneDictionaryCloningValues<long[], EquivalenceClass>();
-            this.decisionCount = new Dictionary<long, int>(eqClassCollection.DecisionCount);
             this.attributes = new int[eqClassCollection.Attributes.Length];
             Array.Copy(eqClassCollection.Attributes, this.attributes, eqClassCollection.Attributes.Length);
         }        
@@ -78,7 +70,38 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public static EquivalenceClassCollection Create(DataStore dataStore, int[] attributes, decimal epsilon, decimal[] weights = null)
+        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights = null, bool useGlobalCache = false)
+        {
+            EquivalenceClassCollection result = null;
+            string partitionKey = null;
+
+            if (useGlobalCache)
+            {
+                partitionKey = reduct.ReductPartitionCacheKey;
+                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
+            }
+
+            if (result == null)
+            {
+                result = new EquivalenceClassCollection();
+                result.Calc(reduct.Attributes, data, weights);
+            }
+
+            if (useGlobalCache)
+                ReductCache.Instance.Set(partitionKey, result);
+
+            return result;
+        }
+
+        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet)
+        {
+            EquivalenceClassCollection result = new EquivalenceClassCollection();
+            result.Calc(reduct.Attributes, data, objectSet, weights);
+            return result;
+        }
+
+
+        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
         {
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
                 throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of records in data");
@@ -129,7 +152,7 @@ namespace Infovision.Datamining.Roughset
             int idx = -1)
         {
             EquivalenceClass eq = null;
-            lock (syncRoot)
+            lock (mutex)
             {                
                 if (!this.partitions.TryGetValue(attributeValues, out eq))
                 {
@@ -149,18 +172,9 @@ namespace Infovision.Datamining.Roughset
             this.partitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
         }
 
-        protected void InitDecisionCount(DataStoreInfo dataStoreInfo)
-        {
-            DataFieldInfo decisionInfo = dataStoreInfo.GetFieldInfo(dataStoreInfo.DecisionFieldId);
-            this.decisionCount = new Dictionary<long, int>(decisionInfo.InternalValues().Count);
-            foreach (long decisionValue in decisionInfo.InternalValues())
-                this.decisionCount.Add(decisionValue, decisionInfo.Histogram.GetBinValue(decisionValue));
-        }
-
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore)
         {
             this.InitPartitions();
-            this.InitDecisionCount(dataStore.DataStoreInfo);
             
             this.attributes = attributeSet.ToArray();
             decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
@@ -176,7 +190,6 @@ namespace Infovision.Datamining.Roughset
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
         {
             this.InitPartitions();
-            this.InitDecisionCount(dataStore.DataStoreInfo);
             this.attributes = attributeSet.ToArray();
 
             //Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
@@ -201,7 +214,7 @@ namespace Infovision.Datamining.Roughset
             long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
             EquivalenceClass eqClass = null;
             long decisionValue = dataStore.GetDecisionValue(objectIndex);
-            lock (syncRoot)
+            lock (mutex)
             {
                 if (this.partitions.TryGetValue(record, out eqClass))
                 {
@@ -265,16 +278,6 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < this.attributes.Length; i++)
                 values[i] = record[this.attributes[i]];
             return GetEquivalenceClass(values);
-        }
-
-        public int GetDecisionValueCount(long decisionValue)
-        {
-            int count = 0;
-            if(this.decisionCount.TryGetValue(decisionValue, out count))
-            {
-                return count;
-            }
-            return 0;
         }
 
         #region IEnumerable Members

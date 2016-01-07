@@ -11,13 +11,15 @@ namespace Infovision.Datamining.Roughset
     public class Reduct : IReduct, IFormattable
     {
         #region Members
-        
-        private decimal[] objectWeights;                
-        private DataStore dataStore;
-        private FieldSet attributeSet;
-        protected EquivalenceClassCollection eqClassMap;
-        protected object syncRoot = new object();
 
+        private FieldSet attributeSet;
+        protected object mutex = new object();
+
+        //TODO To Remove
+        private decimal[] objectWeights;
+        private DataStore dataStore;
+        protected EquivalenceClassCollection eqClassMap;
+        
         #endregion
 
         #region Properties
@@ -52,17 +54,17 @@ namespace Infovision.Datamining.Roughset
             get { return this.dataStore.DataStoreInfo; }
         }
 
-        public EquivalenceClassCollection EquivalenceClasses
+        public virtual EquivalenceClassCollection EquivalenceClasses
         {
             get 
             {
                 if (this.eqClassMap == null)
                 {
-                    lock (syncRoot)
+                    lock (mutex)
                     {
                         if (this.eqClassMap == null)
                         {
-                            this.eqClassMap = this.CreateEquivalenceClassCollection();
+                            this.eqClassMap = EquivalenceClassCollection.Create(this, this.DataStore, this.Weights);
                         }
                     }
                 }
@@ -72,25 +74,20 @@ namespace Infovision.Datamining.Roughset
             
             protected set 
             {
-                lock (syncRoot)
+                lock (mutex)
                 {
                     this.eqClassMap = value;
                 }
             }
         }
 
-        public bool UseGlobalCache { get; set; }
-
-        protected string ReductPartitionCacheKey
+        public virtual string ReductPartitionCacheKey
         {
             get
             {
                 StringBuilder stringBuilder = new StringBuilder();
-
-                stringBuilder.Append("m=Prt"); //Prt aka Partition
+                stringBuilder.Append("m=Prt");
                 stringBuilder.Append("|a=").Append(this.attributeSet.CacheKey);
-                stringBuilder.Append("|d=").Append(this.dataStore.Name);
-
                 return stringBuilder.ToString();
             }
         }
@@ -159,12 +156,12 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods        
         
-        public virtual EquivalenceClassCollection CreateEquivalenceClassCollection()
+        public virtual EquivalenceClassCollection CreateEquivalenceClassCollection(bool useGlobalCache = false)
         {
             EquivalenceClassCollection result = null;
             string partitionKey = null;
 
-            if (this.UseGlobalCache)
+            if (useGlobalCache)
             {
                 partitionKey = this.ReductPartitionCacheKey;
                 result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;                
@@ -172,11 +169,11 @@ namespace Infovision.Datamining.Roughset
 
             if (result == null)
             {
-                result = new EquivalenceClassCollection(this.dataStore);
+                result = new EquivalenceClassCollection();
                 result.Calc(this.attributeSet, this.dataStore, this.objectWeights);
             }
 
-            if (this.UseGlobalCache)
+            if (useGlobalCache)
                 ReductCache.Instance.Set(partitionKey, result);
 
             return result;
@@ -191,7 +188,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.CheckAddAttribute(attributeId))
             {
-                lock (syncRoot)
+                lock (mutex)
                 {
                     this.attributeSet.AddElement(attributeId);
                     this.eqClassMap = null;
@@ -211,7 +208,7 @@ namespace Infovision.Datamining.Roughset
         {
             if(this.CheckRemoveAttribute(attributeId))
             {
-                lock (syncRoot)
+                lock (mutex)
                 {
                     this.attributeSet.RemoveElement(attributeId);
                     this.eqClassMap = null;

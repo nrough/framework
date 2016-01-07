@@ -48,6 +48,25 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
+        public override EquivalenceClassCollection EquivalenceClasses
+        {
+            get
+            {
+                if (this.eqClassMap == null)
+                {
+                    lock (mutex)
+                    {
+                        if (this.eqClassMap == null)
+                        {
+                            this.eqClassMap = EquivalenceClassCollection.Create(this, this.DataStore, this.Weights, this.ObjectSet);
+                        }
+                    }
+                }
+
+                return this.eqClassMap;
+            }
+        }
+
         public override ObjectSet ObjectSet
         {
             get { return this.objectSet; }
@@ -65,14 +84,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
-        #region Methods
-
-        public override EquivalenceClassCollection CreateEquivalenceClassCollection()
-        {
- 	        EquivalenceClassCollection result = new EquivalenceClassCollection(this.DataStore);
-            result.Calc(this.Attributes, this.DataStore, this.objectSet, this.Weights);                
-            return result;
-        }        
+        #region Methods        
 
         protected override bool CheckRemoveAttribute(int attributeId)
         {

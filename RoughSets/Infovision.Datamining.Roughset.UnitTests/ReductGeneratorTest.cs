@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         //if (showInfo)
                         //    Console.WriteLine(reduct);
 
-                        EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(localDataStore);
+                        EquivalenceClassCollection partitionMap = new EquivalenceClassCollection();
                         partitionMap.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                         foreach (EquivalenceClass stats in partitionMap)
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                EquivalenceClassCollection eqClasses = new EquivalenceClassCollection(localDataStore);
+                EquivalenceClassCollection eqClasses = new EquivalenceClassCollection();
                 eqClasses.Calc(reduct.Attributes, localDataStore, reduct.ObjectSet, reduct.Weights);
 
                 foreach (EquivalenceClass eq in eqClasses)

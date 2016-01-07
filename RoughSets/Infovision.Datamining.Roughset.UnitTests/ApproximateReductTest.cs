@@ -255,7 +255,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 foreach (Reduct reduct in reductStore)
                 {
-                    EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(dataStoreTrain);
+                    EquivalenceClassCollection partitionMap = new EquivalenceClassCollection();
                     partitionMap.Calc(reduct.Attributes, dataStoreTrain);
 
                     Assert.AreEqual(partitionMap.NumberOfPartitions, reduct.EquivalenceClasses.NumberOfPartitions);

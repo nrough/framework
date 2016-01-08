@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
             {
                 if (permutationGenerator == null)
                 {
-                    lock (syncRoot)
+                    lock (mutex)
                     {
                         if (permutationGenerator == null)
                         {

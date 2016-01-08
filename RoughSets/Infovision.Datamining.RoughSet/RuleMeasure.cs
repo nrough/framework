@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -34,7 +37,7 @@ namespace Infovision.Datamining.Roughset
             if (eqClass != null)
             {
                 decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-                decimal weightSum_E = eqClass.GetWeight();
+                decimal weightSum_E = eqClass.WeightSum;
                 return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
             }
             return 0;
@@ -53,16 +56,38 @@ namespace Infovision.Datamining.Roughset
 
         //Pw(E|X) = Pw(X,E)/Pw(X)
         public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass == null)
-                return 0;
-
+        {            
             decimal weightSum_XE = eqClass.GetWeight(decisionValue);
             decimal weightSum_X = 0;
 
             if (weightSum_XE != 0)
-                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                    weightSum_X += reduct.Weights[objectIndex];
+            {                
+                //foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                //    weightSum_X += reduct.Weights[objectIndex];
+
+                ParallelOptions options = new ParallelOptions()
+                {
+                    MaxDegreeOfParallelism = System.Math.Max(1, (Environment.ProcessorCount * 2) / 3)
+                };
+
+                object tmp = new object();
+                //weightSum_X = 0;
+                Parallel.ForEach(
+                    reduct.DataStore.GetObjectIndexes(decisionValue),
+                    options,
+                    () => Decimal.Zero,
+                    (objectIndex, state, partialResult) =>
+                    {
+                        return reduct.Weights[objectIndex] + partialResult;
+                    },
+                    (localPartialSum) =>
+                    {                                                
+                        lock (tmp)
+                        {
+                            weightSum_X += localPartialSum;
+                        }
+                    });
+            }
 
             return (weightSum_X != 0) ? weightSum_XE / weightSum_X : 0;
         }
@@ -94,7 +119,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
 
             decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_E = eqClass.GetWeight();
+            decimal weightSum_E = eqClass.WeightSum;
             decimal weightSum_X = 0;
 
             if (weightSum_E != 0)
@@ -120,7 +145,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (eqClass == null)
                 return 0;
-            decimal weightSum_E = eqClass.GetWeight();
+            decimal weightSum_E = eqClass.WeightSum;
             return weightSum_E;
         }
 
@@ -233,7 +258,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
 
             decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_E = eqClass.GetWeight();            
+            decimal weightSum_E = eqClass.WeightSum;
             return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
         }
 
@@ -332,7 +357,7 @@ namespace Infovision.Datamining.Roughset
                 return 0;
 
             decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_E = eqClass.GetWeight();
+            decimal weightSum_E = eqClass.WeightSum;
             decimal weightSum_X = 0;
             
             if (weightSum_E != 0)
@@ -376,7 +401,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (eqClass == null)
                 return 0;
-            decimal weightSum_E = eqClass.GetWeight();                        
+            decimal weightSum_E = eqClass.WeightSum;                        
             return weightSum_E;
         }
 

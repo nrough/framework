@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset
 		
 		protected ReductStoreCollection Models { get; set; }
 
-		public DataSet testDataSet {get; set;}
+		public DataSet TestDataSet { get; set; }
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -139,13 +139,13 @@ namespace Infovision.Datamining.Roughset
 
 			do
 			{
-				IReductStoreCollection reductStoreCollection 
-					= this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
-
+				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
-				ClassificationResult result = classifier.Classify(this.DataStore);
-				//error = result.WeightUnclassified + result.WeightMisclassified;
-				error = result.Error;
+				ClassificationResult result = classifier.Classify(this.DataStore, null, false);				
+				error = result.Error; //result.WeightUnclassified + result.WeightMisclassified;
+
+				Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
+
 				double alpha = this.CalcModelConfidence(K, error);
 
 				if (error >= this.Threshold)

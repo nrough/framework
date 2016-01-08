@@ -48,9 +48,10 @@ namespace DisesorTest
 
         
         string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
-        decimal innerEpsilon = 0.4m;
-        int boostingNumberOfReductsInWeakClassifier = 20;
-        int boostingMaxIterations = 100;
+        
+        //decimal innerEpsilon = 0.4m;
+        //int boostingNumberOfReductsInWeakClassifier = 20;
+        //int boostingMaxIterations = 100;
 
 
         RuleQualityFunction boostingIdentificationFunction = null;
@@ -73,11 +74,24 @@ namespace DisesorTest
         public static void Main(string[] args)
         {
             Program p = new Program();
-            p.FinalTest();
+
+            if (args.Length != 3)
+            {
+                Console.WriteLine("Invalid number of parameters. Parameters should be: #Iterations #WeakClassifierSize #Epsilon");
+
+                throw new InvalidProgramException("Invalid number of parameters. Parameters should be: #Iterations #WeakClassifierSize #Epsilon");
+            }
+
+            int iter = Int32.Parse(args[0]);
+            int weak = Int32.Parse(args[1]);
+            decimal eps = Decimal.Parse(args[2], CultureInfo.InvariantCulture);
+
+            p.FinalTest(iter, weak, eps);
+
             Console.Beep();
         }
 
-        private void FinalTest()
+        private void FinalTest(int iterations, int weakClassifiers, decimal eps)
         {
             Console.WriteLine("Algorithm: {0}", factoryKey);
             Console.WriteLine("Number of permutations: {0}", numberOfPermutations);
@@ -106,13 +120,16 @@ namespace DisesorTest
 
             if (factoryKey.Contains("Boosting"))
             {
-                Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
+                //Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
+                Console.WriteLine("Boosting - Numer of reducts in single model: {0}", weakClassifiers);
                 Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
                 Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
-                Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
+                //Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
+                Console.WriteLine("Boosting - Max iterations: {0}", iterations);
                 Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
                 Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
                 Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
+                Console.WriteLine("Boosting - Inner model epsilon: {0}", eps);
             }
 
             this.LoadMetadata();
@@ -243,7 +260,8 @@ namespace DisesorTest
             Args innerArgs = new Args();
             innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
             innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
+            //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
+            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
             
@@ -255,12 +273,14 @@ namespace DisesorTest
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
             args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
-            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
+            //args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
+            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, weakClassifiers);
             args.SetParameter(ReductGeneratorParamHelper.IdentificationType, boostingIdentificationFunction);
             args.SetParameter(ReductGeneratorParamHelper.VoteType, boostingVoteFunction);
             args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
             args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
-            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
+            //args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
+            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
             args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
 
 
@@ -279,10 +299,12 @@ namespace DisesorTest
             InformationMeasureWeights measure = new InformationMeasureWeights();
             decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
             Console.WriteLine("Traing dataset quality: {0}", q);
+            measure = null;
 
             //return;
 
-            Console.Write("Reduct generation...");
+            Console.WriteLine("Reduct generation...");
+            
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Generate();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
@@ -434,7 +456,7 @@ namespace DisesorTest
                 train = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.trn", n), FileFormat.Csv);
                 Console.WriteLine("Done");
 
-                Console.Write("Loading test data {0}/{1}...", n, nFold - 1);                
+                Console.Write("Loading test data {0}/{1}...", n, nFold - 1);
                 test = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.tst", n), FileFormat.Csv);
                 Console.WriteLine("Done");
 

@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
         private int[][] fieldGroups;
         private int reductIdSequence;
 
-        protected object syncRoot = new object();
+        protected object mutex = new object();
 
         #endregion
         
@@ -49,7 +49,7 @@ namespace Infovision.Datamining.Roughset
             {
                 if (permutationGenerator == null)
                 {
-                    lock (syncRoot)
+                    lock (mutex)
                     {
                         if (permutationGenerator == null)
                         {
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
         
         protected int GetNextReductId()
         {
-            lock (syncRoot)
+            lock (mutex)
             {
                 reductIdSequence++;
                 return reductIdSequence;

@@ -93,7 +93,7 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet)
+        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet, bool updateStat = true)
         {
             EquivalenceClassCollection result = new EquivalenceClassCollection();
             result.Calc(reduct.Attributes, data, objectSet, weights);
@@ -101,7 +101,7 @@ namespace Infovision.Datamining.Roughset
         }
 
 
-        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
+        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null, bool updateStat = true)
         {
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
                 throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of records in data");
@@ -110,6 +110,8 @@ namespace Infovision.Datamining.Roughset
 
             if (weights == null)
             {
+                decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
+
                 //Parallel.For(0, dataStore.NumberOfRecords, i =>
                 for(int i=0; i < dataStore.NumberOfRecords; i++)
                 {
@@ -118,9 +120,10 @@ namespace Infovision.Datamining.Roughset
 
                     eqClassCollection.AddRecordInitial(attributeValues,
                                                         decision,
-                                                        Decimal.One,
+                                                        w,
                                                         dataStore,
-                                                        i);
+                                                        i,
+                                                        updateStat);
                 }
                 //);
             }
@@ -136,7 +139,8 @@ namespace Infovision.Datamining.Roughset
                                                         decision,
                                                         weights[i],
                                                         dataStore,
-                                                        i);
+                                                        i,
+                                                        updateStat);
                 }
                 //);
             }
@@ -149,19 +153,20 @@ namespace Infovision.Datamining.Roughset
             long decision, 
             decimal weight, 
             DataStore dataStore,
-            int idx = -1)
+            int idx = -1,
+            bool updateStat = true)
         {
             EquivalenceClass eq = null;
             lock (mutex)
             {                
                 if (!this.partitions.TryGetValue(attributeValues, out eq))
                 {
-                    eq = new EquivalenceClass(attributeValues, dataStore, true);
+                    eq = new EquivalenceClass(attributeValues, dataStore, updateStat);
                     this.partitions.Add(attributeValues, eq);
                 }
 
                 if (idx != -1)
-                    eq.AddObject(idx, decision, weight, false);
+                    eq.AddObject(idx, decision, weight, updateStat);
                 else
                     eq.AddDecision(decision, weight);
             }
@@ -213,7 +218,7 @@ namespace Infovision.Datamining.Roughset
         {            
             long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
             EquivalenceClass eqClass = null;
-            long decisionValue = dataStore.GetDecisionValue(objectIndex);
+            long decisionValue = dataStore.GetDecisionValue(objectIndex);           
             lock (mutex)
             {
                 if (this.partitions.TryGetValue(record, out eqClass))

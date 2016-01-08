@@ -19,8 +19,9 @@ namespace Infovision.Datamining.Roughset
         decimal[] Weights { get; }
         decimal Epsilon { get; }
         string Id { get; set; }
-        
-        EquivalenceClassCollection EquivalenceClasses { get; }
+
+        EquivalenceClassCollection EquivalenceClasses { get; set; }
+        bool IsEquivalenceClassCollectionCalculated { get; }
 
         bool AddAttribute(int attributeId);
         bool ContainsAttribute(int attributeId);

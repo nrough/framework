@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public decimal Epsilon { get; private set; }        
+        public decimal Epsilon { get; private set; }
 
         public virtual ObjectSet ObjectSet
         {
@@ -72,13 +72,18 @@ namespace Infovision.Datamining.Roughset
                 return this.eqClassMap; 
             }
             
-            protected set 
+            set 
             {
                 lock (mutex)
                 {
                     this.eqClassMap = value;
                 }
             }
+        }
+
+        public virtual bool IsEquivalenceClassCollectionCalculated
+        {
+            get { return this.eqClassMap != null; }
         }
 
         public virtual string ReductPartitionCacheKey

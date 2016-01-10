@@ -84,7 +84,8 @@ namespace Infovision.Datamining
         private int decCountPlusOne;
         private int counter;
         private DataStore testData = null;
-        
+        private object mutex = new object();
+
         //TODO use classificationInfo instead
         private double qualityRatio;
 
@@ -116,8 +117,6 @@ namespace Infovision.Datamining
             get
             {
                 double sum = 0;
-                int numberOfDecisions = 0;
-
                 for (int i = 1; i < decCountPlusOne; i++)
                 {
                     int count = 0;
@@ -130,7 +129,7 @@ namespace Infovision.Datamining
                     }
                 }
 
-                return sum / numberOfDecisions;
+                return decCount > 0 ? sum / decCount : 0.0;
             }
         }
 
@@ -237,20 +236,7 @@ namespace Infovision.Datamining
             {
                 double sum = 0;
                 for (int i = 1; i < decCountPlusOne; i++)
-                    sum += confusionTable[i][0];
-                return sum;
-            }
-        }
-
-        public double Error
-        {
-            get
-            {
-                double sum = 0;
-                for (int i = 1; i < decCountPlusOne; i++)
-                    for (int j = 0; j < decCountPlusOne; j++)
-                        if (i != j)
-                            sum += this.confusionTableWeights[i][j];
+                    sum += this.confusionTableWeights[i][0];
                 return sum;
             }
         }
@@ -296,19 +282,22 @@ namespace Infovision.Datamining
 
         public void Reset()
         {
-            for (int i = 0; i < predictionResults.Length; i++)
-                predictionResults[i] = 0;
-
-            for (int i = 0; i < decCountPlusOne; i++)
+            lock (mutex)
             {
-                for (int j = 0; j < decCountPlusOne; j++)
-                {
-                    confusionTable[i][j] = 0;
-                    confusionTableWeights[i][j] = 0;
-                }
-            }
+                for (int i = 0; i < predictionResults.Length; i++)
+                    predictionResults[i] = 0;
 
-            this.counter = 0;
+                for (int i = 0; i < decCountPlusOne; i++)
+                {
+                    for (int j = 0; j < decCountPlusOne; j++)
+                    {
+                        confusionTable[i][j] = 0;
+                        confusionTableWeights[i][j] = 0;
+                    }
+                }
+
+                this.counter = 0;
+            }
         }
 
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
@@ -316,9 +305,13 @@ namespace Infovision.Datamining
             int actualDecIdx = value2index[actual];
             int predictionDecIdx = value2index[prediction];
             predictionResults[objectIdx] = prediction;
-            confusionTable[actualDecIdx][predictionDecIdx]++;
-            confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
-            this.counter++;
+
+            lock (mutex)
+            {
+                confusionTable[actualDecIdx][predictionDecIdx]++;
+                confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
+                this.counter++;
+            }
         }
 
         public long GetPrediction(int objectIdx)

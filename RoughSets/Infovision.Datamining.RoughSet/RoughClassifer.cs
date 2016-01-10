@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
                 if (reductStoreCollection != null)
                 {
                     numberOfModels = this.reductStoreCollection.Where(rs => rs.IsActive).Count();
-                    allModelsAreEqual = this.reductStoreCollection.Where(rs => rs.IsActive).GroupBy(rs => rs.Weight).Count() > 1;
+                    allModelsAreEqual = !(this.reductStoreCollection.Where(rs => rs.IsActive).GroupBy(rs => rs.Weight).Count() > 1);
                 }
                 else
                 {
@@ -92,7 +92,9 @@ namespace Infovision.Datamining.Roughset
             {
                 MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
             };
+#if DEBUG
             options.MaxDegreeOfParallelism = 1;
+#endif
 
             if (weights == null)
             {
@@ -170,7 +172,7 @@ namespace Infovision.Datamining.Roughset
                         ? identifiedDecisionWeight
                         : identifiedDecision != 0 ? this.VoteFunction(decisions[identifiedDecision], reduct, eqClass) : Decimal.Zero;
 
-                    if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.NumberOfObjects > 0)
+                    if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
                         break;
                 }
 

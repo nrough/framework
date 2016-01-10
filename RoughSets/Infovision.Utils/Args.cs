@@ -6,7 +6,7 @@ namespace Infovision.Utils
 {       
     [Serializable]
     public class Args
-        : IEnumerable<KeyValuePair<string, object>>
+        : IEnumerable<KeyValuePair<string, object>>, ICloneable
     {
         private Dictionary<string, object> parameters = null;
         private List<string> parameterOrder = null;
@@ -130,6 +130,14 @@ namespace Infovision.Utils
                 return true;
             }
             return false;
+        }
+
+        public virtual object Clone()
+        {
+            Args result = new Args(this.Count);
+            foreach (var parameter in this)
+                result.SetParameter(parameter.Key, parameter.Value);
+            return result;
         }
     }
 }

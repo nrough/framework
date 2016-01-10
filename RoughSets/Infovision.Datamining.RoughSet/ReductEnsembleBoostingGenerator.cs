@@ -141,8 +141,8 @@ namespace Infovision.Datamining.Roughset
 			{
 				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
-				ClassificationResult result = classifier.Classify(this.DataStore, null, false);				
-				error = result.Error; //result.WeightUnclassified + result.WeightMisclassified;
+				ClassificationResult result = classifier.Classify(this.DataStore, null, false);
+				error = 1.0 - result.Accuracy;
 
 				Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
 
@@ -311,24 +311,21 @@ namespace Infovision.Datamining.Roughset
 			if (this.InnerParameters == null)
 				throw new InvalidOperationException("Parameters for internal model are not provided. Please use InnerParameters key to provide setup for internal model creation.");
 
+			Args localParameters = (Args) this.InnerParameters.Clone();
+		   
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
-
-			WeightGenerator localWeightGen = null;
-			if (!this.InnerParameters.SetProperty(ReductGeneratorParamHelper.WeightGenerator, ref localWeightGen))
-				localWeightGen = new WeightGenerator(this.DataStore);
-			localWeightGen.Weights = weights;
-			
-			this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+			WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
+			localWeightGen.Weights = weightsCopy;
 
 			if (size != 0)
 			{
-				this.InnerParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
-				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
-				this.InnerParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);                
+				localParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
+				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
+				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);                
 			}
 
-			IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);
+			IReductGenerator generator = ReductFactory.GetReductGenerator(localParameters);
 			generator.Generate();
 
 			return generator.GetReductStoreCollection();

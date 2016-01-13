@@ -20,6 +20,20 @@ namespace Infovision.Utils
             }
         }
 
+        public static void ShuffleFwd<T>(this T[] array, int number = 0)
+        {
+            if (number == 0 || number > array.Length)
+                number = array.Length;
+
+            for (int i = 0; i < number; i++)
+            {
+                int k = RandomSingleton.Random.Next(i, array.Length);
+                T element = array[k];
+                array[k] = array[i];
+                array[i] = element;
+            }
+        }
+
         public static T[] ShuffleDuplicate<T>(this T[] array)
         {
             T[] tmp = new T[array.Length];

@@ -263,8 +263,12 @@ namespace DisesorTest
             //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, 
+                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
             
+            innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, 
+                new PermutationGeneratorFieldQuality(train, wGen, eps, 
+                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)));
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
@@ -283,7 +287,6 @@ namespace DisesorTest
             args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
             args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
 
-
             args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
             /*
@@ -300,9 +303,7 @@ namespace DisesorTest
             decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
             Console.WriteLine("Traing dataset quality: {0}", q);
             measure = null;
-
-            //return;
-
+            
             Console.WriteLine("Reduct generation...");
             
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
@@ -339,7 +340,7 @@ namespace DisesorTest
                     foreach (var kvp in prediction)
                     {
                         if (kvp.Key != -1)
-                            sum += kvp.Value;                        
+                            sum += kvp.Value;
                     }
 
                     if(prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
@@ -361,153 +362,9 @@ namespace DisesorTest
                     file.Close();
                 }
             }
-            Console.WriteLine("Done");
-            Console.WriteLine("Unclassified: {0}", unclassified);       
-        }
-
-        private void DisesorDataStoreLoadTest()
-        {
-            int nFold = 2;
-            int numberOfPermutations = 10;
-            string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
-            decimal epsilon = 0.2m;
-            RuleQualityFunction identificationFunction = RuleQuality.Coverage;
-            RuleQualityFunction voteFunction = RuleQuality.Coverage;
-            int attributeReductionStep = 5;
-
-            this.LoadMetadata();            
-
-            Console.Write("Loading raw data...");            
-            DataTable rawData;
-            using (GenericParserAdapter gpa = new GenericParserAdapter(trainfile))
-            {
-                gpa.ColumnDelimiter = ",".ToCharArray()[0];
-                gpa.FirstRowHasHeader = false;
-                gpa.IncludeFileLineNumber = false;
-
-                rawData = gpa.GetDataTable();
-            }
-            Console.WriteLine("Done");
-
-            Console.Write("Updating raw data...");
-            foreach (DataRow row in rawData.Rows)
-            {
-                string oldValue = row.Field<string>(0);
-                string newValue = metadataDict[oldValue];
-                row.SetField(0, newValue);
-            }
-            Console.WriteLine("Done");
-
-            Console.Write("Saving merged data...");
-            rawData.WriteToCSVFile(trainfile_merge, ",");            
-            Console.WriteLine("Done");
-
-            Console.Write("Loading data store...");            
-            DataStore data = DataStore.Load(trainfile_merge, FileFormat.Csv);
-            Console.WriteLine("Done");
-
-            Console.Write("Loading labels...");
-            DataStore labels = DataStore.Load(labelfile, FileFormat.Csv);            
-            int decisionFieldId = data.AddColumn<string>(labels.GetColumn<string>(1));
-            labels = null;
-            data.SetDecisionFieldId(decisionFieldId);
-            long[] decisionValues = data.DataStoreInfo.GetDecisionValues().ToArray();
-            Console.WriteLine("Done");
-
-            Console.WriteLine("Generating cross validation data sets");            
-            DataStore train = null, test = null;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, nFold);
-
-            for (int n = 0; n < nFold; n++)
-            {
-                Console.Write("Split {0}/{1}...", n, nFold - 1);
-                splitter.ActiveFold = n;
-                splitter.Split(ref train, ref test);
-                Console.WriteLine("Done");
-
-                Console.Write("Discretizing split {0}/{1}...", n, nFold - 1);
-                new DataStoreDiscretizer()
-                {
-                    DiscretizeUsingEntropy = true,
-                    DiscretizeUsingEqualWidth = false,
-                    DiscretizeUsingEqualFreq = false,
-
-                }.Discretize(ref train, ref test);
-
-                Console.WriteLine("Done");
-
-                Console.Write("Saving train split {0}/{1}...", n, nFold - 1);                
-                train.WriteToCSVFileExt(String.Format("c:\\data\\disesor\\disesor-{0}.trn", n), ",");
-                Console.WriteLine("Done");
-
-                Console.Write("Saving test split {0}/{1}...", n, nFold - 1);
-                test.WriteToCSVFileExt(String.Format("c:\\data\\disesor\\disesor-{0}.tst", n), ",");
-                Console.WriteLine("Done");
-            }
-
-
-            Console.WriteLine("Testing");
             
-            train = null; test = null; data = null;
-
-            for (int n = 0; n < nFold; n++)
-            {
-                Console.Write("Loading train data {0}/{1}...", n, nFold - 1);
-                train = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.trn", n), FileFormat.Csv);
-                Console.WriteLine("Done");
-
-                Console.Write("Loading test data {0}/{1}...", n, nFold - 1);
-                test = DataStore.Load(String.Format("c:\\data\\disesor\\disesor-{0}.tst", n), FileFormat.Csv);
-                Console.WriteLine("Done");
-
-                WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(train);
-
-                Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.SetParameter(ReductGeneratorParamHelper.ReductionStep, attributeReductionStep);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
-                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-
-                Console.Write("Reduct generation {0}/{1}...", n, nFold - 1);                
-                IReductGenerator generator = ReductFactory.GetReductGenerator(args);
-                generator.Generate();
-                IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
-                Console.WriteLine("Done");
-
-                foreach (IReductStore reductStore in reductStoreCollection)
-                {
-                    foreach(IReduct reduct in reductStore)
-                    {
-                        Console.WriteLine(reduct);
-                    }
-                }
-
-                Console.Write("Classification {0}/{1}...", n, nFold - 1);
-                RoughClassifier classifier = new RoughClassifier(
-                    reductStoreCollection,
-                    identificationFunction,
-                    voteFunction,                    
-                    decisionValues);                
-                ClassificationResult result = classifier.Classify(test);
-                Console.WriteLine("Done");
-
-                Console.WriteLine("Accuracy: {0}", result.Accuracy);
-                Console.WriteLine("Coverage: {0}", result.Coverage);
-                Console.WriteLine("Confidence: {0}", result.Confidence);
-
-                foreach (long actual in decisionValues)                
-                {
-                    foreach (long predicted in decisionValues)
-                    {
-                        Console.WriteLine("Predicted {0} Actual {1} Count {2}", predicted, actual, result.GetConfusionTable(predicted, actual));
-                    }
-
-                    Console.WriteLine("Predicted {0} Actual {1} Count {2}", -1, actual, result.GetConfusionTable(-1, actual));
-                }
-                
-            }
+            Console.WriteLine("Done");
+            Console.WriteLine("Unclassified: {0}", unclassified);
         }
 
         private void LoadMetadata()

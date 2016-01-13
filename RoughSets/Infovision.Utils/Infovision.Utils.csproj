@@ -101,6 +101,7 @@
     <Compile Include="RandomExt.cs" />
     <Compile Include="RandomSingleton.cs" />
     <Compile Include="Range.cs" />
+    <Compile Include="ReverseComparer.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -21,7 +21,9 @@ namespace Infovision.Datamining.Roughset
         
         #region Properties        
 
+        public Args Parameters { get; set; }
         public Args InnerParameters { get; set; }
+
         public virtual IReductStore ReductPool { get; protected set; }
         public virtual bool UseCache { get; private set; }
         public virtual PermutationCollection Permutations { get; private set; }
@@ -59,6 +61,14 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 return this.permutationGenerator;
+            }
+
+            set
+            {
+                lock(mutex)
+                {
+                    this.permutationGenerator = value;
+                }
             }
         }
 
@@ -129,11 +139,18 @@ namespace Infovision.Datamining.Roughset
         }
          
         public virtual void InitFromArgs(Args args)
-        {                        
+        {
+            this.Parameters = args;
+
             if (args.Exist(ReductGeneratorParamHelper.DataStore))
             {
                 this.DataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
                 this.initFromDataStore(this.DataStore);
+            }
+
+            if (args.Exist(ReductGeneratorParamHelper.PermuatationGenerator))
+            {
+                this.PermutationGenerator = (IPermutationGenerator) args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
             }
             
             if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))

@@ -87,7 +87,8 @@ namespace Infovision.Datamining.Roughset
 
 
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);											
-				decimal m0 = new InformationMeasureWeights().Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
+				decimal m0 = new InformationMeasureWeights()
+                    .Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
 				this.Threshold = (double)(Decimal.One - m0);
 			}
 
@@ -141,8 +142,8 @@ namespace Infovision.Datamining.Roughset
 			{
 				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
-				ClassificationResult result = classifier.Classify(this.DataStore, null, false);
-				error = 1.0 - result.Accuracy;
+				ClassificationResult result = classifier.Classify(this.DataStore, weights, false);
+				error = 1.0 - result.WeightMisclassified + result.WeightMisclassified;
 
 				Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
 

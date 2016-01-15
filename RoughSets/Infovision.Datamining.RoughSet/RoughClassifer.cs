@@ -23,6 +23,7 @@ namespace Infovision.Datamining.Roughset
         public bool UseExceptionRules { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
+        public decimal MinVoteValue { get; set; }
 
         public IReductStoreCollection ReductStoreCollection 
         {
@@ -60,6 +61,8 @@ namespace Infovision.Datamining.Roughset
             this.decisions = new long[this.decCountPlusOne];
             this.decisions[0] = -1;
             Array.Copy(this.DecisionValues.ToArray(), 0, this.decisions, 1, this.decCount);
+
+            this.MinVoteValue = Decimal.Zero;
         }        
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record, IReduct reduct)

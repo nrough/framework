@@ -120,6 +120,7 @@ namespace DisesorTest
 
             if (factoryKey.Contains("Boosting"))
             {
+                Console.WriteLine("Boosting - Inner model: {0}", innerFactoryKey);
                 //Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
                 Console.WriteLine("Boosting - Numer of reducts in single model: {0}", weakClassifiers);
                 Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
@@ -264,11 +265,11 @@ namespace DisesorTest
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, 
-                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.05)); //10% reduction step
             
             innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, 
                 new PermutationGeneratorFieldQuality(train, wGen, eps, 
-                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)));
+                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.33)));
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
@@ -299,10 +300,13 @@ namespace DisesorTest
             }
             */
 
-            InformationMeasureWeights measure = new InformationMeasureWeights();
-            decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
-            Console.WriteLine("Traing dataset quality: {0}", q);
-            measure = null;
+            //InformationMeasureWeights measure = new InformationMeasureWeights();
+            //decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
+            //Console.WriteLine("Traing dataset quality: {0}", q);
+            //measure = null;
+
+            System.GC.Collect();
+            System.GC.WaitForPendingFinalizers();
             
             Console.WriteLine("Reduct generation...");
             
@@ -371,6 +375,7 @@ namespace DisesorTest
         {
             Console.Write("Loading metadata...");
             metadataDict = new Dictionary<string, string>();
+            /*
             metadataDict.Add("146", "_146,ściana 5,Partia F,416,ZZ,2,a");
             metadataDict.Add("149", "_149,ściana 5,Partia F,418,ZZ,2.2,b");
             metadataDict.Add("155", "_155,ściana 3,Partia H,502,ZZ,2.7,b");
@@ -395,6 +400,32 @@ namespace DisesorTest
             metadataDict.Add("777", "_777,Ściana 003,9,504,ZZ,3.4,b");
             metadataDict.Add("793", "_793,Ściana 839a,0,405,ZZ,3.4,b");
             metadataDict.Add("799", "_799,Ściana 026,9,504,ZZ,3.2,a");
+            */
+
+            metadataDict.Add("146", "_146,ściana 5,Partia F,416,2,a");
+            metadataDict.Add("149", "_149,ściana 5,Partia F,418,2.2,b");
+            metadataDict.Add("155", "_155,ściana 3,Partia H,502,2.7,b");
+            metadataDict.Add("171", "_171,ściana 1,Partia F,409,2,a");
+            metadataDict.Add("264", "_264,sc. i100,Z,405/2,3.5,b");
+            metadataDict.Add("373", "_373,1_Ściana M-12,G-1,707/2,1.6,b");
+            metadataDict.Add("437", "_437,1_Ściana M-5,G-1,712/1-2,3,b");
+            metadataDict.Add("470", "_470,sc. i101,Z,405/2,3.8,c");
+            metadataDict.Add("479", "_479,2_Ściana W-4,G - 2,505,4,a");
+            metadataDict.Add("490", "_490,śc.h51,B,405/1,1.9,a");
+            metadataDict.Add("508", "_508,śc.i61,B,405/2,2.8,a");
+            metadataDict.Add("541", "_541,KG1 Sc_521,Dz,510,4.4,b");
+            metadataDict.Add("575", "_575,1_Ściana M-4,G-1,712/1-2,3,b");
+            metadataDict.Add("583", "_583,KG1 Sc_550,Dw,510,4,b");
+            metadataDict.Add("599", "_599,3_Ściana C-2a,G-3,505,3,a");
+            metadataDict.Add("607", "_607,KG2 Sc_510,Az,501,3.8,b");
+            metadataDict.Add("641", "_641,2_Ściana C-3,G-2,503-504,3.8,a");
+            metadataDict.Add("689", "_689,KG2 Sc_560,Dw,510,3,b");
+            metadataDict.Add("703", "_703,1_Ściana M-3,G-1,712/1-2,3,a");
+            metadataDict.Add("725", "_725,Ściana 2,12,506,2.2,b");
+            metadataDict.Add("765", "_765,Ściana 713,13,401,1.4,a");
+            metadataDict.Add("777", "_777,Ściana 003,9,504,3.4,b");
+            metadataDict.Add("793", "_793,Ściana 839a,0,405,3.4,b");
+            metadataDict.Add("799", "_799,Ściana 026,9,504,3.2,a");
 
             foreach (var id in metadataDict.Keys.ToArray())
             {

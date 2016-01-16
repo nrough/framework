@@ -40,6 +40,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string ReductionStep = "ReductionStep";
         public static readonly string InnerParameters = "InnerParameters";
         public static readonly string PermuatationGenerator = "PermutationGenerator";
+        public static readonly string MaxNumberOfWeightResets = "MaxNumberOfWeightResets";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

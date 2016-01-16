@@ -117,7 +117,10 @@ namespace Infovision.Datamining.Roughset
 				this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductGeneratorParamHelper.UpdateWeights);
 
 			if (args.Exist(ReductGeneratorParamHelper.CalcModelConfidence))
-				this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);			
+				this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);
+
+			if (args.Exist(ReductGeneratorParamHelper.MaxNumberOfWeightResets))
+				this.MaxNumberOfWeightResets = (int)args.GetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets);
 		}
 
 		public override void Generate()
@@ -199,11 +202,13 @@ namespace Infovision.Datamining.Roughset
 					});
 
 				result = null;
+				
 				//Normalize object weights
-				Parallel.For(0, this.DataStore.NumberOfRecords, i =>
+				//Parallel.For(0, this.DataStore.NumberOfRecords, i =>
+				for(int i=0; i<this.DataStore.NumberOfRecords; i++)
 				{
 					weights[i] /= (decimal)sum;
-				});
+				}//);
 				
 				alphaSum += alpha;
 				

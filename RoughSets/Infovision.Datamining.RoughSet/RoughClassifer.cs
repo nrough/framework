@@ -241,7 +241,7 @@ namespace Infovision.Datamining.Roughset
                 }
             }
             
-            return new Tuple<long, decimal>(identifiedDecision, identifiedDecisionWeight);
+            return new Tuple<long, decimal>(decisions[identifiedDecision], identifiedDecisionWeight);
         }
 
         public bool IsObjectRecognizable(DataStore data, int objectIdx, IReduct reduct)

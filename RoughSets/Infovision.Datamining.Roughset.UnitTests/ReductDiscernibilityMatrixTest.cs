@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Generate();
-            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection(Int32.MaxValue);
+            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 
             RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.CoverageW, dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(dataStoreTrain, null);
@@ -65,7 +65,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     resultFile.WriteLine();
 
                     for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
-                    //foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
                     {
                         resultFile.Write("{0,5}:", objectIdx);
                         foreach (IReductStore rs in reductStoreCollection)

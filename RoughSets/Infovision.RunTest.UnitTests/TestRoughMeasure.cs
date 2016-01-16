@@ -105,7 +105,7 @@ namespace Infovision.RunTest.UnitTests
             }
         }
 
-        [Test]
+        [Test, Ignore]
         public void TestSerialization()
         {
             DeleteFiles();
@@ -163,7 +163,7 @@ namespace Infovision.RunTest.UnitTests
             Assert.AreEqual(parameterVector[PARM_POS_VOTE_TYPE].ToString(), fields[FILE_POS_VOTE_TYPE].ToString());
         }
 
-        [Test]
+        [Test, Ignore]
         public void TestResultFileAfterSerialization()
         {
             DeleteFiles();
@@ -198,7 +198,7 @@ namespace Infovision.RunTest.UnitTests
                 testRunner.RunSingleTest();
         }
 
-        [Test]
+        [Test, Ignore]
         public void TestReductStoreAfterSerialization()
         {
             DeleteFiles();

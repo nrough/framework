@@ -183,8 +183,14 @@ namespace Infovision.Datamining.Roughset
         {
             decimal result = Decimal.Zero;
             object tmpLock = new object();
-            ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
-
+            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
             Parallel.ForEach(reduct.EquivalenceClasses, options,
                 () => Decimal.Zero,
                 (e, loopState, partialSum) =>

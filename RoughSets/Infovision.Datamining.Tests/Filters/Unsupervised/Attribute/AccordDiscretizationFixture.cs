@@ -293,7 +293,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				gpa.FirstRowHasHeader = true;
 				gpa.IncludeFileLineNumber = false;
 				gpa.TrimResults = true;
-				gpa.SkipEmptyRows = true;                
+				gpa.SkipEmptyRows = true;
 
 				rawData = gpa.GetDataTable();
 			}
@@ -318,10 +318,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			//21 = a20
 			//d not exist (only conditional attributes)
 			//Permutation permutation = new Permutation(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
-			PermutationCollection permList;
-
-			//permList = new PermutationCollection(permutation);
-			permList = this.permutationList;
+			PermutationCollection permList = this.permutationList;
 
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);
 
@@ -334,41 +331,36 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 			reductGenerator.Generate();
 
-			IReductStoreCollection localStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
-			IReductStore localReductStore = localStoreCollection.FirstOrDefault();
-			//TODO reductMeasureKey, numberOfReducts
-
-			localReductStore.FilterReducts(numberOfReducts, filterReductComparer);
+			IReductStoreCollection localStoreCollection = reductGenerator.GetReductStoreCollection();
 			
 			RoughClassifier roughClassifier = new RoughClassifier(
 				localStoreCollection,
 				identificationType, 
 				voteType, 
 				localDataStoreTrain.DataStoreInfo.GetDecisionValues());
-			//ClassificationResult classificationResultTrn = roughClassifier.Classify(localDataStoreTrain, null);
 
+			IReductStore localReductStore = localStoreCollection.FirstOrDefault();
 			for (int i = 0; i < localReductStore.Count; i++)
 			{
 				var reduct = localReductStore.GetReduct(i);
 				var measure = new InformationMeasureMajority().Calc(reduct);
-				//Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
 
 				double[] discernVector = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
 				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 				{
-					long objectId = localDataStoreTrain.ObjectIndex2ObjectId(j);
-					//Console.Write("({0} {1}) ", objectId, discernVector[j]);
-
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
-					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
 					var dataVector = localDataStoreTrain.GetFieldValues(j, reduct.Attributes);
+
+					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
+					
 					long mostFrequentDecisionValue = eqClass.MajorDecision;
 
 					if (decisionValue == mostFrequentDecisionValue)
 					{
 						if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
-							Assert.Greater(discernVector[j], 0);                                                   
+							if (System.Math.Round(discernVector[j], 15) <= 0)
+							    Assert.Greater(System.Math.Round(discernVector[j], 15), 0);                                                   
 					}
 					else
 					{

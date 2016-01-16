@@ -101,8 +101,13 @@ namespace Infovision.Datamining.Roughset
 
         public override void Generate()
         {
-            ParallelOptions options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = System.Math.Max(1, (Environment.ProcessorCount * 2) / 3);
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
 
             this.ReductStoreCollection = new ReductStoreCollection(1);
             ReductStore localReductPool = new ReductStore(this.Permutations.Count);

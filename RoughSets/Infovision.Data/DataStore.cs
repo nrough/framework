@@ -56,13 +56,13 @@ namespace Infovision.Data
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
         {
-            data = new long[capacity * attributeSize];
+            this.data = new long[capacity * attributeSize];
             this.capacity = capacity;
             this.capacityFactor = capacityFactor;
-            lastIndex = -1;
-            objectId2Index = new Dictionary<long, int>(capacity);
+            this.lastIndex = -1;
+            this.objectId2Index = new Dictionary<long, int>(capacity);
             //index2ObjectId = new Dictionary<int, long>(capacity);
-            index2ObjectId = new long[capacity];
+            this.index2ObjectId = new long[capacity];
         }
 
         #endregion
@@ -111,8 +111,13 @@ namespace Infovision.Data
             long newCapacity = capacity != 0 ? Convert.ToInt64((double)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(long));
+            
+            long[] newIndex2ObjectId = new long[newCapacity];
+            Array.Copy(index2ObjectId, newIndex2ObjectId, this.index2ObjectId.Length);
+            
             this.capacity = newCapacity;
             data = newStorage;
+            index2ObjectId = newIndex2ObjectId;
         }
 
         public long Insert(DataRecordInternal record)

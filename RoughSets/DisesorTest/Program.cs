@@ -59,6 +59,7 @@ namespace DisesorTest
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;
+        int numberOfWeightResets = 5;
        
         public Program()
         {
@@ -94,8 +95,8 @@ namespace DisesorTest
         private void FinalTest(int iterations, int weakClassifiers, decimal eps)
         {
             Console.WriteLine("Algorithm: {0}", factoryKey);
-            Console.WriteLine("Number of permutations: {0}", numberOfPermutations);
-            Console.WriteLine("Epsilon: {0}", epsilon);
+            Console.WriteLine("Number of permutations: {0}", weakClassifiers);
+            Console.WriteLine("Epsilon: {0}", eps);
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
@@ -265,11 +266,11 @@ namespace DisesorTest
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, 
-                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.05)); //10% reduction step
+                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
             
             innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, 
                 new PermutationGeneratorFieldQuality(train, wGen, eps, 
-                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.33)));
+                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.5)));
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
@@ -287,6 +288,7 @@ namespace DisesorTest
             //args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
             args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
             args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+            args.SetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets, numberOfWeightResets);
 
             args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 

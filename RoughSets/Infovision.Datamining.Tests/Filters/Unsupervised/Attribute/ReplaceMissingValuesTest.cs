@@ -47,6 +47,14 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
+            Args inner = new Args();
+            inner.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+            inner.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            inner.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
+            inner.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
+
+            parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, inner);
+
             ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
             reductGenerator.Generate();
 

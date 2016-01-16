@@ -29,12 +29,12 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGeneratorFieldObject(DataStore dataSet)
-            : this(dataSet.GetObjectIndexes().ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray())
+            : this(Enumerable.Range(0, dataSet.NumberOfRecords).ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray())
         {
         }
 
         public PermutationGeneratorFieldObject(DataStore dataSet, decimal fieldSelectionRatio)
-            : this(dataSet.GetObjectIndexes().ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), fieldSelectionRatio)
+            : this(Enumerable.Range(0, dataSet.NumberOfRecords).ToArray(), dataSet.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), fieldSelectionRatio)
         {
         }
 

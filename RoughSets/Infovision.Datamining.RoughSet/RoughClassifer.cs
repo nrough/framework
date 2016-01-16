@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record, IReduct reduct)
         {
-            var decisionIdentification = new Dictionary<long, decimal>();
+            var decisionIdentification = new Dictionary<long, decimal>(reduct.ObjectSetInfo.GetDecisionValues().Count);
             EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
             if (eqClass != null)
             {
@@ -256,7 +256,7 @@ namespace Infovision.Datamining.Roughset
         public double[] GetDiscernibilityVector(DataStore data, decimal[] weights, IReduct reduct)
         {
             double[] result = new double[data.NumberOfRecords];
-            foreach (int objectIdx in data.GetObjectIndexes())
+            for (int objectIdx = 0; objectIdx < data.NumberOfRecords; objectIdx++)
                 if (this.IsObjectRecognizable(data, objectIdx, reduct))
                     result[objectIdx] = (double)weights[objectIdx];
             return result;

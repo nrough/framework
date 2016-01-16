@@ -10,12 +10,14 @@ namespace Infovision.Data
     {
         #region Members
         
-        private Char[] fieldDelimiter = new Char[] { ' ', ';', '\t', ',' };
+        private char[] fieldDelimiter = new char[] { ' ', ';', '\t', ',' };
         private int header = 0;
         private int expectedColums = -1;
         private int expectedRows = -1;        
         private Dictionary<int, Type> typePool = new Dictionary<int, Type>();
         private Dictionary<int, int> missingValuesCount = new Dictionary<int, int>();
+        private Dictionary<int, HashSet<string>> valueCount = new Dictionary<int, HashSet<string>>();
+ 
         #endregion
 
         #region Properties
@@ -64,10 +66,7 @@ namespace Infovision.Data
         }
 
         public override DataStoreInfo Analyze()
-        {
-            DataStoreInfo dataStoreInfo = new DataStoreInfo();
-            dataStoreInfo.MissingValue = this.MissingValue;
-
+        {            
             string line = String.Empty;
             int rows = 0;
 
@@ -98,7 +97,8 @@ namespace Infovision.Data
                 this.expectedRows = rows;
             }
 
-            dataStoreInfo.NumberOfFields = this.ExpectedColumns;
+            DataStoreInfo dataStoreInfo = new DataStoreInfo(this.ExpectedColumns);
+            dataStoreInfo.MissingValue = this.MissingValue;
             dataStoreInfo.NumberOfRecords = rows;
 
             for (int i = 1; i <= dataStoreInfo.NumberOfFields; i++)
@@ -109,7 +109,14 @@ namespace Infovision.Data
                     fieldType = FieldTypes.Decision;
                 }
 
-                DataFieldInfo fieldInfo = new DataFieldInfo(i, (this.ReferenceDataStoreInfo == null) ? this.AttributeType(i-1) : this.ReferenceDataStoreInfo.GetFieldInfo(i).FieldValueType);
+                DataFieldInfo fieldInfo = 
+                    new DataFieldInfo(
+                        i, 
+                        (this.ReferenceDataStoreInfo == null) 
+                            ? this.AttributeType(i-1) 
+                            : this.ReferenceDataStoreInfo.GetFieldInfo(i).FieldValueType,
+                        this.valueCount[i - 1].Count);
+
                 if (this.missingValuesCount.ContainsKey(i - 1))
                 {
                     fieldInfo.HasMissingValues = true;                   
@@ -166,7 +173,8 @@ namespace Infovision.Data
             int[] fieldId = new int[numberOfFields];
             long[] fieldValue = new long[numberOfFields];
             string line = String.Empty;
-            int linenum = 0; int i = 0;
+            int linenum = 0; 
+            int i = 0;
 
             try
             {
@@ -332,6 +340,15 @@ namespace Infovision.Data
                 {                    
                     this.AddValue2TypePool(i, value);
                 }
+
+                HashSet<string> fieldValues = null;
+                if (!valueCount.TryGetValue(i, out fieldValues))
+                {
+                    fieldValues = new HashSet<string>();
+                    this.valueCount[i] = fieldValues;
+                }
+
+                fieldValues.Add(value);
             }
         }
 

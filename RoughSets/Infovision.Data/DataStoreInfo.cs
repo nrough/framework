@@ -19,9 +19,9 @@ namespace Infovision.Data
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;
         private int decisionFieldId;
-        private Dictionary<int, DataFieldInfo> fields = new Dictionary<int, DataFieldInfo>();
-        private Dictionary<int, FieldTypes> fieldTypes = new Dictionary<int, FieldTypes>();
-        private Dictionary<FieldTypes, int> fieldTypeCount = new Dictionary<FieldTypes, int>();        
+        private Dictionary<int, DataFieldInfo> fields;
+        private Dictionary<int, FieldTypes> fieldTypes;
+        private Dictionary<FieldTypes, int> fieldTypeCount;
         
         #endregion
 
@@ -83,12 +83,24 @@ namespace Infovision.Data
 
         #region Constructor
 
-        public DataStoreInfo()
+        public DataStoreInfo(int numberOfFields = 0)
         {
-            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+            if (numberOfFields != 0)
             {
-                fieldTypeCount.Add(ft, 0);
+                this.fields = new Dictionary<int, DataFieldInfo>(numberOfFields);
+                this.fieldTypes = new Dictionary<int, FieldTypes>(numberOfFields);
+                this.NumberOfFields = numberOfFields;
             }
+            else
+            {
+                this.fields = new Dictionary<int, DataFieldInfo>();
+                this.fieldTypes = new Dictionary<int, FieldTypes>();
+            }
+
+            this.fieldTypeCount = new Dictionary<FieldTypes, int>(FieldTypesHelper.BasicFieldTypes.Count);
+            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+                fieldTypeCount.Add(ft, 0);
+
         }
 
         #endregion        
@@ -185,11 +197,6 @@ namespace Infovision.Data
         public DataFieldInfo GetFieldInfo(int fieldId)
         {            
             return fields[fieldId];
-        }
-
-        public DataFieldInfo decisionFieldGetDecisionFieldInfo()
-        {
-            return this.DecisionInfo;
         }
 
         public long AddFieldValue(int fieldId, object externalValue, bool isMissing)

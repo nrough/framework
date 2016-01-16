@@ -17,9 +17,8 @@ namespace Infovision.Data
             //if (idIdx != -1 && codification.Columns.Count != (source.Columns.Count - 1))
             //    throw new InvalidOperationException("Number of columns in source table and codification description must be the same");
 
-            DataStoreInfo dataStoreInfo = new DataStoreInfo();
+            DataStoreInfo dataStoreInfo = new DataStoreInfo(source.Columns.Count);
             dataStoreInfo.NumberOfRecords = source.Rows.Count;
-            dataStoreInfo.NumberOfFields = source.Columns.Count;
 
             int[] fieldIds = new int[dataStoreInfo.NumberOfFields];
 

@@ -46,7 +46,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual ObjectSet ObjectSet
         {
-            get { return new ObjectSet(this.dataStore, this.dataStore.GetObjectIndexes().ToArray()); }
+            get { return new ObjectSet(this.dataStore, Enumerable.Range(0, this.dataStore.NumberOfRecords).ToArray()); }
         }
 
         public virtual IObjectSetInfo ObjectSetInfo

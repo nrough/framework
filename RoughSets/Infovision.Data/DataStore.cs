@@ -16,13 +16,16 @@ namespace Infovision.Data
         private long capacity;
         private int lastIndex;
         private double capacityFactor;
+
         private Dictionary<long, int> objectId2Index;
-        private Dictionary<int, long> index2ObjectId;
+        //private Dictionary<int, long> index2ObjectId;
+        
+        private long[] index2ObjectId;
         private DataStoreInfo dataStoreInfo;
         private Dictionary<long, List<int>> decisionValue2ObjectIndex;
         private bool isDecisionMapCalculated = false;
-        
-        public static object syncRoot = new object();
+ 
+        private object mutex = new object();
 
         #endregion        
 
@@ -58,7 +61,8 @@ namespace Infovision.Data
             this.capacityFactor = capacityFactor;
             lastIndex = -1;
             objectId2Index = new Dictionary<long, int>(capacity);
-            index2ObjectId = new Dictionary<int, long>(capacity);            
+            //index2ObjectId = new Dictionary<int, long>(capacity);
+            index2ObjectId = new long[capacity];
         }
 
         #endregion
@@ -134,9 +138,11 @@ namespace Infovision.Data
                 long value = record[fieldId];
                 data[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
                 this.dataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
-            }            
+            }
 
-            index2ObjectId.Add(lastIndex, record.ObjectId);
+            //index2ObjectId.Add(lastIndex, record.ObjectId);
+            index2ObjectId[lastIndex] = record.ObjectId;
+
             objectId2Index.Add(record.ObjectId, lastIndex);
             record.ObjectIdx = lastIndex;            
         }
@@ -362,28 +368,32 @@ namespace Infovision.Data
             return objectId2Index.Keys;
         }
 
+        /*
         public IEnumerable<int> GetObjectIndexes()
         {
-            return index2ObjectId.Keys;
+            //return index2ObjectId.Keys;
+            return Enumerable.Range(0, index2ObjectId.Length);
         }
+        */
 
         public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
             List<int> result;
             if (this.isDecisionMapCalculated == false)
             {
-                lock (syncRoot)
+                lock (mutex)
                 {
                     if (this.isDecisionMapCalculated == false)
                     {
-                        this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>();
-                        foreach (int objectIdx in this.GetObjectIndexes())
+                        this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>(this.DataStoreInfo.NumberOfDecisionValues);
+
+                        for (int objectIdx = 0; objectIdx < this.NumberOfRecords; objectIdx++)
                         {
                             long decision = this.GetDecisionValue(objectIdx);
                             result = null;
                             if (!this.decisionValue2ObjectIndex.TryGetValue(decision, out result))
                             {
-                                result = new List<int>();
+                                result = new List<int>(this.DataStoreInfo.NumberOfObjectsWithDecision(decision));
                                 this.decisionValue2ObjectIndex.Add(decision, result);
                             }
                             result.Add(objectIdx);
@@ -397,7 +407,7 @@ namespace Infovision.Data
             if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
                 return new int[] { };
 
-            return this.decisionValue2ObjectIndex[decisionValue];
+            return result;
         }
 
         protected void DecisionChanged()
@@ -418,10 +428,13 @@ namespace Infovision.Data
 
         public long ObjectIndex2ObjectId(int objectIndex)
         {
+            /*
             long objectId;
             if (index2ObjectId.TryGetValue(objectIndex, out objectId))
                 return objectId;
             return 0;
+            */
+            return index2ObjectId[objectIndex];
         }
 
         public int ObjectId2ObjectIndex(long objectId)

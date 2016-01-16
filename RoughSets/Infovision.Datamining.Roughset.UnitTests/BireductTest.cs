@@ -70,10 +70,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
 
-            foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
+            for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
                 decimal p = Decimal.One / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(dataStoreTrain.GetDecisionValue(objectIdx));
-                
+
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
             }

@@ -32,7 +32,8 @@ namespace Infovision.Datamining.Roughset
         {
             this.elementWeights = new int[dataStore.NumberOfRecords];
             this.sumWeights = 0;
-            foreach (int objectIdx in dataStore.GetObjectIndexes())
+            for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
+            //foreach (int objectIdx in dataStore.GetObjectIndexes())
             {
                 this.elementWeights[objectIdx] = dataStore.DataStoreInfo.NumberOfObjectsWithDecision(dataStore.GetDecisionValue(objectIdx));
                 this.sumWeights += this.elementWeights[objectIdx];

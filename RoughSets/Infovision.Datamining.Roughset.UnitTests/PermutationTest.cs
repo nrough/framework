@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
-                dataStore.GetObjectIndexes().ToArray());
+                Enumerable.Range(0, dataStore.NumberOfRecords).ToArray());
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
-                dataStore.GetObjectIndexes().ToArray());
+                Enumerable.Range(0, dataStore.NumberOfRecords).ToArray());
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
-                dataStore.GetObjectIndexes().ToArray());
+                Enumerable.Range(0, dataStore.NumberOfRecords).ToArray());
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
-                dataStore.GetObjectIndexes().ToArray());
+                Enumerable.Range(0, dataStore.NumberOfRecords).ToArray());
         }
 
         [Test]
@@ -209,7 +209,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGeneratorFieldObject permGen;
             PermutationCollection permList;
             int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-            int[] objects = dataStore.GetObjectIndexes().ToArray();
+            int[] objects = Enumerable.Range(0, dataStore.NumberOfRecords).ToArray();
 
             permGen = new PermutationGeneratorFieldObject(objects, fields, 0);
             permList = permGen.Generate(100);

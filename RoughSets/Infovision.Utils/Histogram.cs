@@ -18,9 +18,10 @@ namespace Infovision.Utils
 
         #region Constructors
 
-        public Histogram()
+        public Histogram(int capacity = 0)
         {
             histogramData = new SortedDictionary<T, int>();
+
             minValue = default(T);
             maxValue = default(T);
         }

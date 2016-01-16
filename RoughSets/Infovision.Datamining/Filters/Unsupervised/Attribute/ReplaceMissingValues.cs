@@ -167,9 +167,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private DataStore ReplaceValues(DataStore dataStore, Dictionary<int, Dictionary<long, long>> frequentFieldValues)
         {
-            DataStoreInfo newDataStoreInfo = new DataStoreInfo();
+            DataStoreInfo newDataStoreInfo = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
             newDataStoreInfo.NumberOfRecords = dataStore.NumberOfRecords;
-            newDataStoreInfo.NumberOfFields = dataStore.DataStoreInfo.NumberOfFields;
             newDataStoreInfo.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, false);
 
             DataStore newDataStore = new DataStore(newDataStoreInfo);

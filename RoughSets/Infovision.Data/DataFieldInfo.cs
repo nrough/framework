@@ -13,23 +13,33 @@ namespace Infovision.Data
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
         private Histogram<long> histogram;
+        private int initialNumberOfValues;
 
         public static int NumericValueLimit = 10;
 
         #region Constructors
 
-        public DataFieldInfo(int attributeId, Type fieldValueType)
+        public DataFieldInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)
         {
+            this.initialNumberOfValues = initialNumberOfValues;
             this.fieldValueType = fieldValueType;
             this.maxValueInternalId = 0;
 
-            this.valueDictionary = new Dictionary<object, long>();
-            this.indexDictionary = new Dictionary<long, object>();
-
+            if (this.initialNumberOfValues == 0)
+            {
+                this.valueDictionary = new Dictionary<object, long>();
+                this.indexDictionary = new Dictionary<long, object>();
+                this.histogram = new Histogram<long>();
+            }
+            else
+            {
+                this.valueDictionary = new Dictionary<object, long>(this.initialNumberOfValues);
+                this.indexDictionary = new Dictionary<long, object>(this.initialNumberOfValues);
+                this.histogram = new Histogram<long>();
+            }
+            
             this.Id = attributeId;
             this.Name = String.Format(CultureInfo.InvariantCulture, "a{0}", attributeId);
-            this.histogram = new Histogram<long>();
-
             this.HasMissingValues = false;
             this.MissingValue = null;
         }
@@ -64,8 +74,16 @@ namespace Infovision.Data
         public void Reset()
         {            
             this.maxValueInternalId = 0;
-            this.valueDictionary = new Dictionary<object, long>();
-            this.indexDictionary = new Dictionary<long, object>();            
+            if (this.initialNumberOfValues == 0)
+            {
+                this.valueDictionary = new Dictionary<object, long>();
+                this.indexDictionary = new Dictionary<long, object>();
+            }
+            else
+            {
+                this.valueDictionary = new Dictionary<object, long>(this.initialNumberOfValues);
+                this.indexDictionary = new Dictionary<long, object>(this.initialNumberOfValues);
+            }
             this.histogram = new Histogram<long>();
             this.HasMissingValues = false;            
         }
@@ -124,6 +142,7 @@ namespace Infovision.Data
             this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
             this.IsNumeric = dataFieldInfo.IsNumeric;
+            this.initialNumberOfValues = dataFieldInfo.initialNumberOfValues;
 
             if (initMissingValues)
             {

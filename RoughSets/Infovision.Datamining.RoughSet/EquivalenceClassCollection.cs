@@ -174,6 +174,7 @@ namespace Infovision.Datamining.Roughset
 
         protected void InitPartitions()
         {
+            //TODO capacity
             this.partitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
         }
 
@@ -244,6 +245,7 @@ namespace Infovision.Datamining.Roughset
 
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
+            //TODO Capacity
             var localPartitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
             int[] attributeArray = attributeSet.ToArray();
 

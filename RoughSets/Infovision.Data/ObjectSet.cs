@@ -8,7 +8,7 @@ namespace Infovision.Data
     public class ObjectSet : PascalSet<int>, IObjectSetInfo
     {
         DataStore dataStore = null;
-        Dictionary<long, int> decisionCount = new Dictionary<long, int>();
+        Dictionary<long, int> decisionCount;
                 
         #region Properties
 
@@ -40,7 +40,13 @@ namespace Infovision.Data
             : base(0, dataStore.NumberOfRecords - 1, initialData)
         {
             this.dataStore = dataStore;
-            this.InitDecisionCount(initialData);
+            this.decisionCount = new Dictionary<long, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
+            for (int i = 0; i < initialData.Length; i++)
+            {
+                long decisionValue = this.dataStore.GetDecisionValue(initialData[i]);
+                int count = 0;
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+            }
         }
 
         public ObjectSet(DataStore dataStore)
@@ -60,17 +66,6 @@ namespace Infovision.Data
         public ICollection<long> GetDecisionValues()
         {
             return this.decisionCount.Keys;
-        }
-
-        private void InitDecisionCount(int[] data)
-        {
-            this.decisionCount = new Dictionary<long, int>();
-            for (int i = 0; i < data.Length; i++)
-            {
-                long decisionValue = this.dataStore.GetDecisionValue(data[i]);
-                int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
-            }
         }
 
         public override void AddElement(int element)

@@ -63,8 +63,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
 
                     resultFile.WriteLine();
-                    
-                    foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
+
+                    for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
+                    //foreach (int objectIdx in dataStoreTrain.GetObjectIndexes())
                     {
                         resultFile.Write("{0,5}:", objectIdx);
                         foreach (IReductStore rs in reductStoreCollection)

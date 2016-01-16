@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset
 
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);											
 				decimal m0 = new InformationMeasureWeights()
-                    .Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
+					.Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
 				this.Threshold = (double)(Decimal.One - m0);
 			}
 

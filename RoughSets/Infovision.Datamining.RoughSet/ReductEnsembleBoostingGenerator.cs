@@ -143,7 +143,7 @@ namespace Infovision.Datamining.Roughset
 				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				ClassificationResult result = classifier.Classify(this.DataStore, weights, false);
-				error = 1.0 - result.WeightMisclassified + result.WeightMisclassified;
+				error = result.WeightMisclassified + result.WeightUnclassified;
 
 				Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
 

@@ -314,7 +314,7 @@ namespace DisesorTest
             generator.Generate();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             Console.WriteLine("Done");
-
+            
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 foreach (IReduct reduct in reductStore)
@@ -329,43 +329,47 @@ namespace DisesorTest
                 identificationFunction,
                 voteFunction,
                 decisionValues);
-
-            StreamWriter file = null;            
-            int unclassified = 0;
-            try
+            
+            int unclassified = 0;                            
+            decimal[] votes = new decimal[test.NumberOfRecords];
+            int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();                
+            
+            for (int i = 0; i < test.NumberOfRecords; i++)
             {
-                file = new System.IO.StreamWriter(outputfile);
+                DataRecordInternal record = test.GetRecordByIndex(i);
+                var prediction = classifier.Classify(record);
+
+                decimal sum = Decimal.Zero;
+                foreach (var kvp in prediction)
+                {
+                    if (kvp.Key != -1)
+                        sum += kvp.Value;
+                }
+
+                if(prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
+                    unclassified++;
+
+                decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
+                votes[i] = sum > 0 ? warning / sum : Decimal.Zero;                 
+            }
+
+            Array.Sort(votes, indices);
+
+            votes = null;
+                
+            int[] rank = new int[test.NumberOfRecords];
+            for (int i = 0; i < test.NumberOfRecords; i++)
+            {
+                rank[indices[i]] = i;
+            }
+            
+            using(StreamWriter file = new System.IO.StreamWriter(outputfile))
+            {
                 for (int i = 0; i < test.NumberOfRecords; i++)
                 {
-                    DataRecordInternal record = test.GetRecordByIndex(i);
-                    var prediction = classifier.Classify(record);
-
-                    decimal sum = Decimal.Zero;
-                    foreach (var kvp in prediction)
-                    {
-                        if (kvp.Key != -1)
-                            sum += kvp.Value;
-                    }
-
-                    if(prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
-                        unclassified++;
-
-                    decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
-                    decimal result = sum > 0 ? warning / sum : Decimal.Zero;
-                    file.WriteLine(result.ToString(CultureInfo.InvariantCulture));
+                    file.WriteLine(rank[i].ToString(CultureInfo.InvariantCulture));
                 }
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                if (file != null)
-                {
-                    file.Close();
-                }
-            }
+            }            
             
             Console.WriteLine("Done");
             Console.WriteLine("Unclassified: {0}", unclassified);

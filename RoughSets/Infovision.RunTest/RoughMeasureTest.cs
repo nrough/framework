@@ -255,7 +255,7 @@ namespace Infovision.RunTest
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
 
-                localReductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                localReductStoreCollection = reductGenerator.GetReductStoreCollection();
 
                 //TODO reductMeasureKey, numberOfReducts
             }

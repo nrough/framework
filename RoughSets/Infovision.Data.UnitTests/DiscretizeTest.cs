@@ -70,7 +70,7 @@ namespace Infovision.Data.UnitTests
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
 
-                IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection();
                 Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
                 IReductStore reductStore = reductStoreCollection.FirstOrDefault();
 
@@ -184,7 +184,7 @@ namespace Infovision.Data.UnitTests
                 reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Generate();
 
-                reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                reductStoreCollection = reductGenerator.GetReductStoreCollection();
                 Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
 
                 reductStore = reductStoreCollection.FirstOrDefault();

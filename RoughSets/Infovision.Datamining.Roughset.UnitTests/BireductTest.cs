@@ -128,7 +128,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             reductGenerator.Generate();
             
             RoughClassifier classifier = new RoughClassifier(
-                reductGenerator.GetReductStoreCollection(Int32.MaxValue),
+                reductGenerator.GetReductStoreCollection(),
                 RuleQuality.Confidence,
                 RuleQuality.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
@@ -476,7 +476,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             reductGenerator.Generate();
 
             RoughClassifier classifier = new RoughClassifier(
-                reductGenerator.GetReductStoreCollection(Int32.MaxValue),
+                reductGenerator.GetReductStoreCollection(),
                 RuleQuality.Confidence, 
                 RuleQuality.SingleVote,
                 dataStoreTrain.DataStoreInfo.GetDecisionValues());

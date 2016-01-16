@@ -262,7 +262,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);                
                 reductGenerator.Generate();
-                IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection();
                 IReductStore reductStore = storeCollection.FirstOrDefault();
 
                 foreach (ReductWeights reduct in reductStore)

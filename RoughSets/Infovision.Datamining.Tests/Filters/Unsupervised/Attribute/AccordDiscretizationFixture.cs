@@ -226,7 +226,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
 				reductGenerator.Generate();
 
-				IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+				IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection();
 				IReductStoreCollection filteredStoreCollection = storeCollection.Filter(numberOfReducts, filterReductComparer);
 
 				RoughClassifier roughClassifier = new RoughClassifier(

@@ -106,7 +106,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
                     reductGenerator.Generate();
 
-                    IReductStoreCollection reductStoreCollction = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                    IReductStoreCollection reductStoreCollction = reductGenerator.GetReductStoreCollection();
                     IReductStore reductStore = reductStoreCollction.FirstOrDefault();
                     foreach (IReduct reduct in reductStore)
                     {
@@ -146,7 +146,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Generate();
 
-            IReductStore reductStore = reductGenerator.GetReductStoreCollection(Int32.MaxValue).FirstOrDefault();
+            IReductStore reductStore = reductGenerator.GetReductStoreCollection().FirstOrDefault();
 
             foreach (IReduct reduct in reductStore)
             {

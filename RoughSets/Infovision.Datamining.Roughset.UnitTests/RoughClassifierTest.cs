@@ -76,7 +76,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                         reductGenerator.Generate();
 
-                        IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(Int32.MaxValue);
+                        IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection();
 
                         RoughClassifier classifier = new RoughClassifier(
                             reductStoreCollection,

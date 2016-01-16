@@ -166,9 +166,12 @@ namespace Infovision.Datamining.Roughset
 						
 						break;
 					}
-
+					
 					this.WeightGenerator.Reset();
 					weights = this.WeightGenerator.Weights;
+
+					Console.WriteLine("Weights resets: {0}", this.NumberOfWeightResets);
+
 					continue;
 				}
 
@@ -321,8 +324,11 @@ namespace Infovision.Datamining.Roughset
 		   
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
+
 			WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
 			localWeightGen.Weights = weightsCopy;
+
+			localParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
 
 			if (size != 0)
 			{
@@ -342,18 +348,17 @@ namespace Infovision.Datamining.Roughset
 			if (this.InnerParameters == null)
 				throw new InvalidOperationException("Parameters for internal model are not provided. Please use InnerParameters key to provide setup for internal model creation.");
 
+			Args localParameters = (Args)this.InnerParameters.Clone();
+
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
 
+			WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
+			localWeightGen.Weights = weightsCopy;
+
 			int[] attr = new int[permutation.Length];
 			Array.Copy(permutation, attr, permutation.Length);
-
-			WeightGenerator localWeightGen;
-			if (this.InnerParameters.Exist(ReductGeneratorParamHelper.WeightGenerator))
-				localWeightGen = (WeightGenerator)this.InnerParameters.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
-			else
-				localWeightGen = new WeightGenerator(this.DataStore);
-			localWeightGen.Weights = weights;
+			
 			this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
 
 			decimal localEpsilon = epsilon;

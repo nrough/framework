@@ -59,7 +59,7 @@ namespace DisesorTest
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;
-        int numberOfWeightResets = 5;
+        int numberOfWeightResets = 99;
        
         public Program()
         {
@@ -132,6 +132,7 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
                 Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
                 Console.WriteLine("Boosting - Inner model epsilon: {0}", eps);
+                Console.WriteLine("Boosting - Max number of weights resets: {0}", numberOfWeightResets);
             }
 
             this.LoadMetadata();
@@ -322,6 +323,7 @@ namespace DisesorTest
                 foreach (IReduct reduct in reductStore)
                 {
                     Console.WriteLine(reduct);
+                    Console.WriteLine(reduct.Weights.ToStr());
                 }
             }
 

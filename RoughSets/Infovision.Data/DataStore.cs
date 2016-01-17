@@ -71,10 +71,7 @@ namespace Infovision.Data
 
         public int[] Sort(IComparer<int> comparer)
         {
-            int[] sortedArray = new int[this.NumberOfRecords];
-            for (int i = 0; i < sortedArray.Length; i++)            
-                sortedArray[i] = i;
-
+            int[] sortedArray = Enumerable.Range(0, this.NumberOfRecords).ToArray();
             Array.Sort(sortedArray, comparer);
             return sortedArray;
         }

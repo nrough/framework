@@ -52,10 +52,7 @@ namespace Infovision.Datamining.Roughset
                 size += this.fieldGroups[i].Length;
             }
 
-            int[] randomGroups = new int[this.fieldGroups.Length];
-            for(int i = 0; i < this.fieldGroups.Length; i++)
-                randomGroups[i] = i;
-
+            int[] randomGroups = Enumerable.Range(0, this.fieldGroups.Length).ToArray();
             randomGroups.Shuffle();
 
             int[] result = new int[size];

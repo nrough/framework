@@ -48,11 +48,11 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
-        public EquivalenceClassCollection(int[] attr)
+        public EquivalenceClassCollection(int[] attr, int initialSize = 0)
         {
             this.attributes = new int[attr.Length];
             Array.Copy(attr, this.attributes, attr.Length);
-            this.InitPartitions();
+            this.InitPartitions(initialSize);
         }
 
         public EquivalenceClassCollection()
@@ -172,10 +172,13 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected void InitPartitions()
+        protected void InitPartitions(int initialSize = 0)
         {
             //TODO capacity
-            this.partitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
+            if (initialSize != 0)
+                this.partitions = new Dictionary<long[], EquivalenceClass>(initialSize, new Int64ArrayEqualityComparer());
+            else
+                this.partitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore)

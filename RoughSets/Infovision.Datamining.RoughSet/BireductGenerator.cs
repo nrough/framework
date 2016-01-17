@@ -28,9 +28,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReductStore CreateReductStore()
+        protected override IReductStore CreateReductStore(int initialSize = 0)
         {
-            return new BireductStore();
+            return new BireductStore(initialSize);
         }      
         
         public override void Generate()

@@ -209,7 +209,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.ReductStoreCollection == null)
             {
-                this.ReductStoreCollection = new ReductStoreCollection();
+                this.ReductStoreCollection = new ReductStoreCollection(1);
                 this.ReductStoreCollection.AddStore(this.ReductPool);
             }
 
@@ -252,11 +252,11 @@ namespace Infovision.Datamining.Roughset
 
             if (this.UseExceptionRules)
             {
-                this.ReductStoreCollection = new ReductStoreCollection();
+                this.ReductStoreCollection = new ReductStoreCollection(this.Permutations.Count);
                 //foreach (Permutation permutation in this.Permutations)
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {
-                    ReductStore localReductPool = new ReductStore();
+                    ReductStore localReductPool = new ReductStore(1);
                     localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray(), localReductPool));
                     this.ReductStoreCollection.AddStore(localReductPool);
                 });

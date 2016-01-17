@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Benchmark
         {
             int cvFolds = 5;
 
-            Dictionary<string, BenchmarkData> dataFiles = new Dictionary<string, BenchmarkData>();
+            Dictionary<string, BenchmarkData> dataFiles = new Dictionary<string, BenchmarkData>(25);
 
             BenchmarkData benchmark = new BenchmarkData("golf",
                 GetFilePath(dataPath, "playgolf.train"), GetFilePath(dataPath, "playgolf.train"));

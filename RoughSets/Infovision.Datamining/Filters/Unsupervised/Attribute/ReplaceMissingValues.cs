@@ -54,6 +54,9 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private Dictionary<int, Dictionary<long, long>> CalcMissingValues(DataStore dataStore)
         {
+            //TODO WTF?!
+
+            //fieldId --> decision --> field value --> count
             Dictionary<int, Dictionary<long, Dictionary<long, int>>> fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
@@ -102,7 +105,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 }
             }
 
-            Dictionary<int, Dictionary<long, long>> mostFrequentValues = new Dictionary<int, Dictionary<long, long>>();
+            Dictionary<int, Dictionary<long, long>> mostFrequentValues = new Dictionary<int, Dictionary<long, long>>(dataStore.DataStoreInfo.NumberOfFields);
             foreach (var field in fieldMap)
             {
                 DataFieldInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(field.Key);

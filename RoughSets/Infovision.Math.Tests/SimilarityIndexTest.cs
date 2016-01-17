@@ -310,7 +310,7 @@ namespace Infovision.Math.Tests
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
             double[][] v = SimilarityTest.GetBinaryVectors();
 
-            List<DistanceFunctionResult> testResults = new List<DistanceFunctionResult>();
+            List<DistanceFunctionResult> testResults = new List<DistanceFunctionResult>(41);
 
             CalcDistanceNotWeighted("(0, 0)", distance, v[0], v[0], testResults);//1 
             CalcDistanceNotWeighted("(0, 31)", distance, v[0], v[31], testResults);//2

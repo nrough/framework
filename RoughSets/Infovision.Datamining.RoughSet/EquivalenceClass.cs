@@ -114,7 +114,6 @@ namespace Infovision.Datamining.Roughset
 
             if (updateStat)
             {
-                //TODO Capacity
                 this.instances = new Dictionary<int, decimal>();
                 this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(numberOfDecisions);
             }

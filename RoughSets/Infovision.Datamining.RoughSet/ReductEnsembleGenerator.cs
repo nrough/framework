@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset
        
         public override void Generate()
         {
-            ReductStore localReductPool = new ReductStore();
+            ReductStore localReductPool = new ReductStore(this.Permutations.Count);
             
             int k = -1;            
             foreach (Permutation permutation in this.Permutations)
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset
 
             double[][] errorVectors = this.GetWeightVectorsFromReducts(localReductPool);
 
-            Dictionary<int, double[]> errors = new Dictionary<int, double[]>();
+            Dictionary<int, double[]> errors = new Dictionary<int, double[]>(errorVectors.Length);
             for (int i = 0; i < errorVectors.Length; i++)
             {
                 errors.Add(i, errorVectors[i]);
@@ -192,11 +192,11 @@ namespace Infovision.Datamining.Roughset
         public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {            
             Dictionary<int, List<int>> clusterMembership = this.hCluster.GetClusterMembershipAsDict(numberOfEnsembles);
-            ReductStoreCollection result = new ReductStoreCollection();
+            ReductStoreCollection result = new ReductStoreCollection(clusterMembership.Count);
 
             foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
             {
-                ReductStore tmpReductStore = new ReductStore();
+                ReductStore tmpReductStore = new ReductStore(kvp.Value.Count);
                 foreach (int r in kvp.Value)
                 {
                     tmpReductStore.DoAddReduct(this.ReductPool.GetReduct(r));

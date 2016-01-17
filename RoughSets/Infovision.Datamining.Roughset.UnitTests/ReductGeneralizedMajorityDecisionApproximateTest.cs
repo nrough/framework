@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReduct reduct_1 = CalculateGeneralizedMajorityApproximateDecisionReduct(data, eps, attributes);
                     watch_1.Stop();
                     
-                    IReductStore store = new ReductStore();
+                    IReductStore store = new ReductStore(1);
                     store.AddReduct(reduct_1);
                     IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
                     reductStoreCollection.AddStore(store);
@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReduct reduct_2 = CalculateApproximateReductFromSubset(data, eps, attributes);
                     watch_2.Stop();
 
-                    IReductStore store2 = new ReductStore();
+                    IReductStore store2 = new ReductStore(1);
                     store2.AddReduct(reduct_2);
                     IReductStoreCollection reductStoreCollection2 = new ReductStoreCollection(1);
                     reductStoreCollection2.AddStore(store2);

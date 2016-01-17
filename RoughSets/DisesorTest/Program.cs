@@ -382,7 +382,7 @@ namespace DisesorTest
         private void LoadMetadata()
         {
             Console.Write("Loading metadata...");
-            metadataDict = new Dictionary<string, string>();
+            metadataDict = new Dictionary<string, string>(24);
             /*
             metadataDict.Add("146", "_146,ściana 5,Partia F,416,ZZ,2,a");
             metadataDict.Add("149", "_149,ściana 5,Partia F,418,ZZ,2.2,b");

@@ -141,7 +141,7 @@ namespace Infovision.Datamining.Roughset
         public ReductStore(int capacity)
             : base(capacity)
         {
-            this.reducts = new List<IReduct>(capacity);
+            this.reducts = capacity != 0 ? new List<IReduct>(capacity) : new List<IReduct>();
         }
 
         protected ReductStore(ReductStore reductStore)

@@ -187,8 +187,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override void Generate()
-        {            
-            this.ReductPool = new ReductStore();
+        {
+            this.ReductPool = new ReductStore(this.permEpsilon.Length);
 
             this.hCluster = new HierarchicalClusteringIncrementalExt(this.Distance, this.Linkage);
             this.hCluster.MinimumNumberOfInstances = this.MinimumNumberOfInstances;
@@ -229,11 +229,11 @@ namespace Infovision.Datamining.Roughset
         public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {
             Dictionary<int, List<int>> clusterMembership = this.hCluster.GetClusterMembershipAsDict(numberOfEnsembles);
-            ReductStoreCollection result = new ReductStoreCollection();
+            ReductStoreCollection result = new ReductStoreCollection(clusterMembership.Count);
 
             foreach (KeyValuePair<int, List<int>> kvp in clusterMembership)
             {
-                ReductStore tmpReductStore = new ReductStore();
+                ReductStore tmpReductStore = new ReductStore(kvp.Value.Count);
                 foreach (int r in kvp.Value)
                 {
                     tmpReductStore.DoAddReduct(this.ReductPool.GetReduct(r));

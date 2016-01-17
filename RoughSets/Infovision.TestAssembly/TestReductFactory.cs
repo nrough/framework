@@ -82,7 +82,7 @@ namespace Infovision.TestAssembly
 
         public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection();
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
             reductStoreCollection.AddStore(this.ReductPool);
             return reductStoreCollection;
         }

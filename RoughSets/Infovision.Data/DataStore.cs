@@ -271,7 +271,7 @@ namespace Infovision.Data
             });
 
             int newFieldId = this.DataStoreInfo.MaxFieldId + 1;
-            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T));
+            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.Values().Count : 0);
             for (int row = 0; row < this.NumberOfRecords; row++)
             {
                 isMissing = this.DataStoreInfo.HasMissingData && String.Equals(columnData[row], newFieldInfo.MissingValue);

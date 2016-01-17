@@ -133,7 +133,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     int ensembleId = 0;
                     foreach (object[] ensemble in clusterCollection.Values())
                     {
-                        ReductStore reductEnsemble = new ReductStore();
+                        ReductStore reductEnsemble = new ReductStore(ensemble.Length);
                         for (int i = 0; i < ensemble.Length; i++)
                         {
                             reductEnsemble.DoAddReduct((IReduct)ensemble[i]);
@@ -175,14 +175,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             VoteType = voteType.Method.Name
                         });
 
-                        ReductStore randomReductGroup = new ReductStore();
+                        ReductStore randomReductGroup = new ReductStore(ensemble.Length);
                         int[] randomReductIndices = RandomExt.RandomVectorNoRepetition(ensemble.Length, 0, reductGenerator.ReductPool.Count() - 1);
                         for (int i = 0; i < ensemble.Length; i++)
                         {
                             randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomReductIndices[i]));
                         }
 
-                        IReductStoreCollection localReductStoreCollection = new ReductStoreCollection();
+                        IReductStoreCollection localReductStoreCollection = new ReductStoreCollection(1);
                         localReductStoreCollection.AddStore(randomReductGroup);
 
                         RoughClassifier rc2 = new RoughClassifier(

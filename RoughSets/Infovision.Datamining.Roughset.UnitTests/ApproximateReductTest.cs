@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductStatisticsTest()
         {
-            ReductStore reductStore = new ReductStore();
+            ReductStore reductStore = new ReductStore(1);
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0);
             reductStore.AddReduct(reduct);
 
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EmptyReductStatisticsTest()
         {
-            ReductStore reductStore = new ReductStore();
+            ReductStore reductStore = new ReductStore(1);
             Reduct reduct = new Reduct(dataStoreTrain);
 
             reductStore.AddReduct(reduct);
@@ -163,7 +163,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void FullAttributeSetReductStatisticsTest()
         {
-            ReductStore reductStore = new ReductStore();
+            ReductStore reductStore = new ReductStore(1);
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2, 3, 4, 5, 6 }, 0);
             reductStore.AddReduct(reduct);
 
@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductFiltering()
         {
-            ReductStore reductStore = new ReductStore();
+            ReductStore reductStore = new ReductStore(3);
 
             reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0));
             reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 5, 6 }, 0));

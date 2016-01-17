@@ -166,7 +166,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (object[] ensemble in clusterCollection.Values())
             {
-                ReductStore tmpReductStore = new ReductStore();
+                ReductStore tmpReductStore = new ReductStore(numberOfClusters);
                 for (int i = 0; i < numberOfClusters; i++)
                 {
                     tmpReductStore.DoAddReduct((IReduct)ensemble[i]);

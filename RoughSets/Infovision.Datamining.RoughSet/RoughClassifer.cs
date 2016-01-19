@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         public bool UseExceptionRules { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
-        public decimal MinVoteValue { get; set; }
+        public decimal MinimumVoteValue { get; set; }
 
         public IReductStoreCollection ReductStoreCollection 
         {
@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Roughset
             this.decisions[0] = -1;
             Array.Copy(this.DecisionValues.ToArray(), 0, this.decisions, 1, this.decCount);
 
-            this.MinVoteValue = Decimal.Zero;
+            this.MinimumVoteValue = Decimal.MinValue;
         }        
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record, IReduct reduct)
@@ -171,9 +171,26 @@ namespace Infovision.Datamining.Roughset
                         }
                     }
 
+                    if (this.VoteFunction.Equals(this.IdentificationFunction))
+                    {
+                        if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
+                            reductsVotes[identifiedDecision] += identifiedDecisionWeight;
+                    }
+                    else
+                    {
+                        if (identifiedDecision != 0)
+                        {
+                            decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
+                            if((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                reductsVotes[identifiedDecision] += vote;
+                        }
+                    }
+                                        
+                    /*
                     reductsVotes[identifiedDecision] += this.VoteFunction.Equals(this.IdentificationFunction)
                         ? identifiedDecisionWeight
                         : identifiedDecision != 0 ? this.VoteFunction(decisions[identifiedDecision], reduct, eqClass) : Decimal.Zero;
+                    */
 
                     if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
                         break;

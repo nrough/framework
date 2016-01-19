@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
 {
 	public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError);
 	public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
-	
+
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
 	{								
 		protected int iterPassed;		
@@ -20,6 +20,7 @@ namespace Infovision.Datamining.Roughset
 		public double Threshold { get; set; }
 		public RuleQualityFunction IdentyficationType { get; set;} 
 		public RuleQualityFunction VoteType {get; set; }
+		public decimal MinimumVoteValue { get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
 		public int MaxIterations { get; set; }
 		public int IterationsPassed { get { return this.iterPassed; } }
@@ -28,7 +29,8 @@ namespace Infovision.Datamining.Roughset
 		public bool CheckEnsembleErrorDuringTraining { get; set; }
 		public WeightGenerator WeightGenerator { get; set; }				
 		public UpdateWeightsDelegate UpdateWeights { get; set; }		
-		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }		
+		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
+		public bool FixedPermutations { get; set; } 
 		
 		protected ReductStoreCollection Models { get; set; }
 
@@ -46,6 +48,7 @@ namespace Infovision.Datamining.Roughset
 			this.CheckEnsembleErrorDuringTraining = false;
 			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+			this.MinimumVoteValue = Decimal.MinValue;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -121,6 +124,12 @@ namespace Infovision.Datamining.Roughset
 
 			if (args.Exist(ReductGeneratorParamHelper.MaxNumberOfWeightResets))
 				this.MaxNumberOfWeightResets = (int)args.GetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets);
+
+			if (args.Exist(ReductGeneratorParamHelper.MinimumVoteValue))
+				this.MinimumVoteValue = (decimal)args.GetParameter(ReductGeneratorParamHelper.MinimumVoteValue);
+
+			if (args.Exist(ReductGeneratorParamHelper.FixedPermutations))
+				this.FixedPermutations = (bool)args.GetParameter(ReductGeneratorParamHelper.FixedPermutations);
 		}
 
 		public override void Generate()
@@ -145,6 +154,7 @@ namespace Infovision.Datamining.Roughset
 			{
 				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
+				classifier.MinimumVoteValue = this.MinimumVoteValue;
 				ClassificationResult result = classifier.Classify(this.DataStore, weights, false);
 				error = result.WeightMisclassified + result.WeightUnclassified;
 
@@ -330,8 +340,21 @@ namespace Infovision.Datamining.Roughset
 
 			localParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
 
-			if (size != 0)
+			if (this.FixedPermutations)
 			{
+				if  (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false && size != 0)
+				{                    
+					PermutationCollection localPermCollection = this.PermutationGenerator.Generate(size);
+					this.InnerParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
+					localParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
+				}
+				else
+				{
+					throw new InvalidOperationException("No fixed permutation nor collection size to generate permutation was given");
+				}
+			}
+			else if (size != 0)
+			{		                
 				localParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
 				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
 				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);                
@@ -375,8 +398,8 @@ namespace Infovision.Datamining.Roughset
 			throw new NotImplementedException("ReductEnsembleBoostingGenerator.CreateReductObject(...) is not implemented");
 		}
 
-		#region Delegate implementations
-
+		#region Delegate implementations        
+						
 		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{            
 			if (actualOutput == predictedOutput)
@@ -412,11 +435,11 @@ namespace Infovision.Datamining.Roughset
 		public static double UpdateWeightsDummy(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{
 			return currentWeight;
-		}
-
+		}        
+		
 		public static double ModelConfidenceAdaBoostM1(int numberOfOutputValues, double totalError)
-		{			
-			return System.Math.Log((1.0 - totalError) / (totalError + 0.0000001)) + System.Math.Log(numberOfOutputValues - 1);
+		{
+			return System.Math.Log((1.0 - totalError) / (totalError + 0.000000001)) + System.Math.Log(numberOfOutputValues - 1.0);
 		}
 
 		public static double ModelConfidenceEqual(int numberOfOutputValues, double totalError)

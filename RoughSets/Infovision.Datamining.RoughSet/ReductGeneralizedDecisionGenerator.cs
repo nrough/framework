@@ -279,6 +279,12 @@ namespace Infovision.Datamining.Roughset
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
+
+            //if (newAttributes.Length == 0)
+            //{
+            //    Console.WriteLine("Empty!");
+            //}
+
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
    
@@ -286,8 +292,9 @@ namespace Infovision.Datamining.Roughset
             eqArray.Shuffle();
 
             decimal weightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
+            //decimal newEqWeightSum = Decimal.Zero;
 
-            foreach(EquivalenceClass eq in eqArray)            
+            foreach(EquivalenceClass eq in eqArray)
             {
                 var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
 
@@ -300,6 +307,7 @@ namespace Infovision.Datamining.Roughset
                     {
                         newEqClass.DecisionSet = newDecisionSet;
                         newEqClass.WeightSum += eq.WeightSum;
+                        //newEqWeightSum += eq.WeightSum;
                         
                         if(this.UseExceptionRules)
                             newEqClass.AddObjectInstances(eq.Instances);
@@ -329,13 +337,20 @@ namespace Infovision.Datamining.Roughset
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;
+                    //newEqWeightSum += eq.WeightSum;
                     
                      if (this.UseExceptionRules)
                         newEqClass.AddObjectInstances(eq.Instances);
 
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
-            }            
+            }
+
+            //Check
+            //if (Decimal.Round(newEqWeightSum, 17) != Decimal.Round(newEqClasses.EqWeightSum, 17))
+            //{
+            //    throw new InvalidOperationException("");
+            //}
 
             return newEqClasses;
         }

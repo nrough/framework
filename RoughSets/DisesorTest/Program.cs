@@ -31,17 +31,17 @@ namespace DisesorTest
 
         //string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
         string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
-        int numberOfPermutations = 100;
-        decimal epsilon = 0.0m;
+        //int numberOfPermutations = 100;
+        //decimal epsilon = 0.0m;
         
         RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
-        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        RuleQualityFunction voteFunction = RuleQuality.ConfidenceW;
         WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
         bool useSupervisedDiscetization = false;
         bool useWeightsInDiscretization = false;
 
-        bool useBetterncoding = true;
+        bool useBetterEncoding = true;
         bool useKokonenkoMDL = true;
 
         DiscretizationType discretizationType = DiscretizationType.Entropy;
@@ -54,20 +54,23 @@ namespace DisesorTest
         //int boostingMaxIterations = 100;
 
 
-        RuleQualityFunction boostingIdentificationFunction = null;
-        RuleQualityFunction boostingVoteFunction = null;        
+        //RuleQualityFunction boostingIdentificationFunction = null;
+        //RuleQualityFunction boostingVoteFunction = null;        
         UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
         CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         bool boostingCheckEnsambleErrorDuringTraining = false;
         int numberOfWeightResets = 99;
+
+        decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
+        bool fixedPermutations = true;
        
         public Program()
         {
-            if (boostingIdentificationFunction == null)
-                boostingIdentificationFunction = identificationFunction;
+            //if (boostingIdentificationFunction == null)
+            //    boostingIdentificationFunction = identificationFunction;
 
-            if (boostingVoteFunction == null)
-                boostingVoteFunction = voteFunction;
+            //if (boostingVoteFunction == null)
+            //    boostingVoteFunction = voteFunction;
         }
 
         #endregion
@@ -99,6 +102,7 @@ namespace DisesorTest
             Console.WriteLine("Epsilon: {0}", eps);
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
+            Console.WriteLine("Minimum vote value: {0}", minimumVoteValue);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
             Console.WriteLine();
                                     
@@ -124,8 +128,8 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Inner model: {0}", innerFactoryKey);
                 //Console.WriteLine("Boosting - Numer of reducts in single model: {0}", boostingNumberOfReductsInWeakClassifier);
                 Console.WriteLine("Boosting - Numer of reducts in single model: {0}", weakClassifiers);
-                Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
-                Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
+                //Console.WriteLine("Boosting - Identification function: {0}", boostingIdentificationFunction.Method.Name);
+                //Console.WriteLine("Boosting - Voting fnction: {0}", boostingVoteFunction.Method.Name);
                 //Console.WriteLine("Boosting - Max iterations: {0}", boostingMaxIterations);
                 Console.WriteLine("Boosting - Max iterations: {0}", iterations);
                 Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
@@ -133,6 +137,7 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
                 Console.WriteLine("Boosting - Inner model epsilon: {0}", eps);
                 Console.WriteLine("Boosting - Max number of weights resets: {0}", numberOfWeightResets);
+                Console.WriteLine("Boosting - Fixed permutations: {0}", fixedPermutations);
             }
 
             this.LoadMetadata();
@@ -237,7 +242,7 @@ namespace DisesorTest
             {
                 var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
                 {
-                    UseBetterEncoding = useBetterncoding,
+                    UseBetterEncoding = useBetterEncoding,
                     UseKononenko = useKokonenkoMDL
                 };
 
@@ -276,20 +281,22 @@ namespace DisesorTest
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(weakClassifiers));
             args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
             //args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
             args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, weakClassifiers);
-            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, boostingIdentificationFunction);
-            args.SetParameter(ReductGeneratorParamHelper.VoteType, boostingVoteFunction);
+            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, identificationFunction);
+            args.SetParameter(ReductGeneratorParamHelper.VoteType, voteFunction);
+            args.SetParameter(ReductGeneratorParamHelper.MinimumVoteValue, minimumVoteValue);
             args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
             args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
             //args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
             args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
             args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
             args.SetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets, numberOfWeightResets);
+            args.SetParameter(ReductGeneratorParamHelper.FixedPermutations, fixedPermutations);
 
             args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
@@ -318,14 +325,14 @@ namespace DisesorTest
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             Console.WriteLine("Done");
             
-            foreach (IReductStore reductStore in reductStoreCollection)
-            {
-                foreach (IReduct reduct in reductStore)
-                {
-                    Console.WriteLine(reduct);
-                    Console.WriteLine(reduct.Weights.ToStr());
-                }
-            }
+            //foreach (IReductStore reductStore in reductStoreCollection)
+            //{
+            //    foreach (IReduct reduct in reductStore)
+            //    {
+            //        Console.WriteLine(reduct);
+            //        //Console.WriteLine(reduct.Weights.ToStr());
+            //    }
+            //}
 
             Console.Write("Classification...");            
             RoughClassifier classifier = new RoughClassifier(
@@ -334,9 +341,11 @@ namespace DisesorTest
                 voteFunction,
                 decisionValues);
             
+            classifier.MinimumVoteValue = minimumVoteValue;
+            
             int unclassified = 0;                            
             decimal[] votes = new decimal[test.NumberOfRecords];
-            int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();                
+            int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();
             
             for (int i = 0; i < test.NumberOfRecords; i++)
             {

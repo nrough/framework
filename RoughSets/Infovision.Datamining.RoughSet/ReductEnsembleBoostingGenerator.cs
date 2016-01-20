@@ -344,11 +344,14 @@ namespace Infovision.Datamining.Roughset
 			{
 				if  (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false && size != 0)
 				{                    
-					PermutationCollection localPermCollection = this.PermutationGenerator.Generate(size);
+					PermutationCollection localPermCollection = this.InnerParameters.Exist(ReductGeneratorParamHelper.PermuatationGenerator)
+						? ((IPermutationGenerator) this.InnerParameters.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator)).Generate(size)
+						: this.PermutationGenerator.Generate(size);
+
 					this.InnerParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
 					localParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
 				}
-				else
+				else if (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false)
 				{
 					throw new InvalidOperationException("No fixed permutation nor collection size to generate permutation was given");
 				}

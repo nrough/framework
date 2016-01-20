@@ -58,12 +58,15 @@ namespace Infovision.Datamining.Roughset
 
         public override int GetHashCode()
         {
+            return base.GetHashCode();
+            /*
             return HashHelper.GetHashCode(
                 HashHelper.GetHashCode(this.Attributes.Data),
                 HashHelper.GetHashCode(
                     this.Weights[0], 
                     this.Weights[(int)(this.Weights.Length - 1) / 2], 
                     this.Weights[this.Weights.Length - 1]));
+            */
         }
 
         #endregion

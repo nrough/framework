@@ -39,13 +39,18 @@ namespace Infovision.Datamining.Roughset
 
             //Sort according to fieldQuality
             Array.Sort(fieldQualityOrig, fieldIdsSorted);
+
+            //Console.WriteLine("S: {0}", fieldIdsSorted.ToStr());
+
+            //Console.WriteLine("W: {0}", fieldQualityOrig.ToStr());
         }
         
         protected override Permutation CreatePermutation()
         {
             int[] fieldIds = new int[fieldIdsSorted.Length];
+
             Array.Copy(fieldIdsSorted, fieldIds, fieldIdsSorted.Length);
-            fieldIds.ShuffleFwd(this.NumberOfShuffles);
+            fieldIds.ShuffleFwd(this.NumberOfShuffles);                                    
             Permutation permutation = new Permutation(fieldIds);
             return permutation;
 

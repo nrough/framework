@@ -268,6 +268,8 @@ namespace Infovision.Datamining.Roughset
                 //foreach (Permutation permutation in this.Permutations)
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {
+                    //Console.WriteLine("P: {0}", permutation);
+
                     IReduct r = this.CalculateReduct(permutation.ToArray(), localReductPool);
                     Console.WriteLine(r.ToString());
                     localReductPool.DoAddReduct(r);

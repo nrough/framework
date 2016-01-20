@@ -63,6 +63,8 @@ namespace DisesorTest
 
         decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
         bool fixedPermutations = true;
+        double reductionStepRatio = 0.025;
+        double shuffleRatio = 0.33;
        
         public Program()
         {
@@ -139,6 +141,9 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Max number of weights resets: {0}", numberOfWeightResets);
                 Console.WriteLine("Boosting - Fixed permutations: {0}", fixedPermutations);
             }
+
+            Console.WriteLine("Reduction step ratio: {0}", reductionStepRatio);
+            Console.WriteLine("Permutation shuffle ratio: {0}", shuffleRatio);
 
             this.LoadMetadata();
 
@@ -272,11 +277,11 @@ namespace DisesorTest
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, 
-                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * reductionStepRatio)); //10% reduction step
             
             innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, 
                 new PermutationGeneratorFieldQuality(train, wGen, eps, 
-                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.5)));
+                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * shuffleRatio)));
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);

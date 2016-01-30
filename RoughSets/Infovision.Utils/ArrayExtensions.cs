@@ -22,7 +22,7 @@ namespace Infovision.Utils
 
         public static void ShuffleFwd<T>(this T[] array, int number = 0)
         {
-            if (number == 0 || number > array.Length)
+            if (number > array.Length)
                 number = array.Length;
 
             for (int i = 0; i < number; i++)
@@ -132,6 +132,13 @@ namespace Infovision.Utils
                     sb.Append('|');
             }
             return sb.ToString();
-        }        
+        }
+
+        public static T[] SubArray<T>(this T[] array, int index, int length)
+        {
+            T[] result = new T[length];
+            Array.Copy(array, index, result, 0, length);
+            return result;
+        }
     }
 }

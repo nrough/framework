@@ -127,7 +127,7 @@
     <Compile Include="Filters\Supervised\Attribute\Discretization.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
-    <Compile Include="Filters\Unsupervised\Attribute\DiscretizationType.cs" />
+    <Compile Include="Filters\DiscretizationType.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\ReplaceMissingValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />

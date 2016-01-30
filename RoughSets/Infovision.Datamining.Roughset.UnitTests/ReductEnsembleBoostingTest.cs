@@ -363,7 +363,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
                     parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    //parms.SetParameter(ReductGeneratorParamHelper.MinReductLength, 1);
+                    //args.SetParameter(ReductGeneratorParamHelper.MinReductLength, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 10);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     
@@ -532,7 +532,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
-                                      parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
+                                      args.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
                                       reductGenerator.VoteType,
                                       reductGenerator.MinReductLength,
@@ -584,7 +584,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.MinReductLength, 2);
-                    //parms.SetParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
+                    //args.SetParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, 20);
@@ -721,7 +721,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     /*
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
-                                      parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
+                                      args.GetParameter(ReductGeneratorParamHelper.FactoryKey),
                                       reductGenerator.IdentyficationType,
                                       reductGenerator.VoteType,
                                       reductGenerator.MinReductLength,

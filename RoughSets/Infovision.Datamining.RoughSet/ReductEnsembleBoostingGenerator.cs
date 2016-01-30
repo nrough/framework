@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
+//TODO Implement Cost of misclassification. (Imbalanced classes)
 namespace Infovision.Datamining.Roughset
 {
 	public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError);
@@ -18,7 +19,7 @@ namespace Infovision.Datamining.Roughset
 		protected int iterPassed;		
 
 		public double Threshold { get; set; }
-		public RuleQualityFunction IdentyficationType { get; set;} 
+		public RuleQualityFunction IdentyficationType { get; set;}
 		public RuleQualityFunction VoteType {get; set; }
 		public decimal MinimumVoteValue { get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
@@ -27,14 +28,12 @@ namespace Infovision.Datamining.Roughset
 		public int MaxNumberOfWeightResets { get; set; }
 		public int NumberOfWeightResets { get; protected set; }
 		public bool CheckEnsembleErrorDuringTraining { get; set; }
-		public WeightGenerator WeightGenerator { get; set; }				
-		public UpdateWeightsDelegate UpdateWeights { get; set; }		
+		public WeightGenerator WeightGenerator { get; set; }
+		public UpdateWeightsDelegate UpdateWeights { get; set; }
 		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
-		public bool FixedPermutations { get; set; } 
+		public bool FixedPermutations { get; set; }
 		
-		protected ReductStoreCollection Models { get; set; }
-
-		public DataSet TestDataSet { get; set; }
+		protected ReductStoreCollection Models { get; set; }		
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -89,7 +88,7 @@ namespace Infovision.Datamining.Roughset
 				}
 
 
-				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);											
+				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 				decimal m0 = new InformationMeasureWeights()
 					.Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
 				this.Threshold = (double)(Decimal.One - m0);
@@ -114,7 +113,7 @@ namespace Infovision.Datamining.Roughset
 				this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);
 
 			if (args.Exist(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining))
-				this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);			
+				this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);
 
 			if (args.Exist(ReductGeneratorParamHelper.UpdateWeights))
 				this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductGeneratorParamHelper.UpdateWeights);
@@ -152,7 +151,8 @@ namespace Infovision.Datamining.Roughset
 
 			do
 			{
-				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);				
+				IReductStoreCollection reductStoreCollection = this.CreateModel(weights, this.NumberOfReductsInWeakClassifier);
+
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				classifier.MinimumVoteValue = this.MinimumVoteValue;
 				ClassificationResult result = classifier.Classify(this.DataStore, weights, false);
@@ -273,7 +273,7 @@ namespace Infovision.Datamining.Roughset
 
 								if (resultEnsemble.WeightMisclassified + resultEnsemble.WeightUnclassified > 0.001)
 								{
-									modelHasConverged = false;									
+									modelHasConverged = false;
 									break;
 								}
 							}
@@ -334,22 +334,20 @@ namespace Infovision.Datamining.Roughset
 		   
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
-
 			WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
 			localWeightGen.Weights = weightsCopy;
-
 			localParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
 
 			if (this.FixedPermutations)
 			{
-				if  (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false && size != 0)
+				if  (localParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false && size != 0)
 				{                    
 					PermutationCollection localPermCollection = this.InnerParameters.Exist(ReductGeneratorParamHelper.PermuatationGenerator)
 						? ((IPermutationGenerator) this.InnerParameters.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator)).Generate(size)
 						: this.PermutationGenerator.Generate(size);
-
-					this.InnerParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
 					localParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
+					this.InnerParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
+					
 				}
 				else if (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false)
 				{
@@ -360,7 +358,7 @@ namespace Infovision.Datamining.Roughset
 			{		                
 				localParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
 				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
-				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);                
+				localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);
 			}
 
 			IReductGenerator generator = ReductFactory.GetReductGenerator(localParameters);
@@ -405,6 +403,7 @@ namespace Infovision.Datamining.Roughset
 						
 		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
 		{            
+			
 			if (actualOutput == predictedOutput)
 				return 1.0;
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
@@ -442,7 +441,8 @@ namespace Infovision.Datamining.Roughset
 		
 		public static double ModelConfidenceAdaBoostM1(int numberOfOutputValues, double totalError)
 		{
-			return System.Math.Log((1.0 - totalError) / (totalError + 0.000000001)) + System.Math.Log(numberOfOutputValues - 1.0);
+			return System.Math.Log((1.0 - totalError) / (totalError + 0.000000000001)) 
+				+ System.Math.Log(numberOfOutputValues - 1.0);
 		}
 
 		public static double ModelConfidenceEqual(int numberOfOutputValues, double totalError)

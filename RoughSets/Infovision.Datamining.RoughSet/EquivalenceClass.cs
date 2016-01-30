@@ -419,8 +419,9 @@ namespace Infovision.Datamining.Roughset
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("{0} ", this.Instance.ToStr());
             stringBuilder.AppendFormat("d=[{0}] ", this.DecisionSet);
+            stringBuilder.AppendFormat("{0}", this.Instance.ToStr());
+            //stringBuilder.AppendFormat("d=[{0}] ", this.DecisionSet);
             return stringBuilder.ToString();
         }
 

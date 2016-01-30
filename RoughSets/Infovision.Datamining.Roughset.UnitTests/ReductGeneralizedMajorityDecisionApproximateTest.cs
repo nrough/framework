@@ -17,24 +17,49 @@ using Infovision.Datamining.Benchmark;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
-    [TestFixture, Ignore]
+    [TestFixture]
     public class ReductGeneralizedMajorityDecisionApproximateTest
     {
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles("Data",
                 new string[] {                     
-                    "zoo",
-                    "semeion",
-                    "opt", 
-                    "dna", 
-                    "letter", 
-                    "monks-1", 
-                    "monks-2", 
-                    "monks-3", 
-                    "spect", 
-                    "pen"                     
+                    //"zoo",
+                    //"semeion",
+                    //"opt", 
+                    "dna" 
+                    //"letter", 
+                    //"monks-1", 
+                    //"monks-2", 
+                    //"monks-3", 
+                    //"spect", 
+                    //"pen"                     
                 });
+        }
+
+        [Test, TestCaseSource("GetDataFiles")]
+        public void EmptyReductsTest(KeyValuePair<string, BenchmarkData> kvp)
+        {
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
+
+            Args args = new Args();
+            args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+            args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(data));
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+
+            Permutation p = ReductFactory.GetPermutationGenerator(args).Generate(1).FirstOrDefault();
+            Permutation p2 = new Permutation(p.ToArray().SubArray(0, p.Length / 4));
+            PermutationCollection permCollection = new PermutationCollection();
+            for (int i = 0; i < 100; i++)
+                permCollection.Add(p2);
+
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permCollection);
+
+            IReductGenerator gen = ReductFactory.GetReductGenerator(args);
+            gen.Generate();
+            IReductStoreCollection model = gen.GetReductStoreCollection();
         }
 
         [Test, TestCaseSource("GetDataFiles")]

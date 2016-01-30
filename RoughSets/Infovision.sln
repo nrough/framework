@@ -152,9 +152,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTest", "Excep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTest", "DisesorTest\DisesorTest.csproj", "{5579F5EC-3490-4C36-B2C1-BED348951F06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTuning", "DisesorTuning\DisesorTuning.csproj", "{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 26
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -249,6 +251,10 @@ Global
 		SccProjectTopLevelParentUniqueName25 = Infovision.sln
 		SccProjectName25 = DisesorTest
 		SccLocalPath25 = DisesorTest
+		SccProjectUniqueName26 = DisesorTuning\\DisesorTuning.csproj
+		SccProjectTopLevelParentUniqueName26 = Infovision.sln
+		SccProjectName26 = DisesorTuning
+		SccLocalPath26 = DisesorTuning
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -644,6 +650,21 @@ Global
 		{5579F5EC-3490-4C36-B2C1-BED348951F06}.Release|x64.ActiveCfg = Release|x64
 		{5579F5EC-3490-4C36-B2C1-BED348951F06}.Release|x64.Build.0 = Release|x64
 		{5579F5EC-3490-4C36-B2C1-BED348951F06}.Release|x86.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|x64.ActiveCfg = Debug|x64
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|x64.Build.0 = Debug|x64
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Win32.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x64.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -672,8 +693,6 @@ Global
 		{56A080A0-CDFF-4888-AC1E-B40F0438929D} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{5579F5EC-3490-4C36-B2C1-BED348951F06} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 EndGlobal

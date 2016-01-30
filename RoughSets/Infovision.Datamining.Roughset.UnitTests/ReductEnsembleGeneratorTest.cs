@@ -128,7 +128,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             /*
             Console.WriteLine("Reduct groups");
-            Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)parms.GetParameter(ReductGeneratorParamHelper.NumberOfClusters));
+            Dictionary<int, List<int>> membership = reductGenerator.Dendrogram.GetClusterMembershipAsDict((int)args.GetParameter(ReductGeneratorParamHelper.NumberOfClusters));
             foreach (KeyValuePair<int, List<int>> kvp in membership)
             {
                 Console.WriteLine("Reduct Group Name {0}", kvp.Key);

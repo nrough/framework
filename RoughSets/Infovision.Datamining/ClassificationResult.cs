@@ -260,6 +260,13 @@ namespace Infovision.Datamining
             this.decisions = new long[decCountPlusOne];
             this.decisions[0] = -1;
             long[] decArray = decisionValues.ToArray();
+            
+            double[] decDistribution = new double[decArray.Length];
+            for(int i=0; i<decArray.Length; i++)
+                decDistribution[i] = dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
+            Array.Sort(decDistribution, decArray);
+            decDistribution = null;
+
             Array.Copy(decArray, 0, decisions, 1, decCount);
             value2index = new Dictionary<long, int>(decCountPlusOne);
             value2index.Add(-1, 0);
@@ -357,6 +364,81 @@ namespace Infovision.Datamining
                     break;
             }
             return result;
+        }
+
+        public double GetConfusionTableWeights(long decisionValue, ConfusionMatrixElement confusionTableElement)
+        {
+            double result = 0;
+            int decIdx = value2index[decisionValue];
+            switch (confusionTableElement)
+            {
+                //actual cats that were correctly classified as cats
+                case ConfusionMatrixElement.TruePositive:
+                    result = confusionTableWeights[decIdx][decIdx];
+                    break;
+
+                //cats that were incorrectly marked as other animals
+                case ConfusionMatrixElement.FalseNegative:
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTableWeights[decIdx][i];
+                    break;
+
+                //all the remaining animals that were incorrectly labeled as cats
+                case ConfusionMatrixElement.FalsePositive:
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTableWeights[i][decIdx];
+                    break;
+
+                //all the remaining animals, correctly classified as non-cats
+                case ConfusionMatrixElement.TrueNegative:
+                    for (int i = 0; i < decCountPlusOne; i++)
+                        if (decIdx != i)
+                            result += confusionTableWeights[i][i];
+                    break;
+            }
+            return result;
+        }
+
+        public double GetAUC(long decision)
+        {
+            double truePositiveRate =
+                (double)this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
+                / (double) (this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
+                   + this.GetConfusionTable(decision, ConfusionMatrixElement.FalseNegative));
+
+            double falsePositiveRate = 
+                (double)this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
+                / (double) (this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
+                    + this.GetConfusionTable(decision, ConfusionMatrixElement.TrueNegative));
+            
+            return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
+        }
+
+        public double GetAUC()
+        {
+            return this.GetAUC(1);
+        }
+
+        public double GetAUCWeights(long decision)
+        {
+            double truePositiveRate =
+                (double)this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TruePositive)
+                / (double)(this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TruePositive)
+                   + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalseNegative));
+
+            double falsePositiveRate =
+                (double)this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalsePositive)
+                / (double)(this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalsePositive)
+                    + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TrueNegative));
+
+            return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
+        }
+
+        public double GetAUCWeights()
+        {
+            return this.GetAUCWeights(decisions[1]);
         }
 
         public double DecisionApriori(long decisionValue)

@@ -25,9 +25,11 @@ namespace Infovision.Datamining.Roughset
             this.internalList = new List<Permutation>();
         }
 
-        public PermutationCollection(List<Permutation> permutationList)
+        public PermutationCollection(ICollection<Permutation> permutations)
         {
-            this.internalList = (List<Permutation>)permutationList.Clone();
+            this.internalList = new List<Permutation>(permutations.Count);
+            foreach (Permutation p in permutations)
+                this.internalList.Add((Permutation)p.Clone());
         }
 
         public PermutationCollection(PermutationCollection permutationList)

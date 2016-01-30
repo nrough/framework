@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using GenericParsing;
 using Infovision.Data;
 using Infovision.Datamining;
+using Infovision.Datamining.Filters;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
@@ -34,9 +35,9 @@ namespace DisesorTest
         //int numberOfPermutations = 100;
         //decimal epsilon = 0.0m;
         
-        RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
-        RuleQualityFunction voteFunction = RuleQuality.ConfidenceW;
-        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
+        RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
+        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Majority;
 
         bool useSupervisedDiscetization = false;
         bool useWeightsInDiscretization = false;
@@ -44,9 +45,8 @@ namespace DisesorTest
         bool useBetterEncoding = true;
         bool useKokonenkoMDL = true;
 
-        DiscretizationType discretizationType = DiscretizationType.Entropy;
+        DiscretizationType discretizationType = DiscretizationType.Unsupervised_Entropy;
 
-        
         string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
         
         //decimal innerEpsilon = 0.4m;
@@ -63,8 +63,8 @@ namespace DisesorTest
 
         decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
         bool fixedPermutations = true;
-        double reductionStepRatio = 0.025;
-        double shuffleRatio = 0.33;
+        double reductionStepRatio = 0.1;
+        double shuffleRatio = 1.0;
        
         public Program()
         {
@@ -287,7 +287,8 @@ namespace DisesorTest
             args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(weakClassifiers));
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, 
+                ReductFactory.GetPermutationGenerator(args).Generate(weakClassifiers));
             args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
             //args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);

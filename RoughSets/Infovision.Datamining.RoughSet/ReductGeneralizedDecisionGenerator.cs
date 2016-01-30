@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
         {
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 1)
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
@@ -111,7 +111,6 @@ namespace Infovision.Datamining.Roughset
 
             this.ReductStoreCollection = new ReductStoreCollection(1);
             ReductStore localReductPool = new ReductStore(this.Permutations.Count);
-            //foreach (Permutation permutation in this.Permutations)
             Parallel.ForEach(this.Permutations, options, permutation =>
             {
                 localReductPool.DoAddReduct(this.CalculateReduct(permutation.ToArray(), localReductPool));
@@ -282,20 +281,18 @@ namespace Infovision.Datamining.Roughset
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
 
-            //if (newAttributes.Length == 0)
-            //{
-            //    Console.WriteLine("Empty!");
-            //}
+            int i = 0;
+            if (newAttributes.Length == 0)
+            {
+                i++;
+                //Console.WriteLine("Empty!");
+            }
 
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
-   
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
             eqArray.Shuffle();
-
             decimal weightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
-            //decimal newEqWeightSum = Decimal.Zero;
-
             foreach(EquivalenceClass eq in eqArray)
             {
                 var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
@@ -309,7 +306,6 @@ namespace Infovision.Datamining.Roughset
                     {
                         newEqClass.DecisionSet = newDecisionSet;
                         newEqClass.WeightSum += eq.WeightSum;
-                        //newEqWeightSum += eq.WeightSum;
                         
                         if(this.UseExceptionRules)
                             newEqClass.AddObjectInstances(eq.Instances);
@@ -339,7 +335,6 @@ namespace Infovision.Datamining.Roughset
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;
-                    //newEqWeightSum += eq.WeightSum;
                     
                      if (this.UseExceptionRules)
                         newEqClass.AddObjectInstances(eq.Instances);
@@ -347,12 +342,6 @@ namespace Infovision.Datamining.Roughset
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
             }
-
-            //Check
-            //if (Decimal.Round(newEqWeightSum, 17) != Decimal.Round(newEqClasses.EqWeightSum, 17))
-            //{
-            //    throw new InvalidOperationException("");
-            //}
 
             return newEqClasses;
         }
@@ -365,10 +354,10 @@ namespace Infovision.Datamining.Roughset
                 this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
         }
 
-        protected override void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
-        {
-            base.KeepMajorDecisions(eqClasses, Decimal.Zero);
-        }        
+        //protected override void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
+        //{
+        //    base.KeepMajorDecisions(eqClasses, Decimal.Zero);
+        //}        
     }
 
     public class ReductGeneralizedMajorityDecisionApproximateFactory : IReductFactory

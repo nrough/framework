@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductRelativeWeights;; }
+            get { return ReductFactoryKeyHelper.ApproximateReductRelativeWeights; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

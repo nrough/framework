@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             switch (discretizationType)
             {
-                case DiscretizationType.Entropy :
+                case DiscretizationType.Unsupervised_Entropy :
                     return new DataStoreDiscretizer()
                     {
                         DiscretizeUsingEntropy = true,
@@ -35,7 +35,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         Fields2Discretize = fields2Discretize
                     };
 
-                case DiscretizationType.EqualFrequency:
+                case DiscretizationType.Unsupervised_EqualFrequency:
                     return new DataStoreDiscretizer()
                     {
                         DiscretizeUsingEntropy = false,
@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         Fields2Discretize = fields2Discretize
                     };
 
-                case DiscretizationType.EqualWidth:
+                case DiscretizationType.Unsupervised_EqualWidth:
                     return new DataStoreDiscretizer()
                     {
                         DiscretizeUsingEntropy = false,

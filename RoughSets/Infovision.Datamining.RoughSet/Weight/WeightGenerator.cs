@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset
         public virtual decimal[] Weights
         {
             get 
-            {
+           {
                 if (!this.CalcFlag)
                 {
                     lock (syncRoot)

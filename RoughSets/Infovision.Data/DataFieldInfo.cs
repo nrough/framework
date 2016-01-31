@@ -13,9 +13,7 @@ namespace Infovision.Data
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
         private Histogram<long> histogram;
-        private int initialNumberOfValues;
-
-        public static int NumericValueLimit = 10;
+        private int initialNumberOfValues;        
 
         #region Constructors
 
@@ -100,8 +98,7 @@ namespace Infovision.Data
                     || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
             return true;
 
-            if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32
-                && this.Values().Count > DataFieldInfo.NumericValueLimit)
+            if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32)
                 return true;
 
             return false;

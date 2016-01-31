@@ -270,8 +270,12 @@ namespace Infovision.Datamining.Roughset
                     //Console.WriteLine("P: {0}", permutation);
 
                     IReduct r = this.CalculateReduct(permutation.ToArray(), localReductPool);
-                    Console.WriteLine(r.ToString());
                     localReductPool.DoAddReduct(r);
+
+                    if (r is Reduct)
+                    {
+                        Console.WriteLine(((Reduct)r).ToString("ext", null));
+                    }
                 });
                 this.ReductStoreCollection.AddStore(localReductPool);
             }

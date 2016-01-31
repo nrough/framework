@@ -247,5 +247,15 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                 }
             }
         }
+
+        public virtual bool CanDiscretize(DataFieldInfo field)
+        {
+            if (field.CanDiscretize() && field.Values().Count > 2)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

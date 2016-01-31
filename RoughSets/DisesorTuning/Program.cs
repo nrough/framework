@@ -276,9 +276,9 @@ namespace DisesorTuning
 						field.Id,
 						field.FieldValueType,
 						field.Values().Count,
-						field.CanDiscretize() ? "Can" : "Cannot");
+						discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
-					if (field.CanDiscretize())
+                    if (discretizer.CanDiscretize(field))
 					{
 						double[] cuts = discretizer.GetCuts(train, field.Id, null);
 						Console.WriteLine(this.Cuts2Sting(cuts));
@@ -301,9 +301,9 @@ namespace DisesorTuning
 						field.Id,
 						field.FieldValueType,
 						field.Values().Count,
-						field.CanDiscretize() ? "Can" : "Cannot");
+                        discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
-					if (field.CanDiscretize())
+                    if (discretizer.CanDiscretize(field))
 					{
 						double[] cuts = discretizer.GetCuts(train, field.Id, null);
 						Console.WriteLine(this.Cuts2Sting(cuts));

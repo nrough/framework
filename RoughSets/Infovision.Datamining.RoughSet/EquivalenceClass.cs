@@ -133,7 +133,7 @@ namespace Infovision.Datamining.Roughset
             this.isStatCalculated = eqClass.isStatCalculated;
 
             if (this.UpdateStat)
-            {
+            {                
                 this.instances = new Dictionary<int, decimal>(eqClass.instances);
                 this.decisionObjectIndexes = new Dictionary<long, HashSet<int>>(eqClass.decisionObjectIndexes.Count);
                 foreach (var kvp in eqClass.decisionObjectIndexes)

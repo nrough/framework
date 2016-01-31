@@ -26,6 +26,7 @@ namespace DisesorTest
         static string testfile_merge = @"c:\data\disesor\testData_merge.csv";
         static string labelfile = @"c:\data\disesor\trainingLabels.csv";
         static string outputfile = @"c:\data\disesor\result.csv";
+        static string columnNames = @"c:\data\disesor\columnNames.txt";
         //static string weightsoutput = @"c:\data\disesor\weights.csv";                        
 
         private Dictionary<string, string> metadataDict;
@@ -37,22 +38,19 @@ namespace DisesorTest
         
         RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
         RuleQualityFunction voteFunction = RuleQuality.CoverageW;
-        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Majority;
-
-        bool useSupervisedDiscetization = false;
+        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
+        
+        bool useSupervisedDiscetization = true;
+        DiscretizationType discretizationType = DiscretizationType.Supervised_FayyadAndIranisMDL_BetterEncoding;
         bool useWeightsInDiscretization = false;
-
         bool useBetterEncoding = true;
         bool useKokonenkoMDL = true;
+        int numberOfBins = 2;
 
-        DiscretizationType discretizationType = DiscretizationType.Unsupervised_Entropy;
-
-        string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;        
-        
+        string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;                
         //decimal innerEpsilon = 0.4m;
         //int boostingNumberOfReductsInWeakClassifier = 20;
         //int boostingMaxIterations = 100;
-
 
         //RuleQualityFunction boostingIdentificationFunction = null;
         //RuleQualityFunction boostingVoteFunction = null;        
@@ -62,9 +60,10 @@ namespace DisesorTest
         int numberOfWeightResets = 99;
 
         decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
-        bool fixedPermutations = true;
+        bool fixedPermutations = false;
         double reductionStepRatio = 0.1;
         double shuffleRatio = 1.0;
+        bool useClassificationCost = true;
        
         public Program()
         {
@@ -122,6 +121,10 @@ namespace DisesorTest
             else
             {
                 Console.WriteLine("(U) Discretization type: {0}", discretizationType);
+                
+                if (discretizationType == DiscretizationType.Unsupervised_EqualWidth)
+                    Console.WriteLine("(U) Number of bins: {0}", numberOfBins);
+                
                 Console.WriteLine();
             }
 
@@ -140,6 +143,11 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Inner model epsilon: {0}", eps);
                 Console.WriteLine("Boosting - Max number of weights resets: {0}", numberOfWeightResets);
                 Console.WriteLine("Boosting - Fixed permutations: {0}", fixedPermutations);
+                Console.WriteLine("Boosting - Classification cost: {0}", useClassificationCost);
+                if (useClassificationCost)
+                {
+                    //TODO print costs
+                }
             }
 
             Console.WriteLine("Reduction step ratio: {0}", reductionStepRatio);
@@ -220,18 +228,32 @@ namespace DisesorTest
 
             WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
 
+            int fieldId = 0;
+            string[] names = System.IO.File.ReadAllLines(columnNames);
+            foreach(string name in names)
+            {
+                fieldId++;
+                DataFieldInfo trainInfo = train.DataStoreInfo.GetFieldInfo(fieldId);
+                trainInfo.Alias = name;
+
+                DataFieldInfo testInfo = test.DataStoreInfo.GetFieldInfo(fieldId);
+                testInfo.Alias = name;
+            }
+            
             Console.Write("Discretizing data...");
            
             if (!useSupervisedDiscetization)
             {
                 var discretizer = DataStoreDiscretizer.Construct(discretizationType);
+                discretizer.NumberOfBins = numberOfBins;
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", 
-                        field.Id, 
-                        field.FieldValueType, 
-                        field.Values().Count, 
+                    Console.WriteLine("Atribute {0} {1} has type {2} and {3} distinct values. {4} be discretized", 
+                        field.Id,
+                        field.Alias,
+                        field.FieldValueType,
+                        field.Values().Count,
                         field.CanDiscretize() ? "Can" : "Cannot");
                     
                     if (field.CanDiscretize())
@@ -253,10 +275,11 @@ namespace DisesorTest
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized", 
-                        field.Id, 
-                        field.FieldValueType, 
-                        field.Values().Count, 
+                    Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized", 
+                        field.Id,
+                        field.Alias,
+                        field.FieldValueType,
+                        field.Values().Count,
                         field.CanDiscretize() ? "Can" : "Cannot");
 
                     if (field.CanDiscretize())
@@ -268,7 +291,7 @@ namespace DisesorTest
 
                 discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
             }            
-            Console.WriteLine("Done");
+            Console.WriteLine("Done");            
 
             Args innerArgs = new Args();
             innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
@@ -303,6 +326,7 @@ namespace DisesorTest
             args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
             args.SetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets, numberOfWeightResets);
             args.SetParameter(ReductGeneratorParamHelper.FixedPermutations, fixedPermutations);
+            args.SetParameter(ReductGeneratorParamHelper.UseClassificationCost, useClassificationCost);
 
             args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 

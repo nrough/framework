@@ -15,7 +15,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private double[] cuts;
         private double weightPerInterval;
-        private bool useWeightPerInterval;        
+        private bool useWeightPerInterval;
+        public static int NumbericValueLimit = 10;
 
         #endregion
 
@@ -25,7 +26,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             this.useWeightPerInterval = false;
             this.weightPerInterval = 0.0;
-            this.NumberOfBuckets = Data.DataFieldInfo.NumericValueLimit;
+            this.NumberOfBuckets = Discretization<T>.NumbericValueLimit;
         }
 
         #endregion

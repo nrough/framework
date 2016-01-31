@@ -76,12 +76,12 @@ namespace Infovision.Datamining
         #region Members
 
         private Dictionary<long, int> value2index;
-        private long[] predictionResults;
-        private int[][] confusionTable;
-        private double[][] confusionTableWeights;
         private long[] decisions;
         private int decCount;
         private int decCountPlusOne;
+        private long[] predictionResults;
+        private int[][] confusionTable;
+        private double[][] confusionTableWeights;        
         private int counter;
         private DataStore testData = null;
         private object mutex = new object();
@@ -255,23 +255,23 @@ namespace Infovision.Datamining
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
         {
             this.TestData = dataStore;
+            
             this.decCount = decisionValues.Count;
             this.decCountPlusOne = decisionValues.Count + 1;
             this.decisions = new long[decCountPlusOne];
             this.decisions[0] = -1;
-            long[] decArray = decisionValues.ToArray();
-            
+            long[] decArray = decisionValues.ToArray();            
             double[] decDistribution = new double[decArray.Length];
             for(int i=0; i<decArray.Length; i++)
                 decDistribution[i] = dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
             Array.Sort(decDistribution, decArray);
             decDistribution = null;
-
             Array.Copy(decArray, 0, decisions, 1, decCount);
             value2index = new Dictionary<long, int>(decCountPlusOne);
             value2index.Add(-1, 0);
             for (int i = 0; i < decArray.Length; i++)
                 value2index.Add(decArray[i], i + 1);
+
             predictionResults = new long[dataStore.NumberOfRecords];
             confusionTable = new int[decCountPlusOne][];
             confusionTableWeights = new double[decCountPlusOne][];

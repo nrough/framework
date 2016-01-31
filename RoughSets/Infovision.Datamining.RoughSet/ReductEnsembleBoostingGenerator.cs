@@ -11,15 +11,13 @@ using Infovision.Utils;
 //TODO Implement Cost of misclassification. (Imbalanced classes)
 namespace Infovision.Datamining.Roughset
 {
-	public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError);
+	public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
 	public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
 
 	public class ReductEnsembleBoostingGenerator : ReductGenerator
-	{								
-		protected int iterPassed;		
-
+	{									
 		public double Threshold { get; set; }
-		public RuleQualityFunction IdentyficationType { get; set;}
+		public RuleQualityFunction IdentyficationType { get; set; }
 		public RuleQualityFunction VoteType {get; set; }
 		public decimal MinimumVoteValue { get; set; }
 		public int NumberOfReductsInWeakClassifier { get; set; }
@@ -32,8 +30,16 @@ namespace Infovision.Datamining.Roughset
 		public UpdateWeightsDelegate UpdateWeights { get; set; }
 		public CalcModelConfidenceDelegate CalcModelConfidence{ get; set; }
 		public bool FixedPermutations { get; set; }
-		
-		protected ReductStoreCollection Models { get; set; }		
+		public bool UseClassificationCost { get; set; }
+
+		protected int iterPassed;
+		protected ReductStoreCollection Models { get; set; }
+
+		private Dictionary<long, int> value2index;
+		private long[] decisions;
+		private int decCount;
+		private int decCountPlusOne;
+		private double[] classificationCosts;
 				
 		public ReductEnsembleBoostingGenerator()
 			: base()
@@ -48,6 +54,7 @@ namespace Infovision.Datamining.Roughset
 			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
 			this.MinimumVoteValue = Decimal.MinValue;
+			this.UseClassificationCost = true;
 		}
 
 		public ReductEnsembleBoostingGenerator(DataStore data)
@@ -69,6 +76,7 @@ namespace Infovision.Datamining.Roughset
 			this.CheckEnsembleErrorDuringTraining = false;
 			this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 			this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+			this.UseClassificationCost = true;
 		}
 
 		public override void InitFromArgs(Args args)
@@ -92,6 +100,8 @@ namespace Infovision.Datamining.Roughset
 				decimal m0 = new InformationMeasureWeights()
 					.Calc(new ReductWeights(this.DataStore, new int[]{} , this.WeightGenerator.Weights, this.Epsilon));
 				this.Threshold = (double)(Decimal.One - m0);
+
+				this.InitFromDecisionValues(this.DataStore, this.DataStore.DataStoreInfo.GetDecisionValues());
 			}
 
 			if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
@@ -129,6 +139,34 @@ namespace Infovision.Datamining.Roughset
 
 			if (args.Exist(ReductGeneratorParamHelper.FixedPermutations))
 				this.FixedPermutations = (bool)args.GetParameter(ReductGeneratorParamHelper.FixedPermutations);
+
+			if(args.Exist(ReductGeneratorParamHelper.UseClassificationCost))
+				this.UseClassificationCost = (bool)args.GetParameter(ReductGeneratorParamHelper.UseClassificationCost);
+		}
+
+		protected void InitFromDecisionValues(DataStore data, ICollection<long> decisionValues)
+		{
+			this.decCount = decisionValues.Count;
+			this.decCountPlusOne = decisionValues.Count + 1;
+			this.decisions = new long[this.decCountPlusOne];
+			this.decisions[0] = -1;
+			long[] decArray = decisionValues.ToArray();
+			double[] decDistribution = new double[this.decCount];            
+			for (int i = 0; i < this.decCount; i++)
+				decDistribution[i] = data.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
+			Array.Sort(decDistribution, decArray);
+			Array.Copy(decArray, 0, decisions, 1, decCount);
+			value2index = new Dictionary<long, int>(decCountPlusOne);
+			value2index.Add(-1, 0);
+			for (int i = 0; i < decArray.Length; i++)
+				value2index.Add(decArray[i], i + 1);
+			
+			this.classificationCosts = new double[this.decCountPlusOne];
+			this.classificationCosts[0] = 0;
+			if (this.classificationCosts.Length > 1)
+				this.classificationCosts[1] = 1;
+			for (int i = 2; i < this.decCountPlusOne; i++)
+				this.classificationCosts[i] = 1.0 / (decDistribution[i - 1] / decDistribution[0]);
 		}
 
 		public override void Generate()
@@ -185,23 +223,40 @@ namespace Infovision.Datamining.Roughset
 					continue;
 				}
 
-				this.AddModel(reductStoreCollection.First(), alpha);
+				 this.AddModel(reductStoreCollection.First(), alpha);
 				
 				double sum = 0.0d;
 				var rangePrtitioner = Partitioner.Create(0, weights.Length);
+
+				ParallelOptions options = new ParallelOptions()
+				{
+					MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 1)
+				};
+#if DEBUG
+
+				options.MaxDegreeOfParallelism = 1;
+#endif
+
 				Parallel.ForEach(
 					rangePrtitioner,
+					options,
 					() => 0.0,
 					(range, loopState, initialValue) =>
 					{
 						double partialSum = initialValue;
 						for (int i = range.Item1; i < range.Item2; i++)
 						{
+							long actual = this.DataStore.GetDecisionValue(i);
+							double classificationCost = 1.0;
+							if (actual != result.GetPrediction(i))
+								classificationCost = this.classificationCosts[this.value2index[actual]];
+
 							weights[i] = (decimal)this.UpdateWeights((double)weights[i],
 																		 K,
-																		 this.DataStore.GetDecisionValue(i),
+																		 actual,
 																		 result.GetPrediction(i),
-																		 error);
+																		 error,
+																		 classificationCost);
 							partialSum += (double)weights[i];
 						}
 						return partialSum;
@@ -401,40 +456,40 @@ namespace Infovision.Datamining.Roughset
 
 		#region Delegate implementations        
 						
-		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)
 		{            
 			
 			if (actualOutput == predictedOutput)
 				return 1.0;
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
-			return currentWeight * System.Math.Exp(alpha); 
+			return classificationCost * currentWeight * System.Math.Exp(alpha); 
 		}
 
-		public static double UpdateWeightsAdaBoost_All(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoost_All(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)
+		{			
+			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
+			if (actualOutput == predictedOutput)
+				return currentWeight * System.Math.Exp(-alpha);
+			return classificationCost * currentWeight * System.Math.Exp(alpha);
+		}
+
+		public static double UpdateWeightsAdaBoost_OnlyCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)
 		{
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
 			if (actualOutput == predictedOutput)
 				return currentWeight * System.Math.Exp(-alpha);
-			return currentWeight * System.Math.Exp(alpha);
+			return classificationCost * currentWeight;
 		}
 
-		public static double UpdateWeightsAdaBoost_OnlyCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
-		{
-			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
-			if (actualOutput == predictedOutput)
-				return currentWeight * System.Math.Exp(-alpha);
-			return currentWeight;
-		}
-
-		public static double UpdateWeightsAdaBoost_OnlyNotCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsAdaBoost_OnlyNotCorrect(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)
 		{            
 			if (actualOutput == predictedOutput)
 				return currentWeight;
 			double alpha = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1(numberOfOutputValues, totalError);
-			return currentWeight * System.Math.Exp(alpha);
+			return classificationCost * currentWeight * System.Math.Exp(alpha);
 		}
 
-		public static double UpdateWeightsDummy(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError)
+		public static double UpdateWeightsDummy(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)
 		{
 			return currentWeight;
 		}        

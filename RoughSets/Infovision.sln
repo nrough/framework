@@ -663,7 +663,8 @@ Global
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|Win32.ActiveCfg = Release|Any CPU
-		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x64.ActiveCfg = Release|Any CPU
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x64.ActiveCfg = Release|x64
+		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x64.Build.0 = Release|x64
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
@@ -694,5 +695,8 @@ Global
 		{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{5579F5EC-3490-4C36-B2C1-BED348951F06} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

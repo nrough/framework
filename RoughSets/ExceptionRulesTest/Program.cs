@@ -108,9 +108,9 @@ namespace ExceptionRulesTest
                     {
                         for (int f = 0; f < results1.GetLength(2); f++)
                         {
-                            outputFile.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
+                            outputFile.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
                             outputFile.WriteLine("ARwOw|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                            outputFile.WriteLine("GAMDR-Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                            outputFile.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
                             outputFile.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         }
                     }

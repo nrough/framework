@@ -118,8 +118,8 @@ namespace Infovision.Datamining.Roughset
             this.ReductStoreCollection.AddStore(localReductPool);               
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
-        {
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        {            
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
 
             eqClasses.EqWeightSum = this.DataSetQuality;
@@ -132,7 +132,7 @@ namespace Infovision.Datamining.Roughset
             {
                 for (int i = 0; i < len && step <= len; i += step)
                 {
-                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step);
+                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step, reductStore);
 
                     //reduction was made
                     if (!Object.ReferenceEquals(newEqClasses, eqClasses))
@@ -160,7 +160,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IReduct CalculateReduct(int[] attributes, IReductStore reductStore = null)
         {
-            return this.CreateReduct(attributes, this.Epsilon, this.WeightGenerator.Weights);
+            return this.CreateReduct(attributes, this.Epsilon, this.WeightGenerator.Weights, reductStore);
         }
 
         protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
@@ -240,6 +240,9 @@ namespace Infovision.Datamining.Roughset
     public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
     {
         public bool UseExceptionRules { get; set; }
+        public decimal Gamma { get; set; }
+        protected decimal WeightDropLimit { get; set; }
+
 
         public override void Generate()
         {
@@ -248,6 +251,8 @@ namespace Infovision.Datamining.Roughset
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
 #endif
+
+            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
 
             if (this.UseExceptionRules)
             {
@@ -280,6 +285,43 @@ namespace Infovision.Datamining.Roughset
                 this.ReductStoreCollection.AddStore(localReductPool);
             }
         }
+
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        {
+            EquivalenceClassCollection eqClasses =
+                this.UseExceptionRules && reductStore != null
+                    ? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, true)
+                    : EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
+
+            eqClasses.EqWeightSum = this.DataSetQuality;
+
+            this.KeepMajorDecisions(eqClasses, Decimal.One);
+
+            int len = permutation.Length;
+            int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
+            while (step >= 1)
+            {
+                for (int i = 0; i < len && step <= len; i += step)
+                {
+                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step, reductStore);
+
+                    //reduction was made
+                    if (!Object.ReferenceEquals(newEqClasses, eqClasses))
+                    {
+                        eqClasses = newEqClasses;
+                        len -= step;
+                        i -= step;
+                    }
+                }
+
+                if (step == 1)
+                    break;
+
+                step /= 2;
+            }
+
+            return this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString());
+        }
         
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
@@ -296,7 +338,9 @@ namespace Infovision.Datamining.Roughset
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
             eqArray.Shuffle();
-            decimal weightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
+
+            //decimal weightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
+            
             foreach(EquivalenceClass eq in eqArray)
             {
                 var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
@@ -317,7 +361,7 @@ namespace Infovision.Datamining.Roughset
                     else
                     {
                         newEqClasses.EqWeightSum -= eq.WeightSum;
-                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < weightDropLimit)
+                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < this.WeightDropLimit)
                             return eqClasses;
 
                         if (this.UseExceptionRules && reductStore != null)

@@ -334,6 +334,9 @@ namespace Infovision.Datamining.Roughset
             if (this.DecisionSet.Count <= 1)
                 return;
 
+            if (epsilon >= Decimal.One)
+                return;
+
             lock (mutex)
             {               
                 bool isFirst = true;

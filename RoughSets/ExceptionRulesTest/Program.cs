@@ -63,8 +63,13 @@ namespace ExceptionRulesTest
                     var permList = permGenerator.Generate(numberOfPermutations);
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
-                        
-                    Parallel.For(0, 100, i =>
+
+                    ParallelOptions options = new ParallelOptions();
+                    options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2);
+#if DEBUG
+                    options.MaxDegreeOfParallelism = 1;
+#endif
+                    Parallel.For(0, 100, options, i =>
                     //for(int i = 0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
@@ -74,10 +79,10 @@ namespace ExceptionRulesTest
                         results3[t, i, f] = accuracy.Item3;
                         results4[t, i, f] = accuracy.Item4;
 
-                        Console.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                        Console.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                        Console.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
-                        Console.WriteLine("D|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
+                        Console.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
+                        Console.WriteLine("ARwOw|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
+                        Console.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                        Console.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         Console.WriteLine();
                     }
                     );
@@ -103,10 +108,10 @@ namespace ExceptionRulesTest
                     {
                         for (int f = 0; f < results1.GetLength(2); f++)
                         {
-                            outputFile.WriteLine("A|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                            outputFile.WriteLine("B|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                            outputFile.WriteLine("C|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
-                            outputFile.WriteLine("D|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
+                            outputFile.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
+                            outputFile.WriteLine("ARwOw|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
+                            outputFile.WriteLine("GAMDR-Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
+                            outputFile.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         }
                     }
                 }
@@ -119,6 +124,29 @@ namespace ExceptionRulesTest
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
             decimal eps = Decimal.Divide(epsilon, 100);
 
+            Args parms_GMDR = new Args();
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+
+            ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
+                ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
+            generator_GMDR.Generate();
+
+            RoughClassifier classifier_GMDR = new RoughClassifier(
+                generator_GMDR.GetReductStoreCollection(),
+                RuleQuality.ConfidenceW,
+                RuleQuality.ConfidenceW,
+                trainData.DataStoreInfo.GetDecisionValues());
+            classifier_GMDR.UseExceptionRules = true;
+            ClassificationResult result_GMDR = classifier_GMDR.Classify(testData, null);
+            result_GMDR.QualityRatio = generator_GMDR.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), true);
+            
+            
+            /*
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
@@ -139,15 +167,29 @@ namespace ExceptionRulesTest
             classifier.UseExceptionRules = true;
             ClassificationResult result = classifier.Classify(testData, null);
             result.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), true);
+            */
+
+            Args parmsEx = new Args();
+            parmsEx.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+
+            ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
+                ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
+            generatorEx.Generate();
 
             RoughClassifier classifierEx = new RoughClassifier(
-                generator.GetReductStoreCollection(), 
+                generatorEx.GetReductStoreCollection(), 
                 RuleQuality.ConfidenceW, 
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
-            classifierEx.UseExceptionRules = false;
+            classifierEx.UseExceptionRules = true;
             ClassificationResult resultEx = classifierEx.Classify(testData, null);
-            resultEx.QualityRatio = generator.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
+            resultEx.QualityRatio = generatorEx.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
+            
 
             Args parms2 = new Args();
             parms2.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
@@ -177,8 +219,8 @@ namespace ExceptionRulesTest
             parms4.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parms4.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms4.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms4.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
-            parms4.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+            //parms4.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
+            //parms4.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
 
             ReductRandomSubsetGenerator generator4 =
                 ReductFactory.GetReductGenerator(parms4) as ReductRandomSubsetGenerator;
@@ -194,10 +236,10 @@ namespace ExceptionRulesTest
             result4.QualityRatio = generator4.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
-                (result, 
-                result2, 
-                resultEx,
-                result4);
+                (result_GMDR,  //1
+                result2,  //2
+                resultEx, //3
+                result4);  //4
         }
 
         private static ILog log;
@@ -214,15 +256,14 @@ namespace ExceptionRulesTest
             Array.Copy(args, 2, datasets, 0, args.Length - 2);
             
             Program program = new Program();
-
-            Random randSeed = new Random();
+            
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
 
             NameValueCollection properties = new NameValueCollection();
+            
             properties["showDateTime"] = "true";
-            properties["showLogName"] = "false";
+            properties["showLogName"] = "true";
             properties["level"] = "All";
-
             properties["configType"] = "FILE";
             properties["configFile"] = "~/NLog.config";
             

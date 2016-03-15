@@ -14,6 +14,8 @@ namespace Infovision.Datamining.Roughset
 
         public int MinReductLength { get; set; }
         public int MaxReductLength { get; set; }
+        
+        protected int NumberOfAttributes { get; set; }
 
         public WeightGenerator WeightGenerator
         {
@@ -61,7 +63,7 @@ namespace Infovision.Datamining.Roughset
             ReductStore localReductPool = new ReductStore();
             foreach (Permutation permutation in this.Permutations)
             {
-                int cut = RandomSingleton.Random.Next(this.MinReductLength, this.MaxReductLength); 
+                int cut = (int) ((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)
@@ -73,7 +75,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

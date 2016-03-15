@@ -11,6 +11,6 @@ namespace Infovision.Datamining.Roughset
         IReductStore ReductPool { get; }
         IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue);
         //IReduct CreateReduct(Permutation permutation);
-        IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights);
+        IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null);
     }
 }

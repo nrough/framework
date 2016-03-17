@@ -60,7 +60,11 @@ namespace ExceptionRulesTest
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     var permGenerator = new PermutationGenerator(trainData);
+                                        
                     var permList = permGenerator.Generate(numberOfPermutations);
+#if DEBUG                    
+                    permList = new PermutationCollection(new Permutation(new int[] { 2, 1, 4, 3 }));
+#endif
 
                     log.InfoFormat("{0} Test:{1}/{2} Fold:{3}/{4}", trainData.Name, t, numberOfTests-1, f, kvp.Value.CrossValidationFolds-1);
 
@@ -69,7 +73,7 @@ namespace ExceptionRulesTest
 #if DEBUG
                     options.MaxDegreeOfParallelism = 1;
 #endif
-                    Parallel.For(0, 100, options, i =>
+                    Parallel.For(40, 41, options, i =>
                     //for(int i = 0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
@@ -172,7 +176,7 @@ namespace ExceptionRulesTest
             Args parmsEx = new Args();
             parmsEx.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
             parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorConstant(trainData, Decimal.One));
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
@@ -219,9 +223,7 @@ namespace ExceptionRulesTest
             parms4.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parms4.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms4.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            //parms4.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
-            //parms4.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultEx.QualityRatio); //Avg Reduct Length in method C
-
+            
             ReductRandomSubsetGenerator generator4 =
                 ReductFactory.GetReductGenerator(parms4) as ReductRandomSubsetGenerator;
             generator4.Generate();

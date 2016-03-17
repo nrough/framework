@@ -119,7 +119,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.UseCache = false;
             this.Epsilon = 0;
-            this.ReductionStep = 5;
+            this.ReductionStep = 1;
         }
 
         public virtual void initFromDataStore(DataStore data)

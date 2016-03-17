@@ -123,7 +123,7 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
 
             eqClasses.EqWeightSum = this.DataSetQuality;
-
+            
             this.KeepMajorDecisions(eqClasses, epsilon);
 
             int len = permutation.Length;
@@ -252,7 +252,9 @@ namespace Infovision.Datamining.Roughset
             options.MaxDegreeOfParallelism = 1;
 #endif
 
-            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
+            //this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
+            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.WeightGenerator.Weights.Sum(), 17);
+            
 
             if (this.UseExceptionRules)
             {

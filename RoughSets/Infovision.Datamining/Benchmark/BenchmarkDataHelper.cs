@@ -36,6 +36,9 @@ namespace Infovision.Datamining.Benchmark
 
             dataFiles.Add(benchmark.Name, benchmark);
 
+            benchmark = new BenchmarkData("testGMDR", GetFilePath(dataPath, "testGMDR.trn"), GetFilePath(dataPath, "testGMDR.trn"));
+            dataFiles.Add(benchmark.Name, benchmark);
+
             benchmark = new BenchmarkData("dna", GetFilePath(dataPath, "dna_modified.trn"), GetFilePath(dataPath, "dna_modified.tst"));
             dataFiles.Add(benchmark.Name, benchmark);
 

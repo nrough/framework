@@ -296,6 +296,9 @@
     <None Include="Data\SPECT.train">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Data\testGMDR.trn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\vehicle.tab">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

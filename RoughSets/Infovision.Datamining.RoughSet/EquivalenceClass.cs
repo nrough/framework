@@ -340,26 +340,27 @@ namespace Infovision.Datamining.Roughset
             lock (mutex)
             {               
                 bool isFirst = true;
-                var items = from kvp in decisionWeigthSums
-                            orderby kvp.Value descending
-                            select kvp;
+                var decisionsFreqOrdered = 
+                    from decisionFrequency in decisionWeigthSums
+                        orderby decisionFrequency.Value descending
+                        select decisionFrequency;
 
                 HashSet<long> decisionsToRemove = new HashSet<long>();
                 decimal totalWeightToRemove = Decimal.Zero;
                 decimal max = Decimal.MinValue;
-                foreach (var kvp in items)
+                foreach (var decisionFreq in decisionsFreqOrdered)
                 {
                     if (isFirst)
                     {
-                        max = kvp.Value;
+                        max = decisionFreq.Value;
                         isFirst = false;
                     }
                     else
-                    {                        
-                        if (Decimal.Round(kvp.Value, 17) < Decimal.Round(((Decimal.One - epsilon) * max), 17))
+                    {
+                        if (Decimal.Round(decisionFreq.Value, 17) < Decimal.Round(((Decimal.One - epsilon) * max), 17))
                         {
-                            decisionsToRemove.Add(kvp.Key);
-                            totalWeightToRemove += kvp.Value;
+                            decisionsToRemove.Add(decisionFreq.Key);
+                            totalWeightToRemove += decisionFreq.Value;
                         }
                     }
                 }
@@ -421,10 +422,54 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
+            return this.ToStringInt();
+        }
+
+        public string ToStringInt()
+        {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendFormat("d=[{0}] ", this.DecisionSet);
             stringBuilder.AppendFormat("{0}", this.Instance.ToStr());
             //stringBuilder.AppendFormat("d=[{0}] ", this.DecisionSet);
+            return stringBuilder.ToString();
+        }
+
+        public string ToStringExt(int[] fieldIds)
+        {
+            if (fieldIds.Length != this.Instance.Length)
+                throw new ArgumentException("Field Id array has different length than current value array", "fieldIds");
+            
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("d=[");
+            bool first = true;
+            foreach (var element in this.DecisionSet)
+            {
+                if(first)
+                {                    
+                    first = false;
+                }
+                else
+                {
+                    stringBuilder.Append(' ');
+                }
+                stringBuilder.Append(this.dataStore.DataStoreInfo.DecisionInfo.Internal2External(element));
+            }
+            stringBuilder.Append("] ");
+
+            first = true;
+            for(int i = 0; i<this.Instance.Length; i++)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    stringBuilder.Append(' ');
+                }
+                stringBuilder.Append(this.dataStore.DataStoreInfo.GetFieldInfo(fieldIds[i]).Internal2External(this.Instance[i]));
+            }
+            
             return stringBuilder.ToString();
         }
 

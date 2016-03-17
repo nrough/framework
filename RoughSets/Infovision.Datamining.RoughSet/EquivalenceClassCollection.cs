@@ -321,9 +321,23 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
+            //return this.ToStringInt();
+            return this.ToStringExt();
+        }
+
+        public string ToStringInt()
+        {
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var kvp in this.partitions)
                 stringBuilder.AppendLine(kvp.Value.ToString());
+            return stringBuilder.ToString();
+        }
+
+        public string ToStringExt()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var kvp in this.partitions)
+                stringBuilder.AppendLine(kvp.Value.ToStringExt(this.attributes));
             return stringBuilder.ToString();
         }
 

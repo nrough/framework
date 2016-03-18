@@ -73,8 +73,7 @@ namespace ExceptionRulesTest
 #if DEBUG
                     options.MaxDegreeOfParallelism = 1;
 #endif
-                    Parallel.For(40, 41, options, i =>
-                    //for(int i = 0; i<100; i++)
+                    Parallel.For(0, 100, options, i =>                    
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i);
 

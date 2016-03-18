@@ -242,6 +242,7 @@ namespace Infovision.Datamining.Roughset
         public bool UseExceptionRules { get; set; }
         public decimal Gamma { get; set; }
         protected decimal WeightDropLimit { get; set; }
+        protected decimal ObjectWeightSum { get; set; }
 
 
         public override void Generate()
@@ -253,7 +254,8 @@ namespace Infovision.Datamining.Roughset
 #endif
 
             //this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
-            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.WeightGenerator.Weights.Sum(), 17);
+            this.ObjectWeightSum = this.WeightGenerator.Weights.Sum();
+            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.ObjectWeightSum, 17);
             
 
             if (this.UseExceptionRules)
@@ -295,7 +297,7 @@ namespace Infovision.Datamining.Roughset
                     ? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, true)
                     : EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
 
-            eqClasses.EqWeightSum = this.DataSetQuality;
+            eqClasses.EqWeightSum = this.ObjectWeightSum;
 
             this.KeepMajorDecisions(eqClasses, Decimal.One);
 
@@ -314,6 +316,12 @@ namespace Infovision.Datamining.Roughset
                         len -= step;
                         i -= step;
                     }
+#if DEBUG                    
+                    else
+                    {
+                        Console.WriteLine("Cannot remove attribute {0}", eqClasses.Attributes[i]);
+                    }
+#endif
                 }
 
                 if (step == 1)
@@ -327,19 +335,14 @@ namespace Infovision.Datamining.Roughset
         
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
-            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-
-            int i = 0;
-            if (newAttributes.Length == 0)
-            {
-                i++;
-                //Console.WriteLine("Empty!");
-            }
-
+            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);           
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
             newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
+            
+#if !DEBUG            
             eqArray.Shuffle();
+#endif
 
             //decimal weightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17);
             
@@ -383,11 +386,10 @@ namespace Infovision.Datamining.Roughset
                 {
                     bool localUseStat = (this.UseExceptionRules && reductStore != null);
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
+                    if (this.UseExceptionRules)
+                        newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);                    
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
-                    newEqClass.WeightSum += eq.WeightSum;
-                    
-                     if (this.UseExceptionRules)
-                        newEqClass.AddObjectInstances(eq.Instances);
+                    newEqClass.WeightSum += eq.WeightSum;                                                                
 
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }

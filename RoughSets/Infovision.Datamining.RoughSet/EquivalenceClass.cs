@@ -86,7 +86,7 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                CalcStatistics();
+                //CalcStatistics();
                 return decisionSet;
             }
 
@@ -97,7 +97,8 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<int, decimal> Instances 
         { 
-            get { return this.instances; } 
+            get { return this.instances; }
+            internal set { this.instances = value; }
         }
 
         #endregion
@@ -179,7 +180,7 @@ namespace Infovision.Datamining.Roughset
                 long tmpMajorDecision = -1;
                 decimal maxWeightSum = Decimal.MinValue;
                 this.totalWeightSum = Decimal.Zero;
-                this.decisionWeigthSums = new Dictionary<long, decimal>(this.decisionObjectIndexes.Count);                                
+                this.decisionWeigthSums = new Dictionary<long, decimal>(this.decisionObjectIndexes.Count);
                 foreach (KeyValuePair<long, HashSet<int>> kvp in this.decisionObjectIndexes)
                 {
                     decimal sum = Decimal.Zero;

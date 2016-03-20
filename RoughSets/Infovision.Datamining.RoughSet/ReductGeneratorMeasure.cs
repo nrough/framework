@@ -79,6 +79,11 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        {
+            return this.CreateReductObject(fieldIds, epsilon, id);
+        }
+
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
         {
             IReductStore localReductStore = this.CreateReductStore();

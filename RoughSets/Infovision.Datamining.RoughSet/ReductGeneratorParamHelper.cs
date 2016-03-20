@@ -44,6 +44,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string MinimumVoteValue = "MinimumVoteValue";
         public static readonly string FixedPermutations = "FixedPermutations";
         public static readonly string UseClassificationCost = "UseClassificationCost";
+        public static readonly string ExceptionRulesAsGaps = "ExceptionRulesAsGaps";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

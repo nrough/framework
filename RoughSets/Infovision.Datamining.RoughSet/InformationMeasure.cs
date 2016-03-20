@@ -182,8 +182,7 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
-            object tmpLock = new object();
-            //ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            object tmpLock = new object();      
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
@@ -191,7 +190,9 @@ namespace Infovision.Datamining.Roughset
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
 #endif
-            Parallel.ForEach(reduct.EquivalenceClasses, options,
+
+            EquivalenceClassCollection eqClasses = reduct.EquivalenceClasses;
+            Parallel.ForEach(eqClasses, options,
                 () => Decimal.Zero,
                 (e, loopState, partialSum) =>
                 {

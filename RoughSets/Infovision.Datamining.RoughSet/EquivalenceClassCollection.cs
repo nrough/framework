@@ -100,7 +100,6 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-
         public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null, bool updateStat = true)
         {
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
@@ -111,8 +110,6 @@ namespace Infovision.Datamining.Roughset
             if (weights == null)
             {
                 decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
-
-                //Parallel.For(0, dataStore.NumberOfRecords, i =>
                 for(int i=0; i < dataStore.NumberOfRecords; i++)
                 {
                     long[] attributeValues = dataStore.GetFieldValues(i, attributes);
@@ -125,12 +122,10 @@ namespace Infovision.Datamining.Roughset
                                                         i,
                                                         updateStat);
                 }
-                //);
             }
             else
             {
-                for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                //Parallel.For(0, dataStore.NumberOfRecords, i =>
+                for (int i = 0; i < dataStore.NumberOfRecords; i++)                
                 {
                     long[] attributeValues = dataStore.GetFieldValues(i, attributes);
                     long decision = dataStore.GetFieldValue(i, dataStore.DataStoreInfo.DecisionFieldId);
@@ -142,7 +137,6 @@ namespace Infovision.Datamining.Roughset
                                                         i,
                                                         updateStat);
                 }
-                //);
             }
      
             return eqClassCollection;
@@ -186,27 +180,21 @@ namespace Infovision.Datamining.Roughset
             this.InitPartitions();
             
             this.attributes = attributeSet.ToArray();
-            decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
-            
-            //Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
+            decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);                        
             for(int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, w);
             }
-            //);    
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
         {
             this.InitPartitions();
-            this.attributes = attributeSet.ToArray();
-
-            //Parallel.For(0, dataStore.NumberOfRecords, objectIdx =>
+            this.attributes = attributeSet.ToArray();            
             for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
-            }
-            //);
+            }            
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
@@ -288,6 +276,14 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < this.attributes.Length; i++)
                 values[i] = record[this.attributes[i]];
             return GetEquivalenceClass(values);
+        }
+
+        public void RecalcEquivalenceClassStatistic(DataStore data)
+        {
+            foreach(var eq in this)
+            {
+                eq.RecalcStatistics(data);
+            }
         }
 
         #region IEnumerable Members

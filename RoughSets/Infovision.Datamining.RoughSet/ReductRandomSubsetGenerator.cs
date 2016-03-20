@@ -63,7 +63,9 @@ namespace Infovision.Datamining.Roughset
             ReductStore localReductPool = new ReductStore();
             foreach (Permutation permutation in this.Permutations)
             {
-                int cut = (int) ((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                int cut = this.MinReductLength == this.MaxReductLength 
+                        ? this.MaxReductLength 
+                        : (int) ((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)
@@ -91,6 +93,13 @@ namespace Infovision.Datamining.Roughset
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
+            r.Id = id;
+            return r;
+        }
+
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        {
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon, equivalenceClasses);
             r.Id = id;
             return r;
         }

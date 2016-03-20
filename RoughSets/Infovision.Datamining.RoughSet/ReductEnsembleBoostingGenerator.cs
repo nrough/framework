@@ -454,6 +454,11 @@ namespace Infovision.Datamining.Roughset
 			throw new NotImplementedException("ReductEnsembleBoostingGenerator.CreateReductObject(...) is not implemented");
 		}
 
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        {
+            return this.CreateReductObject(fieldIds, epsilon, id);
+        }
+
 		#region Delegate implementations        
 						
 		public static double UpdateWeightsAdaBoostM1(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost = 1.0)

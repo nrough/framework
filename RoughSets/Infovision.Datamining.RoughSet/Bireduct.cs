@@ -20,13 +20,13 @@ namespace Infovision.Datamining.Roughset
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon, decimal[] weights)
             : base(dataStore, fieldIds, epsilon, weights)
         {
-            objectSet = new ObjectSet(dataStore, objectIndexes);
+            this.objectSet = new ObjectSet(dataStore, objectIndexes);
         }
 
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
-            objectSet = new ObjectSet(dataStore, objectIndexes);            
+            this.objectSet = new ObjectSet(dataStore, objectIndexes);            
         }
 
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)

@@ -17,6 +17,11 @@ namespace Infovision.Datamining.Roughset
         {            
         }
 
+        public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, decimal[] objectWeights, decimal epsilon, EquivalenceClassCollection equivalenceClasses)
+            : base(dataStore, fieldIds, epsilon, objectWeights, equivalenceClasses)
+        {
+        }
+
         public ReductWeights(ReductWeights reduct)
             : base(reduct)
         {

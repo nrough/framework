@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
         decimal Epsilon { get; }
         string Id { get; set; }
 
-        EquivalenceClassCollection EquivalenceClasses { get; set; }
+        EquivalenceClassCollection EquivalenceClasses { get; }
         bool IsEquivalenceClassCollectionCalculated { get; }
 
         bool AddAttribute(int attributeId);
@@ -34,6 +34,8 @@ namespace Infovision.Datamining.Roughset
         //Number of objects recognizable in DS
         //Number of objects not recognizable in DS
         //Accuracy on training data
+
+        void SetEquivalenceClassCollection(EquivalenceClassCollection equivalenceClasses);
 
         //Each implementation of Reduct must define its hash code and equal method
         int GetHashCode();

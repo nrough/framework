@@ -70,15 +70,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 return this.eqClassMap; 
-            }
-            
-            set 
-            {
-                lock (mutex)
-                {
-                    this.eqClassMap = value;
-                }
-            }
+            }                        
         }
 
         public virtual bool IsEquivalenceClassCollectionCalculated
@@ -103,6 +95,12 @@ namespace Infovision.Datamining.Roughset
         #endregion
 
         #region Constructors
+
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights, EquivalenceClassCollection equivalenceClasses)
+            : this(dataStore, fieldIds, epsilon, weights)
+        {
+            this.eqClassMap = equivalenceClasses;
+        }
 
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights)
         {
@@ -145,6 +143,8 @@ namespace Infovision.Datamining.Roughset
         {            
         }
 
+        
+
         public Reduct(Reduct reduct)
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
@@ -159,8 +159,8 @@ namespace Infovision.Datamining.Roughset
 
         #endregion        
 
-        #region Methods        
-        
+        #region Methods
+
         public virtual EquivalenceClassCollection CreateEquivalenceClassCollection(bool useGlobalCache = false)
         {
             EquivalenceClassCollection result = null;
@@ -182,6 +182,11 @@ namespace Infovision.Datamining.Roughset
                 ReductCache.Instance.Set(partitionKey, result);
 
             return result;
+        }
+
+        public virtual void SetEquivalenceClassCollection(EquivalenceClassCollection equivalenceClasses)
+        {
+            this.eqClassMap = equivalenceClasses;
         }
 
         protected virtual bool CheckAddAttribute(int attributeId)

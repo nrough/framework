@@ -81,6 +81,9 @@ namespace Infovision.Datamining.Benchmark
             benchmark = new BenchmarkData("soybean-small", GetFilePath(dataPath, "soybean-small.2.data"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
+            benchmark = new BenchmarkData("connect", GetFilePath(dataPath, "connect-4.dta"), cvFolds);
+            dataFiles.Add(benchmark.Name, benchmark);
+
             benchmark = new BenchmarkData("soybean-large", GetFilePath(dataPath, "soybean-large.data"), GetFilePath(dataPath, "soybean-large.test"))
             {
                 FileFormat = FileFormat.Csv,
@@ -132,7 +135,19 @@ namespace Infovision.Datamining.Benchmark
             dataFiles.Add(benchmark.Name, benchmark);
 
             if (names != null && names.Length > 0)
-                return dataFiles.Where(item => names.Contains(item.Key));
+            {
+                Dictionary<string, BenchmarkData> result = new Dictionary<string, BenchmarkData>(names.Length);
+                for(int i=0; i<names.Length; i++)
+                {
+                    if (dataFiles.ContainsKey(names[i]))
+                    {
+                        result.Add(names[i], dataFiles[names[i]]);
+                    }
+                }
+
+                return result;
+                
+            }               
 
             return dataFiles;
         }

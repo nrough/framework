@@ -21,6 +21,7 @@ namespace Infovision.Datamining.Roughset
                     
         public ICollection<long> DecisionValues { get; set; }
         public bool UseExceptionRules { get; set; }
+        public bool ExceptionRulesAsGaps { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
         public decimal MinimumVoteValue { get; set; }
@@ -102,8 +103,6 @@ namespace Infovision.Datamining.Roughset
             if (weights == null)
             {
                 double w = 1.0 / testData.NumberOfRecords;
-                
-                //for(int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
@@ -112,8 +111,7 @@ namespace Infovision.Datamining.Roughset
                 });
             }
             else
-            {
-                //for (int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
+            {                
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
@@ -142,24 +140,39 @@ namespace Infovision.Datamining.Roughset
                 {
                     if (this.UseExceptionRules == false && reduct.IsException)
                         continue;
-                    
+
                     for (int k = 0; k < this.decCountPlusOne; k++)
                         identificationWeights[k] = Decimal.Zero;
-                    
+
                     identifiedDecision = 0; // -1 (unclassified)
                     identifiedDecisionWeight = Decimal.Zero;
 
-
                     if (reduct.IsEquivalenceClassCollectionCalculated == false)
                     {
-                        EquivalenceClassCollection equivalenceClasses = EquivalenceClassCollection.Create(reduct.Attributes.ToArray(), reduct.DataStore, reduct.Epsilon, reduct.Weights, calcFullEquivalenceClasses);
-                        reduct.EquivalenceClasses = equivalenceClasses;
-                    }                                        
-                    
-                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                        EquivalenceClassCollection equivalenceClasses = (reduct is Bireduct)
+                                ? EquivalenceClassCollection.Create(
+                                    reduct,
+                                    reduct.DataStore,
+                                    reduct.Weights,
+                                    reduct.ObjectSet,
+                                    calcFullEquivalenceClasses)
+                                : EquivalenceClassCollection.Create(
+                                    reduct.Attributes.ToArray(),
+                                    reduct.DataStore,
+                                    reduct.Epsilon,
+                                    reduct.Weights,
+                                    calcFullEquivalenceClasses);
 
+                        reduct.SetEquivalenceClassCollection(equivalenceClasses);
+                    }
+
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                    
                     if (eqClass != null)
                     {
+                        if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
+                            break;
+
                         for (int k = 1; k < this.decCountPlusOne; k++)
                         {
                             identificationWeights[k] = this.IdentificationFunction(decisions[k], reduct, eqClass);
@@ -170,6 +183,11 @@ namespace Infovision.Datamining.Roughset
                             }
                         }
                     }
+                    else
+                    {
+                        if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
+                            continue;
+                    }                    
 
                     if (this.VoteFunction.Equals(this.IdentificationFunction))
                     {
@@ -184,15 +202,9 @@ namespace Infovision.Datamining.Roughset
                             if((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
                                 reductsVotes[identifiedDecision] += vote;
                         }
-                    }
-                                        
-                    /*
-                    reductsVotes[identifiedDecision] += this.VoteFunction.Equals(this.IdentificationFunction)
-                        ? identifiedDecisionWeight
-                        : identifiedDecision != 0 ? this.VoteFunction(decisions[identifiedDecision], reduct, eqClass) : Decimal.Zero;
-                    */
+                    }                                                            
 
-                    if (this.UseExceptionRules == true && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
+                    if (this.UseExceptionRules && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
                         break;
                 }
 

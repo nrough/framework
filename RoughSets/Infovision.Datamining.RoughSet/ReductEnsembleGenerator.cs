@@ -253,6 +253,11 @@ namespace Infovision.Datamining.Roughset
             r.Id = id;
             return r;
         }
+
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        {
+            return this.CreateReductObject(fieldIds, epsilon, id);
+        }
     }
 
     public class ReductEnsambleFactory : IReductFactory

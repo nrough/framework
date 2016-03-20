@@ -12,6 +12,7 @@ namespace Infovision.Datamining.Roughset
         void AddStore(IReductStore reductStore);
         int Count { get; }
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+        double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
     }
 
@@ -77,6 +78,34 @@ namespace Infovision.Datamining.Roughset
 
                         measureSum += (double)reductMeasure.Calc(reduct);
                         count++;
+                    }
+                }
+            }
+
+            if (count > 0)
+                return measureSum / (double)count;
+
+            return 0;
+        }
+
+        public double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        {
+            if (reductMeasure == null)
+                return 0.0;
+            double measureSum = 0.0;
+            int count = 0;
+
+            lock (mutex)
+            {
+                foreach (IReductStore reducts in this)
+                {
+                    foreach (IReduct reduct in reducts)
+                    {
+                        if (reduct.IsException && includeExceptions == false)
+                            continue;
+
+                        measureSum += (double)reductMeasure.Calc(reduct) * reduct.ObjectSetInfo.NumberOfRecords;
+                        count += reduct.ObjectSetInfo.NumberOfRecords;
                     }
                 }
             }

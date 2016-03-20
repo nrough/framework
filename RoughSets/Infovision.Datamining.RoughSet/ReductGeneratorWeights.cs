@@ -60,6 +60,11 @@ namespace Infovision.Datamining.Roughset
             return r;
         }
 
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        {
+            return this.CreateReductObject(fieldIds, epsilon, id);
+        }
+
         protected virtual WeightGenerator CreateWeightGenerator()
         {
             WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);

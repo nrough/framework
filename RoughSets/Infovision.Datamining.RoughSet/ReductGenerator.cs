@@ -90,8 +90,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods               
 
-        public abstract void Generate();                
+        public abstract void Generate();
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses);
         public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null);                
 
         protected virtual IReductStore CreateReductStore(int initialSize = 0)

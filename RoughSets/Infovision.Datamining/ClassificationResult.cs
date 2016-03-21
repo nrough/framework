@@ -188,7 +188,7 @@ namespace Infovision.Datamining
             {
                 int sum = 0;
                 for (int i = 1; i < decCountPlusOne; i++)
-                    for (int j = 0; j < decCountPlusOne; j++)
+                    for (int j = 1; j < decCountPlusOne; j++)
                         if (i != j)
                             sum += confusionTable[i][j];
                 return sum; 
@@ -335,6 +335,7 @@ namespace Infovision.Datamining
         {
             int result = 0;
             int decIdx = value2index[decisionValue];
+
             switch(confusionTableElement)
             {
                 //actual cats that were correctly classified as cats

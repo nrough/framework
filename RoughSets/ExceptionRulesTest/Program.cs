@@ -153,7 +153,7 @@ namespace ExceptionRulesTest
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierApprox.UseExceptionRules = false;
-            ClassificationResult resultApprox = classifierApprox.Classify(testData, null);
+            ClassificationResult resultApprox = classifierApprox.Classify(testData);
             resultApprox.QualityRatio = generatorApprox.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
 
@@ -176,7 +176,7 @@ namespace ExceptionRulesTest
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
-            ClassificationResult result_GMDR = classifier_GMDR.Classify(testData, null);
+            ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
             result_GMDR.QualityRatio = generator_GMDR.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);                                    
             
             
@@ -200,7 +200,7 @@ namespace ExceptionRulesTest
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierEx.UseExceptionRules = true;
-            ClassificationResult resultEx = classifierEx.Classify(testData, null);
+            ClassificationResult resultEx = classifierEx.Classify(testData);
             resultEx.QualityRatio = generatorEx.GetReductStoreCollection().GetWeightedAvgMeasure(new ReductMeasureLength(), true);
             
             
@@ -225,7 +225,7 @@ namespace ExceptionRulesTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierGaps.UseExceptionRules = true;
             classifierGaps.ExceptionRulesAsGaps = true;
-            ClassificationResult resultGaps = classifierGaps.Classify(testData, null);
+            ClassificationResult resultGaps = classifierGaps.Classify(testData);
             resultGaps.QualityRatio = generatorGaps.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             Args parmsRandom = new Args();
@@ -236,8 +236,8 @@ namespace ExceptionRulesTest
             parmsRandom.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultApprox.QualityRatio > 0 ? (int)resultApprox.QualityRatio : 1);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.QualityRatio > 0 ? (int)resultApprox.QualityRatio : 1);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultApprox.QualityRatio);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.QualityRatio);
             
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
@@ -249,7 +249,7 @@ namespace ExceptionRulesTest
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierRandom.UseExceptionRules = false;
-            ClassificationResult resultRandom = classifierRandom.Classify(testData, null);
+            ClassificationResult resultRandom = classifierRandom.Classify(testData);
             resultRandom.QualityRatio = generatorRandom.GetReductStoreCollection().GetAvgMeasure(new ReductMeasureLength(), false);
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>

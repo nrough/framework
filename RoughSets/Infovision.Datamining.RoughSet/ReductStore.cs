@@ -56,6 +56,7 @@ namespace Infovision.Datamining.Roughset
         public abstract bool IsSuperSet(IReduct reduct);
         public abstract IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
         public abstract double GetAvgMeasure(IReductMeasure reductMeasure);
+        public abstract double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceltions);
         public abstract void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
         public abstract void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
         public abstract bool Exist(IReduct reduct);
@@ -295,6 +296,35 @@ namespace Infovision.Datamining.Roughset
             {
                 return measureSum / this.Count;
             }
+
+            return 0;
+        }
+
+        public override double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        {
+            if (reductMeasure == null)
+                return 0.0;
+            double measureSum = 0.0;
+            int count = 0;
+
+            lock (mutex)
+            {                                
+                foreach (IReduct reduct in this)
+                {
+                    if ((reduct.IsException || reduct.IsGap) && includeExceptions == false)
+                    {
+                        count += reduct.ObjectSetInfo.NumberOfRecords;
+                    }
+                    else
+                    {
+                        measureSum += (double)reductMeasure.Calc(reduct) * reduct.ObjectSetInfo.NumberOfRecords;
+                        count += reduct.ObjectSetInfo.NumberOfRecords;
+                    }
+                }
+            }
+
+            if (count > 0)
+                return measureSum / (double)count;
 
             return 0;
         }

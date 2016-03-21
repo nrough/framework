@@ -334,7 +334,7 @@ namespace Infovision.Datamining.Roughset
 
             eqClasses.EqWeightSum = this.ObjectWeightSum;
 
-            this.KeepMajorDecisions(eqClasses, Decimal.One);
+            this.KeepMajorDecisions(eqClasses, Decimal.Zero);
 
             int len = permutation.Length;
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
@@ -404,7 +404,9 @@ namespace Infovision.Datamining.Roughset
                                 this.Epsilon,
                                 this.WeightGenerator.Weights);
 
-                            exceptionReduct.IsException = true;
+                            exceptionReduct.IsException = this.UseExceptionRules;
+                            exceptionReduct.IsGap = this.ExceptionRulesAsGaps;
+
                             localReductStore.AddReduct(exceptionReduct);                            
                         }
                     }

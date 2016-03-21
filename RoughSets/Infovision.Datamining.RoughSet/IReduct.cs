@@ -9,6 +9,7 @@ namespace Infovision.Datamining.Roughset
         DataStore DataStore { get; }
         FieldSet Attributes { get; }
         bool IsException { get; }
+        bool IsGap { get; }
         bool IsLocal { get; }
         string ReductPartitionCacheKey { get; }
 

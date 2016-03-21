@@ -13,7 +13,10 @@ namespace Infovision.Datamining.Roughset
         IReduct GetReduct(int index);        
         bool IsSuperSet(IReduct reduct);        
         IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
+        
         double GetAvgMeasure(IReductMeasure reductMeasure);
+        double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions);
+        
         void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
         void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
         bool Exist(IReduct reduct);

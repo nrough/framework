@@ -161,7 +161,7 @@ namespace Infovision.Datamining.Roughset
             else if (args.Exist(ReductGeneratorParamHelper.NumberOfPermutations))
             {
                 int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
-                this.Permutations= this.PermutationGenerator.Generate(numberOfPermutations);
+                this.Permutations = this.PermutationGenerator.Generate(numberOfPermutations);
             }
             
             if (args.Exist("USECACHE"))

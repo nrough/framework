@@ -14,6 +14,7 @@ namespace Infovision.Datamining.Roughset
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
+        IReductStoreCollection FilterInEnsemble(int ensembleSize, IComparer<IReductStore> comparer);
     }
 
     [Serializable]
@@ -101,11 +102,15 @@ namespace Infovision.Datamining.Roughset
                 {
                     foreach (IReduct reduct in reducts)
                     {
-                        if (reduct.IsException && includeExceptions == false)
-                            continue;
-
-                        measureSum += (double)reductMeasure.Calc(reduct) * reduct.ObjectSetInfo.NumberOfRecords;
-                        count += reduct.ObjectSetInfo.NumberOfRecords;
+                        if ((reduct.IsException || reduct.IsGap) && includeExceptions == false)
+                        {
+                            count += reduct.ObjectSetInfo.NumberOfRecords;
+                        }                                                    
+                        else
+                        {
+                            measureSum += (double)reductMeasure.Calc(reduct) * reduct.ObjectSetInfo.NumberOfRecords;
+                            count += reduct.ObjectSetInfo.NumberOfRecords;
+                        }
                     }
                 }
             }
@@ -128,6 +133,19 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
+            return result;
+        }
+
+        public IReductStoreCollection FilterInEnsemble(int count, IComparer<IReductStore> comparer)
+        {
+            if ((this.Count < count) || count == 0)
+                count = this.Count;
+
+            ReductStoreCollection result = new ReductStoreCollection(count);
+            IReductStore[] reductStoreArray = this.ToArray();
+            Array.Sort(reductStoreArray, comparer);
+            for (int i = 0; i < count; i++)
+                result.AddStore(reductStoreArray[i]);
             return result;
         }
     } 

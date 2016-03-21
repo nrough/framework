@@ -83,4 +83,32 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
     }
+
+    public class ReductStoreLenghtComparer : Comparer<IReductStore>
+    {
+        public bool IncludeExceptions { get; set; }
+
+        public ReductStoreLenghtComparer(bool includeExceptions)
+            : base()
+        {
+            this.IncludeExceptions = IncludeExceptions;
+        }
+        
+        public override int Compare(IReductStore left, IReductStore right)
+        {
+            double avgLengthLeft = left.GetWeightedAvgMeasure(new ReductMeasureLength(), this.IncludeExceptions);
+            double avgLengthRight = right.GetWeightedAvgMeasure(new ReductMeasureLength(), this.IncludeExceptions);
+
+            if (avgLengthLeft > avgLengthRight)
+            {
+                return 1;
+            }
+            else if (avgLengthLeft < avgLengthRight)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
+    }
 }

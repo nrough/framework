@@ -95,7 +95,7 @@ namespace ExceptionRulesTest
                         results5[t, i, f] = accuracy.Item5;
 
                         Console.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                        Console.WriteLine("ARwOw|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
+                        Console.WriteLine("ARD|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
                         Console.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
                         Console.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         Console.WriteLine("GAMDR+Gaps|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results5[t, i, f]);
@@ -126,7 +126,7 @@ namespace ExceptionRulesTest
                         for (int f = 0; f < results1.GetLength(2); f++)
                         {
                             outputFile.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                            outputFile.WriteLine("ARwOw|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
+                            outputFile.WriteLine("ARD|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
                             outputFile.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
                             outputFile.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                             outputFile.WriteLine("GAMDR+Gaps|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results5[t, i, f]);

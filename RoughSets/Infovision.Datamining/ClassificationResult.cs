@@ -248,7 +248,7 @@ namespace Infovision.Datamining
             set { qualityRatio = value; }
         }
 
-        public double AverageDuration { get; set; }
+        public double Duration { get; set; }
 
         #endregion
 

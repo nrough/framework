@@ -156,9 +156,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTuning", "DisesorTun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTiming", "ExceptionRulesTiming\ExceptionRulesTiming.csproj", "{67AF087D-606E-44F4-9396-74BF2AB160E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingVsRuleInduction", "VotingVsRuleInduction\VotingVsRuleInduction.csproj", "{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 28
+		SccNumberOfProjects = 29
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -261,6 +263,10 @@ Global
 		SccProjectTopLevelParentUniqueName27 = Infovision.sln
 		SccProjectName27 = ExceptionRulesTiming
 		SccLocalPath27 = ExceptionRulesTiming
+		SccProjectUniqueName28 = VotingVsRuleInduction\\VotingVsRuleInduction.csproj
+		SccProjectTopLevelParentUniqueName28 = Infovision.sln
+		SccProjectName28 = VotingVsRuleInduction
+		SccLocalPath28 = VotingVsRuleInduction
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -677,7 +683,8 @@ Global
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|x64.ActiveCfg = Debug|x64
+		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|x64.Build.0 = Debug|x64
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -686,6 +693,21 @@ Global
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Win32.ActiveCfg = Release|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x64.ActiveCfg = Release|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|x64.ActiveCfg = Debug|x64
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|x64.Build.0 = Debug|x64
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -716,6 +738,7 @@ Global
 		{5579F5EC-3490-4C36-B2C1-BED348951F06} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{67AF087D-606E-44F4-9396-74BF2AB160E2} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

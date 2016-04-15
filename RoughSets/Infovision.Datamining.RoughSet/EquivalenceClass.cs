@@ -218,9 +218,10 @@ namespace Infovision.Datamining.Roughset
                 this.decisionObjectIndexes[decision] = new HashSet<int>();
             }
 
+            int decisionIndex = data.DataStoreInfo.DecisionFieldIndex;
             foreach (var instance in this.Instances)
             {
-                long decision = data.GetDecisionValue(instance.Key);
+                long decision = data.GetFieldIndexValue(instance.Key, decisionIndex);
                 if(this.decisionWeigthSums.ContainsKey(decision))
                 {
                     this.decisionWeigthSums[decision] += instance.Value;

@@ -51,8 +51,7 @@ namespace Infovision.Data
                         //We assume that all missing values are replaced
                         fieldInfo.AddInternal((long)kvp.Value, kvp.Key, false);
                     }
-                }
-                                
+                }  
 
                 if (i == decisionIdx)
                 {

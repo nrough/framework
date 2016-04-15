@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Data;
 using MiscUtil;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute
@@ -36,11 +37,31 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             return cuts.Length;
         }
 
-        public int[] Discretize(T[] values)
+        public string[] Discretize(DataStore data, DataFieldInfo fieldInfo)
         {
-            int[] result = new int[values.Length];
-            for (int i = 0; i < values.Length; i++)
-                result[i] = this.Search(values[i]);
+            string[] result = new string[data.NumberOfRecords];
+            int fieldIdx = data.DataStoreInfo.GetFieldIndex(fieldInfo.Id);
+            
+            if (fieldInfo.HasMissingValues)
+            {
+                for (int i = 0; i < data.NumberOfRecords; i++)
+                {
+                    long value = data.GetFieldIndexValue(i, fieldIdx);
+                    if (value == fieldInfo.MissingValueInternal)
+                        result[i] = "?";
+                    else
+                        result[i] = this.Search((T)fieldInfo.Internal2External(value)).ToString();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < data.NumberOfRecords; i++)
+                {
+                    long value = data.GetFieldIndexValue(i, fieldIdx);
+                    result[i] = this.Search((T)fieldInfo.Internal2External(value)).ToString();
+                }
+            }
+
             return result;
         }
         

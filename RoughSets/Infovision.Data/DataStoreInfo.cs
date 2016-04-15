@@ -22,7 +22,8 @@ namespace Infovision.Data
         private Dictionary<int, DataFieldInfo> fields;
         private Dictionary<int, FieldTypes> fieldTypes;
         private Dictionary<FieldTypes, int> fieldTypeCount;
-        
+        private Dictionary<int, int> fieldId2Index;
+
         #endregion
 
         #region Properties
@@ -66,6 +67,11 @@ namespace Infovision.Data
             }
         }
 
+        public int DecisionFieldIndex
+        {
+            get { return this.GetFieldIndex(this.DecisionFieldId); }
+        }
+
         public DataFieldInfo DecisionInfo
         {
             get { return this.GetFieldInfo(this.DecisionFieldId); }
@@ -89,18 +95,19 @@ namespace Infovision.Data
             {
                 this.fields = new Dictionary<int, DataFieldInfo>(numberOfFields);
                 this.fieldTypes = new Dictionary<int, FieldTypes>(numberOfFields);
+                this.fieldId2Index = new Dictionary<int, int>(numberOfFields);
                 this.NumberOfFields = numberOfFields;
             }
             else
             {
                 this.fields = new Dictionary<int, DataFieldInfo>();
                 this.fieldTypes = new Dictionary<int, FieldTypes>();
+                this.fieldId2Index = new Dictionary<int, int>();
             }
 
             this.fieldTypeCount = new Dictionary<FieldTypes, int>(FieldTypesHelper.BasicFieldTypes.Count);
             foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
                 fieldTypeCount.Add(ft, 0);
-
         }
 
         #endregion        
@@ -128,7 +135,12 @@ namespace Infovision.Data
             return fieldIds;
         }
 
-        public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags)
+        public int GetFieldIndex(int fieldId)
+        {
+            return this.fieldId2Index[fieldId];
+        }
+
+        public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags = FieldTypes.All)
         {
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
                 return this.Fields.Select(f => f.Id);                       
@@ -180,6 +192,8 @@ namespace Infovision.Data
 
         public void AddFieldInfo(DataFieldInfo fieldInfo, FieldTypes fieldType)
         {
+            this.fieldId2Index.Add(fieldInfo.Id, this.fields.Count);
+
             this.fields.Add(fieldInfo.Id, fieldInfo);
             this.fieldTypes.Add(fieldInfo.Id, fieldType);
             this.SetFieldMinMaxId(fieldInfo.Id);
@@ -192,6 +206,34 @@ namespace Infovision.Data
 
             if (fieldInfo.HasMissingValues)
                 this.HasMissingData = true;
+        }
+
+        public void RemoveFieldInfo(int fieldId)
+        {
+            int fieldIndex = this.fieldId2Index[fieldId];
+            DataFieldInfo fieldInfo2Remove = this.fields[fieldId];
+            this.fieldTypeCount[this.fieldTypes[fieldId]]--;
+            this.fieldTypes.Remove(fieldId);
+            this.fields.Remove(fieldId);
+            this.NumberOfFields--;
+            List<int> fieldIndexes = new List<int>(this.fieldId2Index.Keys);
+            foreach (int idx in fieldIndexes)
+            {
+                if (this.fieldId2Index[idx] > fieldIndex)
+                    this.fieldId2Index[idx]--;
+            }
+        }
+
+        public void SetFieldIndex(int fieldId, int fieldIdx)
+        {
+            if (this.fieldId2Index.ContainsKey(fieldId))
+            {
+                this.fieldId2Index[fieldId] = fieldIdx;
+            }
+            else
+            {
+                this.fieldId2Index.Add(fieldId, fieldIdx);
+            }
         }
 
         public DataFieldInfo GetFieldInfo(int fieldId)

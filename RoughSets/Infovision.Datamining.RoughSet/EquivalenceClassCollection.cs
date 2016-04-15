@@ -239,6 +239,7 @@ namespace Infovision.Datamining.Roughset
             //TODO Capacity
             var localPartitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
             int[] attributeArray = attributeSet.ToArray();
+            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
 
             foreach (int objectIndex in objectSet)
             {
@@ -246,7 +247,9 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass reductStatistic = null;
                 if (localPartitions.TryGetValue(record, out reductStatistic))
                 {
-                    reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeights[objectIndex]);
+                    reductStatistic.AddObject(objectIndex, 
+                        dataStore.GetFieldIndexValue(objectIndex, decisionIndex), 
+                        objectWeights[objectIndex]);
 
                     if (reductStatistic.NumberOfDecisions > 1)
                         return false;
@@ -254,7 +257,10 @@ namespace Infovision.Datamining.Roughset
                 else
                 {
                     reductStatistic = new EquivalenceClass(record, dataStore);
-                    reductStatistic.AddObject(objectIndex, dataStore.GetDecisionValue(objectIndex), objectWeights[objectIndex]);
+                    reductStatistic.AddObject(objectIndex,
+                        dataStore.GetFieldIndexValue(objectIndex, decisionIndex), 
+                        objectWeights[objectIndex]);
+                    
                     localPartitions[record] = reductStatistic;
                 }
             }

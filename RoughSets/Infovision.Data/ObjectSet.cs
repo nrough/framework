@@ -40,10 +40,11 @@ namespace Infovision.Data
             : base(0, dataStore.NumberOfRecords - 1, initialData)
         {
             this.dataStore = dataStore;
-            this.decisionCount = new Dictionary<long, int>(dataStore.DataStoreInfo.NumberOfDecisionValues);
+            this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
+            int decisionIndex = this.dataStore.DataStoreInfo.DecisionFieldIndex;
             for (int i = 0; i < initialData.Length; i++)
             {
-                long decisionValue = this.dataStore.GetDecisionValue(initialData[i]);
+                long decisionValue = this.dataStore.GetFieldIndexValue(initialData[i], decisionIndex);
                 int count = 0;
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
             }

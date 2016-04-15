@@ -18,13 +18,13 @@ namespace Infovision.Data
         private double capacityFactor;
 
         private Dictionary<long, int> objectId2Index;
-        //private Dictionary<int, long> index2ObjectId;
         
         private long[] index2ObjectId;
         private DataStoreInfo dataStoreInfo;
+        
         private Dictionary<long, List<int>> decisionValue2ObjectIndex;
         private bool isDecisionMapCalculated = false;
- 
+
         private object mutex = new object();
 
         #endregion        
@@ -51,7 +51,7 @@ namespace Infovision.Data
         public DataStore(DataStoreInfo dataStoreInfo)
         {
             this.dataStoreInfo = dataStoreInfo;
-            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.1);            
+            this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.1);
         }
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
@@ -61,7 +61,6 @@ namespace Infovision.Data
             this.capacityFactor = capacityFactor;
             this.lastIndex = -1;
             this.objectId2Index = new Dictionary<long, int>(capacity);
-            //index2ObjectId = new Dictionary<int, long>(capacity);
             this.index2ObjectId = new long[capacity];
         }
 
@@ -163,8 +162,13 @@ namespace Infovision.Data
         public DataRecordInternal GetRecordByIndex(int objectIndex, bool setObjectId = true)
         {
             Dictionary<int, long> valueMap = new Dictionary<int, long>(this.dataStoreInfo.NumberOfFields);
-            for (int i = 1; i <= this.dataStoreInfo.NumberOfFields; i++)
-                valueMap[i] = this.GetFieldValue(objectIndex, i);
+
+            foreach(int fieldId in this.dataStoreInfo.GetFieldIds())
+                valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
+            
+            //for (int i = 1; i <= this.dataStoreInfo.NumberOfFields; i++)
+            //    valueMap[i] = this.GetFieldValue(objectIndex, i);
+            
             DataRecordInternal ret = new DataRecordInternal(valueMap);
             ret.ObjectIdx = objectIndex;
 
@@ -177,9 +181,10 @@ namespace Infovision.Data
         public long[] GetColumnInternal(int fieldId)
         {
             long[] result = new long[this.NumberOfRecords];
+            int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             Parallel.For(0, this.NumberOfRecords, i =>
             {
-                result[i] = this.GetFieldValue(i, fieldId);
+                result[i] = this.GetFieldIndexValue(i, fieldIdx);
             });
             return result;
         }
@@ -188,11 +193,12 @@ namespace Infovision.Data
         {
             T[] result = new T[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
+            int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             try
             {                
                 Parallel.For(0, this.NumberOfRecords, i =>
                 {
-                    result[i] = (T)field.Internal2External(this.GetFieldValue(i, fieldId));
+                    result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
                 });
             }
             catch (InvalidCastException castException)
@@ -221,9 +227,10 @@ namespace Infovision.Data
         {
             object[] result = new object[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
+            int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             Parallel.For(0, this.NumberOfRecords, i =>
             {
-                result[i] = field.Internal2External(this.GetFieldValue(i, fieldId));
+                result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
             });
             return result;
         }
@@ -248,6 +255,56 @@ namespace Infovision.Data
                 }
                 this.data[i * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
                 fieldInfo.IncreaseHistogramCount(internalValue);
+            }
+        }
+
+        public void SwitchColumns(int fieldId1, int fieldId2)
+        {
+            lock (mutex)
+            {
+                int fieldIdx1 = this.DataStoreInfo.GetFieldIndex(fieldId1);
+                int fieldIdx2 = this.DataStoreInfo.GetFieldIndex(fieldId2);
+
+                for (int i = 0; i < this.NumberOfRecords; i++)
+                {
+                    long tmp = this.GetFieldIndexValue(i, fieldIdx1);
+                    this.SetFieldIndexValue(i, fieldIdx1, this.GetFieldIndexValue(i, fieldIdx2));
+                    this.SetFieldIndexValue(i, fieldIdx2, tmp);
+                }
+
+                this.DataStoreInfo.SetFieldIndex(fieldId1, fieldIdx2);
+                this.dataStoreInfo.SetFieldIndex(fieldId2, fieldIdx1);
+            }
+        }
+
+        public void RemoveColumn(int fieldId)
+        {
+            lock(mutex)
+            {
+                int row = 0;
+                int SIZE_OF_LONG = sizeof(long);
+                int count = 0;
+
+                for(int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+                    fieldIdx < this.data.Length;
+                    fieldIdx += this.dataStoreInfo.NumberOfFields)
+                {
+                    count = (fieldIdx + this.dataStoreInfo.NumberOfFields - 1) > this.data.Length
+                          ? this.data.Length - fieldIdx - 1
+                          : this.dataStoreInfo.NumberOfFields - 1;
+    
+                    Buffer.BlockCopy(
+                        this.data,
+                        (fieldIdx + 1) * SIZE_OF_LONG, 
+                        this.data,
+                        (fieldIdx - row) * SIZE_OF_LONG,
+                        count * SIZE_OF_LONG);
+
+                    row++;
+                }
+
+                Array.Resize<long>(ref this.data, this.data.Length - this.NumberOfRecords);
+                this.dataStoreInfo.RemoveFieldInfo(fieldId);
             }
         }
 
@@ -342,7 +399,7 @@ namespace Infovision.Data
         public long[] GetFieldValues(int objectIdx)
         {
             long[] result = new long[this.DataStoreInfo.NumberOfFields];            
-            for(int i = 0; i<this.DataStoreInfo.NumberOfFields; i++)
+            for(int i = 0; i < this.DataStoreInfo.NumberOfFields; i++)
             {
                 result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
             }            
@@ -351,32 +408,23 @@ namespace Infovision.Data
 
         public long GetFieldValue(int objectIndex, int fieldId)
         {
-            /*
-            if(fieldId < this.DataStoreInfo.MinFieldId)
-                throw new ArgumentOutOfRangeException("fieldIds", "Value is out of range");
-            if(fieldId > this.DataStoreInfo.MaxFieldId)
-                throw new ArgumentOutOfRangeException("fieldIds", "Value is out of range");
-            if(objectIndex < 0)
-                throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
-            if(objectIndex > this.NumberOfRecords-1)
-                throw new ArgumentOutOfRangeException("objectIndex", "Value is out of range");
-            */ 
+            return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.GetFieldIndex(fieldId));
+        }
 
-            return data[objectIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)];
+        private void SetFieldIndexValue(int objectIdx, int fieldIdx, long internalValue)
+        {
+            data[objectIdx * this.dataStoreInfo.NumberOfFields + fieldIdx] = internalValue;
+        }
+
+        public long GetFieldIndexValue(int objectIdx, int fieldIdx)
+        {
+            return data[objectIdx * this.dataStoreInfo.NumberOfFields + fieldIdx];
         }
 
         public IEnumerable<long> GetObjectIds()
         {
             return objectId2Index.Keys;
         }
-
-        /*
-        public IEnumerable<int> GetObjectIndexes()
-        {
-            //return index2ObjectId.Keys;
-            return Enumerable.Range(0, index2ObjectId.Length);
-        }
-        */
 
         public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
@@ -388,10 +436,11 @@ namespace Infovision.Data
                     if (this.isDecisionMapCalculated == false)
                     {
                         this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>(this.DataStoreInfo.NumberOfDecisionValues);
+                        int decisionIndex = this.DataStoreInfo.DecisionFieldIndex;
 
                         for (int objectIdx = 0; objectIdx < this.NumberOfRecords; objectIdx++)
                         {
-                            long decision = this.GetDecisionValue(objectIdx);
+                            long decision = this.GetFieldIndexValue(objectIdx, decisionIndex);
                             result = null;
                             if (!this.decisionValue2ObjectIndex.TryGetValue(decision, out result))
                             {
@@ -430,12 +479,6 @@ namespace Infovision.Data
 
         public long ObjectIndex2ObjectId(int objectIndex)
         {
-            /*
-            long objectId;
-            if (index2ObjectId.TryGetValue(objectIndex, out objectId))
-                return objectId;
-            return 0;
-            */
             return index2ObjectId[objectIndex];
         }
 
@@ -582,6 +625,7 @@ namespace Infovision.Data
             }
         }
 
+        //TODO Add decision position
         public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false)
         {
             //System.IO.File.WriteAllText(filePath, this.ToStringExternal(separator));
@@ -592,7 +636,7 @@ namespace Infovision.Data
                 for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
                 {
                     if (objectIndex == 0 && includeHeader)
-                        file.WriteLine(this.ToStringHeader(separator));
+                        file.Write(this.ToStringHeader(separator));
 
                     DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
                     int position = 0;

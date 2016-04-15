@@ -12,54 +12,53 @@ namespace DermoReducts
     {
         public static void Main(string[] args)
         {
-            Run();
+            CreateNewDataSet();
         }
 
-        public static void Run()
+        public static void CreateNewDataSet()
         {
-            int folds = 5;
-
-            DataStore train = null, test = null;
             DataStore data = DataStore.Load(@"Data\dermatology.data", FileFormat.Csv);
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds);
-            for (int f = 0; f < folds; f++)
+            data.SetDecisionFieldId(35);
+
+            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
+
+            foreach (DataFieldInfo f in data.DataStoreInfo.Fields)
             {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
-
-                DataFieldInfo ageAttributeTrain = train.DataStoreInfo.GetFieldInfo(35); //a34                
-                DataFieldInfo ageAttributeTest = test.DataStoreInfo.GetFieldInfo(35); //a34
-
-                //TODO add m columns to DS
-                //Foreach column discretize
-
-                foreach (object val in ageAttributeTest.Values())
-                {
-                    int value = (int)val;
-                    BinaryDiscretization<int> discretizer = new BinaryDiscretization<int>(value);
-                    
-                    int[] ageColumnTrain = train.GetColumn<int>(35);
-                    int[] newValuesTrain = discretizer.Discretize(ageColumnTrain);
-
-                    int[] ageColumnTest = test.GetColumn<int>(35);
-                    int[] newValuesTest = discretizer.Discretize(ageColumnTest);
-                                        
-                    train.UpdateColumn(35, Array.ConvertAll(newValuesTrain, x => (object)x));                    
-
-                    ageAttributeTrain.IsNumeric = false;
-                    ageAttributeTrain.Cuts = discretizer.Cuts;
-                    ageAttributeTrain.FieldValueType = typeof(int);
-
-                    test.UpdateColumn(35, Array.ConvertAll(newValuesTrain, x => (object)x), ageAttributeTrain);
-
-                    ageAttributeTest.IsNumeric = false;
-                    ageAttributeTest.Cuts = discretizer.Cuts;
-                    ageAttributeTest.FieldValueType = typeof(int);
-                }                
+                f.Alias = (f.Id == data.DataStoreInfo.DecisionFieldId) ? "d" : String.Format("a{0}", f.Id);
+                f.Name = f.Alias;
             }
 
-            data.WriteToCSVFileExt(@"Results\dermatology.csv", ",");
+            foreach (object val in ageAttribute.Values())
+            {
+                int value = (int)val;
+                if (value != (int)ageAttribute.MissingValue)
+                {
+                    BinaryDiscretization<int> discretizer = new BinaryDiscretization<int>(value);
 
+                    string[] newValuesTrain = discretizer.Discretize(data, ageAttribute);
+
+                    int newFieldId = data.AddColumn<string>(newValuesTrain);
+                    DataFieldInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(newFieldId);
+
+                    newFieldInfo.IsNumeric = false;
+                    newFieldInfo.Cuts = discretizer.Cuts;
+                    newFieldInfo.FieldValueType = typeof(string);
+                    newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
+                }
+            }
+
+            data.WriteToCSVFileExt(@"Results\dermatology-1.csv", ",", true);
+
+            data.RemoveColumn(34);
+            //data.SwitchColumns(data.DataStoreInfo.MaxFieldId, 35);
+
+            data.WriteToCSVFileExt(@"Results\dermatology-2.csv", ",", true);
+
+        }
+
+        public static void HandleMissingData()
+        {
+            DataStore data = DataStore.Load(@"Results\dermatology.csv", FileFormat.Csv);
         }
     }
 }

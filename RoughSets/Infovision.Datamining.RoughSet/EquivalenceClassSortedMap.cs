@@ -25,6 +25,7 @@ namespace Infovision.Datamining.Roughset
             this.InitPartitions();
             int[] orderByTmp = attributeSet.ToArray();
             int[] orderBy = orderByTmp.Union(new int[1] { dataStore.DataStoreInfo.DecisionFieldId }).ToArray();
+            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             int[] sortedObjIdx = dataStore.Sort(comparer);
@@ -38,7 +39,7 @@ namespace Infovision.Datamining.Roughset
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
-                    long dec = dataStore.GetDecisionValue(j);
+                    long dec = dataStore.GetFieldIndexValue(j, decisionIndex);
                     eq.AddObject(j, dec, weight);
                     j++;
                 }
@@ -94,13 +95,15 @@ namespace Infovision.Datamining.Roughset
             int[] orderBy = new int[orderByTmp.Length + 1];
             Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
             orderBy[orderByTmp.Length] = dataStore.DataStoreInfo.DecisionFieldId;
+            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
             
             //TODO code smell: Do I sort data or objectSet?
             int[] sortedObjIdx = dataStore.Sort(objectSet, comparer);
 
-            int i, j;
+            
+int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
                 var dataVector = dataStore.GetFieldValues(i, orderByTmp);
@@ -108,7 +111,7 @@ namespace Infovision.Datamining.Roughset
                 j = i;
                 while (comparer.Compare(i, j) == 0)
                 {
-                    long dec = dataStore.GetDecisionValue(j);
+                    long dec = dataStore.GetFieldIndexValue(j, decisionIndex);
                     eq.AddObject(j, dec, objectWeights[j]);
                     j++;
                 }

@@ -158,9 +158,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTiming", "Exc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingVsRuleInduction", "VotingVsRuleInduction\VotingVsRuleInduction.csproj", "{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "DermoReducts\DermoReducts.csproj", "{BEA130EC-3920-42F3-AD18-A72231881DBD}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 29
+		SccNumberOfProjects = 30
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -267,6 +269,10 @@ Global
 		SccProjectTopLevelParentUniqueName28 = Infovision.sln
 		SccProjectName28 = VotingVsRuleInduction
 		SccLocalPath28 = VotingVsRuleInduction
+		SccProjectUniqueName29 = DermoReducts\\DermoReducts.csproj
+		SccProjectTopLevelParentUniqueName29 = Infovision.sln
+		SccProjectName29 = DermoReducts
+		SccLocalPath29 = DermoReducts
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -691,7 +697,8 @@ Global
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|Win32.ActiveCfg = Release|Any CPU
-		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x64.ActiveCfg = Release|x64
+		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x64.Build.0 = Release|x64
 		{67AF087D-606E-44F4-9396-74BF2AB160E2}.Release|x86.ActiveCfg = Release|Any CPU
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -708,6 +715,22 @@ Global
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|x64.ActiveCfg = Release|Any CPU
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}.Release|x86.ActiveCfg = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|x64.ActiveCfg = Debug|x64
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|x64.Build.0 = Debug|x64
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|Win32.ActiveCfg = Release|Any CPU
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x64.ActiveCfg = Release|x64
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x64.Build.0 = Release|x64
+		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -739,6 +762,7 @@ Global
 		{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{67AF087D-606E-44F4-9396-74BF2AB160E2} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{BEA130EC-3920-42F3-AD18-A72231881DBD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

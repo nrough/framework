@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
+using Infovision.Datamining.Roughset;
 
 namespace DermoReducts
 {
@@ -12,12 +13,74 @@ namespace DermoReducts
     {
         public static void Main(string[] args)
         {
-            CreateNewDataSet();
+            HandleMissingData(@"Data\dermatology.data", @"Results\dermatology-nomissing.csv", @"Results\dermatology-nomissing-weights.csv");
+            DiscretizeAgeAttribute(@"Results\dermatology-nomissing.csv", @"Results\dermatology-disc-nomissing.csv");
         }
 
-        public static void CreateNewDataSet()
+        public static void HandleMissingData(string filename, string outputfile, string weightsfile)
         {
-            DataStore data = DataStore.Load(@"Data\dermatology.data", FileFormat.Csv);
+            DataStore data = DataStore.Load(filename, FileFormat.Csv);
+            decimal[] w = new decimal[data.NumberOfRecords];
+            for (int i = 0; i < data.NumberOfRecords; i++)
+                w[i] = Decimal.One;
+
+            IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), w, Decimal.Zero);
+            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34            
+
+            Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.InternalValues().Count);
+            foreach (long val in ageAttribute.InternalValues())
+                if (val != ageAttribute.MissingValueInternal)
+                    countVals.Add(val, ageAttribute.Histogram.GetBinValue(val));
+
+            DataRecordInternal[] missingRecs = new DataRecordInternal[ageAttribute.Histogram.GetBinValue(ageAttribute.MissingValueInternal)];
+
+            for (int i = 0, j = 0; i < data.NumberOfRecords; i++)
+            {
+                DataRecordInternal record = data.GetRecordByIndex(i);
+                if (record[34] == ageAttribute.MissingValueInternal)
+                {
+                    missingRecs[j++] = record;
+                }
+            }
+
+            List<long> newRecIds = new List<long>();
+            decimal tmp = Decimal.Zero;
+            int k = 0;
+            int origNumberOfRecords = data.NumberOfRecords;
+            Array.Resize<decimal>(ref w, w.Length + (missingRecs.Length * ageAttribute.InternalValues().Count));
+            foreach (DataRecordInternal rec in missingRecs)
+            {
+                foreach (KeyValuePair<long, int> kvp in countVals)
+                {
+                    tmp = (decimal)kvp.Value / (decimal)(origNumberOfRecords - missingRecs.Length);
+                    w[origNumberOfRecords + k] = tmp;
+                    DataRecordInternal recBis = new DataRecordInternal(rec);
+                    recBis[34] = kvp.Key;
+
+                    newRecIds.Add(data.AddRow(recBis));
+                    k++;
+                }
+            }
+
+            foreach (DataRecordInternal rec in missingRecs)
+            {
+                w[rec.ObjectIdx] = 0;
+            }
+
+            data.WriteToCSVFileExt(outputfile, ",", false, true);
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(weightsfile))
+            {
+                for (int objectIndex = 0; objectIndex < data.NumberOfRecords; objectIndex++)
+                {
+                    file.WriteLine(w[objectIndex].ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+        }
+
+        public static void DiscretizeAgeAttribute(string filename, string outputfile)
+        {
+            DataStore data = DataStore.Load(filename, FileFormat.Csv);
             data.SetDecisionFieldId(35);
 
             DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
@@ -45,20 +108,11 @@ namespace DermoReducts
                     newFieldInfo.FieldValueType = typeof(string);
                     newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
                 }
-            }
+            }            
 
-            data.WriteToCSVFileExt(@"Results\dermatology-1.csv", ",", true);
+            data.RemoveColumn(34);            
+            data.WriteToCSVFileExt(outputfile, ",", true, true);
 
-            data.RemoveColumn(34);
-            //data.SwitchColumns(data.DataStoreInfo.MaxFieldId, 35);
-
-            data.WriteToCSVFileExt(@"Results\dermatology-2.csv", ",", true);
-
-        }
-
-        public static void HandleMissingData()
-        {
-            DataStore data = DataStore.Load(@"Results\dermatology.csv", FileFormat.Csv);
-        }
+        }        
     }
 }

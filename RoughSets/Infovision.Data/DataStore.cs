@@ -114,6 +114,15 @@ namespace Infovision.Data
             this.capacity = newCapacity;
             data = newStorage;
             index2ObjectId = newIndex2ObjectId;
+        }        
+
+        public long AddRow(DataRecordInternal record)
+        {
+            long result = Insert(record);
+            this.DataStoreInfo.NumberOfRecords++;
+            //TODO Update other statistics
+
+            return result;
         }
 
         public long Insert(DataRecordInternal record)
@@ -555,17 +564,36 @@ namespace Infovision.Data
             return stringBuilder.ToString();
         }
 
-        public string ToStringHeader(string separator)
+        public string ToStringHeader(string separator, bool decisionAsLastField = false)
         {
             StringBuilder stringBuilder = new StringBuilder();
             int position = 0;
-            foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+
+            if (decisionAsLastField && this.DataStoreInfo.DecisionFieldId > 0)
             {
-                position++;
-                if(position == this.DataStoreInfo.NumberOfFields)
-                    stringBuilder.AppendFormat("{0}", field.Name);
-                else
-                    stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
+                foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+                {
+                    if (field.Id != this.DataStoreInfo.DecisionFieldId)
+                    {
+                        position++;
+                        if (position == this.DataStoreInfo.NumberOfFields)
+                            stringBuilder.AppendFormat("{0}", field.Name);
+                        else
+                            stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
+                    }                    
+                }
+                stringBuilder.AppendFormat("{0}", this.DataStoreInfo.DecisionInfo.Name);
+            }
+            else
+            {
+                foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+                {
+                    position++;
+                    if (position == this.DataStoreInfo.NumberOfFields)
+                        stringBuilder.AppendFormat("{0}", field.Name);
+                    else
+                        stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
+                }
             }
             stringBuilder.Append(Environment.NewLine);
             return stringBuilder.ToString();
@@ -624,41 +652,67 @@ namespace Infovision.Data
                 }
             }
         }
-
-        //TODO Add decision position
-        public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false)
-        {
-            //System.IO.File.WriteAllText(filePath, this.ToStringExternal(separator));
-            
+        
+        public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false, bool decisionAsLastField = false)
+        {                       
             StringBuilder sb;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
                 for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
                 {
                     if (objectIndex == 0 && includeHeader)
-                        file.Write(this.ToStringHeader(separator));
+                        file.Write(this.ToStringHeader(separator, decisionAsLastField));
 
                     DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
                     int position = 0;
                     sb = new StringBuilder();
-                    foreach (int fieldId in record.GetFields())
+
+                    if (decisionAsLastField && this.DataStoreInfo.DecisionFieldId > 0)
                     {
-                        position++;
-                        DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
-                        object externalVal = attr.Internal2External(record[fieldId]);
-                        string externalValStr = String.Empty;
+                        foreach (int fieldId in record.GetFields())
+                        {
+                            if (fieldId != this.DataStoreInfo.DecisionFieldId)
+                            {
+                                position++;
+                                DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                                object externalVal = attr.Internal2External(record[fieldId]);
+                                string externalValStr = String.Empty;
 
-                        if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
-                            externalValStr = this.DataStoreInfo.MissingValue;
-                        else
-                            externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
+                                if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
+                                    externalValStr = this.DataStoreInfo.MissingValue;
+                                else
+                                    externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
 
-                        if (position == this.DataStoreInfo.NumberOfFields)
-                            sb.AppendFormat("{0}", externalValStr);
-                        else
-                            sb.AppendFormat("{0}{1}", externalValStr, separator);
+                                if (position == this.DataStoreInfo.NumberOfFields)
+                                    sb.AppendFormat("{0}", externalValStr);
+                                else
+                                    sb.AppendFormat("{0}{1}", externalValStr, separator);
+                            }
+                        }
+                        sb.AppendFormat("{0}", 
+                            this.DataStoreInfo.DecisionInfo.Internal2External(
+                                record[this.DataStoreInfo.DecisionFieldId]));
                     }
+                    else
+                    {
+                        foreach (int fieldId in record.GetFields())
+                        {
+                            position++;
+                            DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                            object externalVal = attr.Internal2External(record[fieldId]);
+                            string externalValStr = String.Empty;
 
+                            if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
+                                externalValStr = this.DataStoreInfo.MissingValue;
+                            else
+                                externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
+
+                            if (position == this.DataStoreInfo.NumberOfFields)
+                                sb.AppendFormat("{0}", externalValStr);
+                            else
+                                sb.AppendFormat("{0}{1}", externalValStr, separator);
+                        }
+                    }
                     file.WriteLine(sb.ToString());
                 }
             }

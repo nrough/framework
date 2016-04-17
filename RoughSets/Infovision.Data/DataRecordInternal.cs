@@ -44,6 +44,11 @@ namespace Infovision.Data
                 fields.Add(fieldIds[i], fieldValues[i]);
         }
 
+        public DataRecordInternal(DataRecordInternal otherDataRecordInternal)
+        {
+            fields = new Dictionary<int, long>(otherDataRecordInternal.fields);
+        }
+
         public DataRecordInternal(Dictionary<int, long> valueMap)
         {
             this.fields = valueMap;

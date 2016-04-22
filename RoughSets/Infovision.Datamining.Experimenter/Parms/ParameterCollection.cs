@@ -12,16 +12,13 @@ namespace Infovision.Datamining.Experimenter.Parms
     {                
         #region Globals
 
-        private readonly double resizeFactor = 1.2;
+        private static double resizeFactor = 1.2;
+
         protected IParameter[] parameters;
         protected Dictionary<string, int> name2index;
         private int parmCount;
-
         protected IParameter[][] exclusions;
-        protected int exclusionCount;
-
-        //private List<ParameterExclusion> excludedParameters = new List<ParameterExclusion>();
-        //private HashSet<string> excludedParameterNames = new HashSet<string>();
+        protected int exclusionCount;        
 
         #endregion
 
@@ -81,19 +78,7 @@ namespace Infovision.Datamining.Experimenter.Parms
                     }
                 }
             }                        
-        }
-
-        /*
-        public ParameterCollection(IParameter[] parameters, ParameterExclusion[] exludedParams)
-            : this(parameters)
-        {
-            this.excludedParameters = new List<ParameterExclusion>(exludedParams);
-            for (int i = 0; i < exludedParams.Length; i++)
-            {
-                this.AddExclusionParamName(exludedParams[i]);
-            }
-        }
-        */
+        }        
 
         #endregion
 
@@ -149,7 +134,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
         }
 
-        public IEnumerator GetValueEnumerator()
+        protected IEnumerator GetValueEnumerator()
         {
             return new ParametersValueEnumerator(this);
         }
@@ -167,7 +152,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             exclusionCount++;
         }
 
-        public bool IsCurrentValueExcluded()
+        internal bool IsCurrentValueExcluded()
         {
             for (int i = 0; i < exclusions.Length; i++)
             {
@@ -190,7 +175,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return false;
         }
 
-        public bool IsValueVectorInRange(object[] valueVector)
+        internal bool IsValueVectorInRange(object[] valueVector)
         {
             for (int i = 0; i < exclusions.Length; i++)
             {
@@ -211,21 +196,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
 
             return false;
-        }
-
-        //public void AddExclusion(ParameterExclusion exclusion)
-        //{
-        //    this.excludedParameters.Add(exclusion);
-        //    this.AddExclusionParamName(exclusion);
-        //}
-
-        //private void AddExclusionParamName(ParameterExclusion exclusion)
-        //{
-        //    for (int i = 0; i < exclusion.Count; i++)
-        //    {
-        //        excludedParameterNames.Add(exclusion[i]);
-        //    }
-        //}
+        }        
 
         #region IEnumberable Methods
 
@@ -252,58 +223,21 @@ namespace Infovision.Datamining.Experimenter.Parms
             return new ParameterCollection(this);
         }
 
-        #endregion
-
+        //TODO
         /*
-        public bool CheckParameterExclusion(IParameter parameter, ParameterValueVector valueVector)
+        public object Clone()
         {
-            if (this.HasExclusions(parameter))
-            {
-                return !this.IsExcluded(valueVector);
-            }
-
-            return true;
-
-            //return !this.HasExclusions(parameter) && !this.IsExcluded(valueVector);
+            var clone = (ParameterCollection)this.MemberwiseClone();
+            this.HandleCloned(clone);
+            return clone;
         }
 
-        private bool HasExclusions(ITestParameter parameter)
+        protected virtual void HandleCloned(ParameterCollection clone)
         {
-            return this.excludedParameterNames.Contains(parameter.Name);
         }
+        */
 
-        private bool IsExcluded(ParameterValueVector valueVector)
-        {
-            foreach (ParameterExclusion exclusion in this.excludedParameters)
-            {
-                if (this.Match(exclusion, valueVector))
-                    return true;
-            }
-            return false;
-        }
-
-        private bool Match(ParameterExclusion exclusion, ParameterValueVector valueVector)
-        {
-            foreach (KeyValuePair<string, object> kvp in exclusion)
-            {
-                int parameterIndex = this.name2index[kvp.Key];
-
-                if (parameterIndex > valueVector.Length - 1)
-                    return false;
-
-                if (valueVector[parameterIndex] == null
-                    && kvp.Value != null)
-                    return false;
-
-                if (!valueVector[parameterIndex].Equals(kvp.Value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        */        
+        #endregion
 
         #endregion
     }

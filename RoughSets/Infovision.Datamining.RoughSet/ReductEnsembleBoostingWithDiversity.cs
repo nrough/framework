@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
 		
 		public Func<double[], double[], double> Distance { get; set; }
 		public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
-		public Func<IReduct, decimal[], double[]> ReconWeights { get; set; }
+		public Func<IReduct, decimal[], RuleQualityFunction, double[]> ReconWeights { get; set; }
 		public int NumberOfReductsToTest { get; set; }
 		public AgregateFunction AgregateFunction { get; set; }
 
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
 				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 
 			if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-				this.ReconWeights = (Func<IReduct, decimal[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+				this.ReconWeights = (Func<IReduct, decimal[], RuleQualityFunction, double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
 
 			if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsToTest))
 				this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
@@ -96,7 +96,7 @@ namespace Infovision.Datamining.Roughset
 			for (int i = 0; i < this.NumberOfReductsToTest; i++)
 			{                                                
 				candidates[i] = base.GetNextReduct(weights);
-				double[] condidateVector = this.ReconWeights(candidates[i], weights);
+				double[] condidateVector = this.ReconWeights(candidates[i], weights, this.IdentyficationType);
 
 				for (int j = 0; j < this.clusterInstances2.Count; j++)
 					distanceMatrix[j, this.clusterInstances2.Count + i] = this.Distance(this.clusterInstances2[j], condidateVector);
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset
 			foreach (IReduct r in model)
 			{
 				clusterInstances.Add(r.Id, clusterInstances2.Count);
-				clusterInstances2.Add(this.ReconWeights(r, r.Weights));
+				clusterInstances2.Add(this.ReconWeights(r, r.Weights, this.IdentyficationType));
 			}
 		}
 	}
@@ -161,7 +161,7 @@ namespace Infovision.Datamining.Roughset
 
 		public virtual IPermutationGenerator GetPermutationGenerator(Args args)
 		{
-			DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+			DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 			return new PermutationGenerator(dataStore);
 		}
 	}

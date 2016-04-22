@@ -144,7 +144,7 @@ namespace ExceptionRulesTest
 
             
             Args parmsApprox = new Args();
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -153,14 +153,14 @@ namespace ExceptionRulesTest
 
             ReductGeneratorWeightsMajority generatorApprox =
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
-            generatorApprox.Generate();
+            generatorApprox.Run();
             IReductStoreCollection origReductStoreCollectionApprox = generatorApprox.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, new ReductLenghtComparer());
+            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, new ReductLengthComparer());
 
             RoughClassifier classifierApprox = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQuality.CoverageW2,
+                RuleQuality.CoverageW2,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierApprox.UseExceptionRules = false;
             ClassificationResult resultApprox = classifierApprox.Classify(testData);
@@ -168,7 +168,7 @@ namespace ExceptionRulesTest
 
 
             Args parms_GMDR = new Args();
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -178,14 +178,14 @@ namespace ExceptionRulesTest
 
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
-            generator_GMDR.Generate();
+            generator_GMDR.Run();
             IReductStoreCollection origReductStoreCollection_GMDR = generator_GMDR.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollection_GMDR = origReductStoreCollection_GMDR.Filter(ensembleSize, new ReductLenghtComparer());
+            IReductStoreCollection filteredReductStoreCollection_GMDR = origReductStoreCollection_GMDR.Filter(ensembleSize, new ReductLengthComparer());
 
             RoughClassifier classifier_GMDR = new RoughClassifier(
                 filteredReductStoreCollection_GMDR,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQuality.CoverageW2,
+                RuleQuality.CoverageW2,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
             ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
@@ -193,7 +193,7 @@ namespace ExceptionRulesTest
             
             
             Args parmsEx = new Args();
-            parmsEx.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -203,14 +203,14 @@ namespace ExceptionRulesTest
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-            generatorEx.Generate();
+            generatorEx.Run();
             IReductStoreCollection origReductStoreCollectionEx = generatorEx.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollectionEx = origReductStoreCollectionEx.FilterInEnsemble(ensembleSize, new ReductStoreLenghtComparer(true));
+            IReductStoreCollection filteredReductStoreCollectionEx = origReductStoreCollectionEx.FilterInEnsemble(ensembleSize, new ReductStoreLengthComparer(true));
 
             RoughClassifier classifierEx = new RoughClassifier(
                 filteredReductStoreCollectionEx,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQuality.CoverageW2,
+                RuleQuality.CoverageW2,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierEx.UseExceptionRules = true;
             classifierEx.ExceptionRulesAsGaps = false;
@@ -219,7 +219,7 @@ namespace ExceptionRulesTest
 
             /*
             Args parmsGaps = new Args();
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsGaps.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsGaps.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parmsGaps.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsGaps.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -234,15 +234,15 @@ namespace ExceptionRulesTest
             */
 
             IReductStoreCollection origReductStoreCollectionGap = generatorEx.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollectionGap = origReductStoreCollectionGap.FilterInEnsemble(ensembleSize, new ReductStoreLenghtComparer(false));
+            IReductStoreCollection filteredReductStoreCollectionGap = origReductStoreCollectionGap.FilterInEnsemble(ensembleSize, new ReductStoreLengthComparer(false));
 
             var localPermGenerator = new PermutationGenerator(trainData);
             var localPermList = localPermGenerator.Generate(ensembleSize);
 
             RoughClassifier classifierGaps = new RoughClassifier(
                 filteredReductStoreCollectionGap,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQuality.CoverageW2,
+                RuleQuality.CoverageW2,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierGaps.UseExceptionRules = true;
             classifierGaps.ExceptionRulesAsGaps = true;
@@ -250,7 +250,7 @@ namespace ExceptionRulesTest
             resultGaps.QualityRatio = filteredReductStoreCollectionGap.GetWeightedAvgMeasure(new ReductMeasureLength(), false);
 
             Args parmsRandom = new Args();
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -262,12 +262,12 @@ namespace ExceptionRulesTest
             
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
-            generatorRandom.Generate();
+            generatorRandom.Run();
 
             RoughClassifier classifierRandom = new RoughClassifier(
                 generatorRandom.GetReductStoreCollection(),
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQuality.CoverageW2,
+                RuleQuality.CoverageW2,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierRandom.UseExceptionRules = false;
             ClassificationResult resultRandom = classifierRandom.Classify(testData);
@@ -275,9 +275,9 @@ namespace ExceptionRulesTest
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
                 (result_GMDR,   //1
-                resultApprox,        //2
+                resultApprox,   //2
                 resultEx,       //3
-                resultRandom,        //5
+                resultRandom,   //5
                 resultGaps);    //4
         }
 

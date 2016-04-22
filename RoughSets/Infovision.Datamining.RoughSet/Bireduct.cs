@@ -103,17 +103,16 @@ namespace Infovision.Datamining.Roughset
                 return false;
             
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
-            EquivalenceClass reductStatistics = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
+            EquivalenceClass eqClass = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
-            if (reductStatistics == null)
+            if (eqClass == null)
                 return true;
 
-            if (reductStatistics.NumberOfDecisions <= 1)
+            if (eqClass.NumberOfDecisions <= 1)
             {
                 long decisionValue = this.DataStore.GetDecisionValue(objectIndex);
 
-                if (reductStatistics.NumberOfDecisions == 0
-                    || reductStatistics.MajorDecision == decisionValue)
+                if (eqClass.NumberOfDecisions == 0 || eqClass.DecisionSet.ContainsElement(decisionValue))
                 {                                        
                     return true;
                 }

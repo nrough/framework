@@ -57,12 +57,12 @@ namespace DisesorTuning
 					new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, //3
 						0.0m, 0.50m, 0.05m),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Voting", //4
-						RuleQuality.CoverageW, 
-						RuleQuality.ConfidenceW, 
-						RuleQuality.SingleVote),
+						RuleQuality_DEL.CoverageW, 
+						RuleQuality_DEL.ConfidenceW, 
+						RuleQuality_DEL.SingleVote),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Identification", //5 
-						RuleQuality.CoverageW, 
-						RuleQuality.ConfidenceW),
+						RuleQuality_DEL.CoverageW, 
+						RuleQuality_DEL.ConfidenceW),
 					ParameterValueCollection<DiscretizationType>.CreateFromElements("DiscretizationType", //6
 						DiscretizationType.Unsupervised_Entropy,
 						DiscretizationType.Supervised_KononenkoMDL_BetterEncoding,
@@ -96,7 +96,7 @@ namespace DisesorTuning
 				WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
 				
 				Args innerArgs = new Args();
-				innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+				innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
 				innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);            
 				innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
 				innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
@@ -107,7 +107,7 @@ namespace DisesorTuning
 						(int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * shuffleRatio)));
 
 				Args args = new Args();
-				args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+				args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
 				args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
 				args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
 				args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
@@ -127,7 +127,7 @@ namespace DisesorTuning
 
 
 				IReductGenerator generator = ReductFactory.GetReductGenerator(args);
-				generator.Generate();
+				generator.Run();
 				IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 			   
 				RoughClassifier classifier = new RoughClassifier(
@@ -270,7 +270,7 @@ namespace DisesorTuning
 			{
 				var discretizer = Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer.Construct(discretizationType);
 
-				foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+				foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
 				{
 					Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
 						field.Id,
@@ -278,7 +278,7 @@ namespace DisesorTuning
 						field.Values().Count,
 						discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
-                    if (discretizer.CanDiscretize(field))
+					if (discretizer.CanDiscretize(field))
 					{
 						double[] cuts = discretizer.GetCuts(train, field.Id, null);
 						Console.WriteLine(this.Cuts2Sting(cuts));
@@ -295,15 +295,15 @@ namespace DisesorTuning
 					UseKononenko = useKokonenkoMDL
 				};
 
-				foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+				foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
 				{
 					Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
 						field.Id,
 						field.FieldValueType,
 						field.Values().Count,
-                        discretizer.CanDiscretize(field) ? "Can" : "Cannot");
+						discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
-                    if (discretizer.CanDiscretize(field))
+					if (discretizer.CanDiscretize(field))
 					{
 						double[] cuts = discretizer.GetCuts(train, field.Id, null);
 						Console.WriteLine(this.Cuts2Sting(cuts));

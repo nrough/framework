@@ -34,7 +34,7 @@
     }
 
     /// <summary>
-    /// Encodes different types of decision rules voting. Relates to right side of the decision rule.
+    /// Encodes different types of decisionInternalValue rules voting. Relates to right side of the decisionInternalValue rule.
     /// </summary>
     public enum RuleVoteConseqentRating
     {
@@ -45,7 +45,7 @@
     }
 
     /// <summary>
-    /// When used together with <c>RuleVoteConseqentRating</c> it encodes the decision rule antecedent coefficient. Relates to left side of the decision rule.
+    /// When used together with <c>RuleVoteConseqentRating</c> it encodes the decisionInternalValue rule antecedent coefficient. Relates to left side of the decisionInternalValue rule.
     /// </summary>
     public enum RuleVoteAntecedentRating
     {

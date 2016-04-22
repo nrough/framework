@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 
@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parmsMulti.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, InfovisionHelper.NumberOfCores());
             parmsMulti.SetParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
             parmsMulti.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
@@ -66,7 +66,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 //    Console.WriteLine("Epsilon: {0}", i);
 
                 Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
                 args.SetParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                 IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
@@ -98,13 +98,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
 
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
                     parms.SetParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0m);
                     parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 
                     IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-                    reductGenerator.Generate();
+                    reductGenerator.Run();
 
                     IReductStoreCollection reductStoreCollction = reductGenerator.GetReductStoreCollection();
                     IReductStore reductStore = reductStoreCollction.FirstOrDefault();
@@ -138,13 +138,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-            reductGenerator.Generate();
+            reductGenerator.Run();
 
             IReductStore reductStore = reductGenerator.GetReductStoreCollection().FirstOrDefault();
 
@@ -167,7 +167,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGeneratorMulti.Epsilon = epsilon / 100.0M;
-                reductGeneratorMulti.Generate();
+                reductGeneratorMulti.Run();
                 IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
         }
@@ -179,7 +179,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
                 reductGenerator.Epsilon = epsilon / 100.0M;
-                reductGenerator.Generate();
+                reductGenerator.Run();
                 IReductStore reductStore = reductGenerator.ReductPool;
             }
         }

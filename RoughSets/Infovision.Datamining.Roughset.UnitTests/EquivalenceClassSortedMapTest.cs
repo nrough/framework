@@ -10,9 +10,9 @@ using NUnit.Framework;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    public class EquivalenceClassSortedMapTest
+    public class EquivalenceClassTest
     {
-        public EquivalenceClassSortedMapTest()
+        public EquivalenceClassTest()
         {
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
@@ -42,31 +42,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
-                    int origNumberOfDecisionValues = eq.DecisionValues.Count();
-                    long origMajorDecision = eq.MajorDecision;
-
-                    eq.RemoveObjectsWithMinorDecisions();
+                    int origNumberOfDecisionValues = eq.DecisionValues.Count();                    
+                    eq.KeepMajorDecisions(Decimal.Zero);
 
                     if (origNumberOfDecisionValues > 1)
                         Assert.LessOrEqual(eq.DecisionValues.Count(), origNumberOfDecisionValues);
 
-                    Assert.GreaterOrEqual(eq.DecisionValues.Count(), 1);
-                    //Assert.AreEqual(origMajorDecision, eq.MajorDecision);
-
-                    Assert.IsTrue(eq.DecisionSet.ContainsElement(eq.MajorDecision));
-
+                    Assert.GreaterOrEqual(eq.DecisionValues.Count(), 1);                    
+                    
                     if (eq.DecisionValues.Count() > 1)
                     {
                         int count = -1;                        
                         foreach (long dec in eq.DecisionValues)
                         {
                             if (count < 0)
-                            {
                                 count = eq.GetNumberOfObjectsWithDecision(dec);                                
-                            }
 
                             Assert.AreEqual(count, eq.GetNumberOfObjectsWithDecision(dec));
-
                         }
                     }
                 }                

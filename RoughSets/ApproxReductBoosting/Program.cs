@@ -115,13 +115,13 @@ namespace ApproxReductBoosting
 				
 				Args parms = new Args();
 				if (trnDataOrig.DataStoreInfo.HasMissingData)
-					parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnDataReplaced);
+					parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnDataReplaced);
 				else
-					parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnDataOrig);
+					parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnDataOrig);
 
 				parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-				parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
-				parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+				parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality_DEL.ConfidenceW);
+				parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality_DEL.ConfidenceW);
 				parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
 				parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
 				parms.SetParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
@@ -147,7 +147,7 @@ namespace ApproxReductBoosting
 				parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);				
 
 				ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator) ReductFactory.GetReductGenerator(parms);
-				reductGenerator.Generate();
+                reductGenerator.Run();
 
 				RoughClassifier classifierTrn = new RoughClassifier(
 					reductGenerator.GetReductGroups(),
@@ -160,8 +160,8 @@ namespace ApproxReductBoosting
 
 				RoughClassifier classifierTst = new RoughClassifier(
 					reductGenerator.GetReductGroups(),
-					RuleQuality.ConfidenceW, 
-					RuleQuality.ConfidenceW,
+					RuleQuality_DEL.ConfidenceW, 
+					RuleQuality_DEL.ConfidenceW,
 					trnDataOrig.DataStoreInfo.GetDecisionValues());
 				ClassificationResult resultTst = classifierTst.Classify(tstDataOrig, null);
 

@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private decimal dataSetQuality = Decimal.One;        
         private WeightGenerator weightGenerator;
-        private Func<IReduct, decimal[], double[]> recognition;
+        private Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;                
         private HierarchicalClusteringBase hCluster;
@@ -126,10 +126,10 @@ namespace Infovision.Datamining.Roughset
                 this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
             if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-                this.recognition = (Func<IReduct, decimal[], double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
-        }        
-       
-        public override void Generate()
+                this.recognition = (Func<IReduct, decimal[], RuleQualityFunction, double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+        }
+
+        protected override void Generate()
         {
             ReductStore localReductPool = new ReductStore(this.Permutations.Count);
             
@@ -209,7 +209,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         /// <summary>
-        /// Returns a weight vector array, where for each reduct an recognition weight is stored        
+        /// Returns a objectWeight vector array, where for each reduct an recognition objectWeight is stored        
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
@@ -219,7 +219,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < store.Count; i++)
             {
                 IReduct reduct = store.GetReduct(i);
-                errors[i] = recognition(reduct, reduct.Weights);
+                errors[i] = recognition(reduct, reduct.Weights, RuleQuality.ConfidenceW2);
             }
             return errors;
         }
@@ -276,7 +276,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGenerator(dataStore);
         }
     }

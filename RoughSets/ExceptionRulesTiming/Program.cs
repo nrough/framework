@@ -169,7 +169,7 @@ namespace ExceptionRulesTiming
             decimal eps = Decimal.Divide(epsilon, 100);
 
             Args parmsApprox = new Args();
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -180,12 +180,12 @@ namespace ExceptionRulesTiming
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
             t1 = new Stopwatch();
             t1.Start();
-            generatorApprox.Generate();
+            generatorApprox.Run();
             t1.Stop();
 
             
             Args parms_GMDR = new Args();
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -198,12 +198,12 @@ namespace ExceptionRulesTiming
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
             t2 = new Stopwatch();
             t2.Start();
-            generator_GMDR.Generate();
+            generator_GMDR.Run();
             t2.Stop();            
 
 
             Args parmsEx = new Args();
-            parmsEx.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsEx.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -216,17 +216,17 @@ namespace ExceptionRulesTiming
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
             t3 = new Stopwatch();
             t3.Start();
-            generatorEx.Generate();
+            generatorEx.Run();
             t3.Stop();
 
 
-            double avgSize = generatorApprox.GetReductStoreCollection().Filter(ensembleSize, new ReductLenghtComparer()).GetAvgMeasure(new ReductMeasureLength());
+            double avgSize = generatorApprox.GetReductStoreCollection().Filter(ensembleSize, new ReductLengthComparer()).GetAvgMeasure(new ReductMeasureLength());
 
             var localPermGenerator = new PermutationGenerator(trainData);
             var localPermList = localPermGenerator.Generate(ensembleSize);
 
             Args parmsRandom = new Args();
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -241,7 +241,7 @@ namespace ExceptionRulesTiming
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
             t4 = new Stopwatch();
             t4.Start();
-            generatorRandom.Generate();            
+            generatorRandom.Run();            
             t4.Start();
 
             return new Tuple<long, long, long, long, long>

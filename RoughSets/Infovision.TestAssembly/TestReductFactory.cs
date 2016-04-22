@@ -15,7 +15,7 @@ namespace Infovision.TestAssembly
 
         public IReductGenerator GetReductGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             TestReductGenerator rGen = new TestReductGenerator(dataStore);
             rGen.InitFromArgs(args);
             return rGen;
@@ -23,7 +23,7 @@ namespace Infovision.TestAssembly
 
         public IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGeneratorReverse(dataStore);
         }
 
@@ -33,11 +33,11 @@ namespace Infovision.TestAssembly
         }
     }
 
-    public class TestReductGenerator : Infovision.Datamining.Roughset.IReductGenerator
+    public class TestReductGenerator : ReductGenerator
     {        
         private IReductStore reductPool;
 
-        public IReductStore ReductPool
+        public override IReductStore ReductPool
         {
             get
             {
@@ -50,7 +50,7 @@ namespace Infovision.TestAssembly
             }
         }
 
-        public decimal Epsilon
+        public override decimal Epsilon
         {
             get;
             set;
@@ -65,22 +65,37 @@ namespace Infovision.TestAssembly
         {
         }
 
-        public virtual void InitFromArgs(Args args)
+        public override void InitFromArgs(Args args)
         {
 
         }
 
-        public virtual void Generate()
+        public override void Run()
+        {
+            this.Generate();
+        }         
+
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Generate()
         {
             this.ReductPool = new ReductStore();            
         }
 
-        public virtual IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        public override IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
 
-        public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
+        public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
         {
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
             reductStoreCollection.AddStore(this.ReductPool);

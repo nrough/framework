@@ -38,12 +38,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(fileName.Value.TrainFile, fileName.Value.FileFormat);
             
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, 1);
             
             ReductGeneratorWeightsMajority reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
-            reductGenerator.Generate();
+            reductGenerator.Run();
 
             Assert.NotNull(reductGenerator.GetReductStoreCollection());
             Assert.NotNull(reductGenerator.ReductPool);
@@ -252,7 +252,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void EquivalenceClassMapTest()
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);            
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(1000));
                         
@@ -260,8 +260,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
 
                 parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);                
-                reductGenerator.Generate();
+                IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
+                reductGenerator.Run();
                 IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection();
                 IReductStore reductStore = storeCollection.FirstOrDefault();
 
@@ -294,7 +294,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {
                             Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue),
-                                            reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decision");
+                                            reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decisionInternalValue");
                         }
 
                         objectCount += reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects;
@@ -313,7 +313,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, 
-                                                 ReductGeneratorParamHelper.DataStore }, 
+                                                 ReductGeneratorParamHelper.TrainData }, 
                                   new Object[] { ReductFactoryKeyHelper.ApproximateReductMajorityWeights, dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
@@ -321,7 +321,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            reductGenerator.Generate();
+            reductGenerator.Run();
             IReductStore reductStore = reductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)
@@ -339,14 +339,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weights, 0);
             decimal allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore }, new Object[] { ReductFactoryKeyHelper.ApproximateReductRelativeWeights, dataStoreTrain });
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData }, new Object[] { ReductFactoryKeyHelper.ApproximateReductRelativeWeights, dataStoreTrain });
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             PermutationCollection permutationList = permGen.Generate(1000);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            reductGenerator.Generate();
+            reductGenerator.Run();
             IReductStore reductStore = reductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)

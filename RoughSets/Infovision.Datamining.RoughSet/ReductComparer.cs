@@ -1,59 +1,59 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset
 {
-    public class ReductLenghtComparer : Comparer<IReduct>
+    public abstract class ReductBaseComparer : Comparer<IReduct>, ICloneable
+    {
+        public object Clone()
+        {
+            var clone = (ReductBaseComparer) this.MemberwiseClone();
+            this.HandleCloned(clone);
+            return clone;
+        }        
+
+        protected virtual void HandleCloned(ReductBaseComparer clone)
+        {         
+        }
+    }
+
+    public class ReductLengthComparer : ReductBaseComparer
     {
         public override int Compare(IReduct left, IReduct right)
         {
             if (left.Attributes.Count > right.Attributes.Count)
-            {
                 return 1;
-            }
             else if (left.Attributes.Count < right.Attributes.Count)
-            {
                 return -1;
-            }
-
             return 0;
         }
     }
 
-    public class ReductRuleNumberComparer : Comparer<IReduct>
+    public class ReductRuleNumberComparer : ReductBaseComparer
     {
         public override int Compare(IReduct left, IReduct right)
         {
             if (left.EquivalenceClasses.NumberOfPartitions > right.EquivalenceClasses.NumberOfPartitions)
-            {
                 return 1;
-            }
             else if (left.EquivalenceClasses.NumberOfPartitions < right.EquivalenceClasses.NumberOfPartitions)
-            {
                 return -1;
-            }
-
             return 0;
         }
     }
 
-    public class BireductSizeComparer : Comparer<IReduct>
+    public class BireductSizeComparer : ReductBaseComparer
     {
         public override int Compare(IReduct left, IReduct right)
         {
             if (left.ObjectSetInfo.NumberOfRecords < right.ObjectSetInfo.NumberOfRecords)
-            {
                 return 1;
-            }
             else if (left.ObjectSetInfo.NumberOfRecords > right.ObjectSetInfo.NumberOfRecords)
-            {
                 return -1;
-            }
-
             return 0;
         }
     }
 
-    public class BireductRelativeComparer : Comparer<IReduct>
+    public class BireductRelativeComparer : ReductBaseComparer
     {
         BireductMeasureRelative bireductMeasureRelative = new BireductMeasureRelative();
 
@@ -63,19 +63,14 @@ namespace Infovision.Datamining.Roughset
             decimal rightResult = bireductMeasureRelative.Calc(right);
 
             if (leftResult < rightResult)
-            {
                 return 1;
-            }
             else if (leftResult > rightResult)
-            {
                 return -1;
-            }
-
             return 0;
         }
     }
 
-    public class DiversityComparer : Comparer<IReduct>
+    public class DiversityComparer : ReductBaseComparer
     {                
         public override int Compare(IReduct left, IReduct right)
         {
@@ -84,11 +79,26 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
-    public class ReductStoreLenghtComparer : Comparer<IReductStore>
+    public abstract class ReductStoreBaseComparer : Comparer<IReductStore>, ICloneable
+    {
+        public object Clone()
+        {
+            var clone = (ReductStoreBaseComparer)this.MemberwiseClone();
+            this.HandleCloned(clone);
+            return clone;
+        }
+
+        protected virtual void HandleCloned(ReductStoreBaseComparer clone)
+        {
+        }
+    }
+
+
+    public class ReductStoreLengthComparer : ReductStoreBaseComparer
     {
         public bool IncludeExceptions { get; set; }
 
-        public ReductStoreLenghtComparer(bool includeExceptions)
+        public ReductStoreLengthComparer(bool includeExceptions)
             : base()
         {
             this.IncludeExceptions = IncludeExceptions;
@@ -100,13 +110,9 @@ namespace Infovision.Datamining.Roughset
             double avgLengthRight = right.GetWeightedAvgMeasure(new ReductMeasureLength(), this.IncludeExceptions);
 
             if (avgLengthLeft > avgLengthRight)
-            {
                 return 1;
-            }
             else if (avgLengthLeft < avgLengthRight)
-            {
                 return -1;
-            }
 
             return 0;
         }

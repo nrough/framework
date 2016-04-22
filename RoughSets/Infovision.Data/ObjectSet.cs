@@ -8,7 +8,10 @@ namespace Infovision.Data
     public class ObjectSet : PascalSet<int>, IObjectSetInfo
     {
         DataStore dataStore = null;
+        //decimal[] weights = null;
         Dictionary<long, int> decisionCount;
+        //Dictionary<long, decimal> decisionWeight;
+        private object mutex = new object();
                 
         #region Properties
 
@@ -36,26 +39,40 @@ namespace Infovision.Data
 
         #region Constructors
 
+        //public ObjectSet(DataStore dataStore, int[] initialData, decimal[] weights = null)
         public ObjectSet(DataStore dataStore, int[] initialData)
             : base(0, dataStore.NumberOfRecords - 1, initialData)
         {
             this.dataStore = dataStore;
             this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
+            //this.weights = weights;
+            //this.decisionWeight = new Dictionary<long, decimal>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
             int decisionIndex = this.dataStore.DataStoreInfo.DecisionFieldIndex;
             for (int i = 0; i < initialData.Length; i++)
             {
                 long decisionValue = this.dataStore.GetFieldIndexValue(initialData[i], decisionIndex);
+                
                 int count = 0;
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+                
+                /*
+                decimal w = 0;
+                if (weights != null)
+                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + weights[i]) : weights[i];
+                else
+                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + 1) : 1;
+                */
             }
         }
 
         public ObjectSet(DataStore dataStore)
+            //: this(dataStore, new int[] { }, null)
             : this(dataStore, new int[] { })
         {
         }
 
         public ObjectSet(ObjectSet objectSet)
+            //: this(objectSet.DataStore, objectSet.ToArray(), objectSet.weights)
             : this(objectSet.DataStore, objectSet.ToArray())
         {
         }
@@ -69,13 +86,18 @@ namespace Infovision.Data
             return this.decisionCount.Keys;
         }
 
+        //public void AddElement(int element, decimal weight = 1)
         public override void AddElement(int element)
         {
             if (!this.ContainsElement(element))
             {
                 long decisionValue = this.dataStore.GetDecisionValue(element);
+                
                 int count = 0;
-                decisionCount[decisionValue] = decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+                
+                //decimal w = 0;
+                //this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + weight) : weight;
             }
 
             base.AddElement(element);
@@ -86,8 +108,17 @@ namespace Infovision.Data
             if (this.ContainsElement(element))
             {
                 long decisionValue = this.dataStore.GetDecisionValue(element);
+                
                 int count = 0;
-                decisionCount[decisionValue] = decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;
+                
+                /*
+                decimal w = 0;
+                if(this.weights != null)
+                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w - weights[element]) : 0;
+                else
+                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w - 1) : 0;
+                */
             }
             
             base.RemoveElement(element);            
@@ -102,9 +133,7 @@ namespace Infovision.Data
         {
             int count = 0;
             if (this.decisionCount.TryGetValue(decisionValue, out count))
-            {
                 return (this.NumberOfRecords > 0) ? (decimal)count / (decimal)this.NumberOfRecords : 0;
-            }
             return 0;
         }
 
@@ -112,11 +141,21 @@ namespace Infovision.Data
         {
             int count = 0;
             if (this.decisionCount.TryGetValue(decisionValue, out count))
-            {
                 return count;
-            }
             return 0;
         }
+
+        /*
+        public decimal DecisionWeight(long decisionValue)
+        {
+            if (weights == null)
+                return (decimal)this.NumberOfObjectsWithDecision(decisionValue);
+            decimal w = 0;
+            if (this.decisionWeight.TryGetValue(decisionValue, out w))
+                return w;
+            return 0;
+        }
+        */
 
         #region System.Object Methods
 

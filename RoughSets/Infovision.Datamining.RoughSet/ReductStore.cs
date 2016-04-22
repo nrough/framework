@@ -371,7 +371,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion        
 
-        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, decimal[], double[]> recognition, string filePath, string separator = ";")
+        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++ )
@@ -383,7 +383,7 @@ namespace Infovision.Datamining.Roughset
             foreach (IReduct r in this)
             {
                 sb.Append("r").Append(r.Id).Append(separator);
-                double[] errors = recognition(r, r.Weights);
+                double[] errors = recognition(r, r.Weights, decisionIdentificationMethod);
                 for (int i = 0; i < errors.Length; i++)
                 {
                     sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));
@@ -395,7 +395,7 @@ namespace Infovision.Datamining.Roughset
             File.WriteAllText(filePath, sb.ToString());
         }
 
-        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, decimal[], double[]> recognition, string filePath, string separator = ",")
+        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)
@@ -407,8 +407,8 @@ namespace Infovision.Datamining.Roughset
             sb.Append(Environment.NewLine);
 
             foreach (IReduct r in this)
-            {                
-                double[] errors = recognition(r, r.Weights);
+            {
+                double[] errors = recognition(r, r.Weights, decisionIdentificationMethod);
                 for (int i = 0; i < errors.Length; i++)
                 {
                     sb.Append(errors[i].ToString(CultureInfo.GetCultureInfo("en-US")));

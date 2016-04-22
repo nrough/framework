@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 		{
 			filename = @"Data\german.data";			
 			reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajority;
-			filterReductComparer = new ReductLenghtComparer();
+			filterReductComparer = new ReductLengthComparer();
 
 			numberOfAttributes = 20;
 			attributes = new int[numberOfAttributes];
@@ -62,8 +62,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			decisionIdx = 21;
 			idIdx = 0;
 			
-			identificationType = RuleQuality.Confidence;
-			voteType = RuleQuality.SingleVote;
+			identificationType = RuleQuality_DEL.Confidence;
+			voteType = RuleQuality_DEL.SingleVote;
 
 			nominalAttributes = new string[] { "a1", "a3", "a4", "a6", "a7", "a9", "a10", "a12", "a14", "a15", "a17", "a19", "a20", "d" };
 			continuesAttributes = new string[] { "a2", "a5", "a8", "a11", "a13", "a16", "a18" };
@@ -218,13 +218,13 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				//Console.WriteLine(localDataStoreTest.DataStoreInfo.ToStringInfo());
 
 				Args args = new Args();
-				args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+				args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStoreTrain);
 				args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 				args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
 				args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
 				IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-				reductGenerator.Generate();
+				reductGenerator.Run();
 
 				IReductStoreCollection storeCollection = reductGenerator.GetReductStoreCollection();
 				IReductStoreCollection filteredStoreCollection = storeCollection.Filter(numberOfReducts, filterReductComparer);
@@ -256,25 +256,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
 			Console.WriteLine("Reducts: {0} Training: {1} Testing: {2}", numberOfReducts, result.Training.Mean, result.Validation.Mean);
 		}
-
-		public double[] GetDiscernibilityVector(DataStore data, IReduct reduct, double[] weightVector)
-		{
-			double[] dicernVector = new double[data.NumberOfRecords];            
-			foreach (EquivalenceClass eqClass in reduct.EquivalenceClasses)
-			{
-				//TODO Most frequent decision is ok for normal approximate reducts
-				//TODO for weighted approximate reduct we should choose decision with highest object weight sum?
-
-				foreach (int objectIdx in eqClass.GetObjectIndexes(eqClass.MajorDecision))
-				{
-					dicernVector[objectIdx] = weightVector[objectIdx];
-				}
-			}
-
-			return dicernVector;
-		}
-
-		
 
 		[TestCase(7, 0.1)]
 		public void DiscernibilityVectorTest(int numberOfReducts, decimal epsilon)
@@ -323,13 +304,13 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			DataStore localDataStoreTrain = symbols.ToDataStore(null, decisionIdx, idIdx);
 
 			Args args = new Args();
-			args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+			args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStoreTrain);
 			args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 			args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
 			args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
 			IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-			reductGenerator.Generate();
+			reductGenerator.Run();
 
 			IReductStoreCollection localStoreCollection = reductGenerator.GetReductStoreCollection();
 			
@@ -345,22 +326,23 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 				var reduct = localReductStore.GetReduct(i);
 				var measure = new InformationMeasureMajority().Calc(reduct);
 
-				double[] discernVector = roughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct);
+				double[] discernVector = RoughClassifier.GetDiscernibilityVector(localDataStoreTrain, reduct.Weights, reduct, identificationType);
 				for (int j = 0; j < localDataStoreTrain.NumberOfRecords; j++)
 				{
 					long decisionValue = localDataStoreTrain.GetDecisionValue(j);
 					var dataVector = localDataStoreTrain.GetFieldValues(j, reduct.Attributes);
-
+					
 					EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
 					EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
-					
-					long mostFrequentDecisionValue = eqClass.MajorDecision;
+
+                    var internalRecord = localDataStoreTrain.GetRecordByIndex(j);
+                    long mostFrequentDecisionValue = RoughClassifier.IdentifyDecision(internalRecord, reduct, identificationType).Item1;
 
 					if (decisionValue == mostFrequentDecisionValue)
 					{
 						if(eqClass.GetNumberOfObjectsWithDecision(0) != eqClass.GetNumberOfObjectsWithDecision(1))
 							if (System.Math.Round(discernVector[j], 15) <= 0)
-							    Assert.Greater(System.Math.Round(discernVector[j], 15), 0);                                                   
+								Assert.Greater(System.Math.Round(discernVector[j], 15), 0);                                                   
 					}
 					else
 					{

@@ -66,8 +66,8 @@ namespace Infovision.Datamining.Roughset
 
             this.ReductPool = reductStore;                        
         }
-                
-        public override void Generate()
+
+        protected override void Generate()
         {            
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGeneratorReverse(dataStore);
         }
 

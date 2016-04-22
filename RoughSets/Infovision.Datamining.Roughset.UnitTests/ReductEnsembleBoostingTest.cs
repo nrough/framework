@@ -33,18 +33,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
             Args inner = new Args();
-            inner.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            inner.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             inner.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             inner.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, 1);
             inner.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
             inner.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
 
             Dictionary<string, object> argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -53,11 +53,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -66,11 +66,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -80,11 +80,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);                                    
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -93,11 +93,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -107,10 +107,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -119,10 +119,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -131,10 +131,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -143,10 +143,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -155,10 +155,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -167,10 +167,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -179,10 +179,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -191,10 +191,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -203,11 +203,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -216,11 +216,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.Confidence);
+            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.SingleVote);
             argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
             argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
             argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -239,9 +239,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 parms.SetParameter(kvp.Key, kvp.Value);            
 
             ReductEnsembleBoostingGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingGenerator;
-            reductGenerator.Generate();
+            reductGenerator.Run();
 
-            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(),
@@ -271,8 +271,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
             int numberOfPermutations = 100;
         
-            RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
-            RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+            RuleQualityFunction identificationFunction = RuleQuality_DEL.CoverageW;
+            RuleQualityFunction voteFunction = RuleQuality_DEL.CoverageW;
             WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
             string innerFactoryKey = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;        
@@ -295,14 +295,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
 
             Args innerArgs = new Args();
-            innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             args.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
@@ -318,7 +318,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
             
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
-            generator.Generate();
+            generator.Run();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 
             Assert.NotNull(reductStoreCollection);
@@ -358,11 +358,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
                     //args.SetParameter(ReductGeneratorParamHelper.MinReductLength, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 10);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
@@ -387,7 +387,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
@@ -396,7 +396,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
                     ReductEnsembleBoostingGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingGenerator;
-                    reductGenerator.Generate();
+                    reductGenerator.Run();
 
                     IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection();
 
@@ -441,8 +441,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             //Console.WriteLine("GenerateExperimentBoostingStandard");
 
-            //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            //DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
+            //TrainData trnData = TrainData.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            //TrainData tstData = TrainData.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
 
             DataStore trnData = DataStore.Load(@"Data\optdigits.trn", FileFormat.Rses1);
             DataStore tstData = DataStore.Load(@"Data\optdigits.tst", FileFormat.Rses1, trnData.DataStoreInfo);
@@ -478,10 +478,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     
                     WeightGenerator weightGenerator;
@@ -504,7 +504,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
@@ -513,7 +513,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
                     
                     ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
-                    reductGenerator.Generate();
+                    reductGenerator.Run();
 
                     RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(),
@@ -575,14 +575,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int t = 0; t < 2; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
                     parms.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
                     parms.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.MinReductLength, 2);
                     //args.SetParameter(ReductGeneratorParamHelper.MaxReductLength, 5);                    
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
@@ -591,7 +591,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.AgregateFunction, AgregateFunction.Max);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(trnData));
@@ -600,7 +600,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
                     
                     ReductEnsembleBoostingWithDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithDiversityGenerator;
-                    reductGenerator.Generate();
+                    reductGenerator.Run();
 
                     RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(), 
@@ -665,11 +665,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);                                      
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);                                      
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);                    
 
@@ -693,7 +693,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
@@ -702,7 +702,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
                     
                     ReductEnsembleBoostingWithAttributeDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithAttributeDiversityGenerator;
-                    reductGenerator.Generate();
+                    reductGenerator.Run();
 
                     RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(),

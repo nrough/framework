@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
             return new BireductStore(initialSize);
         }      
         
-        public override void Generate()
+        protected override void Generate()
         {
             IReductStore reductStore = this.CreateReductStore();
                         
@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
                 return new PermutationGeneratorFieldObject(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset
 
         public override IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
                 return new PermutationGeneratorFieldObjectRelative(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));

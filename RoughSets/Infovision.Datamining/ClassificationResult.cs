@@ -246,7 +246,7 @@ namespace Infovision.Datamining
         {
             get { return qualityRatio; }
             set { qualityRatio = value; }
-        }
+        }        
 
         public double Duration { get; set; }
 

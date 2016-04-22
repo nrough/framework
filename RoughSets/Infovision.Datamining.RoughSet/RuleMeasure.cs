@@ -7,7 +7,7 @@ namespace Infovision.Datamining.Roughset
 {
     public delegate decimal RuleQualityFunction(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
     
-    public static class RuleQuality
+    public static class RuleQuality_DEL
     {
         //P(X,E)
         public static decimal Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
         //Pw(X,E)
         public static decimal SupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            return eqClass != null ? eqClass.GetWeight(decisionValue) : 0;            
+            return eqClass != null ? eqClass.GetDecisionWeigth(decisionValue) : 0;            
         }
 
         // P(X|E) = P(X,E)/P(E)
@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (eqClass != null)
             {
-                decimal weightSum_XE = eqClass.GetWeight(decisionValue);
+                decimal weightSum_XE = eqClass.GetDecisionWeigth(decisionValue);
                 decimal weightSum_E = eqClass.WeightSum;
                 return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
             }
@@ -56,41 +56,17 @@ namespace Infovision.Datamining.Roughset
 
         //Pw(E|X) = Pw(X,E)/Pw(X)
         public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {            
-            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_X = 0;
+        {
+            if (eqClass == null)
+                return 0;
 
-            if (weightSum_XE != 0)
-            {                
-                //foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                //    weightSum_X += reduct.Weights[objectIndex];
+            decimal weightSum_XE = eqClass.GetDecisionWeigth(decisionValue);
+            if (weightSum_XE == 0)
+                return 0;
 
-                ParallelOptions options = new ParallelOptions()
-                {
-                    MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
-                };
-#if DEBUG
-                options.MaxDegreeOfParallelism = 1;
-#endif
-
-                object tmp = new object();
-                //weightSum_X = 0;
-                Parallel.ForEach(
-                    reduct.DataStore.GetObjectIndexes(decisionValue),
-                    options,
-                    () => Decimal.Zero,
-                    (objectIndex, state, partialResult) =>
-                    {
-                        return reduct.Weights[objectIndex] + partialResult;
-                    },
-                    (localPartialSum) =>
-                    {                                                
-                        lock (tmp)
-                        {
-                            weightSum_X += localPartialSum;
-                        }
-                    });
-            }
+            decimal weightSum_X = 0;            
+            foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                weightSum_X += reduct.Weights[objectIndex];                
 
             return (weightSum_X != 0) ? weightSum_XE / weightSum_X : 0;
         }
@@ -121,15 +97,19 @@ namespace Infovision.Datamining.Roughset
             if (eqClass == null)
                 return 0;
 
-            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
+            decimal weightSum_XE = eqClass.GetDecisionWeigth(decisionValue);
             decimal weightSum_E = eqClass.WeightSum;
             decimal weightSum_X = 0;
 
-            if (weightSum_E != 0)
-                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                    weightSum_X += reduct.Weights[objectIndex];
+            if (weightSum_E == Decimal.Zero)
+                return 0;
 
-            return (weightSum_E * weightSum_X) != 0 ? weightSum_XE / (weightSum_E * weightSum_X) : 0;
+            //TODO DataStore -> ObjectSet 
+            // Not correct way. For bireducts and intersecting reducts we need to base all calculation on Eq Class Collection
+            foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
+                weightSum_X += reduct.Weights[objectIndex];
+
+            return (weightSum_E * weightSum_X) != 0 ? weightSum_XE / (weightSum_E * weightSum_X) : 0;            
         }
 
         //P(E)
@@ -185,268 +165,151 @@ namespace Infovision.Datamining.Roughset
             return Decimal.One;
         }
     }
-    
-    
-    public interface IRuleMeasure
-    {
-        decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass);        
-        string Description();
-    }
 
-    [Serializable]
-    public class RuleMeasureSupport : IRuleMeasure
+    public static class RuleQuality
     {
         //P(X,E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal Support2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass != null
-                && reduct.ObjectSetInfo.NumberOfRecords > 0)
-            {
-                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
-            }
+            int count_U = reduct.EquivalenceClasses.CountUniverse();
+            if (eqClass != null && count_U > 0)
+                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_U;
             return 0;
         }
 
-        public string Description()
-        {
-            return "#SUPPORT";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureWeightSupport : IRuleMeasure
-    {
         //Pw(X,E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal SupportW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-            return eqClass.GetWeight(decisionValue);            
+            return eqClass != null ? eqClass.GetDecisionWeigth(decisionValue) : 0;
         }
 
-        public string Description()
-        {
-            return "#SUPPORT_WEIGHT";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureConfidence : IRuleMeasure
-    {
         // P(X|E) = P(X,E)/P(E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal Confidence2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass != null
-                && eqClass.NumberOfObjects > 0)
-            {
+            if (eqClass != null && eqClass.NumberOfObjects > 0)
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects;
-            }
-
             return 0;
         }
 
-        public string Description()
-        {
-            return "#CONFIDENCE";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureWeightConfidence : IRuleMeasure
-    {
         // Pw(X|E) = Pw(X,E)/Pw(E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal ConfidenceW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_E = eqClass.WeightSum;
-            return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
+            if (eqClass != null)
+            {
+                decimal weightSum_XE = eqClass.GetDecisionWeigth(decisionValue);
+                decimal weightSum_E = eqClass.WeightSum;
+                return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
+            }
+            return 0;
         }
 
-        public string Description()
-        {
-            return "#WEIGHT_CONFIDENCE";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureCoverage : IRuleMeasure
-    {
         //P(E|X) = P(X,E)/P(X)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal Coverage2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            if (eqClass != null
-                && reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0)
+            int count_X = reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue);
+            if (eqClass != null && count_X > 0)
             {
-                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue)
-                     / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue);
+                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_X;
             }
-
             return 0;
         }
 
-        public string Description()
-        {
-            return "#COVERAGE";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureWeightCoverage : IRuleMeasure
-    {
         //Pw(E|X) = Pw(X,E)/Pw(X)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal CoverageW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            decimal weightSum_XE = eqClass.GetWeight(decisionValue);                        
-            decimal weightSum_X = 0;
-
-            if (weightSum_XE != 0)
-                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                    weightSum_X += reduct.Weights[objectIndex];
-
-            return (weightSum_X != 0) ? weightSum_XE / weightSum_X : 0;
+            if (eqClass == null) return 0;
+            decimal weight_XE = eqClass.GetDecisionWeigth(decisionValue);
+            if (weight_XE == 0) return 0;
+            decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            return (weight_X != 0) ? weight_XE / weight_X : 0;
         }
 
-        public string Description()
-        {
-            return "#WEIGHT_COVERAGE";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureRatio : IRuleMeasure
-    {
         //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal Ratio2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            decimal result = 0;
-            if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0
-                && eqClass.NumberOfObjects > 0
-                && reduct.ObjectSetInfo.NumberOfRecords > 0)
-            {
-                result = ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects)
-                     / ((decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.ObjectSetInfo.NumberOfRecords);
-
-                return result;
-            }
-
-            return 0;
+            if (eqClass == null) return 0;
+            decimal count_XE = eqClass.GetNumberOfObjectsWithDecision(decisionValue);
+            decimal count_E = eqClass.NumberOfObjects;
+            if (count_E == 0) return 0;
+            decimal count_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
         }
 
-        public string Description()
-        {
-            return "#RATIO";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureWeightRatio : IRuleMeasure
-    {
         //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal RatioW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            decimal weightSum_XE = eqClass.GetWeight(decisionValue);
-            decimal weightSum_E = eqClass.WeightSum;
-            decimal weightSum_X = 0;
-            
-            if (weightSum_E != 0)
-                foreach (int objectIndex in reduct.DataStore.GetObjectIndexes(decisionValue))
-                    weightSum_X += reduct.Weights[objectIndex];
-
-            return (weightSum_E * weightSum_X) != 0 ? weightSum_XE / (weightSum_E * weightSum_X) : 0;
+            if (eqClass == null) return 0;
+            decimal weight_XE = eqClass.GetDecisionWeigth(decisionValue);
+            decimal weight_E = eqClass.WeightSum;
+            if (weight_E == 0) return 0;
+            decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
         }
 
-        public string Description()
-        {
-            return "#WEIGHT_RATIO";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureStrenght : IRuleMeasure
-    {
         //P(E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal Strength2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
-            if (reduct.ObjectSetInfo.NumberOfRecords > 0)
-                return (decimal)eqClass.NumberOfObjects / (decimal)reduct.ObjectSetInfo.NumberOfRecords;
+            if (eqClass == null) return 0;
+            int count_U = reduct.EquivalenceClasses.CountUniverse();
+            if (count_U > 0)
+                return (decimal)eqClass.NumberOfObjects / (decimal)count_U;
             return 0;
         }
 
-        public string Description()
-        {
-            return "#STRENGH";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureWeightStrenght : IRuleMeasure
-    {
         //Pw(E)
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal StrengthW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-            decimal weightSum_E = eqClass.WeightSum;                        
-            return weightSum_E;
+            if (eqClass == null) return 0;
+            return eqClass.WeightSum;            
         }
 
-        public string Description()
-        {
-            return "#WEIGHT_STRENGH";
-        }
-    }
-
-    [Serializable]
-    public class RuleMeasureConfidenceRelative : IRuleMeasure
-    {
         //P*(X|E) = (|X & E|/|X|) / (sum_{i} |X_{i} & E| / |X_{i}| )
-        public virtual decimal Calc(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal ConfidenceRelative2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            if (eqClass == null)
-                return 0;
-
+            if (eqClass == null) return 0;
             decimal sum = 0;
-            foreach (long decision in reduct.ObjectSetInfo.GetDecisionValues())
+            foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues())
             {
-                if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision) > 0)
-                {
-                    sum += (decimal)eqClass.GetNumberOfObjectsWithDecision(decision)
-                            / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decision);
-                }
+                int localCount_X = reduct.EquivalenceClasses.CountDecision(dec);
+                if (localCount_X > 0)
+                    sum += ((decimal)eqClass.GetNumberOfObjectsWithDecision(dec) / (decimal)localCount_X);
             }
 
-            if (reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue) > 0 
-                && sum > 0)
+            if (sum > 0)
             {
-                return ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue)
-                        / (decimal)reduct.ObjectSetInfo.NumberOfObjectsWithDecision(decisionValue))
-                        / sum;
+                int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
+                if (count_X > 0)
+                    return ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_X) / sum;
             }
 
             return 0;
         }
 
-        public string Description()
+        public static decimal ConfidenceRelativeW2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            return "#CONFIDENCE_RELATIVE";
+            if (eqClass == null) return 0;
+            decimal sum = 0;
+            foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues()) //TODO should we consider all decision in case of intersections
+            {
+                decimal localWeight_X = reduct.EquivalenceClasses.CountWeightDecision(dec);
+                if (localWeight_X > 0)
+                    sum += (eqClass.GetDecisionWeigth(dec) / localWeight_X);
+            }
+
+            if (sum > 0)
+            {
+                decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+                if (weight_X > 0)
+                    return (eqClass.GetDecisionWeigth(decisionValue) / weight_X) / sum;
+            }
+
+            return 0;
+        }
+
+        //Used for rule voting, returns one
+        public static decimal SingleVote2(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            return Decimal.One;
         }
     }
 }

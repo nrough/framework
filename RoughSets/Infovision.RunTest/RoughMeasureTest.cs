@@ -222,7 +222,7 @@ namespace Infovision.RunTest
                 Args parms = new Args(
                     new string[] { 
                         ReductGeneratorParamHelper.FactoryKey, 
-                        ReductGeneratorParamHelper.DataStore, 
+                        ReductGeneratorParamHelper.TrainData, 
                         ReductGeneratorParamHelper.Epsilon }, 
                     new object[] { 
                         reductFactoryKey, 
@@ -246,14 +246,14 @@ namespace Infovision.RunTest
             if (this.CheckRetrain())
             {
                 Args localArgs = new Args();
-                localArgs.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+                localArgs.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStoreTrain);
                 localArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 localArgs.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
                 localArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
-                localArgs.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStoreTrain);
+                localArgs.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStoreTrain);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-                reductGenerator.Generate();
+                reductGenerator.Run();
 
                 localReductStoreCollection = reductGenerator.GetReductStoreCollection();
 
@@ -363,7 +363,7 @@ namespace Infovision.RunTest
 
         protected void SetParameters(Args args)
         {
-            dataStoreTrain = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            dataStoreTrain = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             dataStoreTest = (DataStore)args.GetParameter("DataStoreTest");
             numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
             numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);

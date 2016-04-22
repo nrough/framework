@@ -61,14 +61,14 @@ namespace Infovision.Data.UnitTests
                 //test.WriteToCSVFileExt(String.Format("disc_german_orig_{0}.tst", i), " ");
 
                 Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
                 args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
                 PermutationCollection permutations = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
                 args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-                reductGenerator.Generate();
+                reductGenerator.Run();
 
                 IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection();
                 Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
@@ -76,8 +76,8 @@ namespace Infovision.Data.UnitTests
 
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQuality_DEL.ConfidenceW,
+                    RuleQuality_DEL.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 ClassificationResult classificationResult = classifier.Classify(test);
@@ -176,13 +176,13 @@ namespace Infovision.Data.UnitTests
                 }
                 
                 args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+                args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
                 args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
                 args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 reductGenerator = ReductFactory.GetReductGenerator(args);
-                reductGenerator.Generate();
+                reductGenerator.Run();
 
                 reductStoreCollection = reductGenerator.GetReductStoreCollection();
                 Console.WriteLine("Average reduct length: {0}", reductStoreCollection.GetAvgMeasure(new ReductMeasureLength()));
@@ -195,8 +195,8 @@ namespace Infovision.Data.UnitTests
                 
                 classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQuality_DEL.ConfidenceW,
+                    RuleQuality_DEL.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 classificationResult = classifier.Classify(test);

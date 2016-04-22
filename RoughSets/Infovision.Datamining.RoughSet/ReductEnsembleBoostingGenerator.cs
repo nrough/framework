@@ -45,8 +45,8 @@ namespace Infovision.Datamining.Roughset
 			: base()
 		{
 			this.Threshold = 0.5;
-			this.IdentyficationType = RuleQuality.ConfidenceW;
-			this.VoteType = RuleQuality.CoverageW;
+			this.IdentyficationType = RuleQuality_DEL.ConfidenceW;
+			this.VoteType = RuleQuality_DEL.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -68,8 +68,8 @@ namespace Infovision.Datamining.Roughset
 			base.SetDefaultParameters();
 
 			this.Threshold = 0.5;
-			this.IdentyficationType = RuleQuality.ConfidenceW;
-			this.VoteType = RuleQuality.CoverageW;
+			this.IdentyficationType = RuleQuality_DEL.ConfidenceW;
+			this.VoteType = RuleQuality_DEL.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -169,7 +169,7 @@ namespace Infovision.Datamining.Roughset
 				this.classificationCosts[i] = 1.0 / (decDistribution[i - 1] / decDistribution[0]);
 		}
 
-		public override void Generate()
+		protected override void Generate()
 		{						
 			this.Models = new ReductStoreCollection(this.MaxIterations);
 
@@ -272,7 +272,7 @@ namespace Infovision.Datamining.Roughset
 				result = null;
 				
 				//Normalize object weights
-				//Parallel.For(0, this.DataStore.NumberOfRecords, i =>
+				//Parallel.For(0, this.TrainData.NumberOfRecords, i =>
 				for(int i=0; i<this.DataStore.NumberOfRecords; i++)
 				{
 					weights[i] /= (decimal)sum;
@@ -417,7 +417,7 @@ namespace Infovision.Datamining.Roughset
 			}
 
 			IReductGenerator generator = ReductFactory.GetReductGenerator(localParameters);
-			generator.Generate();
+			generator.Run();
 
 			return generator.GetReductStoreCollection();
 		}
@@ -454,10 +454,10 @@ namespace Infovision.Datamining.Roughset
 			throw new NotImplementedException("ReductEnsembleBoostingGenerator.CreateReductObject(...) is not implemented");
 		}
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
-        {
-            return this.CreateReductObject(fieldIds, epsilon, id);
-        }
+		protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+		{
+			return this.CreateReductObject(fieldIds, epsilon, id);
+		}
 
 		#region Delegate implementations        
 						
@@ -529,7 +529,7 @@ namespace Infovision.Datamining.Roughset
 
 		public virtual IPermutationGenerator GetPermutationGenerator(Args args)
 		{
-			DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+			DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 			return new PermutationGenerator(dataStore);
 		}
 	}

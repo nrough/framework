@@ -111,7 +111,7 @@ namespace Infovision.Datamining.Roughset
             return new InformationMeasureWeights().Calc(reduct);
         }
 
-        public override void Generate()
+        protected override void Generate()
         {
             ParallelOptions options = new ParallelOptions()
             {
@@ -144,7 +144,8 @@ namespace Infovision.Datamining.Roughset
         {            
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
 
-            eqClasses.EqWeightSum = this.DataSetQuality;
+            eqClasses.CountWeightObjects = this.DataSetQuality;
+            eqClasses.CountObjects = this.DataStore.NumberOfRecords;
             
             this.KeepMajorDecisions(eqClasses, epsilon);
 
@@ -175,20 +176,22 @@ namespace Infovision.Datamining.Roughset
             return this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), eqClasses);
         }
 
-        protected virtual void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
-        {
-            foreach (EquivalenceClass eq in eqClasses)
-                eq.KeepMajorDecisions(epsilon);
-        }
-
         public virtual IReduct CalculateReduct(int[] attributes, IReductStore reductStore = null)
         {
             return this.CreateReduct(attributes, this.Epsilon, this.WeightGenerator.Weights, reductStore);
         }
 
+        protected virtual void KeepMajorDecisions(EquivalenceClassCollection eqClasses, decimal epsilon = Decimal.Zero)
+        {
+            foreach (EquivalenceClass eq in eqClasses)
+                eq.KeepMajorDecisions(epsilon);
+        }
+        
         protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx, length));
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(eqClasses.Attributes.RemoveAt(attributeIdx, length), this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
+            newEqClasses.CountObjects = eqClasses.CountObjects;
 
             foreach (EquivalenceClass eq in eqClasses)
             {
@@ -260,7 +263,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGenerator(dataStore);
         }
     }
@@ -274,7 +277,7 @@ namespace Infovision.Datamining.Roughset
         protected decimal ObjectWeightSum { get; set; }
 
 
-        public override void Generate()
+        protected override void Generate()
         {
             ParallelOptions options = new ParallelOptions();
             options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2);
@@ -287,7 +290,7 @@ namespace Infovision.Datamining.Roughset
             
             if (this.UseExceptionRules)
             {
-                this.ReductStoreCollection = new ReductStoreCollection(this.Permutations.Count);                
+                this.ReductStoreCollection = new ReductStoreCollection(this.Permutations.Count);
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {
                     int cut = this.MaxReductLength > 0
@@ -306,7 +309,7 @@ namespace Infovision.Datamining.Roughset
             else
             {
                 this.ReductStoreCollection = new ReductStoreCollection(1);
-                ReductStore localReductPool = new ReductStore(this.Permutations.Count);                
+                ReductStore localReductPool = new ReductStore(this.Permutations.Count);
                 Parallel.ForEach(this.Permutations, options, permutation =>
                 {
                     int cut = this.MinReductLength > 0
@@ -318,7 +321,7 @@ namespace Infovision.Datamining.Roughset
                         attributes[i] = permutation[i];
 
                     IReduct r = this.CalculateReduct(attributes, localReductPool);
-                    localReductPool.DoAddReduct(r);                    
+                    localReductPool.DoAddReduct(r);
                 });
 
                 this.ReductStoreCollection.AddStore(localReductPool);
@@ -332,7 +335,8 @@ namespace Infovision.Datamining.Roughset
                     ? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, true)
                     : EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
 
-            eqClasses.EqWeightSum = this.ObjectWeightSum;
+            eqClasses.CountWeightObjects = this.ObjectWeightSum;
+            eqClasses.CountObjects = this.DataStore.NumberOfRecords;
 
             this.KeepMajorDecisions(eqClasses, Decimal.Zero);
 
@@ -366,8 +370,10 @@ namespace Infovision.Datamining.Roughset
         protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);           
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes);
-            newEqClasses.EqWeightSum = eqClasses.EqWeightSum;
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
+            newEqClasses.CountObjects = eqClasses.CountObjects;
+
             EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
             ReductStore localReductStore = new ReductStore();
             
@@ -388,12 +394,14 @@ namespace Infovision.Datamining.Roughset
                     {
                         newEqClass.DecisionSet = newDecisionSet;
                         newEqClass.WeightSum += eq.WeightSum;
-                        newEqClass.AddObjectInstances(eq.Instances);                                                
+                        newEqClass.AddObjectInstances(eq.Instances);
                     }
                     else
                     {
-                        newEqClasses.EqWeightSum -= eq.WeightSum;
-                        if (Decimal.Round(newEqClasses.EqWeightSum, 17) < this.WeightDropLimit)
+                        newEqClasses.CountWeightObjects -= eq.WeightSum;
+                        newEqClasses.CountObjects -= eq.NumberOfObjects;
+
+                        if (Decimal.Round(newEqClasses.CountWeightObjects, 17) < this.WeightDropLimit)
                             return eqClasses;
 
                         if (this.UseExceptionRules && reductStore != null)
@@ -407,7 +415,7 @@ namespace Infovision.Datamining.Roughset
                             exceptionReduct.IsException = this.UseExceptionRules;
                             exceptionReduct.IsGap = this.ExceptionRulesAsGaps;
 
-                            localReductStore.AddReduct(exceptionReduct);                            
+                            localReductStore.AddReduct(exceptionReduct);
                         }
                     }
                 }
@@ -415,10 +423,10 @@ namespace Infovision.Datamining.Roughset
                 {
                     bool localUseStat = (this.UseExceptionRules && reductStore != null);
                     
-                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);                    
-                    newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);                    
+                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
+                    newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
-                    newEqClass.WeightSum += eq.WeightSum;                    
+                    newEqClass.WeightSum += eq.WeightSum;
 
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
@@ -458,7 +466,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGenerator(dataStore);
         }
     }

@@ -17,17 +17,17 @@ namespace Infovision.Datamining.Roughset
         #region Members
                 
         private long[] dataVector;
-        private Dictionary<int, decimal> instances;  //map: objectIdx -> weight 
+        private Dictionary<int, decimal> instances;  //map: objectIdx -> objectWeight 
         private decimal totalWeightSum; //sum of object weights belonging to this class
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         private DataStore dataStore; //reference to data
         private readonly object mutex = new object();
 
         //TODO to delete
-        private Dictionary<long, HashSet<int>> decisionObjectIndexes; //map: decision -> set of objects with decision
-        private Dictionary<long, decimal> decisionWeigthSums; //map decision -> weight        
-        private long majorDecision; //major decision within this class 
-        private decimal majorDecisionWeightSum; //sum of object weights with major decision 
+        private Dictionary<long, HashSet<int>> decisionObjectIndexes; //map: decisionInternalValue -> set of objects with decisionInternalValue
+        private Dictionary<long, decimal> decisionWeigthSums; //map decisionInternalValue -> objectWeight        
+        private long majorDecision; //major decisionInternalValue within this class 
+        private decimal majorDecisionWeightSum; //sum of object weights with major decisionInternalValue 
         private bool isStatCalculated; //flags if statistics have been calculated
 
         #endregion
@@ -82,12 +82,7 @@ namespace Infovision.Datamining.Roughset
 
         public PascalSet<long> DecisionSet
         {
-            get
-            {
-                //CalcStatistics();
-                return decisionSet;
-            }
-
+            get { return decisionSet; }
             internal set { this.decisionSet = value; }
         }
 
@@ -151,10 +146,10 @@ namespace Infovision.Datamining.Roughset
         #region Methods        
 
         /// <summary>
-        /// Returns IEnumerable collection of object indexes having specified decision value
+        /// Returns IEnumerable collection of object indexes having specified decisionInternalValue value
         /// </summary>
-        /// <param name="decisionValue">internal value of object decision attribute</param>
-        /// <returns>Collection of objects having specified decision</returns>
+        /// <param name="decisionValue">internal value of object decisionInternalValue attribute</param>
+        /// <returns>Collection of objects having specified decisionInternalValue</returns>
         public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
             HashSet<int> localObjectIndexes;
@@ -165,11 +160,12 @@ namespace Infovision.Datamining.Roughset
         
         public decimal GetDecisionWeigth(long decision)
         {
-            decimal result = Decimal.Zero;
+            CalcStatistics();
+            decimal result = 0;
             if (this.decisionWeigthSums.TryGetValue(decision, out result))
                 return result;
-            return Decimal.Zero;
-        }
+            return 0;
+        }        
 
         protected void DoCalcStatistics()
         {
@@ -331,28 +327,7 @@ namespace Infovision.Datamining.Roughset
                 if (!this.isStatCalculated && this.UpdateStat)
                     this.DoCalcStatistics();
             }
-        }
-
-        public void RemoveObjectsWithMinorDecisions()
-        {
-            lock (mutex)
-            {
-                DoCalcStatistics();
-
-                foreach (KeyValuePair<long, decimal> kvp in this.decisionWeigthSums)
-                {
-                    if (Decimal.Round(kvp.Value, 17) != Decimal.Round(this.majorDecisionWeightSum, 17))
-                    {
-                        foreach (int objectIdx in decisionObjectIndexes[kvp.Key])
-                            this.instances.Remove(objectIdx);
-
-                        decisionObjectIndexes.Remove(kvp.Key);
-                    }
-                }
-
-                this.DoCalcStatistics();
-            }
-        }
+        }        
 
         public virtual void KeepMajorDecisions(decimal epsilon)
         {
@@ -407,17 +382,7 @@ namespace Infovision.Datamining.Roughset
 
                 this.totalWeightSum -= totalWeightToRemove;
             }
-        }        
-        
-        public decimal GetWeight(long decision)
-        {
-            CalcStatistics();            
-            
-            decimal ret = 0;
-            if (this.decisionWeigthSums.TryGetValue(decision, out ret))
-                return ret;
-            return 0;
-        }
+        }                
 
         #region ICloneable Members
         /// <summary>
@@ -439,7 +404,7 @@ namespace Infovision.Datamining.Roughset
             stringBuilder.Append(Environment.NewLine);
             stringBuilder.AppendFormat("Number of decisions: {0}", this.NumberOfDecisions);
             stringBuilder.Append(Environment.NewLine);
-            stringBuilder.AppendFormat("Major decision: {0}", this.DecisionSet.ToString());
+            stringBuilder.AppendFormat("Major decisionInternalValue: {0}", this.DecisionSet.ToString());
             stringBuilder.Append(Environment.NewLine);
 
             return stringBuilder.ToString();

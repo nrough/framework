@@ -238,7 +238,7 @@ namespace Infovision.Datamining.Roughset
             {
                 //default case
                 //case "ReductMeasureLength":
-                //    comparer = new ReductLenghtComparer();
+                //    comparer = new ReductLengthComparer();
                 //    break;
 
                 case "ReductMeasureNumberOfPartitions":
@@ -254,7 +254,7 @@ namespace Infovision.Datamining.Roughset
                     break;
 
                 default:
-                    comparer = new ReductLenghtComparer();
+                    comparer = new ReductLengthComparer();
                     break;
             }
 

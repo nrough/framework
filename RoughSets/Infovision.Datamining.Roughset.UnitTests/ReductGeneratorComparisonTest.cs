@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             argSet.Add("_TestData", testData);
 
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
             argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
             argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
             argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
             argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>) ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
             argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 
@@ -86,7 +86,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetComparisonTestArgs")]
         public void ComparisonTest(Dictionary<string, object> args)
         {
-            DataStore data = (DataStore)args[ReductGeneratorParamHelper.DataStore];
+            DataStore data = (DataStore)args[ReductGeneratorParamHelper.TrainData];
             DataStore testData = (DataStore)args["_TestData"];
             int numberOfClusters = (int)args[ReductGeneratorParamHelper.NumberOfClusters];
 
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
             //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
                      
-            Func<IReduct, decimal[], double[]> recognition = (Func<IReduct, decimal[], double[]>) args[ReductGeneratorParamHelper.ReconWeights];
+            Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition = (Func<IReduct, decimal[], RuleQualityFunction, double[]>) args[ReductGeneratorParamHelper.ReconWeights];
             //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
             
             Args parms = new Args();
@@ -106,7 +106,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(kvp.Key, kvp.Value);           
             
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
-            reductGenerator.Generate();
+            reductGenerator.Run();
             IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(numberOfClusters);
 
             numberOfClusters = System.Math.Min(numberOfClusters, reductGenerator.ReductPool.Count());
@@ -116,8 +116,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             if (reductPool != null)
             {
-                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv");
-                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv");
+                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv", RuleQuality_DEL.Confidence);
+                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv", RuleQuality_DEL.Confidence);
             }
 
             //Console.WriteLine("------------------------ Reduct Pool ------------------------");
@@ -142,8 +142,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 
                 RoughClassifier rc = new RoughClassifier(
                     localStoreCollection,
-                    RuleQuality.Confidence, 
-                    RuleQuality.SingleVote, 
+                    RuleQuality_DEL.Confidence, 
+                    RuleQuality_DEL.SingleVote, 
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 
@@ -177,8 +177,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 RoughClassifier rc = new RoughClassifier(
                     tmpReductStoreCollection, 
-                    RuleQuality.ConfidenceW, 
-                    RuleQuality.ConfidenceW, 
+                    RuleQuality_DEL.ConfidenceW, 
+                    RuleQuality_DEL.ConfidenceW, 
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 

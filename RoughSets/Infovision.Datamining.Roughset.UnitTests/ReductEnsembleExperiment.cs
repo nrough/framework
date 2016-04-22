@@ -23,49 +23,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int seed = Guid.NewGuid().GetHashCode();
             //Console.WriteLine("class ReductEnsembleExperiment Seed: {0}", seed);
             RandomSingleton.Seed = seed;
-        }
-        
-        [Test, TestCaseSource("GetDataFiles")]
-        public void RunExperimentIncremental(KeyValuePair<string, BenchmarkData> kvp)
-        {
-            //Console.WriteLine("Data: {0}", kvp.Key);
-
-            int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
-            data.Name = kvp.Key;
-
-            int minEpsilon = 0;
-            int maxEpsilon = 0;
-            int reductSize = data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2;            
-
-            PermutationGenerator permGenerator = new PermutationGenerator(data);
-
-            for (int testNo = 1; testNo <= 1; testNo++)
-            {
-                PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
-
-                decimal[] epsilons = new decimal[numberOfPermutations];
-                for (int i = 0; i < numberOfPermutations; i++)
-                    epsilons[i] = (decimal)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
-
-                Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleStream);
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-                args.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Hamming);
-                args.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRandom(data));
-                //args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trainData));
-                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
-                args.SetParameter(ReductGeneratorParamHelper.ReductSize, reductSize);
-                args.SetParameter(ReductGeneratorParamHelper.MinimumNumberOfInstances, 10);
-
-                ReductEnsembleStreamGenerator reductGenerator = ReductFactory.GetReductGenerator(args) as ReductEnsembleStreamGenerator;
-                reductGenerator.Generate();
-
-            } //testData No
-        }
+        }        
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
@@ -84,8 +42,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);            
 
-            RuleQualityFunction identificationType = RuleQuality.ConfidenceW;
-            RuleQualityFunction voteType = RuleQuality.ConfidenceW;
+            RuleQualityFunction identificationType = RuleQuality_DEL.ConfidenceW;
+            RuleQualityFunction voteType = RuleQuality_DEL.ConfidenceW;
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
@@ -105,16 +63,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Args args = new Args();
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
-                args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+                args.SetParameter(ReductGeneratorParamHelper.TrainData, data);
                 args.SetParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
                 args.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
                 args.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-                reductGenerator.Generate();
+                reductGenerator.Run();
 
                 int poolSize = reductGenerator.ReductPool.Count();
                 for (int clusterNo = 1; clusterNo <= poolSize; clusterNo += 2)
@@ -286,8 +244,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append("DiscernibiltyVector").Append(separator)
                     .Append("Accuracy").Append(separator)
                     .Append("BalancedAccuracy").Append(separator)
-                    .Append("Coverage").Append(separator)
-                    .Append("Confidence").Append(separator)
+                    .Append("Coverage2").Append(separator)
+                    .Append("Confidence2").Append(separator)
                     .Append("Classified").Append(separator)
                     .Append("Misclassified").Append(separator)
                     .Append("Unclassified").Append(separator)

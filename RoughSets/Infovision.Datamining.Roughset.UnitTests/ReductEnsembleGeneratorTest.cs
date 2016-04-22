@@ -44,24 +44,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 epsilons[i] = (decimal)(RandomSingleton.Random.Next(36) / 100.0);
             }
 
-            //Func<IReduct, double[], double[]> reconWeights = ReductEnsembleGenerator.GetDefaultReconWeights;
-            Func<IReduct, decimal[], double[]> reconWeights = (r, w) =>
-                {
-                    double[] result = new double[w.Length];
-                    //Array.Copy(w, result, w.Length);
-                    for (int i = 0; i < w.Length; i++)
-                        result[i] = (double)w[i];
-                    foreach (EquivalenceClass e in r.EquivalenceClasses)
-                        foreach (int i in e.GetObjectIndexes(e.MajorDecision))
-                            result[i] *= -1;
-
-                    return result;
-                };
-
+            Func<IReduct, decimal[], RuleQualityFunction, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.DataStore, data);
+            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);            
             argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
@@ -92,10 +79,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }                                 
                                                             
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
-            reductGenerator.Generate();
+            reductGenerator.Run();
             IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args[ReductGeneratorParamHelper.NumberOfClusters]);
 
-            DataStore data = (DataStore) parms.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore data = (DataStore) parms.GetParameter(ReductGeneratorParamHelper.TrainData);
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
 

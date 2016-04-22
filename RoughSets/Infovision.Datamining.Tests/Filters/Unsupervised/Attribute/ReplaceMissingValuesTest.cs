@@ -32,23 +32,23 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
 
             DataStore trnCompleteData = new ReplaceMissingValues().Compute(trnData);
-            //DataStore tstCompleteDate = new ReplaceMissingValues().Compute(tstData, trnData);
+            //TrainData tstCompleteDate = new ReplaceMissingValues().Compute(tstData, trnData);
             DataStore tstCompleteDate = tstData;
 
             trnCompleteData.WriteToCSVFileExt(@"temp\missingvals.trn", ",");
             tstCompleteDate.WriteToCSVFileExt(@"temp\missingvals.tst", ",");
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-            parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-            parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+            parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
             parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, 1);            
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
             Args inner = new Args();
-            inner.SetParameter(ReductGeneratorParamHelper.DataStore, trnData);
+            inner.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
             inner.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             inner.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
             inner.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, inner);
 
             ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
-            reductGenerator.Generate();
+            reductGenerator.Run();
 
             RoughClassifier classifierTrn = new RoughClassifier(
                 reductGenerator.GetReductGroups(),

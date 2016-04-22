@@ -36,8 +36,8 @@ namespace DisesorTest
         //int numberOfPermutations = 100;
         //decimal epsilon = 0.0m;
         
-        RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
-        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        RuleQualityFunction identificationFunction = RuleQuality_DEL.ConfidenceW;
+        RuleQualityFunction voteFunction = RuleQuality_DEL.CoverageW;
         WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
         
         bool useSupervisedDiscetization = true;
@@ -247,7 +247,7 @@ namespace DisesorTest
                 var discretizer = DataStoreDiscretizer.Construct(discretizationType);
                 discretizer.NumberOfBins = numberOfBins;
 
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
                     Console.WriteLine("Atribute {0} {1} has type {2} and {3} distinct values. {4} be discretized", 
                         field.Id,
@@ -259,7 +259,7 @@ namespace DisesorTest
                     if (field.CanDiscretize())
                     {
                         double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
-                        Console.WriteLine(this.Cuts2Sting(cuts));                        
+                        Console.WriteLine(this.Cuts2Sting(cuts));
                     }
                 }
 
@@ -273,7 +273,7 @@ namespace DisesorTest
                     UseKononenko = useKokonenkoMDL
                 };
 
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard, false))
+                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
                     Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized", 
                         field.Id,
@@ -294,7 +294,7 @@ namespace DisesorTest
             Console.WriteLine("Done");            
 
             Args innerArgs = new Args();
-            innerArgs.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
             //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -307,7 +307,7 @@ namespace DisesorTest
                     (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * shuffleRatio)));
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, train);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, 
@@ -351,7 +351,7 @@ namespace DisesorTest
             Console.WriteLine("Reduct generation...");
             
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
-            generator.Generate();
+            generator.Run();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             Console.WriteLine("Done");
             

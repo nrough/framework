@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset
                 this.MaxReductLength = this.MinReductLength;
         }
 
-        public override void Generate()
+        protected override void Generate()
         {
             ReductStore localReductPool = new ReductStore();
             foreach (Permutation permutation in this.Permutations)
@@ -121,7 +121,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGenerator(dataStore);
         }
     }    

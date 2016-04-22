@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
@@ -14,7 +15,8 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private int[][] fieldGroups;
         private int reductIdSequence;
-
+        
+        protected readonly Stopwatch timer = new Stopwatch();
         protected object mutex = new object();
 
         #endregion
@@ -77,6 +79,11 @@ namespace Infovision.Datamining.Roughset
             get { return this.reductIdSequence + 1; }
         }
 
+        public virtual long ReductGenerationTime
+        {
+            get { return timer.ElapsedMilliseconds;  }
+        }
+
         #endregion
 
         #region Constructors        
@@ -90,10 +97,18 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods               
 
-        public abstract void Generate();
+        protected abstract void Generate();
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses);
-        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null);                
+        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null);
+
+        public virtual void Run()
+        {
+            timer.Reset();
+            timer.Start();
+            this.Generate();
+            timer.Stop();
+        }        
 
         protected virtual IReductStore CreateReductStore(int initialSize = 0)
         {            
@@ -138,9 +153,9 @@ namespace Infovision.Datamining.Roughset
         {
             this.Parameters = args;
 
-            if (args.Exist(ReductGeneratorParamHelper.DataStore))
+            if (args.Exist(ReductGeneratorParamHelper.TrainData))
             {
-                this.DataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.DataStore);
+                this.DataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
                 this.initFromDataStore(this.DataStore);
             }
 

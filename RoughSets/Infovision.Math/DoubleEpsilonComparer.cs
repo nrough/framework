@@ -41,7 +41,7 @@ namespace Infovision.Math
             return a.GetHashCode();
         }
 
-        public static bool NearlyEqual(double a, double b, double epsilon)
+        public static bool NearlyEqual(double a, double b, double epsilon = 0.0000001)
         {
             double absA = System.Math.Abs(a);
             double absB = System.Math.Abs(b);

@@ -38,15 +38,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0m);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-            generator.Generate();
+            generator.Run();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 
-            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.CoverageW, dataStoreTrain.DataStoreInfo.GetDecisionValues());
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality_DEL.CoverageW, RuleQuality_DEL.CoverageW, dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(dataStoreTrain, null);
             
             using (FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.Read))
@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         {
                             foreach (IReduct red in rs)
                             {
-                                resultFile.Write(" {0,5}", classifier.IsObjectRecognizable(dataStoreTrain, objectIdx, red));
+                                resultFile.Write(" {0,5}", RoughClassifier.IsObjectRecognizable(dataStoreTrain, objectIdx, red, RuleQuality.ConfidenceW2));
                             }
                         }
                         resultFile.Write(Environment.NewLine);

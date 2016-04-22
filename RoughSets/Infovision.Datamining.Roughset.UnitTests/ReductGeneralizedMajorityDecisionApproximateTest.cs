@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(data));
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permCollection);
 
             IReductGenerator gen = ReductFactory.GetReductGenerator(args);
-            gen.Generate();
+            gen.Run();
             IReductStoreCollection model = gen.GetReductStoreCollection();
         }
 
@@ -128,8 +128,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     RoughClassifier classifier_1 = new RoughClassifier(
                         reductStoreCollection, 
-                        RuleQuality.ConfidenceW, 
-                        RuleQuality.ConfidenceW, 
+                        RuleQuality_DEL.ConfidenceW, 
+                        RuleQuality_DEL.ConfidenceW, 
                         data.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult result_1 = classifier_1.Classify(test, null);
@@ -163,8 +163,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     RoughClassifier classifier_2 = new RoughClassifier(
                         reductStoreCollection2, 
-                        RuleQuality.ConfidenceW, 
-                        RuleQuality.ConfidenceW,
+                        RuleQuality_DEL.ConfidenceW, 
+                        RuleQuality_DEL.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
                     ClassificationResult result_2 = classifier_2.Classify(test, null); 
 
@@ -300,7 +300,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal eps = Decimal.Divide(epsilon, 100);
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -309,10 +309,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-            generator.Generate();
+            generator.Run();
 
             Args parms2 = new Args();
-            parms2.SetParameter(ReductGeneratorParamHelper.DataStore, trainData);
+            parms2.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms2.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms2.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms2.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
@@ -321,19 +321,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             ReductGeneratorWeightsMajority generator2 =
                 ReductFactory.GetReductGenerator(parms2) as ReductGeneratorWeightsMajority;
-            generator2.Generate();
+            generator2.Run();
 
             RoughClassifier classifier = new RoughClassifier(
                 generator.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW, 
-                RuleQuality.ConfidenceW,
+                RuleQuality_DEL.ConfidenceW, 
+                RuleQuality_DEL.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(testData, null);
                         
             RoughClassifier classifier2 = new RoughClassifier(
                 generator2.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW, 
-                RuleQuality.ConfidenceW,
+                RuleQuality_DEL.ConfidenceW, 
+                RuleQuality_DEL.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result2 = classifier2.Classify(testData, null);
             
@@ -364,7 +364,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, decimal epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
@@ -377,7 +377,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);

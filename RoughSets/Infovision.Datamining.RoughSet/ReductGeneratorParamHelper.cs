@@ -9,7 +9,8 @@ namespace Infovision.Datamining.Roughset
     public static class ReductGeneratorParamHelper
     {
         public static readonly string FactoryKey = "FactoryKey";
-        public static readonly string DataStore = "DataStore";
+        public static readonly string TrainData = "TrainData";
+        public static readonly string TestData = "TestData";
         public static readonly string NumberOfPermutations = "NumberOfPermutations";
         public static readonly string NumberOfThreads = "NumberOfThreads";
         public static readonly string PermutationCollection = "PermutationCollection";
@@ -45,6 +46,8 @@ namespace Infovision.Datamining.Roughset
         public static readonly string FixedPermutations = "FixedPermutations";
         public static readonly string UseClassificationCost = "UseClassificationCost";
         public static readonly string ExceptionRulesAsGaps = "ExceptionRulesAsGaps";
+        public static readonly string CVNumberOfFolds = "CVNumberOfFolds";
+        public static readonly string ReductComparer = "ReductComparer";
     }
 
     //TODO Keys should be returned from Generator classes as static fields

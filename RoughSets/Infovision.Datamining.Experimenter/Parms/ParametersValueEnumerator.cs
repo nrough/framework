@@ -30,16 +30,9 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.Reset();
         }
 
-        #endregion
-
-        #region Properties
-        
-        #endregion
+        #endregion        
 
         #region Methods        
-
-
-        #region IEnumerator Members
 
         public object Current
         {
@@ -98,14 +91,11 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
 
             for (int i = 0; i < this.parameters.Count; i++)
-            {
                 currentValues[i] = this.parameters[i].Current;
-            }
 
             return true;
         }
-
-        #endregion
+        
         #endregion
     }
 }

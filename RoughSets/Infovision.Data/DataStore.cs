@@ -191,10 +191,18 @@ namespace Infovision.Data
         {
             long[] result = new long[this.NumberOfRecords];
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+            for (int i = 0; i < this.NumberOfRecords; i++)
+            {
+                result[i] = this.GetFieldIndexValue(i, fieldIdx);
+            }
+
+            /*
             Parallel.For(0, this.NumberOfRecords, i =>
             {
                 result[i] = this.GetFieldIndexValue(i, fieldIdx);
             });
+            */
+
             return result;
         }
 
@@ -204,11 +212,18 @@ namespace Infovision.Data
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             try
-            {                
+            {
+                for (int i = 0; i < this.NumberOfRecords; i++)
+                {
+                    result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
+                }
+
+                /*
                 Parallel.For(0, this.NumberOfRecords, i =>
                 {
                     result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
                 });
+                */
             }
             catch (InvalidCastException castException)
             {
@@ -237,10 +252,19 @@ namespace Infovision.Data
             object[] result = new object[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+
+            for (int i = 0; i < this.NumberOfRecords; i++)
+            {
+                result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
+            }
+
+            /*
             Parallel.For(0, this.NumberOfRecords, i =>
             {
                 result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
             });
+            */
+
             return result;
         }
 
@@ -435,6 +459,7 @@ namespace Infovision.Data
             return objectId2Index.Keys;
         }
 
+        //TODO To Delete
         public IEnumerable<int> GetObjectIndexes(long decisionValue)
         {
             List<int> result;

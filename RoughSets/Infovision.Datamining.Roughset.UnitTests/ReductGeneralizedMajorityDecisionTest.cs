@@ -34,7 +34,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.1m)
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+                parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
                 parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
                 parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {                                    
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
         {            
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.DataStore, data);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);

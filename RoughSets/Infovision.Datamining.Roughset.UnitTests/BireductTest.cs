@@ -46,11 +46,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void CheckBireductUnique(string reductGeneratorKey)
         {
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.NumberOfPermutations },
+            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.NumberOfPermutations },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
             
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
-            bireductGenerator.Generate();
+            bireductGenerator.Run();
             IReductStore reductStore = bireductGenerator.ReductPool;
 
             foreach (IReduct reduct in reductStore)
@@ -120,18 +120,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, localDataStore);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-            reductGenerator.Generate();
+            reductGenerator.Run();
             
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence,
-                RuleQuality.SingleVote,
+                RuleQuality_DEL.Confidence,
+                RuleQuality_DEL.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
             
             //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
@@ -186,12 +186,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutations.Add(new Permutation(new int[] { -4, 4, 2, -1, 11, 3, -2, -3, 6, 1, 12, 10, 9, 5, 7, 0, 13, 8 }));
             Args parms;            
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
@@ -259,7 +259,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             (\{W\},\{2..6,9..10,13..14\}) & (\{W\}, $\emptyset$) \\ \hline
             \end{tabular}
             \vspace{\baselineskip}
-            \caption{Examples of decision bireducts and $\gamma$-decision bireducts. \label{play_golf_table_bireducts}}
+            \caption{Examples of decisionInternalValue bireducts and $\gamma$-decisionInternalValue bireducts. \label{play_golf_table_bireducts}}
             \end{table}
              */
             
@@ -409,12 +409,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args parms;
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.DataStore, ReductGeneratorParamHelper.PermutationCollection },
+            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
@@ -468,18 +468,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private void Classify(string reductGeneratorKey)
         {
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.DataStore, dataStoreTrain);
+            args.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.5m);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
-            reductGenerator.Generate();
+            reductGenerator.Run();
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence, 
-                RuleQuality.SingleVote,
+                RuleQuality_DEL.Confidence, 
+                RuleQuality_DEL.SingleVote,
                 dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 

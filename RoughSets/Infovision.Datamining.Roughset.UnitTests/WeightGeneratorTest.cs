@@ -77,7 +77,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IReductGenerator redGenWgh = new ReductGeneratorWeightsMajority();
             redGenWgh.Epsilon = 0.1M;
 
-            Args args = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData }, new object[] { ReductFactoryKeyHelper.ApproximateReductRelative, localDataStore });
+            Args args = new Args(
+                new string[] { 
+                    ReductGeneratorParamHelper.FactoryKey, 
+                    ReductGeneratorParamHelper.TrainData
+                }, 
+                new object[] { 
+                    ReductFactoryKeyHelper.ApproximateReductRelative, 
+                    localDataStore
+                }
+            );
             
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
             PermutationCollection permutationList = permGen.Generate(20);

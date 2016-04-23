@@ -188,14 +188,16 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet, bool updateStat = true)
+        //public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet, bool updateStat = true)
+        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet)
         {
             EquivalenceClassCollection result = new EquivalenceClassCollection();
             result.Calc(reduct.Attributes, data, objectSet, weights);
             return result;
         }
 
-        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null, bool updateStat = true)
+        //public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null, bool updateStat = true)
+        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
         {
             if (weights != null && dataStore.NumberOfRecords != weights.Length)
                 throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of records in data");
@@ -214,8 +216,8 @@ namespace Infovision.Datamining.Roughset
                                                         decision,
                                                         w,
                                                         dataStore,
-                                                        i,
-                                                        updateStat);
+                                                        i);
+                                                        //updateStat);
                 }
 
                 eqClassCollection.CountObjects = dataStore.NumberOfRecords;
@@ -233,8 +235,8 @@ namespace Infovision.Datamining.Roughset
                                                         decision,
                                                         weights[i],
                                                         dataStore,
-                                                        i,
-                                                        updateStat);
+                                                        i);
+                                                        //updateStat);
 
                     sum += weights[i];
                 }
@@ -251,20 +253,22 @@ namespace Infovision.Datamining.Roughset
             long decisionInternalValue, 
             decimal objectWeight, 
             DataStore dataStore,
-            int objectIdx = -1,
-            bool updateStat = true)
+            int objectIdx = -1)
+            //bool updateStat = true)
         {
             EquivalenceClass eq = null;
             lock (mutex)
             {                
                 if (!this.partitions.TryGetValue(attributeInternalValues, out eq))
                 {
-                    eq = new EquivalenceClass(attributeInternalValues, dataStore, updateStat);
+                    //eq = new EquivalenceClass(attributeInternalValues, dataStore, updateStat);
+                    eq = new EquivalenceClass(attributeInternalValues, dataStore);
                     this.partitions.Add(attributeInternalValues, eq);
                 }
 
                 if (objectIdx != -1)
-                    eq.AddObject(objectIdx, decisionInternalValue, objectWeight, updateStat);
+                    //eq.AddObject(objectIdx, decisionInternalValue, objectWeight, updateStat);
+                    eq.AddObject(objectIdx, decisionInternalValue, objectWeight);
                 else
                     eq.AddDecision(decisionInternalValue, objectWeight);
 
@@ -330,6 +334,7 @@ namespace Infovision.Datamining.Roughset
             long decisionValue = dataStore.GetDecisionValue(objectIndex);           
             int count = 0;
             decimal w = 0;
+            
             lock (mutex)
             {            
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;

@@ -142,7 +142,8 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
         {            
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
+            //EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
 
             eqClasses.CountWeightObjects = this.DataSetQuality;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;
@@ -209,7 +210,8 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, false);
+                    //newEqClass = new EquivalenceClass(newInstance, this.DataStore, false);
+                    newEqClass = new EquivalenceClass(newInstance, this.DataStore);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;
                     newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
@@ -332,8 +334,10 @@ namespace Infovision.Datamining.Roughset
         {
             EquivalenceClassCollection eqClasses =
                 (this.UseExceptionRules && reductStore != null)
-                    ? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, true)
-                    : EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
+                //? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, true)
+                    ? EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights)
+                //: EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights, false);
+                    : EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
 
             eqClasses.CountWeightObjects = this.ObjectWeightSum;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;
@@ -421,9 +425,9 @@ namespace Infovision.Datamining.Roughset
                 }
                 else
                 {
-                    bool localUseStat = (this.UseExceptionRules && reductStore != null);
-                    
-                    newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
+                    //bool localUseStat = (this.UseExceptionRules && reductStore != null);                    
+                    //newEqClass = new EquivalenceClass(newInstance, this.DataStore, localUseStat);
+                    newEqClass = new EquivalenceClass(newInstance, this.DataStore);
                     newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
                     newEqClass.WeightSum += eq.WeightSum;

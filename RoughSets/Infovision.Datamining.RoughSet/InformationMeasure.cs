@@ -182,7 +182,8 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
-            object tmpLock = new object();      
+            /*
+            object tmpLock = new object();
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
@@ -215,9 +216,9 @@ namespace Infovision.Datamining.Roughset
                         result += localPartialSum;
                     }
                 });
+            */            
 
 
-            /*
             result = Decimal.Zero;
             decimal maxValue, sum;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
@@ -225,17 +226,17 @@ namespace Infovision.Datamining.Roughset
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    sum = Decimal.Zero;
-                    foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                        sum += reduct.Weights[objectIdx];                   
+                    sum = e.GetDecisionWeigth(decisionValue);
+                    //sum = Decimal.Zero;
+                    //foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
+                    //    sum += reduct.Weights[objectIdx];                   
                     if (sum > maxValue)
                         maxValue = sum;
                 }
                 result += maxValue;
             }
-            */
 
-            return Decimal.Round(result, 17);            
+            return Decimal.Round(result, 17);
         }
 
         public override string Description()

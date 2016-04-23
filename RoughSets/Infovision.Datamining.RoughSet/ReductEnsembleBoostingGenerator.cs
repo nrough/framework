@@ -45,8 +45,8 @@ namespace Infovision.Datamining.Roughset
 			: base()
 		{
 			this.Threshold = 0.5;
-			this.IdentyficationType = RuleQuality_DEL.ConfidenceW;
-			this.VoteType = RuleQuality_DEL.CoverageW;
+			this.IdentyficationType = RuleQuality.ConfidenceW;
+			this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;
@@ -68,8 +68,8 @@ namespace Infovision.Datamining.Roughset
 			base.SetDefaultParameters();
 
 			this.Threshold = 0.5;
-			this.IdentyficationType = RuleQuality_DEL.ConfidenceW;
-			this.VoteType = RuleQuality_DEL.CoverageW;
+			this.IdentyficationType = RuleQuality.ConfidenceW;
+			this.VoteType = RuleQuality.CoverageW;
 			this.NumberOfReductsInWeakClassifier = 1;
 			this.MaxIterations = 100;
 			this.MaxNumberOfWeightResets = 0;

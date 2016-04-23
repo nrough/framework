@@ -128,8 +128,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     RoughClassifier classifier_1 = new RoughClassifier(
                         reductStoreCollection, 
-                        RuleQuality_DEL.ConfidenceW, 
-                        RuleQuality_DEL.ConfidenceW, 
+                        RuleQuality.ConfidenceW, 
+                        RuleQuality.ConfidenceW, 
                         data.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult result_1 = classifier_1.Classify(test, null);
@@ -163,8 +163,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     RoughClassifier classifier_2 = new RoughClassifier(
                         reductStoreCollection2, 
-                        RuleQuality_DEL.ConfidenceW, 
-                        RuleQuality_DEL.ConfidenceW,
+                        RuleQuality.ConfidenceW, 
+                        RuleQuality.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
                     ClassificationResult result_2 = classifier_2.Classify(test, null); 
 
@@ -325,15 +325,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 generator.GetReductStoreCollection(),
-                RuleQuality_DEL.ConfidenceW, 
-                RuleQuality_DEL.ConfidenceW,
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(testData, null);
                         
             RoughClassifier classifier2 = new RoughClassifier(
                 generator2.GetReductStoreCollection(),
-                RuleQuality_DEL.ConfidenceW, 
-                RuleQuality_DEL.ConfidenceW,
+                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result2 = classifier2.Classify(testData, null);
             

@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Infovision.nunit = Infovision.nunit
 		Infovision.pfx = Infovision.pfx
 		Performance1.psess = Performance1.psess
+		Performance2.psess = Performance2.psess
 		runme.bat = runme.bat
 		TODO.txt = TODO.txt
 	EndProjectSection
@@ -160,9 +161,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingVsRuleInduction", "Vo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "DermoReducts\DermoReducts.csproj", "{BEA130EC-3920-42F3-AD18-A72231881DBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorityGeneralizedDecisionTest", "MajorityGeneralizedDecisionTest\MajorityGeneralizedDecisionTest.csproj", "{D460989F-C801-44DA-B74F-E5187D99F446}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 30
+		SccNumberOfProjects = 31
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -273,6 +276,10 @@ Global
 		SccProjectTopLevelParentUniqueName29 = Infovision.sln
 		SccProjectName29 = DermoReducts
 		SccLocalPath29 = DermoReducts
+		SccProjectUniqueName30 = MajorityGeneralizedDecisionTest\\MajorityGeneralizedDecisionTest.csproj
+		SccProjectTopLevelParentUniqueName30 = Infovision.sln
+		SccProjectName30 = MajorityGeneralizedDecisionTest
+		SccLocalPath30 = MajorityGeneralizedDecisionTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -732,6 +739,22 @@ Global
 		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x64.ActiveCfg = Release|x64
 		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x64.Build.0 = Release|x64
 		{BEA130EC-3920-42F3-AD18-A72231881DBD}.Release|x86.ActiveCfg = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|x64.ActiveCfg = Debug|x64
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|x64.Build.0 = Debug|x64
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|Win32.ActiveCfg = Release|Any CPU
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x64.ActiveCfg = Release|x64
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x64.Build.0 = Release|x64
+		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -764,6 +787,7 @@ Global
 		{67AF087D-606E-44F4-9396-74BF2AB160E2} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{BEA130EC-3920-42F3-AD18-A72231881DBD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{D460989F-C801-44DA-B74F-E5187D99F446} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

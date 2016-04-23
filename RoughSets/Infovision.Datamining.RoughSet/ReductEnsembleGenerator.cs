@@ -219,7 +219,7 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < store.Count; i++)
             {
                 IReduct reduct = store.GetReduct(i);
-                errors[i] = recognition(reduct, reduct.Weights, RuleQuality.ConfidenceW2);
+                errors[i] = recognition(reduct, reduct.Weights, RuleQuality.ConfidenceW);
             }
             return errors;
         }

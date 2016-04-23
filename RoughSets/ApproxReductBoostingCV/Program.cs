@@ -156,8 +156,8 @@ namespace ApproxReductBoostingCV
                     }                    
                     
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality_DEL.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality_DEL.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                     parms.SetParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);

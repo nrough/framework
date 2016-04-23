@@ -35,9 +35,9 @@ namespace DisesorTest
         string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
         //int numberOfPermutations = 100;
         //decimal epsilon = 0.0m;
-        
-        RuleQualityFunction identificationFunction = RuleQuality_DEL.ConfidenceW;
-        RuleQualityFunction voteFunction = RuleQuality_DEL.CoverageW;
+
+        RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
+        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
         WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
         
         bool useSupervisedDiscetization = true;

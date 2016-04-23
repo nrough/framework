@@ -198,13 +198,13 @@ namespace Infovision.Datamining.Roughset
             if (this.CalcFlag == true)
                 return;
 
-            base.Generate();          
-            Parallel.For(0, this.DataStore.NumberOfRecords, i =>
+            base.Generate();
+            for(int i=0; i<this.DataStore.NumberOfRecords; i++)
             {
                 this.Weights[i] = Decimal.One
                     / (decimal)(this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
-                        * this.DataStore.DataStoreInfo.NumberOfDecisionValues);                 
-            });            
+                        * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            }            
         }
     }    
 }

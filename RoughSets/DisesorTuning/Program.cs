@@ -57,12 +57,12 @@ namespace DisesorTuning
 					new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, //3
 						0.0m, 0.50m, 0.05m),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Voting", //4
-						RuleQuality_DEL.CoverageW, 
-						RuleQuality_DEL.ConfidenceW, 
-						RuleQuality_DEL.SingleVote),
+						RuleQuality.CoverageW, 
+						RuleQuality.ConfidenceW, 
+						RuleQuality.SingleVote),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Identification", //5 
-						RuleQuality_DEL.CoverageW, 
-						RuleQuality_DEL.ConfidenceW),
+						RuleQuality.CoverageW, 
+						RuleQuality.ConfidenceW),
 					ParameterValueCollection<DiscretizationType>.CreateFromElements("DiscretizationType", //6
 						DiscretizationType.Unsupervised_Entropy,
 						DiscretizationType.Supervised_KononenkoMDL_BetterEncoding,

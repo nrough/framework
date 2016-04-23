@@ -35,8 +35,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality_DEL.Confidence,
-                RuleQuality_DEL.SingleVote,
+                RuleQuality.Confidence,
+                RuleQuality.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
 
             string localFileNameTest = @"Data\dna_modified.tst";

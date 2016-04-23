@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Utils;
@@ -80,18 +81,14 @@ namespace Infovision.Data
             {
                 foreach (long decisionValue in this.dataStore.DataStoreInfo.GetDecisionValues())
                 {
-                    int[] objectsTmp = this.DataStore.GetObjectIndexes(decisionValue).ToArray();
+                    int[] objectsTmp = this.GetObjectIndexes(this.dataStore, decisionValue).ToArray();
                     objectsTmp.Shuffle();
-                    Parallel.For(0, objectsTmp.Length, i =>
-                    {
+                    for (int i = 0; i < objectsTmp.Length; i++)                        
                         folds[objectsTmp[i]] = RandomSplit(i);
-                    });
                 }
 
                 for (int i = 0; i < this.dataStore.DataStoreInfo.NumberOfRecords; i++)
-                {
                     foldSize[folds[i]]++;
-                }
             }
             else
             {
@@ -100,12 +97,24 @@ namespace Infovision.Data
                     folds[i] = RandomSplit(i);
                     foldSize[folds[i]]++;
                 }
-
                 folds.Shuffle();
             }
 
             this.SplitCalculated = true;
-        }        
+        }
+        
+        protected IEnumerable<int> GetObjectIndexes(DataStore dataStore, long decisionValue)
+        {
+            List<int> result = new List<int>(dataStore.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue));
+            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
+            for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
+            {
+                long decision = dataStore.GetFieldIndexValue(objectIdx, decisionIndex);
+                if(decisionValue == decision)
+                    result.Add(objectIdx);
+            }
+            return result;
+        }
 
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2)
         {

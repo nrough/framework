@@ -17,8 +17,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public BireductTest()
         {
-            string trainFileName = @"Data\playgolf.train";
-            string testFileName = @"Data\playgolf.train";
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.train";
 
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
@@ -69,11 +69,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
+
             int decisionIndex = dataStoreTrain.DataStoreInfo.DecisionFieldIndex;
             for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
-                decimal p = Decimal.One / dataStoreTrain.DataStoreInfo.PriorDecisionProbability(
-                    dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex));
+                long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
+                decimal p = Decimal.One / (decimal)(dataStoreTrain.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue) * dataStoreTrain.DataStoreInfo.NumberOfDecisionValues);
 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -81,11 +82,51 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
+            
+            decimal r = roughMeasure.Calc(reduct);
+            decimal u = sumWeights;
+
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
+
+            WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(dataStoreTrain);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
+            InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
+            decimal w = weightMeasure.Calc(reductWeights);
+
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));            
+        }
+
+        [Test]
+        public void MajorityMeasureTest()
+        {
+            Dictionary<int, decimal> elementWeights = new Dictionary<int, decimal>(dataStoreTrain.NumberOfRecords);
+            decimal sumWeights = 0;
+
+            int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
+            int decisionIndex = dataStoreTrain.DataStoreInfo.DecisionFieldIndex;
+            for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
+            {
+                long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
+                decimal p = Decimal.One / (decimal)dataStoreTrain.NumberOfRecords;
+
+                elementWeights[objectIdx] = p;
+                sumWeights += p;
+            }
+
+            InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
+            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
 
             decimal r = roughMeasure.Calc(reduct);
-            decimal u = sumWeights / dataStoreTrainInfo.NumberOfRecords;
+            decimal u = sumWeights;
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));            
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
+
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(dataStoreTrain);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
+            InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
+            decimal w = weightMeasure.Calc(reductWeights);
+
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));            
         }
 
         [Test]
@@ -130,8 +171,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality_DEL.Confidence,
-                RuleQuality_DEL.SingleVote,
+                RuleQuality.Confidence,
+                RuleQuality.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
             
             //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
@@ -478,8 +519,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality_DEL.Confidence, 
-                RuleQuality_DEL.SingleVote,
+                RuleQuality.Confidence, 
+                RuleQuality.SingleVote,
                 dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 

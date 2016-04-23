@@ -76,8 +76,8 @@ namespace Infovision.Data.UnitTests
 
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality_DEL.ConfidenceW,
-                    RuleQuality_DEL.ConfidenceW,
+                    RuleQuality.ConfidenceW,
+                    RuleQuality.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 ClassificationResult classificationResult = classifier.Classify(test);
@@ -195,8 +195,8 @@ namespace Infovision.Data.UnitTests
                 
                 classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality_DEL.ConfidenceW,
-                    RuleQuality_DEL.ConfidenceW,
+                    RuleQuality.ConfidenceW,
+                    RuleQuality.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 classificationResult = classifier.Classify(test);

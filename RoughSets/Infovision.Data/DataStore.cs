@@ -20,10 +20,7 @@ namespace Infovision.Data
         private Dictionary<long, int> objectId2Index;
         
         private long[] index2ObjectId;
-        private DataStoreInfo dataStoreInfo;
-        
-        private Dictionary<long, List<int>> decisionValue2ObjectIndex;
-        private bool isDecisionMapCalculated = false;
+        private DataStoreInfo dataStoreInfo;               
 
         private object mutex = new object();
 
@@ -192,17 +189,7 @@ namespace Infovision.Data
             long[] result = new long[this.NumberOfRecords];
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             for (int i = 0; i < this.NumberOfRecords; i++)
-            {
                 result[i] = this.GetFieldIndexValue(i, fieldIdx);
-            }
-
-            /*
-            Parallel.For(0, this.NumberOfRecords, i =>
-            {
-                result[i] = this.GetFieldIndexValue(i, fieldIdx);
-            });
-            */
-
             return result;
         }
 
@@ -214,16 +201,7 @@ namespace Infovision.Data
             try
             {
                 for (int i = 0; i < this.NumberOfRecords; i++)
-                {
                     result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
-                }
-
-                /*
-                Parallel.For(0, this.NumberOfRecords, i =>
-                {
-                    result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
-                });
-                */
             }
             catch (InvalidCastException castException)
             {
@@ -252,19 +230,8 @@ namespace Infovision.Data
             object[] result = new object[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
-
             for (int i = 0; i < this.NumberOfRecords; i++)
-            {
                 result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
-            }
-
-            /*
-            Parallel.For(0, this.NumberOfRecords, i =>
-            {
-                result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
-            });
-            */
-
             return result;
         }
 
@@ -459,51 +426,9 @@ namespace Infovision.Data
             return objectId2Index.Keys;
         }
 
-        //TODO To Delete
-        public IEnumerable<int> GetObjectIndexes(long decisionValue)
-        {
-            List<int> result;
-            if (this.isDecisionMapCalculated == false)
-            {
-                lock (mutex)
-                {
-                    if (this.isDecisionMapCalculated == false)
-                    {
-                        this.decisionValue2ObjectIndex = new Dictionary<long, List<int>>(this.DataStoreInfo.NumberOfDecisionValues);
-                        int decisionIndex = this.DataStoreInfo.DecisionFieldIndex;
-
-                        for (int objectIdx = 0; objectIdx < this.NumberOfRecords; objectIdx++)
-                        {
-                            long decision = this.GetFieldIndexValue(objectIdx, decisionIndex);
-                            result = null;
-                            if (!this.decisionValue2ObjectIndex.TryGetValue(decision, out result))
-                            {
-                                result = new List<int>(this.DataStoreInfo.NumberOfObjectsWithDecision(decision));
-                                this.decisionValue2ObjectIndex.Add(decision, result);
-                            }
-                            result.Add(objectIdx);
-                        }
-                        this.isDecisionMapCalculated = true;
-                    }
-                }
-            }
-
-            result = null;
-            if (!this.decisionValue2ObjectIndex.TryGetValue(decisionValue, out result))
-                return new int[] { };
-
-            return result;
-        }
-
-        protected void DecisionChanged()
-        {
-            this.isDecisionMapCalculated = false;
-        }
-
         public void SetDecisionFieldId(int fieldId)
         {
-            this.DataStoreInfo.DecisionFieldId = fieldId;
-            this.DecisionChanged();
+            this.DataStoreInfo.DecisionFieldId = fieldId;            
         }
 
         public long GetDecisionValue(int objectIndex)
@@ -524,12 +449,7 @@ namespace Infovision.Data
                 return objectIndex;
             }
             return -1;
-        }
-
-        public decimal PriorDecisionProbability(long decisionValue)
-        {
-            return this.DataStoreInfo.PriorDecisionProbability(decisionValue);
-        }
+        }        
 
         public string ToStringInternal(string separator, bool includeHeader = false)
         {

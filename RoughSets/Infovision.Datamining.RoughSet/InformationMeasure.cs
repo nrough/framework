@@ -104,24 +104,23 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
-            decimal maxValue, decProbability;            
+            decimal maxValue, relativeCount;            
 
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decProbability = Decimal.Divide(e.GetDecisionProbability(decisionValue), 
-                                                    reduct.ObjectSetInfo.PriorDecisionProbability(decisionValue));
+                    relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
                     
-                    if (Decimal.Round(decProbability, 17) > Decimal.Round(maxValue, 17))
-                        maxValue = decProbability;
+                    if (Decimal.Round(relativeCount, 17) > Decimal.Round(maxValue, 17))
+                        maxValue = relativeCount;
                 }
 
-                result += e.NumberOfObjects * maxValue;
+                result += maxValue;
             }
 
-            return Decimal.Round(result / (decimal)reduct.ObjectSetInfo.NumberOfRecords, 17);
+            return result / (decimal) reduct.DataStore.DataStoreInfo.NumberOfDecisionValues;
         }
 
         public override string Description()
@@ -145,20 +144,20 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
-            decimal maxDecisionProbability = Decimal.MinValue;
-            decimal decProbability;
+            int maxDecisionProbability = Int32.MinValue;
+            int majorCount;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
-                maxDecisionProbability = Decimal.MinValue;
+                maxDecisionProbability = Int32.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    decProbability = e.GetDecisionProbability(decisionValue);
-                    if (Decimal.Round(decProbability, 17) > Decimal.Round(maxDecisionProbability, 17))
-                        maxDecisionProbability = decProbability;
+                    majorCount = e.GetNumberOfObjectsWithDecision(decisionValue);
+                    if (majorCount > maxDecisionProbability)
+                        maxDecisionProbability = majorCount;
                 }
-                result += e.NumberOfObjects * maxDecisionProbability;
+                result += (decimal)maxDecisionProbability;
             }
-            return Decimal.Round(result / (decimal)reduct.ObjectSetInfo.NumberOfRecords, 17);
+            return result / (decimal) reduct.EquivalenceClasses.CountObjects;
         }
 
         public override string Description()
@@ -181,44 +180,7 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            decimal result = Decimal.Zero;
-            /*
-            object tmpLock = new object();
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
-            };
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
-
-            EquivalenceClassCollection eqClasses = reduct.EquivalenceClasses;
-            Parallel.ForEach(eqClasses, options,
-                () => Decimal.Zero,
-                (e, loopState, partialSum) =>
-                {
-                    decimal localSum = Decimal.Zero;
-                    decimal max = Decimal.MinValue;
-                    foreach (long decisionValue in e.DecisionValues)
-                    {
-                        localSum = Decimal.Zero;
-                        foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                            localSum += reduct.Weights[objectIdx];
-                        if (localSum > max)
-                            max = localSum;
-                    }
-                    return partialSum + max;
-                },
-                (localPartialSum) =>
-                {
-                    lock(tmpLock)
-                    {
-                        result += localPartialSum;
-                    }
-                });
-            */            
-
-
+            decimal result = Decimal.Zero;                    
             result = Decimal.Zero;
             decimal maxValue, sum;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
@@ -226,10 +188,7 @@ namespace Infovision.Datamining.Roughset
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    sum = e.GetDecisionWeigth(decisionValue);
-                    //sum = Decimal.Zero;
-                    //foreach (int objectIdx in e.GetObjectIndexes(decisionValue))
-                    //    sum += reduct.Weights[objectIdx];                   
+                    sum = e.GetDecisionWeigth(decisionValue);                    
                     if (sum > maxValue)
                         maxValue = sum;
                 }

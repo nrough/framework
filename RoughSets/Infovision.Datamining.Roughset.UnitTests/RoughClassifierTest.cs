@@ -36,29 +36,29 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                         switch (identificationType)
                         {
-                            case IdentificationType.Support: identificationFunc = RuleQuality_DEL.Support; break;
-                            case IdentificationType.Confidence: identificationFunc = RuleQuality_DEL.Confidence; break;
-                            case IdentificationType.Coverage: identificationFunc = RuleQuality_DEL.Coverage; break;
-                            case IdentificationType.WeightSupport: identificationFunc = RuleQuality_DEL.SupportW; break;
-                            case IdentificationType.WeightConfidence: identificationFunc = RuleQuality_DEL.ConfidenceW; break;
-                            case IdentificationType.WeightCoverage: identificationFunc = RuleQuality_DEL.CoverageW; break;
+                            case IdentificationType.Support: identificationFunc = RuleQuality.Support; break;
+                            case IdentificationType.Confidence: identificationFunc = RuleQuality.Confidence; break;
+                            case IdentificationType.Coverage: identificationFunc = RuleQuality.Coverage; break;
+                            case IdentificationType.WeightSupport: identificationFunc = RuleQuality.SupportW; break;
+                            case IdentificationType.WeightConfidence: identificationFunc = RuleQuality.ConfidenceW; break;
+                            case IdentificationType.WeightCoverage: identificationFunc = RuleQuality.CoverageW; break;
                             default: throw new ArgumentException("Unknown value", "identificationType");
                         }
 
                         switch (voteType)
                         {
-                            case VoteType.Support: voteFunc = RuleQuality_DEL.Support; break;
-                            case VoteType.Confidence: voteFunc = RuleQuality_DEL.Confidence; break;
-                            case VoteType.Coverage: voteFunc = RuleQuality_DEL.Coverage; break;
-                            case VoteType.Ratio: voteFunc = RuleQuality_DEL.Ratio; break;
-                            case VoteType.Strength: voteFunc = RuleQuality_DEL.Strength; break;
-                            case VoteType.MajorDecision: voteFunc = RuleQuality_DEL.SingleVote; break;
-                            case VoteType.WeightSupport: voteFunc = RuleQuality_DEL.SupportW; break;
-                            case VoteType.WeightConfidence: voteFunc = RuleQuality_DEL.ConfidenceW; break;
-                            case VoteType.WeightCoverage: voteFunc = RuleQuality_DEL.CoverageW; break;
-                            case VoteType.WeightRatio: voteFunc = RuleQuality_DEL.RatioW; break;
-                            case VoteType.WeightStrength: voteFunc = RuleQuality_DEL.StrengthW; break;
-                            case VoteType.ConfidenceRelative: voteFunc = RuleQuality_DEL.ConfidenceRelative; break;
+                            case VoteType.Support: voteFunc = RuleQuality.Support; break;
+                            case VoteType.Confidence: voteFunc = RuleQuality.Confidence; break;
+                            case VoteType.Coverage: voteFunc = RuleQuality.Coverage; break;
+                            case VoteType.Ratio: voteFunc = RuleQuality.Ratio; break;
+                            case VoteType.Strength: voteFunc = RuleQuality.Strength; break;
+                            case VoteType.MajorDecision: voteFunc = RuleQuality.SingleVote; break;
+                            case VoteType.WeightSupport: voteFunc = RuleQuality.SupportW; break;
+                            case VoteType.WeightConfidence: voteFunc = RuleQuality.ConfidenceW; break;
+                            case VoteType.WeightCoverage: voteFunc = RuleQuality.CoverageW; break;
+                            case VoteType.WeightRatio: voteFunc = RuleQuality.RatioW; break;
+                            case VoteType.WeightStrength: voteFunc = RuleQuality.StrengthW; break;
+                            case VoteType.ConfidenceRelative: voteFunc = RuleQuality.ConfidenceRelative; break;
                             default: throw new ArgumentException("Unknown value", "voteType");
                         }
 
@@ -108,8 +108,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            RuleQualityFunction identificationFunc = RuleQuality_DEL.ConfidenceW;
-            RuleQualityFunction voteFunc = RuleQuality_DEL.ConfidenceW;
+            RuleQualityFunction identificationFunc = RuleQuality.ConfidenceW;
+            RuleQualityFunction voteFunc = RuleQuality.ConfidenceW;
 
             DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);
             DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);

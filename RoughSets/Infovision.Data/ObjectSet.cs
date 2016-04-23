@@ -127,15 +127,7 @@ namespace Infovision.Data
         public static ObjectSet ConstructEmptyObjectSet(DataStore dataStore)
         {
             return new ObjectSet(dataStore);
-        }
-
-        public decimal PriorDecisionProbability(long decisionValue)
-        {
-            int count = 0;
-            if (this.decisionCount.TryGetValue(decisionValue, out count))
-                return (this.NumberOfRecords > 0) ? (decimal)count / (decimal)this.NumberOfRecords : 0;
-            return 0;
-        }
+        }        
 
         public int NumberOfObjectsWithDecision(long decisionValue)
         {

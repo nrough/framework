@@ -101,7 +101,7 @@ namespace Infovision.Datamining.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount)
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
@@ -110,21 +110,25 @@ namespace Infovision.Datamining.Roughset
             if (weights == null)
             {
                 double w = 1.0 / testData.NumberOfRecords;
+                //for(int objectIndex=0; objectIndex<testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = this.Classify(record, calcFullEquivalenceClasses);
                     result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], w);
-                });
+                }
+                );
             }
             else
-            {                
+            {
+                //for (int objectIndex = 0; objectIndex < testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = this.Classify(record, calcFullEquivalenceClasses);
                     result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
-                });
+                }
+                );
             }
 
             timer.Stop();

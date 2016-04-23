@@ -42,8 +42,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);            
 
-            RuleQualityFunction identificationType = RuleQuality_DEL.ConfidenceW;
-            RuleQualityFunction voteType = RuleQuality_DEL.ConfidenceW;
+            RuleQualityFunction identificationType = RuleQuality.ConfidenceW;
+            RuleQualityFunction voteType = RuleQuality.ConfidenceW;
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
@@ -244,8 +244,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append("DiscernibiltyVector").Append(separator)
                     .Append("Accuracy").Append(separator)
                     .Append("BalancedAccuracy").Append(separator)
-                    .Append("Coverage2").Append(separator)
-                    .Append("Confidence2").Append(separator)
+                    .Append("Coverage").Append(separator)
+                    .Append("Confidence").Append(separator)
                     .Append("Classified").Append(separator)
                     .Append("Misclassified").Append(separator)
                     .Append("Unclassified").Append(separator)

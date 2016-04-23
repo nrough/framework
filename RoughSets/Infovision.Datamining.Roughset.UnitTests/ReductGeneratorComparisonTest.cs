@@ -116,8 +116,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             if (reductPool != null)
             {
-                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv", RuleQuality_DEL.Confidence);
-                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv", RuleQuality_DEL.Confidence);
+                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv", RuleQuality.Confidence);
+                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv", RuleQuality.Confidence);
             }
 
             //Console.WriteLine("------------------------ Reduct Pool ------------------------");
@@ -142,8 +142,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 
                 RoughClassifier rc = new RoughClassifier(
                     localStoreCollection,
-                    RuleQuality_DEL.Confidence, 
-                    RuleQuality_DEL.SingleVote, 
+                    RuleQuality.Confidence, 
+                    RuleQuality.SingleVote, 
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 
@@ -177,8 +177,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 RoughClassifier rc = new RoughClassifier(
                     tmpReductStoreCollection, 
-                    RuleQuality_DEL.ConfidenceW, 
-                    RuleQuality_DEL.ConfidenceW, 
+                    RuleQuality.ConfidenceW, 
+                    RuleQuality.ConfidenceW, 
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 

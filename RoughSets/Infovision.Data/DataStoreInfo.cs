@@ -145,7 +145,7 @@ namespace Infovision.Data
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
                 return this.Fields.Select(f => f.Id);                       
                         
-            return this.Fields//.AsParallel()
+            return this.Fields
                 .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
                 .Select(f => f.Id);
         }
@@ -240,7 +240,7 @@ namespace Infovision.Data
         {
             DataFieldInfo attributeInfo = this.GetFieldInfo(fieldId);
             attributeInfo.AddInternal(internalValue, externalValue, isMissing);
-        }        
+        }
 
         private void SetFieldMinMaxId(int fieldId)
         {
@@ -248,12 +248,7 @@ namespace Infovision.Data
                 minFieldId = fieldId;
             if (fieldId > maxFieldId)
                 maxFieldId = fieldId;
-        }
-
-        public decimal PriorDecisionProbability(long decisionValue)
-        {
-            return (decimal) this.NumberOfObjectsWithDecision(decisionValue) / (decimal)this.NumberOfRecords;
-        }
+        }        
 
         public int NumberOfObjectsWithDecision(long decisionValue)
         {

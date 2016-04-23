@@ -248,7 +248,8 @@ namespace Infovision.Datamining
             set { qualityRatio = value; }
         }        
 
-        public double Duration { get; set; }
+        public long ClassificationTime { get; set; }
+        public long ModelCreationTime { get; set; }
 
         #endregion
 
@@ -283,6 +284,8 @@ namespace Infovision.Datamining
                 confusionTableWeights[i] = new double[decCountPlusOne];
             }
             this.counter = 0;
+            this.ModelCreationTime = -1;
+            this.ClassificationTime = -1;
         }
 
         #endregion
@@ -485,6 +488,10 @@ namespace Infovision.Datamining
             stringBuilder.Append('|');
             stringBuilder.Append("AverageReductLength");
             stringBuilder.Append('|');
+            stringBuilder.Append("ModelCreationTime");
+            stringBuilder.Append('|');
+            stringBuilder.Append("ClassificationTime");
+            stringBuilder.Append('|');
 
             return stringBuilder.ToString();
         }
@@ -515,6 +522,10 @@ namespace Infovision.Datamining
             stringBuilder.AppendFormat("{0:0.00000}", this.Coverage);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,9:0.00000}", this.QualityRatio);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,6}", this.ModelCreationTime);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,6}", this.ClassificationTime);
             stringBuilder.Append('|');
 
             return stringBuilder.ToString();

@@ -62,8 +62,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 			decisionIdx = 21;
 			idIdx = 0;
 			
-			identificationType = RuleQuality_DEL.Confidence;
-			voteType = RuleQuality_DEL.SingleVote;
+			identificationType = RuleQuality.Confidence;
+			voteType = RuleQuality.SingleVote;
 
 			nominalAttributes = new string[] { "a1", "a3", "a4", "a6", "a7", "a9", "a10", "a12", "a14", "a15", "a17", "a19", "a20", "d" };
 			continuesAttributes = new string[] { "a2", "a5", "a8", "a11", "a13", "a16", "a18" };

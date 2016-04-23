@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset
 				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 		}
 
-        protected override void Generate()
+		protected override void Generate()
 		{
 			this.GenerateReducts();
 			this.BuildDendrogram();			
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset
 
 			Dictionary<int, double[]> instances = new Dictionary<int, double[]>(this.MaxIterations);
 			for (int i = 0; i < reducts.Length; i++)
-				instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights, RuleQuality.ConfidenceW2));
+				instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights, RuleQuality.ConfidenceW));
 
 			hCluster.Instances = instances;
 			hCluster.Compute();            

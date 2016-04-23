@@ -217,7 +217,6 @@ namespace Infovision.Datamining.Roughset
                                                         w,
                                                         dataStore,
                                                         i);
-                                                        //updateStat);
                 }
 
                 eqClassCollection.CountObjects = dataStore.NumberOfRecords;
@@ -235,8 +234,7 @@ namespace Infovision.Datamining.Roughset
                                                         decision,
                                                         weights[i],
                                                         dataStore,
-                                                        i);
-                                                        //updateStat);
+                                                        i);                                                        
 
                     sum += weights[i];
                 }

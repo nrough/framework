@@ -41,8 +41,8 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-            parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
-            parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality_DEL.ConfidenceW);
+            parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
             parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, 1);            
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);

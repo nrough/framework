@@ -6,8 +6,7 @@ namespace Infovision.Data
     public interface IObjectSetInfo
     {
         int NumberOfRecords { get; }
-        int NumberOfDecisionValues { get; }
-        decimal PriorDecisionProbability(long decisionValue);
+        int NumberOfDecisionValues { get; }        
         int NumberOfObjectsWithDecision(long decisionValue);
         ICollection<long> GetDecisionValues();
     }

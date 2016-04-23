@@ -254,26 +254,19 @@ namespace VotingVsRuleInduction
             
             IParameter parmIdentification = new ParameterValueCollection<RuleQualityFunction>(
                 ReductGeneratorParamHelper.IdentificationType, new RuleQualityFunction[] {
-                    RuleQuality_DEL.ConfidenceW, 
-                    RuleQuality.ConfidenceW2, 
-                    RuleQuality_DEL.CoverageW,
+                    RuleQuality.ConfidenceW2,                     
                     RuleQuality.CoverageW2
                 });
 
             IParameter parmVote = new ParameterValueCollection<RuleQualityFunction>(
                 ReductGeneratorParamHelper.VoteType, new RuleQualityFunction[] {
-                    RuleQuality_DEL.ConfidenceW,
                     RuleQuality.ConfidenceW2,
-                    RuleQuality_DEL.CoverageW,
                     RuleQuality.CoverageW2,
-                    RuleQuality_DEL.RatioW,
                     RuleQuality.RatioW2,
-                    RuleQuality_DEL.SupportW,
                     RuleQuality.SupportW2,
-                    RuleQuality_DEL.StrengthW,
                     RuleQuality.StrengthW2,
-                    RuleQuality_DEL.SingleVote,
-                    RuleQuality.SingleVote2
+                    RuleQuality.SingleVote2,
+                    RuleQuality.ConfidenceRelativeW2
                 });
 
             ParameterCollection parameterList = new ParameterCollection(

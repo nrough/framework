@@ -163,14 +163,12 @@ namespace Infovision.Datamining.Roughset
                                     reduct,
                                     reduct.DataStore,
                                     reduct.Weights,
-                                    reduct.ObjectSet,
-                                    calcFullEquivalenceClasses)
+                                    reduct.ObjectSet)
                                 : EquivalenceClassCollection.Create(
                                     reduct.Attributes.ToArray(),
                                     reduct.DataStore,
                                     reduct.Epsilon,
-                                    reduct.Weights,
-                                    calcFullEquivalenceClasses);
+                                    reduct.Weights);
 
                         reduct.SetEquivalenceClassCollection(equivalenceClasses);
                     }

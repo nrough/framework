@@ -11,8 +11,8 @@ namespace Infovision.Datamining.Roughset
     {        
         #region Constructors
 
-        public EquivalenceClassSortedMap()
-            : base()
+        public EquivalenceClassSortedMap(DataStore data)
+            : base(data)
         {   
         }        
 

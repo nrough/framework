@@ -163,7 +163,7 @@ namespace Infovision.Datamining.Roughset
             {
                 objectSet.RemoveElement(objectIdx);
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
-                this.EquivalenceClasses.GetEquivalenceClass(dataVector).RemoveObject(objectIdx);
+                this.EquivalenceClasses.GetEquivalenceClass(dataVector).RemoveObject(objectIdx, this.DataStore);
                 return true;
             }
 

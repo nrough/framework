@@ -175,7 +175,7 @@ namespace Infovision.Datamining.Roughset
 
             if (result == null)
             {
-                result = new EquivalenceClassCollection();
+                result = new EquivalenceClassCollection(this.dataStore);
                 result.Calc(this.attributeSet, this.dataStore, this.objectWeights);
             }
 
@@ -201,8 +201,8 @@ namespace Infovision.Datamining.Roughset
             {
                 lock (mutex)
                 {
-                    this.attributeSet.AddElement(attributeId);
                     this.eqClassMap = null;
+                    this.attributeSet.AddElement(attributeId);                    
                 }
                 return true;
             }
@@ -221,8 +221,8 @@ namespace Infovision.Datamining.Roughset
             {
                 lock (mutex)
                 {
-                    this.attributeSet.RemoveElement(attributeId);
                     this.eqClassMap = null;
+                    this.attributeSet.RemoveElement(attributeId);                    
                 }
                 return true;
             }

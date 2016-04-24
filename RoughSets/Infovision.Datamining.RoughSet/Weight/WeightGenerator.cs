@@ -54,11 +54,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected bool CalcFlag
-        {
-            get;
-            set;
-        }
+        protected bool CalcFlag { get; set; }
 
         #endregion
 

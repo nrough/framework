@@ -12,36 +12,77 @@ namespace MajorityGeneralizedDecisionTest
 {
     class Program
     {
+        DataStore trainData;
+        DataStore testData;
+        WeightGenerator weightGenerator;
+        decimal eps;
+        int ensembleSize;
+        int ratio;
+        int permutationSize;
+        ReductLengthComparer reductLengthComparer;
+        ReductMeasureLength reductMeasureLength;
+        PermutationCollection permList;
+        
         static void Main(string[] args)
         {
-            Program.MajorityGeneralizedDecisionPerformanceTest();
+            Program program = new Program();
+            program.Init();
 
-            //Console.ReadKey();
+            Console.WriteLine("{0}|{1}", "Factory", ClassificationResult.ResultHeader());
+
+            for (int i = 0; i < 100; i++)
+            {
+                program.InitPermutation();
+                
+                program.ApproximateDecisionReduct();
+                program.MajorityGeneralizedDecisionPerformanceTest();
+
+                Console.ReadKey();
+            }            
+              
+
+            Console.ReadKey();
+        }
+
+        public void Init()
+        {
+            //trainData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            //testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1);
+
+            trainData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1);
+            testData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
+            
+            weightGenerator = new WeightGeneratorMajority(trainData);
+            weightGenerator.Generate();
+
+            eps = 0;
+            ensembleSize = 1;
+            ratio = 1;
+            permutationSize = ensembleSize * ratio;
+            
+            reductLengthComparer = new ReductLengthComparer();
+            reductMeasureLength = new ReductMeasureLength();            
+        }
+
+        public void InitPermutation()
+        {
+            Args permParm = new Args();
+            permParm.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
+            permParm.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(permParm);
+            permList = permGen.Generate(permutationSize);
+
+            Console.WriteLine(permList);
         }
 
         
-        public static void MajorityGeneralizedDecisionPerformanceTest()
-        {
-            DataStore trainData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1);
-            WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
-            decimal eps = 0.05m;
-            int ensembleSize = 1;
-            int ratio = 1;
-            int permutationSize = ensembleSize * ratio;
-
-            ReductLengthComparer reductLengthComparer = new ReductLengthComparer();
-            ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
-
+        public void MajorityGeneralizedDecisionPerformanceTest()
+        {            
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-
-            IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms_GMDR);
-            PermutationCollection permList = permGen.Generate(permutationSize);
-
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
@@ -50,6 +91,8 @@ namespace MajorityGeneralizedDecisionTest
             generator_GMDR.Run();
             IReductStoreCollection origReductStoreCollection_GMDR = generator_GMDR.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollection_GMDR = origReductStoreCollection_GMDR.Filter(ensembleSize, reductLengthComparer);
+
+            Console.WriteLine(filteredReductStoreCollection_GMDR.FirstOrDefault().FirstOrDefault());
 
             RoughClassifier classifier_GMDR = new RoughClassifier(
                 filteredReductStoreCollection_GMDR,
@@ -62,14 +105,17 @@ namespace MajorityGeneralizedDecisionTest
             result_GMDR.ModelCreationTime = generator_GMDR.ReductGenerationTime;
             result_GMDR.ClassificationTime = classifier_GMDR.ClassificationTime;
 
-            Console.WriteLine(ClassificationResult.ResultHeader());
-            Console.WriteLine(result_GMDR);
+            
+            Console.WriteLine("{0,4}|{1}", "GMDR", result_GMDR);
+        }
 
+        public void ApproximateDecisionReduct()
+        {
             Args parmsApprox = new Args();
             parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);            
             parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
@@ -78,6 +124,8 @@ namespace MajorityGeneralizedDecisionTest
             generatorApprox.Run();
             IReductStoreCollection origReductStoreCollectionApprox = generatorApprox.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, reductLengthComparer);
+
+            Console.WriteLine(filteredReductStoreCollectionApprox.FirstOrDefault().FirstOrDefault());
 
             RoughClassifier classifierApprox = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
@@ -89,8 +137,8 @@ namespace MajorityGeneralizedDecisionTest
             resultApprox.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
-
-            Console.WriteLine(resultApprox);
+            
+            Console.WriteLine("{0,4}|{1}", "ADR", resultApprox);
         }
     }
 }

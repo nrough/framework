@@ -40,7 +40,7 @@ namespace Infovision.Utils
 			private set;
 		}
 
-		private bool IsCardinalityCalculated { get; set; }
+		//private bool IsCardinalityCalculated { get; set; }
 
 		#endregion
 
@@ -203,7 +203,7 @@ namespace Infovision.Utils
 		{
 			// create a deep copy of this
 			PascalSet<T> result = (PascalSet<T>)Clone();
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 
 			// For each integer passed in, if it's within the bounds add it to the results's BitArray.
 			for (int i = 0; i < list.LongLength; i++)
@@ -240,7 +240,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise OR to union together this.data and s.data
 			PascalSet<T> result = (PascalSet<T>)Clone();
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 			result.Data.Or(pascalSet.Data);
 
 			return result;
@@ -324,7 +324,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Intersection(params T[] list)
 		{
 			PascalSet<T> result = new PascalSet<T>(this.LowerBound, this.UpperBound);
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 
 			for (int i = 0; i < list.Length; i++)
 			{
@@ -360,7 +360,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise AND to intersect this.data and s.data
 			PascalSet<T> result = (PascalSet<T>)Clone();
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 			result.Data.And(pascalSet.Data);
 
 			return result;
@@ -387,7 +387,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Difference(params T[] list)
 		{
 			PascalSet<T> result = new PascalSet<T>(this.LowerBound, this.UpperBound, list);
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 			return Difference(result);
 		}
 
@@ -404,7 +404,7 @@ namespace Infovision.Utils
 
 			// do a bit-wise XOR and then an AND to achieve set difference
 			PascalSet<T> result = (PascalSet<T>)Clone();
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 			result.Data.Xor(pascalSet.Data).And(this.Data);
 
 			return result;
@@ -442,7 +442,7 @@ namespace Infovision.Utils
 		public virtual PascalSet<T> Complement()
 		{
 			PascalSet<T> result = (PascalSet<T>)Clone();
-			result.IsCardinalityCalculated = false;
+			//result.IsCardinalityCalculated = false;
 			result.Data.Not();
 			return result;
 		}
@@ -479,7 +479,7 @@ namespace Infovision.Utils
 		public virtual bool Subset(params T[] list)
 		{
 			PascalSet<T> temp = new PascalSet<T>(this.LowerBound, this.UpperBound, list);
-			temp.IsCardinalityCalculated = false;
+			//temp.IsCardinalityCalculated = false;
 			return Subset(temp);
 		}
 
@@ -523,7 +523,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSubset(params T[] list)
 		{
 			PascalSet<T> temp = new PascalSet<T>(this.LowerBound, this.UpperBound, list);
-			temp.IsCardinalityCalculated = false;
+			//temp.IsCardinalityCalculated = false;
 			return ProperSubset(temp);
 		}
 
@@ -550,7 +550,7 @@ namespace Infovision.Utils
 		public virtual bool Superset(params T[] list)
 		{
 			PascalSet<T> temp = new PascalSet<T>(this.LowerBound, this.UpperBound, list);
-			temp.IsCardinalityCalculated = false;
+			//temp.IsCardinalityCalculated = false;
 			return Superset(temp);
 		}
 
@@ -575,7 +575,7 @@ namespace Infovision.Utils
 		public virtual bool ProperSuperset(params T[] list)
 		{
 			PascalSet<T> temp = new PascalSet<T>(this.LowerBound, this.UpperBound, list);
-			temp.IsCardinalityCalculated = false;
+			//temp.IsCardinalityCalculated = false;
 			return ProperSuperset(temp);
 		}
 
@@ -595,11 +595,9 @@ namespace Infovision.Utils
 
 		public T[] ToArray()
 		{
-			
 			int size = this.Count;
 			T[] array = new T[size];
-			if (size == 0)
-				return array;            
+			if (size == 0) return array;            
 			int j = 0;
 			for (int i = 0; i < this.Data.Length; i++)
 			{
@@ -620,7 +618,7 @@ namespace Infovision.Utils
 		{
 			PascalSet<T> p = new PascalSet<T>(this.LowerBound, this.UpperBound);
 			p.Data = new BitArray(this.Data);
-			p.IsCardinalityCalculated = false;
+			//p.IsCardinalityCalculated = false;
 			return p;
 		}
 		#endregion

@@ -49,10 +49,17 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
+        public override void InitFromArgs(Args args)
+        {
+            base.InitFromArgs(args);
+
+            this.CalcDataSetQuality();
+        }
+
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, this.GetNextReductId().ToString());
-            this.dataSetQuality = this.informationMeasure.Calc(reduct);            
+            IReduct tmpReduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "tmpReduct");
+            this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
         }        
         
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
@@ -64,7 +71,7 @@ namespace Infovision.Datamining.Roughset
                 reductStore.AddReduct(reduct);
             }
 
-            this.ReductPool = reductStore;                        
+            this.ReductPool = reductStore;
         }
 
         protected override void Generate()
@@ -92,28 +99,25 @@ namespace Infovision.Datamining.Roughset
         
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, decimal epsilon)
         {
-            IReduct reduct = this.CreateReductObject(new int[] { }, 
-                                                     epsilon,
-                                                     this.GetNextReductId().ToString());
-
-            this.Reach(reduct, permutation, reductStore, useCache);
+            IReduct reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
+            this.Reach(reduct, permutation, reductStore, useCache);                        
             this.Reduce(reduct, permutation, reductStore, useCache);
-
+            
+            //Console.WriteLine(this.GetPartitionQuality(reduct));
+            
+            /*
+            IReduct reduct = this.CreateReductObject(permutation, this.Epsilon, this.GetNextReductId().ToString());
+            this.Reduce(reduct, permutation, reductStore, useCache);
+            */
             return reduct;
         }
 
         public virtual IReduct CalculateReduct(int[] attributes)
         {
-            //IReduct reduct = this.CreateReductObject(new int[] { },
-            //                                         this.Epsilon,
-            //                                         this.GetNextReductId().ToString());
-                        
-            IReduct reduct = this.CreateReductObject(attributes,
-                                                     this.Epsilon,
-                                                     this.GetNextReductId().ToString());
-
-
+            //IReduct reduct = this.CreateReductObject(new int[] { }, this.Epsilon, this.GetNextReductId().ToString());
             //this.Reach(reduct, attributes, null, false);
+            
+            IReduct reduct = this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());            
             this.ReduceForward(reduct, attributes, null, false);
 
             return reduct;
@@ -138,11 +142,9 @@ namespace Infovision.Datamining.Roughset
                 if (reduct.TryRemoveAttribute(attributeId))
                 {
                     if (!this.IsReduct(reduct, reductStore, useCache))
-                    {
                         reduct.AddAttribute(attributeId);
-                    }
                 }
-            }            
+            }
         }
 
         protected virtual void ReduceForward(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
@@ -212,7 +214,6 @@ namespace Infovision.Datamining.Roughset
                 ReductCache.Instance.Set(key, new ReductCacheInfo(isReduct, this.Epsilon));
             }
         }
-
 
         protected virtual string GetReductCacheKey(IReduct reduct)
         {

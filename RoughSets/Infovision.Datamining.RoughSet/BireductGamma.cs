@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset
             FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
             
             //TODO Performance killer !!!!!!
-            EquivalenceClassCollection localPartition = new EquivalenceClassCollection();
+            EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(newAttributeSet, this.DataStore);
 
             foreach (int objectIdx in this.ObjectSet)
@@ -68,7 +68,7 @@ namespace Infovision.Datamining.Roughset
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
 
             //TODO  Performance killer !!!!!!
-            EquivalenceClassCollection localPartition = new EquivalenceClassCollection();
+            EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(this.Attributes, this.DataStore);
                         
             EquivalenceClass eqClass = localPartition.GetEquivalenceClass(dataVector);

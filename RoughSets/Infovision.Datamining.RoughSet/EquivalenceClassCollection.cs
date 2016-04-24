@@ -13,11 +13,11 @@ namespace Infovision.Datamining.Roughset
     public class EquivalenceClassCollection : IEnumerable<EquivalenceClass>, ICloneable
     {
         #region Members
-        
+
+        private DataStore data;
         private Dictionary<long[], EquivalenceClass> partitions;        
         private int[] attributes;
         private object mutex = new object();
-
         private Dictionary<long, decimal> decisionWeight;
         private Dictionary<long, int> decisionCount;
 
@@ -53,8 +53,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
-        public EquivalenceClassCollection(int[] attr, int numberOfDecisionValues = 0)
+        public EquivalenceClassCollection(DataStore data, int[] attr, int numberOfDecisionValues = 0)
         {
+            this.data = data;
             this.attributes = new int[attr.Length];
             Array.Copy(attr, this.attributes, attr.Length);
             this.InitPartitions();
@@ -71,14 +72,16 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public EquivalenceClassCollection()
+        public EquivalenceClassCollection(DataStore data)
         {
+            this.data = data;
             this.decisionWeight = new Dictionary<long, decimal>();
             this.decisionCount = new Dictionary<long, int>();
         }
 
         private EquivalenceClassCollection(EquivalenceClassCollection eqClassCollection)
         {
+            this.data = eqClassCollection.data;
             this.partitions = (Dictionary<long[], EquivalenceClass>)eqClassCollection.Partitions.CloneDictionaryCloningValues<long[], EquivalenceClass>();
             this.attributes = new int[eqClassCollection.Attributes.Length];
             Array.Copy(eqClassCollection.Attributes, this.attributes, eqClassCollection.Attributes.Length);
@@ -178,7 +181,7 @@ namespace Infovision.Datamining.Roughset
 
             if (result == null)
             {
-                result = new EquivalenceClassCollection();
+                result = new EquivalenceClassCollection(data);
                 result.Calc(reduct.Attributes, data, weights);
             }
 
@@ -188,32 +191,25 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        //public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet, bool updateStat = true)
         public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet)
         {
-            EquivalenceClassCollection result = new EquivalenceClassCollection();
+            EquivalenceClassCollection result = new EquivalenceClassCollection(data);
             result.Calc(reduct.Attributes, data, objectSet, weights);
             return result;
         }
 
-        //public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null, bool updateStat = true)
         public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
-        {
-            if (weights != null && dataStore.NumberOfRecords != weights.Length)
-                throw new ArgumentOutOfRangeException("weights", "Weight vector must has the same length as number of records in data");
-
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(attributes, dataStore.DataStoreInfo.NumberOfDecisionValues);
+        {            
+            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes, dataStore.DataStoreInfo.NumberOfDecisionValues);
+            int decisionIdx = dataStore.DataStoreInfo.DecisionFieldIndex;
 
             if (weights == null)
             {
                 decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
-                for(int i=0; i < dataStore.NumberOfRecords; i++)
-                {
-                    long[] attributeValues = dataStore.GetFieldValues(i, attributes);
-                    long decision = dataStore.GetFieldValue(i, dataStore.DataStoreInfo.DecisionFieldId);
-
-                    eqClassCollection.AddRecordInitial(attributeValues,
-                                                        decision,
+                for(int i = 0; i < dataStore.NumberOfRecords; i++)
+                {                    
+                    eqClassCollection.AddRecordInitial(dataStore.GetFieldValues(i, attributes),
+                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
                                                         w,
                                                         dataStore,
                                                         i);
@@ -226,12 +222,9 @@ namespace Infovision.Datamining.Roughset
             {
                 decimal sum = 0;
                 for (int i = 0; i < dataStore.NumberOfRecords; i++)                
-                {
-                    long[] attributeValues = dataStore.GetFieldValues(i, attributes);
-                    long decision = dataStore.GetFieldValue(i, dataStore.DataStoreInfo.DecisionFieldId);
-
-                    eqClassCollection.AddRecordInitial(attributeValues,
-                                                        decision,
+                {                    
+                    eqClassCollection.AddRecordInitial(dataStore.GetFieldValues(i, attributes),
+                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
                                                         weights[i],
                                                         dataStore,
                                                         i);                                                        
@@ -244,7 +237,50 @@ namespace Infovision.Datamining.Roughset
             }
                  
             return eqClassCollection;
-        }        
+        }
+
+        /*
+        internal static EquivalenceClassCollection CreateForIntersections(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
+        {
+            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes, dataStore.DataStoreInfo.NumberOfDecisionValues);
+            int decisionIdx = dataStore.DataStoreInfo.DecisionFieldIndex;
+
+            if (weights == null)
+            {
+                decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
+                for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                {
+                    eqClassCollection.AddRecordInitialForIntersections(dataStore.GetFieldValues(i, attributes),
+                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
+                                                        w,
+                                                        dataStore,
+                                                        i);
+                }
+
+                eqClassCollection.CountObjects = dataStore.NumberOfRecords;
+                eqClassCollection.CountWeightObjects = Decimal.One;
+            }
+            else
+            {
+                decimal sum = 0;
+                for (int i = 0; i < dataStore.NumberOfRecords; i++)
+                {
+                    eqClassCollection.AddRecordInitialForIntersections(dataStore.GetFieldValues(i, attributes),
+                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
+                                                        weights[i],
+                                                        dataStore,
+                                                        i);
+
+                    sum += weights[i];
+                }
+
+                eqClassCollection.CountObjects = dataStore.NumberOfRecords;
+                eqClassCollection.CountWeightObjects = sum;
+            }
+
+            return eqClassCollection;
+        }
+        */
 
         protected void AddRecordInitial(            
             long[] attributeInternalValues, 
@@ -252,30 +288,49 @@ namespace Infovision.Datamining.Roughset
             decimal objectWeight, 
             DataStore dataStore,
             int objectIdx = -1)
-            //bool updateStat = true)
-        {
-            EquivalenceClass eq = null;
+        {            
             lock (mutex)
-            {                
+            {
+                EquivalenceClass eq = null;
                 if (!this.partitions.TryGetValue(attributeInternalValues, out eq))
-                {
-                    //eq = new EquivalenceClass(attributeInternalValues, dataStore, updateStat);
+                {                    
                     eq = new EquivalenceClass(attributeInternalValues, dataStore);
                     this.partitions.Add(attributeInternalValues, eq);
                 }
 
-                if (objectIdx != -1)
-                    //eq.AddObject(objectIdx, decisionInternalValue, objectWeight, updateStat);
+                if (objectIdx != -1)                 
                     eq.AddObject(objectIdx, decisionInternalValue, objectWeight);
                 else
                     eq.AddDecision(decisionInternalValue, objectWeight);
 
-                int count = 0;
-                decimal w = 0;
+                int count = 0;                
                 this.decisionCount[decisionInternalValue] = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
+                decimal w = 0;
                 this.decisionWeight[decisionInternalValue] = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
             }
         }
+
+        /*
+        private void AddRecordInitialForIntersections(
+            long[] attributeInternalValues,
+            long decisionInternalValue,
+            decimal objectWeight,
+            DataStore dataStore,
+            int objectIdx)
+        {
+            
+            EquivalenceClass eq = null;
+            if (!this.partitions.TryGetValue(attributeInternalValues, out eq))
+            {
+                eq = new EquivalenceClass(attributeInternalValues, dataStore);
+                this.partitions.Add(attributeInternalValues, eq);
+            }
+
+            eq.Instances.Add(objectIdx, objectWeight);
+            eq.DecisionSet.AddElement(decisionInternalValue);
+            eq.WeightSum += objectWeight;
+        }
+        */
 
         protected void InitPartitions(int initialSize = 0)
         {
@@ -307,13 +362,15 @@ namespace Infovision.Datamining.Roughset
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
+            decimal sum = 0;
             for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
+                sum += objectWeights[objectIdx];
             }
 
             this.CountObjects = dataStore.NumberOfRecords;
-            this.CountWeightObjects = objectWeights.Sum();
+            this.CountWeightObjects = sum;
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
@@ -411,8 +468,9 @@ namespace Infovision.Datamining.Roughset
 
         public void RecalcEquivalenceClassStatistic(DataStore data)
         {
-            this.decisionCount = new Dictionary<long, int>(data.DataStoreInfo.NumberOfDecisionValues);
-            this.decisionWeight = new Dictionary<long, decimal>(data.DataStoreInfo.NumberOfDecisionValues);
+            int numOfDec = data.DataStoreInfo.NumberOfDecisionValues;
+            this.decisionCount = new Dictionary<long, int>(numOfDec);
+            this.decisionWeight = new Dictionary<long, decimal>(numOfDec);
 
             foreach(var eq in this)
             {
@@ -420,11 +478,12 @@ namespace Infovision.Datamining.Roughset
 
                 foreach (long decision in eq.DecisionSet)
                 {
-                    int count = 0;
-                    decimal w = 0;
+                    int count = 0;                    
                     this.decisionCount[decision] = this.decisionCount.TryGetValue(decision, out count) 
                         ? (count + eq.GetNumberOfObjectsWithDecision(decision)) 
                         : eq.GetNumberOfObjectsWithDecision(decision);
+
+                    decimal w = 0;
                     this.decisionWeight[decision] = this.decisionWeight.TryGetValue(decision, out w)
                         ? (w + eq.GetDecisionWeigth(decision))
                         : eq.GetDecisionWeigth(decision);
@@ -481,7 +540,7 @@ namespace Infovision.Datamining.Roughset
         {
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var kvp in this.partitions)
-                stringBuilder.AppendLine(kvp.Value.ToStringExt(this.attributes));
+                stringBuilder.AppendLine(kvp.Value.ToStringExt(this.data, this.attributes));
             return stringBuilder.ToString();
         }
 

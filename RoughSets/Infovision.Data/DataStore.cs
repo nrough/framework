@@ -20,7 +20,7 @@ namespace Infovision.Data
         private Dictionary<long, int> objectId2Index;
         
         private long[] index2ObjectId;
-        private DataStoreInfo dataStoreInfo;               
+        private DataStoreInfo dataStoreInfo;
 
         private object mutex = new object();
 
@@ -115,7 +115,7 @@ namespace Infovision.Data
 
         public long AddRow(DataRecordInternal record)
         {
-            long result = Insert(record);
+            long result = this.Insert(record);
             this.DataStoreInfo.NumberOfRecords++;
             //TODO Update other statistics
 
@@ -171,10 +171,7 @@ namespace Infovision.Data
 
             foreach(int fieldId in this.dataStoreInfo.GetFieldIds())
                 valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
-            
-            //for (int i = 1; i <= this.dataStoreInfo.NumberOfFields; i++)
-            //    valueMap[i] = this.GetFieldValue(objectIndex, i);
-            
+                        
             DataRecordInternal ret = new DataRecordInternal(valueMap);
             ret.ObjectIdx = objectIndex;
 
@@ -377,7 +374,7 @@ namespace Infovision.Data
         public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
             long[] result = new long[fieldIds.Length];            
-            for(int i = 0; i<fieldIds.Length; i++)
+            for(int i = 0; i < fieldIds.Length; i++)
             {
                 result[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
             }            

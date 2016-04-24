@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual IReductStore ReductPool { get; protected set; }
         public virtual bool UseCache { get; private set; }
-        public virtual PermutationCollection Permutations { get; private set; }
+        public virtual PermutationCollection Permutations { get; protected set; }
         public virtual DataStore DataStore { get; private set; }
         public virtual decimal Epsilon { get; set; }
         public virtual int ReductionStep { get; set; }

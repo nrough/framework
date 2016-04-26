@@ -38,7 +38,7 @@ namespace Infovision.Data
             this.fields = new Dictionary<int, long>(fieldIds.Length);
 
             if (fieldIds.Length != fieldValues.Length)
-                throw new InvalidOperationException("Field and value lists must have the same length");
+                throw new InvalidOperationException("Field and key lists must have the same length");
 
             for (int i = 0; i < fieldIds.Length; i++)
                 fields.Add(fieldIds[i], fieldValues[i]);

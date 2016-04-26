@@ -246,8 +246,7 @@ namespace Infovision.Data
                                     }
                                 }
                             }
-
-                            //TODO implement foreach 
+                             
                             for (i = 0; i < dataStoreInfo.NumberOfFields; i++)
                             {
                                 fieldId[i] = i + 1;
@@ -289,6 +288,8 @@ namespace Infovision.Data
             {
                 throw new InvalidProgramException(String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message));
             }
+
+            dataStore.NormalizeWeights();
         }
 
         protected virtual void AnalyzeHeader(StreamReader streamReader)

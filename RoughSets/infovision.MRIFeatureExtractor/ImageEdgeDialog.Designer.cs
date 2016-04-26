@@ -77,7 +77,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(90, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Foreground value";
+            this.label2.Text = "Foreground key";
             // 
             // label1
             // 
@@ -86,7 +86,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Background value";
+            this.label1.Text = "Background key";
             // 
             // noiseDlg
             // 

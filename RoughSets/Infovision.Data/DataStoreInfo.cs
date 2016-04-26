@@ -255,7 +255,7 @@ namespace Infovision.Data
             DataFieldInfo decisionInfo;
             if (fields.TryGetValue(this.DecisionFieldId, out decisionInfo))
             {
-                return decisionInfo.Histogram.GetBinValue(decisionValue);
+                return (int)decisionInfo.Histogram.GetBinValue(decisionValue);
             }
             return 0;
         }
@@ -320,7 +320,16 @@ namespace Infovision.Data
 
             if (initMissingValues)
                 this.HasMissingData = dataStoreInfo.HasMissingData;
-        }        
+        }
+
+        public void CreateWeightHistogram(DataStore data, decimal[] weights, IEnumerable<int> fieldIds)
+        {
+            foreach (int fieldId in fieldIds)
+            {
+                DataFieldInfo fieldInfo = this.GetFieldInfo(fieldId);
+                fieldInfo.CreateWeightHistogram(data, weights);
+            }
+        }
 
         #endregion
 

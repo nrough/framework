@@ -64,16 +64,16 @@ namespace Infovision.Datamining.Roughset
         */
 
         /*
-        public override void Set(string key, object value, DateTimeOffset absoluteExpiration, string regionName = null)
+        public override void Set(string key, object key, DateTimeOffset absoluteExpiration, string regionName = null)
         {
-            Set(key, value, new CacheItemPolicy { AbsoluteExpiration = absoluteExpiration }, regionName);
+            Set(key, key, new CacheItemPolicy { AbsoluteExpiration = absoluteExpiration }, regionName);
         }
         */
 
         /*
-        public override void Set(string key, object value, CacheItemPolicy policy, string regionName)
+        public override void Set(string key, object key, CacheItemPolicy policy, string regionName)
         {
-            base.Set(ReductCache.CreateKeyWithRegion(key, regionName), value, policy);
+            base.Set(ReductCache.CreateKeyWithRegion(key, regionName), key, policy);
         }
         */
 

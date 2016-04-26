@@ -34,7 +34,7 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Includes an enumerated type and returns the new value
+        /// Includes an enumerated type and returns the new key
         /// </summary>
         public static T SetFlag<T>(this Enum value, T append)
         {
@@ -54,7 +54,7 @@ namespace Infovision.Utils
                 result = Convert.ToUInt64(value) | (ulong)parsed.Unsigned;
             }
 
-            //return the final value
+            //return the final key
             return (T)Enum.Parse(type, result.ToString());
         }
 
@@ -63,34 +63,34 @@ namespace Infovision.Utils
         /// Check to see if a flags enumeration has a specific flag set.
         /// </summary>
         /// <param name="variable">Flags enumeration to check</param>
-        /// <param name="value">Flag to check for</param>
+        /// <param name="key">Flag to check for</param>
         /// <returns></returns>
-        public static bool HasFlag(this Enum variable, Enum value)
+        public static bool HasFlag(this Enum variable, Enum key)
         {
             if (variable == null)
                 return false;
 
-            if (value == null)
-                throw new ArgumentNullException("value");
+            if (key == null)
+                throw new ArgumentNullException("key");
 
             // Not as good as the .NET 4 version of this function, 
             // but should be good enough
-            if (!Enum.IsDefined(variable.GetType(), value))
+            if (!Enum.IsDefined(variable.GetType(), key))
             {
                 throw new ArgumentException(string.Format(
                     "Enumeration type mismatch.  The flag is of type '{0}', " +
-                    "was expecting '{1}'.", value.GetType(),
+                    "was expecting '{1}'.", key.GetType(),
                     variable.GetType()));
             }
 
-            ulong num = Convert.ToUInt64(value);
+            ulong num = Convert.ToUInt64(key);
             return ((Convert.ToUInt64(variable) & num) == num);
         }
         */ 
 
 
         /// <summary>
-        /// Removes an enumerated type and returns the new value
+        /// Removes an enumerated type and returns the new key
         /// </summary>
         public static T ClearFlag<T>(this Enum value, T remove)
         {
@@ -110,13 +110,13 @@ namespace Infovision.Utils
                 result = Convert.ToUInt64(value) & ~(ulong)parsed.Unsigned;
             }
 
-            //return the final value
+            //return the final key
             return (T)Enum.Parse(type, result.ToString());
         }
 
         //class to simplfy narrowing values between
-        //a ulong and long since either value should
-        //cover any lesser value
+        //a ulong and long since either key should
+        //cover any lesser key
         private class _Value
         {
             //cached comparisons for tye to use            
@@ -135,11 +135,11 @@ namespace Infovision.Utils
                         "Value provided is not an enumerated type!");
                 }
 
-                //then check for the enumerated value
+                //then check for the enumerated key
                 Type compare = Enum.GetUnderlyingType(type);
 
                 //if this is an unsigned long then the only
-                //value that can hold it would be a ulong
+                //key that can hold it would be a ulong
                 if (compare.Equals(_UInt32) || compare.Equals(_UInt64))
                 {
                     Unsigned = Convert.ToUInt64(value);
@@ -179,7 +179,7 @@ namespace Infovision.Utils
             {
                 return typeof(double);
             }
-            //else if (Decimal.TryParse(value, out decimalResult))
+            //else if (Decimal.TryParse(key, out decimalResult))
             //{
             //    return typeof(decimal);
             //}
@@ -279,13 +279,13 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Returns an Object with the specified Type and whose value is equivalent to the specified object.
+        /// Returns an Object with the specified Type and whose key is equivalent to the specified object.
         /// </summary>
-        /// <param name="value">An Object that implements the IConvertible interface.</param>
-        /// <param name="conversionType">The Type to which value is to be converted.</param>
+        /// <param name="key">An Object that implements the IConvertible interface.</param>
+        /// <param name="conversionType">The Type to which key is to be converted.</param>
         /// <returns>An object whose Type is conversionType (or conversionType's underlying type if conversionType
-        /// is Nullable&lt;&gt;) and whose value is equivalent to value. -or- a null reference, if value is a null
-        /// reference and conversionType is not a value type.</returns>
+        /// is Nullable&lt;&gt;) and whose key is equivalent to key. -or- a null reference, if key is a null
+        /// reference and conversionType is not a key type.</returns>
         /// <remarks>
         /// This method exists as a workaround to System.Convert.ChangeType(Object, Type) which does not handle
         /// nullables as of version 2.0 (2.0.50727.42) of the .NET Framework. The idea is that this method will
@@ -315,7 +315,7 @@ namespace Infovision.Utils
                 // have a type--so just return null
                 // Note: We only do this check if we're converting to a nullable type, since doing it outside
                 // would diverge from Convert.ChangeType's behavior, which throws an InvalidCastException if
-                // value is null and conversionType is a value type.
+                // key is null and conversionType is a key type.
                 if (value == null)
                 {
                     return null;

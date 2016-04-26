@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             //TODO WTF?!
 
-            //fieldId --> decision --> field value --> count
+            //fieldId --> decision --> field key --> value
             Dictionary<int, Dictionary<long, Dictionary<long, int>>> fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {

@@ -48,8 +48,8 @@ namespace Infovision.Utils
 		/// <summary>
 		/// Creates a new PascalSet<int> instance with a specified lower and upper bound.
 		/// </summary>
-		/// <param name="lowerBound">The lower bound for the set.  Can be any legal integer value.</param>
-		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer value.</param>
+		/// <param name="lowerBound">The lower bound for the set.  Can be any legal integer key.</param>
+		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer key.</param>
 		public PascalSet(T lowerBound, T upperBound)
 		{
 			//cardinality is not yet calculated
@@ -75,8 +75,8 @@ namespace Infovision.Utils
 		/// <summary>
 		/// Creates a new PascalSet instance whose initial values are assigned from an integer array.
 		/// </summary>
-		/// <param name="lowerBound">The lower bound for the set.  Can be any legal integer value.</param>
-		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer value.</param>
+		/// <param name="lowerBound">The lower bound for the set.  Can be any legal integer key.</param>
+		/// <param name="upperBound">The upper bound for the set.  Can be any legal integer key.</param>
 		/// <param name="initialData">An integer array that is used as the initial values of the array.</param>
 		public PascalSet(T lowerBound, T upperBound, IEnumerable<T> initialData)
 		{
@@ -112,7 +112,7 @@ namespace Infovision.Utils
 				}
 				else
 				{
-					throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "initialData");
+					throw new ArgumentException("Attempting to add an element with key that is outside of the set's universe.", "initialData");
 				}
 			}
 
@@ -220,7 +220,7 @@ namespace Infovision.Utils
 				}
 				else
 				{
-					throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "list"); 
+					throw new ArgumentException("Attempting to add an element with key that is outside of the set's universe.", "list"); 
 				}
 			}
 
@@ -287,7 +287,7 @@ namespace Infovision.Utils
 			}
 			else
 			{
-				throw new ArgumentException("Attempting to add an element with value that is outside of the set's universe.", "element"); 
+				throw new ArgumentException("Attempting to add an element with key that is outside of the set's universe.", "element"); 
 			}
 		}
 
@@ -309,7 +309,7 @@ namespace Infovision.Utils
 			}
 			else
 			{
-				throw new ArgumentException("Attempting to remove an element with value that is outside of the set's universe.", "element"); 
+				throw new ArgumentException("Attempting to remove an element with key that is outside of the set's universe.", "element"); 
 			}
 		}
 
@@ -450,7 +450,7 @@ namespace Infovision.Utils
 
 		#region Element Of
 		/// <summary>
-		/// Determines if a passed-in value is an element of the PascalSet.
+		/// Determines if a passed-in key is an element of the PascalSet.
 		/// </summary>
 		/// <param name="element">The integer to check if it exists in the set.</param>
 		/// <returns><b>True</b> is <b>element</b> is in the set, <b>False</b> otherwise</returns>
@@ -626,7 +626,7 @@ namespace Infovision.Utils
 		#region ICollection Members
 
 		/// <summary>
-		/// Returns a value indicating whether access to the ICollection is synchronized (thread-safe).
+		/// Returns a key indicating whether access to the ICollection is synchronized (thread-safe).
 		/// </summary>
 		public bool IsSynchronized
 		{

@@ -111,7 +111,8 @@ namespace Infovision.Datamining.Roughset
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
+                    //relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
+                    relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
                     
                     if (Decimal.Round(relativeCount, 17) > Decimal.Round(maxValue, 17))
                         maxValue = relativeCount;
@@ -157,7 +158,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 result += (decimal)maxDecisionProbability;
             }
-            return result / (decimal) reduct.EquivalenceClasses.CountObjects;
+            return result / (decimal) reduct.DataStore.NumberOfRecords;
         }
 
         public override string Description()

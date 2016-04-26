@@ -75,7 +75,7 @@
         Unknown = 2
     }
 
-    //public enum UpdateWeights
+    //public enum SetWeights
     //{
     //    All = 0,
     //    CorrectOnly = 1,

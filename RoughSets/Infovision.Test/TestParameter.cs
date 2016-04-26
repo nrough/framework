@@ -55,7 +55,7 @@ namespace Infovision.Test
         }
 
         /// <summary>
-        /// Returns a value indicating whether access to the ICollection is synchronized (thread-safe).
+        /// Returns a key indicating whether access to the ICollection is synchronized (thread-safe).
         /// </summary>
         public bool IsSynchronized
         {

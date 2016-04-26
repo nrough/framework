@@ -12,7 +12,8 @@ namespace Infovision.Datamining.Roughset
         //P(X,E)
         public static decimal Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            int count_U = reduct.EquivalenceClasses.CountUniverse();
+            //int count_U = reduct.EquivalenceClasses.CountUniverse();
+            int count_U = reduct.DataStore.NumberOfRecords;
             if (eqClass != null && count_U > 0)
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_U;
             return 0;
@@ -47,12 +48,12 @@ namespace Infovision.Datamining.Roughset
         //P(E|X) = P(X,E)/P(X)
         public static decimal Coverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
-            int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
-            if (eqClass != null && count_X > 0)
-            {
-                return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_X;
-            }
-            return 0;
+            if (eqClass == null) return 0;
+            int count_XE = eqClass.GetNumberOfObjectsWithDecision(decisionValue);
+            if (count_XE == 0) return 0;
+            //int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
+            int count_X = (int) reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+            return count_X != 0 ? (decimal)count_XE / (decimal)count_X : 0;
         }
 
         //Pw(E|X) = Pw(X,E)/Pw(X)
@@ -61,7 +62,8 @@ namespace Infovision.Datamining.Roughset
             if (eqClass == null) return 0;
             decimal weight_XE = eqClass.GetDecisionWeigth(decisionValue);
             if (weight_XE == 0) return 0;
-            decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            //decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_X != 0) ? weight_XE / weight_X : 0;
         }
 
@@ -69,10 +71,11 @@ namespace Infovision.Datamining.Roughset
         public static decimal Ratio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
             if (eqClass == null) return 0;
-            decimal count_XE = eqClass.GetNumberOfObjectsWithDecision(decisionValue);
-            decimal count_E = eqClass.NumberOfObjects;
+            int count_XE = eqClass.GetNumberOfObjectsWithDecision(decisionValue);
+            int count_E = eqClass.NumberOfObjects;
             if (count_E == 0) return 0;
-            decimal count_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            //int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
+            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
             return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
         }
 
@@ -83,7 +86,8 @@ namespace Infovision.Datamining.Roughset
             decimal weight_XE = eqClass.GetDecisionWeigth(decisionValue);
             decimal weight_E = eqClass.WeightSum;
             if (weight_E == 0) return 0;
-            decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            //decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
         }
 
@@ -91,7 +95,8 @@ namespace Infovision.Datamining.Roughset
         public static decimal Strength(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
             if (eqClass == null) return 0;
-            int count_U = reduct.EquivalenceClasses.CountUniverse();
+            //int count_U = reduct.EquivalenceClasses.CountUniverse();
+            int count_U = reduct.DataStore.NumberOfRecords;
             if (count_U > 0)
                 return (decimal)eqClass.NumberOfObjects / (decimal)count_U;
             return 0;
@@ -111,14 +116,16 @@ namespace Infovision.Datamining.Roughset
             decimal sum = 0;
             foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues())
             {
-                int localCount_X = reduct.EquivalenceClasses.CountDecision(dec);
+                //int localCount_X = reduct.EquivalenceClasses.CountDecision(dec);
+                int localCount_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[dec];
                 if (localCount_X > 0)
                     sum += ((decimal)eqClass.GetNumberOfObjectsWithDecision(dec) / (decimal)localCount_X);
             }
 
             if (sum > 0)
             {
-                int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
+                //int count_X = reduct.EquivalenceClasses.CountDecision(decisionValue);
+                int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
                 if (count_X > 0)
                     return ((decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_X) / sum;
             }
@@ -132,14 +139,16 @@ namespace Infovision.Datamining.Roughset
             decimal sum = 0;
             foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues()) //TODO should we consider all decision in case of intersections
             {
-                decimal localWeight_X = reduct.EquivalenceClasses.CountWeightDecision(dec);
+                //decimal localWeight_X = reduct.EquivalenceClasses.CountWeightDecision(dec);
+                decimal localWeight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[dec];
                 if (localWeight_X > 0)
                     sum += (eqClass.GetDecisionWeigth(dec) / localWeight_X);
             }
 
             if (sum > 0)
             {
-                decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+                //decimal weight_X = reduct.EquivalenceClasses.CountWeightDecision(decisionValue);
+                decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
                 if (weight_X > 0)
                     return (eqClass.GetDecisionWeigth(decisionValue) / weight_X) / sum;
             }

@@ -138,17 +138,17 @@ namespace Infovision.Data.UnitTests
 
                 foreach (long internalValue in dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
-                    elementSum += dataStore.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
+                    elementSum += (int)dataStore.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
                 foreach(long internalValue in dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
-                    elementSum1 += dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
+                    elementSum1 += (int)dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
                 foreach (long internalValue in dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
-                    elementSum2 += dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
+                    elementSum2 += (int)dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
                 Assert.AreEqual(elementSum, elementSum1 + elementSum2);

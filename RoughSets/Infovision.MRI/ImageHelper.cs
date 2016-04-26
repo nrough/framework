@@ -123,10 +123,10 @@ namespace Infovision.MRI
             uint[] lut = new uint[maxInput];
             for (int i = 0; i < maxInput; i++)
             {
-                // map input value to 8-bit range
+                // map input key to 8-bit range
                 byte intensity = (byte)((i * 0xFF) / maxInput);
 
-                // create ARGB output value A=255, R=G=B=intensity
+                // create ARGB output key A=255, R=G=B=intensity
                 lut[i] = (uint)(0xFF000000L | (intensity * 0x00010101L));
             }
 

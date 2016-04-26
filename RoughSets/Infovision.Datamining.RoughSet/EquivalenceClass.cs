@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset
         private decimal totalWeightSum; //sum of object weights belonging to this class
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         private Dictionary<long, decimal> decisionWeigthSums; //map decisionInternalValue -> objectWeight        
-        private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object count               
+        private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value               
         private readonly object mutex = new object();
 
         #endregion
@@ -339,7 +339,7 @@ namespace Infovision.Datamining.Roughset
         public string ToStringExt(DataStore data, int[] fieldIds)
         {
             if (fieldIds.Length != this.Instance.Length)
-                throw new ArgumentException("Field Id array has different length than current value array", "fieldIds");
+                throw new ArgumentException("Field Id array has different length than current key array", "fieldIds");
             
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("d=[");

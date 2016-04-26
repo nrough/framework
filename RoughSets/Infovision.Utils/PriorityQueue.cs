@@ -23,7 +23,7 @@ namespace Infovision.Utils
             //Initialize the array that will hold the values
             storedValues = new List<T>();
 
-            //Fill the first cell in the array with an empty value
+            //Fill the first cell in the array with an empty key
             storedValues.Add(default(T));
 
             //Create comparer instance
@@ -39,7 +39,7 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Returns the value at the head of the Priority Queue without removing it.
+        /// Returns the key at the head of the Priority Queue without removing it.
         /// </summary>
         public virtual T Peek()
         {
@@ -50,20 +50,20 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Adds a value to the Priority Queue
+        /// Adds a key to the Priority Queue
         /// </summary>
         public virtual void Enqueue(T value)
         {
-            //Add the value to the internal array
+            //Add the key to the internal array
             storedValues.Add(value);
 
             //Bubble up to preserve the heap property,
-            //starting at the inserted value
+            //starting at the inserted key
             this.BubbleUp(storedValues.Count - 1);
         }
 
         /// <summary>
-        /// Returns the minimum value inside the Priority Queue
+        /// Returns the minimum key inside the Priority Queue
         /// </summary>
         public virtual T Dequeue()
         {
@@ -71,7 +71,7 @@ namespace Infovision.Utils
                 return default(T); //queue is empty
             else
             {
-                //The smallest value in the Priority Queue is the first item in the array
+                //The smallest key in the Priority Queue is the first item in the array
                 T minValue = this.storedValues[1];
 
                 //If there's more than one item, replace the first item in the array with the last one
@@ -88,7 +88,7 @@ namespace Infovision.Utils
                 }
                 else
                 {
-                    //Remove the only value stored in the queue
+                    //Remove the only key stored in the queue
                     storedValues.RemoveAt(1);
                 }
 
@@ -156,7 +156,7 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Returns if the value of a parent is greater than its child
+        /// Returns if the key of a parent is greater than its child
         /// </summary>
         protected virtual bool IsParentBigger(int childCell)
         {

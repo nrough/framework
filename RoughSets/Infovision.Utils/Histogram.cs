@@ -10,71 +10,65 @@ namespace Infovision.Utils
         #region Globals
 
         protected object syncRoot = new object();
-        private SortedDictionary<T, Int32> histogramData;
+        private Dictionary<T, decimal> histogramData;
         private T minValue;
         private T maxValue;
 
+        #endregion
+
+        #region Properties
+
+        public decimal this[T value] { get { return this.histogramData.ContainsKey(value) ? this.histogramData[value] : 0; } }
+        public T Min { get { return minValue; } }
+        public T Max { get { return maxValue; } }
+        public int Count { get { return histogramData.Count; } }
+        
         #endregion
 
         #region Constructors
 
         public Histogram(int capacity = 0)
         {
-            histogramData = new SortedDictionary<T, int>();
+            if (capacity != 0)
+                histogramData = new Dictionary<T, decimal>(capacity);
+            else
+                histogramData = new Dictionary<T, decimal>();
 
             minValue = default(T);
             maxValue = default(T);
-        }
-
-        public Histogram(IComparer<T> comparer)
-        {
-            histogramData = new SortedDictionary<T, int>(comparer);
-            minValue = default(T);
-            maxValue = default(T);
-        }
+        }        
 
         #endregion
 
         #region Methods
 
-        public void Increase(T value)
+        public void Increase(T key, decimal value = Decimal.One)
         {
-            int count;
+            decimal count;
             lock (syncRoot)
             {
-                histogramData[value] = histogramData.TryGetValue(value, out count) ? ++count : 1;
-                this.SetMinMaxElement(value);
+                histogramData[key] = histogramData.TryGetValue(key, out count) ? (count + value) : value;
+                this.SetMinMaxElement(key);
             }
         }
 
-        public int GetBinValue(T value)
+        public decimal GetBinValue(T key)
         {
-            int count;
-            if (histogramData.TryGetValue(value, out count))
-                return count;
+            decimal value;
+            if (histogramData.TryGetValue(key, out value))
+                return value;
             return 0;
         }
 
-        private void SetMinMaxElement(T value)
+        private void SetMinMaxElement(T key)
         {
-            lock (syncRoot)
-            {
-                if (value.CompareTo(minValue) < 0)
-                    minValue = value;
-                if (value.CompareTo(maxValue) > 0)
-                    maxValue = value;
-            }
+            
+            if (key.CompareTo(minValue) < 0)
+                minValue = key;
+            if (key.CompareTo(maxValue) > 0)
+                maxValue = key;
         }
 
-        #endregion
-
-        #region Properties
-
-        public T Min { get { return minValue; } }
-        public T Max { get { return maxValue; } }
-        public int Count { get { return histogramData.Count; } }
-        public int this[T value] { get { return this.histogramData.ContainsKey(value) ? this.histogramData[value] : 0; } }
-
-        #endregion
+        #endregion       
     }
 }

@@ -13,6 +13,8 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class RoughClassifier
     {
+        #region Members
+
         private IReductStoreCollection reductStoreCollection { get; set; }
         private int numberOfModels;
         private bool allModelsAreEqual;
@@ -21,7 +23,11 @@ namespace Infovision.Datamining.Roughset
         private long[] decisions;
 
         protected readonly Stopwatch timer = new Stopwatch();
-                    
+
+        #endregion 
+
+        #region Properties
+
         public ICollection<long> DecisionValues { get; set; }
         public bool UseExceptionRules { get; set; }
         public bool ExceptionRulesAsGaps { get; set; }
@@ -29,6 +35,10 @@ namespace Infovision.Datamining.Roughset
         public RuleQualityFunction VoteFunction { get; set; }
         public decimal MinimumVoteValue { get; set; }
         public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }
+
+        #endregion
+
+        #region Constructors
 
         public IReductStoreCollection ReductStoreCollection 
         {
@@ -68,7 +78,9 @@ namespace Infovision.Datamining.Roughset
             Array.Copy(this.DecisionValues.ToArray(), 0, this.decisions, 1, this.decCount);
 
             this.MinimumVoteValue = Decimal.MinValue;
-        }        
+        }
+
+        #endregion
 
         public Dictionary<long, decimal> Classify(DataRecordInternal record, IReduct reduct)
         {
@@ -154,12 +166,7 @@ namespace Infovision.Datamining.Roughset
                     if (this.UseExceptionRules == false && reduct.IsException)
                         continue;
 
-                    for (int k = 0; k < this.decCountPlusOne; k++)
-                        identificationWeights[k] = Decimal.Zero;
-
-                    identifiedDecision = 0; // -1 (unclassified)
-                    identifiedDecisionWeight = Decimal.Zero;
-
+                    //TODO Check for standard Bireduct do we need to recalculate?
                     if (reduct.IsEquivalenceClassCollectionCalculated == false)
                     {
                         EquivalenceClassCollection equivalenceClasses = (reduct is Bireduct)
@@ -176,6 +183,12 @@ namespace Infovision.Datamining.Roughset
 
                         reduct.SetEquivalenceClassCollection(equivalenceClasses);
                     }
+
+                    for (int k = 0; k < this.decCountPlusOne; k++)
+                        identificationWeights[k] = Decimal.Zero;
+
+                    identifiedDecision = 0; // -1 (unclassified)
+                    identifiedDecisionWeight = Decimal.Zero;
 
                     EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
                     
@@ -203,15 +216,21 @@ namespace Infovision.Datamining.Roughset
                     if (this.VoteFunction.Equals(this.IdentificationFunction))
                     {
                         if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
+                        {
+                            //TODO add loop over all decisions with max identifiedDecisionWeight
                             reductsVotes[identifiedDecision] += identifiedDecisionWeight;
+                        }
                     }
                     else
                     {
                         if (identifiedDecision != 0)
                         {
+                            //TODO in case of more than one identified decision we should add more votes, not only one
                             decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
-                            if((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                            {
                                 reductsVotes[identifiedDecision] += vote;
+                            }
                         }
                     }
 
@@ -255,34 +274,34 @@ namespace Infovision.Datamining.Roughset
             return resultGlobal;
         }
 
-        public Tuple<long, decimal> IdentifyDecision(DataRecordInternal record, IReduct reduct)
+        public Dictionary<long, decimal> IdentifyDecision(DataRecordInternal record, IReduct reduct)
         {
-            decimal[] identificationWeights = new decimal[this.decCountPlusOne];
-            int identifiedDecision;
-            decimal identifiedDecisionWeight;
-
-            for (int k = 0; k < this.decCountPlusOne; k++)
-                identificationWeights[k] = Decimal.Zero;
-
-            identifiedDecision = 0; // -1 (unclassified)
-            identifiedDecisionWeight = Decimal.Zero;
-            
+            decimal[] identificationWeights = new decimal[this.decCountPlusOne];                                   
             EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+
+            //if reduct is an Exception and we found an existing rule and we treat exceptions as gaps, 
+            //then we cannot identify the decision, return empty dictionary
+            if (reduct.IsException && eqClass != null && this.ExceptionRulesAsGaps)
+            {
+                Dictionary<long, decimal> result = new Dictionary<long,decimal>(1);
+                result.Add(-1, 0);
+                return result;
+            }
+
             if (eqClass != null)
             {
-                for (int k = 1; k < this.decCountPlusOne; k++)
-                {
-                    identificationWeights[k] = this.IdentificationFunction(decisions[k], reduct, eqClass);
-                    if (identifiedDecisionWeight < identificationWeights[k])
-                    {
-                        identifiedDecisionWeight = identificationWeights[k];
-                        identifiedDecision = k;
-                    }
-                }
+                Dictionary<long, decimal> result = new Dictionary<long, decimal>(eqClass.DecisionSet.Count);
+                foreach (var decision in eqClass.DecisionSet)
+                    result.Add(decision, this.IdentificationFunction(decision, reduct, eqClass));
+                return result;                
             }
-            
-            return new Tuple<long, decimal>(decisions[identifiedDecision], identifiedDecisionWeight);
+
+            Dictionary<long, decimal> unknown = new Dictionary<long, decimal>(1);
+            unknown.Add(-1, 0);
+            return unknown;                        
         }
+
+        #region Recognition Vectors (needs improvement)
 
         public static bool IsObjectRecognizable(DataStore data, int objectIdx, IReduct reduct, RuleQualityFunction decisionIndentificationMethod)
         {
@@ -332,5 +351,7 @@ namespace Infovision.Datamining.Roughset
 
             return new Tuple<long, decimal>(identifiedDecision, identifiedDecisionWeight);
         }
+
+        #endregion 
     }
 }

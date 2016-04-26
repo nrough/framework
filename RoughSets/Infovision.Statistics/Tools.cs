@@ -27,7 +27,7 @@ namespace Infovision.Statistics
 
 
         /// <summary>
-        /// Finds minimum value
+        /// Finds minimum key
         /// </summary>
         /// <param name="sample"></param>
         /// <returns></returns>
@@ -41,7 +41,7 @@ namespace Infovision.Statistics
         }
 
         /// <summary>
-        /// Finds minimum value
+        /// Finds minimum key
         /// </summary>
         /// <param name="sample"></param>
         /// <returns></returns>

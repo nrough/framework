@@ -103,7 +103,7 @@ namespace DisesorTest
             Console.WriteLine("Epsilon: {0}", eps);
             Console.WriteLine("Decision identification: {0}", identificationFunction.Method.Name);
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
-            Console.WriteLine("Minimum vote value: {0}", minimumVoteValue);
+            Console.WriteLine("Minimum vote key: {0}", minimumVoteValue);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
             Console.WriteLine();
                                     

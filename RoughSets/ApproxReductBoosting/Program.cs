@@ -75,7 +75,7 @@ namespace ApproxReductBoosting
 																			   ),
 					ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
 					ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
-					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("UpdateWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),					
+					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),					
 					new ParameterNumericRange<int>(ReductGeneratorParamHelper.Epsilon, 0, 50, 5)
 				}
 			);

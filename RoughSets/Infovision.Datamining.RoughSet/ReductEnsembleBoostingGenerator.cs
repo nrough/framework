@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset
 			long[] decArray = decisionValues.ToArray();
 			double[] decDistribution = new double[this.decCount];            
 			for (int i = 0; i < this.decCount; i++)
-				decDistribution[i] = data.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
+				decDistribution[i] = (int)data.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
 			Array.Sort(decDistribution, decArray);
 			Array.Copy(decArray, 0, decisions, 1, decCount);
 			value2index = new Dictionary<long, int>(decCountPlusOne);

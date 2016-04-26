@@ -5,7 +5,7 @@ namespace Infovision.Datamining.Roughset
     public static class EnumHelper
     {
         /// <summary>
-        /// Convertes <c>VoteType</c> enum value to <c>RuleVoteConseqentRating</c> enum value
+        /// Convertes <c>VoteType</c> enum key to <c>RuleVoteConseqentRating</c> enum key
         /// </summary>
         /// <param name="voteType"></param>
         /// <returns></returns>
@@ -55,14 +55,14 @@ namespace Infovision.Datamining.Roughset
                     break;
 
                 default:
-                    throw new InvalidOperationException(String.Format("Cannot convert {0} to RuleVoteConseqentRating enum value", voteType));
+                    throw new InvalidOperationException(String.Format("Cannot convert {0} to RuleVoteConseqentRating enum key", voteType));
             }
 
             return result;
         }
 
         /// <summary>
-        /// Converted <c>VoteType</c> enum value to <c>RuleVoteAntecedentRating</c> enum value.
+        /// Converted <c>VoteType</c> enum key to <c>RuleVoteAntecedentRating</c> enum key.
         /// </summary>
         /// <param name="voteType"></param>
         /// <returns></returns>
@@ -112,14 +112,14 @@ namespace Infovision.Datamining.Roughset
                     break;
 
                 default:
-                    throw new InvalidOperationException(String.Format("Cannot convert {0} to RuleVoteAntecedentRating enum value", voteType));
+                    throw new InvalidOperationException(String.Format("Cannot convert {0} to RuleVoteAntecedentRating enum key", voteType));
             }
 
             return result;
         }
 
         /// <summary>
-        /// Converts the combination of <c>RuleVoteConseqentRating</c> and <c>RuleVoteAntecedentRating</c> enum value to <c>VoteType</c> enum newInstance
+        /// Converts the combination of <c>RuleVoteConseqentRating</c> and <c>RuleVoteAntecedentRating</c> enum key to <c>VoteType</c> enum newInstance
         /// </summary>
         /// <param name="consequentRating"></param>
         /// <param name="antecedentRating"></param>
@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         /// <summary>
-        /// Converts <c>DecisionIdentificationType</c> enum value to <c>IdentificationType</c> enum value.
+        /// Converts <c>DecisionIdentificationType</c> enum key to <c>IdentificationType</c> enum key.
         /// </summary>
         /// <param name="decisionIdentyficationType"></param>
         /// <param name="isWeighting"></param>
@@ -198,7 +198,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         /// <summary>
-        /// Converts <c>IdentificationType</c> enum value to <c>DecisionIdentificationType</c> enum value.
+        /// Converts <c>IdentificationType</c> enum key to <c>DecisionIdentificationType</c> enum key.
         /// </summary>
         /// <param name="identificationType"></param>
         /// <returns></returns>

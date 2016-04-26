@@ -13,6 +13,7 @@ namespace Infovision.Data
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
         private Histogram<long> histogram;
+        private Histogram<long> histogramWeights;
         private int initialNumberOfValues;        
 
         #region Constructors
@@ -28,12 +29,14 @@ namespace Infovision.Data
                 this.valueDictionary = new Dictionary<object, long>();
                 this.indexDictionary = new Dictionary<long, object>();
                 this.histogram = new Histogram<long>();
+                this.histogramWeights = new Histogram<long>();
             }
             else
             {
                 this.valueDictionary = new Dictionary<object, long>(this.initialNumberOfValues);
                 this.indexDictionary = new Dictionary<long, object>(this.initialNumberOfValues);
                 this.histogram = new Histogram<long>();
+                this.histogramWeights = new Histogram<long>();
             }
             
             this.Id = attributeId;
@@ -57,11 +60,15 @@ namespace Infovision.Data
         }
 
         public Histogram<long> Histogram { get { return histogram; } }
+        public Histogram<long> HistogramWeights { get { return histogramWeights; } }
+
         public long MinValue { get { return histogram.Min; } }
         public long MaxValue { get { return histogram.Max; } }
+        
         public bool HasMissingValues { get; set; }
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
+        
         public bool IsNumeric { get; set; }
         public double[] Cuts { get; set; }
 
@@ -184,7 +191,7 @@ namespace Infovision.Data
                     }
                     else if (!this.MissingValue.Equals(value))
                     {
-                        throw new InvalidOperationException(String.Format("Missing value is already set. Trying to substitute current value {0} with {1}", this.MissingValue, value));
+                        throw new InvalidOperationException(String.Format("Missing key is already set. Trying to substitute current key {0} with {1}", this.MissingValue, value));
                     }
                 }
 
@@ -194,9 +201,9 @@ namespace Infovision.Data
             if (isMissing)
             {
                 if (this.MissingValue == null)
-                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing value, while the existing missing value is null", value));
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is null", value));
                 else if (!this.MissingValue.Equals(value))
-                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing value, while the existing missing value is {1}", value, this.MissingValue));
+                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing key, while the existing missing key is {1}", value, this.MissingValue));
             }
 
             return this.External2Internal(value);
@@ -219,7 +226,7 @@ namespace Infovision.Data
                     }
                     else if (!this.MissingValue.Equals(externalValue))
                     {
-                        throw new InvalidOperationException(String.Format("Missing value is already set. Trying to substitute current value {0} with {1}", this.MissingValue, externalValue));
+                        throw new InvalidOperationException(String.Format("Missing key is already set. Trying to substitute current key {0} with {1}", this.MissingValue, externalValue));
                     }
                 }
             }
@@ -227,9 +234,9 @@ namespace Infovision.Data
             if (isMissing)
             {
                 if (this.MissingValue == null)
-                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing value, while the existing missing value is null", externalValue));
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is null", externalValue));
                 else if (!this.MissingValue.Equals(externalValue))
-                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing value, while the existing missing value is {1}", externalValue, this.MissingValue));
+                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing key, while the existing missing key is {1}", externalValue, this.MissingValue));
             }
         }
 
@@ -252,7 +259,18 @@ namespace Infovision.Data
 
         public int GetAttribiteValueCount(long value)
         {
-            return histogram.GetBinValue(value);
+            return (int)histogram.GetBinValue(value);
+        }
+
+        public decimal GetAttribiteValueWeight(long value)
+        {
+            return histogramWeights.GetBinValue(value);
+        }
+
+        public void CreateWeightHistogram(DataStore data, decimal[] weights)
+        {            
+            for (int i = 0; i < data.NumberOfRecords; i++)
+                histogramWeights.Increase(data.GetFieldValue(i, this.Id), weights[i]);
         }
 
         #endregion

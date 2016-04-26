@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
                                       reductGenerator.IdentyficationType,
                                       reductGenerator.VoteType,
                                       reductGenerator.MinReductLength,
-                                      reductGenerator.UpdateWeights,
+                                      reductGenerator.SetWeights,
                                       "Majority",
                                       reductGenerator.CheckEnsembleErrorDuringTraining,
                                       1,

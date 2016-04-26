@@ -35,7 +35,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string NumberOfReductsToTest = "NumberOfReductsToTest";
         public static readonly string AgregateFunction = "AgregateFunction";
         public static readonly string CheckEnsembleErrorDuringTraining = "CheckEnsembleErrorDuringTraining";
-        public static readonly string UpdateWeights = "UpdateWeights";
+        public static readonly string UpdateWeights = "SetWeights";
         public static readonly string CalcModelConfidence = "CalcModelConfidence";
         public static readonly string UseExceptionRules = "UseExceptionRules";
         public static readonly string ReductionStep = "ReductionStep";

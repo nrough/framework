@@ -86,7 +86,7 @@ namespace Infovision.Data
             return this.decisionCount.Keys;
         }
 
-        //public void AddElement(int element, decimal weight = 1)
+        //public void AddElement(int element, decimal value = 1)
         public override void AddElement(int element)
         {
             if (!this.ContainsElement(element))
@@ -97,7 +97,7 @@ namespace Infovision.Data
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
                 
                 //decimal w = 0;
-                //this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + weight) : weight;
+                //this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + value) : value;
             }
 
             base.AddElement(element);

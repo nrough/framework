@@ -31,7 +31,7 @@ namespace Infovision.MRI.DAL
         {
             if (radius <= 0)
             {
-                throw new ArgumentOutOfRangeException("radius", "Radius must be positive integer value");
+                throw new ArgumentOutOfRangeException("radius", "Radius must be positive integer key");
             }
 
             if (label < 0)

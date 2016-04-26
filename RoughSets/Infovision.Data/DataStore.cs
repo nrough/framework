@@ -20,6 +20,8 @@ namespace Infovision.Data
         private Dictionary<long, int> objectId2Index;
         
         private long[] index2ObjectId;
+        private decimal[] weights;
+
         private DataStoreInfo dataStoreInfo;
 
         private object mutex = new object();
@@ -59,6 +61,7 @@ namespace Infovision.Data
             this.lastIndex = -1;
             this.objectId2Index = new Dictionary<long, int>(capacity);
             this.index2ObjectId = new long[capacity];
+            this.weights = new decimal[capacity];
         }
 
         #endregion
@@ -107,6 +110,9 @@ namespace Infovision.Data
             
             long[] newIndex2ObjectId = new long[newCapacity];
             Array.Copy(index2ObjectId, newIndex2ObjectId, this.index2ObjectId.Length);
+
+            decimal[] newWeights = new decimal[newCapacity];
+            Array.Copy(weights, newWeights, this.weights.Length);
             
             this.capacity = newCapacity;
             data = newStorage;
@@ -150,6 +156,8 @@ namespace Infovision.Data
             //index2ObjectId.Add(lastIndex, record.ObjectId);
             index2ObjectId[lastIndex] = record.ObjectId;
 
+            weights[lastIndex] = 1;
+
             objectId2Index.Add(record.ObjectId, lastIndex);
             record.ObjectIdx = lastIndex;            
         }
@@ -179,6 +187,43 @@ namespace Infovision.Data
                 ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
 
             return ret;
+        }
+
+        public void SetWeights(decimal[] w)
+        {
+            if (w.Length != this.weights.Length)
+                throw new ArgumentException("Invalid length of value vector", "w");
+
+            Array.Copy(w, this.weights, w.Length);
+        }
+
+        public void NormalizeWeights()
+        {            
+            decimal sum = 0;
+            for (int i = 0; i < this.NumberOfRecords; i++)
+                sum += this.weights[i];
+            for (int i = 0; i < this.NumberOfRecords; i++)
+                this.weights[i] /= sum;                
+        }
+
+        public decimal GetWeight(int objectIdx)
+        {
+            return this.weights[objectIdx];
+        }
+
+        public void SetWeight(int objectIdx, decimal weight)
+        {
+            this.weights[objectIdx] = weight;
+        }
+
+        public decimal GetWeightByObjectId(long objectId)
+        {
+            return this.weights[this.objectId2Index[objectId]];
+        }
+
+        public void SetWeightByObjectId(long objectId, decimal weight)
+        {
+            this.weights[this.objectId2Index[objectId]] = weight;
         }
 
         public long[] GetColumnInternal(int fieldId)

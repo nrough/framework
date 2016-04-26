@@ -53,7 +53,7 @@ namespace Infovision.Data
             set 
             {
                 if (value < 0 || value > this.nfold - 1)
-                    throw new IndexOutOfRangeException(String.Format("ActiveFold must have value from {0} to {1}", 0, this.nfold - 1));
+                    throw new IndexOutOfRangeException(String.Format("ActiveFold must have key from {0} to {1}", 0, this.nfold - 1));
                 
                 this.activeFold = value; 
             }

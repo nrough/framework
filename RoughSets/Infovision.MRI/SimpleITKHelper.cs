@@ -12,7 +12,7 @@ namespace Infovision.MRI
     public class SimpleITKHelper
     {
         /// <summary>
-        /// Get maximum pixel value based on itk.simple PixelEnumValueId
+        /// Get maximum pixel key based on itk.simple PixelEnumValueId
         /// </summary>
         /// <param name="pixelID"></param>
         /// <returns></returns>
@@ -55,7 +55,7 @@ namespace Infovision.MRI
         }
 
         /// <summary>
-        /// Get maximum pixel value based on pixel <c>Type</c>
+        /// Get maximum pixel key based on pixel <c>Type</c>
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -446,7 +446,7 @@ namespace Infovision.MRI
                 return PixelFormats.Gray32Float;
             }
 
-            throw new NotImplementedException(String.Format("PixelIDValueEnum value {0} not implemented.", pixelIDValueEnum.ToString()));
+            throw new NotImplementedException(String.Format("PixelIDValueEnum key {0} not implemented.", pixelIDValueEnum.ToString()));
         }
         */
 
@@ -493,7 +493,7 @@ namespace Infovision.MRI
                 return System.Drawing.Imaging.PixelFormat.Format64bppArgb;
             }
 
-            throw new NotImplementedException(String.Format("PixelIDValueEnum value {0} not implemented.", pixelIDValueEnum.ToString()));
+            throw new NotImplementedException(String.Format("PixelIDValueEnum key {0} not implemented.", pixelIDValueEnum.ToString()));
         }
 
         public static IntPtr GetIntPtr<T>(Array src, int srcOffset, int srcCount, int dstCount)

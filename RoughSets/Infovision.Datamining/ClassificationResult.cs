@@ -266,7 +266,7 @@ namespace Infovision.Datamining
             long[] decArray = decisionValues.ToArray();            
             double[] decDistribution = new double[decArray.Length];
             for(int i=0; i<decArray.Length; i++)
-                decDistribution[i] = dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
+                decDistribution[i] = (int)dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
             Array.Sort(decDistribution, decArray);
             decDistribution = null;
             Array.Copy(decArray, 0, decisions, 1, decCount);

@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             case IdentificationType.WeightSupport: identificationFunc = RuleQuality.SupportW; break;
                             case IdentificationType.WeightConfidence: identificationFunc = RuleQuality.ConfidenceW; break;
                             case IdentificationType.WeightCoverage: identificationFunc = RuleQuality.CoverageW; break;
-                            default: throw new ArgumentException("Unknown value", "identificationType");
+                            default: throw new ArgumentException("Unknown key", "identificationType");
                         }
 
                         switch (voteType)
@@ -59,7 +59,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             case VoteType.WeightRatio: voteFunc = RuleQuality.RatioW; break;
                             case VoteType.WeightStrength: voteFunc = RuleQuality.StrengthW; break;
                             case VoteType.ConfidenceRelative: voteFunc = RuleQuality.ConfidenceRelative; break;
-                            default: throw new ArgumentException("Unknown value", "voteType");
+                            default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
                         DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);

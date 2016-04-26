@@ -30,9 +30,9 @@ namespace DermoReducts
             Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.InternalValues().Count);
             foreach (long val in ageAttribute.InternalValues())
                 if (val != ageAttribute.MissingValueInternal)
-                    countVals.Add(val, ageAttribute.Histogram.GetBinValue(val));
+                    countVals.Add(val, (int)ageAttribute.Histogram.GetBinValue(val));
 
-            DataRecordInternal[] missingRecs = new DataRecordInternal[ageAttribute.Histogram.GetBinValue(ageAttribute.MissingValueInternal)];
+            DataRecordInternal[] missingRecs = new DataRecordInternal[(int)ageAttribute.Histogram.GetBinValue(ageAttribute.MissingValueInternal)];
 
             for (int i = 0, j = 0; i < data.NumberOfRecords; i++)
             {

@@ -133,12 +133,12 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             Dictionary<int, DendrogramNode> nodesSimple = simpleVersion.Nodes;
             Dictionary<int, DendrogramNode> nodesAggregative = aggregativeVersion.Nodes;
-            DoubleEpsilonComparer comparer = new DoubleEpsilonComparer(0.0000000001);
+            
             foreach (KeyValuePair<int, DendrogramNode> kvp in nodesSimple)
             {
                 DendrogramNode otherNode = nodesAggregative[kvp.Key];
 
-                if (!comparer.Equals(kvp.Value.Height, otherNode.Height))
+                if (!DoubleEpsilonComparer.Instance.Equals(kvp.Value.Height, otherNode.Height))
                     Assert.True(false, String.Format("Node hight is different"));
 
                 if (otherNode.LeftNode != null && otherNode.RightNode != null)
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             {
                 DendrogramNode otherNode = nodesSimple[kvp.Key];
 
-                if (!comparer.Equals(kvp.Value.Height, otherNode.Height))
+                if (!DoubleEpsilonComparer.Instance.Equals(kvp.Value.Height, otherNode.Height))
                     Assert.True(false, String.Format("Node hight is different"));
 
                 if (otherNode.LeftNode != null && otherNode.RightNode != null)

@@ -1,0 +1,179 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Infovision.Math
+{
+    public class EpsilonComparer<T> : EqualityComparer<T>, IComparer<T>
+        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
+    {
+        public T Epsilon
+        {
+            get;
+            protected set;
+        }
+        
+        public EpsilonComparer(T epsilon)            
+        {
+            this.Epsilon = epsilon;
+        }                
+
+        public override bool Equals(T a, T b)
+        {            
+            return NearlyEqual(a, b, this.Epsilon);
+        }
+
+        public virtual int Compare(T a, T b)
+        {
+            return a.CompareTo(b);            
+        }
+
+        public override int GetHashCode(T a)
+        {
+            return a.GetHashCode();
+        }
+
+        public virtual bool NearlyEqual(T a, T b, T epsilon)
+        {
+            return a.Equals(b);            
+        }
+    }
+
+    public class DoubleEpsilonComparer : EpsilonComparer<double>
+    {        
+        private static volatile DoubleEpsilonComparer instance;
+        private static object syncRoot = new Object();
+        private static double DefaultEpsilon = 1E-9;
+        
+        public static DoubleEpsilonComparer Instance
+        {
+            get 
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot) 
+                    {
+                        if (instance == null) 
+                            instance = new DoubleEpsilonComparer(DoubleEpsilonComparer.DefaultEpsilon);
+                    }
+                }
+                return instance;
+            }
+        }
+
+        public DoubleEpsilonComparer(double epsilon)
+            : base(epsilon)
+        {
+
+        }
+
+        public override int Compare(double a, double b)
+        {            
+            double dif = a - b;
+            if (dif > this.Epsilon)
+                return 1;
+            else if (dif < this.Epsilon)
+                return -1;
+            return 0;
+        }
+
+        public override bool Equals(double a, double b)
+        {            
+            return NearlyEqual(a, b, this.Epsilon);
+        }
+
+        public override bool NearlyEqual(double a, double b, double epsilon)
+        {            
+            double absA = System.Math.Abs(a);
+            double absB = System.Math.Abs(b);
+            double diff = System.Math.Abs(a - b);
+
+            if (a == b)
+            {
+                // shortcut, handles infinities
+                return true;
+            }
+            else if (a == 0 || b == 0 || diff < Double.MinValue)
+            {
+                // a or b is zero or both are extremely close to it
+                // relative error is less meaningful here
+                return diff < (epsilon * Double.MinValue);
+            }
+            else
+            {
+                // use relative error
+                return diff / (absA + absB) < epsilon;
+            }
+        }
+    }
+
+    public class DecimalEpsilonComparer : EpsilonComparer<decimal>
+    {        
+        private static volatile DecimalEpsilonComparer instance;
+        private static object syncRoot = new Object();
+        private static decimal DefaultEpsilon = 0.00000000000000001m;
+        
+        public static DecimalEpsilonComparer Instance
+        {
+            get 
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot) 
+                    {
+                        if (instance == null) 
+                            instance = new DecimalEpsilonComparer(DecimalEpsilonComparer.DefaultEpsilon);
+                    }
+                }
+                return instance;
+            }
+        }
+
+        public DecimalEpsilonComparer(decimal epsilon)
+            : base(epsilon)
+        {
+        }
+
+        public override int Compare(decimal a, decimal b)
+        {            
+            decimal dif = a - b;
+            if (dif > this.Epsilon)
+                return 1;
+            else if (dif < this.Epsilon)
+                return -1;
+            return 0;
+        }
+
+        public override bool Equals(decimal a, decimal b)
+        {            
+            return NearlyEqual(a, b, this.Epsilon);
+        }
+
+        public override bool NearlyEqual(decimal a, decimal b, decimal epsilon)
+        {            
+            decimal absA = System.Math.Abs(a);
+            decimal absB = System.Math.Abs(b);
+            decimal diff = System.Math.Abs(a - b);
+
+            if (a == b)
+            {
+                // shortcut, handles infinities
+                return true;
+            }
+            else if (a == 0 || b == 0 || diff < Decimal.MinValue)
+            {
+                // a or b is zero or both are extremely close to it
+                // relative error is less meaningful here
+                return diff < (epsilon * Decimal.MinValue);
+            }
+            else
+            {
+                // use relative error
+                return diff / (absA + absB) < epsilon;
+            }
+        }
+    }
+    
+}

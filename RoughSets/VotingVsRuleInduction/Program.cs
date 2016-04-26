@@ -135,8 +135,8 @@ namespace VotingVsRuleInduction
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).DataStoreInfo.GetDecisionValues());
                             ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData));
                             result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
-                            
-                            if (DoubleEpsilonComparer.NearlyEqual(result.QualityRatio, 0.0d))
+
+                            if (DoubleEpsilonComparer.Instance.Equals(result.QualityRatio, 0.0d))
                             {
                                 emptyReductResult = true;
                             }

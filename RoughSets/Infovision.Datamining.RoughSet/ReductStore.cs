@@ -228,7 +228,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     /*
                     if (this.AllowDuplicates == false
-                        && DoubleEpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
+                        && EpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
                         && reduct.Attributes.Superset(localReduct.Attributes))
                     {                    
                         return false;                    

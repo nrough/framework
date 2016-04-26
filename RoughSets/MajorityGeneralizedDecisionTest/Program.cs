@@ -45,22 +45,18 @@ namespace MajorityGeneralizedDecisionTest
         }
 
         public void Init()
-        {
-            //trainData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            //testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1);
+        {                       
+            trainData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
             
-            trainData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1);
-            
-            weightGenerator = new WeightGeneratorMajority(trainData);            
+            weightGenerator = new WeightGeneratorMajority(trainData);
             trainData.SetWeights(weightGenerator.Weights);
+            trainData.DataStoreInfo.CreateWeightHistogram(trainData, weightGenerator.Weights, trainData.DataStoreInfo.DecisionFieldId);
 
-            testData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
-            
-            
-
-            eps = 0;
+            testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1, trainData.DataStoreInfo);
+                        
+            eps = 0.00m;
             ensembleSize = 10;
-            ratio = 10;
+            ratio = 2;
             permutationSize = ensembleSize * ratio;
             
             reductLengthComparer = new ReductLengthComparer();

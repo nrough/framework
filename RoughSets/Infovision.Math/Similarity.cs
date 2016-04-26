@@ -10,9 +10,7 @@ namespace Infovision.Math
     /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html
     /// </summary>
     public static class Similarity
-    {
-        private static readonly double tinyDouble = 0.0000000001;
-
+    {        
         public static double Euclidean(double[] a, double[] b)
         {
             return System.Math.Sqrt(Similarity.SquaredEuclidean(a, b));
@@ -59,7 +57,7 @@ namespace Infovision.Math
 
             double sum = 0.0;
             for (int i = 0; i < v1.Length; i++)
-                if ( ! DoubleEpsilonComparer.NearlyEqual(v1[i], v2[i], tinyDouble))
+                if (!DoubleEpsilonComparer.Instance.Equals(v1[i], v2[i]))
                     sum += System.Math.Max(v1[i], v2[i]);
             
             return v1.Length > 0 ? sum / (double) v1.Length : 0.0;
@@ -146,7 +144,7 @@ namespace Infovision.Math
 
                 double denominator = (alpha * a + beta * b + c);
 
-                if (DoubleEpsilonComparer.NearlyEqual(denominator, 0.0, tinyDouble))
+                if (DoubleEpsilonComparer.Instance.Equals(denominator, 0.0))
                     return 0.0;
 
                 return c / denominator;
@@ -167,7 +165,7 @@ namespace Infovision.Math
 
             double denominator = beta * (alpha * x + (1.0 - alpha) * y) + c;
 
-            if (DoubleEpsilonComparer.NearlyEqual(denominator, 0.0, tinyDouble))
+            if (DoubleEpsilonComparer.Instance.Equals(denominator, 0.0))
                 return 0.0;
 
             return c / denominator;
@@ -187,7 +185,7 @@ namespace Infovision.Math
 
                 double denominator = beta * (alpha * x + (1.0 - alpha) * y) + c;
 
-                if (DoubleEpsilonComparer.NearlyEqual(denominator, 0.0, tinyDouble))
+                if (DoubleEpsilonComparer.Instance.Equals(denominator, 0.0))
                     return 0.0;
 
                 return c / denominator;
@@ -484,16 +482,16 @@ namespace Infovision.Math
 
             for (int i = 0; i < vec1.Length; i++)
             {
-                if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble)
-                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
+                if (DoubleEpsilonComparer.Instance.Equals(vec1[i], 0.0)
+                    && DoubleEpsilonComparer.Instance.Equals(vec2[i], 0.0))
                 {
                     d++;
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble))
+                else if (DoubleEpsilonComparer.Instance.Equals(vec1[i], 0.0))
                 {
                     b++;
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
+                else if (DoubleEpsilonComparer.Instance.Equals(vec2[i], 0.0))
                 {
                     a++;
                 }
@@ -522,16 +520,16 @@ namespace Infovision.Math
 
             for (int i = 0; i < vec1.Length; i++)
             {
-                if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble)
-                    && DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
+                if (DoubleEpsilonComparer.Instance.Equals(vec1[i], 0.0)
+                    && DoubleEpsilonComparer.Instance.Equals(vec2[i], 0.0))
                 {
                     d += weights[i];
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec1[i], 0.0, tinyDouble))
+                else if (DoubleEpsilonComparer.Instance.Equals(vec1[i], 0.0))
                 {
                     b += weights[i];
                 }
-                else if (DoubleEpsilonComparer.NearlyEqual(vec2[i], 0.0, tinyDouble))
+                else if (DoubleEpsilonComparer.Instance.Equals(vec2[i], 0.0))
                 {
                     a += weights[i];
                 }

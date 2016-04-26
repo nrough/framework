@@ -11,8 +11,7 @@ namespace Infovision.Statistics
     public static class Tools
     {
         static double LOGPI = 1.14472988584940017414;
-        static double LOG2 = System.Math.Log(2.0);
-        static DoubleEpsilonComparer comparer = new DoubleEpsilonComparer();
+        static double LOG2 = System.Math.Log(2.0);        
         static double MAX_INT_FOR_CACHE_PLUS_ONE = 10000;
         static double[] INT_N_LOG_N_CACHE = new double[(int)MAX_INT_FOR_CACHE_PLUS_ONE];
 
@@ -151,7 +150,7 @@ namespace Infovision.Statistics
                 returnValue -= LnFunc(sample[i]);
                 sum += sample[i];
             }
-            return comparer.Equals(sum, 0.0) ? 0.0 : (returnValue + LnFunc(sum)) / (sum * LOG2);
+            return DoubleEpsilonComparer.Instance.Equals(sum, 0.0) ? 0.0 : (returnValue + LnFunc(sum)) / (sum * LOG2);
         }
 
         public static double LnFunc(double num)
@@ -188,8 +187,8 @@ namespace Infovision.Statistics
                 }
                 returnValue = returnValue - LnFunc(sumForRow);
                 total += sumForRow;
-            }            
-            return comparer.Equals(total, 0.0) ? 0.0 : -returnValue / (total * LOG2);            
+            }
+            return DoubleEpsilonComparer.Instance.Equals(total, 0.0) ? 0.0 : -returnValue / (total * LOG2);            
         }
 
         public static double EntropyConditionedOnColumns(double[][] matrix)
@@ -206,12 +205,12 @@ namespace Infovision.Statistics
                 returnValue = returnValue - LnFunc(sumForColumn);
                 total += sumForColumn;
             }
-            return comparer.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);            
+            return DoubleEpsilonComparer.Instance.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);            
         }
         
         public static double Log2Binomial(double a, double b)
         {
-            if (comparer.Compare(b, a) > 0)
+            if (DoubleEpsilonComparer.Instance.Compare(b, a) > 0)
             {
                 throw new ArithmeticException("Can't compute binomial coefficient.");
             }
@@ -226,7 +225,7 @@ namespace Infovision.Statistics
 
             for (i = 0; i < bs.Length; i++)
             {
-                if (comparer.Compare(bs[i], a) > 0)
+                if (DoubleEpsilonComparer.Instance.Compare(bs[i], a) > 0)
                 {
                     throw new ArithmeticException("Can't compute multinomial coefficient.");
                 }

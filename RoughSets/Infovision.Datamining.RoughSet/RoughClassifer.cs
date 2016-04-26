@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 using System.Diagnostics;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {   
@@ -31,6 +32,7 @@ namespace Infovision.Datamining.Roughset
         public ICollection<long> DecisionValues { get; set; }
         public bool UseExceptionRules { get; set; }
         public bool ExceptionRulesAsGaps { get; set; }
+        public bool IdentifyMultipleDecision { get; set; }
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
         public decimal MinimumVoteValue { get; set; }
@@ -67,6 +69,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.ReductStoreCollection = reductStoreCollection;
             this.UseExceptionRules = true;
+            this.IdentifyMultipleDecision = true;
             this.IdentificationFunction = identificationFunction;
             this.VoteFunction = voteFunction;
             this.DecisionValues = decisionValues;
@@ -214,22 +217,53 @@ namespace Infovision.Datamining.Roughset
                     }                    
 
                     if (this.VoteFunction.Equals(this.IdentificationFunction))
-                    {
-                        if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
+                    {                        
+                        if (this.IdentifyMultipleDecision)
                         {
-                            //TODO add loop over all decisions with max identifiedDecisionWeight
-                            reductsVotes[identifiedDecision] += identifiedDecisionWeight;
+                            for (int k = 1; k < this.decCountPlusOne; k++)
+                            {
+                                if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
+                                {
+                                    if ((this.MinimumVoteValue <= 0) || (identificationWeights[k] >= this.MinimumVoteValue))
+                                    {
+                                        reductsVotes[k] += identificationWeights[k];
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
+                            {
+                                reductsVotes[identifiedDecision] += identificationWeights[identifiedDecision];
+                            }
                         }
                     }
                     else
                     {
                         if (identifiedDecision != 0)
-                        {
-                            //TODO in case of more than one identified decision we should add more votes, not only one
-                            decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
-                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                        {                            
+                            if (this.IdentifyMultipleDecision)
                             {
-                                reductsVotes[identifiedDecision] += vote;
+                                for (int k = 1; k < this.decCountPlusOne; k++)
+                                {
+                                    if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
+                                    {
+                                        decimal vote = this.VoteFunction(decisions[k], reduct, eqClass);
+                                        if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                        {
+                                            reductsVotes[k] += vote;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
+                                if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                {
+                                    reductsVotes[identifiedDecision] += vote;
+                                }
                             }
                         }
                     }

@@ -112,7 +112,7 @@
     <Compile Include="DoubleExtensions.cs" />
     <Compile Include="Similarity.cs" />
     <Compile Include="DistanceMatrix.cs" />
-    <Compile Include="DoubleEpsilonComparer.cs" />
+    <Compile Include="EpsilonComparer.cs" />
     <Compile Include="MatrixIndex.cs" />
     <Compile Include="MatrixTuple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

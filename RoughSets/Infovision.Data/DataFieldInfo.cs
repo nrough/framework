@@ -35,8 +35,8 @@ namespace Infovision.Data
             {
                 this.valueDictionary = new Dictionary<object, long>(this.initialNumberOfValues);
                 this.indexDictionary = new Dictionary<long, object>(this.initialNumberOfValues);
-                this.histogram = new Histogram<long>();
-                this.histogramWeights = new Histogram<long>();
+                this.histogram = new Histogram<long>(this.initialNumberOfValues);
+                this.histogramWeights = new Histogram<long>(this.initialNumberOfValues);
             }
             
             this.Id = attributeId;

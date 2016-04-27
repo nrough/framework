@@ -102,7 +102,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     foreach (IReduct reduct in reducts)
                     {
-                        if ((reduct.IsException || reduct.IsGap) && includeExceptions == false)
+                        if (reduct.IsException && includeExceptions == false)
                         {
                             count += reduct.ObjectSetInfo.NumberOfRecords;
                         }                                                    

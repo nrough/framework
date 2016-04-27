@@ -6,7 +6,7 @@ namespace Infovision.Data
     public interface IDataReader
     {
         DataStoreInfo Analyze();
-        void Load(DataStoreInfo dataStoreInfo, DataStore dataStore);
+        void Load(DataStore dataStore, DataStoreInfo dataStoreInfo);
         string DataName { get; }
         int DecisionId { get; set; }
         string MissingValue { get; set; }
@@ -71,6 +71,6 @@ namespace Infovision.Data
         }
 
         public abstract DataStoreInfo Analyze();
-        public abstract void Load(DataStoreInfo dataStoreInfo, DataStore dataStore);
+        public abstract void Load(DataStore dataStore, DataStoreInfo dataStoreInfo);
     }
 }

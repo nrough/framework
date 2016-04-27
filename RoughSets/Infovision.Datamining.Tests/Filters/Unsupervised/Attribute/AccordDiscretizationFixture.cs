@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 	[TestFixture]
 	public class AccordDiscretizationFixture
 	{
-		#region Member fields
+		#region Member fileLine
 		
 		private string reductFactoryKey;
 		private Comparer<IReduct> filterReductComparer;		

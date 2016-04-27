@@ -208,9 +208,7 @@ namespace ExceptionRulesTiming
             parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.ExceptionRulesAsGaps, false);
-
+            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);          
             
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;

@@ -36,6 +36,7 @@ namespace MajorityGeneralizedDecisionTest
                 
                 program.ApproximateDecisionReduct();
                 program.MajorityGeneralizedDecisionPerformanceTest();
+                program.MajorityGeneralizedDecisionGapsPerformanceTest();
 
                 //Console.ReadKey();
             }            
@@ -50,8 +51,7 @@ namespace MajorityGeneralizedDecisionTest
             
             weightGenerator = new WeightGeneratorMajority(trainData);
             trainData.SetWeights(weightGenerator.Weights);
-            trainData.DataStoreInfo.CreateWeightHistogram(trainData, weightGenerator.Weights, trainData.DataStoreInfo.DecisionFieldId);
-
+            
             testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1, trainData.DataStoreInfo);
                         
             eps = 0.00m;
@@ -106,6 +106,42 @@ namespace MajorityGeneralizedDecisionTest
 
             
             Console.WriteLine("{0,4}|{1}", "GMDR", result_GMDR);
+        }
+
+        public void MajorityGeneralizedDecisionGapsPerformanceTest()
+        {
+            Args parms = new Args();
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);            
+
+            ReductGeneralizedMajorityDecisionGenerator generator =
+                ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
+            generator.Run();
+            IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
+            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);
+
+            //Console.WriteLine(filteredReductStoreCollection_GMDR.FirstOrDefault().FirstOrDefault());
+
+            RoughClassifier classifier = new RoughClassifier(
+                filteredReductStoreCollection,
+                RuleQuality.CoverageW,
+                RuleQuality.CoverageW,
+                trainData.DataStoreInfo.GetDecisionValues());
+            
+            classifier.UseExceptionRules = true;
+            classifier.ExceptionRulesAsGaps = true;
+
+            ClassificationResult result = classifier.Classify(testData);
+            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.ModelCreationTime = generator.ReductGenerationTime;
+            result.ClassificationTime = classifier.ClassificationTime;
+
+
+            Console.WriteLine("{0,4}|{1}", "GAPS", result);
         }
 
         public void ApproximateDecisionReduct()

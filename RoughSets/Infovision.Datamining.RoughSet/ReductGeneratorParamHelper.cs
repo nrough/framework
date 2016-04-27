@@ -45,12 +45,11 @@ namespace Infovision.Datamining.Roughset
         public static readonly string MinimumVoteValue = "MinimumVoteValue";
         public static readonly string FixedPermutations = "FixedPermutations";
         public static readonly string UseClassificationCost = "UseClassificationCost";
-        public static readonly string ExceptionRulesAsGaps = "ExceptionRulesAsGaps";
         public static readonly string CVNumberOfFolds = "CVNumberOfFolds";
         public static readonly string ReductComparer = "ReductComparer";
     }
 
-    //TODO Keys should be returned from Generator classes as static fields
+    //TODO Keys should be returned from Generator classes as static fileLine
     public static class ReductFactoryKeyHelper
     {
         public const string GammaBireduct = "GammaBireduct";
@@ -62,8 +61,7 @@ namespace Infovision.Datamining.Roughset
         public const string ApproximateReductMajorityWeights = "ApproximateReductMajorityWeights";
         public const string ApproximateReductMajority = "ApproximateReductMajority";
         public const string ReductEnsembleStream = "ReductEnsembleStream";
-        public const string ReductEnsemble = "ReductEnsemble";
-        public const string ReductGeneralizedDecision = "ReductGeneralizedDecision";
+        public const string ReductEnsemble = "ReductEnsemble";        
         public const string ReductEnsembleBoosting = "ReductEnsembleBoosting";
         public const string ReductEnsembleBoostingWithDendrogram = "ReductEnsembleBoostingWithDendrogram";
         public const string ReductEnsembleBoostingWithDiversity = "ReductEnsembleBoostingWithDiversity";

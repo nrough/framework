@@ -7,10 +7,8 @@ namespace Infovision.Data
 {
     public class ObjectSet : PascalSet<int>, IObjectSetInfo
     {
-        DataStore dataStore = null;
-        //decimal[] weights = null;
+        DataStore dataStore = null;        
         Dictionary<long, int> decisionCount;
-        //Dictionary<long, decimal> decisionWeight;
         private object mutex = new object();
                 
         #region Properties
@@ -39,40 +37,27 @@ namespace Infovision.Data
 
         #region Constructors
 
-        //public ObjectSet(DataStore dataStore, int[] initialData, decimal[] weights = null)
-        public ObjectSet(DataStore dataStore, int[] initialData)
+        
+        public ObjectSet(DataStore dataStore, IEnumerable<int> initialData)
             : base(0, dataStore.NumberOfRecords - 1, initialData)
         {
             this.dataStore = dataStore;
-            this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
-            //this.weights = weights;
-            //this.decisionWeight = new Dictionary<long, decimal>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
-            int decisionIndex = this.dataStore.DataStoreInfo.DecisionFieldIndex;
-            for (int i = 0; i < initialData.Length; i++)
+            this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);            
+            int decisionIdx = this.dataStore.DataStoreInfo.DecisionFieldIndex;            
+            foreach(int objectIdx in initialData)
             {
-                long decisionValue = this.dataStore.GetFieldIndexValue(initialData[i], decisionIndex);
-                
+                long decisionValue = this.dataStore.GetFieldIndexValue(objectIdx, decisionIdx);                
                 int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
-                
-                /*
-                decimal w = 0;
-                if (weights != null)
-                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + weights[i]) : weights[i];
-                else
-                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + 1) : 1;
-                */
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;                                
             }
         }
 
         public ObjectSet(DataStore dataStore)
-            //: this(dataStore, new int[] { }, null)
             : this(dataStore, new int[] { })
         {
         }
 
         public ObjectSet(ObjectSet objectSet)
-            //: this(objectSet.DataStore, objectSet.ToArray(), objectSet.weights)
             : this(objectSet.DataStore, objectSet.ToArray())
         {
         }
@@ -86,7 +71,6 @@ namespace Infovision.Data
             return this.decisionCount.Keys;
         }
 
-        //public void AddElement(int element, decimal value = 1)
         public override void AddElement(int element)
         {
             if (!this.ContainsElement(element))
@@ -96,8 +80,7 @@ namespace Infovision.Data
                 int count = 0;
                 this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
                 
-                //decimal w = 0;
-                //this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + value) : value;
+               
             }
 
             base.AddElement(element);
@@ -110,15 +93,7 @@ namespace Infovision.Data
                 long decisionValue = this.dataStore.GetDecisionValue(element);
                 
                 int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;
-                
-                /*
-                decimal w = 0;
-                if(this.weights != null)
-                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w - weights[element]) : 0;
-                else
-                    this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w - 1) : 0;
-                */
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;                                
             }
             
             base.RemoveElement(element);            
@@ -135,19 +110,7 @@ namespace Infovision.Data
             if (this.decisionCount.TryGetValue(decisionValue, out count))
                 return count;
             return 0;
-        }
-
-        /*
-        public decimal DecisionWeight(long decisionValue)
-        {
-            if (weights == null)
-                return (decimal)this.NumberOfObjectsWithDecision(decisionValue);
-            decimal w = 0;
-            if (this.decisionWeight.TryGetValue(decisionValue, out w))
-                return w;
-            return 0;
-        }
-        */
+        }        
 
         #region System.Object Methods
 

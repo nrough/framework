@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,12 @@ namespace Infovision.Data
         public int NumberOfRecords 
         {
             get { return this.DataStoreInfo.NumberOfRecords; } 
-        }        
+        }
+
+        public decimal[] Weights
+        { 
+            get { return this.weights; } 
+        }
         
         #endregion
 
@@ -195,6 +201,14 @@ namespace Infovision.Data
                 throw new ArgumentException("Invalid length of value vector", "w");
 
             Array.Copy(w, this.weights, w.Length);
+
+            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Standard))
+            {
+                if (fieldInfo.HistogramWeights != null)
+                {
+                    fieldInfo.CreateWeightHistogram(this, this.weights);
+                }
+            }
         }
 
         public void NormalizeWeights()
@@ -602,7 +616,7 @@ namespace Infovision.Data
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);
             dataStore.Name = dataReader.DataName;
-            dataReader.Load(dataStoreInfo, dataStore);            
+            dataReader.Load(dataStore, dataStoreInfo);            
             return dataStore;
         }              
 

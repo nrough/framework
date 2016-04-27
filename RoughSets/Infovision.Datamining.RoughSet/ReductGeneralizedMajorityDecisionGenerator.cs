@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
     {
         private decimal dataSetQuality = Decimal.One;
         private WeightGenerator weightGenerator = null;
-        private List<int[]> attributePermutations;
+        protected List<int[]> attributePermutations;
 
         //private EquivalenceClassCollection origEquivalenceClasses;
 
@@ -119,9 +119,9 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected virtual void InitReductStoreCollection()
+        protected virtual void InitReductStoreCollection(int capacity = 1)
         {
-            this.ReductStoreCollection = new ReductStoreCollection(1);
+            this.ReductStoreCollection = capacity > 0 ? new ReductStoreCollection(capacity) : new ReductStoreCollection();
         }
 
         protected virtual void CalcDataSetQuality()
@@ -168,7 +168,9 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(localPermutation, this.DataStore, epsilon, weights);
             eqClasses.CountWeightObjects = this.DataSetQuality;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;                        
+            
             this.KeepMajorDecisions(eqClasses, epsilon);
+            
             int len = localPermutation.Length;
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
             
@@ -309,208 +311,6 @@ namespace Infovision.Datamining.Roughset
             return new PermutationGenerator(dataStore);
         }
     }
-
-    //TODO Clean up. Use exceptionRules should identify if we use exceptions as rules or as gaps. We do not need ExceptionRulesAsGaps!
-    public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
-    {
-        public bool UseExceptionRules { get; set; }
-        public bool ExceptionRulesAsGaps { get; set; }
-        public decimal Gamma { get; set; }
-        protected decimal WeightDropLimit { get; set; }
-        protected decimal ObjectWeightSum { get; set; }
-
-
-        protected override void Generate()
-        {
-            /*
-            ParallelOptions options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2);
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
-            */
-
-            this.ObjectWeightSum = this.WeightGenerator.Weights.Sum();
-            this.WeightDropLimit = Decimal.Round((Decimal.One - this.Epsilon) * this.ObjectWeightSum, 17);
-            
-            if (this.UseExceptionRules)
-            {
-                this.ReductStoreCollection = new ReductStoreCollection(this.Permutations.Count);
-                //Parallel.ForEach(this.Permutations, options, permutation =>
-                foreach(var permutation in this.Permutations)
-                {
-                    int cut = this.MaxReductLength > 0
-                        ? this.MaxReductLength
-                        : permutation.Length;
-
-                    int[] attributes = new int[cut];
-                    for (int i = 0; i < cut; i++)
-                        attributes[i] = permutation[i];
-                    
-                    ReductStore localReductPool = new ReductStore();
-                    localReductPool.DoAddReduct(this.CalculateReduct(attributes, localReductPool));
-                    this.ReductStoreCollection.AddStore(localReductPool);
-                }
-                //);
-            }
-            else
-            {
-                this.ReductStoreCollection = new ReductStoreCollection(1);
-                ReductStore localReductPool = new ReductStore(this.Permutations.Count);
-                //Parallel.ForEach(this.Permutations, options, permutation =>
-                foreach(var permutation in this.Permutations)
-                {
-                    int cut = this.MinReductLength > 0
-                        ? this.MaxReductLength
-                        : permutation.Length;
-
-                    int[] attributes = new int[cut];
-                    for (int i = 0; i < cut; i++)
-                        attributes[i] = permutation[i];
-
-                    IReduct r = this.CalculateReduct(attributes, localReductPool);
-                    localReductPool.DoAddReduct(r);
-                }
-                //);
-
-                this.ReductStoreCollection.AddStore(localReductPool);
-            }
-        }
-
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
-        {
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
-            eqClasses.CountWeightObjects = this.ObjectWeightSum;
-            eqClasses.CountObjects = this.DataStore.NumberOfRecords;
-
-            this.KeepMajorDecisions(eqClasses, Decimal.Zero);
-
-            int len = permutation.Length;
-            int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
-            while (step >= 1)
-            {
-                for (int i = 0; i < len && step <= len; i += step)
-                {
-                    EquivalenceClassCollection newEqClasses = this.Reduce(eqClasses, i, step, reductStore);
-
-                    //reduction was made
-                    if (!Object.ReferenceEquals(newEqClasses, eqClasses))
-                    {
-                        eqClasses = newEqClasses;
-                        len -= step;
-                        i -= step;
-                    }
-                }
-
-                if (step == 1)
-                    break;
-
-                step /= 2;
-            }
-
-            eqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
-            return this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), eqClasses);
-        }
-        
-        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
-        {
-            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);           
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
-            newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
-            newEqClasses.CountObjects = eqClasses.CountObjects;
-
-            EquivalenceClass[] eqArray =  eqClasses.Partitions.Values.ToArray();
-            ReductStore localReductStore = new ReductStore();
-            
-#if !DEBUG            
-            eqArray.Shuffle();
-#endif
-                        
-            foreach(EquivalenceClass eq in eqArray)
-            {
-                var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
-
-                EquivalenceClass newEqClass = null;
-                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
-                {
-                    PascalSet<long> newDecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
-
-                    if (newDecisionSet.Count > 0)
-                    {
-                        newEqClass.DecisionSet = newDecisionSet;
-                        newEqClass.WeightSum += eq.WeightSum;
-                        newEqClass.AddObjectInstances(eq.Instances);
-                    }
-                    else
-                    {
-                        newEqClasses.CountWeightObjects -= eq.WeightSum;
-                        newEqClasses.CountObjects -= eq.NumberOfObjects;
-
-                        if (Decimal.Round(newEqClasses.CountWeightObjects, 17) < this.WeightDropLimit)
-                            return eqClasses;
-
-                        if (this.UseExceptionRules && reductStore != null)
-                        {
-                            Bireduct exceptionReduct = new Bireduct(this.DataStore,
-                                newAttributes, 
-                                eq.ObjectIndexes.ToArray(), 
-                                this.Epsilon,
-                                this.WeightGenerator.Weights);
-
-                            exceptionReduct.IsException = this.UseExceptionRules;
-                            exceptionReduct.IsGap = this.ExceptionRulesAsGaps;
-
-                            localReductStore.AddReduct(exceptionReduct);
-                        }
-                    }
-                }
-                else
-                {
-                    newEqClass = new EquivalenceClass(newInstance, this.DataStore);
-                    newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
-                    newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
-                    newEqClass.WeightSum += eq.WeightSum;
-
-                    newEqClasses.Partitions[newInstance] = newEqClass;
-                }
-            }
-
-            for (int i = 0; i < localReductStore.Count; i++)
-                reductStore.AddReduct(localReductStore.GetReduct(i));
-
-            return newEqClasses;
-        }
-
-        public override void InitFromArgs(Args args)
-        {
-            base.InitFromArgs(args);
-
-            if (args.Exist(ReductGeneratorParamHelper.UseExceptionRules))
-                this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
-
-            if (args.Exist(ReductGeneratorParamHelper.ExceptionRulesAsGaps))
-                this.ExceptionRulesAsGaps = (bool)args.GetParameter(ReductGeneratorParamHelper.ExceptionRulesAsGaps);
-        }               
-    }
-
-    public class ReductGeneralizedMajorityDecisionApproximateFactory : IReductFactory
-    {
-        public virtual string FactoryKey
-        {
-            get { return ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate; }
-        }
-
-        public virtual IReductGenerator GetReductGenerator(Args args)
-        {
-            ReductGeneralizedMajorityDecisionApproximateGenerator rGen = new ReductGeneralizedMajorityDecisionApproximateGenerator();
-            rGen.InitFromArgs(args);
-            return rGen;
-        }
-
-        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
-        {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
-            return new PermutationGenerator(dataStore);
-        }
-    }
+    
+    
 }

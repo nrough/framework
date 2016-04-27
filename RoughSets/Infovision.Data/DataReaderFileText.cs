@@ -88,7 +88,7 @@ namespace Infovision.Data
             if (!this.CheckNumberOfRows(rows))
             {
                 throw new System.InvalidOperationException(String.Format(CultureInfo.InvariantCulture,
-                                                                         "Wrong number of fields. Expected number: {0}, Actual number: {1}",
+                                                                         "Wrong number of fileLine. Expected number: {0}, Actual number: {1}",
                                                                          this.expectedRows,
                                                                          rows));
             }
@@ -167,7 +167,7 @@ namespace Infovision.Data
             return true;
         }
 
-        public override void Load(DataStoreInfo dataStoreInfo, DataStore dataStore)
+        public override void Load(DataStore dataStore, DataStoreInfo dataStoreInfo)
         {
             int numberOfFields = this.ReferenceDataStoreInfo != null ? this.ReferenceDataStoreInfo.NumberOfFields : dataStoreInfo.NumberOfFields;
             int[] fieldId = new int[numberOfFields];
@@ -187,17 +187,16 @@ namespace Infovision.Data
                         {
                             linenum++;
 
-                            string[] fields = line.Split(fieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
+                            string[] fileLine = line.Split(fieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
 
-                            if (fields.Length != dataStoreInfo.NumberOfFields)
+                            if (fileLine.Length != dataStoreInfo.NumberOfFields)
                                 throw new System.InvalidOperationException();
 
-                            IComparable[] typedFieldValues = new IComparable[fields.Length];
-
-                            //TODO Iterate over datafieldinfo with foreach loop
-                            for (i = 0; i < fields.Length; i++)
+                            IComparable[] typedFieldValues = new IComparable[fileLine.Length];
+                            
+                            for (i = 0; i < fileLine.Length; i++)
                             {                                
-                                if (this.HandleMissingData && String.Equals(fields[i], this.MissingValue))
+                                if (this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue))
                                 {
                                     switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                     {
@@ -226,19 +225,19 @@ namespace Infovision.Data
                                     switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                     {
                                         case TypeCode.Int32:
-                                            typedFieldValues[i] = Int32.Parse(fields[i], CultureInfo.InvariantCulture);
+                                            typedFieldValues[i] = Int32.Parse(fileLine[i], CultureInfo.InvariantCulture);
                                             break;
 
                                         //case TypeCode.Decimal:
-                                        //    typedFieldValues[i] = Decimal.Parse(fields[i], CultureInfo.InvariantCulture);
+                                        //    typedFieldValues[i] = Decimal.Parse(fileLine[i], CultureInfo.InvariantCulture);
                                         //    break;
 
                                         case TypeCode.Double:
-                                            typedFieldValues[i] = Double.Parse(fields[i], CultureInfo.InvariantCulture);
+                                            typedFieldValues[i] = Double.Parse(fileLine[i], CultureInfo.InvariantCulture);
                                             break;
 
                                         case TypeCode.String:
-                                            typedFieldValues[i] = (string)fields[i].Clone();
+                                            typedFieldValues[i] = (string)fileLine[i].Clone();
                                             break;
 
                                         default:
@@ -253,7 +252,7 @@ namespace Infovision.Data
 
                                 IComparable externalValue = typedFieldValues[i];
                                 long internalValue;
-                                bool isMissing = this.HandleMissingData && String.Equals(fields[i], this.MissingValue);
+                                bool isMissing = this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue);
 
                                 if (this.ReferenceDataStoreInfo != null)
                                 {
@@ -290,6 +289,11 @@ namespace Infovision.Data
             }
 
             dataStore.NormalizeWeights();
+            if (this.DecisionId != -1)
+                dataStore.DataStoreInfo.CreateWeightHistogram(
+                    dataStore, 
+                    dataStore.Weights, 
+                    this.DecisionId);
         }
 
         protected virtual void AnalyzeHeader(StreamReader streamReader)
@@ -320,7 +324,7 @@ namespace Infovision.Data
             else if (!this.CheckNumberOfColumns(fields.Length))
             {
                 throw new System.MissingFieldException(String.Format(CultureInfo.InvariantCulture,
-                                                                     "Wrong fields number in row {0} (Was: {1} Expected: {2}",
+                                                                     "Wrong fileLine number in row {0} (Was: {1} Expected: {2}",
                                                                      lineNum,
                                                                      fields.Length,
                                                                      this.ExpectedColumns));

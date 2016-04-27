@@ -93,19 +93,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        #region MethodsInProgress
-        
-        //|U|
-        public int CountUniverse()
-        {
-            return this.CountObjects;
-        }
-        
-        //|U|w
-        public decimal CountWeightUniverse()
-        {
-            return this.CountWeightObjects;
-        }
+        #region MethodsInProgress               
         
         //|E|
         public int CountEquivalenceClass(long[] internalValueVector)
@@ -196,7 +184,7 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection result = new EquivalenceClassCollection(data);
             result.Calc(reduct.Attributes, data, objectSet, weights);
             return result;
-        }
+        }        
 
         public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
         {            
@@ -239,49 +227,6 @@ namespace Infovision.Datamining.Roughset
             return eqClassCollection;
         }
 
-        /*
-        internal static EquivalenceClassCollection CreateForIntersections(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
-        {
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes, dataStore.DataStoreInfo.NumberOfDecisionValues);
-            int decisionIdx = dataStore.DataStoreInfo.DecisionFieldIndex;
-
-            if (weights == null)
-            {
-                decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
-                for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                {
-                    eqClassCollection.AddRecordInitialForIntersections(dataStore.GetFieldValues(i, attributes),
-                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
-                                                        w,
-                                                        dataStore,
-                                                        i);
-                }
-
-                eqClassCollection.CountObjects = dataStore.NumberOfRecords;
-                eqClassCollection.CountWeightObjects = Decimal.One;
-            }
-            else
-            {
-                decimal sum = 0;
-                for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                {
-                    eqClassCollection.AddRecordInitialForIntersections(dataStore.GetFieldValues(i, attributes),
-                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
-                                                        weights[i],
-                                                        dataStore,
-                                                        i);
-
-                    sum += weights[i];
-                }
-
-                eqClassCollection.CountObjects = dataStore.NumberOfRecords;
-                eqClassCollection.CountWeightObjects = sum;
-            }
-
-            return eqClassCollection;
-        }
-        */
-
         protected void AddRecordInitial(            
             long[] attributeInternalValues, 
             long decisionInternalValue, 
@@ -309,28 +254,6 @@ namespace Infovision.Datamining.Roughset
                 this.decisionWeight[decisionInternalValue] = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
             }
         }
-
-        /*
-        private void AddRecordInitialForIntersections(
-            long[] attributeInternalValues,
-            long decisionInternalValue,
-            decimal objectWeight,
-            DataStore dataStore,
-            int objectIdx)
-        {
-            
-            EquivalenceClass eq = null;
-            if (!this.partitions.TryGetValue(attributeInternalValues, out eq))
-            {
-                eq = new EquivalenceClass(attributeInternalValues, dataStore);
-                this.partitions.Add(attributeInternalValues, eq);
-            }
-
-            eq.Instances.Add(objectIdx, objectWeight);
-            eq.DecisionSet.AddElement(decisionInternalValue);
-            eq.WeightSum += objectWeight;
-        }
-        */
 
         protected void InitPartitions(int initialSize = 0)
         {

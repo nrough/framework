@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
-// set of fields. Change these attribute newInstance to modify the information
+// set of fileLine. Change these attribute newInstance to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Infovision.UnitTests")]
 [assembly: AssemblyDescription("")]

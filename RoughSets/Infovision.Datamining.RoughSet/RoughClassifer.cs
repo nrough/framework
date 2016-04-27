@@ -169,6 +169,7 @@ namespace Infovision.Datamining.Roughset
                     if (this.UseExceptionRules == false && reduct.IsException)
                         continue;
 
+                    /*
                     //TODO Check for standard Bireduct do we need to recalculate?
                     if (reduct.IsEquivalenceClassCollectionCalculated == false)
                     {
@@ -186,6 +187,7 @@ namespace Infovision.Datamining.Roughset
 
                         reduct.SetEquivalenceClassCollection(equivalenceClasses);
                     }
+                    */
 
                     for (int k = 0; k < this.decCountPlusOne; k++)
                         identificationWeights[k] = Decimal.Zero;

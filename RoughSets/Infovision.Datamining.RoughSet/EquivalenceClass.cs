@@ -18,21 +18,22 @@ namespace Infovision.Datamining.Roughset
                 
         private long[] dataVector;        
         private Dictionary<int, decimal> instances;  //map: objectIdx -> objectWeight
+        
         private decimal totalWeightSum; //sum of object weights belonging to this class
+        
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
+        
         private Dictionary<long, decimal> decisionWeigthSums; //map decisionInternalValue -> objectWeight        
-        private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value               
+        private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value
+
+        private decimal avgConfidenceWeight;
+        private int confidenceCount;
+        
         private readonly object mutex = new object();
 
         #endregion
 
-        #region Properties
-
-        public Dictionary<int, decimal> Members
-        {
-            get { return this.instances; }
-            set { this.instances = value; }
-        }
+        #region Properties        
 
         public long[] Instance
         {
@@ -47,6 +48,18 @@ namespace Infovision.Datamining.Roughset
         public int NumberOfDecisions
         {            
             get { return this.DecisionSet.Count; }
+        }
+
+        public decimal AvgConfidenceWeigth
+        {
+            get { return this.avgConfidenceWeight; }
+            set { this.avgConfidenceWeight = value; }
+        }
+
+        public int ConfidenceCount
+        {
+            get { return this.confidenceCount; }
+            set { this.confidenceCount = value; }
         }
 
         public IEnumerable<int> ObjectIndexes
@@ -75,6 +88,16 @@ namespace Infovision.Datamining.Roughset
         { 
             get { return this.instances; }
             internal set { this.instances = value; }
+        }
+
+        public Dictionary<long, decimal> DecisionWeights
+        {
+            get { return this.decisionWeigthSums; }
+        }
+
+        public Dictionary<long, int> DecisionCount
+        {
+            get { return this.decisionCount;}
         }
 
         #endregion

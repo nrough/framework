@@ -222,6 +222,12 @@ namespace Infovision.Datamining.Roughset
 
                 eqClassCollection.CountObjects = dataStore.NumberOfRecords;
                 eqClassCollection.CountWeightObjects = sum;
+                
+                foreach (EquivalenceClass eq in eqClassCollection)
+                {                    
+                    eq.AvgConfidenceWeigth = eq.DecisionWeights.FindMaxValuePair().Value;
+                    eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
+                }
             }
                  
             return eqClassCollection;

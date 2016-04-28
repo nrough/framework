@@ -109,6 +109,7 @@ namespace Infovision.Datamining.Roughset
             IReduct reduct = this.CreateReductObject(permutation, this.Epsilon, this.GetNextReductId().ToString());
             this.Reduce(reduct, permutation, reductStore, useCache);
             */
+
             return reduct;
         }
 

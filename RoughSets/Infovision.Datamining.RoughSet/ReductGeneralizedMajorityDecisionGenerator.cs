@@ -165,7 +165,9 @@ namespace Infovision.Datamining.Roughset
             
             int[] localPermutation = tmpReduct.Attributes.ToArray();
                         
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(localPermutation, this.DataStore, epsilon, weights);
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
+                localPermutation, this.DataStore, epsilon, weights);
+
             eqClasses.CountWeightObjects = this.DataSetQuality;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;                        
             
@@ -194,9 +196,12 @@ namespace Infovision.Datamining.Roughset
             }
 
             eqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
-            IReduct reduct = this.CreateReductObject(eqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), eqClasses);
-            //Console.WriteLine(this.GetPartitionQuality(reduct));
-            return reduct;
+
+            return this.CreateReductObject(
+                eqClasses.Attributes, 
+                epsilon, 
+                this.GetNextReductId().ToString(), 
+                eqClasses);
         }
 
         protected virtual void Reach(IReduct reduct, int[] permutation)

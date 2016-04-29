@@ -33,6 +33,7 @@ namespace MajorityGeneralizedDecisionTest
         Dictionary<string, IReductGenerator> reductGeneratorCache;
         int[] sizes;
         int maxTest;
+        int fold;
         
         public void MajorityGeneralizedDecisionPerformanceTest()
         {
@@ -74,7 +75,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GMDR", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GMDR", t, fold, ensembleSize, eps, result);
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -87,7 +88,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GMDR+", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GMDR+", t, fold, ensembleSize, eps, result);
         }        
 
         public void MajorityGeneralizedDecisionNoExceptionsPerformanceTest()
@@ -133,7 +134,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "NOEX", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "NOEX", t, fold, ensembleSize, eps, result);
 
         }
 
@@ -176,11 +177,11 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = true;
 
             ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, true);
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GAPS", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GAPS", t, fold, ensembleSize, eps, result);
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -192,11 +193,11 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = true;
 
             result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, true);
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GAPS+", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GAPS+", t, fold, ensembleSize, eps, result);
 
             /*
             foreach (var reductStore in filteredReductStoreCollection)
@@ -228,11 +229,11 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = false;
 
             result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, true);
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "EXEP", t, ensembleSize, eps, result);           
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "EXEP", t, fold, ensembleSize, eps, result);           
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -244,11 +245,11 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = false;
 
             result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, true);
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "EXEP+", t, ensembleSize, eps, result);
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "EXEP+", t, fold, ensembleSize, eps, result);
 
         }
 
@@ -292,7 +293,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine(String.Format("{0,5}|{1}|{2,2}|{3,4}|{4}", "ADR+", t, ensembleSize, eps, result));
+            this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "ADR+", t, fold, ensembleSize, eps, result));
         }
 
 
@@ -357,6 +358,8 @@ namespace MajorityGeneralizedDecisionTest
 
                 for (int f = 0; f < benchmarkData.CrossValidationFolds; f++)
                 {
+                    fold = f;
+
                     if (splitter != null)
                     {
                         splitter.ActiveFold = f;
@@ -421,7 +424,7 @@ namespace MajorityGeneralizedDecisionTest
         {
             fileStream = new StreamWriter(path, false);
 
-            this.WriteLine("{0}|{1}|{2}|{3}|{4}", "Factory", "Test", "EnsembleSize", "Epsilon", ClassificationResult.ResultHeader());
+            this.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}", "Factory", "Test", "Fold", "EnsembleSize", "Epsilon", ClassificationResult.ResultHeader());
         }
 
         public void CloseStream()

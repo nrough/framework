@@ -245,7 +245,7 @@ namespace VotingVsRuleInduction
                 });
             
             IParameter parmEpsilon = new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, 
-                0.0m, 0.99m, 0.01m);
+                0.2m, 0.99m, 0.01m);
                 //0.15m, 0.15m, 0.01m);
 
             IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductGeneratorParamHelper.NumberOfReducts, 
@@ -255,7 +255,9 @@ namespace VotingVsRuleInduction
             IParameter parmIdentification = new ParameterValueCollection<RuleQualityFunction>(
                 ReductGeneratorParamHelper.IdentificationType, new RuleQualityFunction[] {
                     RuleQuality.ConfidenceW,                     
-                    RuleQuality.CoverageW
+                    RuleQuality.CoverageW,
+                    RuleQuality.Confidence,                     
+                    RuleQuality.Coverage,
                 });
 
             IParameter parmVote = new ParameterValueCollection<RuleQualityFunction>(
@@ -263,10 +265,14 @@ namespace VotingVsRuleInduction
                     RuleQuality.ConfidenceW,
                     RuleQuality.CoverageW,
                     RuleQuality.RatioW,
-                    RuleQuality.SupportW,
-                    RuleQuality.StrengthW,
+                    RuleQuality.SupportW,                    
                     RuleQuality.SingleVote,
-                    RuleQuality.ConfidenceRelativeW
+                    RuleQuality.ConfidenceRelativeW,
+                    RuleQuality.Confidence,
+                    RuleQuality.Coverage,
+                    RuleQuality.Ratio,
+                    RuleQuality.Support,
+                    RuleQuality.ConfidenceRelative
                 });
 
             ParameterCollection parameterList = new ParameterCollection(

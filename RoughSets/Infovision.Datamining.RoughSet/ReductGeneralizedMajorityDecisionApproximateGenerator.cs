@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset
                 foreach (var permutation in this.attributePermutations)                
                 {                    
                     ReductStore localReductPool = new ReductStore();
-                    localReductPool.DoAddReduct(this.CalculateReduct(permutation, localReductPool));
+                    localReductPool.AddReduct(this.CalculateReduct(permutation, localReductPool));
                     this.ReductStoreCollection.AddStore(localReductPool);
                 }
                 //);
@@ -132,7 +132,7 @@ namespace Infovision.Datamining.Roughset
                         exception.SetEquivalenceClassCollection(exceptionEqClasses);
                         exception.IsException = true;
 
-                        localReductStore.AddReduct(exception);
+                        localReductStore.DoAddReduct(exception);
                     }
                 }
                 else

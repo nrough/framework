@@ -151,7 +151,7 @@ namespace Infovision.Datamining.Roughset
             foreach(var permutation in this.attributePermutations)
             //Parallel.ForEach(this.attributePermutations, options, permutation =>
             {                                
-                localReductPool.DoAddReduct(this.CalculateReduct(permutation, localReductPool));
+                localReductPool.AddReduct(this.CalculateReduct(permutation, localReductPool));
             }
             //);            
             this.ReductStoreCollection.AddStore(localReductPool);

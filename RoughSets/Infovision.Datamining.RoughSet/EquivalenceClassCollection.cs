@@ -225,13 +225,18 @@ namespace Infovision.Datamining.Roughset
                 eqClassCollection.CountWeightObjects = sum;                               
             }
 
-            foreach (EquivalenceClass eq in eqClassCollection)
-            {
-                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
-                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
-            }
+            eqClassCollection.CalcAvgConfidence();
                  
             return eqClassCollection;
+        }
+
+        private void CalcAvgConfidence()
+        {
+            foreach (EquivalenceClass eq in this)
+            {
+                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
+            }
         }
 
         protected void AddRecordInitial(            
@@ -250,7 +255,7 @@ namespace Infovision.Datamining.Roughset
                     this.partitions.Add(attributeInternalValues, eq);
                 }
 
-                if (objectIdx != -1)                 
+                if (objectIdx != -1)
                     eq.AddObject(objectIdx, decisionInternalValue, objectWeight);
                 else
                     eq.AddDecision(decisionInternalValue, objectWeight);
@@ -302,11 +307,7 @@ namespace Infovision.Datamining.Roughset
             this.CountObjects = dataStore.NumberOfRecords;
             this.CountWeightObjects = sum;
 
-            foreach (EquivalenceClass eq in this)
-            {
-                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
-                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
-            }
+            this.CalcAvgConfidence();
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
@@ -429,7 +430,7 @@ namespace Infovision.Datamining.Roughset
             foreach (EquivalenceClass eq in this)
             {
                 eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
-                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
+                eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
             }
         }
 

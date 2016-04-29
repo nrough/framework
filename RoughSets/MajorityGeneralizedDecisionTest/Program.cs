@@ -23,26 +23,20 @@ namespace MajorityGeneralizedDecisionTest
         ReductMeasureLength reductMeasureLength;
         ReductStoreLengthComparer reductStoreLengthComparer;
         PermutationCollection permList;
+        RuleQualityFunction identification, identificationPlus;
+        RuleQualityFunction voting, votingPlus;
+        int t;
+
         
         static void Main(string[] args)
         {
             Program program = new Program();
             program.Init();
 
-            Console.WriteLine("{0}|{1}", "Factory", ClassificationResult.ResultHeader());
+            Console.WriteLine("{0}|{1}|{2}|{3}|{4}", "Factory", "Test", "EnsembleSize", "Epsilon", ClassificationResult.ResultHeader());
 
-            for (int i = 0; i < 100; i++)
-            {
-                program.InitPermutation();
 
-                //program.MajorityGeneralizedDecisionNoExceptionsPerformanceTest();
-                program.MajorityGeneralizedDecisionGapsPerformanceTest();                
-                //program.MajorityGeneralizedDecisionPerformanceTest();                
-                //program.ApproximateDecisionReduct();                
-
-                //Console.ReadKey();
-            }            
-              
+            program.Run();
 
             Console.ReadKey();
         }
@@ -56,14 +50,50 @@ namespace MajorityGeneralizedDecisionTest
             
             testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1, trainData.DataStoreInfo);
                         
-            eps = 0.05m;
-            ensembleSize = 1;
-            ratio = 1;
+            eps = 0.17m;
+            ensembleSize = 10;
+            ratio = 10;
             permutationSize = ensembleSize * ratio;
             
             reductLengthComparer = new ReductLengthComparer();
             reductStoreLengthComparer = new ReductStoreLengthComparer(true);
-            reductMeasureLength = new ReductMeasureLength();            
+            reductMeasureLength = new ReductMeasureLength();
+
+            identification = RuleQuality.AvgConfidenceW; 
+            identificationPlus = RuleQuality.AvgConfidenceW;
+            voting =  RuleQuality.ConfidenceW;
+            votingPlus =  RuleQuality.ConfidenceW;
+        }
+
+        public void Run()
+        {
+            int[] sizes = new int[] {1, 2, 10, 20};
+
+            for (int i = 0; i < 20; i++)
+            {
+                t = i;
+                
+                foreach (int size in sizes)
+                {
+                    ensembleSize = size;
+                    permutationSize = ensembleSize * ratio;
+
+                    this.InitPermutation();
+
+                    for (int e = 0; e < 100; e++)
+                    {
+                        eps = (decimal)e / (decimal)100;
+
+                        this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest();
+                        this.MajorityGeneralizedDecisionGapsPerformanceTest();
+                        this.MajorityGeneralizedDecisionPerformanceTest();
+                        this.ApproximateDecisionReduct();
+
+                        //Console.WriteLine();
+                        //Console.ReadKey();
+                    }
+                }
+            }
         }
 
         public void InitPermutation()
@@ -98,8 +128,8 @@ namespace MajorityGeneralizedDecisionTest
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.AvgCoverageW,
-                RuleQuality.AvgCoverageW,
+                identification,
+                identification,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier.UseExceptionRules = false;
             ClassificationResult result = classifier.Classify(testData);
@@ -107,13 +137,12 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            
-            Console.WriteLine("{0,5}|{1}", "GMDR", result);
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GMDR", t, ensembleSize, eps, result);
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                identificationPlus,
+                identificationPlus,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier.UseExceptionRules = false;
             result = classifier.Classify(testData);
@@ -121,8 +150,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-
-            Console.WriteLine("{0,5}|{1}", "GMDR+", result);
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GMDR+", t, ensembleSize, eps, result);
         }        
 
         public void MajorityGeneralizedDecisionNoExceptionsPerformanceTest()
@@ -145,8 +173,8 @@ namespace MajorityGeneralizedDecisionTest
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.AvgCoverageW,
-                RuleQuality.AvgCoverageW,
+                identification,
+                identification,
                 trainData.DataStoreInfo.GetDecisionValues());
 
             classifier.UseExceptionRules = false;
@@ -157,8 +185,8 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "NOEX", t, ensembleSize, eps, result);
 
-            Console.WriteLine("{0,5}|{1}", "NOEX", result);
         }
 
         public void MajorityGeneralizedDecisionGapsPerformanceTest()
@@ -181,8 +209,8 @@ namespace MajorityGeneralizedDecisionTest
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.AvgCoverageW,
-                RuleQuality.AvgCoverageW,
+                identification,
+                identification,
                 trainData.DataStoreInfo.GetDecisionValues());
             
             classifier.UseExceptionRules = true;
@@ -193,13 +221,12 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-
-            Console.WriteLine("{0,5}|{1}", "GAPS", result);
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GAPS", t, ensembleSize, eps, result);
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                identificationPlus,
+                identificationPlus,
                 trainData.DataStoreInfo.GetDecisionValues());
 
             classifier.UseExceptionRules = true;
@@ -210,8 +237,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-
-            Console.WriteLine("{0,5}|{1}", "GAPS+", result);
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "GAPS+", t, ensembleSize, eps, result);
 
             foreach (var reductStore in filteredReductStoreCollection)
             {
@@ -233,8 +259,8 @@ namespace MajorityGeneralizedDecisionTest
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.AvgCoverageW,
-                RuleQuality.AvgCoverageW,
+                identification,
+                identification,
                 trainData.DataStoreInfo.GetDecisionValues());
 
             classifier.UseExceptionRules = true;
@@ -245,13 +271,12 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-
-            Console.WriteLine("{0,5}|{1}", "EXEP", result);            
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "EXEP", t, ensembleSize, eps, result);           
 
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                identificationPlus,
+                identificationPlus,
                 trainData.DataStoreInfo.GetDecisionValues());
 
             classifier.UseExceptionRules = true;
@@ -262,40 +287,39 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-
-            Console.WriteLine("{0,5}|{1}", "EXEP+", result);
-        }        
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "EXEP+", t, ensembleSize, eps, result);
+        }
 
         public void ApproximateDecisionReduct()
         {
-            Args parmsApprox = new Args();
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);            
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            Args parms = new Args();
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);            
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
-            ReductGeneratorWeightsMajority generatorApprox =
-                ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
-            generatorApprox.Run();
-            IReductStoreCollection origReductStoreCollectionApprox = generatorApprox.GetReductStoreCollection();
+            ReductGeneratorWeightsMajority generator =
+                ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
+            generator.Run();
+            IReductStoreCollection origReductStoreCollectionApprox = generator.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, reductLengthComparer);
 
             //Console.WriteLine(filteredReductStoreCollectionApprox.FirstOrDefault().FirstOrDefault());
 
-            RoughClassifier classifierApprox = new RoughClassifier(
+            RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                identificationPlus,
+                identificationPlus,
                 trainData.DataStoreInfo.GetDecisionValues());
-            classifierApprox.UseExceptionRules = false;
-            ClassificationResult resultApprox = classifierApprox.Classify(testData);
-            resultApprox.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
-            resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
-            resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
-            
-            Console.WriteLine("{0,5}|{1}", "ADR", resultApprox);
+            classifier.UseExceptionRules = false;
+            ClassificationResult result = classifier.Classify(testData);
+            result.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
+            result.ModelCreationTime = generator.ReductGenerationTime;
+            result.ClassificationTime = classifier.ClassificationTime;
+
+            Console.WriteLine("{0,5}|{1}|{2,2}|{3,4}|{4}", "ADR+", t, ensembleSize, eps, result);
         }
     }
 }

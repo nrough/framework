@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset
             set { this.avgConfidenceWeight = value; }
         }
 
-        public int ConfidenceCount
+        public int AvgConfidenceSum
         {
             get { return this.confidenceCount; }
             set { this.confidenceCount = value; }

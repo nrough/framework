@@ -264,7 +264,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.AvgConfidenceWeight += eq.AvgConfidenceWeight;
 
                     //Update |X * E| count
-                    newEqClass.ConfidenceCount += eq.ConfidenceCount;
+                    newEqClass.AvgConfidenceSum += eq.AvgConfidenceSum;
 
                     //Update |E|
                     newEqClass.AddObjectInstances(eq.Instances);
@@ -276,7 +276,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore);
                     newEqClass.AvgConfidenceWeight = eq.AvgConfidenceWeight;
-                    newEqClass.ConfidenceCount = eq.ConfidenceCount;
+                    newEqClass.AvgConfidenceSum = eq.AvgConfidenceSum;
                     newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
                     newEqClass.WeightSum = eq.WeightSum;
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);

@@ -179,12 +179,6 @@ namespace Infovision.Datamining.Roughset
                     if (newDecisionSet.Count > 0)
                     {
                         //Update |X * E|w as new weighted average
-                        //newEqClass.AvgConfidenceWeight
-                        //    = ((newEqClass.AvgConfidenceWeight * newEqClass.WeightSum)
-                        //    + (eq.AvgConfidenceWeight * eq.WeightSum))
-                        //    / (newEqClass.WeightSum + eq.WeightSum);
-
-                        //Update |X * E|w as new weighted average
                         newEqClass.AvgConfidenceWeight += eq.AvgConfidenceWeight;
 
                         //Update |X * E| count
@@ -201,17 +195,16 @@ namespace Infovision.Datamining.Roughset
                     }
                     else
                     {
-                        //Increase |E|
-                        newEqClass.AddObjectInstances(eq.Instances);
-                        newEqClass.WeightSum += eq.WeightSum;
-
-                        //Do not change |X * E|
-                        
                         newEqClasses.CountWeightObjects -= eq.WeightSum;
-                        newEqClasses.CountObjects -= eq.NumberOfObjects;                        
+                        newEqClasses.CountObjects -= eq.NumberOfObjects;
 
                         if (Decimal.Round(newEqClasses.CountWeightObjects, 17) < this.WeightDropLimit)
                             return eqClasses;
+
+                        //Update |E|
+                        newEqClass.AddObjectInstances(eq.Instances);
+                        //Update |E|w
+                        newEqClass.WeightSum += eq.WeightSum;
                     }
                 }
                 else

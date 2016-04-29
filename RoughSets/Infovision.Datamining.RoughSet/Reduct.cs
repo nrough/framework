@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset
             this.objectWeights = new decimal[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
-
+            this.IsException = reduct.IsException;
             this.eqClassMap = (EquivalenceClassCollection)reduct.EquivalenceClasses.Clone();
         }
 

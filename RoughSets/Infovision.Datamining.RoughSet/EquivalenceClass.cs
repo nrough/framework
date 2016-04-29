@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         
-        private Dictionary<long, decimal> decisionWeigthSums; //map decisionInternalValue -> objectWeight        
+        private Dictionary<long, decimal> decisionWeightSums; //map decisionInternalValue -> objectWeight        
         private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value
 
         private decimal avgConfidenceWeight;
@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.DecisionSet.Count; }
         }
 
-        public decimal AvgConfidenceWeigth
+        public decimal AvgConfidenceWeight
         {
             get { return this.avgConfidenceWeight; }
             set { this.avgConfidenceWeight = value; }
@@ -92,12 +92,14 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<long, decimal> DecisionWeights
         {
-            get { return this.decisionWeigthSums; }
+            get { return this.decisionWeightSums; }
+            internal set { this.decisionWeightSums = value; }
         }
 
         public Dictionary<long, int> DecisionCount
         {
-            get { return this.decisionCount;}
+            get { return this.decisionCount; }
+            internal set { this.decisionCount = value; }
         }
 
         #endregion
@@ -111,7 +113,7 @@ namespace Infovision.Datamining.Roughset
             this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
             int numberOfDecisions = decisionField.InternalValues().Count;
             this.instances = new Dictionary<int, decimal>();            
-            this.decisionWeigthSums = new Dictionary<long, decimal>(numberOfDecisions);
+            this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);            
         }
 
@@ -120,20 +122,22 @@ namespace Infovision.Datamining.Roughset
             this.dataVector = new long[eqClass.dataVector.Length];
             Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);            
             this.instances = new Dictionary<int, decimal>(eqClass.instances);           
-            this.decisionWeigthSums = new Dictionary<long, decimal>(eqClass.decisionWeigthSums);
+            this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);            
             this.totalWeightSum = eqClass.totalWeightSum;
-            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet.LowerBound, eqClass.DecisionSet.UpperBound, eqClass.decisionSet.Data);                    
+            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet.LowerBound, eqClass.DecisionSet.UpperBound, eqClass.decisionSet.Data);
+            this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
+            this.confidenceCount = eqClass.confidenceCount;
         }
 
         #endregion
 
         #region Methods
         
-        public decimal GetDecisionWeigth(long decision)
+        public decimal GetDecisionWeight(long decision)
         {            
             decimal result = 0;
-            if (this.decisionWeigthSums.TryGetValue(decision, out result))
+            if (this.decisionWeightSums.TryGetValue(decision, out result))
                 return result;
             return 0;
         }        
@@ -144,12 +148,12 @@ namespace Infovision.Datamining.Roughset
             {
                 this.totalWeightSum = 0;
                 int decCount = this.DecisionSet.Count;
-                this.decisionWeigthSums = new Dictionary<long, decimal>(decCount);
+                this.decisionWeightSums = new Dictionary<long, decimal>(decCount);
                 this.decisionCount = new Dictionary<long, int>(decCount);                
 
                 foreach (var decision in this.DecisionSet)
                 {
-                    this.decisionWeigthSums[decision] = 0;
+                    this.decisionWeightSums[decision] = 0;
                     this.decisionCount[decision] = 0;                    
                 }
 
@@ -158,9 +162,9 @@ namespace Infovision.Datamining.Roughset
                 {
                     long decision = data.GetFieldIndexValue(instance.Key, decisionIndex);
                     decimal w = 0;
-                    if (this.decisionWeigthSums.TryGetValue(decision, out w))
+                    if (this.decisionWeightSums.TryGetValue(decision, out w))
                     {
-                        this.decisionWeigthSums[decision] = (w + instance.Value);                        
+                        this.decisionWeightSums[decision] = (w + instance.Value);                        
                     }
 
                     int count = 0;
@@ -182,14 +186,14 @@ namespace Infovision.Datamining.Roughset
                 this.totalWeightSum += weight;
                 
                 decimal weightSum = Decimal.Zero;
-                if (this.decisionWeigthSums.TryGetValue(decisionValue, out weightSum))
+                if (this.decisionWeightSums.TryGetValue(decisionValue, out weightSum))
                 {
                     weight += weightSum;
-                    this.decisionWeigthSums[decisionValue] = weight;
+                    this.decisionWeightSums[decisionValue] = weight;
                 }
                 else
                 {
-                    this.decisionWeigthSums.Add(decisionValue, weight);
+                    this.decisionWeightSums.Add(decisionValue, weight);
                 }
 
                 int count = 0;
@@ -212,8 +216,8 @@ namespace Infovision.Datamining.Roughset
                 this.decisionCount[decisionValue] = --count;
 
             decimal w = 0;
-            if (this.decisionWeigthSums.TryGetValue(decisionValue, out w))
-                this.decisionWeigthSums[decisionValue] = (w - weight);
+            if (this.decisionWeightSums.TryGetValue(decisionValue, out w))
+                this.decisionWeightSums[decisionValue] = (w - weight);
 
             this.totalWeightSum -= weight;
         }
@@ -267,7 +271,7 @@ namespace Infovision.Datamining.Roughset
             {               
                 bool isFirst = true;
                 var decisionsFreqOrdered = 
-                    from decisionFrequency in decisionWeigthSums
+                    from decisionFrequency in decisionWeightSums
                         orderby decisionFrequency.Value descending
                         select decisionFrequency;
 
@@ -289,7 +293,7 @@ namespace Infovision.Datamining.Roughset
                 foreach (long decision in decisionsToRemove)
                 {
                     this.DecisionSet.RemoveElement(decision);
-                    this.decisionWeigthSums.Remove(decision);
+                    this.decisionWeightSums.Remove(decision);
                     this.decisionCount.Remove(decision);                                                            
                 }                
             }
@@ -303,7 +307,7 @@ namespace Infovision.Datamining.Roughset
             
             lock (mutex)
             {
-                var list = decisionWeigthSums.ToList();
+                var list = decisionWeightSums.ToList();
                 list.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value)); //descending order                 
                 decimal max = list[0].Value;
                 decimal threshold = Decimal.Round(((Decimal.One - epsilon) * max), 17);
@@ -312,7 +316,7 @@ namespace Infovision.Datamining.Roughset
                     if (Decimal.Round(list[i].Value, 17) < threshold)
                     {
                         this.DecisionSet.RemoveElement(list[i].Key);
-                        this.decisionWeigthSums.Remove(list[i].Key);
+                        this.decisionWeightSums.Remove(list[i].Key);
                         this.decisionCount.Remove(list[i].Key);
                     }
                 }                                

@@ -266,8 +266,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         if (eq1.MajorDecision != eq2.MajorDecision)
                         {                                                        
                             Assert.AreEqual(
-                                eq1.GetDecisionWeigth(eq1.MajorDecision),
-                                eq2.GetDecisionWeigth(eq2.MajorDecision), 
+                                eq1.GetDecisionWeight(eq1.MajorDecision),
+                                eq2.GetDecisionWeight(eq2.MajorDecision), 
                                     String.Format("Major Decision Weights eps = {0}", epsilon));
                         
                         }

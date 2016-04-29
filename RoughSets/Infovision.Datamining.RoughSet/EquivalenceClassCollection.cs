@@ -75,8 +75,8 @@ namespace Infovision.Datamining.Roughset
         public EquivalenceClassCollection(DataStore data)
         {
             this.data = data;
-            this.decisionWeight = new Dictionary<long, decimal>();
-            this.decisionCount = new Dictionary<long, int>();
+            this.decisionWeight = new Dictionary<long, decimal>(data.DataStoreInfo.GetDecisionValues().Count);
+            this.decisionCount = new Dictionary<long, int>(data.DataStoreInfo.GetDecisionValues().Count);
         }
 
         private EquivalenceClassCollection(EquivalenceClassCollection eqClassCollection)
@@ -145,7 +145,7 @@ namespace Infovision.Datamining.Roughset
         {
             EquivalenceClass eqClass = null;
             if(this.Partitions.TryGetValue(internalValueVector, out eqClass))
-                return eqClass.GetDecisionWeigth(decisionInternalValue);
+                return eqClass.GetDecisionWeight(decisionInternalValue);
             return 0;
         }
 
@@ -205,6 +205,7 @@ namespace Infovision.Datamining.Roughset
 
                 eqClassCollection.CountObjects = dataStore.NumberOfRecords;
                 eqClassCollection.CountWeightObjects = Decimal.One;
+                
             }
             else
             {
@@ -221,13 +222,13 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 eqClassCollection.CountObjects = dataStore.NumberOfRecords;
-                eqClassCollection.CountWeightObjects = sum;
-                
-                foreach (EquivalenceClass eq in eqClassCollection)
-                {                    
-                    eq.AvgConfidenceWeigth = eq.DecisionWeights.FindMaxValuePair().Value;
-                    eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
-                }
+                eqClassCollection.CountWeightObjects = sum;                               
+            }
+
+            foreach (EquivalenceClass eq in eqClassCollection)
+            {
+                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
             }
                  
             return eqClassCollection;
@@ -300,6 +301,12 @@ namespace Infovision.Datamining.Roughset
 
             this.CountObjects = dataStore.NumberOfRecords;
             this.CountWeightObjects = sum;
+
+            foreach (EquivalenceClass eq in this)
+            {
+                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
+            }
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
@@ -414,12 +421,16 @@ namespace Infovision.Datamining.Roughset
 
                     decimal w = 0;
                     this.decisionWeight[decision] = this.decisionWeight.TryGetValue(decision, out w)
-                        ? (w + eq.GetDecisionWeigth(decision))
-                        : eq.GetDecisionWeigth(decision);
+                        ? (w + eq.GetDecisionWeight(decision))
+                        : eq.GetDecisionWeight(decision);
                 }
             }
-                       
 
+            foreach (EquivalenceClass eq in this)
+            {
+                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.ConfidenceCount = eq.DecisionCount.FindMaxValuePair().Value;
+            }
         }
 
         #region IEnumerable Members

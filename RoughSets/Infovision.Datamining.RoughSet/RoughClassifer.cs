@@ -15,13 +15,13 @@ namespace Infovision.Datamining.Roughset
     public class RoughClassifier
     {
         #region Members
-
-        private IReductStoreCollection reductStoreCollection { get; set; }
+        
         private int numberOfModels;
         private bool allModelsAreEqual;
         private int decCount;
         private int decCountPlusOne;
         private long[] decisions;
+        Dictionary<long, int> dec2index;
 
         protected readonly Stopwatch timer = new Stopwatch();
 
@@ -36,7 +36,9 @@ namespace Infovision.Datamining.Roughset
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
         public decimal MinimumVoteValue { get; set; }
-        public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }
+        public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }        
+
+        private IReductStoreCollection reductStoreCollection { get; set; }
 
         #endregion
 
@@ -78,7 +80,15 @@ namespace Infovision.Datamining.Roughset
             this.decCountPlusOne = decCount + 1;
             this.decisions = new long[this.decCountPlusOne];
             this.decisions[0] = -1;
-            Array.Copy(this.DecisionValues.ToArray(), 0, this.decisions, 1, this.decCount);
+            
+            dec2index = new Dictionary<long, int>(this.decCount);
+            int k = 1;
+            foreach (long decVal in this.DecisionValues)
+            {
+                this.decisions[k] = decVal;
+                dec2index.Add(decVal, k);
+                k++;
+            }            
 
             this.MinimumVoteValue = Decimal.MinValue;
         }
@@ -167,27 +177,7 @@ namespace Infovision.Datamining.Roughset
                 foreach (IReduct reduct in rs)
                 {
                     if (this.UseExceptionRules == false && reduct.IsException)
-                        continue;
-
-                    /*
-                    //TODO Check for standard Bireduct do we need to recalculate?
-                    if (reduct.IsEquivalenceClassCollectionCalculated == false)
-                    {
-                        EquivalenceClassCollection equivalenceClasses = (reduct is Bireduct)
-                                ? EquivalenceClassCollection.Create(
-                                    reduct,
-                                    reduct.DataStore,
-                                    reduct.Weights,
-                                    reduct.ObjectSet)
-                                : EquivalenceClassCollection.Create(
-                                    reduct.Attributes.ToArray(),
-                                    reduct.DataStore,
-                                    reduct.Epsilon,
-                                    reduct.Weights);
-
-                        reduct.SetEquivalenceClassCollection(equivalenceClasses);
-                    }
-                    */
+                        continue;                                                            
 
                     for (int k = 0; k < this.decCountPlusOne; k++)
                         identificationWeights[k] = Decimal.Zero;
@@ -202,6 +192,17 @@ namespace Infovision.Datamining.Roughset
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                             break;
 
+                        foreach(var decVal in eqClass.DecisionSet)
+                        {
+                            int idx = dec2index[decVal];
+                            identificationWeights[idx] = this.IdentificationFunction(decVal, reduct, eqClass);
+                            if (identifiedDecisionWeight < identificationWeights[idx])
+                            {
+                                identifiedDecisionWeight = identificationWeights[idx];
+                                identifiedDecision = idx;
+                            }
+                        }
+                        /*
                         for (int k = 1; k < this.decCountPlusOne; k++)
                         {
                             identificationWeights[k] = this.IdentificationFunction(decisions[k], reduct, eqClass);
@@ -211,64 +212,100 @@ namespace Infovision.Datamining.Roughset
                                 identifiedDecision = k;
                             }
                         }
+                        */
+
+                        if (this.VoteFunction.Equals(this.IdentificationFunction))
+                        {
+                            if (this.IdentifyMultipleDecision)
+                            {
+
+                                foreach (var decVal in eqClass.DecisionSet)
+                                {
+                                    int idx = dec2index[decVal];
+                                    if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
+                                    {
+                                        if ((this.MinimumVoteValue <= 0) || (identificationWeights[idx] >= this.MinimumVoteValue))
+                                        {
+                                            reductsVotes[idx] += identificationWeights[idx];
+                                        }
+                                    }
+                                }
+
+
+                                /*
+                                for (int k = 1; k < this.decCountPlusOne; k++)
+                                {
+                                    if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
+                                    {
+                                        if ((this.MinimumVoteValue <= 0) || (identificationWeights[k] >= this.MinimumVoteValue))
+                                        {
+                                            reductsVotes[k] += identificationWeights[k];
+                                        }
+                                    }
+                                }
+                                */
+
+                            }
+                            else
+                            {
+                                if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
+                                {
+                                    reductsVotes[identifiedDecision] += identificationWeights[identifiedDecision];
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (identifiedDecision != 0)
+                            {
+                                if (this.IdentifyMultipleDecision)
+                                {
+
+                                    foreach (var decVal in eqClass.DecisionSet)
+                                    {
+                                        int idx = dec2index[decVal];
+                                        if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
+                                        {
+                                            decimal vote = this.VoteFunction(decVal, reduct, eqClass);
+                                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                            {
+                                                reductsVotes[idx] += vote;
+                                            }
+                                        }
+                                    }
+
+
+                                    /*
+                                    for (int k = 1; k < this.decCountPlusOne; k++)
+                                    {
+                                        if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
+                                        {
+                                            decimal vote = this.VoteFunction(decisions[k], reduct, eqClass);
+                                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                            {
+                                                reductsVotes[k] += vote;
+                                            }
+                                        }
+                                    }
+                                    */
+
+                                }
+                                else
+                                {
+                                    decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
+                                    if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                    {
+                                        reductsVotes[identifiedDecision] += vote;
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                             continue;
                     }                    
-
-                    if (this.VoteFunction.Equals(this.IdentificationFunction))
-                    {                        
-                        if (this.IdentifyMultipleDecision)
-                        {
-                            for (int k = 1; k < this.decCountPlusOne; k++)
-                            {
-                                if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
-                                {
-                                    if ((this.MinimumVoteValue <= 0) || (identificationWeights[k] >= this.MinimumVoteValue))
-                                    {
-                                        reductsVotes[k] += identificationWeights[k];
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
-                            {
-                                reductsVotes[identifiedDecision] += identificationWeights[identifiedDecision];
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (identifiedDecision != 0)
-                        {                            
-                            if (this.IdentifyMultipleDecision)
-                            {
-                                for (int k = 1; k < this.decCountPlusOne; k++)
-                                {
-                                    if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
-                                    {
-                                        decimal vote = this.VoteFunction(decisions[k], reduct, eqClass);
-                                        if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
-                                        {
-                                            reductsVotes[k] += vote;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                decimal vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
-                                if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
-                                {
-                                    reductsVotes[identifiedDecision] += vote;
-                                }
-                            }
-                        }
-                    }
 
                     if (this.UseExceptionRules && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
                         break;
@@ -310,9 +347,32 @@ namespace Infovision.Datamining.Roughset
             return resultGlobal;
         }
 
+        public Dictionary<long, decimal> IdentifyDecision(EquivalenceClass eqClass, IReduct reduct)
+        {            
+            //if reduct is an Exception and we found an existing rule and we treat exceptions as gaps, 
+            //then we cannot identify the decision, return empty dictionary
+            if (reduct.IsException && eqClass != null && this.ExceptionRulesAsGaps)
+            {
+                Dictionary<long, decimal> result = new Dictionary<long, decimal>(1);
+                result.Add(-1, 0);
+                return result;
+            }
+
+            if (eqClass != null)
+            {
+                Dictionary<long, decimal> result = new Dictionary<long, decimal>(eqClass.DecisionSet.Count);
+                foreach (var decision in eqClass.DecisionSet)
+                    result.Add(decision, this.IdentificationFunction(decision, reduct, eqClass));
+                return result;
+            }
+
+            Dictionary<long, decimal> unknown = new Dictionary<long, decimal>(1);
+            unknown.Add(-1, 0);
+            return unknown;
+        }
+
         public Dictionary<long, decimal> IdentifyDecision(DataRecordInternal record, IReduct reduct)
         {
-            decimal[] identificationWeights = new decimal[this.decCountPlusOne];                                   
             EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
 
             //if reduct is an Exception and we found an existing rule and we treat exceptions as gaps, 
@@ -329,12 +389,12 @@ namespace Infovision.Datamining.Roughset
                 Dictionary<long, decimal> result = new Dictionary<long, decimal>(eqClass.DecisionSet.Count);
                 foreach (var decision in eqClass.DecisionSet)
                     result.Add(decision, this.IdentificationFunction(decision, reduct, eqClass));
-                return result;                
+                return result;
             }
 
             Dictionary<long, decimal> unknown = new Dictionary<long, decimal>(1);
             unknown.Add(-1, 0);
-            return unknown;                        
+            return unknown;
         }
 
         #region Recognition Vectors (needs improvement)
@@ -359,7 +419,7 @@ namespace Infovision.Datamining.Roughset
 
         public static Tuple<long, decimal> IdentifyDecision(DataRecordInternal record, IReduct reduct, RuleQualityFunction decisionIndentificationMethod)
         {
-            ICollection<long> decisions = reduct.EquivalenceClasses.DecisionValues();
+            ICollection<long> decisions = reduct.DataStore.DataStoreInfo.GetDecisionValues();
             int decCountPlusOne = decisions.Count + 1;
             //decimal[] identificationWeights = new decimal[decCountPlusOne];
             long identifiedDecision;

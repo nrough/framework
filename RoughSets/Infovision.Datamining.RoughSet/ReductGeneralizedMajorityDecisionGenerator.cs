@@ -248,21 +248,39 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
+                    //Update m_d
                     newEqClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
 
                     if (newEqClass.DecisionSet.Count == 0)
                         return eqClasses;
 
-                    newEqClass.WeightSum += eq.WeightSum;
+                    //Update |X * E|w as new weighted average
+                    //newEqClass.AvgConfidenceWeight
+                    //    = ((newEqClass.AvgConfidenceWeight * newEqClass.WeightSum)
+                    //    + (eq.AvgConfidenceWeight * eq.WeightSum))
+                    //    / (newEqClass.WeightSum + eq.WeightSum);
+
+                    //Update |X * E|w as new weighted average
+                    newEqClass.AvgConfidenceWeight += eq.AvgConfidenceWeight;
+
+                    //Update |X * E| count
+                    newEqClass.ConfidenceCount += eq.ConfidenceCount;
+
+                    //Update |E|
                     newEqClass.AddObjectInstances(eq.Instances);
+
+                    //Update |E|w
+                    newEqClass.WeightSum += eq.WeightSum;
                 }
                 else
                 {
                     newEqClass = new EquivalenceClass(newInstance, this.DataStore);
-                    newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
-                    newEqClass.WeightSum += eq.WeightSum;
+                    newEqClass.AvgConfidenceWeight = eq.AvgConfidenceWeight;
+                    newEqClass.ConfidenceCount = eq.ConfidenceCount;
                     newEqClass.Instances = new Dictionary<int, decimal>(eq.Instances);
-
+                    newEqClass.WeightSum = eq.WeightSum;
+                    newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
+                    
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
             }

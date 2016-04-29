@@ -40,9 +40,10 @@ namespace Infovision.Datamining.Roughset
         }
 
         public Bireduct(Bireduct bireduct)
-            : this(bireduct.DataStore, bireduct.Attributes, bireduct.ObjectSet, bireduct.Epsilon)
+            : base(bireduct as Reduct)
         {
-        }
+            this.objectSet = new ObjectSet(bireduct.DataStore, bireduct.ObjectSet);
+        }        
 
         #endregion
 

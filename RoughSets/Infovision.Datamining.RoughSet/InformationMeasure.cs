@@ -189,7 +189,7 @@ namespace Infovision.Datamining.Roughset
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    sum = e.GetDecisionWeigth(decisionValue);                    
+                    sum = e.GetDecisionWeight(decisionValue);                    
                     if (sum > maxValue)
                         maxValue = sum;
                 }

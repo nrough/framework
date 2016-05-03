@@ -49,7 +49,7 @@ namespace VotingVsRuleInduction
             {                
                 using (StreamWriter outputFile = new StreamWriter(Path.Combine("results", kvp.Key + ".result"), false)) 
                 {
-                    Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}{9}|{10}",
+                    Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}",
                         "Test",
                         ReductGeneratorParamHelper.TrainData,
                         ReductGeneratorParamHelper.TestData,
@@ -58,12 +58,10 @@ namespace VotingVsRuleInduction
                         ReductGeneratorParamHelper.Epsilon,
                         ReductGeneratorParamHelper.IdentificationType,
                         ReductGeneratorParamHelper.VoteType,
-                        ClassificationResult.ResultHeader(),
-                        "ReductCalculationTime",
-                        "ClassificationTime"
+                        ClassificationResult.ResultHeader()
                         );
 
-                    outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}{9}|{10}",
+                    outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}",
                         "Test",
                         ReductGeneratorParamHelper.TrainData,
                         ReductGeneratorParamHelper.TestData,
@@ -72,9 +70,7 @@ namespace VotingVsRuleInduction
                         ReductGeneratorParamHelper.Epsilon,
                         ReductGeneratorParamHelper.IdentificationType,
                         ReductGeneratorParamHelper.VoteType,
-                        ClassificationResult.ResultHeader(),
-                        "ReductCalculationTime",
-                        "ClassificationTime"
+                        ClassificationResult.ResultHeader()
                         );
 
                     for (int t = 0; t < numberOfTests; t++)
@@ -133,15 +129,20 @@ namespace VotingVsRuleInduction
                                 (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType),
                                 (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType),
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).DataStoreInfo.GetDecisionValues());
+                            
                             ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData));
                             result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
+
+                            result.ModelCreationTime = reductGenerator.ReductGenerationTime;
+                            result.ClassificationTime = classifier.ClassificationTime;
+    
 
                             if (DoubleEpsilonComparer.Instance.Equals(result.QualityRatio, 0.0d))
                             {
                                 emptyReductResult = true;
                             }
 
-                            Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}{9}|{10}",
+                            Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}",
                                 t,
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name,
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData)).Name,
@@ -150,12 +151,10 @@ namespace VotingVsRuleInduction
                                 setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
-                                result,
-                                regeneratedReducts ? reductGenerator.ReductGenerationTime : 0,
-                                classifier.ClassificationTime
+                                result
                                 );
 
-                            outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}{9}|{10}",
+                            outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}",
                                 t,
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name,
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData)).Name,
@@ -164,9 +163,7 @@ namespace VotingVsRuleInduction
                                 setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
-                                result,
-                                regeneratedReducts ? reductGenerator.ReductGenerationTime : 0,
-                                classifier.ClassificationTime
+                                result
                                 );
 
                             lastTrainName = ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name;                            

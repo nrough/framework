@@ -90,7 +90,6 @@ namespace Infovision.Datamining.Roughset
         }
 
         public virtual bool IsException { get; set; }
-        public virtual bool IsLocal { get; set; }
 
         #endregion
 

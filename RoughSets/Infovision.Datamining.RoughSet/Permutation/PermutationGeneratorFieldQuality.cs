@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
             {
                 fieldIdsSorted[c] = field.Id;
                 fieldQualityOrig[c] = measure.Calc(
-                    new ReductWeights(this.Data, new int[] { field.Id }, this.WeightGenerator.Weights, this.Epsilon));
+                    new ReductWeights(this.Data, new int[] { field.Id }, this.Epsilon, this.WeightGenerator.Weights));
                 c++;
             }
 

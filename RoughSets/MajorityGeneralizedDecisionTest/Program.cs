@@ -76,7 +76,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ClassificationTime = classifier.ClassificationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GMDR", t, fold, ensembleSize, eps, result);
-
+            /*
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 identificationPlus,
@@ -89,6 +89,8 @@ namespace MajorityGeneralizedDecisionTest
             result.ClassificationTime = classifier.ClassificationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GMDR+", t, fold, ensembleSize, eps, result);
+            */
+
         }        
 
         public void MajorityGeneralizedDecisionNoExceptionsPerformanceTest()
@@ -183,6 +185,7 @@ namespace MajorityGeneralizedDecisionTest
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GAPS", t, fold, ensembleSize, eps, result);
 
+            /*
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 identificationPlus,
@@ -194,10 +197,12 @@ namespace MajorityGeneralizedDecisionTest
 
             result = classifier.Classify(testData);
             result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, true);
+            
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "GAPS+", t, fold, ensembleSize, eps, result);
+            */
 
             /*
             foreach (var reductStore in filteredReductStoreCollection)
@@ -235,6 +240,7 @@ namespace MajorityGeneralizedDecisionTest
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "EXEP", t, fold, ensembleSize, eps, result);           
 
+            /*
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 identificationPlus,
@@ -250,7 +256,7 @@ namespace MajorityGeneralizedDecisionTest
             result.ClassificationTime = classifier.ClassificationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "EXEP+", t, fold, ensembleSize, eps, result);
-
+            */
         }
 
         public void ApproximateDecisionReduct()
@@ -293,10 +299,8 @@ namespace MajorityGeneralizedDecisionTest
             result.ModelCreationTime = generator.ReductGenerationTime;
             result.ClassificationTime = classifier.ClassificationTime;
 
-            this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "ADR+", t, fold, ensembleSize, eps, result));
+            this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5}", "ADR", t, fold, ensembleSize, eps, result));
         }
-
-
 
         static void Main(string[] args)
         {
@@ -309,8 +313,6 @@ namespace MajorityGeneralizedDecisionTest
                 program.Run(kvp.Value);
             }
         }
-
-        
         
         public void Init(BenchmarkData benchmarkData)
         {

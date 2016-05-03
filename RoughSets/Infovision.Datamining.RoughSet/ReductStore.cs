@@ -226,17 +226,11 @@ namespace Infovision.Datamining.Roughset
             {
                 foreach (IReduct localReduct in reducts)
                 {
-                    /*
                     if (this.AllowDuplicates == false
-                        && EpsilonComparer.NearlyEqual(localReduct.Epsilon, reduct.Epsilon, 0.000000001)
-                        && reduct.Attributes.Superset(localReduct.Attributes))
-                    {                    
-                        return false;                    
-                    }
-                    */
-
-                    if (this.AllowDuplicates == false
-                        && localReduct.Epsilon == reduct.Epsilon
+                        && reduct.GetType() == localReduct.GetType()
+                        && localReduct.IsException == reduct.IsException
+                        //&& localReduct.Epsilon == reduct.Epsilon
+                        && DecimalEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
                         && reduct.Attributes.Superset(localReduct.Attributes))
                     {
                         return false;

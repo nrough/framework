@@ -219,12 +219,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
-            IReduct allAttributes = 
-                new ReductWeights(
-                    data, 
-                    data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
-                    new WeightGeneratorMajority(data).Weights, 
-                    Decimal.Zero);
+            IReduct allAttributes =
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
             decimal dataQuality = measure.Calc(allAttributes);
@@ -252,12 +248,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
-            IReduct allAttributes = 
-                new ReductWeights(
-                    data, 
-                    data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 
-                    new WeightGeneratorMajority(data).Weights, 
-                    Decimal.Zero);
+            IReduct allAttributes =
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
             decimal dataQuality = measure.Calc(allAttributes);

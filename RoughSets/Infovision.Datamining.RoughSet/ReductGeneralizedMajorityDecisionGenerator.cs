@@ -14,8 +14,6 @@ namespace Infovision.Datamining.Roughset
         private WeightGenerator weightGenerator = null;
         protected List<int[]> attributePermutations;
 
-        //private EquivalenceClassCollection origEquivalenceClasses;
-
         public WeightGenerator WeightGenerator
         {
             get
@@ -290,14 +288,14 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }
         
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon, eqClasses);
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, eqClasses);
             r.Id = id;
             return r;
         }

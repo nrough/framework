@@ -81,12 +81,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
             
             Decimal dataQuality = new InformationMeasureWeights().Calc(
-                new ReductWeights(
-                    data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, Decimal.Zero));
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, weightGenerator.Weights));
 
             Decimal dataQuality_2 = new InformationMeasureWeights().Calc(
-                new ReductWeights(
-                    data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, Decimal.Zero));
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, weightGenerator.Weights));
 
             Assert.AreEqual(Decimal.Round(dataQuality, 17), Decimal.Round(dataQuality_2, 17));
 

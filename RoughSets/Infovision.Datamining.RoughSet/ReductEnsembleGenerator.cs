@@ -249,7 +249,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, this.WeightGenerator.Weights, epsilon);
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }

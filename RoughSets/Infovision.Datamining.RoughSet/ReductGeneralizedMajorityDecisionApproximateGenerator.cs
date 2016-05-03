@@ -124,11 +124,14 @@ namespace Infovision.Datamining.Roughset
                         exceptionEqClasses.Partitions[newInstance] = exeptionEq;
                         exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
 
+                        /*
                         Bireduct exception = new Bireduct(this.DataStore,
                             newAttributes,
                             eq.ObjectIndexes,
                             this.Epsilon,
                             this.WeightGenerator.Weights);
+                        */
+                        ReductWeights exception = new ReductWeights(this.DataStore, newAttributes, this.Epsilon, this.WeightGenerator.Weights);
                         exception.SetEquivalenceClassCollection(exceptionEqClasses);
                         exception.IsException = true;
 

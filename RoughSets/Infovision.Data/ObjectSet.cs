@@ -73,30 +73,34 @@ namespace Infovision.Data
 
         public override void AddElement(int element)
         {
-            if (!this.ContainsElement(element))
+            lock (mutex)
             {
-                long decisionValue = this.dataStore.GetDecisionValue(element);
-                
-                int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
-                
-               
-            }
+                if (!this.ContainsElement(element))
+                {
+                    long decisionValue = this.dataStore.GetDecisionValue(element);
 
-            base.AddElement(element);
+                    int count = 0;
+                    this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+                }
+
+                base.AddElement(element);
+            }
         }
 
         public override void RemoveElement(int element)
         {
-            if (this.ContainsElement(element))
+            lock (mutex)
             {
-                long decisionValue = this.dataStore.GetDecisionValue(element);
-                
-                int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;                                
+                if (this.ContainsElement(element))
+                {
+                    long decisionValue = this.dataStore.GetDecisionValue(element);
+
+                    int count = 0;
+                    this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? --count : 0;
+                }
+
+                base.RemoveElement(element);
             }
-            
-            base.RemoveElement(element);            
         }
 
         public static ObjectSet ConstructEmptyObjectSet(DataStore dataStore)

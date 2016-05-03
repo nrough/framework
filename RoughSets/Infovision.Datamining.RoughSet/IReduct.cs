@@ -9,7 +9,6 @@ namespace Infovision.Datamining.Roughset
         DataStore DataStore { get; }
         FieldSet Attributes { get; }
         bool IsException { get; }        
-        bool IsLocal { get; }
         string ReductPartitionCacheKey { get; }
 
         //TODO Move to Bireduct Interface? (Exceptions?)

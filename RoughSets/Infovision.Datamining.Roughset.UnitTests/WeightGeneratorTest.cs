@@ -388,7 +388,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
 
-            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
+            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);
             IInformationMeasure infoMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority);
             decimal infoMeasureResult = infoMeasure.Calc(reduct);
 

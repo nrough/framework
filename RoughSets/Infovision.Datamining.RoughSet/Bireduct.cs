@@ -78,11 +78,6 @@ namespace Infovision.Datamining.Roughset
             get { return this.ObjectSet; }
         }
 
-        public override bool IsLocal
-        {
-            get { return true; }
-        }
-
         #endregion
 
         #region Methods        

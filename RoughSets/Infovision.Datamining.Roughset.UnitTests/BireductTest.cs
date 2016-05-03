@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
 
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(dataStoreTrain);
-            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             decimal w = weightMeasure.Calc(reductWeights);
 
@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(dataStoreTrain);
-            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), weightGenerator.Weights, 0);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             decimal w = weightMeasure.Calc(reductWeights);
 

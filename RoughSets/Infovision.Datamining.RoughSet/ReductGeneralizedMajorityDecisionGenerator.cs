@@ -231,11 +231,11 @@ namespace Infovision.Datamining.Roughset
         }
         
         protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null)
-        {            
+        {
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(
                 this.DataStore,
-                eqClasses.Attributes.RemoveAt(attributeIdx, length), 
-                this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+                eqClasses.Attributes.RemoveAt(attributeIdx, length));
+                //this.DataStore.DataStoreInfo.NumberOfDecisionValues);
 
             newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
             newEqClasses.CountObjects = eqClasses.CountObjects;

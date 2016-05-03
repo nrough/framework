@@ -61,7 +61,8 @@ namespace Infovision.Datamining.Roughset
                 throw new ArgumentNullException("Reduct generating with exceptions requires initialized reductStore", "reductStore");
 
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            //EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes);
             newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
             newEqClasses.CountObjects = eqClasses.CountObjects;
 
@@ -71,6 +72,10 @@ namespace Infovision.Datamining.Roughset
 #if !DEBUG            
             eqArray.Shuffle();
 #endif
+
+            EquivalenceClassCollection exceptionEqClasses = null;
+            ReductWeights exception = null;
+            EquivalenceClass exeptionEq = null;
 
             foreach (EquivalenceClass eq in eqArray)
             {
@@ -111,31 +116,49 @@ namespace Infovision.Datamining.Roughset
                         if (Decimal.Round(newEqClasses.CountWeightObjects, 17) < this.WeightDropLimit)
                             return eqClasses;
                                                 
-                        EquivalenceClassCollection exceptionEqClasses = new EquivalenceClassCollection(
-                            this.DataStore, newAttributes, eq.DecisionSet.Count);
+                        //EquivalenceClassCollection exceptionEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eq.DecisionSet.Count);
+                        if (exception == null)
+                        {
+                            exceptionEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes);
 
-                        EquivalenceClass exeptionEq = new EquivalenceClass(newInstance, this.DataStore);
-                        exeptionEq.AvgConfidenceWeight = eq.AvgConfidenceWeight;
-                        exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
-                        exeptionEq.Instances = new Dictionary<int, decimal>(eq.Instances);                        
-                        exeptionEq.WeightSum = eq.WeightSum;
-                        exeptionEq.DecisionSet = new PascalSet<long>(eq.DecisionSet);                        
+                            exeptionEq = new EquivalenceClass(newInstance, this.DataStore);
+                            exeptionEq.AvgConfidenceWeight = eq.AvgConfidenceWeight;
+                            exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
+                            exeptionEq.Instances = new Dictionary<int, decimal>(eq.Instances);
+                            exeptionEq.WeightSum = eq.WeightSum;
+                            exeptionEq.DecisionSet = new PascalSet<long>(eq.DecisionSet);
 
-                        exceptionEqClasses.Partitions[newInstance] = exeptionEq;
-                        exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
+                            exceptionEqClasses.Partitions.Add(newInstance, exeptionEq);
+                            
+                            exception = new ReductWeights(this.DataStore, newAttributes, this.Epsilon, this.WeightGenerator.Weights);
+                            exception.SetEquivalenceClassCollection(exceptionEqClasses);
+                            exception.IsException = true;
 
-                        /*
-                        Bireduct exception = new Bireduct(this.DataStore,
-                            newAttributes,
-                            eq.ObjectIndexes,
-                            this.Epsilon,
-                            this.WeightGenerator.Weights);
-                        */
-                        ReductWeights exception = new ReductWeights(this.DataStore, newAttributes, this.Epsilon, this.WeightGenerator.Weights);
-                        exception.SetEquivalenceClassCollection(exceptionEqClasses);
-                        exception.IsException = true;
+                            //localReductStore.DoAddReduct(exception);
+                        }
+                        else
+                        {
+                            exeptionEq = null;
+                            if (exceptionEqClasses.Partitions.TryGetValue(newInstance, out exeptionEq))
+                            {
+                                exeptionEq.AvgConfidenceWeight += eq.AvgConfidenceWeight;
+                                exeptionEq.AvgConfidenceSum += eq.AvgConfidenceSum;
+                                exeptionEq.AddObjectInstances(eq.Instances);
+                                exeptionEq.WeightSum += eq.WeightSum;
+                                exeptionEq.DecisionSet += eq.DecisionSet;
+                            }
+                            else
+                            {
+                                exeptionEq = new EquivalenceClass(newInstance, this.DataStore);
+                                exeptionEq.AvgConfidenceWeight = eq.AvgConfidenceWeight;
+                                exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
+                                exeptionEq.Instances = new Dictionary<int, decimal>(eq.Instances);
+                                exeptionEq.WeightSum = eq.WeightSum;
+                                exeptionEq.DecisionSet = new PascalSet<long>(eq.DecisionSet);
 
-                        localReductStore.DoAddReduct(exception);
+                                exceptionEqClasses.Partitions.Add(newInstance, exeptionEq);
+                            }
+                        }
                     }
                 }
                 else
@@ -147,12 +170,19 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.WeightSum = eq.WeightSum;
                     newEqClass.DecisionSet = new PascalSet<long>(eq.DecisionSet);
 
-                    newEqClasses.Partitions[newInstance] = newEqClass;
+                    newEqClasses.Partitions.Add(newInstance, newEqClass);
                 }
             }
 
-            for (int i = 0; i < localReductStore.Count; i++)
-                reductStore.AddReduct(localReductStore.GetReduct(i));
+
+            if (exception != null)
+            {
+                exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
+                reductStore.AddReduct(exception);
+            }
+
+            //for (int i = 0; i < localReductStore.Count; i++)
+            //    reductStore.AddReduct(localReductStore.GetReduct(i));
 
             return newEqClasses;
         }
@@ -160,7 +190,8 @@ namespace Infovision.Datamining.Roughset
         private EquivalenceClassCollection ReduceWithoutExceptions(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            //EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, this.DataStore.DataStoreInfo.NumberOfDecisionValues);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes);
             newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
             newEqClasses.CountObjects = eqClasses.CountObjects;
 

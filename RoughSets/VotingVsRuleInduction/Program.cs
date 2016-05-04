@@ -141,7 +141,7 @@ namespace VotingVsRuleInduction
                                 emptyReductResult = true;
                             }
 
-                            Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
+                            Console.WriteLine("{0,2}|{1}|{2}|{3,2}|{4,4}|{5,11}|{6,19}|{7}",
                                 t,
                                 f,
                                 setup.GetParameter(ReductGeneratorParamHelper.FactoryKey),
@@ -192,13 +192,13 @@ namespace VotingVsRuleInduction
             }            
 
             Args conf = new Args();
-            conf.SetParameter(ReductGeneratorParamHelper.TrainData, ((Tuple<DataStore, DataStore, int>)parameterVector[0]).Item1);
+            conf.SetParameter(ReductGeneratorParamHelper.TrainData, data.Item1);
             conf.SetParameter(ReductGeneratorParamHelper.FactoryKey, parameterVector[1]);
             conf.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permuationCollection);
             conf.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, parameterVector[3]);
             conf.SetParameter(ReductGeneratorParamHelper.Epsilon, parameterVector[2]);
 
-            conf.SetParameter(ReductGeneratorParamHelper.TestData, ((Tuple<DataStore, DataStore, int>)parameterVector[0]).Item2);
+            conf.SetParameter(ReductGeneratorParamHelper.TestData, data.Item2);
             conf.SetParameter(ReductGeneratorParamHelper.IdentificationType, parameterVector[4]);
             conf.SetParameter(ReductGeneratorParamHelper.VoteType, parameterVector[5]);
             conf.SetParameter(ReductGeneratorParamHelper.CVActiveFold, data.Item3);

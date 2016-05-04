@@ -8,6 +8,7 @@ using Infovision.Data;
 using Infovision.Utils;
 using System.Diagnostics;
 using Infovision.Math;
+using System.Reflection;
 
 namespace Infovision.Datamining.Roughset
 {   
@@ -21,7 +22,10 @@ namespace Infovision.Datamining.Roughset
         private int decCount;
         private int decCountPlusOne;
         private long[] decisions;
-        Dictionary<long, int> dec2index;
+        private Dictionary<long, int> dec2index;
+        private string singleVoteName;        
+        private string singleVoteModule;
+        private IReductStoreCollection reductStoreCollection;
 
         protected readonly Stopwatch timer = new Stopwatch();
 
@@ -36,18 +40,12 @@ namespace Infovision.Datamining.Roughset
         public RuleQualityFunction IdentificationFunction { get; set; }
         public RuleQualityFunction VoteFunction { get; set; }
         public decimal MinimumVoteValue { get; set; }
-        public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }        
+        public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }
 
-        private IReductStoreCollection reductStoreCollection { get; set; }
-
-        #endregion
-
-        #region Constructors
-
-        public IReductStoreCollection ReductStoreCollection 
+        public IReductStoreCollection ReductStoreCollection
         {
             get { return this.reductStoreCollection; }
-            protected set 
+            protected set
             {
                 this.reductStoreCollection = value;
                 if (reductStoreCollection != null)
@@ -62,6 +60,10 @@ namespace Infovision.Datamining.Roughset
                 }
             }
         }
+
+        #endregion
+
+        #region Constructors        
         
         public RoughClassifier(            
             IReductStoreCollection reductStoreCollection,
@@ -91,6 +93,10 @@ namespace Infovision.Datamining.Roughset
             }            
 
             this.MinimumVoteValue = Decimal.MinValue;
+
+            MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
+            this.singleVoteName = singleVoteMethod.Name;
+            this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;
         }
 
         #endregion
@@ -299,10 +305,24 @@ namespace Infovision.Datamining.Roughset
                                     }
                                 }
                             }
+                            else
+                            {
+                                if (this.VoteFunction.Method.Name == singleVoteName
+                                    && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
+                                {
+                                    reductsVotes[0] += 1;
+                                }
+                            }
                         }
                     }
                     else
                     {
+                        if (this.VoteFunction.Method.Name == singleVoteName
+                            && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
+                        {
+                            reductsVotes[0] += 1;
+                        }
+                        
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                             continue;
                     }                    

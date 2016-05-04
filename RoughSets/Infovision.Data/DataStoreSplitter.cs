@@ -149,6 +149,13 @@ namespace Infovision.Data
                     dataStore2.Insert(dataStore.GetRecordByIndex(i));
                 }
             }
+
+            dataStore1.NormalizeWeights();
+            dataStore1.CreateWeightHistogramsOnFields();
+
+            dataStore2.NormalizeWeights();
+            dataStore2.CreateWeightHistogramsOnFields();
+            
         }
 
         public virtual void GetTrainingData(ref DataStore dataStore1)
@@ -173,6 +180,9 @@ namespace Infovision.Data
                     dataStore1.Insert(dataStore.GetRecordByIndex(i));
                 }
             }
+
+            dataStore1.NormalizeWeights();
+            dataStore1.CreateWeightHistogramsOnFields();
         }
 
         public virtual void GetTestData(ref DataStore dataStore2)
@@ -197,6 +207,9 @@ namespace Infovision.Data
                     dataStore2.Insert(dataStore.GetRecordByIndex(i)); 
                 }
             }
+
+            dataStore2.NormalizeWeights();
+            dataStore2.CreateWeightHistogramsOnFields();
         }
     }
 

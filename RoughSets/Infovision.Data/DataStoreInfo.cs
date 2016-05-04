@@ -50,7 +50,7 @@ namespace Infovision.Data
         public int DecisionFieldId
         {
             get { return decisionFieldId; }
-            set 
+            internal set 
             {
                 if (this.decisionFieldId != value)
                 {
@@ -63,7 +63,7 @@ namespace Infovision.Data
                     this.decisionFieldId = value;
 
                     if (this.decisionFieldId > 0)
-                        fieldTypes[this.decisionFieldId] = FieldTypes.Decision;                    
+                        fieldTypes[this.decisionFieldId] = FieldTypes.Decision;
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace Infovision.Data
             this.fieldTypeCount[fieldType]++;
 
             if (fieldType == FieldTypes.Decision)
-            {
+            {                
                 this.DecisionFieldId = fieldInfo.Id;
             }
 
@@ -320,7 +320,7 @@ namespace Infovision.Data
             }
 
             if (initMissingValues)
-                this.HasMissingData = dataStoreInfo.HasMissingData;
+                this.HasMissingData = dataStoreInfo.HasMissingData;            
         }
 
         public void CreateWeightHistogram(DataStore data, decimal[] weights, int fieldId)

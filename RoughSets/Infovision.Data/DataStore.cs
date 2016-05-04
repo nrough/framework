@@ -202,12 +202,22 @@ namespace Infovision.Data
 
             Array.Copy(w, this.weights, w.Length);
 
+            this.CreateWeightHistogramsOnFields();            
+        }
+
+        internal void CreateWeightHistogramsOnFields()
+        {
             foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Standard))
             {
                 if (fieldInfo.HistogramWeights != null)
                 {
                     fieldInfo.CreateWeightHistogram(this, this.weights);
                 }
+            }
+
+            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Decision))
+            {
+                fieldInfo.CreateWeightHistogram(this, this.weights);                
             }
         }
 
@@ -484,7 +494,10 @@ namespace Infovision.Data
 
         public void SetDecisionFieldId(int fieldId)
         {
-            this.DataStoreInfo.DecisionFieldId = fieldId;            
+            this.DataStoreInfo.DecisionFieldId = fieldId;
+
+            //TODO this should be called inside setting this.DataStoreInfo.DecisionFieldId property but we miss reference to DataStore and its weights
+            this.DataStoreInfo.DecisionInfo.CreateWeightHistogram(this, this.weights);
         }
 
         public long GetDecisionValue(int objectIndex)

@@ -85,7 +85,9 @@ namespace Infovision.Datamining.Roughset
 
         protected override WeightGenerator CreateWeightGenerator()
         {
-            return new WeightGeneratorMajority(this.DataStore);
+            WeightGenerator wGen = new WeightGeneratorMajority(this.DataStore);
+            this.DataStore.SetWeights(wGen.Weights);
+            return wGen;
         }
     }
 
@@ -114,7 +116,9 @@ namespace Infovision.Datamining.Roughset
 
         protected override WeightGenerator CreateWeightGenerator()
         {
-            return new WeightGeneratorRelative(this.DataStore);
+            WeightGenerator wGen = new WeightGeneratorRelative(this.DataStore);
+            this.DataStore.SetWeights(wGen.Weights);
+            return wGen;
         }        
     }
 

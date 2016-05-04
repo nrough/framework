@@ -270,8 +270,21 @@ namespace Infovision.Data
 
         public void CreateWeightHistogram(DataStore data, decimal[] weights)
         {            
+            int len = 0;
+            if(histogramWeights != null)
+            {
+                len = histogramWeights.Count;
+                histogramWeights = new Histogram<long>(len);
+            }
+            else
+            {
+                histogramWeights = new Histogram<long>();
+            }
+
+            int fieldIdx = data.DataStoreInfo.GetFieldIndex(this.Id);
+            
             for (int i = 0; i < data.NumberOfRecords; i++)
-                histogramWeights.Increase(data.GetFieldValue(i, this.Id), weights[i]);
+                histogramWeights.Increase(data.GetFieldIndexValue(i, fieldIdx), weights[i]);
         }
 
         #endregion

@@ -132,7 +132,14 @@ namespace Infovision.Data
         {
             string[] fields = fileInfo.Split(fieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
             this.expectedColums = fields.Length;
-            this.DecisionId = fields.Length;
+            if (this.ReferenceDataStoreInfo != null && this.ReferenceDataStoreInfo.DecisionFieldId > 0)
+            {
+                this.DecisionId = this.ReferenceDataStoreInfo.DecisionFieldId;
+            }
+            else
+            {
+                this.DecisionId = fields.Length;
+            }
         }
 
         protected virtual bool CheckNumberOfColumns(int numberOfColumns)
@@ -433,9 +440,16 @@ namespace Infovision.Data
 
             if (!Int32.TryParse(fields[0], out tmp))
                 throw new InvalidDataException("FileFormat error");
-            this.ExpectedRows = tmp;            
-
-            this.DecisionId = this.ExpectedColumns;
+            this.ExpectedRows = tmp;
+            
+            if (this.ReferenceDataStoreInfo != null && this.ReferenceDataStoreInfo.DecisionFieldId > 0)
+            {
+                this.DecisionId = this.ReferenceDataStoreInfo.DecisionFieldId;
+            }
+            else
+            {
+                this.DecisionId = this.ExpectedColumns;
+            }
         }
     }
 

@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Data", "Infovisi
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.RunTest", "Infovision.RunTest\Infovision.RunTest.csproj", "{D994976F-B358-4C84-B00E-0858A22B5068}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Utils", "Infovision.Utils\Infovision.Utils.csproj", "{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Roughset", "Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj", "{2D23E210-FFB7-46EF-AD27-18B5DE007EE3}"
@@ -31,14 +29,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining", "Infovision.Datamining\Infovision.Datamining.csproj", "{82E1F95C-4559-44AB-9114-42E78DA331A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Test", "Infovision.Test\Infovision.Test.csproj", "{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Data.UnitTests", "Infovision.Data.UnitTests\Infovision.Data.UnitTests.csproj", "{5D273260-69B2-49ED-8B82-21E0BC9D0778}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Datamining.Roughset.UnitTests", "Infovision.Datamining.Roughset.UnitTests\Infovision.Datamining.Roughset.UnitTests.csproj", "{520A0AD7-41EA-4779-9142-3BC13868168D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1} = {ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.TestAssembly", "Infovision.TestAssembly\Infovision.TestAssembly.csproj", "{9DDFE474-0A4C-492C-82B2-C0A850217774}"
 EndProject
@@ -57,7 +50,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.MRI.UnitTests", "Infovision.MRI.UnitTests\Infovision.MRI.UnitTests.csproj", "{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3E09373E-33C7-4119-9FC9-068A141668E1} = {3E09373E-33C7-4119-9FC9-068A141668E1}
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1} = {ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.MRI.UI", "infovision.MRIFeatureExtractor\Infovision.MRI.UI.csproj", "{7B6ECA13-1C53-4F4F-9EB5-877D5A7E6356}"
@@ -165,7 +157,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorityGeneralizedDecision
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 31
+		SccNumberOfProjects = 29
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -206,80 +198,74 @@ Global
 		SccProjectTopLevelParentUniqueName10 = Infovision.sln
 		SccProjectName10 = Infovision.RunTest.UnitTests
 		SccLocalPath10 = Infovision.RunTest.UnitTests
-		SccProjectUniqueName11 = Infovision.RunTest\\Infovision.RunTest.csproj
-		SccProjectName11 = Infovision.RunTest
-		SccLocalPath11 = Infovision.RunTest
-		SccProjectUniqueName12 = Infovision.Test\\Infovision.Test.csproj
-		SccProjectName12 = Infovision.Test
-		SccLocalPath12 = Infovision.Test
-		SccProjectUniqueName13 = Infovision.TestAssembly\\Infovision.TestAssembly.csproj
-		SccProjectTopLevelParentUniqueName13 = Infovision.sln
-		SccProjectName13 = Infovision.TestAssembly
-		SccLocalPath13 = Infovision.TestAssembly
-		SccProjectUniqueName14 = Infovision.Utils.UnitTests\\Infovision.Utils.UnitTests.csproj
-		SccProjectTopLevelParentUniqueName14 = Infovision.sln
-		SccProjectName14 = Infovision.Utils.UnitTests
-		SccLocalPath14 = Infovision.Utils.UnitTests
-		SccProjectUniqueName15 = Infovision.Utils\\Infovision.Utils.csproj
-		SccProjectName15 = Infovision.Utils
-		SccLocalPath15 = Infovision.Utils
-		SccProjectUniqueName16 = Infovision.Datamining.Experimenter\\Infovision.Datamining.Experimenter.csproj
-		SccProjectName16 = Infovision.Datamining.Experimenter
-		SccLocalPath16 = Infovision.Datamining.Experimenter
-		SccProjectUniqueName17 = Infovision.Datamining.Experimenter.Test\\Infovision.Datamining.Experimenter.Test.csproj
-		SccProjectTopLevelParentUniqueName17 = Infovision.sln
-		SccProjectName17 = Infovision.Datamining.Experimenter.Test
-		SccLocalPath17 = Infovision.Datamining.Experimenter.Test
-		SccProjectUniqueName18 = Infovision.Datamining.Tests\\Infovision.Datamining.Tests.csproj
+		SccProjectUniqueName11 = Infovision.TestAssembly\\Infovision.TestAssembly.csproj
+		SccProjectTopLevelParentUniqueName11 = Infovision.sln
+		SccProjectName11 = Infovision.TestAssembly
+		SccLocalPath11 = Infovision.TestAssembly
+		SccProjectUniqueName12 = Infovision.Utils.UnitTests\\Infovision.Utils.UnitTests.csproj
+		SccProjectTopLevelParentUniqueName12 = Infovision.sln
+		SccProjectName12 = Infovision.Utils.UnitTests
+		SccLocalPath12 = Infovision.Utils.UnitTests
+		SccProjectUniqueName13 = Infovision.Utils\\Infovision.Utils.csproj
+		SccProjectName13 = Infovision.Utils
+		SccLocalPath13 = Infovision.Utils
+		SccProjectUniqueName14 = Infovision.Datamining.Experimenter\\Infovision.Datamining.Experimenter.csproj
+		SccProjectName14 = Infovision.Datamining.Experimenter
+		SccLocalPath14 = Infovision.Datamining.Experimenter
+		SccProjectUniqueName15 = Infovision.Datamining.Experimenter.Test\\Infovision.Datamining.Experimenter.Test.csproj
+		SccProjectTopLevelParentUniqueName15 = Infovision.sln
+		SccProjectName15 = Infovision.Datamining.Experimenter.Test
+		SccLocalPath15 = Infovision.Datamining.Experimenter.Test
+		SccProjectUniqueName16 = Infovision.Datamining.Tests\\Infovision.Datamining.Tests.csproj
+		SccProjectTopLevelParentUniqueName16 = Infovision.sln
+		SccProjectName16 = Infovision.Datamining.Tests
+		SccLocalPath16 = Infovision.Datamining.Tests
+		SccProjectUniqueName17 = Infovision.Math\\Infovision.Math.csproj
+		SccProjectName17 = Infovision.Math
+		SccLocalPath17 = Infovision.Math
+		SccProjectUniqueName18 = Infovision.Math.Tests\\Infovision.Math.Tests.csproj
 		SccProjectTopLevelParentUniqueName18 = Infovision.sln
-		SccProjectName18 = Infovision.Datamining.Tests
-		SccLocalPath18 = Infovision.Datamining.Tests
-		SccProjectUniqueName19 = Infovision.Math\\Infovision.Math.csproj
-		SccProjectName19 = Infovision.Math
-		SccLocalPath19 = Infovision.Math
-		SccProjectUniqueName20 = Infovision.Math.Tests\\Infovision.Math.Tests.csproj
+		SccProjectName18 = Infovision.Math.Tests
+		SccLocalPath18 = Infovision.Math.Tests
+		SccProjectUniqueName19 = ApproxReductBoosting\\ApproxReductBoosting.csproj
+		SccProjectTopLevelParentUniqueName19 = Infovision.sln
+		SccProjectName19 = ApproxReductBoosting
+		SccLocalPath19 = ApproxReductBoosting
+		SccProjectUniqueName20 = ApproxReductBoostingCV\\ApproxReductBoostingCV.csproj
 		SccProjectTopLevelParentUniqueName20 = Infovision.sln
-		SccProjectName20 = Infovision.Math.Tests
-		SccLocalPath20 = Infovision.Math.Tests
-		SccProjectUniqueName21 = ApproxReductBoosting\\ApproxReductBoosting.csproj
-		SccProjectTopLevelParentUniqueName21 = Infovision.sln
-		SccProjectName21 = ApproxReductBoosting
-		SccLocalPath21 = ApproxReductBoosting
-		SccProjectUniqueName22 = ApproxReductBoostingCV\\ApproxReductBoostingCV.csproj
+		SccProjectName20 = ApproxReductBoostingCV
+		SccLocalPath20 = ApproxReductBoostingCV
+		SccProjectUniqueName21 = Infovision.Statistics\\Infovision.Statistics.csproj
+		SccProjectName21 = Infovision.Statistics
+		SccLocalPath21 = Infovision.Statistics
+		SccProjectUniqueName22 = ExceptionRulesTest\\ExceptionRulesTest.csproj
 		SccProjectTopLevelParentUniqueName22 = Infovision.sln
-		SccProjectName22 = ApproxReductBoostingCV
-		SccLocalPath22 = ApproxReductBoostingCV
-		SccProjectUniqueName23 = Infovision.Statistics\\Infovision.Statistics.csproj
-		SccProjectName23 = Infovision.Statistics
-		SccLocalPath23 = Infovision.Statistics
-		SccProjectUniqueName24 = ExceptionRulesTest\\ExceptionRulesTest.csproj
+		SccProjectName22 = ExceptionRulesTest
+		SccLocalPath22 = ExceptionRulesTest
+		SccProjectUniqueName23 = DisesorTest\\DisesorTest.csproj
+		SccProjectTopLevelParentUniqueName23 = Infovision.sln
+		SccProjectName23 = DisesorTest
+		SccLocalPath23 = DisesorTest
+		SccProjectUniqueName24 = DisesorTuning\\DisesorTuning.csproj
 		SccProjectTopLevelParentUniqueName24 = Infovision.sln
-		SccProjectName24 = ExceptionRulesTest
-		SccLocalPath24 = ExceptionRulesTest
-		SccProjectUniqueName25 = DisesorTest\\DisesorTest.csproj
+		SccProjectName24 = DisesorTuning
+		SccLocalPath24 = DisesorTuning
+		SccProjectUniqueName25 = ExceptionRulesTiming\\ExceptionRulesTiming.csproj
 		SccProjectTopLevelParentUniqueName25 = Infovision.sln
-		SccProjectName25 = DisesorTest
-		SccLocalPath25 = DisesorTest
-		SccProjectUniqueName26 = DisesorTuning\\DisesorTuning.csproj
+		SccProjectName25 = ExceptionRulesTiming
+		SccLocalPath25 = ExceptionRulesTiming
+		SccProjectUniqueName26 = VotingVsRuleInduction\\VotingVsRuleInduction.csproj
 		SccProjectTopLevelParentUniqueName26 = Infovision.sln
-		SccProjectName26 = DisesorTuning
-		SccLocalPath26 = DisesorTuning
-		SccProjectUniqueName27 = ExceptionRulesTiming\\ExceptionRulesTiming.csproj
+		SccProjectName26 = VotingVsRuleInduction
+		SccLocalPath26 = VotingVsRuleInduction
+		SccProjectUniqueName27 = DermoReducts\\DermoReducts.csproj
 		SccProjectTopLevelParentUniqueName27 = Infovision.sln
-		SccProjectName27 = ExceptionRulesTiming
-		SccLocalPath27 = ExceptionRulesTiming
-		SccProjectUniqueName28 = VotingVsRuleInduction\\VotingVsRuleInduction.csproj
+		SccProjectName27 = DermoReducts
+		SccLocalPath27 = DermoReducts
+		SccProjectUniqueName28 = MajorityGeneralizedDecisionTest\\MajorityGeneralizedDecisionTest.csproj
 		SccProjectTopLevelParentUniqueName28 = Infovision.sln
-		SccProjectName28 = VotingVsRuleInduction
-		SccLocalPath28 = VotingVsRuleInduction
-		SccProjectUniqueName29 = DermoReducts\\DermoReducts.csproj
-		SccProjectTopLevelParentUniqueName29 = Infovision.sln
-		SccProjectName29 = DermoReducts
-		SccLocalPath29 = DermoReducts
-		SccProjectUniqueName30 = MajorityGeneralizedDecisionTest\\MajorityGeneralizedDecisionTest.csproj
-		SccProjectTopLevelParentUniqueName30 = Infovision.sln
-		SccProjectName30 = MajorityGeneralizedDecisionTest
-		SccLocalPath30 = MajorityGeneralizedDecisionTest
+		SccProjectName28 = MajorityGeneralizedDecisionTest
+		SccLocalPath28 = MajorityGeneralizedDecisionTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,22 +296,6 @@ Global
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}.Release|x64.ActiveCfg = Release|x64
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}.Release|x64.Build.0 = Release|x64
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}.Release|x86.ActiveCfg = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|x64.ActiveCfg = Debug|x64
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|x64.Build.0 = Debug|x64
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|Win32.ActiveCfg = Release|Any CPU
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|x64.ActiveCfg = Release|x64
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|x64.Build.0 = Release|x64
-		{D994976F-B358-4C84-B00E-0858A22B5068}.Release|x86.ActiveCfg = Release|Any CPU
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -374,22 +344,6 @@ Global
 		{82E1F95C-4559-44AB-9114-42E78DA331A1}.Release|x64.ActiveCfg = Release|x64
 		{82E1F95C-4559-44AB-9114-42E78DA331A1}.Release|x64.Build.0 = Release|x64
 		{82E1F95C-4559-44AB-9114-42E78DA331A1}.Release|x86.ActiveCfg = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|x64.ActiveCfg = Debug|x64
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|x64.Build.0 = Debug|x64
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|Win32.ActiveCfg = Release|Any CPU
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|x64.ActiveCfg = Release|x64
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|x64.Build.0 = Release|x64
-		{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{5D273260-69B2-49ED-8B82-21E0BC9D0778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D273260-69B2-49ED-8B82-21E0BC9D0778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D273260-69B2-49ED-8B82-21E0BC9D0778}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -789,8 +743,5 @@ Global
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{BEA130EC-3920-42F3-AD18-A72231881DBD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{D460989F-C801-44DA-B74F-E5187D99F446} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

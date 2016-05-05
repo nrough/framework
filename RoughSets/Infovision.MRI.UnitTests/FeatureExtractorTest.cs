@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Infovision.Test;
+using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Utils;
 using itk.simple;
 using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {
-    [TestFixture, Ignore, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
-    //[Ignore("Temporary turned off")]
+    [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]    
     public class FeatureExtractorTest
     {
         [Test]
         public void FeatureGroupExtractor()
-        {
+        {                        
             uint imageWidth = 181;
             uint imageHeight = 217;
             uint imageDepth = 181;
@@ -32,13 +31,17 @@ namespace Infovision.MRI.UnitTests
             ParameterCollection histogramParamList = new ParameterCollection();
 
             //order is important
-            histogramParamList.Add(new ParameterObjectReferenceList<ImageHistogramCluster>("Cluster", new ImageHistogramCluster()));
-            //histogramParamList.Add(new ParameterObjectReferenceList<IImage>("Image", new IImage[] {imageT1, imageT2, imagePD} ));
-            histogramParamList.Add(new ParameterObjectReferenceList<IImage>("Image", new IImage[] { imageT1}));
-            //histogramParamList.Add(new ParameterObjectReferenceList<List<int>>("Slices", new List<int>(new int [] {89, 90})));
-            histogramParamList.Add(new ParameterObjectReferenceList<List<int>>("Slices", new List<int>(new int[] { 89})));
+            histogramParamList.Add(new ParameterObjectReferenceCollection<ImageHistogramCluster>("Cluster", new ImageHistogramCluster()));
+            
+            //histogramParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", new IImage[] {imageT1, imageT2, imagePD} ));
+            histogramParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", new IImage[] { imageT1 }));
+            
+            //histogramParamList.Add(new ParameterObjectReferenceCollection<List<int>>("Slices", new List<int>(new int [] {89, 90})));
+            histogramParamList.Add(new ParameterObjectReferenceCollection<List<int>>("Slices", new List<int>(new int[] { 89 })));
+            
             //histogramParamList.Add(new ParameterNumericRange<int>("HistogramBucketSize", 1, 9, 2));
             histogramParamList.Add(new ParameterNumericRange<int>("HistogramBucketSize", 4, 4, 1));
+            
             //histogramParamList.Add(new ParameterNumericRange<int>("MinimumClusterDistance", 0, 300, 50));
             histogramParamList.Add(new ParameterNumericRange<int>("MinimumClusterDistance", 150, 150, 50));
             
@@ -50,9 +53,8 @@ namespace Infovision.MRI.UnitTests
 
             
             ParameterCollection phantomParamList = new ParameterCollection();
-            phantomParamList.Add(new ParameterObjectReference<IImage>("Image", imagePH));
+            phantomParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", imagePH));
             featureExtractor.AddFeatureGenerator("Phantom", new ImageFeatureVoxelMagnitude(), phantomParamList);
-
 
 
             DataTable dataTable = featureExtractor.GetDataTable(60,61,60,61,60,61);
@@ -62,8 +64,7 @@ namespace Infovision.MRI.UnitTests
             Assert.IsTrue(System.IO.File.Exists(@"mri.csv"));
         }
 
-        [Test]
-        //[Ignore("Long runing")]
+        [Test, Ignore]        
         public void FeatureExtractor()
         {
             uint imageWidth = 181;

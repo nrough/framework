@@ -10,7 +10,7 @@ namespace Infovision.Datamining.Experimenter.Parms
     [Serializable]
     public class ParameterCollection : IEnumerable<IParameter>, ICloneable
     {                
-        #region Globals
+        #region Members
 
         private static double resizeFactor = 1.2;
 

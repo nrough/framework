@@ -11,8 +11,7 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {    
-    [TestFixture, Ignore]
-    //[Ignore("Temporary turned off")]
+    [TestFixture]    
     public class ITKSimpleTest
     {
         public ITKSimpleTest()
@@ -126,11 +125,10 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image importedImage = SimpleITKHelper.ReadImageRAW(fileName, 181, 217, 181, PixelIDValueEnum.sitkUInt8);
 
             Assert.IsNotNull(importedImage);
-            //SimpleITK.Show(importedImage);
+            SimpleITK.Show(importedImage);
         }
 
-        [Test]
-        [Ignore("We do not want to close all ImageJ open files")]
+        [Test]        
         public void TestImageJ()
         {
             string fileName = @"Brain-MRI.png";
@@ -190,8 +188,7 @@ namespace Infovision.MRI.UnitTests
             ImageInfo(image);
         }
 
-        [Test]
-        //[Ignore("Very time consuming")]
+        [Test]        
         public void ReadImageAndPhantomVoxels()
         {
             string imageFileName = @"t1_icbm_normal_1mm_pn3_rf20.img";

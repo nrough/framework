@@ -137,9 +137,9 @@
     <Compile Include="SimpleITKHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Test\Infovision.Test.csproj">
-      <Project>{ecf16b3f-ea20-4d13-b8dc-bf5785b197c1}</Project>
-      <Name>Infovision.Test</Name>
+    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">
+      <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
+      <Name>Infovision.Datamining.Experimenter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
@@ -147,7 +147,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

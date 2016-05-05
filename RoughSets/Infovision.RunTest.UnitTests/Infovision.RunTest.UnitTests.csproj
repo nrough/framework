@@ -87,14 +87,6 @@
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>Infovision.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.RunTest\Infovision.RunTest.csproj">
-      <Project>{d994976f-b358-4c84-b00e-0858a22b5068}</Project>
-      <Name>Infovision.RunTest</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infovision.Test\Infovision.Test.csproj">
-      <Project>{ecf16b3f-ea20-4d13-b8dc-bf5785b197c1}</Project>
-      <Name>Infovision.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>Infovision.Utils</Name>

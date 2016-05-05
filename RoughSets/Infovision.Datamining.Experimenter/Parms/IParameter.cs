@@ -7,17 +7,14 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
 {
-    public interface IParameter : IEnumerable, IEnumerator, ICloneable //, ICollection
+    public interface IParameter : IEnumerable, IEnumerator, ICloneable
     {
         Type Type { get; }
-        string Name { get; }
-        //object GetValue(int idx);
+        string Name { get; }      
         bool InRange(object value);
     }
 
     public interface IParameter<T> : IParameter
-    {
-        //new T GetValue(int idx);
-        //new bool InRange(T value);
+    {        
     }
 }

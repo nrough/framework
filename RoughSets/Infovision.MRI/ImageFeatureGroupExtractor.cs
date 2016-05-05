@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using Infovision.Test;
+using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Utils;
 
 namespace Infovision.MRI
@@ -43,13 +43,11 @@ namespace Infovision.MRI
         public DataTable GetDataTable(int xStart, int xEnd, int yStart, int yEnd, int zStart, int zEnd)
         {
             int objectId = 0;
-            DataTable dataTable = new DataTable();
-            
-            DataColumn objectIdColumn = dataTable.Columns.Add("Id", typeof(Int64));
+            DataTable dataTable = new DataTable();            
+            DataColumn objectIdColumn = dataTable.Columns.Add("Id", typeof(long));
             DataColumn positionXColumn = dataTable.Columns.Add("Position_X", typeof(uint));
             DataColumn positionYColumn = dataTable.Columns.Add("Position_Y", typeof(uint));
             DataColumn positionZColumn = dataTable.Columns.Add("Position_Z", typeof(uint));
-
             DataRow dataRow;
 
             for (int z = zStart; z <= zEnd; z++)
@@ -71,35 +69,22 @@ namespace Infovision.MRI
                 }
             }
 
-            uint[] position = new uint[3];
-
-            IImageFeature generator;
-            ParameterCollection generatorParameterList;
-            ParameterVectorEnumerator i_parm;
-            string generatorName;
+            uint[] position = new uint[3];            
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
             {
-                generatorName = kvp.Key;
-                generator = kvp.Value;
-                generatorParameterList = generatorsParms[generatorName];
-
+                string generatorName = kvp.Key;
+                IImageFeature generator = kvp.Value;
+                ParameterCollection parameterCollection = generatorsParms[generatorName];                
                 int i = 0;
-
-                if (generatorParameterList != null)
-                {
-                    i_parm = (ParameterVectorEnumerator) generatorParameterList.ParmValueEnumerator;
-        
-                    while (i_parm.MoveNext())
-                    {
-                        ParameterValueVector parameterVector = (ParameterValueVector)i_parm.Current;
-                        Args args = new Args(generatorParameterList.GetParameterNames(), parameterVector.GetArray());
-                        this.SetGeneratorProperties(generator, args);
-
-                        i++;
-                        string columnName = generatorName + Convert.ToString(i);
+                if (parameterCollection != null)
+                {        
+                    foreach (object[] p in parameterCollection.Values())
+                    {                                                
+                        this.SetGeneratorProperties(generator, new Args(parameterCollection.GetParameterNames(), p));
+                        string columnName = generatorName + Convert.ToString(i++);
                         DataColumn newColumn = new DataColumn(columnName);
+                        
                         newColumn.AllowDBNull = true;
-
                         dataTable.Columns.Add(newColumn);
 
                         foreach (DataRow row in dataTable.Rows)
@@ -109,11 +94,8 @@ namespace Infovision.MRI
                             position[2] = (uint) row["Position_Z"];
 
                             row[columnName] = generator.GetValue(position);
-
                         }
-
                     }
-
                 }
             }
             

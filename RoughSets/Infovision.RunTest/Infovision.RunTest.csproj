@@ -105,10 +105,6 @@
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>Infovision.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Test\Infovision.Test.csproj">
-      <Project>{ECF16B3F-EA20-4D13-B8DC-BF5785B197C1}</Project>
-      <Name>Infovision.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
       <Name>Infovision.Utils</Name>

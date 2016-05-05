@@ -95,9 +95,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SimpleITKCSharpManaged, Version=0.8.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="SimpleITKCSharpManaged, Version=0.8.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\external\SimpleITK\SimpleITK-0.8.0-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
+      <HintPath>..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -151,7 +151,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimpleITKCSharpNative.dll">
+    <Content Include="..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll">
+      <Link>SimpleITKCSharpNative.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

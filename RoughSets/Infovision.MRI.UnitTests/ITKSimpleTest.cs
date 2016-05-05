@@ -432,15 +432,7 @@ namespace Infovision.MRI.UnitTests
                                             new VectorUInt32(new uint[] { width, height, 0 }),
                                             new VectorInt32(new int[] { 0, 0, sliceId }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
-
-            MeasurementMap measurementMap = SimpleITK.Statistics(slice);
-            VectorString measurementNames = measurementMap.GetVectorOfMeasurementNames();
-            VectorDouble measurementValues = measurementMap.GetVectorOfMeasurementValues();
-            for(int i = 0; i<measurementNames.Count; i++)
-            {
-                Console.WriteLine("{0}: {1}", measurementNames[i], measurementValues[i]);
-            }
-
+            
             StatisticsImageFilter imageStats = new StatisticsImageFilter();
             imageStats.Execute(slice);
 

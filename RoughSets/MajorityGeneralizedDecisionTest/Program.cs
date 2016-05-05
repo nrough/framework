@@ -355,6 +355,10 @@ namespace MajorityGeneralizedDecisionTest
                 if (benchmarkData.CrossValidationActive)
                 {
                     data = DataStore.Load(benchmarkData.DataFile, benchmarkData.FileFormat);
+
+                    if (benchmarkData.DecisionFieldId > 0)
+                        data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
+
                     splitter = new DataStoreSplitter(data, benchmarkData.CrossValidationFolds);
                 }
 
@@ -373,6 +377,9 @@ namespace MajorityGeneralizedDecisionTest
                     else
                     {
                         trainData = DataStore.Load(benchmarkData.TrainFile, benchmarkData.FileFormat);
+
+                        if (benchmarkData.DecisionFieldId > 0)
+                            trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
 
                         weightGenerator = new WeightGeneratorMajority(trainData);
                         trainData.SetWeights(weightGenerator.Weights);

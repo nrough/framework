@@ -13,20 +13,7 @@ namespace Infovision.MRI.UnitTests
 {    
     [TestFixture]    
     public class ITKSimpleTest
-    {
-        public ITKSimpleTest()
-        {
-        }
-
-        //[Test]
-        //[Ignore("Was ok for learning")]
-        public void EnvironmentTest()
-        {
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Console.WriteLine(Environment.CurrentDirectory);
-            Assert.IsTrue(true);
-        }
-        
+    {                       
         [Test]        
         public void ReadImagePNG()
         {
@@ -92,8 +79,8 @@ namespace Infovision.MRI.UnitTests
         [Ignore("MINC 1.0 is not suported")]
         public void ReadImageMNC1()
         {
-            string fileName = @"t1_icbm_normal_1mm_pn3_rf20.mnc";
-            ImageFileReader reader = new ImageFileReader();
+            string fileName = @"Data\t1_icbm_normal_1mm_pn3_rf20.mnc";
+            ImageFileReader reader = new ImageFileReader();            
             reader.SetFileName(fileName);
             itk.simple.Image image = reader.Execute();
             Assert.IsNotNull(image);
@@ -104,8 +91,8 @@ namespace Infovision.MRI.UnitTests
         [Ignore("MINC 2.0 is not suported")]
         public void ReadImageMNC2()
         {
-            string fileName = @"t1_icbm_normal_1mm_pn3_rf20_3.mnc";
-            //string fileName = @"tst-convert.mnc";
+            string fileName = @"Data\t1_icbm_normal_1mm_pn3_rf20_3.mnc";
+         
 
             ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
@@ -443,7 +430,6 @@ namespace Infovision.MRI.UnitTests
             Console.WriteLine("Variance: {0}", imageStats.GetVariance());
             Console.WriteLine("Sum: {0}", imageStats.GetSum());
         }
-
         
 
         [Test]
@@ -489,9 +475,7 @@ namespace Infovision.MRI.UnitTests
             IImage image = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             IImage result = som.Execute(image);
             ImageITK.Show((ImageITK)result);
-        }
-
-        
+        }        
 
         [Test]
         public void SimpleContourExtractorImageFilter()

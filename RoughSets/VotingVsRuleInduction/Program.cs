@@ -132,10 +132,8 @@ namespace VotingVsRuleInduction
                             ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData));
                             result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
 
-                            result.ModelCreationTime = reductGenerator.ReductGenerationTime;
-                            result.ClassificationTime = classifier.ClassificationTime;
+                            result.ModelCreationTime = reductGenerator.ReductGenerationTime;                           
     
-
                             if (DoubleEpsilonComparer.Instance.Equals(result.QualityRatio, 0.0d))
                             {
                                 emptyReductResult = true;

@@ -164,6 +164,8 @@ namespace Infovision.Datamining.Roughset
 
             timer.Stop();
 
+            result.ClassificationTime = this.ClassificationTime;
+
             return result;
         }
 

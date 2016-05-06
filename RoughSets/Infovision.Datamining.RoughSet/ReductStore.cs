@@ -32,13 +32,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.Weight = Decimal.One;
             this.IsActive = true;
-        }
-
-        public ReductStoreBase(int capacity)
-        {
-            this.Weight = Decimal.One;
-            this.IsActive = true;
-        }
+        }        
 
         protected ReductStoreBase(ReductStoreBase reductStore)
         {
@@ -75,12 +69,7 @@ namespace Infovision.Datamining.Roughset
                 stringBuilder.Append(String.Format("{0}: ", i)).Append(this.GetReduct(i).ToString()).Append(Environment.NewLine);                               
             return stringBuilder.ToString();
         }
-        #endregion
-
-        public virtual int CompareTo(Object obj)
-        {
-            return 0;
-        }
+        #endregion        
 
         public void Save(string fileName)
         {
@@ -140,7 +129,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public ReductStore(int capacity)
-            : base(capacity)
+            : base()
         {
             this.reducts = capacity != 0 ? new List<IReduct>(capacity) : new List<IReduct>();
         }
@@ -228,8 +217,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     if (this.AllowDuplicates == false
                         && reduct.GetType() == localReduct.GetType()
-                        && localReduct.IsException == reduct.IsException
-                        //&& localReduct.Epsilon == reduct.Epsilon
+                        && localReduct.IsException == reduct.IsException                        
                         && DecimalEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
                         && reduct.Attributes.Superset(localReduct.Attributes))
                     {

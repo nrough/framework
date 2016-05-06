@@ -73,14 +73,7 @@
         No = 0,
         Yes = 1,
         Unknown = 2
-    }
-
-    //public enum SetWeights
-    //{
-    //    All = 0,
-    //    CorrectOnly = 1,
-    //    NotCorrectOnly = 2
-    //}
+    }    
 
     public enum WeightingSchema
     {

@@ -17,27 +17,12 @@ namespace Infovision.Datamining.Roughset
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_U;
             return 0;
         }
-
-        //P(X,E)
-        public static decimal AvgSupport(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            int count_U = reduct.DataStore.NumberOfRecords;
-            if (eqClass != null && count_U > 0)
-                return (decimal)eqClass.AvgConfidenceSum / (decimal)count_U;
-            return 0;
-        }
-
+      
         //Pw(X,E)
         public static decimal SupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
             return eqClass != null ? eqClass.GetDecisionWeight(decisionValue) : 0;
-        }
-
-        //Pw(X,E)
-        public static decimal AvgSupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            return eqClass != null ? eqClass.AvgConfidenceWeight : 0;
-        }
+        }        
 
         // P(X|E) = P(X,E)/P(E)
         public static decimal Confidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -45,15 +30,7 @@ namespace Infovision.Datamining.Roughset
             if (eqClass != null && eqClass.NumberOfObjects > 0)
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects;
             return 0;
-        }
-
-        // P(X|E) = P(X,E)/P(E)
-        public static decimal AvgConfidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass != null && eqClass.NumberOfObjects > 0)
-                return (decimal)eqClass.AvgConfidenceSum / (decimal)eqClass.NumberOfObjects;
-            return 0;
-        }
+        }        
 
         // Pw(X|E) = Pw(X,E)/Pw(E)
         public static decimal ConfidenceW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -62,16 +39,7 @@ namespace Infovision.Datamining.Roughset
             decimal weightSum_XE = eqClass.GetDecisionWeight(decisionValue);
             decimal weightSum_E = eqClass.WeightSum;
             return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;            
-        }
-
-        // Pw(X|E) = Pw(X,E)/Pw(E)
-        public static decimal AvgConfidenceW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass == null) return 0;
-            decimal weightSum_XE = eqClass.AvgConfidenceWeight;
-            decimal weightSum_E = eqClass.WeightSum;
-            return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;            
-        }
+        }        
 
         //P(E|X) = P(X,E)/P(X)
         public static decimal Coverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -81,17 +49,7 @@ namespace Infovision.Datamining.Roughset
             if (count_XE == 0) return 0;
             int count_X = (int) reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
             return count_X != 0 ? (decimal)count_XE / (decimal)count_X : 0;
-        }
-
-        //P(E|X) = P(X,E)/P(X)
-        public static decimal AvgCoverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass == null) return 0;
-            int count_XE = eqClass.AvgConfidenceSum;
-            if (count_XE == 0) return 0;
-            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
-            return count_X != 0 ? (decimal)count_XE / (decimal)count_X : 0;
-        }
+        }        
 
         //Pw(E|X) = Pw(X,E)/Pw(X)
         public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -101,17 +59,7 @@ namespace Infovision.Datamining.Roughset
             if (weight_XE == 0) return 0;
             decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_X != 0) ? weight_XE / weight_X : 0;
-        }
-
-        //Pw(E|X) = Pw(X,E)/Pw(X)
-        public static decimal AvgCoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {                        
-            if (eqClass == null) return 0;
-            decimal weight_XE = eqClass.AvgConfidenceWeight;
-            if (weight_XE == 0) return 0;
-            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
-            return (weight_X != 0) ? weight_XE / weight_X : 0;
-        }
+        }        
 
         //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
         public static decimal Ratio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -122,18 +70,7 @@ namespace Infovision.Datamining.Roughset
             if (count_E == 0) return 0;
             int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
             return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
-        }
-
-        //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
-        public static decimal AvgRatio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass == null) return 0;
-            int count_XE = eqClass.AvgConfidenceSum;
-            int count_E = eqClass.NumberOfObjects;
-            if (count_E == 0) return 0;
-            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
-            return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
-        }
+        }        
 
         //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
         public static decimal RatioW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -144,18 +81,7 @@ namespace Infovision.Datamining.Roughset
             if (weight_E == 0) return 0;
             decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
-        }
-
-        //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
-        public static decimal AvgRatioW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            if (eqClass == null) return 0;
-            decimal weight_XE = eqClass.AvgConfidenceWeight;
-            decimal weight_E = eqClass.WeightSum;
-            if (weight_E == 0) return 0;
-            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
-            return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
-        }
+        }        
 
         //P(E)
         public static decimal Strength(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -221,10 +147,93 @@ namespace Infovision.Datamining.Roughset
             }
 
             return 0;
+        }        
+
+        //Used for rule voting, returns one
+        public static decimal SingleVote(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            return Decimal.One;
+        }
+    }
+
+    public static class RuleQualityAvg
+    {
+        //P(X,E)
+        public static decimal Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            int count_U = reduct.DataStore.NumberOfRecords;
+            if (eqClass != null && count_U > 0)
+                return (decimal)eqClass.AvgConfidenceSum / (decimal)count_U;
+            return 0;
+        }
+
+        //Pw(X,E)
+        public static decimal SupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            return eqClass != null ? eqClass.AvgConfidenceWeight : 0;
+        }
+
+        // P(X|E) = P(X,E)/P(E)
+        public static decimal Confidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass != null && eqClass.NumberOfObjects > 0)
+                return (decimal)eqClass.AvgConfidenceSum / (decimal)eqClass.NumberOfObjects;
+            return 0;
+        }
+
+        // Pw(X|E) = Pw(X,E)/Pw(E)
+        public static decimal ConfidenceW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null) return 0;
+            decimal weightSum_XE = eqClass.AvgConfidenceWeight;
+            decimal weightSum_E = eqClass.WeightSum;
+            return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
+        }
+
+        //P(E|X) = P(X,E)/P(X)
+        public static decimal Coverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null) return 0;
+            int count_XE = eqClass.AvgConfidenceSum;
+            if (count_XE == 0) return 0;
+            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+            return count_X != 0 ? (decimal)count_XE / (decimal)count_X : 0;
+        }
+
+        //Pw(E|X) = Pw(X,E)/Pw(X)
+        public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null) return 0;
+            decimal weight_XE = eqClass.AvgConfidenceWeight;
+            if (weight_XE == 0) return 0;
+            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
+            return (weight_X != 0) ? weight_XE / weight_X : 0;
+        }
+
+        //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
+        public static decimal Ratio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null) return 0;
+            int count_XE = eqClass.AvgConfidenceSum;
+            int count_E = eqClass.NumberOfObjects;
+            if (count_E == 0) return 0;
+            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+            return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
+        }
+
+        //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
+        public static decimal RatioW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        {
+            if (eqClass == null) return 0;
+            decimal weight_XE = eqClass.AvgConfidenceWeight;
+            decimal weight_E = eqClass.WeightSum;
+            if (weight_E == 0) return 0;
+            decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
+            return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
         }
 
         //Pw*(X|E) = (|X * E|w/|X|w) / (sum_{i} |X_{i} * E|w / |X_{i}|w )
-        public static decimal AvgConfidenceRelativeW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
+        public static decimal ConfidenceRelativeW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
             if (eqClass == null) return 0;
             decimal sum = 0;
@@ -245,12 +254,6 @@ namespace Infovision.Datamining.Roughset
             }
 
             return 0;
-        }
-
-        //Used for rule voting, returns one
-        public static decimal SingleVote(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
-        {
-            return Decimal.One;
         }
     }
 }

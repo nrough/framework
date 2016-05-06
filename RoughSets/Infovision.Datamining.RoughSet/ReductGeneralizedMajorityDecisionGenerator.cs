@@ -135,23 +135,23 @@ namespace Infovision.Datamining.Roughset
 
         protected override void Generate()
         {
-            /*
+            
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 1)
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
 #endif
-            */
-            
+                        
             ReductStore localReductPool = new ReductStore(this.attributePermutations.Count);
-            foreach(var permutation in this.attributePermutations)
-            //Parallel.ForEach(this.attributePermutations, options, permutation =>
+            //foreach(var permutation in this.attributePermutations)
+            Parallel.ForEach(this.attributePermutations, options, permutation =>
             {                                
                 localReductPool.AddReduct(this.CalculateReduct(permutation, localReductPool));
             }
-            //);            
+            );
+
             this.ReductStoreCollection.AddStore(localReductPool);
         }
 
@@ -163,8 +163,7 @@ namespace Infovision.Datamining.Roughset
             
             int[] localPermutation = tmpReduct.Attributes.ToArray();
                         
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(
-                localPermutation, this.DataStore, epsilon, weights);
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(localPermutation, this.DataStore, epsilon, weights);
 
             eqClasses.CountWeightObjects = this.DataSetQuality;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;                        

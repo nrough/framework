@@ -189,8 +189,7 @@ namespace Infovision.Datamining.Roughset
         }        
 
         public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
-        {            
-            //EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes, dataStore.DataStoreInfo.NumberOfDecisionValues);
+        {
             EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes);
             int decisionIdx = dataStore.DataStoreInfo.DecisionFieldIndex;
 
@@ -412,7 +411,17 @@ namespace Infovision.Datamining.Roughset
             //this.decisionCount = new Dictionary<long, int>(numOfDec);
             //this.decisionWeight = new Dictionary<long, decimal>(numOfDec);
 
-            foreach(var eq in this)
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
+
+            Parallel.ForEach(this, options, eq =>
+            //foreach(var eq in this)
             {
                 eq.RecalcStatistics(data);
 
@@ -433,7 +442,8 @@ namespace Infovision.Datamining.Roughset
 
                 eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
-            }            
+            }
+            );
         }
 
         #region IEnumerable Members

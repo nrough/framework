@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
+using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -63,13 +64,24 @@ namespace Infovision.Datamining.Roughset
         }        
         
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
-        {                        
-            IReductStore reductStore = this.CreateReductStore();
-            foreach (Permutation permutation in permutationList)
+        {
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
+
+            IReductStore reductStore = this.CreateReductStore(permutationList.Count);
+            //foreach (Permutation permutation in permutationList)
+            Parallel.ForEach(permutationList, options, permutation =>
             {
                 IReduct reduct = this.CalculateReduct(permutation.ToArray(), reductStore, this.UseCache, this.Epsilon);
                 reductStore.AddReduct(reduct);
             }
+            );
 
             this.ReductPool = reductStore;
         }

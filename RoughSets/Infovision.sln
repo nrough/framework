@@ -153,9 +153,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "DermoReduct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorityGeneralizedDecisionTest", "MajorityGeneralizedDecisionTest\MajorityGeneralizedDecisionTest.csproj", "{D460989F-C801-44DA-B74F-E5187D99F446}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadSQLRoughsetDB", "LoadSQLRoughsetDB\LoadSQLRoughsetDB.csproj", "{387979CB-4468-4EDD-A6CD-38E3303CFC92}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 28
+		SccNumberOfProjects = 29
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -260,6 +262,10 @@ Global
 		SccProjectTopLevelParentUniqueName27 = Infovision.sln
 		SccProjectName27 = MajorityGeneralizedDecisionTest
 		SccLocalPath27 = MajorityGeneralizedDecisionTest
+		SccProjectUniqueName28 = LoadSQLRoughsetDB\\LoadSQLRoughsetDB.csproj
+		SccProjectTopLevelParentUniqueName28 = Infovision.sln
+		SccProjectName28 = LoadSQLRoughsetDB
+		SccLocalPath28 = LoadSQLRoughsetDB
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -688,6 +694,22 @@ Global
 		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x64.ActiveCfg = Release|x64
 		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x64.Build.0 = Release|x64
 		{D460989F-C801-44DA-B74F-E5187D99F446}.Release|x86.ActiveCfg = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|x64.ActiveCfg = Debug|x64
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|x64.Build.0 = Debug|x64
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|Win32.ActiveCfg = Release|Any CPU
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|x64.ActiveCfg = Release|x64
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|x64.Build.0 = Release|x64
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -720,6 +742,7 @@ Global
 		{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{BEA130EC-3920-42F3-AD18-A72231881DBD} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{D460989F-C801-44DA-B74F-E5187D99F446} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{387979CB-4468-4EDD-A6CD-38E3303CFC92} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

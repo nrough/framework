@@ -240,8 +240,7 @@ namespace Infovision.Datamining
                 return sum;
             }
         }
-
-        //TODO use classification info instead
+        
         public double QualityRatio
         {
             get { return qualityRatio; }
@@ -250,6 +249,8 @@ namespace Infovision.Datamining
 
         public long ClassificationTime { get; set; }
         public long ModelCreationTime { get; set; }
+
+        //TODO
 
         #endregion
 

@@ -25,8 +25,9 @@ namespace LoadSQLRoughsetDB
             //p.InsertDB(p.GetTableWeightingType());
             //p.InsertDB(p.GetTableDecisionRuleMeasure());
             //p.InsertDB(p.GetTableModelType());
+            //p.InsertDB(p.GetTableExceptionRuleType());
 
-            string path = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\VotingVsRuleInduction\bin\x64\Release\results";
+            //string path = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\VotingVsRuleInduction\bin\x64\Release\results";
             /*
             p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "dna.result"), p.DatasetToInt("dna"), 1));
             p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "zoo.result"), p.DatasetToInt("zoo"), 1));
@@ -41,17 +42,44 @@ namespace LoadSQLRoughsetDB
             p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "mashroom.result"), p.DatasetToInt("mashroom"), 1));
             p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "semeion.result"), p.DatasetToInt("semeion"), 1));            
             p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "letter.result"), p.DatasetToInt("letter"), 1));
+            p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "pen.result"), p.DatasetToInt("pen"), 1));
+            p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "opt.result"), p.DatasetToInt("opt"), 1));
+            
             */
 
-            p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "pen.result"), p.DatasetToInt("pen"), 1));
+            //p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "nursery.result"), p.DatasetToInt("nursery"), 1));
+            //p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "connect.result"), p.DatasetToInt("connect"), 1));
 
+            //string path2 = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MajorityGeneralizedDecisionTest\bin\x64\Release\results";
+
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "dna.result"), p.DatasetToInt("dna"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "zoo.result"), p.DatasetToInt("zoo"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "breast.result"), p.DatasetToInt("breast"), 2));
+            
+            /*
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-small.result"), p.DatasetToInt("soybean-small"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-large.result"), p.DatasetToInt("soybean-large"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "house.result"), p.DatasetToInt("house"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "audiology.result"), p.DatasetToInt("audiology"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "promoters.result"), p.DatasetToInt("promoters"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "spect.result"), p.DatasetToInt("spect"), 2));
+            */
+
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "mashroom.result"), p.DatasetToInt("mashroom"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "semeion.result"), p.DatasetToInt("semeion"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "nursery.result"), p.DatasetToInt("nursery"), 2));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "connect.result"), p.DatasetToInt("connect"), 2));
 
 
         }
 
         public void InsertDB(DataTable table)
         {
-            string connectionString = @"Server=HUJOLOPTER\SQL2014;Database=RoughsetDB;Integrated Security=True;";                                                          
+            string connectionString = @"Server=HUJOLOPTER\SQL2014;Database=RoughDB;Integrated Security=True;";                                                          
             using (SqlConnection dbConnection = new SqlConnection(connectionString))
             {
                 dbConnection.Open();
@@ -185,6 +213,41 @@ namespace LoadSQLRoughsetDB
             return table;
         }
 
+        public DataTable GetTableExceptionRuleType()
+        {
+            DataTable table = new DataTable("dbo.EXCEPTIONRULETYPE");
+
+            DataColumn idColumn = new DataColumn();
+            idColumn.DataType = Type.GetType("System.Int32");
+            idColumn.ColumnName = "EXCEPTIONTYPEID";
+
+            DataColumn nameColumn = new DataColumn();
+            nameColumn.ColumnName = "NAME";
+
+            table.Columns.Add(idColumn);
+            table.Columns.Add(nameColumn);
+
+            int i = 1;
+            DataRow dataSetRow = null;
+
+            dataSetRow = table.NewRow();
+            dataSetRow[idColumn.ColumnName] = i++;
+            dataSetRow[nameColumn.ColumnName] = "NONE";
+            table.Rows.Add(dataSetRow);
+
+            dataSetRow = table.NewRow();
+            dataSetRow[idColumn.ColumnName] = i++;
+            dataSetRow[nameColumn.ColumnName] = "GAPS";
+            table.Rows.Add(dataSetRow);
+
+            dataSetRow = table.NewRow();
+            dataSetRow[idColumn.ColumnName] = i++;
+            dataSetRow[nameColumn.ColumnName] = "RULES";
+            table.Rows.Add(dataSetRow);
+
+            return table;
+        }
+
         private DataColumn AddColumn(DataTable table, string name, string type)
         {
             DataColumn c = new DataColumn();
@@ -194,7 +257,7 @@ namespace LoadSQLRoughsetDB
             return c;
         }
 
-        public DataTable GetTableResult_VotingVsRuleInduction(string filename, int datasetid, int experimentid)
+        private DataTable DefineResultTable()
         {
             DataTable table = new DataTable("dbo.RESULT");
 
@@ -202,11 +265,11 @@ namespace LoadSQLRoughsetDB
             this.AddColumn(table, "EXPERIMENTID", "System.Int32");
             this.AddColumn(table, "DATASETID", "System.Int32");
             this.AddColumn(table, "FOLDID", "System.Int32");
-            this.AddColumn(table, "TESTNUM", "System.Int32");
+            this.AddColumn(table, "TESTID", "System.Int32");
             this.AddColumn(table, "ENSEMBLESIZE", "System.Int32");
-            this.AddColumn(table, "IDENTIFICATIONTYPE", "System.Int32");
-            this.AddColumn(table, "VOTINGTYPE", "System.Int32");
-            this.AddColumn(table, "MODELTYPE", "System.Int32");
+            this.AddColumn(table, "IDENTIFICATIONTYPEID", "System.Int32");
+            this.AddColumn(table, "VOTINGTYPEID", "System.Int32");
+            this.AddColumn(table, "MODELTYPEID", "System.Int32");
             this.AddColumn(table, "EPSILON", "System.Double");
             this.AddColumn(table, "CLASSIFIED", "System.Int32");
             this.AddColumn(table, "MISCLASSIFIED", "System.Int32");
@@ -222,8 +285,134 @@ namespace LoadSQLRoughsetDB
             this.AddColumn(table, "MODELCREATIONTIME", "System.Int64");
             this.AddColumn(table, "CLASSIFICATIONTIME", "System.Int64");
             this.AddColumn(table, "WEIGHTINGTYPEID", "System.Int32");
-                                   
-            
+            this.AddColumn(table, "EXCEPTIONRULETYPEID", "System.Int32");
+
+            return table;
+        }
+
+        public DataTable GetTableResult_MajorityGeneralizedDecisionTest(string filename, int datasetid, int experimentid)
+        {
+            DataTable table = this.DefineResultTable();
+
+            DataTable tmpTable;
+            using (GenericParserAdapter gpa = new GenericParserAdapter(filename))
+            {
+                gpa.ColumnDelimiter = "|".ToCharArray()[0];
+                gpa.FirstRowHasHeader = true;
+                gpa.IncludeFileLineNumber = false;
+                gpa.TrimResults = true;
+
+                tmpTable = gpa.GetDataTable();
+            }
+
+            long i = 1;
+            DataRow dataSetRow = null;
+            foreach (DataRow row in tmpTable.Rows)
+            {
+                dataSetRow = table.NewRow();
+
+                dataSetRow["RESULTID"] = i;
+                dataSetRow["EXPERIMENTID"] = experimentid;
+                dataSetRow["DATASETID"] = datasetid;
+
+                dataSetRow["FOLDID"] = Int32.Parse(row["Fold"].ToString());
+                dataSetRow["TESTID"] = Int32.Parse(row["Test"].ToString());
+                dataSetRow["ENSEMBLESIZE"] = Int32.Parse(row["EnsembleSize"].ToString());
+                dataSetRow["IDENTIFICATIONTYPEID"] = this.RuleQualityToInt(row["Ident"].ToString());
+                dataSetRow["VOTINGTYPEID"] = this.RuleQualityToInt(row["Vote"].ToString());
+                dataSetRow["MODELTYPEID"] = this.FactoryKeyToInt(row["Factory"].ToString());
+                dataSetRow["EPSILON"] = Double.Parse(row["Epsilon"].ToString());
+                dataSetRow["CLASSIFIED"] = Int32.Parse(row["Classified"].ToString());
+                dataSetRow["MISCLASSIFIED"] = Int32.Parse(row["Misclassified"].ToString());
+                dataSetRow["UNCLASSIFIED"] = Int32.Parse(row["Unclassified"].ToString());
+                dataSetRow["WEIGHTCLASSIFIED"] = Double.Parse(row["WeightClassified"].ToString());
+                dataSetRow["WEIGHTUNCLASSIFIED"] = Double.Parse(row["WeightMisclassified"].ToString());
+                dataSetRow["WEIGHTMISCLASSIFIED"] = Double.Parse(row["WeightUnclassified"].ToString());
+                dataSetRow["ACCURACY"] = Double.Parse(row["Accuracy"].ToString());
+                dataSetRow["BALANCEDACCURACY"] = Double.Parse(row["BalancedAccuracy"].ToString());
+                dataSetRow["CONFIDENCE"] = Double.Parse(row["Confidence"].ToString());
+                dataSetRow["COVERAGE"] = Double.Parse(row["Coverage"].ToString());
+                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
+                dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
+                dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());                
+                dataSetRow["WEIGHTINGTYPEID"] = this.WeightTypeToInt_MajorityGeneralizedDecisionTest(row["Weight"].ToString());
+
+                dataSetRow["MODELTYPEID"] = this.FactoryKeyToInt_MajorityGeneralizedDecisionTest(
+                    row["Factory"].ToString(), row["Weight"].ToString());
+
+                dataSetRow["EXCEPTIONRULETYPEID"] = ExceptionRuleToInt_MajorityGeneralizedDecisionTest(
+                    row["Factory"].ToString(), row["Weight"].ToString());
+
+                i++;
+
+                table.Rows.Add(dataSetRow);
+            }
+
+            return table;
+        }
+
+        private int FactoryKeyToInt_MajorityGeneralizedDecisionTest(string factoryKey, string weight)
+        {
+            int result = 0;
+            switch (factoryKey)
+            {
+                case "NOEX": 
+                    result = 11; //GeneralizedMajorityDecisionApproximate
+                    break;
+
+                case "GAPS": 
+                    result = 11; //GeneralizedMajorityDecisionApproximate
+                    break;
+                
+                case "EXEP": 
+                    result = 11; //GeneralizedMajorityDecisionApproximate
+                    break;
+                
+                
+                case "GMDR": 
+                    result = 12; //GeneralizedMajorityDecision
+                    break;
+                
+                
+                case "ADR":
+                    switch (weight)
+                    {
+                        case "Majority": result = 16; break; //ApproximateReductMajorityWeights
+                        case "Relative": result = 17; break; //ApproximateReductRelativeWeights
+                    }
+                    break;                
+            }
+            return result;
+        }
+
+        private int ExceptionRuleToInt_MajorityGeneralizedDecisionTest(string factoryKey, string weight)
+        {
+            int result = 0;
+            switch (factoryKey)
+            {
+                case "NOEX": result = 1; break;
+                case "GAPS": result = 2; break;
+                case "EXEP": result = 3; break;
+                case "GMDR": result = 1; break;
+                case "ADR" : result = 1; break;
+            }
+            return result;
+        }
+
+        private int WeightTypeToInt_MajorityGeneralizedDecisionTest(string factoryKey)
+        {
+            int result = 0;
+            switch (factoryKey)
+            {
+                case "Majority": result = 1; break;
+                case "Relative": result = 2; break;                
+            }
+            return result;
+        }
+
+        public DataTable GetTableResult_VotingVsRuleInduction(string filename, int datasetid, int experimentid)
+        {
+            DataTable table = this.DefineResultTable();                                               
 
             DataTable tmpTable;
             using (GenericParserAdapter gpa = new GenericParserAdapter(filename))
@@ -246,11 +435,11 @@ namespace LoadSQLRoughsetDB
                 dataSetRow["EXPERIMENTID"] = experimentid;
                 dataSetRow["DATASETID"] = datasetid;                
                 dataSetRow["FOLDID"] = Int32.Parse(row["Fold"].ToString());
-                dataSetRow["TESTNUM"] = Int32.Parse(row["Test"].ToString());
+                dataSetRow["TESTID"] = Int32.Parse(row["Test"].ToString());
                 dataSetRow["ENSEMBLESIZE"] = Int32.Parse(row["NumberOfReducts"].ToString());
-                dataSetRow["IDENTIFICATIONTYPE"] = this.RuleQualityToInt(row["IdentificationType"].ToString());
-                dataSetRow["VOTINGTYPE"] = this.RuleQualityToInt(row["VoteType"].ToString());
-                dataSetRow["MODELTYPE"] = this.FactoryKeyToInt(row["FactoryKey"].ToString());
+                dataSetRow["IDENTIFICATIONTYPEID"] = this.RuleQualityToInt(row["IdentificationType"].ToString());
+                dataSetRow["VOTINGTYPEID"] = this.RuleQualityToInt(row["VoteType"].ToString());
+                dataSetRow["MODELTYPEID"] = this.FactoryKeyToInt(row["FactoryKey"].ToString());
                 dataSetRow["EPSILON"] = Double.Parse(row["Epsilon"].ToString());
                 dataSetRow["CLASSIFIED"] = Int32.Parse(row["Classified"].ToString());
                 dataSetRow["MISCLASSIFIED"] = Int32.Parse(row["Misclassified"].ToString());
@@ -266,6 +455,7 @@ namespace LoadSQLRoughsetDB
                 dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
                 dataSetRow["WEIGHTINGTYPEID"] = this.WeightTypeToInt_VotingVsRuleInduction(row["FactoryKey"].ToString());
+                dataSetRow["EXCEPTIONRULETYPEID"] = 1;
 
                 i++;
 

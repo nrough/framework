@@ -1,0 +1,141 @@
+﻿<DataSourceView xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl2="http://schemas.microsoft.com/analysisservices/2003/engine/2" xmlns:ddl2_2="http://schemas.microsoft.com/analysisservices/2003/engine/2/2" xmlns:ddl100_100="http://schemas.microsoft.com/analysisservices/2008/engine/100/100" xmlns:ddl200="http://schemas.microsoft.com/analysisservices/2010/engine/200" xmlns:ddl200_200="http://schemas.microsoft.com/analysisservices/2010/engine/200/200" xmlns:ddl300="http://schemas.microsoft.com/analysisservices/2011/engine/300" xmlns:ddl300_300="http://schemas.microsoft.com/analysisservices/2011/engine/300/300" xmlns:ddl400="http://schemas.microsoft.com/analysisservices/2012/engine/400" xmlns:ddl400_400="http://schemas.microsoft.com/analysisservices/2012/engine/400/400" xmlns:dwd="http://schemas.microsoft.com/DataWarehouse/Designer/1.0" dwd:design-time-name="02026d03-b4bc-405d-a0c8-7268d6fad9f0" xmlns="http://schemas.microsoft.com/analysisservices/2003/engine">
+  <ID>RESULTVIEW</ID>
+  <Name>RESULTVIEW</Name>
+  <CreatedTimestamp>0001-01-01T00:00:00Z</CreatedTimestamp>
+  <LastSchemaUpdate>0001-01-01T00:00:00Z</LastSchemaUpdate>
+  <Annotations>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:ShowFriendlyNames</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:CurrentLayout</Name>
+      <Value>_ALL_TABLES_</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SchemaRestriction</Name>
+      <Value>DBO</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:RetrieveRelationships</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:Layouts</Name>
+      <Value>
+        <Layouts xmlns="">
+          <Diagram>
+            <Name>_ALL_TABLES_</Name>
+            <DiagramLayout>
+              <dds>
+                <diagram fontclsid="{0BE35203-8F91-11CE-9DE3-00AA004BB851}" mouseiconclsid="{0BE35204-8F91-11CE-9DE3-00AA004BB851}" defaultlayout="MSDDS.Rectilinear" defaultlineroute="MSDDS.Rectilinear" version="7" nextobject="2" scale="100" pagebreakanchorx="0" pagebreakanchory="0" pagebreaksizex="0" pagebreaksizey="0" scrollleft="-10748" scrolltop="-7832" gridx="150" gridy="150" marginx="5000" marginy="5000" zoom="100" x="25797" y="20664" backcolor="2434342" defaultpersistence="2" PrintPageNumbersMode="3" PrintMarginTop="0" PrintMarginBottom="635" PrintMarginLeft="0" PrintMarginRight="0" marqueeselectionmode="0" mousepointer="0" snaptogrid="0" autotypeannotation="1" showscrollbars="0" viewpagebreaks="0" donotforceconnectorsbehindshapes="1" backpictureclsid="{00000000-0000-0000-0000-000000000000}">
+                  <font>
+                    <ddsxmlobjectstreamwrapper binary="01000000900144420100065461686f6d61" />
+                  </font>
+                  <mouseicon>
+                    <ddsxmlobjectstreamwrapper binary="6c74000000000000" />
+                  </mouseicon>
+                </diagram>
+                <layoutmanager>
+                  <ddsxmlobj />
+                </layoutmanager>
+                <ddscontrol controlprogid="DdsShapes.DdsObjectManagedBridge.3" tooltip="RESULTVIEW" left="-3684" top="-5265" logicalid="1" controlid="1" masterid="0" hint1="0" hint2="0" width="4445" height="7698" noresize="0" nomove="0" nodefaultattachpoints="0" autodrag="1" usedefaultiddshape="1" selectable="1" showselectionhandles="1" allownudging="1" isannotation="0" dontautolayout="0" groupcollapsed="0" tabstop="1" visible="1" snaptogrid="0">
+                  <control>
+                    <ddsxmlobjectstreaminitwrapper binary="000a00005d110000121e0000" />
+                  </control>
+                  <layoutobject>
+                    <ddsxmlobj>
+                      <property name="LogicalObject" value="dbo_RESULTVIEW" vartype="8" />
+                    </ddsxmlobj>
+                  </layoutobject>
+                  <shape groupshapeid="0" groupnode="0" />
+                </ddscontrol>
+              </dds>
+</DiagramLayout>
+            <ShowRelationshipNames>False</ShowRelationshipNames>
+            <UseDiagramDefaultLayout>True</UseDiagramDefaultLayout>
+            <DiagramViewPortLeft>-10748</DiagramViewPortLeft>
+            <DiagramViewPortTop>-7832</DiagramViewPortTop>
+            <DiagramBoundingLeft>0</DiagramBoundingLeft>
+            <DiagramBoundingTop>0</DiagramBoundingTop>
+            <DiagramZoom>100</DiagramZoom>
+          </Diagram>
+        </Layouts>
+      </Value>
+    </Annotation>
+  </Annotations>
+  <DataSourceID>Rough DB</DataSourceID>
+  <Schema>
+    <xs:schema id="RESULTVIEW" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+      <xs:element name="RESULTVIEW" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:design-time-name="88f5e6fb-4948-4deb-a4a3-190f082c1cab">
+        <xs:complexType>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="dbo_RESULTVIEW" msprop:design-time-name="f44c118d-098c-461c-9e5a-01c4dc8591fb" msprop:FriendlyName="RESULTVIEW" msprop:DbSchemaName="dbo" msprop:DbTableName="RESULTVIEW" msprop:TableType="View">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="EXPERIMENT" msprop:design-time-name="6c472a73-f323-4d1d-8d98-3682116a5b3c" msprop:DbColumnName="EXPERIMENT" msprop:FriendlyName="EXPERIMENT">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="80" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="DATASET" msprop:design-time-name="39a97a81-3329-4f92-8744-dbdbf87e6c00" msprop:DbColumnName="DATASET" msprop:FriendlyName="DATASET">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="IDENTIFICATION" msprop:design-time-name="56ebc442-e020-45c5-bfff-8e0953b53f61" msprop:DbColumnName="IDENTIFICATION" msprop:FriendlyName="IDENTIFICATION">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="VOTING" msprop:design-time-name="c78405b8-7c13-4ae9-baa9-1bc3b93b0867" msprop:DbColumnName="VOTING" msprop:FriendlyName="VOTING">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="WEIGHTING" msprop:design-time-name="eaafca97-16e6-4df9-ba48-c1714c0c7c49" msprop:DbColumnName="WEIGHTING" msprop:FriendlyName="WEIGHTING">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="MODEL" msprop:design-time-name="5c3ba8c2-a0f7-4bff-afa4-a42abf21bb5c" msprop:DbColumnName="MODEL" msprop:FriendlyName="MODEL">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="EXCEPTION" msprop:design-time-name="bcc43d10-f7f7-40a6-9950-f8fd5c2406d1" msprop:DbColumnName="EXCEPTION" msprop:FriendlyName="EXCEPTION">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:maxLength value="50" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:element>
+                  <xs:element name="EPSILON" msprop:design-time-name="f3970ba6-fbb0-4faf-99fa-d249fca4773a" msprop:DbColumnName="EPSILON" msprop:FriendlyName="EPSILON" type="xs:decimal" />
+                  <xs:element name="ENSEMBLESIZE" msprop:design-time-name="2cabaca5-37e8-41ce-aa3a-5693a26c6ded" msprop:DbColumnName="ENSEMBLESIZE" msprop:FriendlyName="ENSEMBLESIZE" type="xs:int" />
+                  <xs:element name="ACCURACY" msdata:ReadOnly="true" msprop:design-time-name="72790d25-12b1-48fa-95cd-ef7dd45d6699" msprop:DbColumnName="ACCURACY" msprop:FriendlyName="ACCURACY" type="xs:decimal" minOccurs="0" />
+                  <xs:element name="BALANCEDACCURACY" msdata:ReadOnly="true" msprop:design-time-name="0f5121a2-1e75-447d-8159-0a6c1bb72297" msprop:DbColumnName="BALANCEDACCURACY" msprop:FriendlyName="BALANCEDACCURACY" type="xs:decimal" minOccurs="0" />
+                  <xs:element name="CONFIDENCE" msdata:ReadOnly="true" msprop:design-time-name="bfba3666-5d32-41b4-95bc-b3e55bc073cc" msprop:DbColumnName="CONFIDENCE" msprop:FriendlyName="CONFIDENCE" type="xs:decimal" minOccurs="0" />
+                  <xs:element name="COVERAGE" msdata:ReadOnly="true" msprop:design-time-name="63ba95df-6c73-41c9-8492-0ad99a12cb97" msprop:DbColumnName="COVERAGE" msprop:FriendlyName="COVERAGE" type="xs:decimal" minOccurs="0" />
+                  <xs:element name="REDUCTLEN" msdata:ReadOnly="true" msprop:design-time-name="0aef1b80-ce85-4a72-9b0f-596350716a60" msprop:DbColumnName="REDUCTLEN" msprop:FriendlyName="REDUCTLEN" type="xs:decimal" minOccurs="0" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <RESULTVIEW xmlns="" />
+  </Schema>
+</DataSourceView>

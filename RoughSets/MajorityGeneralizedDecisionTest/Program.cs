@@ -308,7 +308,7 @@ namespace MajorityGeneralizedDecisionTest
 
                     }
 
-                    for (int e = 0; e < 100; e++)
+                    for (int e = 20; e < 100; e++)
                     {                       
                         eps = (decimal)e / (decimal)100;
 
@@ -331,7 +331,7 @@ namespace MajorityGeneralizedDecisionTest
                             {
                                 ensembleSize = size;
                                 
-                                for (int j = 0; j < 10; j++)
+                                for (int j = 9; j < 10; j++)
                                 {
 
                                     RuleQualityFunction v1, v2;

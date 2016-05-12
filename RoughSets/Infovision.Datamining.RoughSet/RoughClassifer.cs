@@ -317,16 +317,19 @@ namespace Infovision.Datamining.Roughset
                             }
                         }
                     }
-                    else
-                    {
-                        if (this.VoteFunction.Method.Name == singleVoteName
-                            && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
-                        {
-                            reductsVotes[0] += 1;
-                        }
-                        
+                    else //equivalence class not found
+                    {                                                
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                             continue;
+
+                        if(!reduct.IsException)
+                        {
+                            if (this.VoteFunction.Method.Name == singleVoteName
+                                && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
+                            {
+                                reductsVotes[0] += 1;
+                            }
+                        }
                     }                    
 
                     if (this.UseExceptionRules && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)

@@ -430,7 +430,6 @@ namespace Infovision.MRI.UnitTests
             Console.WriteLine("Variance: {0}", imageStats.GetVariance());
             Console.WriteLine("Sum: {0}", imageStats.GetSum());
         }
-        
 
         [Test]
         public void ImageSOMClassifierTest()

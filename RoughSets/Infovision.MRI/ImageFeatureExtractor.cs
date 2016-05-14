@@ -7,35 +7,15 @@ namespace Infovision.MRI
     {
         private Dictionary<string, IImageFeature> generators = new Dictionary<string, IImageFeature>();
 
-        public ImageFeatureExtractor()
-        {
-        }
-
-        public uint ImageWidth
-        {
-            get;
-            set;
-        }
-
-        public uint ImageHeight
-        {
-            get;
-            set;
-        }
-
-        public uint ImageDepth
-        {
-            get;
-            set;
-        }
+        public uint ImageWidth { get; set; } 
+        public uint ImageHeight { get; set; }
+        public uint ImageDepth { get; set; }
 
         public DataTable GetDataTable()
         {
             DataTable dataTable = new DataTable();
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
-            {
-                dataTable.Columns.Add(kvp.Key);     
-            }
+                dataTable.Columns.Add(kvp.Key);
 
             uint[] position = new uint[3];
 

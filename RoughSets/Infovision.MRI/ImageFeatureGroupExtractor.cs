@@ -9,31 +9,12 @@ namespace Infovision.MRI
 {
     public class ImageFeatureGroupExtractor
     {
-
         private Dictionary<string, IImageFeature> generators = new Dictionary<string, IImageFeature>();
         private Dictionary<string, ParameterCollection> generatorsParms = new Dictionary<string, ParameterCollection>();
 
-        public ImageFeatureGroupExtractor()
-        {
-        }
-
-        public uint ImageWidth
-        {
-            get;
-            set;
-        }
-
-        public uint ImageHeight
-        {
-            get;
-            set;
-        }
-
-        public uint ImageDepth
-        {
-            get;
-            set;
-        }
+        public uint ImageWidth { get; set; }
+        public uint ImageHeight { get; set; }
+        public uint ImageDepth { get; set; }
 
         public DataTable GetDataTable()
         {
@@ -76,6 +57,7 @@ namespace Infovision.MRI
                 IImageFeature generator = kvp.Value;
                 ParameterCollection parameterCollection = generatorsParms[generatorName];                
                 int i = 0;
+
                 if (parameterCollection != null)
                 {        
                     foreach (object[] p in parameterCollection.Values())

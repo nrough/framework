@@ -33,13 +33,13 @@ namespace Infovision.Datamining
         #region ConfusionMatrixKey
 
         [Serializable]
-        private class ConfusionMatrixKey
+        private class ConfusionMaatrixKey
         {
             public long Predicted { get; set; }
             public long Actual { get; set; }
 
             public ConfusionMatrixKey(long predicted, long actual)
-            {
+            { 
                 this.Predicted = predicted;
                 this.Actual = actual;
             }

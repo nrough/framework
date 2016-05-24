@@ -337,6 +337,22 @@ namespace Infovision.Data
             }
         }
 
+        public void SetFieldType(int fieldId, FieldTypes fieldType)
+        {
+            if (this.fields.ContainsKey(fieldId))
+            {
+                FieldTypes oldFieldType = this.fieldTypes[fieldId];
+                this.fieldTypes[fieldId] = fieldType;
+                this.fieldTypeCount[oldFieldType]--;
+                
+                int count = 0;
+                if (this.fieldTypeCount.TryGetValue(fieldType, out count))
+                    this.fieldTypeCount[fieldType] = count + 1;
+                else
+                    this.fieldTypeCount.Add(fieldType, 1);
+            }
+        }
+
         #endregion
 
     }

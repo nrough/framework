@@ -282,7 +282,7 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
-        public override double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        public override double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool isGap = false)
         {
             if (reductMeasure == null)
                 return 0.0;
@@ -293,7 +293,7 @@ namespace Infovision.Datamining.Roughset
             {                                
                 foreach (IReduct reduct in this)
                 {
-                    if (reduct.IsException && includeExceptions == false)
+                    if (reduct.IsException && isGap == false)
                     {
                         count += reduct.ObjectSetInfo.NumberOfRecords;
                     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System;
 
 namespace Infovision.MRI
 {
@@ -11,19 +12,26 @@ namespace Infovision.MRI
         public uint ImageHeight { get; set; }
         public uint ImageDepth { get; set; }
 
-        public DataTable GetDataTable()
+        public DataTable GetDataTable(uint x0, uint y0, uint z0, uint xn, uint yn, uint zn)
         {
+
+            if (xn > this.ImageWidth
+                || yn > this.ImageHeight
+                || zn > this.ImageDepth)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            
             DataTable dataTable = new DataTable();
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
                 dataTable.Columns.Add(kvp.Key);
 
             uint[] position = new uint[3];
-
-            for (uint z = 0; z < this.ImageDepth; z++)
+            for (uint z = z0; z < zn; z++)
             {
-                for (uint y = 0; y < this.ImageHeight; y++)
+                for (uint y = y0; y < yn; y++)
                 {
-                    for (uint x = 0; x < this.ImageWidth; x++)
+                    for (uint x = x0; x < xn; x++)
                     {
                         position[0] = x;
                         position[1] = y;
@@ -40,6 +48,11 @@ namespace Infovision.MRI
             }
             
             return dataTable;
+        }
+
+        public DataTable GetDataTable()
+        {
+            return this.GetDataTable(0, 0, 0, this.ImageWidth, this.ImageHeight, this.ImageDepth);
         }
 
         public void AddFeature(IImageFeature imageFeature, string name)

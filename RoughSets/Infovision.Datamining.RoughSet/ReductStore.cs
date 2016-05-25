@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset
 
             XDocument xmlDoc = new XDocument(
                                     new XDeclaration("1.0", "utf-8", null),
-                                    new XElement("Reducts",
+                                    new XElement("ReductStore",
                                         new XAttribute(XNamespace.Xmlns + "xsd", xsd.NamespaceName),
                                         new XAttribute(XNamespace.Xmlns + "xsi", xsi.NamespaceName),
                                         from r in this

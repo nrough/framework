@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -147,6 +148,29 @@ namespace Infovision.Datamining.Roughset
             for (int i = 0; i < count; i++)
                 result.AddStore(reductStoreArray[i]);
             return result;
+        }
+
+        public void Save(string fileName)
+        {
+            XDocument xmlDoc = this.GetXDocument();
+            xmlDoc.Save(fileName);
+        }
+
+        public XDocument GetXDocument()
+        {
+            XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-newInstance");
+            XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
+
+            XDocument xmlDoc = new XDocument(
+                                    new XDeclaration("1.0", "utf-8", null),
+                                    new XElement("ReductStoreCollection",
+                                        new XAttribute(XNamespace.Xmlns + "xsd", xsd.NamespaceName),
+                                        new XAttribute(XNamespace.Xmlns + "xsi", xsi.NamespaceName),
+                                        from r in this
+                                        select new XElement("ReductStore",
+                                            r.ToString()
+                                            )));
+            return xmlDoc;
         }
     } 
 }

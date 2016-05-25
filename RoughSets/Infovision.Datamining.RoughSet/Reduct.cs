@@ -293,11 +293,42 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
-            return String.Format(
-                "[Id:{0}] {1} (eps:{2})", 
-                this.Id, 
-                this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty", 
-                this.Epsilon);
+            if (this.IsException == false)
+            {
+                return String.Format(
+                    "[Id:{0}] {1} (eps:{2})",
+                    this.Id,
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
+                    this.Epsilon);
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("[Id:{0}] {1} (eps:{2}) ",
+                    this.Id,
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
+                    this.Epsilon);
+                sb.Append("[");
+                
+                bool first = true;
+                foreach (EquivalenceClass eq in this.EquivalenceClasses)
+                {
+                    foreach (int objectIdx in eq.ObjectIndexes)
+                    {
+                        if (first)
+                        {
+                            sb.Append(objectIdx);
+                            first = false;
+                        }
+                        else
+                        {
+                            sb.AppendFormat(" {0}", objectIdx);
+                        }
+                    }
+                }
+                sb.Append("]");
+                return sb.ToString();
+            }
         }
 
         public virtual string ToString(string format, IFormatProvider fp)

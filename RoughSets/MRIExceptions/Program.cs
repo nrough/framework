@@ -157,6 +157,12 @@ namespace MRIExceptions
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(10, new ReductStoreLengthComparer(true));
 
+            ReductStoreCollection rsc = filteredReductStoreCollection as ReductStoreCollection;
+            if (rsc != null)
+            {
+                rsc.Save(@"Results\reductstore.csv");
+            }
+
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 RuleQualityAvg.ConfidenceW,

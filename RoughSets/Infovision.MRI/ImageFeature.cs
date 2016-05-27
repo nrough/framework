@@ -54,6 +54,21 @@ namespace Infovision.MRI
         public abstract object GetValue(uint[] position);
     }
 
+    public class ImageFeatureConstant<T> : ImageFeature
+    {
+        private T val;
+
+        public ImageFeatureConstant(T value)
+        {
+            this.val = value;
+        }
+
+        public override object GetValue(uint[] position)
+        {
+            return this.val;
+        }
+    }
+
     [Serializable]
     public class ImageFeatrueVoxelPosition : ImageFeature
     {
@@ -336,9 +351,9 @@ namespace Infovision.MRI
         public ImageFeatureMask()
             : base()
         {
-            items.Add(new MRIMaskItem { LabelValue = 150, Radius = 10 });
+            items.Add(new MRIMaskItem { LabelValue = 150, Radius = 15 });
             items.Add(new MRIMaskItem { LabelValue = 100, Radius = 20 });
-            items.Add(new MRIMaskItem { LabelValue = 51, Radius = 50 });
+            items.Add(new MRIMaskItem { LabelValue = 51, Radius = 30 });
         }
 
         protected override void Calc()

@@ -92,6 +92,11 @@ namespace Infovision.MRI
             throw new System.NotImplementedException("GetBitmap method is not implemented");
         }
 
+        public virtual void Save(string filename)
+        {
+            throw new System.NotImplementedException("Save method is not implemented");
+        }
+
         #endregion
         
 

@@ -77,7 +77,7 @@ namespace Infovision.MRI
             @switch[type]();
 
             return maxPixelValue;    
-        }
+        }        
 
         public static double GetPixelAsDouble(itk.simple.Image image, VectorUInt32 position)
         {
@@ -502,7 +502,25 @@ namespace Infovision.MRI
             Buffer.BlockCopy(src, srcOffset, data, 0, srcCount);
             GCHandle hObject = GCHandle.Alloc(data, GCHandleType.Pinned);
             return hObject.AddrOfPinnedObject();
-        }        
+        }
+
+        public static void WriteImageRaw(itk.simple.Image image, string fileName)
+        {
+            int width = (int)image.GetWidth();
+            int height = (int)image.GetHeight();
+            int depth = (int)image.GetDepth();
+            
+            VectorDouble direction = image.GetDirection();
+            VectorDouble spacing = image.GetSpacing();
+            VectorDouble origin = image.GetOrigin();
+            uint dimension = image.GetDimension();
+            
+
+            byte[] pixelBytes = SimpleITKHelper.GetImageAsBytes(image);
+            int bits = SimpleITKHelper.PixelSize(image.GetPixelIDValue()) * 8;
+
+            System.IO.File.WriteAllBytes(fileName, pixelBytes);
+        }
         
         public static itk.simple.Image ReadImageRAW(string fileName, 
                                                     uint width, 

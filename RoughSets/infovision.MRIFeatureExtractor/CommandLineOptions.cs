@@ -10,7 +10,7 @@ namespace Infovision.MRI.UI
 {
     public sealed class CommandLineOptions
     {
-        [Option("p", "project", HelpText = "Project to be loaded on startup")]
+        [Option('p', "project", HelpText = "Project to be loaded on startup")]
         public string ProjectFileName { get; set; }
 
         [HelpOption]

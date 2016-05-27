@@ -357,10 +357,12 @@ namespace Infovision.MRI
                     if (minDistanceIndex < secondMinDistanceIndex)
                     {
                         clusterLabels[i] = (minDistanceIndex * 10) + secondMinDistanceIndex;
+                        //clusterLabels[i] = (minDistanceIndex + secondMinDistanceIndex) / 2;
                     }
                     else
                     {
                         clusterLabels[i] = (secondMinDistanceIndex * 10) + minDistanceIndex;
+                        //clusterLabels[i] = (minDistanceIndex + secondMinDistanceIndex) / 2;
                     }
 
                 }

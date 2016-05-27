@@ -46,11 +46,14 @@ namespace Infovision.MRI
             var getPixelRef = getPixelMethod.MakeGenericMethod(this.PixelType);
             
             uint [] position = new uint[3];
-            for(uint z = 0; z < this.Width; z++)
-                for(uint y = 0; y < this.Width; y++)
+
+            for(uint z = 0; z < this.Depth; z++)
+                for(uint y = 0; y < this.Height; y++)
                     for(uint x = 0; x < this.Width; x++)
                     {
-                        position[0] = x; position[1] = y; position[2] = z;
+                        position[0] = x; 
+                        position[1] = y; 
+                        position[2] = z;
 
                         setPixelRef.Invoke(this, new object[] { position, getPixelRef.Invoke(image, new object [] { position }) });
                     }
@@ -317,11 +320,16 @@ namespace Infovision.MRI
             this.ItkImage.SetPixelAsDouble(this.positionVector, pixelValue);
         }
 
-        public virtual void Save(string fileName)
+        public override void Save(string filename)
         {
             itk.simple.ImageFileWriter fileWriter = new itk.simple.ImageFileWriter();
-            fileWriter.SetFileName(fileName);
+            fileWriter.SetFileName(filename);
             fileWriter.Execute(this.ItkImage);
+        }
+
+        public virtual void SaveRaw(string fileName)
+        {
+            SimpleITKHelper.WriteImageRaw(this.ItkImage, fileName);
         }
 
         public override T[] GetData<T>()

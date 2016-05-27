@@ -28,51 +28,7 @@ namespace Infovision.Datamining
     //TODO add additional classification Info
     [Serializable]
     public class ClassificationResult
-    {
-        /*
-        #region ConfusionMatrixKey
-
-        [Serializable]
-        private class ConfusionMaatrixKey
-        {
-            public long Predicted { get; set; }
-            public long Actual { get; set; }
-
-            public ConfusionMatrixKey(long predicted, long actual)
-            { 
-                this.Predicted = predicted;
-                this.Actual = actual;
-            }
-
-            #region System.Object Methods
-
-            public override bool Equals(object obj)
-            {
-                if (obj == null)
-                {
-                    return false;
-                }
-
-                ConfusionMatrixKey p = obj as ConfusionMatrixKey;
-                if (p == null)
-                {
-                    return false;
-                }
-
-                return p.Predicted == this.Predicted 
-                    && p.Actual == this.Actual;
-            }
-            public override int GetHashCode()
-            {
-                return HashHelper.GetHashCode<Int64, Int64>(this.Predicted, this.Actual);
-            }
-
-            #endregion
-        }
-
-        #endregion
-        */
-
+    {       
         #region Members
 
         private Dictionary<long, int> value2index;
@@ -330,6 +286,11 @@ namespace Infovision.Datamining
         public long GetPrediction(int objectIdx)
         {
             return predictionResults[objectIdx];
+        }
+
+        public long GetActual(int objectIdx)
+        {
+            return testData.GetFieldValue(objectIdx, testData.DataStoreInfo.DecisionFieldId);
         }
         
         public int GetConfusionTable(long prediction, long actual)

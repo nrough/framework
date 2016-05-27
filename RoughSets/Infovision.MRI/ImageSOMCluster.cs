@@ -74,8 +74,8 @@ namespace Infovision.MRI
                 trainer.LearningRate = driftingLearningRate * (iterations - i) / iterations + fixedLearningRate;
                 trainer.LearningRadius = (double)radius * (iterations - i) / iterations;
 
-                //trainer.Run(input);
-                trainer.RunEpoch(input);
+                double error = trainer.RunEpoch(input);
+                //Console.WriteLine("{0}: {1}", i, error);
             }
 
         }

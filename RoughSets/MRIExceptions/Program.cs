@@ -18,6 +18,7 @@ namespace MRIExceptions
     {
         static void Main(string[] args)
         {
+            
             Program p = new Program();
 
             p.Run();
@@ -32,26 +33,62 @@ namespace MRIExceptions
         private void CleanResultsFolder()
         {
             System.IO.DirectoryInfo di = new DirectoryInfo("Results");
+            
             foreach (FileInfo file in di.GetFiles())
-                file.Delete(); 
+                file.Delete();
+
+            foreach (DirectoryInfo dir in di.GetDirectories())
+                dir.Delete(true);
         }
 
-        public void Run()
+        private string GetTestFolder(int testId, decimal epsilon)
         {
+            int epsilonInt = (int) (epsilon * 100);
+            string testFolder = String.Format(@"Results\Test-{0}-{1}", testId, epsilonInt);
+            if (!Directory.Exists(testFolder))
+            {
+                Directory.CreateDirectory(testFolder);
+            }
+            return testFolder;
+        }
+
+        private int minSlice = 66;
+        private int maxSlice = 122;
+        private ImageITK imageT1, imageT2, imagePD, imagePH;
+
+        public void Run()
+        {            
             RandomSingleton.Seed = Environment.TickCount * Environment.TickCount;
-
             this.CleanResultsFolder();
-            
-            int minSlice = 66;
-            int maxSlice = 122;
-            
-            ImageITK imageT1 = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
-            ImageITK imageT2 = ImageITK.ReadImageRAW(@"Data\t2_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
-            ImageITK imagePD = ImageITK.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
-            ImageITK imagePH = ImageITK.ReadImageRAW(@"Data\ph_icbm_1mm_normal_crisp.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
 
-            int trainSlice = 89; //RandomSingleton.Random.Next(minSlice, maxSlice + 1);
-            int testSlice = 78;  //RandomSingleton.Random.Next(minSlice, maxSlice + 1);
+            imageT1 = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
+            imageT2 = ImageITK.ReadImageRAW(@"Data\t2_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
+            imagePD = ImageITK.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
+            imagePH = ImageITK.ReadImageRAW(@"Data\ph_icbm_1mm_normal_crisp.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
+
+            this.OpenStream(@"Results\Accuracy.result");
+            
+            for (int t = 0; t < 20; t++)
+            {
+                for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon += 0.02m)
+                {
+                    Console.WriteLine("############# Test {0}  Epsilon {1} ###############", t, epsilon);
+
+                    this.RunSingleTest(t, epsilon);
+                }
+            }
+
+            this.CloseStream();
+
+        }
+
+        public void RunSingleTest(int testId, decimal epsilon)
+        {
+
+            string testFolder = this.GetTestFolder(testId, epsilon);
+
+            int trainSlice = RandomSingleton.Random.Next(minSlice, maxSlice + 1);
+            int testSlice = RandomSingleton.Random.Next(minSlice, maxSlice + 1);
 
             if (minSlice != (maxSlice + 1) && minSlice != maxSlice)
             {
@@ -70,7 +107,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK trainImageT1 = new ImageITK(itkTrainImageT1);
-            trainImageT1.Save(String.Format("Results\\TrnSliceT1-{0}.png", trainSlice));
+            trainImageT1.Save(String.Format("{0}\\TrnSliceT1-{1}.png", testFolder, trainSlice));
 
             itk.simple.Image itkTrainImageT2 = SimpleITK.Extract(imageT2.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -78,7 +115,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK trainImageT2 = new ImageITK(itkTrainImageT2);
-            trainImageT2.Save(String.Format("Results\\TrnSliceT2-{0}.png", trainSlice));
+            trainImageT2.Save(String.Format("{0}\\TrnSliceT2-{1}.png", testFolder, trainSlice));
 
             itk.simple.Image itkTrainImagePD = SimpleITK.Extract(imagePD.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -86,7 +123,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK trainImagePD = new ImageITK(itkTrainImagePD);
-            trainImagePD.Save(String.Format("Results\\TrnSlicePD-{0}.png", trainSlice));
+            trainImagePD.Save(String.Format("{0}\\TrnSlicePD-{1}.png", testFolder, trainSlice));
 
             itk.simple.Image itkTrainImagePH = SimpleITK.Extract(imagePH.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -102,7 +139,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK testImageT1 = new ImageITK(itkTestImageT1);
-            testImageT1.Save(String.Format("Results\\TstSliceT1-{0}.png", testSlice));
+            testImageT1.Save(String.Format("{0}\\TstSliceT1-{1}.png", testFolder, testSlice));
 
             itk.simple.Image itkTestImageT2 = SimpleITK.Extract(imageT2.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -110,7 +147,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK testImageT2 = new ImageITK(itkTestImageT2);
-            testImageT2.Save(String.Format("Results\\TstSliceT2-{0}.png", testSlice));
+            testImageT2.Save(String.Format("{0}\\TstSliceT2-{1}.png", testFolder, testSlice));
 
             itk.simple.Image itkTestImagePD = SimpleITK.Extract(imagePD.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -118,7 +155,7 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK testImagePD = new ImageITK(itkTestImagePD);
-            testImagePD.Save(String.Format("Results\\TstSlicePD-{0}.png", testSlice));
+            testImagePD.Save(String.Format("{0}\\TstSlicePD-{1}.png", testFolder, testSlice));
 
             itk.simple.Image itkTestImagePH = SimpleITK.Extract(imagePH.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -126,35 +163,35 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK testImagePH = new ImageITK(itkTestImagePH);
-            
 
-            string trainDataFilename = String.Format("Results\\trnSlice-{0}.trn", trainSlice);
-            string testDataFilename = String.Format("Results\\tstSlice-{0}.tst", testSlice);
+
+            string trainDataFilename = String.Format("{0}\\trnSlice-{1}.trn", testFolder, trainSlice);
+            string testDataFilename = String.Format("{0}\\tstSlice-{1}.tst", testFolder, testSlice);
 
             Console.WriteLine("Generating decision table...");
             var data = this.GenerateDecisionTable(
                 trainImageT1, trainImageT2, trainImagePD, trainImagePH, 
                 testImageT1, testImageT2, testImagePD, testImagePH, 
-                trainDataFilename, testDataFilename);
+                testFolder, trainDataFilename, testDataFilename);
 
             Console.WriteLine("Segmentation model learning...");
-            RoughClassifier model = this.Learn(data.Item1, 0.20m);
+            RoughClassifier model = this.Learn(data.Item1, testId, epsilon);
 
             Console.WriteLine("Testing model accuracy...");
-            this.Test(model, data.Item2, data.Item1);
+            this.Test(model, data.Item2, data.Item1, testId, epsilon);
 
             trainImagePH.ItkImage = SimpleITK.Multiply(trainImagePH.ItkImage, 10.0);
-            trainImagePH.Save(String.Format("Results\\TrnSlicePH-{0}.png", trainSlice));
+            trainImagePH.Save(String.Format("{0}\\TrnSlicePH-{1}.png", testFolder, trainSlice));
 
             testImagePH.ItkImage = SimpleITK.Multiply(testImagePH.ItkImage, 10.0);
-            testImagePH.Save(String.Format("Results\\TstSlicePH-{0}.png", testSlice));
+            testImagePH.Save(String.Format("{0}\\TstSlicePH-{1}.png", testFolder, testSlice));
 
             
         }
 
         private Tuple<DataStore, DataStore> GenerateDecisionTable(IImage trainImageT1, IImage trainImageT2, IImage trainImagePD, IImage trainImagePH,
                                                 IImage testImageT1, IImage testImageT2, IImage testImagePD, IImage testImagePH,
-                                                string trainFileName, string testFileName)
+                                                string testFolder, string trainFileName, string testFileName)
         {
             ImageFeatureExtractor featureExtractor = new ImageFeatureExtractor();
 
@@ -163,8 +200,7 @@ namespace MRIExceptions
             featureExtractor.ImageDepth = 1;
 
             featureExtractor.AddFeature(new ImageFeatureVoxelPositionX { Image = trainImageT1 }, "PositionX");
-            featureExtractor.AddFeature(new ImageFeatureVoxelPositionY { Image = trainImageT1 }, "PositionY");
-            //featureExtractor.AddFeature(new ImageFeatureConstant<uint>((uint) trainSlice), "PositionZ");
+            featureExtractor.AddFeature(new ImageFeatureVoxelPositionY { Image = trainImageT1 }, "PositionY");            
 
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImageT1 }, "MagnitureT1");
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImageT2 }, "MagnitudeT2");
@@ -177,12 +213,11 @@ namespace MRIExceptions
             histClusterT1.BucketCountWeight = 1.5;
             histClusterT1.ApproximationDegree = 0.1;
             histClusterT1.MaxNumberOfRepresentatives = 3;
-            histClusterT1.Image = trainImageT1;
-            //histClusterT1.Slices = new List<int>(new int[] { 1 });
+            histClusterT1.Image = trainImageT1;            
             histClusterT1.Train();
 
             IImage histClusterImageT1 = histClusterT1.Execute(trainImageT1);
-            histClusterImageT1.Save(@"Results\TrnHcT1.png");
+            histClusterImageT1.Save(String.Format("{0}\\TrnHcT1.png", testFolder));
 
             featureExtractor.AddFeature(new ImageFeatureHistogramCluster { Image = trainImageT1, Cluster = histClusterT1 }, "HistogramT1");
 
@@ -194,12 +229,11 @@ namespace MRIExceptions
             histClusterT2.ApproximationDegree = 0.1;
             histClusterT2.MaxNumberOfRepresentatives = 3;
             histClusterT2.Image = trainImageT2;
-            //histClusterT2.Slices = new List<int>(new int[] { 1 });
             histClusterT2.Train();
             featureExtractor.AddFeature(new ImageFeatureHistogramCluster { Image = trainImageT2, Cluster = histClusterT2 }, "HistogramT2");
 
             IImage histClusterImageT2 = histClusterT2.Execute(trainImageT2);
-            histClusterImageT2.Save(@"Results\TrnHcT2.png");
+            histClusterImageT2.Save(String.Format("{0}\\TrnHcT2.png", testFolder));
 
             Console.WriteLine("Training Histogram clustering for PD image...");
             ImageHistogramCluster histClusterPD = new ImageHistogramCluster();
@@ -209,23 +243,22 @@ namespace MRIExceptions
             histClusterPD.ApproximationDegree = 0.1;
             histClusterPD.MaxNumberOfRepresentatives = 3;
             histClusterPD.Image = trainImagePD;
-            //histClusterPD.Slices = new List<int>(new int[] { 1 });
             histClusterPD.Train();
             featureExtractor.AddFeature(new ImageFeatureHistogramCluster { Image = trainImagePD, Cluster = histClusterPD }, "HistogramPD");
 
             IImage histClusterImagePD = histClusterPD.Execute(trainImagePD);
-            histClusterImagePD.Save(@"Results\TrnHcPD.png");
+            histClusterImagePD.Save(String.Format("{0}\\TrnHcPD.png", testFolder));
 
-            int iterations = 5000;
-            double learningRate = 0.1;
-            int radius = 15;
+            int iterations = 1000;
+            double learningRate = 0.2;
+            int radius = 10;
 
             Console.WriteLine("Training SOM for T1 image...");
             ImageSOMCluster somClusterT1 = new ImageSOMCluster(1, 9);
             somClusterT1.Train(trainImageT1, iterations, learningRate, radius);
 
             IImage somImageT1 = somClusterT1.Execute(trainImageT1);
-            somImageT1.Save(@"Results\TrnSomT1.png");
+            somImageT1.Save(String.Format("{0}\\TrnSomT1.png", testFolder));
 
             featureExtractor.AddFeature(new ImageFeatureSOMCluster { Image = trainImageT1, Cluster = somClusterT1 }, "SOMT1");
 
@@ -234,7 +267,7 @@ namespace MRIExceptions
             somClusterT2.Train(trainImageT2, iterations, learningRate, radius);
 
             IImage somImageT2 = somClusterT2.Execute(trainImageT2);
-            somImageT2.Save(@"Results\TrnSomT2.png");
+            somImageT2.Save(String.Format("{0}\\TrnSomT2.png", testFolder));
 
             featureExtractor.AddFeature(new ImageFeatureSOMCluster { Image = trainImageT2, Cluster = somClusterT2 }, "SOMT2");
 
@@ -243,7 +276,7 @@ namespace MRIExceptions
             somClusterPD.Train(trainImagePD, iterations, learningRate, radius);
 
             IImage somImagePD = somClusterPD.Execute(trainImagePD);
-            somImagePD.Save(@"Results\TrnSomPD.png");
+            somImagePD.Save(String.Format("{0}\\TrnSomPD.png", testFolder));
 
             featureExtractor.AddFeature(new ImageFeatureSOMCluster { Image = trainImagePD, Cluster = somClusterPD }, "SOMPD");
 
@@ -257,7 +290,7 @@ namespace MRIExceptions
             concentricMaskImageFilter.AddMaskItems(items);
 
             IImage trainMaskImage = concentricMaskImageFilter.Execute(new MRIMaskBinaryImageFilter().Execute(trainImageT1));
-            trainMaskImage.Save(@"Results\TrainMask.png");
+            trainMaskImage.Save(String.Format("{0}\\TrainMask.png", testFolder));
 
             EdgeThresholdFilter edgeFilterT1 = new EdgeThresholdFilter();
             featureExtractor.AddFeature(new ImageFeatureEdge { Image = trainImageT1, EdgeFilter = edgeFilterT1 }, "EdgeT1");
@@ -275,7 +308,7 @@ namespace MRIExceptions
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImageT1, EdgeFilter = edgeFilterT1, Cluster = somClusterT1 }, "NbrSOMT1");
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImageT2, EdgeFilter = edgeFilterT2, Cluster = somClusterT2 }, "NbrSOMT2");
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImagePD, EdgeFilter = edgeFilterPD, Cluster = somClusterPD }, "NbrSOMPD");
-
+           
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImagePH }, "Label");
 
             DataTable dataTable = featureExtractor.GetDataTable();
@@ -289,7 +322,6 @@ namespace MRIExceptions
             trainingData.DataStoreInfo.SetFieldType(3, FieldTypes.Technical);
             trainingData.DataStoreInfo.SetFieldType(4, FieldTypes.Technical);
             trainingData.DataStoreInfo.SetFieldType(5, FieldTypes.Technical);
-            //trainingData.DataStoreInfo.SetFieldType(6, FieldTypes.Technical);
 
             ImageFeatureExtractor featureExtractorTest = new ImageFeatureExtractor();
 
@@ -316,7 +348,7 @@ namespace MRIExceptions
 
                                     
             IImage testMaskImage = concentricMaskImageFilter.Execute(new MRIMaskBinaryImageFilter().Execute(testImageT1));
-            testMaskImage.Save(@"Results\TestMask.png");
+            testMaskImage.Save(String.Format("{0}\\TestMask.png", testFolder));
 
             EdgeThresholdFilter testEdgeFilterT1 = new EdgeThresholdFilter();
             EdgeThresholdFilter testEdgeFilterT2 = new EdgeThresholdFilter();
@@ -351,8 +383,10 @@ namespace MRIExceptions
             return new Tuple<DataStore, DataStore>(trainingData, testData);
         }
 
-        private RoughClassifier Learn(DataStore train, decimal epsilon)
-        {            
+        private RoughClassifier Learn(DataStore train, int testId, decimal epsilon)
+        {
+            string testFolder = this.GetTestFolder(testId, epsilon);
+            
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(train);
             weightGenerator.Generate();
             train.SetWeights(weightGenerator.Weights);
@@ -372,7 +406,7 @@ namespace MRIExceptions
             IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(10, new ReductStoreLengthComparer(true));
 
             ReductStoreCollection rsc = filteredReductStoreCollection as ReductStoreCollection;
-            rsc.Save(@"Results\reductstore.xml");
+            rsc.Save(String.Format("{0}\\reductstore.xml", testFolder));
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -407,27 +441,20 @@ namespace MRIExceptions
                     }                    
                 }
 
-                string exceptionfilename = String.Format("Results\\exceptionImage-{0}.", n);
-                exceptionImage.Save(exceptionfilename + "png");
-                //exceptionImage.Save(exceptionfilename + "img");
-                //exceptionImage.SaveRaw(exceptionfilename + "rawb");
-
-                //ImageITK.Show(exceptionImage);
-
-                n++;
+                string exceptionfilename = String.Format("{0}\\exceptionImage-{1}.", testFolder, n++);
+                exceptionImage.Save(exceptionfilename + "png");                
             }
 
             return classifier;
         }
 
-        private void Test(RoughClassifier model, DataStore test, DataStore train)
+        private void Test(RoughClassifier model, DataStore test, DataStore train, int testId, decimal epsilon)
         {
             
+            string testFolder = this.GetTestFolder(testId, epsilon);
             ClassificationResult result =  model.Classify(test);
-
-            this.OpenStream(@"Results\Accuracy.result");
-            this.WriteLine("{0}", result);
-            this.CloseStream();
+            
+            this.WriteLine("{0}|{1}|{2}", testId, epsilon, result);            
                         
             uint[] position = new uint[] { 0, 0 };            
             byte pixelValue;            
@@ -454,11 +481,7 @@ namespace MRIExceptions
             }
 
             resultImage.ItkImage = SimpleITK.Multiply(resultImage.ItkImage, 10.0);
-            resultImage.Save(@"Results\resultImage.png");
-            //resultImage.Save(@"Results\resultImage.img");
-            //resultImage.SaveRaw(@"Results\resultImage.rawb");
-
-            //ImageITK.Show(resultImage, "Result");
+            resultImage.Save(String.Format("{0}\\resultImage.png", testFolder));
             
             ImageITK errorImage = new ImageITK
             {
@@ -477,8 +500,8 @@ namespace MRIExceptions
                 }
             }
 
-            errorImage.Save(@"Results\errorImage.png");
-            resultImage.Save(@"Results\errorImage2.png");
+            errorImage.Save(String.Format("{0}\\errorImage.png", testFolder));
+            resultImage.Save(String.Format("{0}\\errorImage2.png", testFolder));
         }
 
         StreamWriter fileStream;
@@ -487,7 +510,7 @@ namespace MRIExceptions
         {
             fileStream = new StreamWriter(path, false);
 
-            this.WriteLine("{0}", ClassificationResult.ResultHeader());
+            this.WriteLine("{0}|{1}|{2}", "Test", "Epsilon", ClassificationResult.ResultHeader());
         }
 
         public void CloseStream()

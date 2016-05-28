@@ -776,7 +776,7 @@ namespace Infovision.MRI.UnitTests
                                                                  depth,
                                                                  PixelIDValueEnum.sitkUInt8);
 
-            ImageITK.Show((ImageITK)new EdgeThresholdFilter().Execute(image, 0.40, 200, 0));
+            ImageITK.Show((ImageITK)new EdgeThresholdFilter().Execute(image, 0.40, byte.MaxValue, 0));
         }
 
         [Test]

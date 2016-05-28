@@ -8,7 +8,7 @@ namespace Infovision.MRI
 	public class EdgeThresholdFilter
 	{
 		public EdgeThresholdFilter()
-			: this(0.20, 1, 0)
+			: this(0.40, 1, 0)
 		{
 		}
 

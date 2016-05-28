@@ -109,17 +109,33 @@ namespace Infovision.Data
                     fieldType = FieldTypes.Decision;
                 }
 
+                DataFieldInfo referenceFieldInfo = null;
+                if (this.ReferenceDataStoreInfo != null)
+                {
+                    referenceFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(i);
+                }
+
                 DataFieldInfo fieldInfo = 
                     new DataFieldInfo(
-                        i, 
-                        (this.ReferenceDataStoreInfo == null) 
-                            ? this.AttributeType(i-1) 
-                            : this.ReferenceDataStoreInfo.GetFieldInfo(i).FieldValueType,
+                        i,
+                        (referenceFieldInfo == null) 
+                            ? this.AttributeType(i-1)
+                            : referenceFieldInfo.FieldValueType,
                         this.valueCount[i - 1].Count);
+
+                if (referenceFieldInfo != null)
+                {
+                    foreach (long internalValue in referenceFieldInfo.InternalValues())
+                    {
+                        object externalValue = referenceFieldInfo.Internal2External(internalValue);
+                        bool isMissing = referenceFieldInfo.MissingValueInternal == internalValue;
+                        fieldInfo.AddInternal(internalValue, externalValue, isMissing);
+                    }
+                }
 
                 if (this.missingValuesCount.ContainsKey(i - 1))
                 {
-                    fieldInfo.HasMissingValues = true;                   
+                    fieldInfo.HasMissingValues = true;
                 }
 
                 dataStoreInfo.AddFieldInfo(fieldInfo, fieldType);

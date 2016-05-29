@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GenericParsing;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Roughset;
@@ -533,5 +535,124 @@ namespace MRIExceptions
 
             Console.WriteLine(format, paramteters);
         }
+
+        public void InsertDB(DataTable table)
+        {
+            string connectionString = @"Server=HUJOLOPTER\SQL2014;Database=RoughDB;Integrated Security=True;";
+            using (SqlConnection dbConnection = new SqlConnection(connectionString))
+            {
+                dbConnection.Open();
+                using (SqlBulkCopy s = new SqlBulkCopy(dbConnection))
+                {
+                    s.DestinationTableName = table.TableName;
+                    s.BulkCopyTimeout = 300; //5 minutes
+
+                    foreach (var column in table.Columns)
+                        s.ColumnMappings.Add(column.ToString(), column.ToString());
+
+                    s.WriteToServer(table);
+                }
+            }
+        }
+
+        private DataTable DefineResultTable()
+        {
+            DataTable table = new DataTable("dbo.RESULT");
+
+            this.AddColumn(table, "RESULTID", "System.Int64");
+            this.AddColumn(table, "EXPERIMENTID", "System.Int32");
+            this.AddColumn(table, "DATASETID", "System.Int32");
+            this.AddColumn(table, "FOLDID", "System.Int32");
+            this.AddColumn(table, "TESTID", "System.Int32");
+            this.AddColumn(table, "ENSEMBLESIZE", "System.Int32");
+            this.AddColumn(table, "IDENTIFICATIONTYPEID", "System.Int32");
+            this.AddColumn(table, "VOTINGTYPEID", "System.Int32");
+            this.AddColumn(table, "MODELTYPEID", "System.Int32");
+            this.AddColumn(table, "EPSILON", "System.Double");
+            this.AddColumn(table, "CLASSIFIED", "System.Int32");
+            this.AddColumn(table, "MISCLASSIFIED", "System.Int32");
+            this.AddColumn(table, "UNCLASSIFIED", "System.Int32");
+            this.AddColumn(table, "WEIGHTCLASSIFIED", "System.Double");
+            this.AddColumn(table, "WEIGHTUNCLASSIFIED", "System.Double");
+            this.AddColumn(table, "WEIGHTMISCLASSIFIED", "System.Double");
+            this.AddColumn(table, "ACCURACY", "System.Double");
+            this.AddColumn(table, "BALANCEDACCURACY", "System.Double");
+            this.AddColumn(table, "CONFIDENCE", "System.Double");
+            this.AddColumn(table, "COVERAGE", "System.Double");
+            this.AddColumn(table, "AVERAGEREDUCTLENGTH", "System.Double");
+            this.AddColumn(table, "MODELCREATIONTIME", "System.Int64");
+            this.AddColumn(table, "CLASSIFICATIONTIME", "System.Int64");
+            this.AddColumn(table, "WEIGHTINGTYPEID", "System.Int32");
+            this.AddColumn(table, "EXCEPTIONRULETYPEID", "System.Int32");
+
+            return table;
+        }
+
+        private DataColumn AddColumn(DataTable table, string name, string type)
+        {
+            DataColumn c = new DataColumn();
+            c.DataType = Type.GetType(type);
+            c.ColumnName = name;
+            table.Columns.Add(c);
+            return c;
+        }
+
+        public DataTable GetTableResult_MajorityGeneralizedDecisionTest(string filename, int datasetid, int experimentid)
+        {
+            DataTable table = this.DefineResultTable();
+
+            DataTable tmpTable;
+            using (GenericParserAdapter gpa = new GenericParserAdapter(filename))
+            {
+                gpa.ColumnDelimiter = "|".ToCharArray()[0];
+                gpa.FirstRowHasHeader = true;
+                gpa.IncludeFileLineNumber = false;
+                gpa.TrimResults = true;
+
+                tmpTable = gpa.GetDataTable();
+            }
+
+            long i = 1;
+            DataRow dataSetRow = null;
+            foreach (DataRow row in tmpTable.Rows)
+            {
+                dataSetRow = table.NewRow();
+
+                dataSetRow["RESULTID"] = i;
+                dataSetRow["EXPERIMENTID"] = experimentid;
+                dataSetRow["DATASETID"] = datasetid;
+
+                dataSetRow["FOLDID"] = 0;
+                dataSetRow["TESTID"] = Int32.Parse(row["Test"].ToString());
+                dataSetRow["ENSEMBLESIZE"] = 10;
+                dataSetRow["IDENTIFICATIONTYPEID"] = 4; //ConfidenceW
+                dataSetRow["VOTINGTYPEID"] = 4; //ConfidenceW
+                dataSetRow["MODELTYPEID"] = 11; //GeneralizedMajorityDecisionApproximate
+                dataSetRow["EPSILON"] = Double.Parse(row["Epsilon"].ToString());
+                dataSetRow["CLASSIFIED"] = Int32.Parse(row["Classified"].ToString());
+                dataSetRow["MISCLASSIFIED"] = Int32.Parse(row["Misclassified"].ToString());
+                dataSetRow["UNCLASSIFIED"] = Int32.Parse(row["Unclassified"].ToString());
+                dataSetRow["WEIGHTCLASSIFIED"] = Double.Parse(row["WeightClassified"].ToString());
+                dataSetRow["WEIGHTUNCLASSIFIED"] = Double.Parse(row["WeightMisclassified"].ToString());
+                dataSetRow["WEIGHTMISCLASSIFIED"] = Double.Parse(row["WeightUnclassified"].ToString());
+                dataSetRow["ACCURACY"] = Double.Parse(row["Accuracy"].ToString());
+                dataSetRow["BALANCEDACCURACY"] = Double.Parse(row["BalancedAccuracy"].ToString());
+                dataSetRow["CONFIDENCE"] = Double.Parse(row["Confidence"].ToString());
+                dataSetRow["COVERAGE"] = Double.Parse(row["Coverage"].ToString());
+                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
+                dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
+                dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
+                dataSetRow["WEIGHTINGTYPEID"] = 1; //Majority                
+                dataSetRow["EXCEPTIONRULETYPEID"] = 3; //Exceptions
+
+                i++;
+
+                table.Rows.Add(dataSetRow);
+            }
+
+            return table;
+        }
+
+
     }
 }

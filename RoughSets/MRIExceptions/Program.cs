@@ -57,7 +57,7 @@ namespace MRIExceptions
         private ImageITK imageT1, imageT2, imagePD, imagePH;
 
         public void Run()
-        {            
+        {                        
             RandomSingleton.Seed = Environment.TickCount * Environment.TickCount;
             this.CleanResultsFolder();
 

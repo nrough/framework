@@ -24,6 +24,8 @@ namespace MRIExceptions
             Program p = new Program();
 
             p.Run();
+
+            //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 3));
                        
         }
 
@@ -389,7 +391,8 @@ namespace MRIExceptions
         {
             string testFolder = this.GetTestFolder(testId, epsilon);
             
-            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(train);
+            //WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(train);
+            WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(train);
             weightGenerator.Generate();
             train.SetWeights(weightGenerator.Weights);
 
@@ -455,6 +458,7 @@ namespace MRIExceptions
             
             string testFolder = this.GetTestFolder(testId, epsilon);
             ClassificationResult result =  model.Classify(test);
+            result.QualityRatio = model.ReductStoreCollection.GetWeightedAvgMeasure(new ReductMeasureLength(), true);
             
             this.WriteLine("{0}|{1}|{2}", testId, epsilon, result);            
                         
@@ -597,7 +601,7 @@ namespace MRIExceptions
             return c;
         }
 
-        public DataTable GetTableResult_MajorityGeneralizedDecisionTest(string filename, int datasetid, int experimentid)
+        public DataTable GetTableResult_MRIExceptionsTest(string filename, int datasetid, int experimentid)
         {
             DataTable table = this.DefineResultTable();
 
@@ -642,7 +646,7 @@ namespace MRIExceptions
                 dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
                 dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
-                dataSetRow["WEIGHTINGTYPEID"] = 1; //Majority                
+                dataSetRow["WEIGHTINGTYPEID"] = 2; //1=Majority 2=Relative
                 dataSetRow["EXCEPTIONRULETYPEID"] = 3; //Exceptions
 
                 i++;

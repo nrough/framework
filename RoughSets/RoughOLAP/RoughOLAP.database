@@ -3,6 +3,96 @@
   <Name>RoughOLAP</Name>
   <CreatedTimestamp>0001-01-01T00:00:00Z</CreatedTimestamp>
   <LastSchemaUpdate>0001-01-01T00:00:00Z</LastSchemaUpdate>
+  <Annotations>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectProjectID</Name>
+      <Value>f1ec55b6-a756-4391-8d3e-38291f532e12</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:CreateSubjectArea</Name>
+      <Value>True</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectDataSourceID</Name>
+      <Value>Rough DB</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectDSVID</Name>
+      <Value>RoughOLAP</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectDSVName</Name>
+      <Value>RoughOLAP</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectOwningSchema</Name>
+      <Value>dbo</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectCreatePkeyOnDimTable</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectCreateIndexes</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectEnforceRefIntegrity</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectPreserveData</Name>
+      <Value>true</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:SubjectPopulateTimeTable</Name>
+      <Value>0</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:PKeyPrefix</Name>
+      <Value>PK</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:FKeyPrefix</Name>
+      <Value>FK</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:Separator</Name>
+      <Value>_</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrNameColumnSuffix</Name>
+      <Value>Name</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrCustRollUpColumnSuffix</Name>
+      <Value>CustomRollup</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrCustRollUpPropColumnSuffix</Name>
+      <Value>CustomRollupProperties</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrUnaryOperatorColumnSuffix</Name>
+      <Value>UnaryOperator</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrSkippedLevelsColumnSuffix</Name>
+      <Value>SkippedLevels</Value>
+    </Annotation>
+    <Annotation>
+      <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DimAttrValueColumnSuffix</Name>
+      <Value>Value</Value>
+    </Annotation>
+    <Annotation>
+      <Name>B77886FF900E4C18A95F79A6BFA488A9</Name>
+      <Value>
+        <Results xmlns="B77886FF900E4C18A95F79A6BFA488A9">
+          <Result sourcePath="[RoughOLAP]" sourceType="Database" rule="36"></Result>
+        </Results>
+      </Value>
+    </Annotation>
+  </Annotations>
   <LastProcessed>0001-01-01T00:00:00Z</LastProcessed>
   <State>Unprocessed</State>
   <LastUpdate>0001-01-01T00:00:00Z</LastUpdate>
@@ -10,4 +100,8 @@
     <ImpersonationMode>Default</ImpersonationMode>
     <ImpersonationInfoSecurity>Unchanged</ImpersonationInfoSecurity>
   </DataSourceImpersonationInfo>
+  <Dimensions />
+  <Cubes />
+  <DataSources />
+  <DataSourceViews />
 </Database>

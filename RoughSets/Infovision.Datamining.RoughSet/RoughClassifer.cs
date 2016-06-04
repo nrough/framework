@@ -16,7 +16,9 @@ namespace Infovision.Datamining.Roughset
     public class RoughClassifier
     {
         #region Members
-        
+
+        protected readonly Stopwatch timer = new Stopwatch();
+
         private int numberOfModels;
         private bool allModelsAreEqual;
         private int decCount;
@@ -26,9 +28,8 @@ namespace Infovision.Datamining.Roughset
         private string singleVoteName;        
         private string singleVoteModule;
         private IReductStoreCollection reductStoreCollection;
-
-        protected readonly Stopwatch timer = new Stopwatch();
-
+        private object mutex = new object();
+        
         #endregion 
 
         #region Properties
@@ -60,6 +61,11 @@ namespace Infovision.Datamining.Roughset
                 }
             }
         }
+
+        public int ExceptionRuleHitCounter { get; protected set; }
+        public int StandardRuleHitCounter { get; protected set; }
+        public int ExceptionRuleLengthSum { get; protected set; }
+        public int StandardRuleLengthSum { get; protected set; }
 
         #endregion
 
@@ -96,7 +102,7 @@ namespace Infovision.Datamining.Roughset
 
             MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
             this.singleVoteName = singleVoteMethod.Name;
-            this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;
+            this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;            
         }
 
         #endregion
@@ -157,7 +163,11 @@ namespace Infovision.Datamining.Roughset
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = this.Classify(record, calcFullEquivalenceClasses);
-                    result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
+                    result.AddResult(
+                        objectIndex, 
+                        prediction.FindMaxValueKey(), 
+                        record[testData.DataStoreInfo.DecisionFieldId], 
+                        (double)weights[objectIndex]);
                 }
                 );
             }
@@ -165,6 +175,11 @@ namespace Infovision.Datamining.Roughset
             timer.Stop();
 
             result.ClassificationTime = this.ClassificationTime;
+            
+            result.ExceptionRuleHitCounter = this.ExceptionRuleHitCounter;
+            result.StandardRuleHitCounter = this.StandardRuleHitCounter;
+            result.ExceptionRuleLengthSum = this.ExceptionRuleLengthSum;
+            result.StandardRuleLengthSum = this.StandardRuleLengthSum;
 
             return result;
         }
@@ -185,7 +200,15 @@ namespace Infovision.Datamining.Roughset
                 foreach (IReduct reduct in rs)
                 {
                     if (this.UseExceptionRules == false && reduct.IsException)
-                        continue;                                                            
+                    {
+                        lock (mutex)
+                        {
+                            this.ExceptionRuleHitCounter++;
+                            this.ExceptionRuleLengthSum += reduct.Attributes.Count;
+                        }
+
+                        continue;
+                    }
 
                     for (int k = 0; k < this.decCountPlusOne; k++)
                         identificationWeights[k] = Decimal.Zero;
@@ -198,7 +221,29 @@ namespace Infovision.Datamining.Roughset
                     if (eqClass != null)
                     {
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
+                        {
+                            lock (mutex)
+                            {
+                                this.ExceptionRuleHitCounter++;
+                                this.ExceptionRuleLengthSum += reduct.Attributes.Count;
+                            }
+
                             break;
+                        }
+
+                        lock (mutex)
+                        {
+                            if (reduct.IsException)
+                            {
+                                this.ExceptionRuleHitCounter++;
+                                this.ExceptionRuleLengthSum += reduct.Attributes.Count;
+                            }
+                            else
+                            {
+                                this.StandardRuleHitCounter++;
+                                this.StandardRuleLengthSum += reduct.Attributes.Count;
+                            }
+                        }
 
                         foreach(var decVal in eqClass.DecisionSet)
                         {
@@ -210,23 +255,11 @@ namespace Infovision.Datamining.Roughset
                                 identifiedDecision = idx;
                             }
                         }
-                        /*
-                        for (int k = 1; k < this.decCountPlusOne; k++)
-                        {
-                            identificationWeights[k] = this.IdentificationFunction(decisions[k], reduct, eqClass);
-                            if (identifiedDecisionWeight < identificationWeights[k])
-                            {
-                                identifiedDecisionWeight = identificationWeights[k];
-                                identifiedDecision = k;
-                            }
-                        }
-                        */
 
                         if (this.VoteFunction.Equals(this.IdentificationFunction))
                         {
                             if (this.IdentifyMultipleDecision)
                             {
-
                                 foreach (var decVal in eqClass.DecisionSet)
                                 {
                                     int idx = dec2index[decVal];
@@ -238,21 +271,6 @@ namespace Infovision.Datamining.Roughset
                                         }
                                     }
                                 }
-
-
-                                /*
-                                for (int k = 1; k < this.decCountPlusOne; k++)
-                                {
-                                    if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
-                                    {
-                                        if ((this.MinimumVoteValue <= 0) || (identificationWeights[k] >= this.MinimumVoteValue))
-                                        {
-                                            reductsVotes[k] += identificationWeights[k];
-                                        }
-                                    }
-                                }
-                                */
-
                             }
                             else
                             {
@@ -268,7 +286,6 @@ namespace Infovision.Datamining.Roughset
                             {
                                 if (this.IdentifyMultipleDecision)
                                 {
-
                                     foreach (var decVal in eqClass.DecisionSet)
                                     {
                                         int idx = dec2index[decVal];
@@ -281,22 +298,6 @@ namespace Infovision.Datamining.Roughset
                                             }
                                         }
                                     }
-
-
-                                    /*
-                                    for (int k = 1; k < this.decCountPlusOne; k++)
-                                    {
-                                        if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[k], identifiedDecisionWeight))
-                                        {
-                                            decimal vote = this.VoteFunction(decisions[k], reduct, eqClass);
-                                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
-                                            {
-                                                reductsVotes[k] += vote;
-                                            }
-                                        }
-                                    }
-                                    */
-
                                 }
                                 else
                                 {
@@ -318,7 +319,7 @@ namespace Infovision.Datamining.Roughset
                         }
                     }
                     else //equivalence class not found
-                    {                                                
+                    {
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                             continue;
 
@@ -330,7 +331,7 @@ namespace Infovision.Datamining.Roughset
                                 reductsVotes[0] += 1;
                             }
                         }
-                    }                    
+                    }
 
                     if (this.UseExceptionRules && reduct.IsException && eqClass != null && eqClass.WeightSum > 0)
                         break;

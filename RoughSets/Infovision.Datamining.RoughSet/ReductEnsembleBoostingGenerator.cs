@@ -63,9 +63,9 @@ namespace Infovision.Datamining.Roughset
 			this.WeightGenerator = new WeightBoostingGenerator(data);
 		}
 
-		public override void SetDefaultParameters()
+		public override void InitDefaultParameters()
 		{
-			base.SetDefaultParameters();
+			base.InitDefaultParameters();
 
 			this.Threshold = 0.5;
 			this.IdentyficationType = RuleQuality.ConfidenceW;
@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset
 
 				int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 				decimal m0 = new InformationMeasureWeights()
-                    .Calc(new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
+					.Calc(new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
 				this.Threshold = (double)(Decimal.One - m0);
 
 				this.InitFromDecisionValues(this.DataStore, this.DataStore.DataStoreInfo.GetDecisionValues());
@@ -348,7 +348,7 @@ namespace Infovision.Datamining.Roughset
 			// Normalize weights for models confidence
 			if (alphaSum != 0.0)
 			{
-				foreach(IReductStore rs in this.Models)                		
+				foreach(IReductStore rs in this.Models)
 				{
 					rs.Weight /= (decimal)alphaSum;
 				}

@@ -90,7 +90,7 @@ namespace Infovision.Datamining.Roughset
 
         protected ReductGenerator()
         {
-            this.SetDefaultParameters();            
+            this.InitDefaultParameters();            
         }
 
         #endregion 
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public virtual void SetDefaultParameters()
+        public virtual void InitDefaultParameters()
         {
             this.UseCache = false;
             this.Epsilon = 0;

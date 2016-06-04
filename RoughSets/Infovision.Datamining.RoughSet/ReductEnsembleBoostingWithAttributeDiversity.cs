@@ -22,9 +22,9 @@ namespace Infovision.Datamining.Roughset
 		{						
 		}
 
-		public override void SetDefaultParameters()
+		public override void InitDefaultParameters()
 		{
-			base.SetDefaultParameters();			
+			base.InitDefaultParameters();			
 		}
 
 		public override void InitFromArgs(Args args)

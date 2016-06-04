@@ -119,9 +119,9 @@ namespace Infovision.Datamining.Roughset
 			return this.GetPartitionQuality(allAttributesReduct);
 		}
 
-		public override void SetDefaultParameters()
+		public override void InitDefaultParameters()
 		{
-			base.SetDefaultParameters();
+			base.InitDefaultParameters();
 						
 			this.Epsilon = (decimal) (0.5 * this.Threshold);
 		}

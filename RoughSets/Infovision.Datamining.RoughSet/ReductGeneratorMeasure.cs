@@ -261,7 +261,7 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorRelative()
             : base()
         {
-            //TODO Move to SetDefaultParameters()
+            //TODO Move to InitDefaultParameters()
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Relative);
         }
 
@@ -291,7 +291,7 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorMajority()
             : base()
         {
-            //TODO Move to SetDefaultParameters()
+            //TODO Move to InitDefaultParameters()
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Majority);
         }
 
@@ -321,7 +321,7 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorPositive()
             : base()
         {
-            //TODO Move to SetDefaultParameters()
+            //TODO Move to InitDefaultParameters()
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Positive);
         }
 

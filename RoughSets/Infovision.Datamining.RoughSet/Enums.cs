@@ -65,7 +65,8 @@
     public enum SortDirection
     {
         Ascending = 0,
-        Descending = 1
+        Descending = 1,
+        Random = 2
     }
 
     public enum NoYesUnknown
@@ -80,5 +81,5 @@
         Unknown = 0,
         Majority = 1,
         Relative = 2
-    }
+    }    
 }

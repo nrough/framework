@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Infovision.Data;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;

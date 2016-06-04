@@ -35,9 +35,9 @@ namespace Infovision.Datamining.Roughset
 			clusterInstances2 = new List<double[]>();
 		}
 
-		public override void SetDefaultParameters()
+		public override void InitDefaultParameters()
 		{
-			base.SetDefaultParameters();
+			base.InitDefaultParameters();
 
 			this.Distance = Similarity.Manhattan;
 			this.Linkage = ClusteringLinkage.Average;

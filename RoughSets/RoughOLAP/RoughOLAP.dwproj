@@ -67,6 +67,10 @@
       <Name>RESULTVIEW.dsv</Name>
       <FullPath>RESULTVIEW.dsv</FullPath>
     </ProjectItem>
+    <ProjectItem>
+      <Name>RoughOLAP.dsv</Name>
+      <FullPath>RoughOLAP.dsv</FullPath>
+    </ProjectItem>
   </DataSourceViews>
   <Configurations>
     <Configuration>

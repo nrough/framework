@@ -205,6 +205,10 @@ namespace Infovision.Datamining
 
         public long ClassificationTime { get; set; }
         public long ModelCreationTime { get; set; }
+        public int ExceptionRuleHitCounter { get; set; }
+        public int StandardRuleHitCounter { get; set; }
+        public int ExceptionRuleLengthSum { get; set; }
+        public int StandardRuleLengthSum { get; set; }
 
         //TODO
 
@@ -453,6 +457,15 @@ namespace Infovision.Datamining
             stringBuilder.Append("ModelCreationTime");
             stringBuilder.Append('|');
             stringBuilder.Append("ClassificationTime");
+            stringBuilder.Append('|');            
+
+            stringBuilder.Append("ExceptionRuleHitCounter");
+            stringBuilder.Append('|');
+            stringBuilder.Append("ExceptionRuleLengthSum");
+            stringBuilder.Append('|');
+            stringBuilder.Append("StandardRuleHitCounter");
+            stringBuilder.Append('|');
+            stringBuilder.Append("StandardRuleLengthSum");
             stringBuilder.Append('|');
 
             return stringBuilder.ToString();
@@ -466,7 +479,7 @@ namespace Infovision.Datamining
             stringBuilder.AppendFormat("{0,5}", this.Misclassified);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,5}", this.Unclassified);
-            stringBuilder.Append('|');            
+            stringBuilder.Append('|');
 
             stringBuilder.AppendFormat("{0:0.000000}", this.WeightClassified);
             stringBuilder.Append('|');
@@ -488,6 +501,15 @@ namespace Infovision.Datamining
             stringBuilder.AppendFormat("{0,6}", this.ModelCreationTime);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,6}", this.ClassificationTime);
+            stringBuilder.Append('|');
+
+            stringBuilder.AppendFormat("{0,5}", this.ExceptionRuleHitCounter);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,7}", this.ExceptionRuleLengthSum);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,5}", this.StandardRuleHitCounter);
+            stringBuilder.Append('|');            
+            stringBuilder.AppendFormat("{0,7}", this.StandardRuleLengthSum);
             stringBuilder.Append('|');
 
             return stringBuilder.ToString();

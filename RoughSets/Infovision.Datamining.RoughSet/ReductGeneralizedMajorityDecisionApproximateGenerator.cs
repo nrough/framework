@@ -13,6 +13,7 @@ namespace Infovision.Datamining.Roughset
         #region Properties
 
         public bool UseExceptionRules { get; set; }
+        public SortDirection EquivalenceClassSortDirection { get; set; }
         public decimal Gamma { get; set; }        
         protected decimal WeightDropLimit { get; set; }
         protected decimal ObjectWeightSum { get; set; }
@@ -69,7 +70,20 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
             ReductStore localReductStore = new ReductStore();
          
-            eqArray.Shuffle();
+            switch(this.EquivalenceClassSortDirection)
+            {
+                case SortDirection.Ascending:
+                    Array.Sort<EquivalenceClass>(eqArray, Comparer<EquivalenceClass>.Create((a, b) => a.NumberOfObjects.CompareTo(b.NumberOfObjects)));
+                    break;
+
+                case SortDirection.Descending:
+                    Array.Sort<EquivalenceClass>(eqArray, Comparer<EquivalenceClass>.Create((a, b) => b.NumberOfObjects.CompareTo(a.NumberOfObjects)));
+                    break;
+
+                default :
+                    eqArray.Shuffle();
+                    break;
+            }
 
             EquivalenceClassCollection exceptionEqClasses = null;
             ReductWeights exception = null;
@@ -170,7 +184,20 @@ namespace Infovision.Datamining.Roughset
 
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
 
-            eqArray.Shuffle();
+            switch (this.EquivalenceClassSortDirection)
+            {
+                case SortDirection.Ascending:
+                    Array.Sort<EquivalenceClass>(eqArray, Comparer<EquivalenceClass>.Create((a, b) => a.NumberOfObjects.CompareTo(b.NumberOfObjects)));
+                    break;
+
+                case SortDirection.Descending:
+                    Array.Sort<EquivalenceClass>(eqArray, Comparer<EquivalenceClass>.Create((a, b) => b.NumberOfObjects.CompareTo(a.NumberOfObjects)));
+                    break;
+
+                default:
+                    eqArray.Shuffle();
+                    break;
+            }
 
             foreach (EquivalenceClass eq in eqArray)
             {
@@ -228,12 +255,23 @@ namespace Infovision.Datamining.Roughset
             return newEqClasses;
         }
 
+        public override void InitDefaultParameters()
+        {
+            base.InitDefaultParameters();
+
+            this.UseExceptionRules = true;
+            this.EquivalenceClassSortDirection = SortDirection.Random;
+        }
+
         public override void InitFromArgs(Args args)
         {
             base.InitFromArgs(args);
 
             if (args.Exist(ReductGeneratorParamHelper.UseExceptionRules))
-                this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
+                this.UseExceptionRules = (bool) args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
+
+            if (args.Exist(ReductGeneratorParamHelper.EquivalenceClassSortDirection))
+                this.EquivalenceClassSortDirection = (SortDirection) args.GetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection);
 
             if (this.UseExceptionRules)
             {

@@ -157,11 +157,25 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
         {            
+            //TODO ERROR 
+            
             //We try to reach crisp reduct first
             IReduct tmpReduct = this.CreateReductObject(new int[] { }, epsilon, "tmpReduct");
-            this.Reach(tmpReduct, permutation);            
+            this.Reach(tmpReduct, permutation);
+
+            //ERROR: tmpReduct.Attributes returns attributes in increasing order, not in the order of permutaiton 
+            //int[] localPermutation = tmpReduct.Attributes.ToArray();
+
+            int[] localPermutation = new int[tmpReduct.Attributes.Count];
+            int j = 0;
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                if (tmpReduct.Attributes.ContainsElement(permutation[i]))
+                {
+                    localPermutation[j++] = permutation[i];
+                }
+            }
             
-            int[] localPermutation = tmpReduct.Attributes.ToArray();
                         
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(localPermutation, this.DataStore, epsilon, weights);
 

@@ -14,17 +14,17 @@ namespace Infovision.Datamining.Roughset
 	{       
 		public ReductEnsembleBoostingWithAttributeDiversityGenerator()
 			: base()
-		{						
+		{
 		}
 
 		public ReductEnsembleBoostingWithAttributeDiversityGenerator(DataStore data)
-			: base(data)		
-		{						
+			: base(data)
+		{
 		}
 
 		public override void InitDefaultParameters()
 		{
-			base.InitDefaultParameters();			
+			base.InitDefaultParameters();
 		}
 
 		public override void InitFromArgs(Args args)

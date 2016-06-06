@@ -25,7 +25,7 @@ namespace MRIExceptions
 
             p.Run();
 
-            //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 3));
+            //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 4));
             
             Console.WriteLine("Done");
             Console.ReadKey();                       
@@ -187,12 +187,14 @@ namespace MRIExceptions
             for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon += 0.02m)
             {
                 Console.WriteLine("Segmentation model learning and test eps={0}", epsilon);
+
+                PermutationCollection permutations = new PermutationGenerator(data_1.Item1).Generate(100);
                 
-                RoughClassifier model_1 = this.Learn(data_1.Item1, testId, epsilon, trainSlice, testSlice);
+                RoughClassifier model_1 = this.Learn(data_1.Item1, testId, epsilon, trainSlice, testSlice, permutations);
                 this.Test(model_1, data_1.Item2, data_1.Item1, testId, epsilon, trainSlice, testSlice);
                 
                 //We reverse slices and dataset
-                RoughClassifier model_2 = this.Learn(data_2.Item1, testId, epsilon, testSlice, trainSlice);
+                RoughClassifier model_2 = this.Learn(data_2.Item1, testId, epsilon, testSlice, trainSlice, permutations);
                 this.Test(model_2, data_2.Item2, data_2.Item1, testId, epsilon, testSlice, trainSlice);
             }
 
@@ -394,7 +396,7 @@ namespace MRIExceptions
             return new Tuple<DataStore, DataStore>(trainingData, testData);
         }
 
-        private RoughClassifier Learn(DataStore train, int testId, decimal epsilon, int trainSlice, int testSlice)
+        private RoughClassifier Learn(DataStore train, int testId, decimal epsilon, int trainSlice, int testSlice, PermutationCollection permutations)
         {
             int epsilonInt = (int)(epsilon * 100);
             string testFolder = this.GetTestFolder(testId);
@@ -415,6 +417,7 @@ namespace MRIExceptions
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
             parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
             parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();
@@ -425,11 +428,14 @@ namespace MRIExceptions
             ReductStoreCollection rsc = filteredReductStoreCollection as ReductStoreCollection;
             rsc.Save(String.Format("{0}\\reductstore-{1}-{2}.xml", testFolder, trainSlice, epsilonInt));
 
+            ReductStoreCollection rscAll = origReductStoreCollection as ReductStoreCollection;
+            rscAll.Save(String.Format("{0}\\reductstoreAll-{1}-{2}.xml", testFolder, trainSlice, epsilonInt));
+
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 RuleQualityAvg.ConfidenceW,
                 RuleQualityAvg.ConfidenceW,
-                train.DataStoreInfo.GetDecisionValues());
+                train.DataStoreInfo.GetDecisionValues());            
             
             classifier.UseExceptionRules = true;
             classifier.ExceptionRulesAsGaps = false;
@@ -608,6 +614,14 @@ namespace MRIExceptions
             this.AddColumn(table, "WEIGHTINGTYPEID", "System.Int32");
             this.AddColumn(table, "EXCEPTIONRULETYPEID", "System.Int32");
 
+            this.AddColumn(table, "EXCEPTIONRULEHITCOUNTER", "System.Int32");
+            this.AddColumn(table, "EXCEPTIONRULELENGTHSUM", "System.Int32");
+            this.AddColumn(table, "STANDARDRULEHITCOUNTER", "System.Int32");
+            this.AddColumn(table, "STANDARDRULELENGTHSUM", "System.Int32");
+
+            this.AddColumn(table, "MRISLICETRN", "System.Int32");
+            this.AddColumn(table, "MRISLICETST", "System.Int32");
+
             return table;
         }
 
@@ -667,6 +681,14 @@ namespace MRIExceptions
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
                 dataSetRow["WEIGHTINGTYPEID"] = 2; //1=Majority 2=Relative
                 dataSetRow["EXCEPTIONRULETYPEID"] = 3; //Exceptions
+
+                dataSetRow["EXCEPTIONRULEHITCOUNTER"] = Int32.Parse(row["ExceptionRuleHitCounter"].ToString());
+                dataSetRow["EXCEPTIONRULELENGTHSUM"] = Int32.Parse(row["ExceptionRuleLengthSum"].ToString());
+                dataSetRow["STANDARDRULEHITCOUNTER"] = Int32.Parse(row["StandardRuleHitCounter"].ToString());
+                dataSetRow["STANDARDRULELENGTHSUM"] = Int32.Parse(row["StandardRuleLengthSum"].ToString());
+
+                dataSetRow["MRISLICETRN"] = Int32.Parse(row["TrainSlice"].ToString());
+                dataSetRow["MRISLICETST"] = Int32.Parse(row["TestSlice"].ToString());
 
                 i++;
 

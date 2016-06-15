@@ -259,7 +259,7 @@ namespace MajorityGeneralizedDecisionTest
             this.ClearCache();
 
             //in decreasing order!
-            sizes = new int[] { 20, 10, 5, 3, 1 };
+            sizes = new int[] { 10, 5, 3, 1 };
             maxTest = 20;
         }
 

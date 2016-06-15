@@ -23,9 +23,9 @@ namespace MRIExceptions
             
             Program p = new Program();
 
-            p.Run();
+            //p.Run();
 
-            //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 4));
+            //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 5));
             
             Console.WriteLine("Done");
             Console.ReadKey();                       
@@ -191,6 +191,7 @@ namespace MRIExceptions
                 PermutationCollection permutations = new PermutationGenerator(data_1.Item1).Generate(100);
                 
                 RoughClassifier model_1 = this.Learn(data_1.Item1, testId, epsilon, trainSlice, testSlice, permutations);
+
                 this.Test(model_1, data_1.Item2, data_1.Item1, testId, epsilon, trainSlice, testSlice);
                 
                 //We reverse slices and dataset
@@ -679,7 +680,7 @@ namespace MRIExceptions
                 dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
                 dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
-                dataSetRow["WEIGHTINGTYPEID"] = 2; //1=Majority 2=Relative
+                dataSetRow["WEIGHTINGTYPEID"] = 1; //1=Majority 2=Relative
                 dataSetRow["EXCEPTIONRULETYPEID"] = 3; //Exceptions
 
                 dataSetRow["EXCEPTIONRULEHITCOUNTER"] = Int32.Parse(row["ExceptionRuleHitCounter"].ToString());

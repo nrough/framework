@@ -50,20 +50,21 @@ namespace LoadSQLRoughsetDB
             //p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "nursery.result"), p.DatasetToInt("nursery"), 1));
             //p.InsertDB(p.GetTableResult_VotingVsRuleInduction(Path.Combine(path, "connect.result"), p.DatasetToInt("connect"), 1));
 
-            //string path2 = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MajorityGeneralizedDecisionTest\bin\x64\Release\results";
+            string path2 = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MajorityGeneralizedDecisionTest\bin\x64\Release\results";
+            int experimentId = 6;
 
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "dna.result"), p.DatasetToInt("dna"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "zoo.result"), p.DatasetToInt("zoo"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "breast.result"), p.DatasetToInt("breast"), 2));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "dna.result"), p.DatasetToInt("dna"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "zoo.result"), p.DatasetToInt("zoo"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "breast.result"), p.DatasetToInt("breast"), experimentId));
+
+
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-small.result"), p.DatasetToInt("soybean-small"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-large.result"), p.DatasetToInt("soybean-large"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "house.result"), p.DatasetToInt("house"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "audiology.result"), p.DatasetToInt("audiology"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "promoters.result"), p.DatasetToInt("promoters"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "spect.result"), p.DatasetToInt("spect"), experimentId));
             
-            /*
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-small.result"), p.DatasetToInt("soybean-small"), 2));
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "soybean-large.result"), p.DatasetToInt("soybean-large"), 2));
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "house.result"), p.DatasetToInt("house"), 2));
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "audiology.result"), p.DatasetToInt("audiology"), 2));
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "promoters.result"), p.DatasetToInt("promoters"), 2));
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "spect.result"), p.DatasetToInt("spect"), 2));
-            */
 
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), 2));
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "mashroom.result"), p.DatasetToInt("mashroom"), 2));
@@ -287,6 +288,14 @@ namespace LoadSQLRoughsetDB
             this.AddColumn(table, "WEIGHTINGTYPEID", "System.Int32");
             this.AddColumn(table, "EXCEPTIONRULETYPEID", "System.Int32");
 
+            this.AddColumn(table, "EXCEPTIONRULEHITCOUNTER", "System.Int32");
+            this.AddColumn(table, "EXCEPTIONRULELENGTHSUM", "System.Int32");
+            this.AddColumn(table, "STANDARDRULEHITCOUNTER", "System.Int32");
+            this.AddColumn(table, "STANDARDRULELENGTHSUM", "System.Int32");
+
+            this.AddColumn(table, "MRISLICETRN", "System.Int32");
+            this.AddColumn(table, "MRISLICETST", "System.Int32");
+
             return table;
         }
 
@@ -342,6 +351,14 @@ namespace LoadSQLRoughsetDB
 
                 dataSetRow["EXCEPTIONRULETYPEID"] = ExceptionRuleToInt_MajorityGeneralizedDecisionTest(
                     row["Factory"].ToString(), row["Weight"].ToString());
+
+                dataSetRow["EXCEPTIONRULEHITCOUNTER"] = Int32.Parse(row["ExceptionRuleHitCounter"].ToString());
+                dataSetRow["EXCEPTIONRULELENGTHSUM"] = Int32.Parse(row["ExceptionRuleLengthSum"].ToString());
+                dataSetRow["STANDARDRULEHITCOUNTER"] = Int32.Parse(row["StandardRuleHitCounter"].ToString());
+                dataSetRow["STANDARDRULELENGTHSUM"] = Int32.Parse(row["StandardRuleLengthSum"].ToString());
+
+                dataSetRow["MRISLICETRN"] = 0;
+                dataSetRow["MRISLICETST"] = 0;
 
                 i++;
 
@@ -456,6 +473,14 @@ namespace LoadSQLRoughsetDB
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
                 dataSetRow["WEIGHTINGTYPEID"] = this.WeightTypeToInt_VotingVsRuleInduction(row["FactoryKey"].ToString());
                 dataSetRow["EXCEPTIONRULETYPEID"] = 1;
+
+                dataSetRow["EXCEPTIONRULEHITCOUNTER"] = Int32.Parse(row["ExceptionRuleHitCounter"].ToString());
+                dataSetRow["EXCEPTIONRULELENGTHSUM"] = Int32.Parse(row["ExceptionRuleLengthSum"].ToString());
+                dataSetRow["STANDARDRULEHITCOUNTER"] = Int32.Parse(row["StandardRuleHitCounter"].ToString());
+                dataSetRow["STANDARDRULELENGTHSUM"] = Int32.Parse(row["StandardRuleLengthSum"].ToString());
+
+                dataSetRow["MRISLICETRN"] = 0;
+                dataSetRow["MRISLICETST"] = 0;
 
                 i++;
 

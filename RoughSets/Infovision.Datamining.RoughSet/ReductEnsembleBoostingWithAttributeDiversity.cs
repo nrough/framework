@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset
 		{
 			Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
-		}				
+		}
 	}
 
 	public class ReductEnsembleBoostingWithAttributeDiversityFactory : IReductFactory

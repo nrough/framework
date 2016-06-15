@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
 	public class ReductEnsembleBoostingVarEpsGenerator : ReductEnsembleBoostingGenerator
 	{
 		private decimal m0;
-		private InformationMeasureWeights informationMeasure;		
+		private InformationMeasureWeights informationMeasure;
 
 		private InformationMeasureWeights InformationMeasure
 		{
@@ -35,8 +35,8 @@ namespace Infovision.Datamining.Roughset
 		}
 
 		public ReductEnsembleBoostingVarEpsGenerator(DataStore data)
-			: base(data)		
-		{						
+			: base(data)
+		{
 		}
 		
 		public override IReduct GetNextReduct(decimal[] weights)
@@ -45,12 +45,12 @@ namespace Infovision.Datamining.Roughset
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
 		}
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
 		{
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);
 
-            ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, weightsCopy);
+			ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, weightsCopy);
 			reduct.Id = this.GetNextReductId().ToString();
 			this.Reach(reduct, permutation, null);
 			this.Reduce(reduct, permutation, null);
@@ -114,7 +114,7 @@ namespace Infovision.Datamining.Roughset
 		
 		protected virtual decimal GetDataSetQuality(IReduct reduct)
 		{
-            ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), reduct.Epsilon, reduct.Weights);
+			ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), reduct.Epsilon, reduct.Weights);
 
 			return this.GetPartitionQuality(allAttributesReduct);
 		}

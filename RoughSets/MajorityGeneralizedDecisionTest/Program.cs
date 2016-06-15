@@ -248,7 +248,7 @@ namespace MajorityGeneralizedDecisionTest
         {
             eps = 0.17m;
             ensembleSize = 10;
-            ratio = 10;
+            ratio = 5;
             permutationSize = ensembleSize * ratio;
 
             reductLengthComparer = new ReductLengthComparer();
@@ -258,9 +258,9 @@ namespace MajorityGeneralizedDecisionTest
 
             this.ClearCache();
 
-            sizes = new int[] { 20 };
+            //in decreasing order!
+            sizes = new int[] { 20, 10, 5, 3, 1 };
             maxTest = 20;
-
         }
 
         public void ClearCache()
@@ -337,7 +337,7 @@ namespace MajorityGeneralizedDecisionTest
                             {
                                 ensembleSize = size;
                                 
-                                //onclu confidenceW
+                                //only confidenceW
                                 for (int j = 2; j <= 2; j++)
                                 {
 

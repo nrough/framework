@@ -75,6 +75,18 @@ namespace Infovision.Utils
 
             this.parameters[key] = value;
         }
+
+        public void SetParameter<T>(string key, T value)
+        {
+            if (this.parameters.ContainsKey(key) == false)
+            {
+                this.parameterOrder.Add(key);
+                this.index2parameter[this.nextIndex] = key;
+                this.nextIndex++;
+            }
+
+            this.parameters[key] = value;
+        }
         
         public void RemoveParameter(string key)
         {
@@ -87,6 +99,14 @@ namespace Infovision.Utils
                 return this.parameters[key];
 
             return null;
+        }
+
+        public T GetParameter<T>(string key)
+        {
+            if (this.Exist(key))
+                return (T)this.parameters[key];
+            else
+                throw new KeyNotFoundException(String.Format("Key {0} was not found.", key));
         }
 
         public object GetParameter(int index)

@@ -23,7 +23,7 @@ namespace MajorityGeneralizedDecisionTest
         ReductMeasureLength reductMeasureLength;
         
         ReductStoreLengthComparer reductStoreLengthComparer;
-        ReductStoreLengthComparer reductStoreLengthComparerGaps;
+        //ReductStoreLengthComparer reductStoreLengthComparerGaps;
 
         PermutationCollection permList;
         int t;
@@ -139,9 +139,14 @@ namespace MajorityGeneralizedDecisionTest
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
                 parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
                 parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+#if DEBUG                
+                parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending); 
+                parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, 0.1m); 
+#else
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps); 
+#endif
                 parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);            
+                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
                 generator.Run();
@@ -151,26 +156,10 @@ namespace MajorityGeneralizedDecisionTest
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(ensembleSize, reductStoreLengthComparerGaps);
+            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(ensembleSize, reductStoreLengthComparer);
+            double avgLength = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true); ;
 
             RoughClassifier classifier = new RoughClassifier(
-                filteredReductStoreCollection,
-                identification,
-                voting,
-                trainData.DataStoreInfo.GetDecisionValues());
-            
-            classifier.UseExceptionRules = true;
-            classifier.ExceptionRulesAsGaps = true;
-
-            ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);
-            result.ModelCreationTime = generator.ReductGenerationTime;            
-
-            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GAPS", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
-
-            filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(ensembleSize, reductStoreLengthComparer);
-            
-            classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 identification,
                 voting,
@@ -179,11 +168,29 @@ namespace MajorityGeneralizedDecisionTest
             classifier.UseExceptionRules = true;
             classifier.ExceptionRulesAsGaps = false;
 
-            result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
-            result.ModelCreationTime = generator.ReductGenerationTime;            
+            ClassificationResult result = classifier.Classify(testData);
+            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
+            result.ModelCreationTime = generator.ReductGenerationTime;
 
-            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "EXEP", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);                       
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "EXEP", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
+
+            //TODO consider removal of next line
+            //filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(ensembleSize, reductStoreLengthComparerGaps);
+
+            classifier = new RoughClassifier(
+                filteredReductStoreCollection,
+                identification,
+                voting,
+                trainData.DataStoreInfo.GetDecisionValues());
+
+            classifier.UseExceptionRules = true;
+            classifier.ExceptionRulesAsGaps = true;
+
+            result = classifier.Classify(testData);
+            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);            
+            result.ModelCreationTime = generator.ReductGenerationTime;
+
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GAPS", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
         }
 
         public void ApproximateDecisionReduct(
@@ -224,7 +231,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.UseExceptionRules = false;
             ClassificationResult result = classifier.Classify(testData);
             result.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
-            result.ModelCreationTime = generator.ReductGenerationTime;            
+            result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "ADR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result));
         }
@@ -245,16 +252,15 @@ namespace MajorityGeneralizedDecisionTest
         }
         
         public void Init(BenchmarkData benchmarkData)
-        {
-            eps = 0.17m;
+        {            
             ensembleSize = 10;
             ratio = 5;
             permutationSize = ensembleSize * ratio;
 
             reductLengthComparer = new ReductLengthComparer();
             reductStoreLengthComparer = new ReductStoreLengthComparer(true);
-            reductStoreLengthComparerGaps = new ReductStoreLengthComparer(false);
-            reductMeasureLength = new ReductMeasureLength();                       
+            //reductStoreLengthComparerGaps = new ReductStoreLengthComparer(false);
+            reductMeasureLength = new ReductMeasureLength();
 
             this.ClearCache();
 
@@ -273,6 +279,9 @@ namespace MajorityGeneralizedDecisionTest
             DataStoreSplitter splitter;
 
             this.OpenStream(Path.Combine(@"results", benchmarkData.Name + ".result"));
+
+            ensembleSize = sizes.First();
+            permutationSize = ensembleSize * ratio;
             
             for (int i = 0; i < maxTest; i++)
             {
@@ -286,7 +295,23 @@ namespace MajorityGeneralizedDecisionTest
                         data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
 
                     splitter = new DataStoreSplitter(data, benchmarkData.CrossValidationFolds);
+
+                    this.InitPermutation(data);
                 }
+                else
+                {
+                    trainData = DataStore.Load(benchmarkData.TrainFile, benchmarkData.FileFormat);
+
+                    if (benchmarkData.DecisionFieldId > 0)
+                        trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
+
+                    WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
+                    trainData.SetWeights(weightGenerator.Weights);
+
+                    testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
+
+                    this.InitPermutation(trainData);
+                }                                
 
                 for (int f = 0; f < benchmarkData.CrossValidationFolds; f++)
                 {
@@ -299,32 +324,14 @@ namespace MajorityGeneralizedDecisionTest
 
                         WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
                         trainData.SetWeights(weightGenerator.Weights);
-                    }
-                    else
-                    {
-                        trainData = DataStore.Load(benchmarkData.TrainFile, benchmarkData.FileFormat);
-
-                        if (benchmarkData.DecisionFieldId > 0)
-                            trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
-
-                        WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
-                        trainData.SetWeights(weightGenerator.Weights);
-
-                        testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
-
-                    }
+                    }                    
 
                     for (int e = 0; e < 100; e++)
                     {                       
                         eps = (decimal)e / (decimal)100;
 
-                        ensembleSize = sizes.First();
-                        permutationSize = ensembleSize * ratio;
-                        this.InitPermutation();
-
                         for (int w = 0; w < 2; w++)
                         {
-
                             WeightGenerator weightGenerator = (w == 0) 
                                             ? new WeightGeneratorMajority(trainData) as WeightGenerator
                                             : new WeightGeneratorRelative(trainData) as WeightGenerator;
@@ -374,10 +381,11 @@ namespace MajorityGeneralizedDecisionTest
             this.CloseStream();
         }
 
-        public void InitPermutation()
+        public void InitPermutation(DataStore d)
         {
             Args permParm = new Args();
-            permParm.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
+            
+            permParm.SetParameter(ReductGeneratorParamHelper.TrainData, d);
             permParm.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(permParm);
             permList = permGen.Generate(permutationSize);

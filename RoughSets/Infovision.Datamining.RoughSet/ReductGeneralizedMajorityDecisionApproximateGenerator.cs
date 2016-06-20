@@ -177,7 +177,7 @@ namespace Infovision.Datamining.Roughset
 
         private EquivalenceClassCollection ReduceWithoutExceptions(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore)
         {
-            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);            
+            var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes);
             newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
             newEqClasses.CountObjects = eqClasses.CountObjects;

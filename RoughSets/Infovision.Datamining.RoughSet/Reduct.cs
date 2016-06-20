@@ -296,18 +296,21 @@ namespace Infovision.Datamining.Roughset
             if (this.IsException == false)
             {
                 return String.Format(
-                    "[Id:{0}] {1} (eps:{2})",
+                    "[Id:{0}] {1} (eps:{2}, #objects:{3})",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon);
+                    this.Epsilon,
+                    this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count);
             }
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("[Id:{0}] {1} (eps:{2}) ",
+                sb.AppendFormat("[Id:{0}] {1} (eps:{2}, #objects:{3}) ",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon);
+                    this.Epsilon,
+                    this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count);
+
                 sb.Append("[");
                 
                 bool first = true;

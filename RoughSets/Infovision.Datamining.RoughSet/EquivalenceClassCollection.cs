@@ -96,7 +96,16 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        #region MethodsInProgress               
+        #region MethodsInProgress
+
+        //|U| (Returns number of suppoerted objects (may differ from all number of records in dataset because of exception rules)
+        public int CountSupportedObjects()
+        {
+            int sum = 0;
+            foreach (var e in this)
+                sum += e.NumberOfObjects;
+            return sum;
+        }
         
         //|E|
         public int CountEquivalenceClass(long[] internalValueVector)

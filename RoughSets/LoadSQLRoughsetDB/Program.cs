@@ -53,6 +53,7 @@ namespace LoadSQLRoughsetDB
             string path2 = @"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MajorityGeneralizedDecisionTest\bin\x64\Release\results";
             int experimentId = 6;
 
+            /*
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "dna.result"), p.DatasetToInt("dna"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "zoo.result"), p.DatasetToInt("zoo"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "breast.result"), p.DatasetToInt("breast"), experimentId));
@@ -64,16 +65,18 @@ namespace LoadSQLRoughsetDB
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "audiology.result"), p.DatasetToInt("audiology"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "promoters.result"), p.DatasetToInt("promoters"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "spect.result"), p.DatasetToInt("spect"), experimentId));
-            
+            */
 
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "mashroom.result"), p.DatasetToInt("mashroom"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "semeion.result"), p.DatasetToInt("semeion"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "nursery.result"), p.DatasetToInt("nursery"), 2));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "connect.result"), p.DatasetToInt("connect"), 2));
+
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), experimentId));
+
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "mashroom.result"), p.DatasetToInt("mashroom"), experimentId));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "semeion.result"), p.DatasetToInt("semeion"), experimentId));            
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "nursery.result"), p.DatasetToInt("nursery"), experimentId));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "connect.result"), p.DatasetToInt("connect"), experimentId));
 
 
         }

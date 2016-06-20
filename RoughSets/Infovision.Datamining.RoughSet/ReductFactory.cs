@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Roughset
         public void RegisterFactory(string className)
         {            
             StringBuilder assemblyName = new StringBuilder();
-            string [] assemblyNameParts = className.Split(new Char[] {'.'});
+            string [] assemblyNameParts = className.Split(new char[] {'.'});
             for (int i = 0; i < assemblyNameParts.Length - 1; i++)
             {
                 assemblyName.Append(assemblyNameParts[i]);

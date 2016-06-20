@@ -101,7 +101,7 @@ namespace Infovision.Datamining.Roughset
         public ReductStoreLengthComparer(bool includeExceptions)
             : base()
         {
-            this.IncludeExceptions = IncludeExceptions;
+            this.IncludeExceptions = includeExceptions;
         }
         
         public override int Compare(IReductStore left, IReductStore right)

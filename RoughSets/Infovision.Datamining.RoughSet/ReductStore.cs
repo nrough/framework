@@ -293,14 +293,18 @@ namespace Infovision.Datamining.Roughset
             {                                
                 foreach (IReduct reduct in this)
                 {
+                    int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated 
+                        ? reduct.EquivalenceClasses.CountSupportedObjects() 
+                        : reduct.ObjectSetInfo.NumberOfRecords;
+
                     if (reduct.IsException && isGap == false)
                     {
-                        count += reduct.ObjectSetInfo.NumberOfRecords;
+                        count += numberOfSupportedObjects;
                     }
                     else
                     {
-                        measureSum += (double)reductMeasure.Calc(reduct) * reduct.ObjectSetInfo.NumberOfRecords;
-                        count += reduct.ObjectSetInfo.NumberOfRecords;
+                        measureSum += (double)reductMeasure.Calc(reduct) * numberOfSupportedObjects;
+                        count += numberOfSupportedObjects;
                     }
                 }
             }

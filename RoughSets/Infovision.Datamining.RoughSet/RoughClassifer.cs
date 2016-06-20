@@ -178,6 +178,7 @@ namespace Infovision.Datamining.Roughset
             
             result.ExceptionRuleHitCounter = this.ExceptionRuleHitCounter;
             result.StandardRuleHitCounter = this.StandardRuleHitCounter;
+            
             result.ExceptionRuleLengthSum = this.ExceptionRuleLengthSum;
             result.StandardRuleLengthSum = this.StandardRuleLengthSum;
 

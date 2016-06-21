@@ -162,25 +162,26 @@ namespace Infovision.Datamining.Roughset
             {
                 p = new int[permutation.Length];
                 Array.Copy(permutation, p, permutation.Length);
-                IReadOnlyList<IReductStore> localStoreCollection = reductStoreCollection.GetStoreList();
                 int n = permutation.Length;
                 bool flag = false;
                 for (int j = n - 1; j >= 0 ; j--)
                 {
-                    foreach (IReductStore rs in localStoreCollection)
-                    {                        
-                        if (rs.First().Attributes.ProperSubset(p))
+                    foreach (IReductStore rs in reductStoreCollection)
+                    {
+                        IReduct r = rs.First();
+                        PascalSet<int> temp = new PascalSet<int>(r.Attributes.LowerBound, r.Attributes.UpperBound, p);
+                        if (r.Attributes.ProperSubsetFast(temp))
                         {
                             p = p.RemoveAt(j);
                             break;
                         }
-                        else
+
+                        if (r.Attributes.SupersetFast(temp))
                         {
                             flag = true;
                             break;
                         }
                     }
-
                     if (flag)
                         break;
                 }
@@ -197,7 +198,6 @@ namespace Infovision.Datamining.Roughset
             
             this.KeepMajorDecisions(eqClasses, epsilon);
 
-            
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
 
             EquivalenceClassCollection newEqClasses = null;
@@ -220,7 +220,7 @@ namespace Infovision.Datamining.Roughset
 
                 step /= 2;
             }
-                        
+
             //eqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
 
             return this.CreateReductObject(
@@ -229,18 +229,6 @@ namespace Infovision.Datamining.Roughset
                 this.GetNextReductId().ToString(), 
                 eqClasses);
         }
-
-        /*
-        protected virtual void Reach(IReduct reduct, int[] permutation)
-        {
-            for (int i = 0; i < permutation.Length; i++)
-            {
-                reduct.AddAttribute(permutation[i]);
-                if (this.CheckIsReduct(reduct, 0))
-                    return;
-            }
-        }
-        */
 
         protected virtual bool CheckIsReduct(IReduct reduct, decimal epsilon)
         {
@@ -278,7 +266,7 @@ namespace Infovision.Datamining.Roughset
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
                     //Update m_d
-                    newEqClass.DecisionSet = newEqClass.DecisionSet.Intersection(eq.DecisionSet);
+                    newEqClass.DecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
 
                     if (newEqClass.DecisionSet.Count == 0)
                         return eqClasses;

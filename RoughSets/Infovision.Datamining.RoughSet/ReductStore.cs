@@ -111,12 +111,7 @@ namespace Infovision.Datamining.Roughset
         public override int Count
         {
             get { return reducts.Count; }
-        }
-
-        public List<IReduct> ReductSet
-        {
-            get { return this.reducts; }
-        }        
+        }                
 
         #endregion
 
@@ -159,11 +154,11 @@ namespace Infovision.Datamining.Roughset
             bool ret = false;
             lock (mutex)
             {
-                foreach (IReduct localReduct in reducts)
+                foreach (IReduct localReduct in this)
                 {
                     if (localReduct.Epsilon <= reduct.Epsilon)
                     {
-                        if (reduct.Attributes.Superset(localReduct.Attributes))
+                        if (reduct.Attributes.SupersetFast(localReduct.Attributes))
                         {
                             ret = true;
                             break;
@@ -172,6 +167,14 @@ namespace Infovision.Datamining.Roughset
                 }                   
             }
             return ret;
+        }
+
+        public IReadOnlyList<IReduct> GetReducts()
+        {
+            lock (mutex)
+            {
+                return this.reducts.ToList().AsReadOnly();
+            }
         }
         
         public virtual ReductStore RemoveDuplicates()
@@ -361,7 +364,7 @@ namespace Infovision.Datamining.Roughset
         /// <returns>An IEnumerator newInstance.</returns>
         public override IEnumerator<IReduct> GetEnumerator()
         {
-            return reducts.GetEnumerator();
+            return this.GetReducts().GetEnumerator(); // return reducts.GetEnumerator();
         }
 
         #endregion        

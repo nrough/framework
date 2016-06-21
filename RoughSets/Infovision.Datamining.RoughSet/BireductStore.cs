@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override bool CanAddReduct(IReduct reduct)
         {
-            foreach (IReduct localReduct in this.ReductSet)
+            foreach (IReduct localReduct in this)
             {
                 if (reduct.Attributes.Equals(localReduct.Attributes)
                     && reduct.ObjectSet.Equals(localReduct.ObjectSet))

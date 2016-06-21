@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace Infovision.Utils
 		// Private member variables
 		//private int cardinality;
 		
-		#region PascalSet<int> Properties
+		#region PascalSet Properties
 		/// <summary>
 		/// Returns the lower bound of the set.
 		/// </summary>
@@ -152,7 +153,14 @@ namespace Infovision.Utils
 			//this.IsCardinalityCalculated = true;
 		}
 
-		public PascalSet(PascalSet<T> set) : this(set.LowerBound, set.UpperBound, set.Data) {}
+		//public PascalSet(PascalSet<T> set) : this(set.LowerBound, set.UpperBound, set.Data) {}
+
+		public PascalSet(PascalSet<T> set)
+		{
+			this.LowerBound = set.LowerBound;
+			this.UpperBound = set.UpperBound;
+			this.Data = new BitArray(set.Data);
+		}
 		
 		#endregion
 
@@ -279,11 +287,11 @@ namespace Infovision.Utils
 					Operator<T>.Subtract(element, LowerBound),
 					typeof(int));
 
-				if (this.Data.Get(index) == false)
-				{
+				//if (this.Data.Get(index) == false)
+				//{
 					//cardinality++;
 					this.Data.Set(index, true);
-				}
+				//}
 			}
 			else
 			{
@@ -301,11 +309,12 @@ namespace Infovision.Utils
 				int index = (int)Convert.ChangeType(
 					Operator<T>.Subtract(element, LowerBound),
 					typeof(int));
-				if (this.Data.Get(index) == true)
-				{
+				
+				//if (this.Data.Get(index) == true)
+				//{
 					//this.cardinality--;
 					this.Data.Set(index, false);
-				}
+				//}
 			}
 			else
 			{
@@ -358,6 +367,26 @@ namespace Infovision.Utils
 			if (!AreSimilar(pascalSet))
 				throw new ArgumentException("Attempting to intersect two dissimilar sets. Intersection can only occur between two sets with the same universe.", "pascalSet");
 
+			// do a bit-wise AND to intersect this.data and s.data
+			PascalSet<T> result = (PascalSet<T>)Clone();
+			//result.IsCardinalityCalculated = false;
+			result.Data.And(pascalSet.Data);
+
+			return result;
+		}
+
+		public virtual PascalSet<long> Intersection(PascalSet<long> pascalSet)
+		{
+			// do a bit-wise AND to intersect this.data and s.data
+			PascalSet<long> result = (PascalSet<long>)Clone();
+			//result.IsCardinalityCalculated = false;
+			result.Data.And(pascalSet.Data);
+
+			return result;
+		}
+
+		public virtual PascalSet<T> IntersectionFast(PascalSet<T> pascalSet)
+		{
 			// do a bit-wise AND to intersect this.data and s.data
 			PascalSet<T> result = (PascalSet<T>)Clone();
 			//result.IsCardinalityCalculated = false;
@@ -515,6 +544,30 @@ namespace Infovision.Utils
 			return true;
 		}
 
+        public virtual bool SubsetFast(PascalSet<T> pascalSet)
+        {            
+            // Get the BitArray's underlying array
+            const int INT_SIZE = 32;
+            int arraySize = (Data.Length + INT_SIZE - 1) / INT_SIZE;
+            int[] thisBits = new int[arraySize];
+            int[] sBits = new int[arraySize];
+            Data.CopyTo(thisBits, 0);
+            pascalSet.Data.CopyTo(sBits, 0);
+
+            // now, enumerate through the int array elements
+            for (int i = 0; i < thisBits.Length; i++)
+            {
+                // do a bitwise AND between thisBits[i] and sBits[i];
+                int result = thisBits[i] & sBits[i];
+
+                // see if result == thisBits[i] - if it doesn't, then not a subset
+                if (result != thisBits[i])
+                    return false;
+            }
+
+            return true;
+        }
+
 		/// <summary>
 		/// Determins if this set is a proper subset of the integers passed-in.
 		/// </summary>
@@ -539,6 +592,11 @@ namespace Infovision.Utils
 
 			return Subset(pascalSet) && !pascalSet.Subset(this);
 		}
+
+        public virtual bool ProperSubsetFast(PascalSet<T> pascalSet)
+        {            
+            return SubsetFast(pascalSet) && !pascalSet.SubsetFast(this);
+        }
 		#endregion
 
 		#region Superset
@@ -566,6 +624,11 @@ namespace Infovision.Utils
 
 			return pascalSet.Subset(this);
 		}
+
+        public virtual bool SupersetFast(PascalSet<T> pascalSet)
+        {            
+            return pascalSet.SubsetFast(this);
+        }
 
 		/// <summary>
 		/// Determins if this set is a proper superset of the integers passed-in.
@@ -597,7 +660,7 @@ namespace Infovision.Utils
 		{
 			int size = this.Count;
 			T[] array = new T[size];
-			if (size == 0) return array;            
+			if (size == 0) return array;
 			int j = 0;
 			for (int i = 0; i < this.Data.Length; i++)
 			{
@@ -616,9 +679,7 @@ namespace Infovision.Utils
 		/// <returns>A new instance of a PascalSet, using a deep copy.</returns>
 		public virtual object Clone()
 		{
-			PascalSet<T> p = new PascalSet<T>(this.LowerBound, this.UpperBound);
-			p.Data = new BitArray(this.Data);
-			//p.IsCardinalityCalculated = false;
+			PascalSet<T> p = new PascalSet<T>(this);
 			return p;
 		}
 		#endregion
@@ -643,7 +704,14 @@ namespace Infovision.Utils
 		{
 			get
 			{
-				return this.GetCardinality();
+				//return this.GetCardinality();
+
+				int elements = 0;
+				for (int i = 0; i < this.Data.Length; i++)
+					if (this.Data.Get(i))
+						elements++;
+				return elements;
+
 				
 				/*
 				if (this.IsCardinalityCalculated == false)

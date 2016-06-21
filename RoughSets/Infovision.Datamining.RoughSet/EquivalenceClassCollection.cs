@@ -287,7 +287,7 @@ namespace Infovision.Datamining.Roughset
             this.InitPartitions();
             
             this.attributes = attributeSet.ToArray();
-            decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);                        
+            decimal w = Decimal.Divide(Decimal.One, dataStore.NumberOfRecords);
             for(int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, w);
@@ -413,6 +413,7 @@ namespace Infovision.Datamining.Roughset
             //this.decisionCount = new Dictionary<long, int>(numOfDec);
             //this.decisionWeight = new Dictionary<long, decimal>(numOfDec);
 
+            /*
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
@@ -423,7 +424,9 @@ namespace Infovision.Datamining.Roughset
 #endif
 
             Parallel.ForEach(this, options, eq =>
-            //foreach(var eq in this)
+            */
+              
+            foreach(var eq in this)
             {
                 eq.RecalcStatistics(data);
 
@@ -445,7 +448,7 @@ namespace Infovision.Datamining.Roughset
                 eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
             }
-            );
+            //);
         }
 
         #region IEnumerable Members

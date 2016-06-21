@@ -11,6 +11,7 @@ namespace Infovision.Datamining.Roughset
     public interface IReductStoreCollection : IEnumerable<IReductStore>
     {
         void AddStore(IReductStore reductStore);
+        IReadOnlyList<IReductStore> GetStoreList();
         int Count { get; }
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
@@ -42,25 +43,25 @@ namespace Infovision.Datamining.Roughset
             {
                 this.stores.Add(reductStore);
             }
-        }        
+        }
+
+        public IReadOnlyList<IReductStore> GetStoreList()
+        {
+            lock (mutex)
+            {
+                return this.stores.ToList().AsReadOnly();
+            }
+        }
 
         public IEnumerator<IReductStore> GetEnumerator()
         {
-            return stores.GetEnumerator();
+            return this.GetStoreList().GetEnumerator(); // return stores.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return stores.GetEnumerator();
-        }
-
-        public List<IReductStore> ActiveModels()
-        {
-            lock (mutex)
-            {
-                return stores.FindAll(x => x.IsActive == true);
-            }
-        }
+            return this.GetStoreList().GetEnumerator(); //return stores.GetEnumerator();
+        }        
 
         public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
         {

@@ -200,6 +200,11 @@ namespace Infovision.Datamining.Roughset
 
         public override void AddReduct(IReduct reduct)
         {
+            if (this.AllowDuplicates)
+            {
+                this.DoAddReduct(reduct);
+            }
+            
             lock (mutex)
             {
                 if (this.CanAddReduct(reduct))
@@ -211,13 +216,17 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CanAddReduct(IReduct reduct)
         {
+            if (this.AllowDuplicates)
+            {
+                return true;
+            }
+            
             lock (mutex)
             {
                 foreach (IReduct localReduct in reducts)
                 {
-                    if (this.AllowDuplicates == false
-                        && reduct.GetType() == localReduct.GetType()
-                        && localReduct.IsException == reduct.IsException                        
+                    if (reduct.GetType() == localReduct.GetType()
+                        && localReduct.IsException == reduct.IsException
                         && DecimalEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
                         && reduct.Attributes.Superset(localReduct.Attributes))
                     {
@@ -225,7 +234,7 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
             }
-            
+                        
             return true;
         }
 

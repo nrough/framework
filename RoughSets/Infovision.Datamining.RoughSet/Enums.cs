@@ -66,7 +66,8 @@
     {
         Ascending = 0,
         Descending = 1,
-        Random = 2
+        Random = 2,
+        None = 3
     }
 
     public enum NoYesUnknown

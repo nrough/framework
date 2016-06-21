@@ -139,12 +139,9 @@ namespace MajorityGeneralizedDecisionTest
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
                 parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
                 parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-#if DEBUG                
-                parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending); 
-                parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, 0.1m); 
-#else
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps); 
-#endif
+                parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, eps);
+                //parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
+
                 parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
                 parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
 
@@ -152,7 +149,6 @@ namespace MajorityGeneralizedDecisionTest
                 generator.Run();
 
                 reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate, generator);
-                
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
@@ -237,7 +233,7 @@ namespace MajorityGeneralizedDecisionTest
         }
 
         static void Main(string[] args)
-        {
+        {            
             string[] names = args;
 
             foreach (var kvp in BenchmarkDataHelper.GetDataFiles(names: names))
@@ -363,10 +359,10 @@ namespace MajorityGeneralizedDecisionTest
                                         case 9: v1 = RuleQuality.SingleVote; v2 = RuleQuality.SingleVote; break;
 
                                         default: v1 = RuleQuality.SingleVote; v2 = RuleQuality.SingleVote; break;
-                                    }                                                                                                           
-                                    
-                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
+                                    }
+
                                     this.MajorityGeneralizedDecisionGapsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
+                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);                                    
                                     //this.MajorityGeneralizedDecisionPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
                                     this.ApproximateDecisionReduct(weightGenerator, RuleQuality.ConfidenceW, v2);
                                 }

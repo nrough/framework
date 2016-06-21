@@ -253,7 +253,7 @@ namespace Infovision.Datamining.Roughset
         
         public virtual int CompareTo(object reduct)
         {
-            Reduct r = reduct as Reduct;            
+            Reduct r = reduct as Reduct;
             return this.CompareTo(r);
         }
 
@@ -262,14 +262,13 @@ namespace Infovision.Datamining.Roughset
             if (r == null)
                 return 1;
 
-            int retval = this.Attributes.Count.CompareTo(r.Attributes.Count);
+            int attrCount = this.Attributes.Count;
+            int retval = attrCount.CompareTo(r.Attributes.Count);
 
             if (retval != 0)
-            {
                 return retval;
-            }
 
-            for (int i = 0; i < this.Attributes.Count; i++)
+            for (int i = 0; i < attrCount; i++)
             {
                 int xval = Convert.ToInt32(this.Attributes.Data.Get(i));
                 int yval = Convert.ToInt32(r.Attributes.Data.Get(i));
@@ -340,7 +339,8 @@ namespace Infovision.Datamining.Roughset
             {
                 StringBuilder sb = new StringBuilder();
                 int[] fieldIds = this.attributeSet.ToArray();
-                for (int i = 0; i < this.attributeSet.Count; i++)
+                int attrCount = this.attributeSet.Count;
+                for (int i = 0; i < attrCount; i++)
                 {
                     if (i != 0)
                         sb.Append(' ');

@@ -94,6 +94,7 @@
     <Compile Include="HashHelper.cs" />
     <Compile Include="Histogram.cs" />
     <Compile Include="IntArrayComparer.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PascalSet.cs" />

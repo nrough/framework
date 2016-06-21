@@ -103,7 +103,7 @@ namespace Infovision.Datamining.Roughset
             return this.CreateReductObject(fieldIds, epsilon, id);
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore, false, epsilon);

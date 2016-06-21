@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
 			return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
 		}
 
-		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
 		{
 			decimal[] weightsCopy = new decimal[weights.Length];
 			Array.Copy(weights, weightsCopy, weights.Length);

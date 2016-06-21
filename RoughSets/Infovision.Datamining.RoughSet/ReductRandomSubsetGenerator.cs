@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

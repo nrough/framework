@@ -106,28 +106,69 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors        
 
+        public EquivalenceClass(long[] dataVector, Dictionary<int, decimal> instances, PascalSet<long> decSet)
+        {
+            this.dataVector = dataVector;
+            this.decisionSet = new PascalSet<long>(decSet);
+            this.instances = new Dictionary<int, decimal>(instances);
+            int numberOfDecisions = decisionSet.Count;
+            this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
+            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
+        }
+
+        public EquivalenceClass(long[] dataVector, DataStore data, Dictionary<int, decimal> instances)
+        {
+            this.dataVector = dataVector;
+            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
+            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+            this.instances = new Dictionary<int, decimal>(instances);
+            int numberOfDecisions = decisionField.InternalValues().Count;
+            this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
+            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
+        }
+
+        public EquivalenceClass(long[] dataVector, DataStore data, int capacity)
+        {
+            this.dataVector = dataVector;
+            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
+            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+
+            if (capacity > 0)
+                this.instances = new Dictionary<int, decimal>(capacity);
+            else
+                this.instances = new Dictionary<int, decimal>();
+
+            int numberOfDecisions = decisionField.InternalValues().Count;
+            this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
+            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
+        }
+
         public EquivalenceClass(long[] dataVector, DataStore data)
         {            
             this.dataVector = dataVector;
             DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);            
+            this.instances = new Dictionary<int, decimal>();
+
             int numberOfDecisions = decisionField.InternalValues().Count;
-            this.instances = new Dictionary<int, decimal>();            
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
-            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);            
+            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
         private EquivalenceClass(EquivalenceClass eqClass)
         {                        
             this.dataVector = new long[eqClass.dataVector.Length];
             Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);            
+            
             this.instances = new Dictionary<int, decimal>(eqClass.instances);           
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
-            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);            
-            this.totalWeightSum = eqClass.totalWeightSum;
-            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet.LowerBound, eqClass.DecisionSet.UpperBound, eqClass.decisionSet.Data);
+            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);                        
+            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
+
+            this.WeightSum = eqClass.WeightSum;
             this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
-            this.confidenceCount = eqClass.confidenceCount;
+            this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
+            
         }
 
         #endregion
@@ -234,7 +275,7 @@ namespace Infovision.Datamining.Roughset
         public void AddObjectInstances(Dictionary<int, decimal> instancesToAdd)
         {
             lock (mutex)
-            {
+            {                
                 foreach (var kvp in instancesToAdd)
                     this.instances.Add(kvp.Key, kvp.Value);
             }
@@ -260,46 +301,8 @@ namespace Infovision.Datamining.Roughset
             if (this.decisionCount.TryGetValue(decisionValue, out count))
                 return count;
             return 0;            
-        }                
-
-        public virtual void KeepMajorDecisions_OLD(decimal epsilon)
-        {
-            if (this.DecisionSet.Count <= 1) return;
-            if (epsilon >= Decimal.One) return;
-                        
-            lock (mutex)
-            {               
-                bool isFirst = true;
-                var decisionsFreqOrdered = 
-                    from decisionFrequency in decisionWeightSums
-                        orderby decisionFrequency.Value descending
-                        select decisionFrequency;
-
-                List<long> decisionsToRemove = new List<long>(this.DecisionSet.Count - 1);
-                decimal max = Decimal.MinValue;
-                foreach (var decisionFreq in decisionsFreqOrdered)
-                {
-                    if (isFirst)
-                    {
-                        max = decisionFreq.Value;
-                        isFirst = false;
-                    }
-                    else if (Decimal.Round(decisionFreq.Value, 17) < Decimal.Round(((Decimal.One - epsilon) * max), 17))
-                    {
-                        decisionsToRemove.Add(decisionFreq.Key);
-                    }
-                }
-
-                foreach (long decision in decisionsToRemove)
-                {
-                    this.DecisionSet.RemoveElement(decision);
-                    this.decisionWeightSums.Remove(decision);
-                    this.decisionCount.Remove(decision);                                                            
-                }                
-            }
-        }
-
-        //TODO Check performance vs. KeepMajorDecisions
+        }        
+        
         public virtual void KeepMajorDecisions(decimal epsilon)
         {
             if (this.DecisionSet.Count <= 1) return;
@@ -308,7 +311,7 @@ namespace Infovision.Datamining.Roughset
             lock (mutex)
             {
                 var list = decisionWeightSums.ToList();
-                list.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value)); //descending order                 
+                list.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value)); //descending order
                 decimal max = list[0].Value;
                 decimal threshold = Decimal.Round(((Decimal.One - epsilon) * max), 17);
                 for (int i = 1; i < list.Count; i++)

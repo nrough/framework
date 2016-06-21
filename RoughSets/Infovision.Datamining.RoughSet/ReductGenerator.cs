@@ -100,7 +100,7 @@ namespace Infovision.Datamining.Roughset
         protected abstract void Generate();
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses);
-        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null);
+        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null);
 
         public virtual void Run()
         {

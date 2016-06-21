@@ -51,28 +51,21 @@ namespace Infovision.Datamining.Roughset
         
         #endregion
 
-        #region Constructors        
+        #region Constructors
 
-        //public EquivalenceClassCollection(DataStore data, int[] attr, int numberOfDecisionValues = 0)
+        public EquivalenceClassCollection(DataStore data, int[] attrCopy, int initialPartitionSize)
+        {
+            this.data = data;
+            this.attributes = attrCopy;
+            this.InitPartitions(initialPartitionSize);
+        }
+        
         public EquivalenceClassCollection(DataStore data, int[] attr)
         {
             this.data = data;
             this.attributes = new int[attr.Length];
             Array.Copy(attr, this.attributes, attr.Length);
-            this.InitPartitions();
-            
-            /*
-            if(numberOfDecisionValues > 0)
-            {
-                this.decisionWeight = new Dictionary<long, decimal>(numberOfDecisionValues);
-                this.decisionCount = new Dictionary<long, int>(numberOfDecisionValues);
-            }
-            else
-            {
-                this.decisionWeight = new Dictionary<long, decimal>();
-                this.decisionCount = new Dictionary<long, int>();
-            }
-            */
+            this.InitPartitions();                        
         }
 
         public EquivalenceClassCollection(DataStore data)
@@ -281,9 +274,9 @@ namespace Infovision.Datamining.Roughset
         protected void InitPartitions(int initialSize = 0)
         {
             if (initialSize > 0)
-                this.partitions = new Dictionary<long[], EquivalenceClass>(initialSize, new Int64ArrayEqualityComparer());
+                this.partitions = new Dictionary<long[], EquivalenceClass>(initialSize, Int64ArrayEqualityComparer.Instance);
             else
-                this.partitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
+                this.partitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
 
             this.CountObjects = 0;
             this.CountWeightObjects = 0;
@@ -367,7 +360,7 @@ namespace Infovision.Datamining.Roughset
         public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             //TODO Capacity
-            var localPartitions = new Dictionary<long[], EquivalenceClass>(new Int64ArrayEqualityComparer());
+            var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();
             int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
 

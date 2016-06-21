@@ -11,12 +11,14 @@ namespace Infovision.Utils
     {
         public static void Shuffle<T>(this T[] array)
         {
-            for (int i = array.Length - 1; i > 0; i--)
+            int n = array.Length;
+            while (n > 1)
             {
-                int k = RandomSingleton.Random.Next() % (i + 1);
+                n--;
+                int k = RandomSingleton.Random.Next(n + 1);
                 T element = array[k];
-                array[k] = array[i];
-                array[i] = element;
+                array[k] = array[n];
+                array[n] = element;
             }
         }
 
@@ -72,7 +74,7 @@ namespace Infovision.Utils
         {
             T[] newArray;
 
-            if (len >= 0)
+            if (len > 0)
             {
                 if (idx + len > array.Length)
                     len = array.Length - idx;
@@ -86,35 +88,16 @@ namespace Infovision.Utils
             }
             else
             {
-                newArray = new T[array.Length + len];                
+                newArray = new T[array.Length + len];
                 if (idx > 0)
                     Array.Copy(array, 0, newArray, 0, idx + len);
                 
                 if (idx < array.Length - 1)
                     Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
-            }
-
-            //if (newArray.Contains(Operator<T>.Zero))
-            //    throw new InvalidOperationException();
-
+            }            
 
             return newArray;
         }
-
-        /*
-        public static void RemoveAt<T>(ref T[] array, int idx)
-        {
-            if (idx < 0)
-                throw new ArgumentOutOfRangeException("idx");
-
-            if (idx >= array.Length)
-                throw new ArgumentOutOfRangeException("idx");
-
-            for (int a = idx; a < array.Length - 1; a++)
-                array[a] = array[a + 1];
-            Array.Resize(ref array, array.Length - 1);
-        }
-        */
 
         public static T[] RemoveValue<T>(this T[] array, T value)
         {            

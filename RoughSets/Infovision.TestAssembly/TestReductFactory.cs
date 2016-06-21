@@ -89,7 +89,7 @@ namespace Infovision.TestAssembly
             this.ReductPool = new ReductStore();            
         }
 
-        public override IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+        public override IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

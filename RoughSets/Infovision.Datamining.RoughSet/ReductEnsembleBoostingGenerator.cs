@@ -422,7 +422,7 @@ namespace Infovision.Datamining.Roughset
 			return generator.GetReductStoreCollection();
 		}
 
-		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null)
+		public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
 		{
 			if (this.InnerParameters == null)
 				throw new InvalidOperationException("Parameters for internal model are not provided. Please use InnerParameters key to provide setup for internal model creation.");

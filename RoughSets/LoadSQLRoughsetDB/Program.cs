@@ -68,7 +68,7 @@ namespace LoadSQLRoughsetDB
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), experimentId));
 
 
-            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), experimentId));
+            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), experimentId));
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), experimentId));
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), experimentId));
             

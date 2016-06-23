@@ -157,6 +157,7 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
+            /*
             int[] p = permutation;
             if(reductStoreCollection != null && reductStoreCollection.Count > 0)
             {
@@ -187,11 +188,12 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            //EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
-            //int len = permutation.Length;
-
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(p, this.DataStore, epsilon, weights);
             int len = p.Length;
+            */
+
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
+            int len = permutation.Length;            
 
             eqClasses.CountWeightObjects = this.DataSetQuality;
             eqClasses.CountObjects = this.DataStore.NumberOfRecords;

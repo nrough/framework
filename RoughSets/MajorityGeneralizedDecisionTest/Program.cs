@@ -210,6 +210,7 @@ namespace MajorityGeneralizedDecisionTest
                 parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
+                generator.UsePerformanceImprovements = false;
                 generator.Run();
 
                 reductGeneratorCache.Add(ReductFactoryKeyHelper.ApproximateReductMajorityWeights, generator);

@@ -13,8 +13,8 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
 
-        private IInformationMeasure informationMeasure;        
-        private decimal dataSetQuality = Decimal.MinValue;        
+        private IInformationMeasure informationMeasure;
+        private decimal dataSetQuality;
 
         #endregion
 
@@ -23,11 +23,13 @@ namespace Infovision.Datamining.Roughset
         protected ReductGeneratorMeasure()
             : base()
         {
+            this.dataSetQuality = Decimal.MinValue;
+            this.UsePerformanceImprovements = true;
         }
 
         #endregion
 
-        #region Properties        
+        #region Properties
 
         protected decimal DataSetQuality
         {
@@ -45,6 +47,8 @@ namespace Infovision.Datamining.Roughset
             get { return this.informationMeasure; }
             set { this.informationMeasure = value; }
         }
+
+        public bool UsePerformanceImprovements { get; set;}
 
         #endregion
 
@@ -111,16 +115,19 @@ namespace Infovision.Datamining.Roughset
         
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, decimal epsilon)
         {
-            IReduct reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
-            this.Reach(reduct, permutation, reductStore, useCache);                        
-            this.Reduce(reduct, permutation, reductStore, useCache);
-            
-            //Console.WriteLine(this.GetPartitionQuality(reduct));
-            
-            /*
-            IReduct reduct = this.CreateReductObject(permutation, this.Epsilon, this.GetNextReductId().ToString());
-            this.Reduce(reduct, permutation, reductStore, useCache);
-            */
+            IReduct reduct = null;
+
+            if (this.UsePerformanceImprovements)
+            {
+                reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
+                this.Reach(reduct, permutation, reductStore, useCache);
+                this.Reduce(reduct, permutation, reductStore, useCache);
+            }
+            else
+            {
+                reduct = this.CreateReductObject(permutation, epsilon, this.GetNextReductId().ToString());
+                this.Reduce(reduct, permutation, reductStore, useCache);
+            }
 
             return reduct;
         }
@@ -200,7 +207,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             bool isReduct = false;
-            if (reductStore != null && reductStore.IsSuperSet(reduct))
+            if (this.UsePerformanceImprovements && reductStore != null && reductStore.IsSuperSet(reduct))
                 isReduct = true;
             else
                 isReduct = this.CheckIsReduct(reduct);

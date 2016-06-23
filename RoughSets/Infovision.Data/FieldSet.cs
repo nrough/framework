@@ -5,6 +5,7 @@ using Infovision.Utils;
 
 namespace Infovision.Data
 {
+    //TODO T obe removed -  use PascalSet<int> instead!
     [Serializable]
     public class FieldSet : PascalSet<int>
     {        

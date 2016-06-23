@@ -88,7 +88,7 @@ namespace Infovision.Datamining.Roughset
             this.decCountPlusOne = decCount + 1;
             this.decisions = new long[this.decCountPlusOne];
             this.decisions[0] = -1;
-            
+
             dec2index = new Dictionary<long, int>(this.decCount);
             int k = 1;
             foreach (long decVal in this.DecisionValues)
@@ -96,13 +96,13 @@ namespace Infovision.Datamining.Roughset
                 this.decisions[k] = decVal;
                 dec2index.Add(decVal, k);
                 k++;
-            }            
+            }
 
             this.MinimumVoteValue = Decimal.MinValue;
 
             MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
             this.singleVoteName = singleVoteMethod.Name;
-            this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;            
+            this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;
         }
 
         #endregion

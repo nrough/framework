@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
+    <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="Permutation\PermutationGeneratorFieldQuality.cs" />
     <Compile Include="ReductEnsembleBoostingGenerator.cs" />

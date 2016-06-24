@@ -73,6 +73,11 @@ namespace Infovision.Data
         public bool IsNumeric { get; set; }
         public double[] Cuts { get; set; }
 
+        public int NumberOfValues
+        {
+            get { return this.Histogram.Count; }
+        }
+
         #endregion
 
         #region Methods

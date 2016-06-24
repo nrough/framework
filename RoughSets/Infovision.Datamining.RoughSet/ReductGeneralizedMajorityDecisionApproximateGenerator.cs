@@ -82,8 +82,8 @@ namespace Infovision.Datamining.Roughset
         {           
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
-            newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
-            newEqClasses.CountObjects = eqClasses.CountObjects;
+            newEqClasses.ObjectsWeightCount = eqClasses.ObjectsWeightCount;
+            newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
 
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
             this.SortEquivalenceClassArray(eqArray);
@@ -119,10 +119,10 @@ namespace Infovision.Datamining.Roughset
                     }
                     else
                     {
-                        newEqClasses.CountWeightObjects -= eq.WeightSum;
-                        newEqClasses.CountObjects -= eq.NumberOfObjects;
+                        newEqClasses.ObjectsWeightCount -= eq.WeightSum;
+                        newEqClasses.ObjectsCount -= eq.NumberOfObjects;
 
-                        if (newEqClasses.CountWeightObjects < this.WeightDropLimit)
+                        if (newEqClasses.ObjectsWeightCount < this.WeightDropLimit)
                             return eqClasses;
 
                         if (exceptionEqClasses == null)
@@ -196,8 +196,8 @@ namespace Infovision.Datamining.Roughset
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
-            newEqClasses.CountWeightObjects = eqClasses.CountWeightObjects;
-            newEqClasses.CountObjects = eqClasses.CountObjects;
+            newEqClasses.ObjectsWeightCount = eqClasses.ObjectsWeightCount;
+            newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
 
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
             this.SortEquivalenceClassArray(eqArray);
@@ -230,10 +230,10 @@ namespace Infovision.Datamining.Roughset
                     }
                     else
                     {
-                        newEqClasses.CountWeightObjects -= eq.WeightSum;
-                        newEqClasses.CountObjects -= eq.NumberOfObjects;
+                        newEqClasses.ObjectsWeightCount -= eq.WeightSum;
+                        newEqClasses.ObjectsCount -= eq.NumberOfObjects;
 
-                        if (newEqClasses.CountWeightObjects < this.WeightDropLimit)
+                        if (newEqClasses.ObjectsWeightCount < this.WeightDropLimit)
                             return eqClasses;
 
                         //Update |E|

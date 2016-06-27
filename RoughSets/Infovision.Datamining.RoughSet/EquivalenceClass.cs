@@ -69,9 +69,9 @@ namespace Infovision.Datamining.Roughset
 
         public decimal WeightSum
         { 
-            get { return this.totalWeightSum; }
-            set { this.totalWeightSum = value; }
-        }        
+            get;
+            internal set;
+        }
 
         public IEnumerable<long> DecisionValues
         {
@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset
             
             this.instances = new Dictionary<int, decimal>(eqClass.instances);           
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
-            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);                        
+            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
             this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
 
             this.WeightSum = eqClass.WeightSum;
@@ -187,7 +187,7 @@ namespace Infovision.Datamining.Roughset
         {
             lock (mutex)
             {
-                this.totalWeightSum = 0;
+                this.WeightSum = 0;
                 int decCount = this.DecisionSet.Count;
                 this.decisionWeightSums = new Dictionary<long, decimal>(decCount);
                 this.decisionCount = new Dictionary<long, int>(decCount);                
@@ -214,7 +214,7 @@ namespace Infovision.Datamining.Roughset
                         this.decisionCount[decision] = (count + 1);
                     }
 
-                    this.totalWeightSum += instance.Value;
+                    this.WeightSum += instance.Value;
                 }
             }
         }
@@ -224,7 +224,7 @@ namespace Infovision.Datamining.Roughset
             lock (mutex)
             {
                 this.decisionSet += decisionValue;
-                this.totalWeightSum += weight;
+                this.WeightSum += weight;
                 
                 decimal weightSum = Decimal.Zero;
                 if (this.decisionWeightSums.TryGetValue(decisionValue, out weightSum))
@@ -260,7 +260,7 @@ namespace Infovision.Datamining.Roughset
             if (this.decisionWeightSums.TryGetValue(decisionValue, out w))
                 this.decisionWeightSums[decisionValue] = (w - weight);
 
-            this.totalWeightSum -= weight;
+            this.WeightSum -= weight;
         }
         
         public void AddObject(int objectIndex, long decisionValue, decimal weight)

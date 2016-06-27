@@ -70,6 +70,7 @@ namespace Infovision.Utils
             return newArray;
         }
 
+        /*
         public static T[] RemoveAt<T>(this T[] array, int idx, int len)
         {
             T[] newArray;
@@ -95,6 +96,33 @@ namespace Infovision.Utils
                 if (idx < array.Length - 1)
                     Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
             }            
+
+            return newArray;
+        }
+        */
+
+        //Code reviwed
+        //http://codereview.stackexchange.com/questions/132630/removing-n-elements-from-array-starting-from-index/132635#132635
+        public static T[] RemoveAt<T>(this T[] array, int startIndex, int length)
+        {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            if (length < 0)
+            {
+                startIndex += 1 + length;
+                length = -length;
+            }
+
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException("startIndex");
+            if (startIndex + length > array.Length)
+                throw new ArgumentOutOfRangeException("length");
+
+            T[] newArray = new T[array.Length - length];
+
+            Array.Copy(array, 0, newArray, 0, startIndex);
+            Array.Copy(array, startIndex + length, newArray, startIndex, array.Length - startIndex - length);
 
             return newArray;
         }
@@ -133,8 +161,35 @@ namespace Infovision.Utils
                     result = i;
                     break;
                 }
-
             return result; 
+        }
+
+        public static int[] IndicesOf<T>(this T[] array, T[] values)
+        {
+            int[] result = new int[values.Length];
+            for (int i = 0; i < values.Length; i++)
+                result[i] = array.IndexOf(values[i]);
+            return result;
+        }
+
+        public static int[] IndicesOfOrderedByValue<T>(this T[] array, T[] values)
+        {
+            int[] result = new int[values.Length];
+            int j = 0;
+            for (int i = 0; i < array.Length; i++)
+                if (Array.IndexOf<T>(values, array[i]) != -1)
+                {
+                    result[j++] = i;
+                }
+            return result;
+        }
+
+        public static T[] KeepIndices<T>(this T[] array, int[] indicesToKeep)
+        {            
+            T[] result = new T[indicesToKeep.Length];            
+            for (int i = 0; i < indicesToKeep.Length; i++)
+                result[i] = array[indicesToKeep[i]];
+            return result;
         }
     }
 }

@@ -98,7 +98,7 @@ namespace Infovision.Utils
 				Operator<T>.Subtract(upperBound, lowerBound),
 				Operator<T>.One), typeof(int));
 			this.Data = new BitArray(size);
-			
+
 			// Populuate the BitArray with the passed-in initialData array.
 			foreach(T val in initialData)
 			{
@@ -124,7 +124,7 @@ namespace Infovision.Utils
 		{
 			//cardinality is not yet calculated
 			//this.cardinality = 0;
-			
+
 			// make sure lowerbound is less than or equal to upperbound
 			//if (lowerBound > upperBound)
 			if (lowerBound.CompareTo(upperBound) > 0)
@@ -254,6 +254,16 @@ namespace Infovision.Utils
 			return result;
 		}
 
+		public virtual PascalSet<T> UnionFast(PascalSet<T> pascalSet)
+		{           
+			// do a bit-wise OR to union together this.data and s.data
+			PascalSet<T> result = (PascalSet<T>)Clone();
+			//result.IsCardinalityCalculated = false;
+			result.Data.Or(pascalSet.Data);
+
+			return result;
+		}
+
 		// Overloaded + operator for union...
 		public static PascalSet<T> operator +(PascalSet<T> pascalSet1, PascalSet<T> pascalSet2)
 		{
@@ -309,7 +319,7 @@ namespace Infovision.Utils
 				int index = (int)Convert.ChangeType(
 					Operator<T>.Subtract(element, LowerBound),
 					typeof(int));
-				
+
 				//if (this.Data.Get(index) == true)
 				//{
 					//this.cardinality--;
@@ -544,29 +554,29 @@ namespace Infovision.Utils
 			return true;
 		}
 
-        public virtual bool SubsetFast(PascalSet<T> pascalSet)
-        {            
-            // Get the BitArray's underlying array
-            const int INT_SIZE = 32;
-            int arraySize = (Data.Length + INT_SIZE - 1) / INT_SIZE;
-            int[] thisBits = new int[arraySize];
-            int[] sBits = new int[arraySize];
-            Data.CopyTo(thisBits, 0);
-            pascalSet.Data.CopyTo(sBits, 0);
+		public virtual bool SubsetFast(PascalSet<T> pascalSet)
+		{            
+			// Get the BitArray's underlying array
+			const int INT_SIZE = 32;
+			int arraySize = (Data.Length + INT_SIZE - 1) / INT_SIZE;
+			int[] thisBits = new int[arraySize];
+			int[] sBits = new int[arraySize];
+			Data.CopyTo(thisBits, 0);
+			pascalSet.Data.CopyTo(sBits, 0);
 
-            // now, enumerate through the int array elements
-            for (int i = 0; i < thisBits.Length; i++)
-            {
-                // do a bitwise AND between thisBits[i] and sBits[i];
-                int result = thisBits[i] & sBits[i];
+			// now, enumerate through the int array elements
+			for (int i = 0; i < thisBits.Length; i++)
+			{
+				// do a bitwise AND between thisBits[i] and sBits[i];
+				int result = thisBits[i] & sBits[i];
 
-                // see if result == thisBits[i] - if it doesn't, then not a subset
-                if (result != thisBits[i])
-                    return false;
-            }
+				// see if result == thisBits[i] - if it doesn't, then not a subset
+				if (result != thisBits[i])
+					return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
 		/// <summary>
 		/// Determins if this set is a proper subset of the integers passed-in.
@@ -593,10 +603,10 @@ namespace Infovision.Utils
 			return Subset(pascalSet) && !pascalSet.Subset(this);
 		}
 
-        public virtual bool ProperSubsetFast(PascalSet<T> pascalSet)
-        {            
-            return SubsetFast(pascalSet) && !pascalSet.SubsetFast(this);
-        }
+		public virtual bool ProperSubsetFast(PascalSet<T> pascalSet)
+		{            
+			return SubsetFast(pascalSet) && !pascalSet.SubsetFast(this);
+		}
 		#endregion
 
 		#region Superset
@@ -625,10 +635,10 @@ namespace Infovision.Utils
 			return pascalSet.Subset(this);
 		}
 
-        public virtual bool SupersetFast(PascalSet<T> pascalSet)
-        {            
-            return pascalSet.SubsetFast(this);
-        }
+		public virtual bool SupersetFast(PascalSet<T> pascalSet)
+		{            
+			return pascalSet.SubsetFast(this);
+		}
 
 		/// <summary>
 		/// Determins if this set is a proper superset of the integers passed-in.
@@ -712,7 +722,6 @@ namespace Infovision.Utils
 						elements++;
 				return elements;
 
-				
 				/*
 				if (this.IsCardinalityCalculated == false)
 				{

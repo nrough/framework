@@ -38,7 +38,7 @@ namespace ApproxReductBoostingCV
             Console.WriteLine("Training dataset: {0} ({1})", dataFilename, fileFormat);
             Console.WriteLine("Number of records: {0}", data.DataStoreInfo.NumberOfRecords);
             Console.WriteLine("Number of attributes: {0}", data.DataStoreInfo.NumberOfFields);
-            Console.WriteLine("Decision attribute position: {0}", data.DataStoreInfo.DecisionFieldId);
+            Console.WriteLine("Decision key position: {0}", data.DataStoreInfo.DecisionFieldId);
             Console.WriteLine("Missing Values: {0}", data.DataStoreInfo.HasMissingData);
             
             int cvfolds = 5;

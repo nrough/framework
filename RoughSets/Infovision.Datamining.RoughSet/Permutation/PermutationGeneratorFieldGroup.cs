@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
 
             int[] result = new int[size];
 
-            //take attribute one by one from each group
+            //take key one by one from each group
             int pos = 0;
             bool flag = true;
             while (flag)

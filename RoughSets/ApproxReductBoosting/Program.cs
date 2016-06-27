@@ -44,13 +44,13 @@ namespace ApproxReductBoosting
 			Console.WriteLine("Training dataset: {0} ({1})", trainFilename, fileFormat);
 			Console.WriteLine("Number of records: {0}", trnDataOrig.DataStoreInfo.NumberOfRecords);
 			Console.WriteLine("Number of attributes: {0}", trnDataOrig.DataStoreInfo.NumberOfFields);
-			Console.WriteLine("Decision attribute position: {0}", trnDataOrig.DataStoreInfo.DecisionFieldId);
+			Console.WriteLine("Decision key position: {0}", trnDataOrig.DataStoreInfo.DecisionFieldId);
 			Console.WriteLine("Missing Values: {0}", trnDataOrig.DataStoreInfo.HasMissingData);
 
 			Console.WriteLine("Test dataset: {0} ({1})", testFilename, fileFormat);
 			Console.WriteLine("Number of records: {0}", tstDataOrig.DataStoreInfo.NumberOfRecords);
 			Console.WriteLine("Number of attributes: {0}", tstDataOrig.DataStoreInfo.NumberOfFields);
-			Console.WriteLine("Decision attribute position: {0}", tstDataOrig.DataStoreInfo.DecisionFieldId);
+			Console.WriteLine("Decision key position: {0}", tstDataOrig.DataStoreInfo.DecisionFieldId);
 			Console.WriteLine("Missing Values: {0}", tstDataOrig.DataStoreInfo.HasMissingData);
 
 			if (trnDataOrig.DataStoreInfo.HasMissingData)

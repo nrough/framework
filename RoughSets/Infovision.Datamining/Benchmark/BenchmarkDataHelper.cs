@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Benchmark
                 return filename;
 
             return Path.Combine(path, filename);
-        }
+        }        
 
         public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles(
             string dataPath = "Data", 
@@ -29,10 +29,11 @@ namespace Infovision.Datamining.Benchmark
             BenchmarkData benchmark = new BenchmarkData("golf",
                 GetFilePath(dataPath, "playgolf.train"), GetFilePath(dataPath, "playgolf.train"));
 
-            benchmark.AddFieldInfo(1, new DataFieldInfo(1, typeof(string)) { Alias = "O" });
-            benchmark.AddFieldInfo(2, new DataFieldInfo(2, typeof(string)) { Alias = "T" });
-            benchmark.AddFieldInfo(3, new DataFieldInfo(3, typeof(string)) { Alias = "H" });
-            benchmark.AddFieldInfo(4, new DataFieldInfo(4, typeof(string)) { Alias = "W" });
+            benchmark.AddFieldInfo(1, new DataFieldInfo(1, typeof(string)) { Name = "Outlook", Alias = "O" });
+            benchmark.AddFieldInfo(2, new DataFieldInfo(2, typeof(string)) { Name = "Temperature", Alias = "T" });
+            benchmark.AddFieldInfo(3, new DataFieldInfo(3, typeof(string)) { Name = "Humidity", Alias = "H" });
+            benchmark.AddFieldInfo(4, new DataFieldInfo(4, typeof(string)) { Name = "Wind", Alias = "W" });
+            benchmark.AddFieldInfo(5, new DataFieldInfo(4, typeof(string)) { Name = "Play", Alias = "d" });
 
             dataFiles.Add(benchmark.Name, benchmark);
 

@@ -193,7 +193,7 @@ namespace Infovision.Datamining.Roughset
 
 				RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
 				classifier.MinimumVoteValue = this.MinimumVoteValue;
-				ClassificationResult result = classifier.Classify(this.DataStore, weights, false);
+				ClassificationResult result = classifier.Classify(this.DataStore, weights);
 				error = result.WeightMisclassified + result.WeightUnclassified;
 
 				Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);

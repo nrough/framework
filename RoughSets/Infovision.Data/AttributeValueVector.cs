@@ -62,7 +62,7 @@ namespace Infovision.Data
             get { return attributes; }
         }
 
-        private long this[int index]
+        public long this[int index]
         {
             get { return this.values[index]; }
             set { this.values[index] = value; }
@@ -70,7 +70,7 @@ namespace Infovision.Data
 
         #endregion
 
-        #region Methods        
+        #region Methods
 
         public AttributeValueVector RemoveAttribute(int attributeId)
         {

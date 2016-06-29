@@ -421,7 +421,7 @@ namespace Infovision.Data
         {
             return new AttributeValueVector(fieldIds, this.GetFieldValues(objectIndex, fieldIds), false);
         }
-
+        
         public AttributeValueVector GetDataVector(int objectIndex, FieldSet fieldSet)
         {
             return new AttributeValueVector(fieldSet.ToArray(), this.GetFieldValues(objectIndex, fieldSet), false);
@@ -555,6 +555,8 @@ namespace Infovision.Data
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
+
+                //TODO Extract this code to a method -->
                 int position = 0;
                 foreach (int fieldId in record.GetFields())
                 {
@@ -573,6 +575,7 @@ namespace Infovision.Data
                     else
                         stringBuilder.AppendFormat("{0}{1}", externalValStr, separator);
                 }
+                //<--
                 stringBuilder.Append(Environment.NewLine);                
             }            
             return stringBuilder.ToString();

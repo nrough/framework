@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset
 
         protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
         {
-            if (eqClassCollection.ObjectsCount == 0 || eqClassCollection.Attributes.Length == 1)
+            if (eqClassCollection.ObjectsCount == 0 || eqClassCollection.Attributes.Length == 0)
             {
                 this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
                 return;
@@ -68,17 +68,7 @@ namespace Infovision.Datamining.Roughset
 
                 this.GenerateSplits(kvp.Value, newNode);
             }
-        }
-
-        public static void PrintTree(ITreeNode node, int indentSize, int currentLevel)
-        {
-            var currentNode = string.Format("{0}({1})", new string(' ',indentSize*currentLevel), node);
-            Console.WriteLine(currentNode);
-            
-            if(node.Children != null)
-                foreach(var child in node.Children)
-                    PrintTree(child, indentSize, currentLevel+1);
-        }
+        }        
 
         public long Compute(DataRecordInternal record, ITreeNode subtree)
         {

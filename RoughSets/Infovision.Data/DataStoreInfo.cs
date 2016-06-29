@@ -176,7 +176,7 @@ namespace Infovision.Data
                 {
                     numberOfNotIncludedFields += this.fieldTypeCount[ft];
                 }
-            }                       
+            }
              
             return numberOfFields - numberOfNotIncludedFields;
         }

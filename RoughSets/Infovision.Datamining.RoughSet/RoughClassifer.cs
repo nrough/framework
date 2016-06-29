@@ -129,7 +129,7 @@ namespace Infovision.Datamining.Roughset
             return decisionIdentification;
         }
         
-        public ClassificationResult Classify(DataStore testData, decimal[] weights = null, bool calcFullEquivalenceClasses = true)
+        public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
             timer.Reset();
             timer.Start();
@@ -151,7 +151,7 @@ namespace Infovision.Datamining.Roughset
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Classify(record, calcFullEquivalenceClasses);
+                    var prediction = this.Classify(record);
                     result.AddResult(objectIndex, prediction.FindMaxValueKey(), record[testData.DataStoreInfo.DecisionFieldId], w);
                 }
                 );
@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Classify(record, calcFullEquivalenceClasses);
+                    var prediction = this.Classify(record);
                     result.AddResult(
                         objectIndex, 
                         prediction.FindMaxValueKey(), 
@@ -185,7 +185,7 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public Dictionary<long, decimal> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)
+        public Dictionary<long, decimal> Classify(DataRecordInternal record)
         {                        
             decimal[] globalVotes = new decimal[this.decCountPlusOne];
             decimal[] reductsVotes = new decimal[this.decCountPlusOne];

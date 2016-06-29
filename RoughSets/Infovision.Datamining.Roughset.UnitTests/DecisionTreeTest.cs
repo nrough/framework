@@ -13,6 +13,7 @@ using Accord.MachineLearning.DecisionTrees;
 using DecTrees = Accord.MachineLearning.DecisionTrees;
 using Accord.MachineLearning.DecisionTrees.Learning;
 using Accord.MachineLearning.DecisionTrees.Rules;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -24,35 +25,100 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("ID3LearnTest");
 
-            //DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            DecisionTree.PrintTree(treeID3.Root, 2, 0);
-
-            ClassificationResult resultID3 = treeID3.Classify(data, null);
-            Console.WriteLine(resultID3);
+            
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
+            Console.WriteLine(treeID3.Classify(data, null));
+            Console.WriteLine(treeID3.Classify(test, null));
         }
 
         [Test]
         public void C45LearnTest()
         {
             Console.WriteLine("C45LearnTest");
-
-            //DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             
-            DecisionTree.PrintTree(treeC45.Root, 2, 0);
-            ClassificationResult resultC45 = treeC45.Classify(data, null);
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
+            Console.WriteLine(treeC45.Classify(data, null));
+            Console.WriteLine(treeC45.Classify(test, null));
+
+        }
+
+        public DataStore GetDataStore()
+        {
+            /*
+            DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
+            data.DataStoreInfo.GetFieldInfo(1).Name = "Outlook";
+            data.DataStoreInfo.GetFieldInfo(2).Name = "Temperature";
+            data.DataStoreInfo.GetFieldInfo(3).Name = "Humidity";
+            data.DataStoreInfo.GetFieldInfo(4).Name = "Wind";
+            data.DataStoreInfo.GetFieldInfo(5).Name = "Play";
+            */
+
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            return data;
+        }
+
+        [Test]
+        public void ReductSubsetC45Tree()
+        {
+            DataStore data = this.GetDataStore();
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+            decimal eps = 0.0m;
+            PermutationCollection permList = new PermutationGenerator(data).Generate(10);
+
+
+            Args parms = new Args();
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+
+            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            //generator.UsePerformanceImprovements = false;
+            generator.Run();
+
+            IReductStoreCollection reducts = generator.GetReductStoreCollection();
+            IReductStoreCollection reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
+
+            IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
+            
+
+            DecisionTreeC45 treeC45 = new DecisionTreeC45();
+            //treeC45.Learn(data, reduct.Attributes.ToArray());
+            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
+            ClassificationResult resultC45 = treeC45.Classify(test);
             Console.WriteLine(resultC45);
 
-            //DecisionTreeNode node = treeID3.Root;
-            //TreeNodeTraversal.TraverseLevelOrder(node, n => Console.WriteLine(" ({0},{1}) ", n.Key, n.Value));
+            RoughClassifier roughClassifier = new RoughClassifier(reductsfiltered, RuleQualityAvg.ConfidenceW, RuleQualityAvg.ConfidenceW, data.DataStoreInfo.GetDecisionValues());
+            ClassificationResult reductResult = roughClassifier.Classify(test);
+            Console.WriteLine(reductResult);
+
+            int[] nodeAttributes = treeC45.Root.GroupBy(x => x.Key).Select(g => g.First().Key).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
+            int[] reductAttributes = reduct.Attributes.ToArray();
             
+            Console.WriteLine("Tree: {0}", nodeAttributes.ToStr(' '));
+            Console.WriteLine("Reduct: {0}", reductAttributes.ToStr(' '));
+
+            for (int i = 0; i < nodeAttributes.Length; i++)
+            {
+                Assert.AreEqual(nodeAttributes[i], reductAttributes[i]);
+            }
         }
 
         #region Accord Trees
@@ -62,48 +128,35 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("AccordC45Test");
 
-            DataTable data = GetDataTable();
-            Codification codebook = new Codification(data);
-            DecisionVariable[] attributes =
-            {
-                new DecisionVariable("Outlook", 3), // 3 possible values (Sunny, overcast, rain)
-                new DecisionVariable("Temperature", 3), // 3 possible values (Hot, mild, cool)
-                new DecisionVariable("Humidity", 2), // 2 possible values (High, normal)
-                new DecisionVariable("Wind", 2) // 2 possible values (Weak, strong)
-            };
-            int classCount = 2; // 2 possible output values for playing tennis: yes or no
-            
+            DataStore ds = this.GetDataStore();
+            DataTable data = ds.ToDataTable();
+            DecisionVariable[] attributes = this.AccordAttributes(ds);
+            int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
             DecTrees.DecisionTree tree = new DecTrees.DecisionTree(attributes, classCount);
             C45Learning c45learning = new C45Learning(tree);
 
-            // Translate our training data into integer symbols using our codebook:
+            Codification codebook = new Codification(data);
             DataTable symbols = codebook.Apply(data); 
-            double[][] inputs = symbols.ToArray<double>("Outlook", "Temperature", "Humidity", "Wind");
-            int[] outputs = symbols.ToArray<int>("PlayTennis");
+            double[][] inputs = symbols.ToArray<double>(this.AttributeNames(ds));
+            int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
 
             // Learn the training instances!
             c45learning.Run(inputs, outputs);
 
-            this.PrintTree(tree.Root, 2, 0, codebook);
+            string[] conditionalAttributes = this.AttributeNames(ds);
+            string decisionName = this.DecisionName(ds);
 
-            string[] conditionalAttributes = new string[] { "Outlook", "Temperature", "Humidity", "Wind" };
+            this.PrintTree(tree.Root, 2, 0, codebook, decisionName);
 
             int count = 0;
             int correct = 0;
             foreach (DataRow row in data.Rows)
             {
-                var record = new string[] 
-                { 
-                    row["Outlook"].ToString(), 
-                    row["Temperature"].ToString(), 
-                    row["Humidity"].ToString(), 
-                    row["Wind"].ToString()
-                };
-
-                string actual = row["PlayTennis"].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, record);
+                var rec = row.ToArray<string>(conditionalAttributes);
+                string actual = row[decisionName].ToString();
+                int[] query = codebook.Translate(conditionalAttributes, rec);
                 int output = tree.Compute(query);
-                string answer = codebook.Translate("PlayTennis", output);
+                string answer = codebook.Translate(decisionName, output);
 
                 count++;
                 if (actual == answer)
@@ -111,15 +164,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
 
             Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);
-
-            /*
-            int[] query = codebook.Translate(
-                new string[] {"Outlook", "Temperature", "Humidity", "Wind"},
-                new string[] {"Sunny", "Hot", "High", "Strong"});
-
-            int output = tree.Compute(query);
-            string answer = codebook.Translate("PlayTennis", output); // answer will be "No".
-            */
         }
 
         [Test]
@@ -127,111 +171,107 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("AccordID3Test");
 
-            DataTable data = GetDataTable();
-            Codification codebook = new Codification(data);
-            DecisionVariable[] attributes =
-            {
-                new DecisionVariable("Outlook", 3), // 3 possible values (Sunny, overcast, rain)
-                new DecisionVariable("Temperature", 3), // 3 possible values (Hot, mild, cool)
-                new DecisionVariable("Humidity", 2), // 2 possible values (High, normal)
-                new DecisionVariable("Wind", 2) // 2 possible values (Weak, strong)
-            };
-            int classCount = 2; // 2 possible output values for playing tennis: yes or no
+            DataStore ds = this.GetDataStore();
+            DataTable data = ds.ToDataTable();
+            DecisionVariable[] attributes = this.AccordAttributes(ds);
+            int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
 
             DecTrees.DecisionTree tree = new DecTrees.DecisionTree(attributes, classCount);
             ID3Learning id3learning = new ID3Learning(tree);
 
-            // Translate our training data into integer symbols using our codebook:
+            Codification codebook = new Codification(data);
             DataTable symbols = codebook.Apply(data);
-            int[][] inputs = symbols.ToArray<int>("Outlook", "Temperature", "Humidity", "Wind");
-            int[] outputs = symbols.ToArray<int>("PlayTennis");
+            int[][] inputs = symbols.ToArray<int>(this.AttributeNames(ds));
+            int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
 
             // Learn the training instances!
             id3learning.Run(inputs, outputs);
 
-            this.PrintTree(tree.Root, 2, 0, codebook);
+            string[] conditionalAttributes = this.AttributeNames(ds);
+            string decisionName = this.DecisionName(ds);
 
-            string[] conditionalAttributes = new string[] { "Outlook", "Temperature", "Humidity", "Wind" };
+            this.PrintTree(tree.Root, 2, 0, codebook, decisionName);
 
             int count = 0;
             int correct = 0;
             foreach (DataRow row in data.Rows)
             {
-                var record = new string[] 
-                { 
-                    row["Outlook"].ToString(), 
-                    row["Temperature"].ToString(), 
-                    row["Humidity"].ToString(), 
-                    row["Wind"].ToString()
-                };
-
-                string actual = row["PlayTennis"].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, record);
+                var rec = row.ToArray<string>(conditionalAttributes);
+                string actual = row[decisionName].ToString();
+                int[] query = codebook.Translate(conditionalAttributes, rec);
                 int output = tree.Compute(query);
-                string answer = codebook.Translate("PlayTennis", output);
+                string answer = codebook.Translate(decisionName, output);
 
                 count++;
                 if (actual == answer)
                     correct++;
             }
 
-            Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);
-
-            /*
-            int[] query = codebook.Translate(
-                new string[] {"Outlook", "Temperature", "Humidity", "Wind"},
-                new string[] {"Sunny", "Hot", "High", "Strong"});
-
-            int output = tree.Compute(query);
-            string answer = codebook.Translate("PlayTennis", output); // answer will be "No".
-            */
+            Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);            
         }
 
-        public DataTable GetDataTable()
-        {
-            DataTable data = new DataTable("PlayGolf");
-
-            data.Columns.Add("Day");
-            data.Columns.Add("Outlook");
-            data.Columns.Add("Temperature");
-            data.Columns.Add("Humidity");
-            data.Columns.Add("Wind");
-            data.Columns.Add("PlayTennis");
-
-            data.Rows.Add("D1", "Sunny", "Hot", "High", "Weak", "No");
-            data.Rows.Add("D2", "Sunny", "Hot", "High", "Strong", "No");
-            data.Rows.Add("D3", "Overcast", "Hot", "High", "Weak", "Yes");
-            data.Rows.Add("D4", "Rain", "Mild", "High", "Weak", "Yes");
-            data.Rows.Add("D5", "Rain", "Cool", "Normal", "Weak", "Yes");
-            data.Rows.Add("D6", "Rain", "Cool", "Normal", "Strong", "No");
-            data.Rows.Add("D7", "Overcast", "Cool", "Normal", "Strong", "Yes");
-            data.Rows.Add("D8", "Sunny", "Mild", "High", "Weak", "No");
-            data.Rows.Add("D9", "Sunny", "Cool", "Normal", "Weak", "Yes");
-            data.Rows.Add("D10", "Rain", "Mild", "Normal", "Weak", "Yes");
-            data.Rows.Add("D11", "Sunny", "Mild", "Normal", "Strong", "Yes");
-            data.Rows.Add("D12", "Overcast", "Mild", "High", "Strong", "Yes");
-            data.Rows.Add("D13", "Overcast", "Hot", "Normal", "Weak", "Yes");
-            data.Rows.Add("D14", "Rain", "Mild", "High", "Strong", "No");
-
-            return data;
-        }
-
-        public void PrintTree(DecisionNode node, int indentSize, int currentLevel, Codification codebook)
+        public void PrintTree(DecisionNode node, int indentSize, int currentLevel, Codification codebook, string decisionName)
         {
             if (!node.IsRoot)
             {
-                var currentNode = string.Format("{0}({1})", new string(' ', indentSize * currentLevel), node);
+                var currentNode = string.Format("{0}({1})", new string(' ', indentSize * currentLevel), node.ToString(codebook));
                 Console.WriteLine(currentNode);
                 if (node.Output != null)
                 {
-                    currentNode = string.Format("{0}(Play = {1})", new string(' ', indentSize * (currentLevel + 1)), node.Output);
+                    currentNode = string.Format("{0}({2} == {1})", 
+                        new string(' ', indentSize * (currentLevel + 1)), 
+                        codebook.Translate(decisionName, (int)node.Output), 
+                        decisionName);
+
                     Console.WriteLine(currentNode);
                 }
             }
 
             if (node.Branches != null)
                 foreach (var child in node.Branches)
-                    PrintTree(child, indentSize, currentLevel + 1, codebook);
+                    PrintTree(child, indentSize, currentLevel + 1, codebook, decisionName);
+        }
+
+        public DecisionVariable[] AccordAttributes(DataStore data)
+        {
+            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
+            DecisionVariable[] variables = null;
+            if (data.DataStoreInfo.DecisionFieldId > 0)
+                variables = new DecisionVariable[fieldIds.Length - 1]; //do not include decision attribute
+            else
+                variables = new DecisionVariable[fieldIds.Length];
+
+            int j = 0;
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                DataFieldInfo field = data.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                if (field.Id != data.DataStoreInfo.DecisionFieldId)
+                    variables[j++] = new DecisionVariable(field.Name, field.NumberOfValues);
+            }
+            return variables;
+        }
+
+        public string[] AttributeNames(DataStore data)
+        {
+            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
+            string[] names = null;
+            if (data.DataStoreInfo.DecisionFieldId > 0)
+                names = new string[fieldIds.Length - 1]; //do not include decision attribute
+            else
+                names = new string[fieldIds.Length];
+            int j = 0;
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                DataFieldInfo field = data.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                if (field.Id != data.DataStoreInfo.DecisionFieldId)
+                    names[j++] = field.Name;
+            }
+            return names;
+        }
+
+        public string DecisionName(DataStore data)
+        {
+            return data.DataStoreInfo.DecisionInfo.Name;
         }
 
         #endregion 

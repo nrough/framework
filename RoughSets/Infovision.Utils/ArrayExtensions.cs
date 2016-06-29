@@ -133,14 +133,14 @@ namespace Infovision.Utils
             return array.Where((val, idx) => idx != numIndex).ToArray();
         }
 
-        public static string ToStr<T>(this T[] array)
+        public static string ToStr<T>(this T[] array, char separator = '|')
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < array.Length; i++)
             {
                 sb.Append(array[i].ToString());
                 if (i < array.Length - 1)
-                    sb.Append('|');
+                    sb.Append(separator);
             }
             return sb.ToString();
         }

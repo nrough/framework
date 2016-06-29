@@ -9,6 +9,38 @@ namespace Infovision.Data
 {
     public static class DataStoreHelper
     {
+        public static DataTable ToDataTable(this DataStore source)
+        {
+            DataTable datatable = new DataTable(String.IsNullOrEmpty(source.Name) ? "DataTable converted from DataStore" : source.Name);
+            int[] fieldIds = source.DataStoreInfo.GetFieldIds().ToArray();
+            for(int i=0; i<fieldIds.Length; i++)
+            {
+                DataFieldInfo field = source.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                datatable.Columns.Add(field.Name);
+            }
+
+            string[] recordStr = new string[fieldIds.Length];
+            for (int i = 0; i < source.NumberOfRecords; i++)
+            {
+                AttributeValueVector record = source.GetDataVector(i, fieldIds);
+                //TODO Extract this code to a method -->
+                for (int j = 0; j < fieldIds.Length; j++)
+                {
+                    DataFieldInfo field = source.DataStoreInfo.GetFieldInfo(fieldIds[j]);
+                    object externalVal = field.Internal2External(record[j]);                    
+                    if (field.HasMissingValues && record[j] == field.MissingValueInternal)
+                        recordStr[j] = source.DataStoreInfo.MissingValue;
+                    else
+                        recordStr[j] = (externalVal != null) ? externalVal.ToString() : "?";
+                }
+                //<--
+
+                datatable.Rows.Add(recordStr);
+            }
+
+            return datatable;
+        }        
+        
         [CLSCompliant(false)]
         public static DataStore ToDataStore(this DataTable source, Codification codification, int decisionIdx = -1, int idIdx = -1)
         {

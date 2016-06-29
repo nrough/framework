@@ -178,9 +178,7 @@ namespace Infovision.Utils
             int j = 0;
             for (int i = 0; i < array.Length; i++)
                 if (Array.IndexOf<T>(values, array[i]) != -1)
-                {
                     result[j++] = i;
-                }
             return result;
         }
 

@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset
         private long[] dataVector;        
         private Dictionary<int, decimal> instances;  //map: objectIdx -> objectWeight
         
-        private decimal totalWeightSum; //sum of object weights belonging to this class
+        //private decimal totalWeightSum; //sum of object weights belonging to this class
         
         private PascalSet<long> decisionSet;  //set containing all decisions within this class
         

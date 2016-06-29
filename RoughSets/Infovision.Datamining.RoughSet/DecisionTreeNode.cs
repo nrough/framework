@@ -11,6 +11,7 @@ namespace Infovision.Datamining.Roughset
         IReadOnlyList<ITreeNode> Children { get; }
         int Key { get; }
         long Value { get; }
+        bool IsLeaf { get; }
     }
 
     public class DecisionTreeNode : ITreeNode
@@ -75,6 +76,14 @@ namespace Infovision.Datamining.Roughset
                 children = new List<DecisionTreeNode>();
             children.Add(child);
         }
+
+        public override string ToString()
+        {
+            if (this.Key == -1 && this.Value == -1)
+                return "ROOT";
+
+            return String.Format("{0} == {1}", this.Key, this.Value); 
+        }
     }
 
     /// <summary>
@@ -87,7 +96,7 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="node"></param>
         /// <param name="action"></param>
-        public static void TraverseLevelOrder(ITreeNode node, Action<ITreeNode> action)
+        public static void TraverseLevelOrder(ITreeNode node, Action<ITreeNode> action) 
         {
             Queue<ITreeNode> queue = new Queue<ITreeNode>();
             queue.Enqueue(node);
@@ -96,8 +105,8 @@ namespace Infovision.Datamining.Roughset
                 ITreeNode currentNode = queue.Dequeue();
                 action.Invoke(currentNode);
 
-                if (node.Children != null)
-                    foreach (ITreeNode child in node.Children)
+                if (currentNode.Children != null)
+                    foreach (ITreeNode child in currentNode.Children)
                         if (child != null)
                             queue.Enqueue(child);
             }

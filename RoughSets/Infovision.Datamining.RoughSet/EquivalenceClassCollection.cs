@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributes; }
         }
 
-        internal decimal ObjectsWeightCount { get; set; }
+        internal decimal WeightSum { get; set; }
         internal int ObjectsCount { get; set; }
         
         public DataStore Data { get { return this.data; } }
@@ -61,13 +61,10 @@ namespace Infovision.Datamining.Roughset
         { 
             get 
             {
-                lock (mutex)
-                {
-                    return new PascalSet<long>(
-                        this.data.DataStoreInfo.DecisionInfo.MinValue,
-                        this.data.DataStoreInfo.DecisionInfo.MaxValue,
-                        this.decisionCount.Where(kvp => kvp.Value != 0).Select(kvp => kvp.Key));
-                }
+                return new PascalSet<long>(
+                    this.data.DataStoreInfo.DecisionInfo.MinValue,
+                    this.data.DataStoreInfo.DecisionInfo.MaxValue,
+                    this.decisionCount.Where(kvp => kvp.Value != 0).Select(kvp => kvp.Key));   
             } 
         }
         
@@ -240,7 +237,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 eqClassCollection.ObjectsCount = dataStore.NumberOfRecords;
-                eqClassCollection.ObjectsWeightCount = Decimal.One;
+                eqClassCollection.WeightSum = Decimal.One;
                 
             }
             else
@@ -258,7 +255,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 eqClassCollection.ObjectsCount = dataStore.NumberOfRecords;
-                eqClassCollection.ObjectsWeightCount = sum;
+                eqClassCollection.WeightSum = sum;
             }
 
             eqClassCollection.CalcAvgConfidence();
@@ -297,9 +294,11 @@ namespace Infovision.Datamining.Roughset
                     eq.AddDecision(decisionInternalValue, objectWeight);
 
                 int count = 0;
-                this.decisionCount[decisionInternalValue] = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
+                this.decisionCount[decisionInternalValue] 
+                    = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
                 decimal w = 0;
-                this.decisionWeight[decisionInternalValue] = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
+                this.decisionWeight[decisionInternalValue] 
+                    = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
             }
         }
 
@@ -311,7 +310,7 @@ namespace Infovision.Datamining.Roughset
                 this.partitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
 
             this.ObjectsCount = 0;
-            this.ObjectsWeightCount = 0;
+            this.WeightSum = 0;
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore)
@@ -326,7 +325,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             this.ObjectsCount = dataStore.NumberOfRecords;
-            this.ObjectsWeightCount = Decimal.One;
+            this.WeightSum = Decimal.One;
         }
 
         public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
@@ -341,7 +340,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             this.ObjectsCount = dataStore.NumberOfRecords;
-            this.ObjectsWeightCount = sum;
+            this.WeightSum = sum;
 
             this.CalcAvgConfidence();
         }
@@ -364,9 +363,11 @@ namespace Infovision.Datamining.Roughset
                 long decisionValue = dataStore.GetDecisionValue(objectIndex);
 
                 int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
+                this.decisionCount[decisionValue] 
+                    = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
                 decimal w = 0;
-                this.decisionWeight[decisionValue] = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + objectWeight) : objectWeight;
+                this.decisionWeight[decisionValue] 
+                    = this.decisionWeight.TryGetValue(decisionValue, out w) ? (w + objectWeight) : objectWeight;
 
                 if (this.partitions.TryGetValue(record, out eqClass))
                 {
@@ -389,7 +390,8 @@ namespace Infovision.Datamining.Roughset
             return EquivalenceClassCollection.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
         }
 
-        public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
+        public static bool CheckRegionPositive(
+            FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             //TODO Capacity
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
@@ -444,6 +446,8 @@ namespace Infovision.Datamining.Roughset
             int numOfDec = data.DataStoreInfo.NumberOfDecisionValues;
             this.decisionCount = new Dictionary<long, int>(numOfDec);
             this.decisionWeight = new Dictionary<long, decimal>(numOfDec);
+            this.ObjectsCount = 0;
+            this.WeightSum = 0;
 
             /*
             ParallelOptions options = new ParallelOptions()
@@ -479,18 +483,21 @@ namespace Infovision.Datamining.Roughset
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
 
                 this.ObjectsCount += eq.Instances.Count;
-                this.ObjectsWeightCount += eq.Instances.Sum(x => x.Value);
+                this.WeightSum += eq.Instances.Sum(x => x.Value);
             }
             //);
         }
 
-        public static Dictionary<long, EquivalenceClassCollection> Split(EquivalenceClassCollection collectionToSplit, int attributeId)
+        public static Dictionary<long, EquivalenceClassCollection> Split(
+            EquivalenceClassCollection collectionToSplit, 
+            int attributeId)
         {
             int attributeIdx = collectionToSplit.Attributes.IndexOf(attributeId);
 
             int[] newAttributes = collectionToSplit.Attributes.RemoveAt(attributeIdx);
             DataFieldInfo attributeInfo = collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId);
-            Dictionary<long, EquivalenceClassCollection> result = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
+            Dictionary<long, EquivalenceClassCollection> result 
+                = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
 
             foreach (var eqClass in collectionToSplit)
             {
@@ -500,7 +507,10 @@ namespace Infovision.Datamining.Roughset
                 if (!result.TryGetValue(attributeValue, out tmpCollection))
                 {
                     //TODO Decision tries: do we know better estimation of partition size?
-                    tmpCollection = new EquivalenceClassCollection(collectionToSplit.data, newAttributes, (int)(collectionToSplit.NumberOfPartitions / attributeInfo.NumberOfValues));
+                    tmpCollection = new EquivalenceClassCollection(
+                        collectionToSplit.data, 
+                        newAttributes, 
+                        (int)(collectionToSplit.NumberOfPartitions / attributeInfo.NumberOfValues));
                     result.Add(attributeValue, tmpCollection);
                 }
 
@@ -518,7 +528,10 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public static EquivalenceClassCollection Create(int[] attributes, EquivalenceClassCollection eqClassCollection, decimal epsilon)
+        public static EquivalenceClassCollection Create(
+            int[] attributes, 
+            EquivalenceClassCollection eqClassCollection, 
+            decimal epsilon)
         {
             //TODO Decision tries : Update statistics
 
@@ -547,7 +560,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 result.ObjectsCount += eq.Instances.Count;
-                result.ObjectsWeightCount += eq.Instances.Sum(x => x.Value);
+                result.WeightSum += eq.Instances.Sum(x => x.Value);
             }
 
             return result;

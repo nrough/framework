@@ -459,7 +459,7 @@ namespace Infovision.Utils
 
         static int RandomizedPartition(int[] a, int p, int r)
         {
-            int i = new Random(Environment.TickCount).Next(p, r + 1);
+            int i = RandomSingleton.Random.Next(p, r + 1);
             Swap(ref a[r], ref a[i]);
             return Partition(a, p, r);
         }

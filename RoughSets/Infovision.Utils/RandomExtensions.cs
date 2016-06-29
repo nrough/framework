@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
-    public static class RandomExt
+    public static class RandomExtensions
     {
         public static int[] RandomVectorNoRepetition(int n, int min, int max)
         {

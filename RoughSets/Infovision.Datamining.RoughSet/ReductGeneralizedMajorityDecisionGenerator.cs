@@ -195,7 +195,7 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
             int len = permutation.Length;            
 
-            eqClasses.ObjectsWeightCount = this.DataSetQuality;
+            eqClasses.WeightSum = this.DataSetQuality;
             eqClasses.ObjectsCount = this.DataStore.NumberOfRecords;
             
             this.KeepMajorDecisions(eqClasses, epsilon);
@@ -258,7 +258,7 @@ namespace Infovision.Datamining.Roughset
                 eqClasses.Attributes.RemoveAt(attributeIdx, length),
                 eqClasses.Partitions.Count);
                 
-            newEqClasses.ObjectsWeightCount = eqClasses.ObjectsWeightCount;
+            newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
 
             foreach (EquivalenceClass eq in eqClasses)

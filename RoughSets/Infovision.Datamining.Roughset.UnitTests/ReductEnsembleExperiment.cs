@@ -134,7 +134,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         });
 
                         ReductStore randomReductGroup = new ReductStore(ensemble.Length);
-                        int[] randomReductIndices = RandomExt.RandomVectorNoRepetition(ensemble.Length, 0, reductGenerator.ReductPool.Count() - 1);
+                        int[] randomReductIndices = RandomExtensions.RandomVectorNoRepetition(ensemble.Length, 0, reductGenerator.ReductPool.Count() - 1);
                         for (int i = 0; i < ensemble.Length; i++)
                         {
                             randomReductGroup.DoAddReduct(reductGenerator.ReductPool.GetReduct(randomReductIndices[i]));

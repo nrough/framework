@@ -68,13 +68,18 @@ namespace LoadSQLRoughsetDB
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "chess.result"), p.DatasetToInt("chess"), experimentId));
 
 
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), experimentId));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), experimentId));
-            //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "letter.result"), p.DatasetToInt("letter"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "pen.result"), p.DatasetToInt("pen"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "opt.result"), p.DatasetToInt("opt"), experimentId));
             
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "mashroom.result"), p.DatasetToInt("mashroom"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "semeion.result"), p.DatasetToInt("semeion"), experimentId));
             p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "nursery.result"), p.DatasetToInt("nursery"), experimentId));
+
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "monks-1.result"), p.DatasetToInt("monks-1"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "monks-2.result"), p.DatasetToInt("monks-2"), experimentId));
+            p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "monks-3.result"), p.DatasetToInt("monks-3"), experimentId));
+
             
             //p.InsertDB(p.GetTableResult_MajorityGeneralizedDecisionTest(Path.Combine(path2, "connect.result"), p.DatasetToInt("connect"), experimentId));
         }

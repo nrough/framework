@@ -71,53 +71,67 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductSubsetC45Tree()
         {
-            DataStore data = this.GetDataStore();
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\letter.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
-            decimal eps = 0.0m;
-            PermutationCollection permList = new PermutationGenerator(data).Generate(10);
+            string factoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);            
+            PermutationCollection permList = new PermutationGenerator(data).Generate(10);            
 
-
-            Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-
-            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-            //generator.UsePerformanceImprovements = false;
-            generator.Run();
-
-            IReductStoreCollection reducts = generator.GetReductStoreCollection();
-            IReductStoreCollection reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
-
-            IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
-            
-
-            DecisionTreeC45 treeC45 = new DecisionTreeC45();
-            //treeC45.Learn(data, reduct.Attributes.ToArray());
-            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
-            ClassificationResult resultC45 = treeC45.Classify(test);
-            Console.WriteLine(resultC45);
-
-            RoughClassifier roughClassifier = new RoughClassifier(reductsfiltered, RuleQualityAvg.ConfidenceW, RuleQualityAvg.ConfidenceW, data.DataStoreInfo.GetDecisionValues());
-            ClassificationResult reductResult = roughClassifier.Classify(test);
-            Console.WriteLine(reductResult);
-
-            int[] nodeAttributes = treeC45.Root.GroupBy(x => x.Key).Select(g => g.First().Key).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
-            int[] reductAttributes = reduct.Attributes.ToArray();
-            
-            Console.WriteLine("Tree: {0}", nodeAttributes.ToStr(' '));
-            Console.WriteLine("Reduct: {0}", reductAttributes.ToStr(' '));
-
-            for (int i = 0; i < nodeAttributes.Length; i++)
+            for (int t = 0; t < 20; t++)
             {
-                Assert.AreEqual(nodeAttributes[i], reductAttributes[i]);
+                DecisionTreeC45 treeC45_full = new DecisionTreeC45();
+                treeC45_full.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                ClassificationResult resultC45_full = treeC45_full.Classify(test);
+                Console.WriteLine("{0} | {1} | {2}", "C4.5 All", 0.0m, resultC45_full);
+                Console.WriteLine();
+
+                for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+                {
+                    Args parms = new Args();
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                    parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
+                    parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+
+                    IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                    if (generator is ReductGeneratorMeasure)
+                        ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = false;
+                    generator.Run();
+
+                    IReductStoreCollection reducts = generator.GetReductStoreCollection();
+
+                    IReductStoreCollection reductsfiltered = null;
+                    if (generator is ReductGeneratorMeasure)
+                        reductsfiltered = reducts.Filter(1, new ReductLengthComparer());
+                    else
+                        reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
+
+                    IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
+
+                    DecisionTreeC45 treeC45 = new DecisionTreeC45();
+                    treeC45.Learn(data, reduct.Attributes.ToArray());
+                    //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
+                    ClassificationResult resultC45 = treeC45.Classify(test);
+                    Console.WriteLine("{0} | {1} | {2}", "C4.5    ", eps, resultC45);
+
+                    RoughClassifier roughClassifier = new RoughClassifier(reductsfiltered, RuleQuality.ConfidenceW, RuleQuality.ConfidenceW, data.DataStoreInfo.GetDecisionValues());
+                    ClassificationResult reductResult = roughClassifier.Classify(test);
+                    Console.WriteLine("{0} | {1} | {2}", "RS      ", eps, reductResult);
+
+                    int[] nodeAttributes = treeC45.Root.GroupBy(x => x.Key).Select(g => g.First().Key).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
+                    int[] reductAttributes = reduct.Attributes.ToArray();
+
+                    //Console.WriteLine("Tree: {0}", nodeAttributes.ToStr(' '));
+                    //Console.WriteLine("Reduct: {0}", reductAttributes.ToStr(' '));
+
+                    for (int i = 0; i < nodeAttributes.Length; i++)
+                    {
+                        Assert.AreEqual(nodeAttributes[i], reductAttributes[i]);
+                    }
+                }
             }
         }
 

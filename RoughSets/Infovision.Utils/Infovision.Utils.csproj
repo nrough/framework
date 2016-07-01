@@ -93,6 +93,7 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="Histogram.cs" />
+    <Compile Include="IEnumerableExternsions.cs" />
     <Compile Include="IntArrayComparer.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Matrix.cs" />

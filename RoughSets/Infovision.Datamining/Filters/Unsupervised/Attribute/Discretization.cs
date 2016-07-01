@@ -54,7 +54,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 if (value == true)
                 {
                     if (this.weightPerInterval == 0)
-                        throw new InvalidOperationException("Weight key must be set first");
+                        throw new InvalidOperationException("Weight key must be set startFromIdx");
                 }
                 else
                 {

@@ -141,7 +141,7 @@ namespace Infovision.Datamining.Roughset
     public static class TreeNodeTraversal
     {
         /// <summary>
-        /// Traverse tree in level order and perform Action for every tree node (aka Breadth-first search (BFS))
+        /// Traverse tree in level order and perform Action for every tree node (aka Breadth-startFromIdx search (BFS))
         /// </summary>
         /// <param name="node"></param>
         /// <param name="action"></param>

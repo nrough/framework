@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -248,6 +249,55 @@ namespace Infovision.Data.UnitTests
                     //Console.WriteLine(record);
                 }
             }
+        }
+
+        [Test]
+        public void CopyTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data2 = DataStore.Copy(data, 0, data.NumberOfRecords);
+            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
+
+            for (int i = 0; i < data.NumberOfRecords; i++)
+            {
+                var rec1 = data.GetDataVector(i);
+                var rec2 = data2.GetDataVector(i);
+                Assert.AreEqual(rec1, rec2);
+            }
+
+            DataStore data3 = DataStore.Copy(data, data.NumberOfRecords / 2, data.NumberOfRecords - (data.NumberOfRecords / 2));
+            Assert.AreEqual(data.NumberOfRecords - (data.NumberOfRecords / 2), data3.NumberOfRecords);
+
+            DataStore data4 = DataStore.Copy(data, 0, data.NumberOfRecords - (data.NumberOfRecords / 2));
+            Assert.AreEqual(data.NumberOfRecords - (data.NumberOfRecords / 2), data3.NumberOfRecords);
+        }
+
+        [Test]
+        public void SwapTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            for(int i=0; i<data.NumberOfRecords; i++)
+                for (int j = 0; j < data.NumberOfRecords; j++)
+                {
+                    var rec1 = data.GetDataVector(i);
+                    var rec2 = data.GetDataVector(j);
+                    
+                    data.Swap(i, j);
+
+                    var rec3 = data.GetDataVector(i);
+                    var rec4 = data.GetDataVector(j);
+
+                    Assert.AreEqual(rec2, rec3);
+                    Assert.AreEqual(rec1, rec4);
+                }
+
+        }
+
+        [Test]
+        public void ShuffleTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            data.Shuffle();
         }
 
     }

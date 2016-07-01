@@ -184,9 +184,30 @@ namespace Infovision.Utils
 
         public static T[] KeepIndices<T>(this T[] array, int[] indicesToKeep)
         {            
-            T[] result = new T[indicesToKeep.Length];            
+            T[] result = new T[indicesToKeep.Length];
             for (int i = 0; i < indicesToKeep.Length; i++)
                 result[i] = array[indicesToKeep[i]];
+            return result;
+        }
+
+        public static void SetAll<T>(this T[] array, T value)
+        {
+            for (int i = 0; i < array.Length; i++)
+                array[i] = value;
+        }
+
+        public static T[] RandomSubArray<T>(this T[] array, int size)
+        {
+            if (size < 0)
+                throw new ArgumentException("size < 0", "size");
+            if (size > array.Length)
+                throw new ArgumentException("size > array.Length", "size");
+
+            T[] result = new T[size];
+            int[] tmpArray = Enumerable.Range(0, array.Length - 1).ToArray();
+            tmpArray.Shuffle();
+            for (int i = 0; i < size; i++)
+                result[i] = array[tmpArray[i]];
             return result;
         }
     }

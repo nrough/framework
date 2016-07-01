@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Statistics;
+using Infovision.Utils;
 
 namespace Infovision.Data
 {
@@ -27,7 +29,7 @@ namespace Infovision.Data
 
         private object mutex = new object();
 
-        #endregion        
+        #endregion
 
         #region Properties
 
@@ -208,26 +210,16 @@ namespace Infovision.Data
         internal void CreateWeightHistogramsOnFields()
         {
             foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Standard))
-            {
                 if (fieldInfo.HistogramWeights != null)
-                {
                     fieldInfo.CreateWeightHistogram(this, this.weights);
-                }
-            }
 
             foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Decision))
-            {
-                fieldInfo.CreateWeightHistogram(this, this.weights);                
-            }
+                fieldInfo.CreateWeightHistogram(this, this.weights);
         }
 
         public void NormalizeWeights()
         {            
-            decimal sum = 0;
-            for (int i = 0; i < this.NumberOfRecords; i++)
-                sum += this.weights[i];
-            for (int i = 0; i < this.NumberOfRecords; i++)
-                this.weights[i] /= sum;                
+            Tools.Normalize(this.weights, this.weights.Sum());                
         }
 
         public decimal GetWeight(int objectIdx)
@@ -732,6 +724,68 @@ namespace Infovision.Data
                     }
                     file.WriteLine(sb.ToString());
                 }
+            }
+        }
+
+        public static DataStore Copy(DataStore dataToCopy, int startFromIdx, int recordCount)
+        {
+            int len = startFromIdx + recordCount;
+
+            if (len > dataToCopy.NumberOfRecords)
+                throw new ArgumentException("startFromIdx + recordCount > dataToCopy.NumberOfRecords ", "recordCount");
+            if (startFromIdx < 0)
+                throw new ArgumentException("startFromIdx < 0", "recordCount");
+
+            DataStoreInfo localDataStoreInfo = new DataStoreInfo(dataToCopy.DataStoreInfo.NumberOfFields);
+            localDataStoreInfo.InitFromDataStoreInfo(dataToCopy.DataStoreInfo, true, true);
+            localDataStoreInfo.NumberOfRecords = recordCount;
+
+            DataStore localDataStore = new DataStore(localDataStoreInfo);
+            localDataStore.Name = dataToCopy.Name;
+
+            int j = 0;
+            for (int i = startFromIdx; i < len; i++)
+            {
+                localDataStore.Insert(dataToCopy.GetRecordByIndex(i));
+                localDataStore.SetWeight(j, dataToCopy.GetWeight(i));
+                j++;
+            }
+
+            localDataStore.NormalizeWeights();
+            localDataStore.CreateWeightHistogramsOnFields();
+
+            return localDataStore;
+        }
+
+        public void Shuffle()
+        {
+            for (int j = this.NumberOfRecords - 1; j > 0; j--)
+                this.Swap(j, RandomSingleton.Random.Next(j + 1));
+        }
+
+        public void Swap(int aidx, int bidx)
+        {
+            int numOfFields = this.dataStoreInfo.NumberOfFields;
+            for(int i = 0; i < numOfFields; i++)
+            {
+                long tmpValue = this.GetFieldIndexValue(aidx, i);
+                this.SetFieldIndexValue(aidx, i, this.GetFieldIndexValue(bidx, i));
+                this.SetFieldIndexValue(bidx, i, tmpValue);
+            }
+
+            long aId = index2ObjectId[aidx];
+            long bId = index2ObjectId[bidx];
+            index2ObjectId[aidx] = index2ObjectId[bidx];
+            index2ObjectId[bidx] = aId;
+
+            objectId2Index[aId] = bidx;
+            objectId2Index[bId] = aidx;
+
+            if (weights != null)
+            {
+                decimal tmpWeigth = weights[aidx];
+                weights[aidx] = weights[bidx];
+                weights[bidx] = tmpWeigth;
             }
         }
 

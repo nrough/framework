@@ -21,11 +21,13 @@ namespace Infovision.Datamining.Roughset
         private int decisionAttributeId;
 
         public DecisionTreeNode Root { get { return this.root; } }
+        public int NumberOfRandomAttributes { get; set; }
         
         public DecisionTree()
         {
             this.root = null;
             this.decisionAttributeId = -1;
+            this.NumberOfRandomAttributes = -1;
         }
 
         public void Learn(DataStore data, int[] attributes)
@@ -133,28 +135,29 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        protected abstract int GetNextSplit(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions);
-    }
-
-    public class DecisionTreeID3 : DecisionTree
-    {
-        protected override int GetNextSplit(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected virtual int GetNextSplit(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
         {
+            int[] localAttributes = eqClassCollection.Attributes;
+            if (this.NumberOfRandomAttributes != -1)
+            {
+                int m = System.Math.Min(localAttributes.Length, this.NumberOfRandomAttributes);
+                localAttributes = localAttributes.RandomSubArray(m);
+            }
+
             int result = 0;
-            double maxGain = Double.MinValue;
+            double maxScore = Double.MinValue;
+            double currentScore = this.GetCurrentScore(eqClassCollection, decisions);
 
-            double entropy = this.Entropy(eqClassCollection, decisions);
-
-            foreach (int attribute in eqClassCollection.Attributes)
+            foreach (int attribute in localAttributes)
             {
                 EquivalenceClassCollection attributeEqClasses
                     = EquivalenceClassCollection.Create(new int[] { attribute }, eqClassCollection, 0);
                 attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
 
-                double score = this.Score(attributeEqClasses, entropy);
-                if (maxGain < score)
+                double score = this.GetSplitScore(attributeEqClasses, currentScore);
+                if (maxScore < score)
                 {
-                    maxGain = score;
+                    maxScore = score;
                     result = attribute;
                 }
             }
@@ -162,12 +165,41 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        protected virtual double Score(EquivalenceClassCollection attributeEqClasses, double entropy)
+        protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
         {
-            return this.GainInfo(attributeEqClasses, entropy);
+            throw new NotImplementedException();
         }
 
-        protected double Entropy(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected virtual double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double currentScore)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+    public class DecisionTreeID3 : DecisionTree
+    {
+        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
+        {
+            double result = 0;
+            foreach (var eq in attributeEqClasses)
+            {
+                double localEntropy = 0;
+                foreach (var dec in eq.DecisionSet)
+                {
+                    decimal decWeight = eq.GetDecisionWeight(dec);
+                    double p = (double)(decWeight / eq.WeightSum);
+                    if (p != 0)
+                        localEntropy -= p * System.Math.Log(p, 2);
+                }
+
+                result += (double)(eq.WeightSum / attributeEqClasses.WeightSum) * localEntropy;
+            }
+
+            return entropy - result;
+        }
+
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
         {
             double entropy = 0;
             foreach (long dec in decisions)
@@ -179,31 +211,18 @@ namespace Infovision.Datamining.Roughset
             }
             return entropy;
         }
-
-        protected double GainInfo(EquivalenceClassCollection eqClassCollection, double entropy)
-        {
-            double result = 0;
-            foreach (var eq in eqClassCollection)
-            {
-                double localEntropy = 0;
-                foreach (var dec in eq.DecisionSet)
-                {
-                    decimal decWeight = eq.GetDecisionWeight(dec);
-                    double p = (double)(decWeight / eq.WeightSum);
-                    if (p != 0)
-                        localEntropy -= p * System.Math.Log(p, 2);
-                }
-                
-                result += (double)(eq.WeightSum / eqClassCollection.WeightSum) * localEntropy;
-            }
-
-            return entropy - result;
-        }
     }
 
     public class DecisionTreeC45 : DecisionTreeID3
     {
-        protected double SplitInfo(EquivalenceClassCollection eqClassCollection)
+        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
+        {
+            double gain = base.GetSplitScore(attributeEqClasses, entropy);
+            double splitInfo = this.SplitInfo(attributeEqClasses);
+            return (splitInfo == 0) ? 0 : gain / splitInfo;
+        }
+
+        private double SplitInfo(EquivalenceClassCollection eqClassCollection)
         {
             double result = 0;
             foreach (var eq in eqClassCollection)
@@ -214,12 +233,20 @@ namespace Infovision.Datamining.Roughset
             }
             return result;
         }
+    }
 
-        protected override double Score(EquivalenceClassCollection attributeEqClasses, double entropy)
+    public class DecisionTreeCART : DecisionTree
+    {
+        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double gini)
         {
-            double gain = this.GainInfo(attributeEqClasses, entropy);
-            double splitInfo = this.SplitInfo(attributeEqClasses);
-            return (splitInfo == 0) ? 0 : gain / splitInfo;
+            throw new NotImplementedException();
+        }
+
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        {
+            throw new NotImplementedException();
         }
     }
+
+    
 }

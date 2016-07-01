@@ -52,6 +52,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         }
 
+        [Test]
+        public void RandomForestTest()
+        {
+            Console.WriteLine("RandomForestTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            DecisionTreeC45 treeC45 = new DecisionTreeC45();
+            treeC45.NumberOfRandomAttributes = 5;
+            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
+            Console.WriteLine(treeC45.Classify(data, null));
+            Console.WriteLine(treeC45.Classify(test, null));
+
+        }
+
         public DataStore GetDataStore()
         {
             /*
@@ -128,9 +145,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     //Console.WriteLine("Reduct: {0}", reductAttributes.ToStr(' '));
 
                     for (int i = 0; i < nodeAttributes.Length; i++)
-                    {
                         Assert.AreEqual(nodeAttributes[i], reductAttributes[i]);
-                    }
                 }
             }
         }

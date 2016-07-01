@@ -201,12 +201,8 @@ namespace Infovision.Data
             dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;
 
             for (int i = 0; i < folds.Length; i++)
-            {
                 if (folds[i] == this.ActiveFold)
-                {
-                    dataStore2.Insert(dataStore.GetRecordByIndex(i)); 
-                }
-            }
+                    dataStore2.Insert(dataStore.GetRecordByIndex(i));
 
             dataStore2.NormalizeWeights();
             dataStore2.CreateWeightHistogramsOnFields();

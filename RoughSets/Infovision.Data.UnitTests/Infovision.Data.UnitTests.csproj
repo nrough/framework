@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSamplerTest.cs" />
     <Compile Include="DataStoreInfoTest.cs" />
     <Compile Include="DataStoreSplitterTest.cs" />
     <Compile Include="DiscretizeTest.cs" />

@@ -366,5 +366,17 @@ namespace Infovision.Statistics
             return System.Math.Log(a) / LOG2;
         }
 
+        public static void Normalize(double[] values, double sum)
+        {
+            for (int i = 0; i < values.Length; i++)
+                values[i] /= sum;
+        }
+
+        public static void Normalize(decimal[] values, decimal sum)
+        {
+            for (int i = 0; i < values.Length; i++)
+                values[i] /= sum;
+        }
+
     }
 }

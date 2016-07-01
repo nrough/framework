@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                                     minSize1 = sizeJ;
                                     minSize2 = sizeK;
                                 }                                
-                                //prefer to join smaller clusters first
+                                //prefer to join smaller clusters startFromIdx
                                 else if (distance == minDistance
                                     && (sizeJ < minSize1 || sizeK < minSize2))
                                 {

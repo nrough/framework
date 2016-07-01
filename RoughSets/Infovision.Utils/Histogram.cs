@@ -69,6 +69,30 @@ namespace Infovision.Utils
                 maxValue = key;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            Histogram<T> p = obj as Histogram<T>;
+            if (p == null)
+                return false;
+
+            //TODO compare two dictionaries
+            if (!p.minValue.Equals(this.minValue))
+                return false;
+
+            if (p.maxValue.Equals(this.maxValue))
+                return false;
+
+            return new DictionaryComparer<T, decimal>().Equals(p.histogramData, this.histogramData);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();    
+        }
+
         #endregion       
     }
 }

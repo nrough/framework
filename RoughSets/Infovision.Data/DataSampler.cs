@@ -28,12 +28,14 @@ namespace Infovision.Data
 		public DataSampler()
 		{
 			this.BagSizePercent = 100;
+			this.Weights = null;
 		}
 
 		public DataSampler(DataStore data)
 			: this()
 		{
 			this.Data = data;
+			this.Weights = (data.Weights != null) ? Array.ConvertAll(data.Weights, x => (double)x) : this.Weights;
 		}
 
 		public DataStore GetData(int iteration)

@@ -1,3 +1,4 @@
 ﻿@echo off
 REM Majority Generalized Decision Test
-start MajorityGeneralizedDecisionTest.exe dna zoo soybean-small promoters spect chess mashroom semeion letter nursery monks-1 monks-2 monks-3 opt pen
+REM start MajorityGeneralizedDecisionTest.exe dna zoo soybean-small promoters letter monks-1 monks-2 monks-3 spect chess mashroom semeion nursery opt pen
+start MajorityGeneralizedDecisionTest.exe monks-1 monks-2 monks-3 spect letter chess mashroom semeion nursery opt pen

@@ -10,17 +10,29 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-    public interface IDecisionTree
+    public interface ILearner
     {
-        void Learn(DataStore data, int[] attributes);
+        double Learn(DataStore data, int[] attributes);
+    }    
+
+    public interface IDecisionTree : ILearner
+    {        
+        ITreeNode Root { get; }
+        long Compute(DataRecordInternal record);
+        ClassificationResult Classify(DataStore data, decimal[] weights = null);
+    }
+
+    public interface IRandomForestTree : IDecisionTree
+    {
+        int NumberOfRandomAttributes { get; set;}
     }
     
-    public abstract class DecisionTree : IDecisionTree
+    public abstract class DecisionTree : IRandomForestTree
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
 
-        public DecisionTreeNode Root { get { return this.root; } }
+        public ITreeNode Root { get { return this.root; } }
         public int NumberOfRandomAttributes { get; set; }
         
         public DecisionTree()
@@ -30,12 +42,15 @@ namespace Infovision.Datamining.Roughset
             this.NumberOfRandomAttributes = -1;
         }
 
-        public void Learn(DataStore data, int[] attributes)
+        public double Learn(DataStore data, int[] attributes)
         {
             this.root = new DecisionTreeNode(-1, -1);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
             EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, 0, data.Weights);
             this.GenerateSplits(eqClasscollection, this.root);
+
+            ClassificationResult trainResult = this.Classify(data, data.Weights);
+            return 1 - trainResult.Accuracy;
         }
 
         protected void CreateLeaf(DecisionTreeNode parent, long decisionValue)
@@ -72,12 +87,12 @@ namespace Infovision.Datamining.Roughset
             }
         }        
 
-        public long Compute(DataRecordInternal record, ITreeNode subtree)
+        public long Compute(DataRecordInternal record)
         {
-            if (subtree == null)
-                throw new ArgumentNullException("subtree");
+            if (this.Root == null)
+                throw new InvalidOperationException("this.Root == null");
 
-            ITreeNode current = subtree;
+            ITreeNode current = this.Root;
             while (current != null)
             {
                 if (current.IsLeaf)
@@ -111,7 +126,7 @@ namespace Infovision.Datamining.Roughset
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record, this.Root);
+                    var prediction = this.Compute(record);
                     result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
                 }
                 );
@@ -122,7 +137,7 @@ namespace Infovision.Datamining.Roughset
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record, this.Root);
+                    var prediction = this.Compute(record);
                     result.AddResult(
                         objectIndex,
                         prediction,
@@ -248,5 +263,203 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
-    
+    public interface IRandomForestMember
+    {
+        IRandomForestTree Tree { get; }
+        double Error { get; }
+    }
+
+    public class RandomForestMember : IRandomForestMember
+    {
+        public IRandomForestTree Tree { get; set; }
+        public double Error { get; set; }
+    }
+
+    public class RandomForest<T> : ILearner, IEnumerable<IRandomForestMember>
+        where T : IRandomForestTree, new()
+    {
+        private List<IRandomForestMember> trees;       
+        
+        public int Size { get; set; }
+        public int BagSizePercent { get; set; }
+        public int NumberOfRandomAttributes { get; set; }
+
+        public RandomForest()
+        {
+            this.Size = 500;
+            this.BagSizePercent = 100;
+            this.NumberOfRandomAttributes = -1;
+
+            this.trees = new List<IRandomForestMember>(this.Size);            
+        }
+
+        public virtual double Learn(DataStore data, int[] attributes)
+        {
+            DataSampler sampler = new DataSampler(data);
+            if(this.BagSizePercent != -1)
+                sampler.BagSizePercent = this.BagSizePercent;
+            for (int iter = 0; iter < this.Size; iter++)
+            {
+                DataStore baggedData = sampler.GetData(iter);
+                T tree = new T();
+                tree.NumberOfRandomAttributes 
+                    = (this.NumberOfRandomAttributes > 0) 
+                    ? this.NumberOfRandomAttributes
+                    : (int)System.Math.Max(1, data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1);
+
+                double error = tree.Learn(baggedData, attributes);
+                this.AddTree(tree, error);
+                
+            }
+            ClassificationResult trainResult = this.Classify(data, data.Weights);
+            return 1 - trainResult.Accuracy;
+        }
+
+        protected void AddTree(IRandomForestTree tree, double error)
+        {
+            IRandomForestMember newMember = new RandomForestMember()
+            {
+                Tree = tree,
+                Error = error
+            };
+            
+            this.trees.Add(newMember);
+        }
+
+        public long Compute(DataRecordInternal record)
+        {
+            var votes = new Dictionary<long, double>(this.trees.Count);
+            foreach (var member in this)
+            {
+                long result = member.Tree.Compute(record);
+
+                if (votes.ContainsKey(result))
+                    votes[result] += (1 - member.Error);
+                else
+                    votes.Add(result, (1 - member.Error));
+            }
+            
+            return votes.FindMaxValueKey();
+        }
+        
+        public IEnumerator<IRandomForestMember> GetEnumerator()
+        {
+            return this.trees.GetEnumerator();
+        }
+        
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        //TODO Move to some global blace this method will always be used
+        public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
+        {
+            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
+
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
+
+            if (weights == null)
+            {
+                double w = 1.0 / testData.NumberOfRecords;             
+                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
+                {
+                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
+                    var prediction = this.Compute(record);
+                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
+                }
+                );
+            }
+            else
+            {
+                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
+                {
+                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
+                    var prediction = this.Compute(record);
+                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
+                }
+                );
+            }
+
+            return result;
+        }
+    }
+
+    public class RoughForest<T> : RandomForest<T>
+        where T : IRandomForestTree, new()
+    {
+       
+        private int reductLengthSum;
+
+        public double AverageReductLength 
+        {
+            get
+            {
+                return (double) this.reductLengthSum / (double) this.Size;
+            }
+        }
+
+        public decimal Epsilon { get; set; }
+        public int NumberOfPermutationsPerTree { get; set; }
+
+        public RoughForest()
+            : base()
+        {
+            this.Epsilon = 0.2m;
+            this.NumberOfPermutationsPerTree = 20;
+        }
+
+        public override double Learn(DataStore data, int[] attributes)
+        {
+            this.reductLengthSum = 0;
+            DataSampler sampler = new DataSampler(data);
+            if (this.BagSizePercent != -1)
+                sampler.BagSizePercent = this.BagSizePercent;
+            
+            for (int iter = 0; iter < this.Size; iter++)
+            {
+                DataStore baggedData = sampler.GetData(iter);
+
+                WeightGenerator weightGenerator = new WeightGeneratorMajority(baggedData);                
+                PermutationCollection permuations = new PermutationGenerator(baggedData).Generate(this.NumberOfPermutationsPerTree);
+
+                Args parms = new Args();
+                parms.SetParameter(ReductGeneratorParamHelper.TrainData, baggedData);
+                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
+                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permuations);
+                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+
+                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                generator.Run();
+
+                IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
+                IReductStoreCollection reductsFiltered = null;
+
+                if (reductStoreCollection.ReductPerStore)
+                    reductsFiltered = reductStoreCollection.FilterInEnsemble(1, new ReductStoreLengthComparer(false));
+                else    
+                    reductsFiltered = reductStoreCollection.Filter(1, new ReductLengthComparer());
+
+                IReduct reduct = reductsFiltered.FirstOrDefault().FirstOrDefault();
+                this.reductLengthSum += reduct.Attributes.Count;
+                
+                T tree = new T();
+                tree.NumberOfRandomAttributes = -1;
+                double error = tree.Learn(baggedData, reduct.Attributes.ToArray());
+
+                this.AddTree(tree, error);
+            }
+            
+            ClassificationResult trainResult = this.Classify(data, data.Weights);
+            return 1 - trainResult.Accuracy;
+        }
+    }
 }

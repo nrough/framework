@@ -157,41 +157,6 @@ namespace Infovision.Datamining.Roughset
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
-            /*
-            int[] p = permutation;
-            if(reductStoreCollection != null && reductStoreCollection.Count > 0)
-            {
-                p = new int[permutation.Length];
-                Array.Copy(permutation, p, permutation.Length);
-                int n = permutation.Length;
-                bool flag = false;
-                for (int j = n - 1; j >= 0 ; j--)
-                {
-                    foreach (IReductStore rs in reductStoreCollection)
-                    {
-                        IReduct r = rs.First();
-                        PascalSet<int> temp = new PascalSet<int>(r.Attributes.LowerBound, r.Attributes.UpperBound, p);
-                        if (r.Attributes.ProperSubsetFast(temp))
-                        {
-                            p = p.RemoveAt(j);
-                            break;
-                        }
-
-                        if (r.Attributes.SupersetFast(temp))
-                        {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (flag)
-                        break;
-                }
-            }
-
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(p, this.DataStore, epsilon, weights);
-            int len = p.Length;
-            */
-
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, epsilon, weights);
             int len = permutation.Length;            
 

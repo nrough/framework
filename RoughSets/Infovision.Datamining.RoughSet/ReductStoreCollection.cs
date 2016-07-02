@@ -13,6 +13,7 @@ namespace Infovision.Datamining.Roughset
         void AddStore(IReductStore reductStore);
         IReadOnlyList<IReductStore> GetStoreList();
         int Count { get; }
+        bool ReductPerStore { get; set; }
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
@@ -26,6 +27,8 @@ namespace Infovision.Datamining.Roughset
         protected object mutex = new object();
 
         public int Count { get { return this.stores.Count; } }
+
+        public bool ReductPerStore { get; set; }
 
         public ReductStoreCollection()
         {

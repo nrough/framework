@@ -64,6 +64,8 @@ namespace Infovision.Datamining.Roughset
                     this.ReductStoreCollection.AddStore(localReductPool);
                 }
                 );
+
+                this.ReductStoreCollection.ReductPerStore = true;
             }
             else
             {
@@ -71,14 +73,24 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        protected override EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        protected override EquivalenceClassCollection Reduce(
+            EquivalenceClassCollection eqClasses, 
+            int attributeIdx, 
+            int length, 
+            IReductStore reductStore = null, 
+            IReductStoreCollection reductStoreCollection = null)
         {
             if (this.UseExceptionRules)
                 return this.ReduceWithExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
             return this.ReduceWithoutExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);            
         }
 
-        private EquivalenceClassCollection ReduceWithExceptions(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore, IReductStoreCollection reductStoreCollection = null)
+        private EquivalenceClassCollection ReduceWithExceptions(
+            EquivalenceClassCollection eqClasses, 
+            int attributeIdx, 
+            int length, 
+            IReductStore reductStore, 
+            IReductStoreCollection reductStoreCollection = null)
         {           
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
@@ -192,7 +204,12 @@ namespace Infovision.Datamining.Roughset
             }
         }        
 
-        private EquivalenceClassCollection ReduceWithoutExceptions(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore, IReductStoreCollection reductStoreCollection = null)
+        private EquivalenceClassCollection ReduceWithoutExceptions(
+            EquivalenceClassCollection eqClasses, 
+            int attributeIdx, 
+            int length, 
+            IReductStore reductStore, 
+            IReductStoreCollection reductStoreCollection = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);

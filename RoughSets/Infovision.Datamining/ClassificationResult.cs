@@ -210,8 +210,6 @@ namespace Infovision.Datamining
         public int ExceptionRuleLengthSum { get; set; }
         public int StandardRuleLengthSum { get; set; }
 
-        //TODO
-
         #endregion
 
         #region Constructors

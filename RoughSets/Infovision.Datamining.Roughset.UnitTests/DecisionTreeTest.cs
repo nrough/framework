@@ -77,24 +77,35 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("RoughForestTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int size = 100;
 
-            RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
-            roughForest.Size = 20;
-            roughForest.Epsilon = 0.1m;
-            roughForest.NumberOfPermutationsPerTree = 30;
-            roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(roughForest.Classify(test, null));
+            for (int i = 0; i < 20; i++)
+            {
+                RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
+                roughForest.Size = size;
+                roughForest.NumberOfPermutationsPerTree = 20;
+                roughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
+                roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());                
+                Console.WriteLine(roughForest.Classify(test, null));
 
-            RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
-            randomForest.Size = 20;
-            randomForest.NumberOfRandomAttributes = (int)roughForest.AverageReductLength;
-            randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(randomForest.Classify(test, null));
+                RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
+                randomForest.Size = size;
+                randomForest.NumberOfRandomAttributes = (int)roughForest.AverageReductLength;
+                randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());                
+                Console.WriteLine(randomForest.Classify(test, null));
 
-            DecisionTreeC45 c45tree = new DecisionTreeC45();
-            c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(c45tree.Classify(test, null));
+                DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
+                dummyForest.Size = size;
+                dummyForest.NumberOfRandomAttributes = (int)dummyForest.AverageReductLength;
+                dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                Console.WriteLine(dummyForest.Classify(test, null));
 
+                DecisionTreeC45 c45tree = new DecisionTreeC45();
+                c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                Console.WriteLine(c45tree.Classify(test, null));
+
+                Console.WriteLine();
+            }
         }
 
         public DataStore GetDataStore()
@@ -120,8 +131,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\letter.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             string factoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
-            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);            
-            PermutationCollection permList = new PermutationGenerator(data).Generate(10);            
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
+            PermutationCollection permList = new PermutationGenerator(data).Generate(10);
 
             for (int t = 0; t < 20; t++)
             {

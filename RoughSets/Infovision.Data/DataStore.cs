@@ -204,7 +204,7 @@ namespace Infovision.Data
 
             Array.Copy(w, this.weights, w.Length);
 
-            this.CreateWeightHistogramsOnFields();            
+            this.CreateWeightHistogramsOnFields();
         }
 
         internal void CreateWeightHistogramsOnFields()

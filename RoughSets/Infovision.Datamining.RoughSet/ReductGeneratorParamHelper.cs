@@ -49,6 +49,7 @@ namespace Infovision.Datamining.Roughset
         public static readonly string CVActiveFold = "CVActiveFold";
         public static readonly string ReductComparer = "ReductComparer";
         public static readonly string EquivalenceClassSortDirection = "EquivalenceClassSortDirection";
+        public static readonly string DataSetQuality = "DataSetQuality";
     }
 
     //TODO Keys should be returned from Generator classes as static fileLine

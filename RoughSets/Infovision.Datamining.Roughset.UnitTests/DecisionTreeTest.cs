@@ -85,20 +85,25 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 roughForest.Size = size;
                 roughForest.NumberOfPermutationsPerTree = 20;
                 roughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
-                roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());                
+                roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(roughForest.Classify(test, null));
 
                 RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
                 randomForest.Size = size;
                 randomForest.NumberOfRandomAttributes = (int)roughForest.AverageReductLength;
-                randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());                
+                randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(randomForest.Classify(test, null));
 
                 DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
                 dummyForest.Size = size;
-                dummyForest.NumberOfRandomAttributes = (int)dummyForest.AverageReductLength;
                 dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(dummyForest.Classify(test, null));
+
+                SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
+                semiRoughForest.Size = size;
+                semiRoughForest.Epsilon = 0.1m;
+                semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                Console.WriteLine(semiRoughForest.Classify(test, null));
 
                 DecisionTreeC45 c45tree = new DecisionTreeC45();
                 c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());

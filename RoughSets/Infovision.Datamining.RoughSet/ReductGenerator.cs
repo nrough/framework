@@ -86,16 +86,16 @@ namespace Infovision.Datamining.Roughset
 
         #endregion
 
-        #region Constructors        
+        #region Constructors
 
         protected ReductGenerator()
         {
-            this.InitDefaultParameters();            
+            this.InitDefaultParameters();
         }
 
         #endregion 
 
-        #region Methods               
+        #region Methods
 
         protected abstract void Generate();
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
@@ -190,7 +190,7 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
                 this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
-
+            
             //TODO FieldGroups
         }
 

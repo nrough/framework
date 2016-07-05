@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Roughset
         private DecisionTreeFormatter()
         {
             this.Indent = 2;
-        }        
+        }
 
         public ITreeNode Root { get; set; }
         public DataStore Data { get; set; }
@@ -248,7 +248,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         private void Build(ITreeNode node, int currentLevel, StringBuilder sb)
-        {            
+        {
             sb.AppendLine(NodeToString(node, currentLevel));
             if (node.Children != null)
                 foreach (var child in node.Children)

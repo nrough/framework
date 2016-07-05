@@ -35,11 +35,11 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                if (this.dataSetQuality < -Decimal.One)
+                if (!this.IsDataSetQualityCalculated())
                     this.CalcDataSetQuality();
 
                 return this.dataSetQuality;
-            }            
+            }
         }
 
         protected IInformationMeasure InformationMeasure
@@ -58,14 +58,25 @@ namespace Infovision.Datamining.Roughset
         {
             base.InitFromArgs(args);
 
+            if (args.Exist(ReductGeneratorParamHelper.DataSetQuality))
+                this.dataSetQuality = args.GetParameter<decimal>(ReductGeneratorParamHelper.DataSetQuality);
+
             this.CalcDataSetQuality();
+        }
+
+        protected bool IsDataSetQualityCalculated()
+        {
+            return this.dataSetQuality > 0;
         }
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct tmpReduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "tmpReduct");
-            this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
-        }        
+            if (!this.IsDataSetQualityCalculated())
+            {
+                IReduct tmpReduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "tmpReduct");
+                this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
+            }
+        }
         
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
         {
@@ -137,7 +148,7 @@ namespace Infovision.Datamining.Roughset
             //IReduct reduct = this.CreateReductObject(new int[] { }, this.Epsilon, this.GetNextReductId().ToString());
             //this.Reach(reduct, attributes, null, false);
             
-            IReduct reduct = this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());            
+            IReduct reduct = this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());
             this.ReduceForward(reduct, attributes, null, false);
 
             return reduct;
@@ -237,7 +248,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual string GetReductCacheKey(IReduct reduct)
         {
-            StringBuilder stringBuilder = new StringBuilder();            
+            StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("m=").Append(this.GetType().Name);
             stringBuilder.Append("|d=").Append(this.DataStore.Name);
             stringBuilder.Append("|a=").Append(reduct.Attributes.CacheKey);

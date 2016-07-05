@@ -437,7 +437,7 @@ namespace Infovision.Datamining.Roughset
         protected virtual IReduct CalculateReduct(DataStore data)
         {
             //WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
-            PermutationCollection permuations = new PermutationGenerator(data).Generate(this.NumberOfPermutationsPerTree);
+            PermutationCollection permutations = new PermutationGenerator(data).Generate(this.NumberOfPermutationsPerTree);
 
             decimal localEpsilon = Decimal.MinValue;
             if (this.Epsilon >= 0)
@@ -450,7 +450,7 @@ namespace Infovision.Datamining.Roughset
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
             //parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, localEpsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permuations);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
@@ -514,7 +514,7 @@ namespace Infovision.Datamining.Roughset
             {
                 DataStore baggedData = sampler.GetData(iter);
 
-                IReduct reduct = this.CalculateReduct(baggedData);                
+                IReduct reduct = this.CalculateReduct(baggedData);
                 
                 this.reductLengthSum += reduct.Attributes.Count;
                 foreach (int attr in reduct.Attributes)
@@ -546,6 +546,38 @@ namespace Infovision.Datamining.Roughset
             int len = attributes.Length;
             attributes = attributes.RandomSubArray(RandomSingleton.Random.Next(1, len));
             IReduct reduct = new ReductWeights(data, attributes, 0, data.Weights);
+
+            return reduct;
+        }
+    }
+
+    public class SemiRoughForest<T> : DummyForest<T>
+        where T : IRandomForestTree, new()
+    {
+        protected override IReduct CalculateReduct(DataStore data)
+        {
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int len = attributes.Length;
+            attributes = attributes.RandomSubArray(RandomSingleton.Random.Next(1, len));
+
+            PermutationCollection permutations = new PermutationCollection(new Permutation(attributes));
+            IReduct r = new ReductWeights(data, attributes, 0, data.Weights);
+            InformationMeasureWeights m = new InformationMeasureWeights();
+            decimal q = m.Calc(r);
+            
+            Args parms = new Args();
+            parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
+            parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
+            parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
+            parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, permutations);
+            parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms.SetParameter<decimal>(ReductGeneratorParamHelper.DataSetQuality, q);
+
+            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            generator.Run();
+
+            IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
+            IReduct reduct = reductStoreCollection.First().First();
 
             return reduct;
         }

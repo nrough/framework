@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
 {
     public class MiningObjectHistogramCluster : MiningObject
     {
         private List<ImageHistogramInterval> intervalList = new List<ImageHistogramInterval>();
-        
+
         public double ApproximationDegree { get; set; }
         public double BucketCountWeight { get; set; }
         public int HistogramBucketSize { get; set; }
@@ -38,7 +37,7 @@ namespace Infovision.MRI.DAL
                 this.intervalList = value;
             }
         }
-        
+
         public override XElement XMLParametersElement
         {
             get
@@ -103,7 +102,6 @@ namespace Infovision.MRI.DAL
                                 Convert.ToDouble(interval.Attribute("UpperBound").Value, provider),
                                 Convert.ToInt32(interval.Attribute("Label").Value));
 
-
             foreach (ImageHistogramInterval interval in intervals)
             {
                 intervalList.Add(interval);
@@ -114,9 +112,9 @@ namespace Infovision.MRI.DAL
         {
             base.ReloadReferences(project);
 
-            if(histogramCluster == null)
+            if (histogramCluster == null)
             {
-                if ( !String.IsNullOrEmpty(this.FileNameLoad) && File.Exists(this.FileNameLoad))
+                if (!String.IsNullOrEmpty(this.FileNameLoad) && File.Exists(this.FileNameLoad))
                 {
                     histogramCluster = ImageHistogramCluster.Load(this.FileNameLoad);
                 }
@@ -136,7 +134,7 @@ namespace Infovision.MRI.DAL
 
                     histogramCluster.Image = image;
                     histogramCluster.Train();
-                }     
+                }
             }
         }
 
@@ -148,7 +146,7 @@ namespace Infovision.MRI.DAL
 
             this.TypeId = MiningObjectType.Types.ImageHistogramCluster;
             this.Name = "Image histogram cluster";
-            
+
             this.ApproximationDegree = clusterModel.ApproximationDegree;
             this.BucketCountWeight = clusterModel.BucketCountWeight;
             this.HistogramBucketSize = clusterModel.HistogramBucketSize;
@@ -163,7 +161,7 @@ namespace Infovision.MRI.DAL
                 this.histogramCluster = clusterModel.Cluster;
                 this.FileNameLoad = clusterModel.FileNameLoad;
             }
-            else if(clusterModel.Image != null)
+            else if (clusterModel.Image != null)
             {
                 ImageITK image = clusterModel.Image as ImageITK;
                 clusterModel.Train(image);
@@ -173,8 +171,8 @@ namespace Infovision.MRI.DAL
 
             this.intervalList = new List<ImageHistogramInterval>(clusterModel.Cluster.GetIntervals());
 
-            if (clusterModel.SaveFile 
-                && !String.IsNullOrEmpty(clusterModel.FileNameSave) 
+            if (clusterModel.SaveFile
+                && !String.IsNullOrEmpty(clusterModel.FileNameSave)
                 && clusterModel.Cluster != null)
             {
                 clusterModel.Save(clusterModel.FileNameSave);

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.Math
 {
@@ -18,8 +15,8 @@ namespace Infovision.Math
         {
             this.x = x;
             this.y = y;
-        } 
-        
+        }
+
         #region System.Object Methods
 
         public override string ToString()
@@ -41,12 +38,12 @@ namespace Infovision.Math
             if (obj is MatrixKey)
             {
                 index = (MatrixKey)obj;
-                return (this.X == index.X && this.Y == index.Y)  || (this.X == index.Y && this.Y == index.X);                
+                return (this.X == index.X && this.Y == index.Y) || (this.X == index.Y && this.Y == index.X);
             }
 
-            return false;            
+            return false;
         }
 
-        #endregion
+        #endregion System.Object Methods
     }
 }

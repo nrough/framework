@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System;
 
 namespace Infovision.MRI
 {
@@ -8,20 +8,19 @@ namespace Infovision.MRI
     {
         private Dictionary<string, IImageFeature> generators = new Dictionary<string, IImageFeature>();
 
-        public uint ImageWidth { get; set; } 
+        public uint ImageWidth { get; set; }
         public uint ImageHeight { get; set; }
         public uint ImageDepth { get; set; }
 
         public DataTable GetDataTable(uint x0, uint y0, uint z0, uint xn, uint yn, uint zn)
         {
-
             if (xn > this.ImageWidth
                 || yn > this.ImageHeight
                 || zn > this.ImageDepth)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            
+
             DataTable dataTable = new DataTable();
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
                 dataTable.Columns.Add(kvp.Key);
@@ -46,7 +45,7 @@ namespace Infovision.MRI
                     }
                 }
             }
-            
+
             return dataTable;
         }
 

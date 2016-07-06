@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
@@ -16,33 +14,33 @@ namespace Infovision.Datamining.Roughset
         private IComparer<EquivalenceClass> lengthComparer;
         private IComparer<EquivalenceClass> lengthComparerReverse;
 
-        #endregion
+        #endregion Members
 
         #region Properties
 
         public bool UseExceptionRules { get; set; }
         public SortDirection EquivalenceClassSortDirection { get; set; }
-        public decimal Gamma { get; set; }        
+        public decimal Gamma { get; set; }
         protected decimal WeightDropLimit { get; set; }
         protected decimal ObjectWeightSum { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
         public ReductGeneralizedMajorityDecisionApproximateGenerator()
             : base()
-        {            
+        {
             lengthComparer = Comparer<EquivalenceClass>.Create((a, b) => a.NumberOfObjects.CompareTo(b.NumberOfObjects));
             lengthComparerReverse = Comparer<EquivalenceClass>.Create((a, b) => b.NumberOfObjects.CompareTo(a.NumberOfObjects));
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         protected override void Generate()
-        {            
+        {
             if (this.UseExceptionRules)
             {
                 ParallelOptions options = new ParallelOptions()
@@ -56,7 +54,7 @@ namespace Infovision.Datamining.Roughset
 
                 Parallel.ForEach(this.attributePermutations, options, permutation =>
                 //foreach (var permutation in this.attributePermutations)
-                {                    
+                {
                     ReductStore localReductPool = new ReductStore();
                     localReductPool.AllowDuplicates = true;
                     localReductPool.DoAddReduct(this.CalculateReduct(permutation, localReductPool, this.ReductStoreCollection));
@@ -74,24 +72,24 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override EquivalenceClassCollection Reduce(
-            EquivalenceClassCollection eqClasses, 
-            int attributeIdx, 
-            int length, 
-            IReductStore reductStore = null, 
+            EquivalenceClassCollection eqClasses,
+            int attributeIdx,
+            int length,
+            IReductStore reductStore = null,
             IReductStoreCollection reductStoreCollection = null)
         {
             if (this.UseExceptionRules)
                 return this.ReduceWithExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
-            return this.ReduceWithoutExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);            
+            return this.ReduceWithoutExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
         }
 
         private EquivalenceClassCollection ReduceWithExceptions(
-            EquivalenceClassCollection eqClasses, 
-            int attributeIdx, 
-            int length, 
-            IReductStore reductStore, 
+            EquivalenceClassCollection eqClasses,
+            int attributeIdx,
+            int length,
+            IReductStore reductStore,
             IReductStoreCollection reductStoreCollection = null)
-        {           
+        {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
@@ -125,7 +123,7 @@ namespace Infovision.Datamining.Roughset
 
                         //Update |E|w
                         newEqClass.WeightSum += eq.WeightSum;
-                        
+
                         //Update m_d
                         newEqClass.DecisionSet = newDecisionSet;
                     }
@@ -165,10 +163,10 @@ namespace Infovision.Datamining.Roughset
             {
                 //exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
                 ReductWeights exception = new ReductWeights(
-                    this.DataStore, 
-                    eqClasses.Attributes, 
-                    this.Epsilon, 
-                    this.WeightGenerator.Weights, 
+                    this.DataStore,
+                    eqClasses.Attributes,
+                    this.Epsilon,
+                    this.WeightGenerator.Weights,
                     exceptionEqClasses);
                 exception.IsException = true;
 
@@ -202,13 +200,13 @@ namespace Infovision.Datamining.Roughset
                     eqArray.Shuffle();
                     break;
             }
-        }        
+        }
 
         private EquivalenceClassCollection ReduceWithoutExceptions(
-            EquivalenceClassCollection eqClasses, 
-            int attributeIdx, 
-            int length, 
-            IReductStore reductStore, 
+            EquivalenceClassCollection eqClasses,
+            int attributeIdx,
+            int length,
+            IReductStore reductStore,
             IReductStoreCollection reductStoreCollection = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
@@ -265,7 +263,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.AvgConfidenceWeight = eq.AvgConfidenceWeight;
                     newEqClass.AvgConfidenceSum = eq.AvgConfidenceSum;
                     newEqClass.WeightSum = eq.WeightSum;
-                                        
+
                     newEqClasses.Partitions[newInstance] = newEqClass;
                 }
             }
@@ -285,10 +283,10 @@ namespace Infovision.Datamining.Roughset
             base.InitFromArgs(args);
 
             if (args.Exist(ReductGeneratorParamHelper.UseExceptionRules))
-                this.UseExceptionRules = (bool) args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
+                this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
 
             if (args.Exist(ReductGeneratorParamHelper.EquivalenceClassSortDirection))
-                this.EquivalenceClassSortDirection = (SortDirection) args.GetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection);
+                this.EquivalenceClassSortDirection = (SortDirection)args.GetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection);
 
             if (this.UseExceptionRules)
             {
@@ -302,7 +300,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightDropLimit = (Decimal.One - this.Gamma) * this.ObjectWeightSum;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public class ReductGeneralizedMajorityDecisionApproximateFactory : IReductFactory

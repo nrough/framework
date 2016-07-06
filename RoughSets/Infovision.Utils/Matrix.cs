@@ -9,11 +9,14 @@ namespace Infovision.Utils
         where V : IComparable
     {
         #region Globals
+
         private Dictionary<R, Dictionary<C, V>> rows;
         private Dictionary<C, Dictionary<R, V>> cols;
-        #endregion
+
+        #endregion Globals
 
         #region Constructors
+
         public Matrix()
         {
             rows = new Dictionary<R, Dictionary<C, V>>();
@@ -25,9 +28,11 @@ namespace Infovision.Utils
             rows = new Dictionary<R, Dictionary<C, V>>(numberOfRows);
             cols = new Dictionary<C, Dictionary<R, V>>(numberOfCols);
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Properties
+
         public int NumberOfRows
         {
             get { return rows.Count; }
@@ -47,7 +52,8 @@ namespace Infovision.Utils
         {
             get { return cols.Keys; }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
@@ -76,7 +82,6 @@ namespace Infovision.Utils
                 localRows.Add(rowElement, value);
                 cols[colElement] = localRows;
             }
-            
         }
 
         public void RemoveElement(R rowElement, C colElement)
@@ -114,7 +119,7 @@ namespace Infovision.Utils
             }
 
             return false;
-        } 
+        }
 
         public void RemoveColumn(C columnElement)
         {
@@ -218,7 +223,7 @@ namespace Infovision.Utils
             return cols[colElement].Values;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -226,12 +231,12 @@ namespace Infovision.Utils
     {
         public MatrixInt()
             : base()
-        { 
+        {
         }
 
         public int SumColumn(C colElement)
         {
-            return this.GetColValues(colElement).Sum();    
+            return this.GetColValues(colElement).Sum();
         }
 
         public int SumRow(R rowElement)

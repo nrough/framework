@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 using Infovision.Utils;
 
@@ -12,10 +8,13 @@ namespace Infovision.MRI.DAL
     [Serializable]
     public class MiningObject : IMiningObject
     {
-        event EventHandler<MiningObjectEventArgs> PreExecuteEvent;
-        event EventHandler<MiningObjectEventArgs> PostExecuteEvent;
-        event EventHandler<MiningObjectEventArgs> PreViewEvent;
-        event EventHandler<MiningObjectEventArgs> PostViewEvent;
+        private event EventHandler<MiningObjectEventArgs> PreExecuteEvent;
+
+        private event EventHandler<MiningObjectEventArgs> PostExecuteEvent;
+
+        private event EventHandler<MiningObjectEventArgs> PreViewEvent;
+
+        private event EventHandler<MiningObjectEventArgs> PostViewEvent;
 
         private object objectLock = new Object();
 
@@ -31,36 +30,36 @@ namespace Infovision.MRI.DAL
 
             switch (typeId)
             {
-                case MiningObjectType.Types.ImageRAW :
-                case MiningObjectType.Types.ImageITK :
+                case MiningObjectType.Types.ImageRAW:
+                case MiningObjectType.Types.ImageITK:
                     ret = new MiningObjectImage();
                     break;
 
-                case MiningObjectType.Types.ImageExtract :
+                case MiningObjectType.Types.ImageExtract:
                     ret = new MiningObjectImageExtract();
                     break;
 
-                case MiningObjectType.Types.ImageHistogram :
+                case MiningObjectType.Types.ImageHistogram:
                     ret = new MiningObjectImageHistogram();
                     break;
 
-                case MiningObjectType.Types.ImageMask :
+                case MiningObjectType.Types.ImageMask:
                     ret = new MiningObjectImageMask();
                     break;
 
-                case MiningObjectType.Types.ImageEdge :
+                case MiningObjectType.Types.ImageEdge:
                     ret = new MiningObjectImageEdge();
                     break;
 
-                case MiningObjectType.Types.ImageSOMCluster :
+                case MiningObjectType.Types.ImageSOMCluster:
                     ret = new MiningObjectSOMCluster();
                     break;
 
-                case MiningObjectType.Types.ImageHistogramCluster :
+                case MiningObjectType.Types.ImageHistogramCluster:
                     ret = new MiningObjectHistogramCluster();
                     break;
 
-                case MiningObjectType.Types.ImageNeighbour :
+                case MiningObjectType.Types.ImageNeighbour:
                     ret = new MiningObjectNeighbour();
                     break;
 
@@ -80,7 +79,7 @@ namespace Infovision.MRI.DAL
             ret.InitFromViewModel(viewModel);
             return ret;
         }
-        
+
         public string Name { get; set; }
         public long Id { get; set; }
         public string TypeId { get; set; }
@@ -96,7 +95,7 @@ namespace Infovision.MRI.DAL
             return parameters.GetParameter(name);
         }
 
-        public virtual XElement XMLParametersElement 
+        public virtual XElement XMLParametersElement
         {
             get { return new XElement("Parameters", null); }
         }
@@ -121,7 +120,7 @@ namespace Infovision.MRI.DAL
         public virtual void ReloadReferences(MiningProject project)
         {
         }
-        
+
         event EventHandler<MiningObjectEventArgs> IMiningObject.Executing
         {
             add
@@ -130,7 +129,6 @@ namespace Infovision.MRI.DAL
                 {
                     PreExecuteEvent += value;
                 }
-
             }
             remove
             {
@@ -167,7 +165,6 @@ namespace Infovision.MRI.DAL
                 {
                     PreViewEvent += value;
                 }
-
             }
             remove
             {
@@ -203,7 +200,7 @@ namespace Infovision.MRI.DAL
             this.OnExecuting(e);
             this.OnExecuted(e);
         }
-        
+
         public void View()
         {
             MiningObjectEventArgs e = new MiningObjectEventArgs(this);

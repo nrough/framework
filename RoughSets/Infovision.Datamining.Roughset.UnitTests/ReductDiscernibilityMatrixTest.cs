@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 using Infovision.Data;
-using Infovision.Datamining.Roughset;
 using Infovision.Utils;
 
 using NUnit.Framework;
-using NUnit;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    class ReductDiscernibilityMatrixTest
+    internal class ReductDiscernibilityMatrixTest
     {
-        DataStore dataStoreTrain = null;
-        DataStore dataStoreTest = null;
+        private DataStore dataStoreTrain = null;
+        private DataStore dataStoreTest = null;
 
-        DataStoreInfo dataStoreTrainInfo = null;
-        string output = "matrix.out";
+        private DataStoreInfo dataStoreTrainInfo = null;
+        private string output = "matrix.out";
 
         public ReductDiscernibilityMatrixTest()
         {
@@ -48,7 +43,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.CoverageW, dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(dataStoreTrain, null);
-            
+
             using (FileStream fileStream = new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
                 using (StreamWriter resultFile = new StreamWriter(fileStream))
@@ -79,6 +74,5 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
         }
-
     }
 }

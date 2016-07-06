@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -10,11 +10,10 @@ namespace Infovision.Datamining.Roughset
     public class PermutatioGeneratorFieldGroup : PermutationGenerator
     {
         private int[][] fieldGroups;
-        
+
         protected PermutatioGeneratorFieldGroup()
             : base()
         {
-            
         }
 
         public PermutatioGeneratorFieldGroup(int[][] fieldGroups)
@@ -71,19 +70,17 @@ namespace Infovision.Datamining.Roughset
                         int element = (int)localElements[randomGroups[groupId]][k];
                         localElements[randomGroups[groupId]].RemoveAt(k);
                         result[pos++] = element;
-                        
+
                         flag = true;
                     }
                 }
             }
-            
+
             Permutation permutation = new Permutation(result);
-            
+
             return permutation;
         }
 
-        #endregion
-
-
+        #endregion Methods
     }
 }

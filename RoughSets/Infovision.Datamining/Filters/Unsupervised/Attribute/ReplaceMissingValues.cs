@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 {
     public class ReplaceMissingValues
-    {               
+    {
         public ReplaceMissingValues()
         {
         }
 
         public DataStore Compute(DataStore dataStore, DataStore referenceDataStore = null)
-        {                                    
-            if(dataStore.DataStoreInfo.HasMissingData == false)
+        {
+            if (dataStore.DataStoreInfo.HasMissingData == false)
                 return dataStore;
 
             if (referenceDataStore != null)
@@ -23,7 +20,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 return this.ComputeFromReference(dataStore, referenceDataStore);
             }
 
-            return this.ComputeNoReference(dataStore);            
+            return this.ComputeNoReference(dataStore);
         }
 
         private DataStore ComputeFromReference(DataStore dataStore, DataStore referenceDataStore)
@@ -33,16 +30,16 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         }
 
         private DataStore ComputeNoReference(DataStore dataStore)
-        {            
+        {
             Dictionary<int, Dictionary<long, long>> mostFrequentValues = this.CalcMissingValues(dataStore);
 
             /*
             foreach (var kvp in mostFrequentValues)
-            {                
+            {
                 foreach (var kvp2 in kvp.Value)
                 {
                     Console.WriteLine("{0} {1} {2}",
-                        kvp.Key,               
+                        kvp.Key,
                         dataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(kvp2.Key),
                         dataStore.DataStoreInfo.GetFieldInfo(kvp.Key).Internal2External(kvp2.Value));
                 }
@@ -137,7 +134,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                                 fieldMaxValue = values.Key;
                                 fieldFound = true;
                             }
-
                         }
                     }
 
@@ -188,7 +184,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         continue;
 
                     if (record[fieldId] == fieldInfo.MissingValueInternal)
-                        record[fieldId] = frequentFieldValues[fieldId][decisionValue];                    
+                        record[fieldId] = frequentFieldValues[fieldId][decisionValue];
                 }
 
                 newDataStore.Insert(record);

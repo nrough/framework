@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Infovision.Datamining.Experimenter.Parms;
 using NUnit.Framework;
-using System.Threading.Tasks;
-using Infovision.Datamining.Experimenter.Parms;
 
 namespace Infovision.Datamining.Experimenter.Test
 {
     [TestFixture]
-    class ParmExclusionFixture
+    internal class ParmExclusionFixture
     {
         [Test]
         public void CreateExclusionList()
@@ -24,7 +19,7 @@ namespace Infovision.Datamining.Experimenter.Test
             IParameter parmBx1 = new ParameterValueCollection<int>("Bx1", new int[] { 1 });
             IParameter parmCx1 = new ParameterValueCollection<int>("Cx1", new int[] { 1 });
 
-            IParameter parmAx2 = new ParameterValueCollection<int>("Ax2", new int[] { 1 });            
+            IParameter parmAx2 = new ParameterValueCollection<int>("Ax2", new int[] { 1 });
             IParameter parmCx2 = new ParameterValueCollection<int>("Cx2", new int[] { 3 });
 
             IParameter parmAx3 = new ParameterValueCollection<int>("Ax3", new int[] { 2 });
@@ -35,7 +30,7 @@ namespace Infovision.Datamining.Experimenter.Test
             parmList.AddExclusion(new string[] { "A", "B", "C" }, new IParameter[] { parmAx1, parmBx1, parmCx1 });
             parmList.AddExclusion(new string[] { "A", "C" }, new IParameter[] { parmAx2, parmCx2 });
             parmList.AddExclusion(new string[] { "A" }, new IParameter[] { parmAx3 });
-            
+
             int i = 0;
             foreach (object[] parms in parmList.Values())
             {
@@ -57,12 +52,11 @@ namespace Infovision.Datamining.Experimenter.Test
             IParameter parmAx1 = new ParameterNumericRange<int>("Ax1", 3, 5, 1);
             IParameter parmBx2 = new ParameterNumericRange<double>("Bx1", 0.3, 0.5, 0.1);
 
-
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB });
 
             //Add exclusions
-            parmList.AddExclusion(new string[] { "A"} , new IParameter[] { parmAx1 });
-            parmList.AddExclusion(new string[] { "B" }, new IParameter[] { parmBx2});            
+            parmList.AddExclusion(new string[] { "A" }, new IParameter[] { parmAx1 });
+            parmList.AddExclusion(new string[] { "B" }, new IParameter[] { parmBx2 });
 
             int i = 0;
             foreach (object[] parms in parmList.Values())

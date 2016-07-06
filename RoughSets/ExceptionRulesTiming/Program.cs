@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Common.Logging;
+using Common.Logging.Configuration;
 using Infovision.Data;
-using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
-using Common.Logging;
-using Common.Logging.Configuration;
-using System.Diagnostics;
 
 namespace ExceptionRulesTiming
 {
@@ -19,11 +15,11 @@ namespace ExceptionRulesTiming
     {
         private static ILog log;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length < 1)
                 throw new ArgumentException("Please provide number of tests.");
-            
+
             int numberOfTests = Int32.Parse(args[0]);
 
             Program program = new Program();
@@ -112,7 +108,6 @@ namespace ExceptionRulesTiming
                         kvp.Value.CrossValidationFolds - 1,
                         mA);
 
-
                     for (int i = 0; i < 100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, 0, ensembleSize);
@@ -132,17 +127,16 @@ namespace ExceptionRulesTiming
                     }
 
                     this.SaveResults(filename, results1, results2, results3, results4, results5);
-
                 }
             }
         }
 
         private void SaveResults(string filename,
-            long[,,] results1,
-            long[,,] results2,
-            long[,,] results3,
-            long[,,] results4,
-            long[,,] results5)
+            long[, ,] results1,
+            long[, ,] results2,
+            long[, ,] results3,
+            long[, ,] results4,
+            long[, ,] results5)
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {
@@ -175,7 +169,7 @@ namespace ExceptionRulesTiming
             parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            
+
             ReductGeneratorWeightsMajority generatorApprox =
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
             t1 = new Stopwatch();
@@ -183,7 +177,6 @@ namespace ExceptionRulesTiming
             generatorApprox.Run();
             t1.Stop();
 
-            
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
@@ -193,14 +186,12 @@ namespace ExceptionRulesTiming
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
             //parms_GMDR.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int) resultApprox.QualityRatio > 0 ? (int) resultApprox.QualityRatio : 1);
 
-            
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
             t2 = new Stopwatch();
             t2.Start();
             generator_GMDR.Run();
-            t2.Stop();            
-
+            t2.Stop();
 
             Args parmsEx = new Args();
             parmsEx.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
@@ -208,15 +199,14 @@ namespace ExceptionRulesTiming
             parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);          
-            
+            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
             t3 = new Stopwatch();
             t3.Start();
             generatorEx.Run();
             t3.Stop();
-
 
             double avgSize = generatorApprox.GetReductStoreCollection().Filter(ensembleSize, new ReductLengthComparer()).GetAvgMeasure(new ReductMeasureLength());
 
@@ -234,12 +224,11 @@ namespace ExceptionRulesTiming
             parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)avgSize);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)avgSize);
 
-            
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
             t4 = new Stopwatch();
             t4.Start();
-            generatorRandom.Run();            
+            generatorRandom.Run();
             t4.Start();
 
             return new Tuple<long, long, long, long, long>

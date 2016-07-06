@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -11,7 +9,7 @@ namespace Infovision.MRI.DAL
     public class MiningObjectViewModel : IMiningObjectViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

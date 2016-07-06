@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infovision.Datamining.Roughset
+﻿namespace Infovision.Datamining.Roughset
 {
     internal class ReductStoreWorkerTaskInfo
     {
@@ -13,7 +11,7 @@ namespace Infovision.Datamining.Roughset
             this.NumberOfThreads = numberOfThreads;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -21,6 +19,6 @@ namespace Infovision.Datamining.Roughset
         public int NumberOfThreads { get; set; }
         public IReduct Reduct { get; set; }
 
-        #endregion
+        #endregion Properties
     }
 }

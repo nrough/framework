@@ -1,5 +1,4 @@
 ﻿using System;
-using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
@@ -14,12 +13,12 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorWeights()
             : base()
         {
-            this.InformationMeasure = 
+            this.InformationMeasure =
                 (IInformationMeasure)InformationMeasureBase
                 .Construct(InformationMeasureType.ObjectWeights);
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -41,7 +40,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -72,12 +71,12 @@ namespace Infovision.Datamining.Roughset
             return wGen;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
     public class ReductGeneratorWeightsMajority : ReductGeneratorWeights
-    {       
+    {
         public ReductGeneratorWeightsMajority()
             : base()
         {
@@ -108,7 +107,7 @@ namespace Infovision.Datamining.Roughset
 
     [Serializable]
     public class ReductGeneratorWeightsRelative : ReductGeneratorWeights
-    {        
+    {
         public ReductGeneratorWeightsRelative()
             : base()
         {
@@ -119,7 +118,7 @@ namespace Infovision.Datamining.Roughset
             WeightGenerator wGen = new WeightGeneratorRelative(this.DataStore);
             this.DataStore.SetWeights(wGen.Weights);
             return wGen;
-        }        
+        }
     }
 
     public class ApproximateReductRelativeWeightsFactory : ApproximateReductRelativeFactory
@@ -135,5 +134,5 @@ namespace Infovision.Datamining.Roughset
             rGen.InitFromArgs(args);
             return rGen;
         }
-    }   
+    }
 }

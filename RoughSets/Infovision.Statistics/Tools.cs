@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Math;
-using Infovision.Utils;
 
 namespace Infovision.Statistics
 {
     public static class Tools
     {
-        static double LOGPI = 1.14472988584940017414;
-        static double LOG2 = System.Math.Log(2.0);        
-        static double MAX_INT_FOR_CACHE_PLUS_ONE = 10000;
-        static double[] INT_N_LOG_N_CACHE = new double[(int)MAX_INT_FOR_CACHE_PLUS_ONE];
+        private static double LOGPI = 1.14472988584940017414;
+        private static double LOG2 = System.Math.Log(2.0);
+        private static double MAX_INT_FOR_CACHE_PLUS_ONE = 10000;
+        private static double[] INT_N_LOG_N_CACHE = new double[(int)MAX_INT_FOR_CACHE_PLUS_ONE];
 
         static Tools()
         {
@@ -23,7 +18,6 @@ namespace Infovision.Statistics
                 INT_N_LOG_N_CACHE[i] = d * System.Math.Log(d);
             }
         }
-
 
         /// <summary>
         /// Finds minimum key
@@ -89,7 +83,7 @@ namespace Infovision.Statistics
         /// <param name="mean"></param>
         /// <returns></returns>
         public static double StdDev(double[] sample, double mean)
-        {            
+        {
             if (sample.Length == 1)
                 return 0.0;
             double sum = 0.0;
@@ -135,7 +129,7 @@ namespace Infovision.Statistics
         /// <param name="mean"></param>
         /// <returns>Returns the average of the absolute deviations of data points from their mean.</returns>
         public static double AveDev(double[] sample, double mean)
-        {            
+        {
             double sum = 0.0;
             for (int i = 0; i < sample.Length; i++)
                 sum += System.Math.Abs(sample[i] - mean);
@@ -188,7 +182,7 @@ namespace Infovision.Statistics
                 returnValue = returnValue - LnFunc(sumForRow);
                 total += sumForRow;
             }
-            return DoubleEpsilonComparer.Instance.Equals(total, 0.0) ? 0.0 : -returnValue / (total * LOG2);            
+            return DoubleEpsilonComparer.Instance.Equals(total, 0.0) ? 0.0 : -returnValue / (total * LOG2);
         }
 
         public static double EntropyConditionedOnColumns(double[][] matrix)
@@ -205,9 +199,9 @@ namespace Infovision.Statistics
                 returnValue = returnValue - LnFunc(sumForColumn);
                 total += sumForColumn;
             }
-            return DoubleEpsilonComparer.Instance.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);            
+            return DoubleEpsilonComparer.Instance.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);
         }
-        
+
         public static double Log2Binomial(double a, double b)
         {
             if (DoubleEpsilonComparer.Instance.Compare(b, a) > 0)
@@ -217,9 +211,8 @@ namespace Infovision.Statistics
             return (LnFactorial(a) - LnFactorial(b) - LnFactorial(a - b)) / LOG2;
         }
 
-        
         public static double Log2Multinomial(double a, double[] bs)
-        {            
+        {
             double sum = 0;
             int i;
 
@@ -345,7 +338,7 @@ namespace Infovision.Statistics
 
         public static double Pol1Evl(double x, double[] coef, int N)
         {
-            double ans = x + coef[0];            
+            double ans = x + coef[0];
             for (int i = 1; i < N; i++)
                 ans = ans * x + coef[i];
             return ans;
@@ -377,6 +370,5 @@ namespace Infovision.Statistics
             for (int i = 0; i < values.Length; i++)
                 values[i] /= sum;
         }
-
     }
 }

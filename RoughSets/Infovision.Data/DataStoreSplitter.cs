@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Infovision.Utils;
 
 namespace Infovision.Data
@@ -15,26 +14,26 @@ namespace Infovision.Data
     public class DataStoreSplitter : IDataStoreSplitter
     {
         private DataStore dataStore;
-        
+
         private int[] folds;
         private int[] foldSize;
         private int nfold;
 
         private int activeFold = -1;
         protected bool SplitCalculated { get; set; }
-        
+
         public DataStoreSplitter(DataStore dataStore, int nfold)
         {
             this.dataStore = dataStore;
             this.nfold = nfold;
-            
+
             this.InitSplit();
         }
 
         public int NFold
         {
             get { return this.nfold; }
-            set 
+            set
             {
                 if (value <= 1)
                     throw new InvalidOperationException("Number of folds must be greater that one.");
@@ -50,12 +49,12 @@ namespace Infovision.Data
         public int ActiveFold
         {
             get { return activeFold; }
-            set 
+            set
             {
                 if (value < 0 || value > this.nfold - 1)
                     throw new IndexOutOfRangeException(String.Format("ActiveFold must have key from {0} to {1}", 0, this.nfold - 1));
-                
-                this.activeFold = value; 
+
+                this.activeFold = value;
             }
         }
 
@@ -83,7 +82,7 @@ namespace Infovision.Data
                 {
                     int[] objectsTmp = this.GetObjectIndexes(this.dataStore, decisionValue).ToArray();
                     objectsTmp.Shuffle();
-                    for (int i = 0; i < objectsTmp.Length; i++)                        
+                    for (int i = 0; i < objectsTmp.Length; i++)
                         folds[objectsTmp[i]] = RandomSplit(i);
                 }
 
@@ -102,7 +101,7 @@ namespace Infovision.Data
 
             this.SplitCalculated = true;
         }
-        
+
         protected IEnumerable<int> GetObjectIndexes(DataStore dataStore, long decisionValue)
         {
             List<int> result = new List<int>(dataStore.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue));
@@ -110,7 +109,7 @@ namespace Infovision.Data
             for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
                 long decision = dataStore.GetFieldIndexValue(objectIdx, decisionIndex);
-                if(decisionValue == decision)
+                if (decisionValue == decision)
                     result.Add(objectIdx);
             }
             return result;
@@ -121,7 +120,7 @@ namespace Infovision.Data
             if (ActiveFold < 0)
                 throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
 
-            if(!this.SplitCalculated)
+            if (!this.SplitCalculated)
                 this.GenerateSplit();
 
             DataStoreInfo dataStoreInfo1 = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
@@ -134,10 +133,10 @@ namespace Infovision.Data
             DataStoreInfo dataStoreInfo2 = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
             dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
             dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold];
-           
+
             dataStore2 = new DataStore(dataStoreInfo2);
             dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;
-            
+
             for (int i = 0; i < folds.Length; i++)
             {
                 if (folds[i] != this.ActiveFold)
@@ -155,7 +154,6 @@ namespace Infovision.Data
 
             dataStore2.NormalizeWeights();
             dataStore2.CreateWeightHistogramsOnFields();
-            
         }
 
         public virtual void GetTrainingData(ref DataStore dataStore1)
@@ -214,7 +212,7 @@ namespace Infovision.Data
         private double splitRatio = 0.5;
 
         public DataStoreSplitterRatio(DataStore dataStore, double splitRatio)
-            : base (dataStore, 2)
+            : base(dataStore, 2)
         {
             if (splitRatio > 1 || splitRatio < 0)
                 throw new ArgumentOutOfRangeException("splitRatio", "Value must be between 0 and 1");
@@ -231,6 +229,6 @@ namespace Infovision.Data
         protected override int RandomSplit(int index)
         {
             return (this.splitRatio > RandomSingleton.Random.NextDouble()) ? 1 : 0;
-        }        
+        }
     }
 }

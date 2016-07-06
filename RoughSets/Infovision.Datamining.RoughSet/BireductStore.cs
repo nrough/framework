@@ -5,20 +5,19 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class BireductStore : ReductStore
     {
-
-        #region Constructors 
+        #region Constructors
 
         public BireductStore()
             : base()
-        {            
+        {
         }
 
         public BireductStore(int capacity)
             : base(capacity)
-        {            
+        {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -35,6 +34,6 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

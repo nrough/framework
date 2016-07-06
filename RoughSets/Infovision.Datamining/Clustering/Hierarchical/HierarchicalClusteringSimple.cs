@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringSimple : HierarchicalClustering
-    {        
+    {
         public HierarchicalClusteringSimple()
             : base()
         {
@@ -22,20 +19,20 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public HierarchicalClusteringSimple(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(matrix, linkage)
         {
-        }        
+        }
 
         protected override void CreateClusters()
         {
             double[,] clusterDistance = new double[this.NumberOfInstances, this.NumberOfInstances];
             for (int i = 0; i < this.NumberOfInstances; i++)
-            {                
+            {
                 for (int j = i + 1; j < this.NumberOfInstances; j++)
                 {
-                    clusterDistance[i, j] = this.GetClusterDistance(i,j);
+                    clusterDistance[i, j] = this.GetClusterDistance(i, j);
                     clusterDistance[j, i] = clusterDistance[i, j];
                 }
             }
-                        
+
             int iMin1 = -1;
             int iMin2 = -1;
             int minSize1 = -1;
@@ -62,7 +59,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                                     iMin2 = k;
                                     minSize1 = sizeJ;
                                     minSize2 = sizeK;
-                                }                                
+                                }
                                 //prefer to join smaller clusters startFromIdx
                                 else if (distance == minDistance
                                     && (sizeJ < minSize1 || sizeK < minSize2))
@@ -77,8 +74,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     }
                 }
 
-                this.MergeClustersSimple(iMin1, iMin2, minDistance);                
-                
+                this.MergeClustersSimple(iMin1, iMin2, minDistance);
+
                 // update distances
                 for (int j = 0; j < NumberOfInstances; j++)
                 {
@@ -91,7 +88,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         clusterDistance[i2, i1] = distance;
                     }
                 }
-            }            
-        }                                       
+            }
+        }
     }
 }

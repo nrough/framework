@@ -31,7 +31,7 @@ namespace Infovision.Utils
             get { return this.UpperBound - this.LowerBound; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region System.Object
 
@@ -68,6 +68,6 @@ namespace Infovision.Utils
             return true;
         }
 
-        #endregion
+        #endregion System.Object
     }
 }

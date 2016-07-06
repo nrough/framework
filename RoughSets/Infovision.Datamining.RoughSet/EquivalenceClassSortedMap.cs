@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
 {
     public class EquivalenceClassSortedMap : EquivalenceClassCollection
-    {        
+    {
         #region Constructors
 
         public EquivalenceClassSortedMap(DataStore data)
             : base(data)
-        {   
-        }        
+        {
+        }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -51,8 +48,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
-        {                        
-            this.InitPartitions();            
+        {
+            this.InitPartitions();
             int[] orderByTmp = attributeSet.ToArray();
             int[] orderBy = new int[orderByTmp.Length + 1];
             Array.Copy(orderByTmp, orderBy, orderByTmp.Length);
@@ -63,8 +60,8 @@ namespace Infovision.Datamining.Roughset
 
             comparer = new DataStoreOrderByComparer(dataStore, orderByTmp);
 
-            int i = 0, j = 0, sum = 0;                        
-            while(i < sortedObjIdx.Length)
+            int i = 0, j = 0, sum = 0;
+            while (i < sortedObjIdx.Length)
             {
                 var dataVector = dataStore.GetFieldValues(sortedObjIdx[i], orderByTmp);
                 EquivalenceClass eq = new EquivalenceClass(dataVector, dataStore);
@@ -78,7 +75,7 @@ namespace Infovision.Datamining.Roughset
                     eq.AddObject(sortedObjIdx[j], dec, objectWeights[sortedObjIdx[j]]);
                     j++;
                 }
-                
+
                 this.Partitions.Add(dataVector, eq);
                 sum += eq.NumberOfObjects;
                 i = j;
@@ -98,12 +95,11 @@ namespace Infovision.Datamining.Roughset
             int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
 
             DataStoreOrderByComparer comparer = new DataStoreOrderByComparer(dataStore, orderBy);
-            
+
             //TODO code smell: Do I sort data or objectSet?
             int[] sortedObjIdx = dataStore.Sort(objectSet, comparer);
 
-            
-int i, j;
+            int i, j;
             for (i = 0; i < sortedObjIdx.Length; i++)
             {
                 var dataVector = dataStore.GetFieldValues(i, orderByTmp);
@@ -120,11 +116,8 @@ int i, j;
 
                 i = j + 1;
             }
-        }        
-        
+        }
 
-        #endregion
-
-
-    }    
+        #endregion Methods
+    }
 }

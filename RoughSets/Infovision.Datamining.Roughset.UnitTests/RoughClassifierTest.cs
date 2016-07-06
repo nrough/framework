@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -94,7 +90,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-
         [Test]
         public void RoughClassifierNewPerformanceTest()
         {
@@ -120,10 +115,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
 
             for (int i = 0; i < loops; i++)
-            {    
+            {
                 args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                             ReductFactory.GetPermutationGenerator(args).Generate(numberOfPerm));
-                
+
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();
 
@@ -136,12 +131,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     voteFunc,
                     trainData.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = classifier.Classify(testData, null);
-                
+
                 for (int objectIdx = 0; objectIdx < testData.NumberOfRecords; objectIdx++)
                     classificationResult.GetPrediction(objectIdx);
                 watch_2.Stop();
-                sum_2 += (ulong) watch_2.ElapsedMilliseconds;
-                
+                sum_2 += (ulong)watch_2.ElapsedMilliseconds;
+
                 Console.WriteLine("Accuracy 2: {0}", classificationResult.Accuracy);
                 Console.WriteLine();
             }

@@ -10,7 +10,7 @@ namespace Infovision.MRI
     public abstract class ImageBase : IImage, ISerializable
     {
         private uint depth;
-        
+
         public ImageBase()
             : base()
         {
@@ -24,8 +24,8 @@ namespace Infovision.MRI
             this.depth = si.GetUInt32("depth");
             this.Height = si.GetUInt32("Height");
             this.Width = si.GetUInt32("Width");
-            this.PixelType = (Type) si.GetValue("PixelType", typeof(Type));
-            
+            this.PixelType = (Type)si.GetValue("PixelType", typeof(Type));
+
             var localData = si.GetValue("innerImageData", this.PixelType.MakeArrayType());
             Type localType = this.PixelType;
 
@@ -34,20 +34,20 @@ namespace Infovision.MRI
             mRef.Invoke(this, new object[] { localData });
         }
 
-        public virtual uint Depth 
-        { 
+        public virtual uint Depth
+        {
             get
             {
                 return this.depth;
             }
-                 
+
             set
             {
                 if (value == 0)
                     this.depth = 1;
                 else
                     this.depth = value;
-            } 
+            }
         }
 
         public virtual uint Height { get; set; }
@@ -97,8 +97,7 @@ namespace Infovision.MRI
             throw new System.NotImplementedException("Save method is not implemented");
         }
 
-        #endregion
-        
+        #endregion IImage interface implementation
 
         #region Serialization methods
 
@@ -124,10 +123,8 @@ namespace Infovision.MRI
             };
 
             @switch[this.PixelType]();
+        }
 
-        }  
-
-        #endregion
+        #endregion Serialization methods
     }
-
 }

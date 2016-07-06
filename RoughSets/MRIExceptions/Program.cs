@@ -4,8 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GenericParsing;
 using Infovision.Data;
 using Infovision.Datamining;
@@ -16,30 +14,28 @@ using itk.simple;
 
 namespace MRIExceptions
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            
             Program p = new Program();
 
             //p.Run();
 
             //p.InsertDB(p.GetTableResult_MRIExceptionsTest(@"c:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\MRIExceptions\bin\x64\Release\Results\Accuracy.result", 99, 5));
-            
+
             Console.WriteLine("Done");
-            Console.ReadKey();                       
+            Console.ReadKey();
         }
 
         private const uint ImageWidth = 181;
         private const uint ImageHeight = 217;
         private const uint ImageDepth = 181;
 
-
         private void CleanResultsFolder()
         {
             System.IO.DirectoryInfo di = new DirectoryInfo("Results");
-            
+
             foreach (FileInfo file in di.GetFiles())
                 file.Delete();
 
@@ -48,7 +44,7 @@ namespace MRIExceptions
         }
 
         private string GetTestFolder(int testId)
-        {            
+        {
             string testFolder = String.Format(@"Results\Test-{0}", testId);
             if (!Directory.Exists(testFolder))
             {
@@ -62,7 +58,7 @@ namespace MRIExceptions
         private ImageITK imageT1, imageT2, imagePD, imagePH;
 
         public void Run()
-        {                        
+        {
             RandomSingleton.Seed = Environment.TickCount * Environment.TickCount;
             this.CleanResultsFolder();
 
@@ -72,21 +68,19 @@ namespace MRIExceptions
             imagePH = ImageITK.ReadImageRAW(@"Data\ph_icbm_1mm_normal_crisp.rawb", ImageWidth, ImageHeight, ImageDepth, PixelIDValueEnum.sitkUInt8);
 
             this.OpenStream(@"Results\Accuracy.result");
-            
+
             for (int t = 0; t < 20; t++)
-            {                
+            {
                 Console.WriteLine("############# Test {0} ###############", t);
 
                 this.RunSingleTest(t);
             }
 
             this.CloseStream();
-
         }
 
         public void RunSingleTest(int testId)
         {
-
             string testFolder = this.GetTestFolder(testId);
 
             int trainSlice = RandomSingleton.Random.Next(minSlice, maxSlice + 1);
@@ -100,7 +94,7 @@ namespace MRIExceptions
                 }
             }
 
-            Console.WriteLine("Slice {0} and {1} selected", trainSlice, testSlice);            
+            Console.WriteLine("Slice {0} and {1} selected", trainSlice, testSlice);
 
             itk.simple.Image itkTrainImageT1 = SimpleITK.Extract(imageT1.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -132,7 +126,6 @@ namespace MRIExceptions
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             ImageITK trainImagePH = new ImageITK(itkTrainImagePH);
-            
 
             itk.simple.Image itkTestImageT1 = SimpleITK.Extract(imageT1.ItkImage,
                                             new VectorUInt32(new uint[] { ImageWidth, ImageHeight, 0 }),
@@ -165,22 +158,21 @@ namespace MRIExceptions
 
             ImageITK testImagePH = new ImageITK(itkTestImagePH);
 
-
             Console.WriteLine("Generating decision tables...");
 
             string trainDataFilename = String.Format("{0}\\Slice-{1}.trn", testFolder, trainSlice);
             string testDataFilename = String.Format("{0}\\Slice-{1}.tst", testFolder, testSlice);
-                        
+
             var data_1 = this.GenerateDecisionTable(
-                testFolder, 
-                trainImageT1, trainImageT2, trainImagePD, trainImagePH, trainDataFilename, trainSlice, 
+                testFolder,
+                trainImageT1, trainImageT2, trainImagePD, trainImagePH, trainDataFilename, trainSlice,
                 testImageT1, testImageT2, testImagePD, testImagePH, testDataFilename, testSlice);
 
             trainDataFilename = String.Format("{0}\\Slice-{1}.trn", testFolder, testSlice);
             testDataFilename = String.Format("{0}\\Slice-{1}.tst", testFolder, trainSlice);
 
             var data_2 = this.GenerateDecisionTable(
-                testFolder, 
+                testFolder,
                 testImageT1, testImageT2, testImagePD, testImagePH, testDataFilename, testSlice,
                 trainImageT1, trainImageT2, trainImagePD, trainImagePH, trainDataFilename, trainSlice);
 
@@ -189,11 +181,11 @@ namespace MRIExceptions
                 Console.WriteLine("Segmentation model learning and test eps={0}", epsilon);
 
                 PermutationCollection permutations = new PermutationGenerator(data_1.Item1).Generate(100);
-                
+
                 RoughClassifier model_1 = this.Learn(data_1.Item1, testId, epsilon, trainSlice, testSlice, permutations);
 
                 this.Test(model_1, data_1.Item2, data_1.Item1, testId, epsilon, trainSlice, testSlice);
-                
+
                 //We reverse slices and dataset
                 RoughClassifier model_2 = this.Learn(data_2.Item1, testId, epsilon, testSlice, trainSlice, permutations);
                 this.Test(model_2, data_2.Item2, data_2.Item1, testId, epsilon, testSlice, trainSlice);
@@ -204,7 +196,6 @@ namespace MRIExceptions
 
             testImagePH.ItkImage = SimpleITK.Multiply(testImagePH.ItkImage, 10.0);
             testImagePH.Save(String.Format("{0}\\SlicePH-{1}.png", testFolder, testSlice));
-            
         }
 
         private Tuple<DataStore, DataStore> GenerateDecisionTable(string testFolder, IImage trainImageT1, IImage trainImageT2, IImage trainImagePD, IImage trainImagePH, string trainFileName, int trainSlice, IImage testImageT1, IImage testImageT2, IImage testImagePD, IImage testImagePH, string testFileName, int testSlice)
@@ -216,7 +207,7 @@ namespace MRIExceptions
             featureExtractor.ImageDepth = 1;
 
             featureExtractor.AddFeature(new ImageFeatureVoxelPositionX { Image = trainImageT1 }, "PositionX");
-            featureExtractor.AddFeature(new ImageFeatureVoxelPositionY { Image = trainImageT1 }, "PositionY");            
+            featureExtractor.AddFeature(new ImageFeatureVoxelPositionY { Image = trainImageT1 }, "PositionY");
 
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImageT1 }, "MagnitureT1");
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImageT2 }, "MagnitudeT2");
@@ -229,7 +220,7 @@ namespace MRIExceptions
             histClusterT1.BucketCountWeight = 1.5;
             histClusterT1.ApproximationDegree = 0.1;
             histClusterT1.MaxNumberOfRepresentatives = 3;
-            histClusterT1.Image = trainImageT1;            
+            histClusterT1.Image = trainImageT1;
             histClusterT1.Train();
 
             IImage histClusterImageT1 = histClusterT1.Execute(trainImageT1);
@@ -324,7 +315,7 @@ namespace MRIExceptions
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImageT1, EdgeFilter = edgeFilterT1, Cluster = somClusterT1 }, "NbrSOMT1");
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImageT2, EdgeFilter = edgeFilterT2, Cluster = somClusterT2 }, "NbrSOMT2");
             featureExtractor.AddFeature(new ImageFeatureEdgeNeighbourSOM { Image = trainImagePD, EdgeFilter = edgeFilterPD, Cluster = somClusterPD }, "NbrSOMPD");
-           
+
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImagePH }, "Label");
 
             DataTable dataTable = featureExtractor.GetDataTable();
@@ -346,7 +337,7 @@ namespace MRIExceptions
             featureExtractorTest.ImageDepth = 1;
 
             featureExtractorTest.AddFeature(new ImageFeatureVoxelPositionX { Image = testImageT1 }, "PositionX");
-            featureExtractorTest.AddFeature(new ImageFeatureVoxelPositionY { Image = testImageT1 }, "PositionY");            
+            featureExtractorTest.AddFeature(new ImageFeatureVoxelPositionY { Image = testImageT1 }, "PositionY");
 
             featureExtractorTest.AddFeature(new ImageFeatureVoxelMagnitude { Image = testImageT1 }, "MagnitureT1");
             featureExtractorTest.AddFeature(new ImageFeatureVoxelMagnitude { Image = testImageT2 }, "MagnitudeT2");
@@ -356,7 +347,7 @@ namespace MRIExceptions
             featureExtractorTest.AddFeature(new ImageFeatureHistogramCluster { Image = testImageT2, Cluster = histClusterT2 }, "HistogramT2");
             featureExtractorTest.AddFeature(new ImageFeatureHistogramCluster { Image = testImagePD, Cluster = histClusterPD }, "HistogramPD");
             featureExtractorTest.AddFeature(new ImageFeatureSOMCluster { Image = testImageT1, Cluster = somClusterT1 }, "SOMT1");
-            featureExtractorTest.AddFeature(new ImageFeatureSOMCluster { Image = testImageT2, Cluster = somClusterT2 }, "SOMT2");            
+            featureExtractorTest.AddFeature(new ImageFeatureSOMCluster { Image = testImageT2, Cluster = somClusterT2 }, "SOMT2");
             featureExtractorTest.AddFeature(new ImageFeatureSOMCluster { Image = testImagePD, Cluster = somClusterPD }, "SOMPD");
 
             featureExtractorTest.AddFeature(new ImageFeatureMask { Image = testImageT1 }, "Mask");
@@ -436,11 +427,11 @@ namespace MRIExceptions
                 filteredReductStoreCollection,
                 RuleQualityAvg.ConfidenceW,
                 RuleQualityAvg.ConfidenceW,
-                train.DataStoreInfo.GetDecisionValues());            
-            
+                train.DataStoreInfo.GetDecisionValues());
+
             classifier.UseExceptionRules = true;
             classifier.ExceptionRulesAsGaps = false;
-            
+
             int n = 1;
             uint[] position = new uint[] { 0, 0 };
             DataFieldInfo xField = train.DataStoreInfo.GetFieldInfo(1);
@@ -463,33 +454,33 @@ namespace MRIExceptions
                             position[1] = (uint)(int)yField.Internal2External(train.GetFieldValue(objectIdx, 2));
                             exceptionImage.SetPixel<byte>(position, byte.MaxValue);
                         }
-                    }                    
+                    }
                 }
 
                 string exceptionfilename = String.Format("{0}\\exceptionImage-{1}-{2}-{3}", testFolder, trainSlice, epsilonInt, n++);
-                exceptionImage.Save(exceptionfilename + ".png"); 
+                exceptionImage.Save(exceptionfilename + ".png");
             }
 
             return classifier;
         }
 
         private void Test(
-            RoughClassifier model, DataStore test, DataStore train, 
+            RoughClassifier model, DataStore test, DataStore train,
             int testId, decimal epsilon, int trainSlice, int testSlice)
         {
             string testFolder = this.GetTestFolder(testId);
             int epsilonInt = (int)(epsilon * 100);
 
-            ClassificationResult result =  model.Classify(test);
+            ClassificationResult result = model.Classify(test);
 
             //TODO Remember to change ###############################################
             result.QualityRatio = model.ReductStoreCollection.GetWeightedAvgMeasure(new ReductMeasureLength(), true);
             //result.QualityRatio = model.ReductStoreCollection.GetAvgMeasure(new ReductMeasureLength());
-            
-            this.WriteLine("{0}|{1}|{2}|{3}|{4}", testId, epsilon, trainSlice, testSlice, result);            
-                        
-            uint[] position = new uint[] { 0, 0 };            
-            byte pixelValue;            
+
+            this.WriteLine("{0}|{1}|{2}|{3}|{4}", testId, epsilon, trainSlice, testSlice, result);
+
+            uint[] position = new uint[] { 0, 0 };
+            byte pixelValue;
             DataFieldInfo xField = test.DataStoreInfo.GetFieldInfo(1);
             DataFieldInfo yField = test.DataStoreInfo.GetFieldInfo(2);
             DataFieldInfo decField = test.DataStoreInfo.DecisionInfo;
@@ -501,9 +492,9 @@ namespace MRIExceptions
 
             for (int i = 0; i < test.NumberOfRecords; i++)
             {
-                position[0] = (uint) (int) xField.Internal2External(test.GetFieldValue(i, 1));
-                position[1] = (uint) (int) yField.Internal2External(test.GetFieldValue(i, 2));
-                
+                position[0] = (uint)(int)xField.Internal2External(test.GetFieldValue(i, 1));
+                position[1] = (uint)(int)yField.Internal2External(test.GetFieldValue(i, 2));
+
                 if (result.GetPrediction(i) == -1)
                     pixelValue = byte.MaxValue;
                 else
@@ -514,7 +505,7 @@ namespace MRIExceptions
 
             resultImage.ItkImage = SimpleITK.Multiply(resultImage.ItkImage, 10.0);
             resultImage.Save(String.Format("{0}\\resultImage-{1}-{2}.png", testFolder, testSlice, epsilonInt));
-            
+
             ImageITK errorImage = new ImageITK
             {
                 ItkImage = SimpleITKHelper.ConstructImage(ImageWidth, ImageHeight, 0, typeof(byte))
@@ -526,7 +517,7 @@ namespace MRIExceptions
                 position[1] = (uint)(int)yField.Internal2External(test.GetFieldValue(i, 2));
 
                 if (result.GetPrediction(i) != result.GetActual(i))
-                {                    
+                {
                     resultImage.SetPixel<byte>(position, byte.MaxValue);
                     errorImage.SetPixel<byte>(position, byte.MaxValue);
                 }
@@ -536,7 +527,7 @@ namespace MRIExceptions
             resultImage.Save(String.Format("{0}\\errorImageOverlay-{1}-{2}.png", testFolder, testSlice, epsilonInt));
         }
 
-        StreamWriter fileStream;
+        private StreamWriter fileStream;
 
         public void OpenStream(string path)
         {
@@ -698,7 +689,5 @@ namespace MRIExceptions
 
             return table;
         }
-
-
     }
 }

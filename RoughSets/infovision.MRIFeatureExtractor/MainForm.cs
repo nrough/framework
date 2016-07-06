@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using Infovision.MRI.DAL;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace Infovision.MRI.UI
 {
@@ -49,7 +44,6 @@ namespace Infovision.MRI.UI
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void rAWFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -63,32 +57,26 @@ namespace Infovision.MRI.UI
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void propertyGrid1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void toolStripContainer1_LeftToolStripPanel_Click(object sender, EventArgs e)
         {
-
         }
 
         private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
         {
-
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-
         }
 
         private void clearUserDataToolStripMenuItem_Click(object sender, EventArgs e)
@@ -160,6 +148,7 @@ namespace Infovision.MRI.UI
         }
 
         private TreeNode oldSelectNode;
+
         private void dlgImageTree_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -251,7 +240,6 @@ namespace Infovision.MRI.UI
 
         private void treeContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
         }
 
         private void extractImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -294,7 +282,7 @@ namespace Infovision.MRI.UI
                     }
                     else
                     {
-                        /* Cancel the label edit action, inform the user, and 
+                        /* Cancel the label edit action, inform the user, and
                            place the node in edit mode again. */
                         e.CancelEdit = true;
                         MessageBox.Show("Invalid tree node label.\n" +
@@ -305,7 +293,7 @@ namespace Infovision.MRI.UI
                 }
                 else
                 {
-                    /* Cancel the label edit action, inform the user, and 
+                    /* Cancel the label edit action, inform the user, and
                        place the node in edit mode again. */
                     e.CancelEdit = true;
                     MessageBox.Show("Invalid tree node label.\nThe label cannot be blank",
@@ -344,7 +332,6 @@ namespace Infovision.MRI.UI
 
         private void projectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.RestoreDirectory = false;
             fileDialog.Filter = "Mining Project XML 1.0 (*.xml)|*.xml";
@@ -396,6 +383,5 @@ namespace Infovision.MRI.UI
                 this.appl.ActiveProject.Save();
             }
         }
-
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ namespace Infovision.Data
     public class DataStore : IDataTable
     {
         #region Members
-        
+
         private long nextObjectId = 1;
         private long[] data;
         private long capacity;
@@ -21,7 +20,7 @@ namespace Infovision.Data
         private double capacityFactor;
 
         private Dictionary<long, int> objectId2Index;
-        
+
         private long[] index2ObjectId;
         private decimal[] weights;
 
@@ -29,7 +28,7 @@ namespace Infovision.Data
 
         private object mutex = new object();
 
-        #endregion
+        #endregion Members
 
         #region Properties
 
@@ -41,17 +40,17 @@ namespace Infovision.Data
             set { DataStoreInfo = value; }
         }
 
-        public int NumberOfRecords 
+        public int NumberOfRecords
         {
-            get { return this.DataStoreInfo.NumberOfRecords; } 
+            get { return this.DataStoreInfo.NumberOfRecords; }
         }
 
         public decimal[] Weights
-        { 
-            get { return this.weights; } 
+        {
+            get { return this.weights; }
         }
-        
-        #endregion
+
+        #endregion Properties
 
         #region Constructors
 
@@ -72,7 +71,7 @@ namespace Infovision.Data
             this.weights = new decimal[capacity];
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -87,9 +86,9 @@ namespace Infovision.Data
         {
             int[] objects = objectSet.ToArray();
             int[] sortedArray = new int[objects.Length];
-            
-            for (int i = 0; i < objects.Length; i++)            
-                sortedArray[i] = objects[i];            
+
+            for (int i = 0; i < objects.Length; i++)
+                sortedArray[i] = objects[i];
 
             Array.Sort<int>(sortedArray, comparer);
             return sortedArray;
@@ -107,7 +106,6 @@ namespace Infovision.Data
                 return true;
 
             return false;
-
         }
 
         private void Resize()
@@ -115,17 +113,17 @@ namespace Infovision.Data
             long newCapacity = capacity != 0 ? Convert.ToInt64((double)capacity * (1 + capacityFactor)) + 1 : 1;
             long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(long));
-            
+
             long[] newIndex2ObjectId = new long[newCapacity];
             Array.Copy(index2ObjectId, newIndex2ObjectId, this.index2ObjectId.Length);
 
             decimal[] newWeights = new decimal[newCapacity];
             Array.Copy(weights, newWeights, this.weights.Length);
-            
+
             this.capacity = newCapacity;
             data = newStorage;
             index2ObjectId = newIndex2ObjectId;
-        }        
+        }
 
         public long AddRow(DataRecordInternal record)
         {
@@ -139,7 +137,7 @@ namespace Infovision.Data
         public long Insert(DataRecordInternal record)
         {
             if (record.ObjectId == 0)
-            {                
+            {
                 record.ObjectId = nextObjectId;
                 nextObjectId++;
             }
@@ -153,7 +151,7 @@ namespace Infovision.Data
 
             if (this.CheckResize())
                 this.Resize();
-            
+
             foreach (int fieldId in record.GetFields())
             {
                 long value = record[fieldId];
@@ -167,7 +165,7 @@ namespace Infovision.Data
             weights[lastIndex] = 1;
 
             objectId2Index.Add(record.ObjectId, lastIndex);
-            record.ObjectIdx = lastIndex;            
+            record.ObjectIdx = lastIndex;
         }
 
         public DataRecordInternal GetRecordByObjectId(long objectId)
@@ -185,13 +183,13 @@ namespace Infovision.Data
         {
             Dictionary<int, long> valueMap = new Dictionary<int, long>(this.dataStoreInfo.NumberOfFields);
 
-            foreach(int fieldId in this.dataStoreInfo.GetFieldIds())
+            foreach (int fieldId in this.dataStoreInfo.GetFieldIds())
                 valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
-                        
+
             DataRecordInternal ret = new DataRecordInternal(valueMap);
             ret.ObjectIdx = objectIndex;
 
-            if(setObjectId)
+            if (setObjectId)
                 ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
 
             return ret;
@@ -218,8 +216,8 @@ namespace Infovision.Data
         }
 
         public void NormalizeWeights()
-        {            
-            Tools.Normalize(this.weights, this.weights.Sum());                
+        {
+            Tools.Normalize(this.weights, this.weights.Sum());
         }
 
         public decimal GetWeight(int objectIdx)
@@ -264,13 +262,13 @@ namespace Infovision.Data
             catch (InvalidCastException castException)
             {
                 throw new InvalidCastException(
-                    String.Format("Invalid cast exception for field {0} (Discovered type was: {1}, Expected type was {2}", 
+                    String.Format("Invalid cast exception for field {0} (Discovered type was: {1}, Expected type was {2}",
                         fieldId,
-                        field.FieldValueType.ToString(), 
+                        field.FieldValueType.ToString(),
                         typeof(T).ToString()),
                     castException);
             }
-            catch(System.AggregateException aggregateException)
+            catch (System.AggregateException aggregateException)
             {
                 throw new AggregateException(
                     String.Format("Exception was thrown for field {0} (Discovered type was: {1}, Expected type was {2}",
@@ -301,7 +299,7 @@ namespace Infovision.Data
             bool isMissing;
             for (int i = 0; i < this.NumberOfRecords; i++)
             {
-                isMissing = this.DataStoreInfo.HasMissingData && String.Equals(data[i], fieldInfo.MissingValue);                
+                isMissing = this.DataStoreInfo.HasMissingData && String.Equals(data[i], fieldInfo.MissingValue);
                 if (referenceFieldInfo != null)
                 {
                     internalValue = referenceFieldInfo.Add(data[i], isMissing);
@@ -337,23 +335,23 @@ namespace Infovision.Data
 
         public void RemoveColumn(int fieldId)
         {
-            lock(mutex)
+            lock (mutex)
             {
                 int row = 0;
                 int SIZE_OF_LONG = sizeof(long);
                 int count = 0;
 
-                for(int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+                for (int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
                     fieldIdx < this.data.Length;
                     fieldIdx += this.dataStoreInfo.NumberOfFields)
                 {
                     count = (fieldIdx + this.dataStoreInfo.NumberOfFields - 1) > this.data.Length
                           ? this.data.Length - fieldIdx - 1
                           : this.dataStoreInfo.NumberOfFields - 1;
-    
+
                     Buffer.BlockCopy(
                         this.data,
-                        (fieldIdx + 1) * SIZE_OF_LONG, 
+                        (fieldIdx + 1) * SIZE_OF_LONG,
                         this.data,
                         (fieldIdx - row) * SIZE_OF_LONG,
                         count * SIZE_OF_LONG);
@@ -398,7 +396,7 @@ namespace Infovision.Data
             this.data = newData;
             this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldTypes.Standard);
             this.DataStoreInfo.NumberOfFields++;
-            
+
             return newFieldInfo.Id;
         }
 
@@ -413,7 +411,7 @@ namespace Infovision.Data
         {
             return new AttributeValueVector(fieldIds, this.GetFieldValues(objectIndex, fieldIds), false);
         }
-        
+
         public AttributeValueVector GetDataVector(int objectIndex, FieldSet fieldSet)
         {
             return new AttributeValueVector(fieldSet.ToArray(), this.GetFieldValues(objectIndex, fieldSet), false);
@@ -425,7 +423,7 @@ namespace Infovision.Data
         }
 
         public void GetFieldValues(int objectIndex, int[] fieldIds, ref long[] cursor)
-        {                        
+        {
             for (int i = 0; i < fieldIds.Length; i++)
             {
                 cursor[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
@@ -434,11 +432,11 @@ namespace Infovision.Data
 
         public long[] GetFieldValues(int objectIndex, int[] fieldIds)
         {
-            long[] result = new long[fieldIds.Length];            
-            for(int i = 0; i < fieldIds.Length; i++)
+            long[] result = new long[fieldIds.Length];
+            for (int i = 0; i < fieldIds.Length; i++)
             {
                 result[i] = this.GetFieldValue(objectIndex, fieldIds[i]);
-            }            
+            }
             return result;
         }
 
@@ -448,19 +446,19 @@ namespace Infovision.Data
             int j = 0;
             for (int i = 0; i < fieldSet.Data.Length; i++)
             {
-                if(fieldSet.Data.Get(i))
-                    data[j++] = this.GetFieldValue(objectIndex, i + fieldSet.LowerBound); 
+                if (fieldSet.Data.Get(i))
+                    data[j++] = this.GetFieldValue(objectIndex, i + fieldSet.LowerBound);
             }
             return data;
         }
 
         public long[] GetFieldValues(int objectIdx)
         {
-            long[] result = new long[this.DataStoreInfo.NumberOfFields];            
-            for(int i = 0; i < this.DataStoreInfo.NumberOfFields; i++)
+            long[] result = new long[this.DataStoreInfo.NumberOfFields];
+            for (int i = 0; i < this.DataStoreInfo.NumberOfFields; i++)
             {
                 result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
-            }            
+            }
             return result;
         }
 
@@ -510,7 +508,7 @@ namespace Infovision.Data
                 return objectIndex;
             }
             return -1;
-        }        
+        }
 
         public string ToStringInternal(string separator, bool includeHeader = false)
         {
@@ -518,7 +516,7 @@ namespace Infovision.Data
 
             if (includeHeader)
                 stringBuilder.Append(this.ToStringHeader(separator));
-            
+
             for (int objectIndex = 0; objectIndex < this.DataStoreInfo.NumberOfRecords; objectIndex++)
             {
                 DataRecordInternal record = this.GetRecordByIndex(objectIndex, false);
@@ -533,7 +531,7 @@ namespace Infovision.Data
                         stringBuilder.AppendFormat("{0}{1}", record[fieldId], separator);
                 }
                 stringBuilder.Append(Environment.NewLine);
-            }            
+            }
             return stringBuilder.ToString();
         }
 
@@ -556,20 +554,20 @@ namespace Infovision.Data
                     DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
                     object externalVal = attr.Internal2External(record[fieldId]);
                     string externalValStr = String.Empty;
-                    
+
                     if (attr.HasMissingValues && record[fieldId] == attr.MissingValueInternal)
                         externalValStr = this.DataStoreInfo.MissingValue;
                     else
                         externalValStr = (externalVal != null) ? externalVal.ToString() : "?";
-                    
-                    if(position == this.DataStoreInfo.NumberOfFields)
+
+                    if (position == this.DataStoreInfo.NumberOfFields)
                         stringBuilder.AppendFormat("{0}", externalValStr);
                     else
                         stringBuilder.AppendFormat("{0}{1}", externalValStr, separator);
                 }
                 //<--
-                stringBuilder.Append(Environment.NewLine);                
-            }            
+                stringBuilder.Append(Environment.NewLine);
+            }
             return stringBuilder.ToString();
         }
 
@@ -589,7 +587,7 @@ namespace Infovision.Data
                             stringBuilder.AppendFormat("{0}", field.Name);
                         else
                             stringBuilder.AppendFormat("{0}{1}", field.Name, separator);
-                    }                    
+                    }
                 }
                 stringBuilder.AppendFormat("{0}", this.DataStoreInfo.DecisionInfo.Name);
             }
@@ -624,9 +622,9 @@ namespace Infovision.Data
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);
             dataStore.Name = dataReader.DataName;
-            dataReader.Load(dataStore, dataStoreInfo);            
+            dataReader.Load(dataStore, dataStoreInfo);
             return dataStore;
-        }              
+        }
 
         public static DataStore Load(string fileName, FileFormat fileFormat)
         {
@@ -634,7 +632,7 @@ namespace Infovision.Data
         }
 
         public void WriteToCSVFile(string filePath, string separator, bool includeHeader = false)
-        {            
+        {
             //System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
 
             StringBuilder sb;
@@ -661,9 +659,9 @@ namespace Infovision.Data
                 }
             }
         }
-        
+
         public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false, bool decisionAsLastField = false)
-        {                       
+        {
             StringBuilder sb;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
@@ -698,7 +696,7 @@ namespace Infovision.Data
                                     sb.AppendFormat("{0}{1}", externalValStr, separator);
                             }
                         }
-                        sb.AppendFormat("{0}", 
+                        sb.AppendFormat("{0}",
                             this.DataStoreInfo.DecisionInfo.Internal2External(
                                 record[this.DataStoreInfo.DecisionFieldId]));
                     }
@@ -766,7 +764,7 @@ namespace Infovision.Data
         public void Swap(int aidx, int bidx)
         {
             int numOfFields = this.dataStoreInfo.NumberOfFields;
-            for(int i = 0; i < numOfFields; i++)
+            for (int i = 0; i < numOfFields; i++)
             {
                 long tmpValue = this.GetFieldIndexValue(aidx, i);
                 this.SetFieldIndexValue(aidx, i, this.GetFieldIndexValue(bidx, i));
@@ -796,8 +794,8 @@ namespace Infovision.Data
             return this.Name;
         }
 
-        #endregion
+        #endregion System.Object Methods
 
-        #endregion
-    }        
+        #endregion Methods
+    }
 }

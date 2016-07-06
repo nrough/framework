@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
-using Infovision.Math;
-using Infovision.Statistics;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
@@ -13,20 +10,22 @@ namespace Infovision.Datamining.Roughset
     public interface ILearner
     {
         double Learn(DataStore data, int[] attributes);
-    }    
+    }
 
     public interface IDecisionTree : ILearner
-    {        
+    {
         ITreeNode Root { get; }
+
         long Compute(DataRecordInternal record);
+
         ClassificationResult Classify(DataStore data, decimal[] weights = null);
     }
 
     public interface IRandomForestTree : IDecisionTree
     {
-        int NumberOfRandomAttributes { get; set;}
+        int NumberOfRandomAttributes { get; set; }
     }
-    
+
     public abstract class DecisionTree : IRandomForestTree
     {
         private DecisionTreeNode root;
@@ -34,7 +33,7 @@ namespace Infovision.Datamining.Roughset
 
         public ITreeNode Root { get { return this.root; } }
         public int NumberOfRandomAttributes { get; set; }
-        
+
         public DecisionTree()
         {
             this.root = null;
@@ -65,7 +64,7 @@ namespace Infovision.Datamining.Roughset
                 this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
                 return;
             }
-            
+
             PascalSet<long> decisions = eqClassCollection.DecisionSet;
             if (decisions.Count == 1)
             {
@@ -77,7 +76,7 @@ namespace Infovision.Datamining.Roughset
 
             //Generate split on result
             Dictionary<long, EquivalenceClassCollection> subEqClasses = EquivalenceClassCollection.Split(eqClassCollection, maxAttribute);
-            foreach(var kvp in subEqClasses)
+            foreach (var kvp in subEqClasses)
             {
                 DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key);
                 parent.AddChild(newNode);
@@ -90,7 +89,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (node.Children == null)
                 throw new InvalidOperationException("node.Children == null");
-            
+
             if (node.Children.First().Key == this.decisionAttributeId)
                 return true;
 
@@ -116,7 +115,7 @@ namespace Infovision.Datamining.Roughset
 
                 if (this.IsNextNodeALeafNode(current))
                     return this.GetDecision(current);
-                
+
                 current = current.Children.Where(x => x.Value == record[x.Key]).FirstOrDefault();
             }
 
@@ -163,7 +162,6 @@ namespace Infovision.Datamining.Roughset
 
             result.ClassificationTime = 0;
             result.QualityRatio = 0;
-            
 
             return result;
         }
@@ -207,7 +205,6 @@ namespace Infovision.Datamining.Roughset
         {
             throw new NotImplementedException();
         }
-
     }
 
     public class DecisionTreeID3 : DecisionTree
@@ -296,8 +293,8 @@ namespace Infovision.Datamining.Roughset
     public class RandomForest<T> : ILearner, IEnumerable<IRandomForestMember>
         where T : IRandomForestTree, new()
     {
-        private List<IRandomForestMember> trees;       
-        
+        private List<IRandomForestMember> trees;
+
         public int Size { get; set; }
         public int BagSizePercent { get; set; }
         public int NumberOfRandomAttributes { get; set; }
@@ -314,7 +311,7 @@ namespace Infovision.Datamining.Roughset
         public virtual double Learn(DataStore data, int[] attributes)
         {
             DataSampler sampler = new DataSampler(data);
-            if(this.BagSizePercent != -1)
+            if (this.BagSizePercent != -1)
                 sampler.BagSizePercent = this.BagSizePercent;
             for (int iter = 0; iter < this.Size; iter++)
             {
@@ -338,7 +335,7 @@ namespace Infovision.Datamining.Roughset
                 Tree = tree,
                 Error = error
             };
-            
+
             this.trees.Add(newMember);
         }
 
@@ -357,12 +354,12 @@ namespace Infovision.Datamining.Roughset
 
             return votes.Count > 0 ? votes.FindMaxValueKey() : -1;
         }
-        
+
         public IEnumerator<IRandomForestMember> GetEnumerator()
         {
             return this.trees.GetEnumerator();
         }
-        
+
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -383,7 +380,7 @@ namespace Infovision.Datamining.Roughset
 
             if (weights == null)
             {
-                double w = 1.0 / testData.NumberOfRecords;             
+                double w = 1.0 / testData.NumberOfRecords;
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
@@ -413,11 +410,11 @@ namespace Infovision.Datamining.Roughset
         private int reductLengthSum;
         private Dictionary<int, int> attributeCount;
 
-        public double AverageReductLength 
+        public double AverageReductLength
         {
             get
             {
-                return (double) this.reductLengthSum / (double) this.Size;
+                return (double)this.reductLengthSum / (double)this.Size;
             }
         }
 
@@ -455,14 +452,14 @@ namespace Infovision.Datamining.Roughset
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();
-            
+
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 
             int bestScore = Int32.MaxValue;
             IReduct bestReduct = null;
 
             List<IReduct> reducts = new List<IReduct>(this.NumberOfPermutationsPerTree);
-            foreach(var store in reductStoreCollection)
+            foreach (var store in reductStoreCollection)
                 foreach (var reduct in store)
                 {
                     reducts.Add(reduct);
@@ -470,17 +467,17 @@ namespace Infovision.Datamining.Roughset
 
             //reducts.Sort(new ReductLengthComparer());
             reducts.Sort(new ReductRuleNumberComparer());
-            
+
             foreach (var reduct in reducts)
             {
                 int count = 0;
                 foreach (int attr in reduct.Attributes)
                 {
-                    if(this.attributeCount.ContainsKey(attr))
+                    if (this.attributeCount.ContainsKey(attr))
                         count += this.attributeCount[attr];
                 }
 
-                if(count < bestScore)
+                if (count < bestScore)
                 {
                     bestScore = count;
                     bestReduct = reduct;
@@ -500,7 +497,6 @@ namespace Infovision.Datamining.Roughset
 
             return reductsFiltered.FirstOrDefault().FirstOrDefault();
             */
-            
         }
 
         public override double Learn(DataStore data, int[] attributes)
@@ -515,7 +511,7 @@ namespace Infovision.Datamining.Roughset
                 DataStore baggedData = sampler.GetData(iter);
 
                 IReduct reduct = this.CalculateReduct(baggedData);
-                
+
                 this.reductLengthSum += reduct.Attributes.Count;
                 foreach (int attr in reduct.Attributes)
                 {
@@ -524,14 +520,14 @@ namespace Infovision.Datamining.Roughset
                     else
                         this.attributeCount[attr] += 1;
                 }
-                
+
                 T tree = new T();
                 tree.NumberOfRandomAttributes = -1;
                 double error = tree.Learn(baggedData, reduct.Attributes.ToArray());
 
                 this.AddTree(tree, error);
             }
-            
+
             ClassificationResult trainResult = this.Classify(data, data.Weights);
             return 1 - trainResult.Accuracy;
         }
@@ -564,7 +560,7 @@ namespace Infovision.Datamining.Roughset
             IReduct r = new ReductWeights(data, attributes, 0, data.Weights);
             InformationMeasureWeights m = new InformationMeasureWeights();
             decimal q = m.Calc(r);
-            
+
             Args parms = new Args();
             parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);

@@ -36,14 +36,14 @@ namespace Infovision.MRI
             uint height = images[0].Height;
             double[][] input = new double[width * height][];
             uint[] position = new uint[] { 0, 0, (uint)sliceId };
-            
+
             for (uint y = 0; y < height; y++)
             {
                 for (uint x = 0; x < width; x++)
                 {
                     uint idx = y * width + x;
                     input[idx] = new double[images.Length];
-                    
+
                     position[0] = x;
                     position[1] = y;
 
@@ -68,7 +68,7 @@ namespace Infovision.MRI
             double fixedLearningRate = learningRate / 10;
             double driftingLearningRate = fixedLearningRate * 9;
             double[][] input = this.GetInputData(images, sliceId);
-            
+
             for (int i = 0; i <= iterations; i++)
             {
                 trainer.LearningRate = driftingLearningRate * (iterations - i) / iterations + fixedLearningRate;
@@ -77,7 +77,6 @@ namespace Infovision.MRI
                 double error = trainer.RunEpoch(input);
                 //Console.WriteLine("{0}: {1}", i, error);
             }
-
         }
 
         public void Train(IImage[] images, int iterations, double learningRate, int radius)
@@ -129,8 +128,8 @@ namespace Infovision.MRI
                             input[i] = images[i].GetPixel<double>(position);
                         }
 
-                        this.Network.Compute(input);                        
-                        byte pixelValue = (byte) (this.Network.GetWinner() * 10);
+                        this.Network.Compute(input);
+                        byte pixelValue = (byte)(this.Network.GetWinner() * 10);
 
                         result.SetPixel<byte>(position, pixelValue);
                     }
@@ -157,7 +156,7 @@ namespace Infovision.MRI
 
         public void LoadNetwork(Stream stream)
         {
-            this.Network = (DistanceNetwork) DistanceNetwork.Load(stream);
+            this.Network = (DistanceNetwork)DistanceNetwork.Load(stream);
         }
 
         public void LoadNetwork(string fileName)

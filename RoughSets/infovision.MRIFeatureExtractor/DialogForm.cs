@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
+﻿using System.Windows.Forms;
 
 namespace Infovision.MRI.UI
 {
     public class DialogForm : Form
     {
-    
         public DialogForm()
             : base()
         {
@@ -20,13 +14,12 @@ namespace Infovision.MRI.UI
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
+            //
             // DialogForm
-            // 
+            //
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Name = "DialogForm";
             this.ResumeLayout(false);
-
         }
     }
 }

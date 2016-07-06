@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -8,7 +7,7 @@ namespace Infovision.Datamining.Roughset
 {
     [Serializable]
     public class BireductGenerator : ReductGenerator
-    {       
+    {
         #region Properties
 
         protected override IPermutationGenerator PermutationGenerator
@@ -16,40 +15,41 @@ namespace Infovision.Datamining.Roughset
             get { return new PermutationGeneratorFieldObject(this.DataStore, this.Epsilon); }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
-        public BireductGenerator() : base()
+        public BireductGenerator()
+            : base()
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         protected override IReductStore CreateReductStore(int initialSize = 0)
         {
             return new BireductStore(initialSize);
-        }      
-        
+        }
+
         protected override void Generate()
         {
             IReductStore reductStore = this.CreateReductStore();
-                        
+
             foreach (Permutation permutation in this.Permutations)
-            {               
+            {
                 Bireduct bireduct = (Bireduct)this.CalculateReduct(permutation.ToArray(), reductStore);
                 reductStore.AddReduct(bireduct);
             }
 
-            this.ReductPool = reductStore;                        
+            this.ReductPool = reductStore;
         }
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             IReductStore localReductStore = this.CreateReductStore();
-            return this.CalculateReduct(permutation, localReductStore);            
+            return this.CalculateReduct(permutation, localReductStore);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
@@ -67,11 +67,11 @@ namespace Infovision.Datamining.Roughset
         //protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 
-                                                        this.Epsilon, 
+            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
+                                                        this.Epsilon,
                                                         this.GetNextReductId().ToString()) as Bireduct;
-            
-            this.Reach(bireduct, permutation, reductStore);            
+
+            this.Reach(bireduct, permutation, reductStore);
             return bireduct;
         }
 
@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset
                     bireduct.TryAddObject(permutation[i]);
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public class BireductFactory : IReductFactory
@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset
             get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.Epsilon); }
         }
 
-        #endregion
+        #endregion Properties
     }
 
     public class BireductRelativeFactory : BireductFactory
@@ -164,17 +164,17 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductGammaGenerator() : base()
+        public BireductGammaGenerator()
+            : base()
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
-            
             BireductGamma r = new BireductGamma(this.DataStore, epsilon);
             r.Id = id;
             return r;
@@ -182,14 +182,14 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 
-                                                             this.Epsilon, 
+            BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
+                                                             this.Epsilon,
                                                              this.GetNextReductId().ToString()) as BireductGamma;
             Reach(bireduct, permutation, reductStore);
             return bireduct;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public class BireductGammaFactory : BireductFactory

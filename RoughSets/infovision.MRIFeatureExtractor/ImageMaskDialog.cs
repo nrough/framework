@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Infovision.MRI.DAL;
 
@@ -27,29 +20,25 @@ namespace Infovision.MRI.UI
         {
             get
             {
-                ImageMaskItems maskItems = (ImageMaskItems) this.ImageMaskItemsBindingSource.List;
+                ImageMaskItems maskItems = (ImageMaskItems)this.ImageMaskItemsBindingSource.List;
                 return maskItems;
             }
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void label2_Click(object sender, EventArgs e)
         {
-
         }
 
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
         {
-
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -60,7 +49,6 @@ namespace Infovision.MRI.UI
 
         private void label3_Click(object sender, EventArgs e)
         {
-
         }
 
         private void okBtn_Click(object sender, EventArgs e)
@@ -71,7 +59,6 @@ namespace Infovision.MRI.UI
 
         private void bindingSource1_CurrentChanged(object sender, EventArgs e)
         {
-
         }
 
         private void addBtn_Click(object sender, EventArgs e)
@@ -81,7 +68,7 @@ namespace Infovision.MRI.UI
                 this.ImageMaskItems.AddMaskItem((int)this.labelValueDlg.Value,
                                                 (int)this.radiusDlg.Value);
             }
-            catch 
+            catch
             {
             }
         }

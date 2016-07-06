@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{    
+{
     [Serializable]
     public class ParameterObjectReferenceCollection<T> : ParameterBase<T>
     {
@@ -15,7 +12,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         private T[] values;
         private int currentIndex;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
@@ -64,11 +61,9 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        #endregion
+        #endregion Constructors
 
-        #region Properties                
 
-        #endregion
 
         #region Methods
 
@@ -98,7 +93,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return (IEnumerator)this;
         }
-        #endregion
+
+        #endregion IEnumerable Members
 
         #region IEnumerator Members
 
@@ -111,7 +107,7 @@ namespace Infovision.Datamining.Experimenter.Parms
                 return this.values.GetValue(currentIndex);
             }
         }
-        
+
         public override void Reset()
         {
             this.ResetCurrent();
@@ -125,7 +121,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return true;
         }
 
-        #endregion
+        #endregion IEnumerator Members
 
         #region ICloneable Members
 
@@ -133,7 +129,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return new ParameterObjectReferenceCollection<T>(this);
         }
-        #endregion
+
+        #endregion ICloneable Members
 
         #region ICollection Members
 
@@ -141,7 +138,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             get { return this.values.Length; }
         }
-        
+
         /// <summary>
         /// Copies the elements of the ICollection to an Array, starting at a particular Array index.
         /// </summary>
@@ -150,8 +147,8 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.values.CopyTo(array, index);
         }
 
-        #endregion
+        #endregion ICollection Members
 
-        #endregion
+        #endregion Methods
     }
 }

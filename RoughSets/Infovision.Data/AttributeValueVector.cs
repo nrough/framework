@@ -11,8 +11,8 @@ namespace Infovision.Data
 
         private int[] attributes;
         private long[] values;
-        
-        #endregion
+
+        #endregion Members
 
         #region Constructors
 
@@ -48,7 +48,7 @@ namespace Infovision.Data
             Buffer.BlockCopy(attributes, 0, this.attributes, 0, attributes.Length * sizeof(int));
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -68,7 +68,7 @@ namespace Infovision.Data
             set { this.values[index] = value; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -92,9 +92,9 @@ namespace Infovision.Data
         }
 
         public AttributeValueVector RemoveAt(int index)
-        {            
+        {
             return new AttributeValueVector(
-                attributes.RemoveAt<int>(index), 
+                attributes.RemoveAt<int>(index),
                 values.RemoveAt<long>(index), false);
         }
 
@@ -113,7 +113,7 @@ namespace Infovision.Data
                 return false;
 
             for (int i = 0; i < attributes.Length; i++)
-            {                
+            {
                 if (this.values[i] != p.values[i] || this.attributes[i] != p.attributes[i])
                     return false;
             }
@@ -132,7 +132,7 @@ namespace Infovision.Data
             for (int i = 0; i < attributes.Length; i++)
             {
                 sb.AppendFormat("{0}={1}", attributes[i], values[i]);
-                if(i < attributes.Length - 1)
+                if (i < attributes.Length - 1)
                     sb.Append(" & ");
             }
 
@@ -141,11 +141,11 @@ namespace Infovision.Data
 
         public string ToString2(DataStoreInfo dataStoreInfo)
         {
-            StringBuilder sb = new StringBuilder();            
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < attributes.Length; i++)
             {
-                sb.Append(String.Format("{0}={1}", 
-                        dataStoreInfo.GetFieldInfo(attributes[i]).Alias, 
+                sb.Append(String.Format("{0}={1}",
+                        dataStoreInfo.GetFieldInfo(attributes[i]).Alias,
                         dataStoreInfo.GetFieldInfo(attributes[i]).Internal2External(values[i])));
                 if (i != attributes.Length - 1)
                     sb.Append(" & ");
@@ -153,9 +153,10 @@ namespace Infovision.Data
             return sb.ToString();
         }
 
-        #endregion
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the DataVector, performing a deep copy.
         /// </summary>
@@ -164,7 +165,9 @@ namespace Infovision.Data
         {
             return new AttributeValueVector(attributes, values);
         }
-        #endregion
-        #endregion
+
+        #endregion ICloneable Members
+
+        #endregion Methods
     }
 }

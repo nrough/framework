@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Roughset
@@ -10,7 +6,7 @@ namespace Infovision.Datamining.Roughset
     public class WeightBoostingGenerator : WeightGenerator
     {
         private bool isFirst;
-        
+
         public WeightBoostingGenerator(DataStore dataStore)
             : base(dataStore)
         {
@@ -25,7 +21,7 @@ namespace Infovision.Datamining.Roughset
                 for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
                     this.w[i] = w;
                 this.isFirst = false;
-            }                       
+            }
         }
     }
 }

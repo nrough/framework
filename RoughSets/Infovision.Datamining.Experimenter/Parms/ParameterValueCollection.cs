@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{   
+{
     [Serializable]
     public class ParameterValueCollection<T> : ParameterBase<T>
     {
@@ -15,7 +12,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         private T[] values;
         private int currentIndex;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -33,7 +30,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.Name = name;
             values.CopyTo(this.values, 0);
             this.ResetCurrent();
-        }        
+        }
 
         public ParameterValueCollection(string name, IEnumerable<T> collection)
         {
@@ -58,14 +55,14 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
-        public static ParameterValueCollection<T> CreateFromElements(string name, params T[] elements)           
+        public static ParameterValueCollection<T> CreateFromElements(string name, params T[] elements)
         {
             return new ParameterValueCollection<T>(name, elements);
-        }        
+        }
 
         public T GetValue(int index)
         {
@@ -78,7 +75,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         }
 
         public override bool InRange(object value)
-        {           
+        {
             if (Array.Exists(this.values, x => x.Equals(value)))
             {
                 return true;
@@ -93,7 +90,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return (IEnumerator)this;
         }
-        #endregion
+
+        #endregion IEnumerable Members
 
         #region IEnumerator Members
 
@@ -108,7 +106,7 @@ namespace Infovision.Datamining.Experimenter.Parms
                 return this.values.GetValue(currentIndex);
             }
         }
-        
+
         public override void Reset()
         {
             this.ResetCurrent();
@@ -122,7 +120,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return true;
         }
 
-        #endregion
+        #endregion IEnumerator Members
 
         #region ICloneable Members
 
@@ -130,7 +128,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return new ParameterValueCollection<T>(this);
         }
-        #endregion
+
+        #endregion ICloneable Members
 
         #region ICollection Members
 
@@ -147,8 +146,8 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.values.CopyTo(array, index);
         }
 
-        #endregion
+        #endregion ICollection Members
 
-        #endregion
+        #endregion Methods
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using Infovision.Utils;
 
@@ -8,14 +7,14 @@ namespace Infovision.Data
 {
     [Serializable]
     public class DataFieldInfo
-    {               
+    {
         private Type fieldValueType;
         private Dictionary<long, object> indexDictionary;
         private Dictionary<object, long> valueDictionary;
         private long maxValueInternalId;
         private Histogram<long> histogram;
         private Histogram<long> histogramWeights;
-        private int initialNumberOfValues;        
+        private int initialNumberOfValues;
 
         #region Constructors
 
@@ -39,21 +38,21 @@ namespace Infovision.Data
                 this.histogram = new Histogram<long>(this.initialNumberOfValues);
                 this.histogramWeights = new Histogram<long>(this.initialNumberOfValues);
             }
-            
+
             this.Id = attributeId;
             this.Name = String.Format(CultureInfo.InvariantCulture, "a{0}", attributeId);
             this.HasMissingValues = false;
             this.MissingValue = null;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
-        public string Name { get; set; }        
-        public string Alias { get; set; }        
+        public string Name { get; set; }
+        public string Alias { get; set; }
         public int Id { get; set; }
-        
+
         public Type FieldValueType
         {
             get { return fieldValueType; }
@@ -65,11 +64,11 @@ namespace Infovision.Data
 
         public long MinValue { get { return histogram.Min; } }
         public long MaxValue { get { return histogram.Max; } }
-        
+
         public bool HasMissingValues { get; set; }
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
-        
+
         public bool IsNumeric { get; set; }
         public double[] Cuts { get; set; }
 
@@ -78,12 +77,12 @@ namespace Infovision.Data
             get { return this.Histogram.Count; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
         public void Reset()
-        {            
+        {
             this.maxValueInternalId = 0;
             if (this.initialNumberOfValues == 0)
             {
@@ -96,7 +95,7 @@ namespace Infovision.Data
                 this.indexDictionary = new Dictionary<long, object>(this.initialNumberOfValues);
             }
             this.histogram = new Histogram<long>();
-            this.HasMissingValues = false;            
+            this.HasMissingValues = false;
         }
 
         public bool CanDiscretize()
@@ -105,11 +104,11 @@ namespace Infovision.Data
 
             if (this.HasMissingValues)
                 return false;
-            
-            if((this.IsNumeric
-                    //|| Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
+
+            if ((this.IsNumeric
+                //|| Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
                     || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
-            return true;
+                return true;
 
             if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32)
                 return true;
@@ -250,7 +249,7 @@ namespace Infovision.Data
         {
             return indexDictionary.Values;
         }
-        
+
         public ICollection<long> InternalValues()
         {
             return valueDictionary.Values;
@@ -274,9 +273,9 @@ namespace Infovision.Data
         }
 
         public void CreateWeightHistogram(DataStore data, decimal[] weights)
-        {            
+        {
             int len = 0;
-            if(histogramWeights != null)
+            if (histogramWeights != null)
             {
                 len = histogramWeights.Count;
                 histogramWeights = new Histogram<long>(len);
@@ -287,13 +286,13 @@ namespace Infovision.Data
             }
 
             int fieldIdx = data.DataStoreInfo.GetFieldIndex(this.Id);
-            
+
             for (int i = 0; i < data.NumberOfRecords; i++)
                 histogramWeights.Increase(data.GetFieldIndexValue(i, fieldIdx), weights[i]);
         }
 
-        #endregion
+        #endregion Histogram Methods
 
-        #endregion        
+        #endregion Methods
     }
 }

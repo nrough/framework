@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using MiscUtil;
 
 namespace Infovision.Utils
 {
@@ -50,9 +47,9 @@ namespace Infovision.Utils
             }
             return tmp;
         }
-        
+
         public static T[] RemoveAt<T>(this T[] array, int idx)
-        {            
+        {
             //if (idx < 0)
             //    throw new ArgumentOutOfRangeException("idx");
 
@@ -62,10 +59,10 @@ namespace Infovision.Utils
             T[] newArray = new T[array.Length - 1];
 
             if (idx > 0)
-                Array.Copy(array, 0, newArray, 0, idx);                            
+                Array.Copy(array, 0, newArray, 0, idx);
 
             if (idx < array.Length - 1)
-                Array.Copy(array, idx + 1, newArray, idx, array.Length - idx - 1);                
+                Array.Copy(array, idx + 1, newArray, idx, array.Length - idx - 1);
 
             return newArray;
         }
@@ -79,7 +76,7 @@ namespace Infovision.Utils
             {
                 if (idx + len > array.Length)
                     len = array.Length - idx;
-                
+
                 newArray = new T[array.Length - len];
                 if (idx > 0)
                     Array.Copy(array, 0, newArray, 0, idx);
@@ -92,10 +89,10 @@ namespace Infovision.Utils
                 newArray = new T[array.Length + len];
                 if (idx > 0)
                     Array.Copy(array, 0, newArray, 0, idx + len);
-                
+
                 if (idx < array.Length - 1)
                     Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
-            }            
+            }
 
             return newArray;
         }
@@ -128,7 +125,7 @@ namespace Infovision.Utils
         }
 
         public static T[] RemoveValue<T>(this T[] array, T value)
-        {            
+        {
             int numIndex = Array.IndexOf(array, value);
             return array.Where((val, idx) => idx != numIndex).ToArray();
         }
@@ -161,7 +158,7 @@ namespace Infovision.Utils
                     result = i;
                     break;
                 }
-            return result; 
+            return result;
         }
 
         public static int[] IndicesOf<T>(this T[] array, T[] values)
@@ -183,7 +180,7 @@ namespace Infovision.Utils
         }
 
         public static T[] KeepIndices<T>(this T[] array, int[] indicesToKeep)
-        {            
+        {
             T[] result = new T[indicesToKeep.Length];
             for (int i = 0; i < indicesToKeep.Length; i++)
                 result[i] = array[indicesToKeep[i]];

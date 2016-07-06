@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using CommandLine;
 using CommandLine.Text;
 
 namespace Infovision.MRI.UI
 {
-    static class Program
+    internal static class Program
     {
         private static readonly HeadingInfo _headingInfo = new HeadingInfo("Infovision MRI", "1.8");
-        
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             var options = new CommandLineOptions();
             var parser = new CommandLineParser(new CommandLineParserSettings(Console.Error));

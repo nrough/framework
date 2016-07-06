@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
 
         private ObjectSet objectSet;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Roughset
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, decimal epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
-            this.objectSet = new ObjectSet(dataStore, objectIndexes);            
+            this.objectSet = new ObjectSet(dataStore, objectIndexes);
         }
 
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
@@ -43,9 +43,9 @@ namespace Infovision.Datamining.Roughset
             : base(bireduct as Reduct)
         {
             this.objectSet = new ObjectSet(bireduct.DataStore, bireduct.ObjectSet);
-        }        
+        }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -78,9 +78,9 @@ namespace Infovision.Datamining.Roughset
             get { return this.ObjectSet; }
         }
 
-        #endregion
+        #endregion Properties
 
-        #region Methods        
+        #region Methods
 
         protected override bool CheckRemoveAttribute(int attributeId)
         {
@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Roughset
                 return false;
             }
 
-            FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
+            FieldSet newAttributeSet = (FieldSet)(this.Attributes - attributeId);
             return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
         }
 
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.ObjectSet.ContainsElement(objectIndex))
                 return false;
-            
+
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
             EquivalenceClass eqClass = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
 
@@ -109,21 +109,21 @@ namespace Infovision.Datamining.Roughset
                 long decisionValue = this.DataStore.GetDecisionValue(objectIndex);
 
                 if (eqClass.NumberOfDecisions == 0 || eqClass.DecisionSet.ContainsElement(decisionValue))
-                {                                        
+                {
                     return true;
                 }
             }
-            
+
             return false;
         }
 
         public virtual bool TryAddObject(int objectIdx)
         {
             if (this.CheckAddObject(objectIdx))
-            {                                
+            {
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
                 EquivalenceClass eq = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
-                
+
                 if (eq == null)
                 {
                     eq = new EquivalenceClass(dataVector, this.DataStore);
@@ -131,10 +131,10 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 eq.AddObject(
-                    objectIdx, 
-                    this.DataStore.GetDecisionValue(objectIdx), 
+                    objectIdx,
+                    this.DataStore.GetDecisionValue(objectIdx),
                     Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords));
-                
+
                 objectSet.AddElement(objectIdx);
 
                 return true;
@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset
                                 ? dataField.Name
                                 : (-attr[i]).ToString();
                 if (i == 0)
-                {                    
+                {
                     stringBuilder.Append(attrName);
                 }
                 else
@@ -194,12 +194,12 @@ namespace Infovision.Datamining.Roughset
             }
             stringBuilder.Append("},{");
 
-            long[] objectIds = Array.ConvertAll<int, long>(this.ObjectSet.ToArray(), 
-                                                               delegate(int i) 
-                                                               { 
-                                                                   return this.DataStore.ObjectIndex2ObjectId(i); 
+            long[] objectIds = Array.ConvertAll<int, long>(this.ObjectSet.ToArray(),
+                                                               delegate(int i)
+                                                               {
+                                                                   return this.DataStore.ObjectIndex2ObjectId(i);
                                                                }
-                                                              );            
+                                                              );
             stringBuilder.Append(InfovisionHelper.IntArray2Ranges(objectIds));
             stringBuilder.Append('}');
             stringBuilder.Append(')');
@@ -209,7 +209,7 @@ namespace Infovision.Datamining.Roughset
 
         public override int GetHashCode()
         {
-            return (int) this.Attributes.GetHashCode() ^ this.ObjectSet.GetHashCode();
+            return (int)this.Attributes.GetHashCode() ^ this.ObjectSet.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -229,9 +229,11 @@ namespace Infovision.Datamining.Roughset
 
             return true;
         }
-        #endregion
+
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the BiReduct, performing a deep copy.
         /// </summary>
@@ -240,8 +242,9 @@ namespace Infovision.Datamining.Roughset
         {
             return new Bireduct(this);
         }
-        #endregion
 
-        #endregion
-    }    
+        #endregion ICloneable Members
+
+        #endregion Methods
+    }
 }

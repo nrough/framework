@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
@@ -14,21 +14,21 @@ namespace Infovision.Datamining
     {
         //actual cats that were correctly classified as cats
         TruePositive = 0,
- 
+
         //cats that were incorrectly marked as other animals
         FalseNegative = 1,
-        
+
         //all the remaining animals that were incorrectly labeled as cats
-        FalsePositive = 2, 
-        
+        FalsePositive = 2,
+
         //all the remaining animals, correctly classified as non-cats
         TrueNegative = 3
     }
-    
+
     //TODO add additional classification Info
     [Serializable]
     public class ClassificationResult
-    {       
+    {
         #region Members
 
         private Dictionary<long, int> value2index;
@@ -37,7 +37,7 @@ namespace Infovision.Datamining
         private int decCountPlusOne;
         private long[] predictionResults;
         private int[][] confusionTable;
-        private double[][] confusionTableWeights;        
+        private double[][] confusionTableWeights;
         private int counter;
         private DataStore testData = null;
         private object mutex = new object();
@@ -45,7 +45,7 @@ namespace Infovision.Datamining
         //TODO use classificationInfo instead
         private double qualityRatio;
 
-        #endregion        
+        #endregion Members
 
         #region Properties
 
@@ -62,7 +62,7 @@ namespace Infovision.Datamining
 
         public double Accuracy
         {
-            get 
+            get
             {
                 return counter > 0 ? (double)this.Classified / (double)counter : 0;
             }
@@ -81,7 +81,7 @@ namespace Infovision.Datamining
 
                     if (count > 0)
                     {
-                        sum += (double) confusionTable[i][i] / (double) count;
+                        sum += (double)confusionTable[i][i] / (double)count;
                     }
                 }
 
@@ -113,7 +113,7 @@ namespace Infovision.Datamining
         {
             get
             {
-                return this.Count > 0 ? (double)(this.Classified + this.Misclassified) / (double)this.Count: 0;
+                return this.Count > 0 ? (double)(this.Classified + this.Misclassified) / (double)this.Count : 0;
             }
         }
 
@@ -129,7 +129,7 @@ namespace Infovision.Datamining
 
         public int Classified
         {
-            get 
+            get
             {
                 int sum = 0;
                 for (int i = 1; i < decCountPlusOne; i++)
@@ -140,25 +140,25 @@ namespace Infovision.Datamining
 
         public int Misclassified
         {
-            get 
+            get
             {
                 int sum = 0;
                 for (int i = 1; i < decCountPlusOne; i++)
                     for (int j = 1; j < decCountPlusOne; j++)
                         if (i != j)
                             sum += confusionTable[i][j];
-                return sum; 
+                return sum;
             }
         }
 
         public int Unclassified
         {
-            get 
+            get
             {
                 int sum = 0;
                 for (int i = 1; i < decCountPlusOne; i++)
                     sum += confusionTable[i][0];
-                return sum; 
+                return sum;
             }
         }
 
@@ -196,12 +196,12 @@ namespace Infovision.Datamining
                 return sum;
             }
         }
-        
+
         public double QualityRatio
         {
             get { return qualityRatio; }
             set { qualityRatio = value; }
-        }        
+        }
 
         public long ClassificationTime { get; set; }
         public long ModelCreationTime { get; set; }
@@ -210,21 +210,21 @@ namespace Infovision.Datamining
         public int ExceptionRuleLengthSum { get; set; }
         public int StandardRuleLengthSum { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
         {
             this.TestData = dataStore;
-            
+
             this.decCount = decisionValues.Count;
             this.decCountPlusOne = decisionValues.Count + 1;
             this.decisions = new long[decCountPlusOne];
             this.decisions[0] = -1;
-            long[] decArray = decisionValues.ToArray();            
+            long[] decArray = decisionValues.ToArray();
             double[] decDistribution = new double[decArray.Length];
-            for(int i=0; i<decArray.Length; i++)
+            for (int i = 0; i < decArray.Length; i++)
                 decDistribution[i] = (int)dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
             Array.Sort(decDistribution, decArray);
             decDistribution = null;
@@ -247,7 +247,7 @@ namespace Infovision.Datamining
             this.ClassificationTime = -1;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -294,7 +294,7 @@ namespace Infovision.Datamining
         {
             return testData.GetFieldValue(objectIdx, testData.DataStoreInfo.DecisionFieldId);
         }
-        
+
         public int GetConfusionTable(long prediction, long actual)
         {
             return confusionTable[value2index[actual]][value2index[prediction]];
@@ -305,10 +305,10 @@ namespace Infovision.Datamining
             int result = 0;
             int decIdx = value2index[decisionValue];
 
-            switch(confusionTableElement)
+            switch (confusionTableElement)
             {
                 //actual cats that were correctly classified as cats
-                case ConfusionMatrixElement.TruePositive :
+                case ConfusionMatrixElement.TruePositive:
                     result = confusionTable[decIdx][decIdx];
                     break;
 
@@ -316,14 +316,14 @@ namespace Infovision.Datamining
                 case ConfusionMatrixElement.FalseNegative:
                     for (int i = 0; i < decCountPlusOne; i++)
                         if (decIdx != i)
-                            result += confusionTable[decIdx][i]; 
+                            result += confusionTable[decIdx][i];
                     break;
 
                 //all the remaining animals that were incorrectly labeled as cats
                 case ConfusionMatrixElement.FalsePositive:
                     for (int i = 0; i < decCountPlusOne; i++)
                         if (decIdx != i)
-                            result += confusionTable[i][decIdx]; 
+                            result += confusionTable[i][decIdx];
                     break;
 
                 //all the remaining animals, correctly classified as non-cats
@@ -375,14 +375,14 @@ namespace Infovision.Datamining
         {
             double truePositiveRate =
                 (double)this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
-                / (double) (this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
+                / (double)(this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
                    + this.GetConfusionTable(decision, ConfusionMatrixElement.FalseNegative));
 
-            double falsePositiveRate = 
+            double falsePositiveRate =
                 (double)this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
-                / (double) (this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
+                / (double)(this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
                     + this.GetConfusionTable(decision, ConfusionMatrixElement.TrueNegative));
-            
+
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
         }
 
@@ -413,14 +413,14 @@ namespace Infovision.Datamining
 
         public double DecisionApriori(long decisionValue)
         {
-            return (double) this.DecisionTotal(decisionValue) / (double) this.TestData.NumberOfRecords;
+            return (double)this.DecisionTotal(decisionValue) / (double)this.TestData.NumberOfRecords;
         }
 
         public int DecisionTotal(long decisionValue)
         {
             int total = 0;
             int decIdx = value2index[decisionValue];
-            for(int i = 1; i<decCountPlusOne; i++)
+            for (int i = 1; i < decCountPlusOne; i++)
                 total += confusionTable[decIdx][i];
             return total;
         }
@@ -455,7 +455,7 @@ namespace Infovision.Datamining
             stringBuilder.Append("ModelCreationTime");
             stringBuilder.Append('|');
             stringBuilder.Append("ClassificationTime");
-            stringBuilder.Append('|');            
+            stringBuilder.Append('|');
 
             stringBuilder.Append("ExceptionRuleHitCounter");
             stringBuilder.Append('|');
@@ -506,7 +506,7 @@ namespace Infovision.Datamining
             stringBuilder.AppendFormat("{0,7}", this.ExceptionRuleLengthSum);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,5}", this.StandardRuleHitCounter);
-            stringBuilder.Append('|');            
+            stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,7}", this.StandardRuleLengthSum);
             stringBuilder.Append('|');
 
@@ -519,7 +519,7 @@ namespace Infovision.Datamining
             stringBuilder.Append("Number of classified: ");
             stringBuilder.Digits(this.Classified);
             stringBuilder.Append('\n');
-            
+
             stringBuilder.Append("Number of misclassified: ");
             stringBuilder.Digits(this.Misclassified);
             stringBuilder.Append('\n');
@@ -542,11 +542,11 @@ namespace Infovision.Datamining
 
             stringBuilder.Append("Coverage: ");
             stringBuilder.AppendFormat("{0:0.0000}", this.Coverage);
-            stringBuilder.Append('\n');            
+            stringBuilder.Append('\n');
 
             return stringBuilder.ToString();
         }
 
-        #endregion
+        #endregion Methods
     }
 }

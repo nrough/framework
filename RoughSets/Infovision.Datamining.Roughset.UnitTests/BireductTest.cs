@@ -10,10 +10,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class BireductTest
     {
-        DataStore dataStoreTrain = null;
-        DataStore dataStoreTest = null;
+        private DataStore dataStoreTrain = null;
+        private DataStore dataStoreTest = null;
 
-        DataStoreInfo dataStoreTrainInfo = null;
+        private DataStoreInfo dataStoreTrainInfo = null;
 
         public BireductTest()
         {
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
-            dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;         
+            dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.NumberOfPermutations },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
-            
+
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
             bireductGenerator.Run();
             IReductStore reductStore = bireductGenerator.ReductPool;
@@ -82,7 +82,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
-            
+
             decimal r = roughMeasure.Calc(reduct);
             decimal u = sumWeights;
 
@@ -93,7 +93,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             decimal w = weightMeasure.Calc(reductWeights);
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));            
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             decimal w = weightMeasure.Calc(reductWeights);
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));            
+            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));
         }
 
         [Test]
@@ -159,7 +159,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
             localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
 
-
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
@@ -168,16 +167,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();
-            
+
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
                 RuleQuality.Confidence,
                 RuleQuality.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
-            
+
             //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
         }
-
 
         //Ad 2
         [Test]
@@ -189,8 +187,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
             localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
-            
-            
+
             /*
             \scriptsize{O 8 W 1 4 7 2 14 10 12 9 T 6 3 13 5 11 H} & \scriptsize{(\{H\},$\{u_i: i \in \{1,2,5,7..11,13..14\}\}$)}\\ \hline
             \scriptsize{H 13 T 8 W 6 11 3 14 10 O 5 7 9 2 1 4 12} & \scriptsize{(\{O\},\{1..3 6..8 12..14\})}\\ \hline
@@ -225,12 +222,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutations.Add(new Permutation(new int[] { 12, 7, 5, -3, 6, -4, 8, -2, 4, 2, 3, 11, -1, 1, 9, 13, 10, 0 }));
             permutations.Add(new Permutation(new int[] { 8, -3, 1, 3, 5, 12, 13, 6, -2, 10, 9, -1, -4, 2, 4, 0, 7, 11 }));
             permutations.Add(new Permutation(new int[] { -4, 4, 2, -1, 11, 3, -2, -3, 6, 1, 12, 10, 9, 5, 7, 0, 13, 8 }));
-            Args parms;            
+            Args parms;
 
             parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
 
-            BireductGenerator bireductGenerator = (BireductGenerator) ReductFactory.GetReductGenerator(parms);
+            BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
 
             parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
                              new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
@@ -243,7 +240,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0M, null);
 
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < perm.Length; i++ )
+                for (int i = 0; i < perm.Length; i++)
                 {
                     if (perm[i] < 0)
                     {
@@ -256,14 +253,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
 
                 //Console.WriteLine("{0} & {1} & {2}", sb.ToString(), r1.ToString(), r2.ToString());
-            }                                                            
+            }
         }
 
         //Ad 3
         [Test]
         public void CheckIsBireduct()
         {
-
             /*
             \begin{table}[t]
             \normalsize
@@ -303,7 +299,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             \caption{Examples of decisionInternalValue bireducts and $\gamma$-decisionInternalValue bireducts. \label{play_golf_table_bireducts}}
             \end{table}
              */
-            
+
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
@@ -372,20 +368,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 new int[] { 4,8,9,12 },
                 new int[] { }
             };
-            
+
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 Bireduct bireduct = new Bireduct(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
                 EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.ObjectSet);
-                
+
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireduct.TryRemoveAttribute(k));
 
-                for(int k=0; k<14; k++)
+                for (int k = 0; k < 14; k++)
                     Assert.IsFalse(bireduct.TryAddObject(k));
-
             }
-
 
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
@@ -397,9 +391,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 for (int k = 0; k < 14; k++)
                     Assert.IsFalse(bireductGamma.TryAddObject(k));
-            }            
+            }
         }
-
 
         //Ad 4
         [Test]
@@ -411,7 +404,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
             localDataStore.DataStoreInfo.GetFieldInfo(4).Alias = "W";
             localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
-
 
             /*
             \scriptsize{O 8 W 1 4 7 2 14 10 12 9 T 6 3 13 5 11 H} & \scriptsize{(\{H\},$\{u_i: i \in \{1,2,5,7..11,13..14\}\}$)}\\ \hline
@@ -489,7 +481,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Name,
                                     localDataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(eq.MajorDecision)));
                 }
-                
+
                 Console.WriteLine();
 
                 Console.WriteLine("Gamma Bireduct rules");
@@ -519,7 +511,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence, 
+                RuleQuality.Confidence,
                 RuleQuality.SingleVote,
                 dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);

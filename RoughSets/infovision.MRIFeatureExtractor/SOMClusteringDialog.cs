@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Infovision.MRI.DAL;
 
@@ -38,13 +31,12 @@ namespace Infovision.MRI.UI
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void SOMClusteringDialog_Load(object sender, EventArgs e)
         {
             DAL.SOMClustering somClustering = this.SOMClusteringBindingSource.Current as DAL.SOMClustering;
-            if(somClustering == null)
+            if (somClustering == null)
             {
                 throw new InvalidOperationException("Unexpected error");
             }
@@ -98,7 +90,6 @@ namespace Infovision.MRI.UI
 
         private void groupBox3_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click_1(object sender, EventArgs e)

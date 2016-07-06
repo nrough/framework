@@ -1,33 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
-using Infovision.Utils;
-using Infovision.Datamining;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
-using Infovision.Datamining.Experimenter.Parms;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{       
+{
     [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator
-    {                        
+    {
         private decimal[] permEpsilon;
         private IPermutationGenerator permutationGenerator;
-        private decimal dataSetQuality = Decimal.One;        
+        private decimal dataSetQuality = Decimal.One;
         private WeightGenerator weightGenerator;
         private Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
-        private Func<double[], double[], double> distance;                
+        private Func<double[], double[], double> distance;
         private HierarchicalClusteringBase hCluster;
-        
+
         public HierarchicalClusteringBase Dendrogram
         {
             get { return this.hCluster; }
-        }        
+        }
 
         protected override IPermutationGenerator PermutationGenerator
         {
@@ -50,7 +46,8 @@ namespace Infovision.Datamining.Roughset
 
         protected bool IsQualityCalculated
         {
-            get; set;
+            get;
+            set;
         }
 
         protected decimal DataSetQuality
@@ -85,15 +82,15 @@ namespace Infovision.Datamining.Roughset
                 return this.weightGenerator;
             }
 
-            set 
-            { 
-                this.weightGenerator = value; 
+            set
+            {
+                this.weightGenerator = value;
             }
         }
-        
+
         public ReductEnsembleGenerator()
             : base()
-        {            
+        {
         }
 
         public override void InitDefaultParameters()
@@ -106,8 +103,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override void InitFromArgs(Args args)
-        {            
-            base.InitFromArgs(args);            
+        {
+            base.InitFromArgs(args);
 
             if (args.Exist(ReductGeneratorParamHelper.PermutationEpsilon))
             {
@@ -115,12 +112,12 @@ namespace Infovision.Datamining.Roughset
                 this.permEpsilon = new decimal[epsilons.Length];
                 Array.Copy(epsilons, this.permEpsilon, epsilons.Length);
             }
-            
+
             if (args.Exist(ReductGeneratorParamHelper.Distance))
                 this.distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
 
             if (args.Exist(ReductGeneratorParamHelper.Linkage))
-                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);            
+                this.linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 
             if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
                 this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
@@ -132,14 +129,14 @@ namespace Infovision.Datamining.Roughset
         protected override void Generate()
         {
             ReductStore localReductPool = new ReductStore(this.Permutations.Count);
-            
-            int k = -1;            
+
+            int k = -1;
             foreach (Permutation permutation in this.Permutations)
-            {                
+            {
                 decimal localApproxLevel = this.permEpsilon[++k];
 
                 IReduct reduct = this.CreateReductObject(new int[] { }, localApproxLevel, this.GetNextReductId().ToString());
-                
+
                 //Reach
                 for (int i = 0; i < permutation.Length; i++)
                 {
@@ -178,7 +175,7 @@ namespace Infovision.Datamining.Roughset
             {
                 errors.Add(i, errorVectors[i]);
             }
-                            
+
             this.hCluster = new HierarchicalClustering(distance, linkage);
             this.hCluster.Instances = errors;
             this.hCluster.Compute();
@@ -190,7 +187,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles)
-        {            
+        {
             Dictionary<int, List<int>> clusterMembership = this.hCluster.GetClusterMembershipAsDict(numberOfEnsembles);
             ReductStoreCollection result = new ReductStoreCollection(clusterMembership.Count);
 
@@ -205,11 +202,11 @@ namespace Infovision.Datamining.Roughset
                 result.AddStore(tmpReductStore);
             }
 
-            return result;            
+            return result;
         }
 
         /// <summary>
-        /// Returns a objectWeight vector array, where for each reduct an recognition objectWeight is stored        
+        /// Returns a objectWeight vector array, where for each reduct an recognition objectWeight is stored
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
@@ -225,9 +222,9 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)
-        {            
-            if (reductStore.IsSuperSet(reduct))            
-                return true;            
+        {
+            if (reductStore.IsSuperSet(reduct))
+                return true;
 
             decimal partitionQuality = this.GetPartitionQuality(reduct);
             if (Decimal.Round(partitionQuality, 17) >= Decimal.Round((Decimal.One - reduct.Epsilon) * this.DataSetQuality, 17))
@@ -268,7 +265,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
-        {            
+        {
             ReductEnsembleGenerator rGen = new ReductEnsembleGenerator();
             rGen.InitFromArgs(args);
             return rGen;

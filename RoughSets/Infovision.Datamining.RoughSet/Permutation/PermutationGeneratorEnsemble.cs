@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -15,9 +13,9 @@ namespace Infovision.Datamining.Roughset
         private int[][] existingAttributeSets;
         private Dictionary<int, int> attributeCount;
         private bool generateWithProbability;
-        private int countSum;        
+        private int countSum;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -27,7 +25,7 @@ namespace Infovision.Datamining.Roughset
             this.generateWithProbability = false;
             this.Setup(elements, attributes);
         }
-        
+
         public PermutationGeneratorEnsemble(DataStore dataStore, int[][] attributes)
             : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), attributes)
         {
@@ -35,7 +33,7 @@ namespace Infovision.Datamining.Roughset
 
         public PermutationGeneratorEnsemble(DataStore dataStore, IReductStoreCollection models)
             : base(dataStore)
-        {            
+        {
             this.generateWithProbability = false;
 
             if (models != null && models.Count > 0)
@@ -43,13 +41,13 @@ namespace Infovision.Datamining.Roughset
                 int[][] selectedAttributes;
                 int count = 0;
                 foreach (IReductStore rs in models)
-                    if(rs.IsActive)
+                    if (rs.IsActive)
                         count += rs.Count;
                 selectedAttributes = new int[count][];
 
                 int k = 0;
                 foreach (IReductStore rs in models)
-                    if(rs.IsActive)
+                    if (rs.IsActive)
                         foreach (IReduct r in rs)
                             selectedAttributes[k++] = r.Attributes.ToArray();
 
@@ -57,11 +55,10 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        #endregion
+        #endregion Constructors
 
         private void Setup(int[] elements, int[][] attributes)
         {
-            
             if (attributes != null)
             {
                 this.existingAttributeSets = new int[attributes.Length][];
@@ -79,26 +76,26 @@ namespace Infovision.Datamining.Roughset
             this.countSum += elements.Length;
 
             if (attributes != null && attributes.Length > 0)
-            {                
+            {
                 for (int k = 0; k < this.existingAttributeSets.Length; k++)
                     for (int i = 0; i < existingAttributeSets[k].Length; i++)
                     {
                         this.attributeCount[existingAttributeSets[k][i]]++;
                         countSum++;
                     }
-                
+
                 this.generateWithProbability = true;
             }
         }
 
         protected override Permutation CreatePermutation()
         {
-            if(this.generateWithProbability == false)
+            if (this.generateWithProbability == false)
                 return base.CreatePermutation();
 
             int[] pds = new int[this.countSum];
             int pos = 0;
-            foreach (var kvp in this.attributeCount)                
+            foreach (var kvp in this.attributeCount)
                 for (int i = 0; i < kvp.Value; i++)
                     pds[pos++] = kvp.Key;
 
@@ -123,7 +120,7 @@ namespace Infovision.Datamining.Roughset
                 pds = newPds;
             }
 
-            return new Permutation(result);            
+            return new Permutation(result);
         }
     }
 }

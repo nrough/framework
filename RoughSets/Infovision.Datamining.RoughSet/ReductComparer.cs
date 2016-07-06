@@ -7,13 +7,13 @@ namespace Infovision.Datamining.Roughset
     {
         public object Clone()
         {
-            var clone = (ReductBaseComparer) this.MemberwiseClone();
+            var clone = (ReductBaseComparer)this.MemberwiseClone();
             this.HandleCloned(clone);
             return clone;
-        }        
+        }
 
         protected virtual void HandleCloned(ReductBaseComparer clone)
-        {         
+        {
         }
     }
 
@@ -55,10 +55,10 @@ namespace Infovision.Datamining.Roughset
 
     public class BireductRelativeComparer : ReductBaseComparer
     {
-        BireductMeasureRelative bireductMeasureRelative = new BireductMeasureRelative();
+        private BireductMeasureRelative bireductMeasureRelative = new BireductMeasureRelative();
 
         public override int Compare(IReduct left, IReduct right)
-        {            
+        {
             decimal leftResult = bireductMeasureRelative.Calc(left);
             decimal rightResult = bireductMeasureRelative.Calc(right);
 
@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset
     }
 
     public class DiversityComparer : ReductBaseComparer
-    {                
+    {
         public override int Compare(IReduct left, IReduct right)
         {
             //TODO DiversityComparer.Compare(...)
@@ -93,7 +93,6 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
-
     public class ReductStoreLengthComparer : ReductStoreBaseComparer
     {
         public bool IncludeExceptions { get; set; }
@@ -103,7 +102,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.IncludeExceptions = includeExceptions;
         }
-        
+
         public override int Compare(IReductStore left, IReductStore right)
         {
             double avgLengthLeft = left.GetWeightedAvgMeasure(new ReductMeasureLength(), this.IncludeExceptions);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Infovision.Data;
@@ -15,13 +14,13 @@ namespace Infovision.Datamining.Roughset
         private IPermutationGenerator permutationGenerator;
         private int[][] fieldGroups;
         private int reductIdSequence;
-        
+
         protected readonly Stopwatch timer = new Stopwatch();
         protected object mutex = new object();
 
-        #endregion
-        
-        #region Properties        
+        #endregion Members
+
+        #region Properties
 
         public Args Parameters { get; set; }
         public Args InnerParameters { get; set; }
@@ -43,7 +42,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     this.fieldGroups[i] = new int[value[i].Length];
                     Buffer.BlockCopy(value[i], 0, this.fieldGroups[i], 0, value[i].Length * sizeof(int));
-                }   
+                }
             }
         }
 
@@ -67,7 +66,7 @@ namespace Infovision.Datamining.Roughset
 
             set
             {
-                lock(mutex)
+                lock (mutex)
                 {
                     this.permutationGenerator = value;
                 }
@@ -81,10 +80,10 @@ namespace Infovision.Datamining.Roughset
 
         public virtual long ReductGenerationTime
         {
-            get { return timer.ElapsedMilliseconds;  }
+            get { return timer.ElapsedMilliseconds; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
@@ -93,13 +92,16 @@ namespace Infovision.Datamining.Roughset
             this.InitDefaultParameters();
         }
 
-        #endregion 
+        #endregion Constructors
 
         #region Methods
 
         protected abstract void Generate();
+
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
+
         protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses);
+
         public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null);
 
         public virtual void Run()
@@ -108,10 +110,10 @@ namespace Infovision.Datamining.Roughset
             timer.Start();
             this.Generate();
             timer.Stop();
-        }        
+        }
 
         protected virtual IReductStore CreateReductStore(int initialSize = 0)
-        {            
+        {
             return initialSize != 0 ? new ReductStore(initialSize) : new ReductStore();
         }
 
@@ -121,7 +123,7 @@ namespace Infovision.Datamining.Roughset
             reductStoreCollection.AddStore(this.ReductPool);
             return reductStoreCollection;
         }
-        
+
         protected int GetNextReductId()
         {
             lock (mutex)
@@ -148,7 +150,7 @@ namespace Infovision.Datamining.Roughset
                 this.fieldGroups[i][0] = fieldIds[i];
             }
         }
-         
+
         public virtual void InitFromArgs(Args args)
         {
             this.Parameters = args;
@@ -161,9 +163,9 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist(ReductGeneratorParamHelper.PermuatationGenerator))
             {
-                this.PermutationGenerator = (IPermutationGenerator) args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
+                this.PermutationGenerator = (IPermutationGenerator)args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
             }
-            
+
             if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))
             {
                 this.Permutations = (PermutationCollection)args.GetParameter(ReductGeneratorParamHelper.PermutationCollection);
@@ -178,22 +180,22 @@ namespace Infovision.Datamining.Roughset
                 int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
                 this.Permutations = this.PermutationGenerator.Generate(numberOfPermutations);
             }
-            
+
             if (args.Exist("USECACHE"))
                 this.UseCache = true;
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
                 this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
 
-            if(args.Exist(ReductGeneratorParamHelper.ReductionStep))
+            if (args.Exist(ReductGeneratorParamHelper.ReductionStep))
                 this.ReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.ReductionStep);
 
             if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
                 this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
-            
+
             //TODO FieldGroups
         }
 
-        #endregion
+        #endregion Methods
     }
 }

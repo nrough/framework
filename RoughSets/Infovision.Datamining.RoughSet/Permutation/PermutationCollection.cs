@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
 
         private List<Permutation> internalList;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset
             this.internalList.Add(permutation);
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Roughset
             get { return internalList[index]; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -74,11 +74,11 @@ namespace Infovision.Datamining.Roughset
                 using (StreamReader streamReader = new StreamReader(fileStream))
                 {
                     string line = streamReader.ReadLine();
-                    while ( ! String.IsNullOrEmpty(line))
+                    while (!String.IsNullOrEmpty(line))
                     {
-                        string [] values = line.Split(new Char [] {' ', ';', ',', '\t', '|'}, StringSplitOptions.RemoveEmptyEntries); 
-                        int [] elements = new int[values.Length];
-                        for(int i= 0 ; i < values.Length; i++)
+                        string[] values = line.Split(new Char[] { ' ', ';', ',', '\t', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                        int[] elements = new int[values.Length];
+                        for (int i = 0; i < values.Length; i++)
                         {
                             elements[i] = Int32.Parse(values[i], CultureInfo.InvariantCulture);
                         }
@@ -172,8 +172,8 @@ namespace Infovision.Datamining.Roughset
             return new PermutationCollection(this);
         }
 
-        #endregion
+        #endregion ICloneable Members
 
-        #endregion
+        #endregion Methods
     }
 }

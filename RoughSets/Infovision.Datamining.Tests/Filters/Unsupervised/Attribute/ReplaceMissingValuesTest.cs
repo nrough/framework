@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Infovision.Data;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
@@ -20,14 +15,14 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
         {
             //Console.WriteLine("ReplaceMissingValuesTest.ComputeTest()");
 
-            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.Csv);            
+            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.Csv);
             DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.Csv, trnData.DataStoreInfo);
             trnData.SetDecisionFieldId(1);
             tstData.SetDecisionFieldId(1);
 
             if (!Directory.Exists(@"temp"))
                 Directory.CreateDirectory(@"temp");
-            
+
             trnData.WriteToCSVFileExt(@"temp\missingvalsorig.trn", ",");
             tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
 
@@ -43,7 +38,7 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
             parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
             parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-            parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, 1);            
+            parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, 1);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
 
@@ -60,15 +55,14 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
 
             RoughClassifier classifierTrn = new RoughClassifier(
                 reductGenerator.GetReductGroups(),
-                reductGenerator.IdentyficationType, 
+                reductGenerator.IdentyficationType,
                 reductGenerator.VoteType,
                 trnData.DataStoreInfo.GetDecisionValues());
             ClassificationResult resultTrn = classifierTrn.Classify(trnData, null);
 
-
             RoughClassifier classifierTst = new RoughClassifier(
                 reductGenerator.GetReductGroups(),
-                reductGenerator.IdentyficationType, 
+                reductGenerator.IdentyficationType,
                 reductGenerator.VoteType,
                 trnData.DataStoreInfo.GetDecisionValues());
             ClassificationResult resultTst = classifierTst.Classify(tstData, null);

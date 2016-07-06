@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
         private ManualResetEvent[] resetEvents;
         private bool threadResults;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset
             resetEvents = new ManualResetEvent[this.numberOfThreads];
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -71,6 +71,6 @@ namespace Infovision.Datamining.Roughset
             this.resetEvents[taskInfo.ThreadIndex].Set();
         }
 
-        #endregion
+        #endregion Methods
     }
 }

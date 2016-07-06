@@ -7,7 +7,7 @@ namespace Infovision.MRI.DAL
     public class ImageDatabase
     {
         public static long NextImageId = 1;
-        
+
         public class Tables
         {
             public const string Image = "Image";
@@ -65,7 +65,7 @@ namespace Infovision.MRI.DAL
             imageStore.Tables.Add(imageTable);
 
             parentImageRelation = new DataRelation("ParentImage",
-                imageStore.Tables[Tables.Image].Columns[ImageFields.Id], 
+                imageStore.Tables[Tables.Image].Columns[ImageFields.Id],
                 imageStore.Tables[Tables.Image].Columns[ImageFields.ParentId]);
             imageStore.Relations.Add(parentImageRelation);
         }
@@ -73,7 +73,7 @@ namespace Infovision.MRI.DAL
         public DataRow[] GetChildImages(long? parentId)
         {
             DataTable imageTable = imageStore.Tables[Tables.Image];
-            string expression = parentId == null ? "ParentID is null"  : "ParentId = " + parentId.ToString();
+            string expression = parentId == null ? "ParentID is null" : "ParentId = " + parentId.ToString();
 
             //string sortOrder = "Id ASC";
             //return imageTable.Select(expression, sortOrder);
@@ -112,9 +112,9 @@ namespace Infovision.MRI.DAL
             row.SetField<long>(ImageFields.Id, image.Id);
             row.SetField<string>(ImageFields.Name, image.Name);
             row.SetField<long?>(ImageFields.ParentId, image.ParentId);
-            row.SetField<int>(ImageFields.Width, (int) image.Width);
-            row.SetField<int>(ImageFields.Height, (int) image.Height);
-            row.SetField<int>(ImageFields.Depth, (int) image.Depth);
+            row.SetField<int>(ImageFields.Width, (int)image.Width);
+            row.SetField<int>(ImageFields.Height, (int)image.Height);
+            row.SetField<int>(ImageFields.Depth, (int)image.Depth);
             row.SetField<string>(ImageFields.FileName, image.FileName);
             row.SetField<Endianness>(ImageFields.Endianness, image.Endianness);
             row.SetField<PixelType>(ImageFields.PixelType, image.PixelType);
@@ -122,9 +122,9 @@ namespace Infovision.MRI.DAL
             row.SetField<int>(ImageFields.SliceFrom, image.SliceFrom);
             row.SetField<int>(ImageFields.SliceTo, image.SliceTo);
             row.SetField<ImageType>(ImageFields.ImageType, image.ImageTypeId);
-            
+
             imageTable.Rows.Add(row);
-            
+
             return row;
         }
 
@@ -134,7 +134,7 @@ namespace Infovision.MRI.DAL
 
             image.Id = (long)dataRow[ImageFields.Id];
             image.Name = (string)dataRow[ImageFields.Name];
-            
+
             if (dataRow[ImageFields.ParentId] != DBNull.Value)
             {
                 image.ParentId = (long)dataRow[ImageFields.ParentId];

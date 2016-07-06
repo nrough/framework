@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
@@ -12,7 +10,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
     {
         private Dictionary<int, DendrogramNode> nodes;
         public int MinimumNumberOfInstances { get; set; }
-        
+
         public Dictionary<int, DendrogramNode> Nodes
         {
             get { return this.nodes; }
@@ -51,13 +49,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         /// <summary>
-        ///  Creates a hierarchy of clusters 
+        ///  Creates a hierarchy of clusters
         /// </summary>
-        /// 
-        /// <param name="data">The data where to compute the algorithm.</param>        
+        ///
+        /// <param name="data">The data where to compute the algorithm.</param>
         public override void Compute()
         {
-            throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");            
+            throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");
         }
 
         public override bool AddToCluster(int id, double[] instance)
@@ -129,7 +127,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 nodes.Add(newNode.Id, newNode);
                 return true;
             }
-            //only one node (on the left) existing 
+            //only one node (on the left) existing
             else if (this.NumberOfInstances - 1 == 1)
             {
                 DendrogramNode newNode = new DendrogramNode
@@ -197,9 +195,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             {
                 throw new InvalidOperationException(String.Format("Cannot find leaf node with Id {0}", minLeafKey));
             }
-                                    
+
             return true;
-        }        
+        }
 
         public override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {

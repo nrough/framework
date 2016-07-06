@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -34,6 +29,6 @@ namespace Infovision.Datamining.Roughset
             };
 
             return tverskyDistance;
-        }    
+        }
     }
 }

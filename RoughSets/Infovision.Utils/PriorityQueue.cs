@@ -5,14 +5,13 @@
 //====================================================
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Infovision.Utils
 {
     /// <summary>
     /// Priority Queue data structure
     /// </summary>
-    public class PriorityQueue<T, C>        
+    public class PriorityQueue<T, C>
         where C : IComparer<T>
     {
         protected List<T> storedValues;
@@ -218,7 +217,7 @@ namespace Infovision.Utils
 
                     //Compare the values of the children
                     //if (leftValue.CompareTo(rightValue) <= 0)
-                    if(comparer.Compare(leftValue, rightValue) <= 0)
+                    if (comparer.Compare(leftValue, rightValue) <= 0)
                         return -1; //left child is smaller
                     else
                         return 1; //right child is smaller
@@ -231,6 +230,5 @@ namespace Infovision.Utils
             else
                 return 0; //both children are bigger or don't exist
         }
-
     }
 }

@@ -6,7 +6,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace Infovision.MRI
 {
     public class ImageHistogram
-    {       
+    {
         public ImageHistogram()
         {
             this.HistogramBucketSize = 4;
@@ -19,11 +19,12 @@ namespace Infovision.MRI
         {
             this.Image = image;
         }
-        
+
         public int HistogramBucketSize { get; set; }
         public int ChartWidth { get; set; }
         public int ChartHeight { get; set; }
         public IImage Image { get; set; }
+
         public Chart Chart
         {
             get;
@@ -42,7 +43,7 @@ namespace Infovision.MRI
 
         public static MathNet.Numerics.Statistics.Histogram GetHistogram(IImage image, int numberOfBuckets)
         {
-            MathNet.Numerics.Statistics.Histogram histogram = new MathNet.Numerics.Statistics.Histogram(image.GetData<double>(), numberOfBuckets);   
+            MathNet.Numerics.Statistics.Histogram histogram = new MathNet.Numerics.Statistics.Histogram(image.GetData<double>(), numberOfBuckets);
             return histogram;
         }
 
@@ -95,7 +96,7 @@ namespace Infovision.MRI
             ImageITK imageITK = new ImageITK(image);
             return ImageHistogram.GetChart(imageITK, bucketCount);
         }
-        
+
         public static Chart GetChart(IImage image, int bucketCount)
         {
             int numberOfBuckets = ImageHelper.GetNumberOfHistogramBuckets(image, bucketCount);
@@ -103,7 +104,7 @@ namespace Infovision.MRI
 
             DataSet dataSet = new DataSet();
             DataTable dt = new DataTable();
-            
+
             dt.Columns.Add("Range", typeof(double));
             dt.Columns.Add("Counter", typeof(double));
 
@@ -215,7 +216,7 @@ namespace Infovision.MRI
         public Chart GetChart()
         {
             if (this.Chart == null)
-                this.CreateChart();    
+                this.CreateChart();
 
             return this.Chart;
         }

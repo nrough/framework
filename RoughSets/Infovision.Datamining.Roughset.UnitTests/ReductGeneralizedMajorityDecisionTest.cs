@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    class ReductGeneralizedMajorityDecisionTest
+    internal class ReductGeneralizedMajorityDecisionTest
     {
         public ReductGeneralizedMajorityDecisionTest()
         {
@@ -31,10 +31,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int ensembleSize = 10;
             int ratio = 1;
             int permutationSize = ensembleSize * ratio;
-            
+
             ReductLengthComparer reductLengthComparer = new ReductLengthComparer();
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
-            
+
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGen.Generate(ensembleSize * 10);
 
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);            
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
@@ -91,10 +91,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             resultApprox.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
-            
+
             Console.WriteLine(resultApprox);
         }
-
 
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
@@ -138,11 +137,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             foreach (Permutation permutation in permutations)
-            {                
+            {
                 int[] attributes = new int[cutoff + 1];
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
-                
+
                 CalculateGeneralizedDecisionReductFromSubset(data, 0.0M, attributes);
                 CalculateGeneralizedDecisionReductFromSubset(data, 0.1M, attributes);
                 CalculateGeneralizedDecisionReductFromSubset(data, 0.2M, attributes);
@@ -157,31 +156,31 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
         public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
-        {                                    
+        {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
-            ReductGeneralizedMajorityDecisionGenerator reductGenerator = 
-                ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;                               
-            return reductGenerator.CalculateReduct(attributeSubset);                                    
+            ReductGeneralizedMajorityDecisionGenerator reductGenerator =
+                ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
+            return reductGenerator.CalculateReduct(attributeSubset);
         }
 
         public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
-        {            
+        {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
-            ReductGeneratorWeightsMajority reductGenerator = 
+            ReductGeneratorWeightsMajority reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
             return reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
         }
-        
+
         [Test, TestCaseSource("GetDataFiles"), Ignore]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
@@ -228,21 +227,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01M)
             {
                 foreach (Permutation permutation in permutations)
-                {    
+                {
                     IReduct gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
                     decimal gdQuality = measure.Calc(gdReduct);
 
                     Assert.GreaterOrEqual(
-                        Decimal.Round(gdQuality, 17), 
+                        Decimal.Round(gdQuality, 17),
                         Decimal.Round(((Decimal.One - eps) * dataQuality), 17),
-                        String.Format("{0} M(B)={1}", gdReduct, gdQuality));        
+                        String.Format("{0} M(B)={1}", gdReduct, gdQuality));
                 }
             }
         }
 
         [Test, TestCaseSource("GetDataFiles")]
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2(KeyValuePair<string, BenchmarkData> kvp)
-        {   
+        {
             int numberOfPermutations = 100;
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -254,7 +253,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IInformationMeasure measure = new InformationMeasureWeights();
             decimal dataQuality = measure.Calc(allAttributes);
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps+=0.01m)
+            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
             {
                 foreach (Permutation permutation in permutations)
                 {

@@ -1,28 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
-using NUnit.Framework;
 using Infovision.Datamining.Filters.Supervised.Attribute;
+using NUnit.Framework;
 
 namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
 {
-    
     [TestFixture]
     public class DiscretizationTest
     {
-        int[] data = { 5, 5, 5, 5, 5, 7, 8, 9, 
-                        10, 12, 13, 14, 16, 40, 41, 42, 
+        private int[] data = { 5, 5, 5, 5, 5, 7, 8, 9,
+                        10, 12, 13, 14, 16, 40, 41, 42,
                         43, 44, 45, 45, 46, 47, 48, 49 };
 
-        int[] labels = { 1, 1, 1, 1, 1, 1, 1, 1, 
-                        1, 1, 1, 2, 2, 2, 2, 2, 
+        private int[] labels = { 1, 1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 2, 2, 2, 2, 2,
                         2, 2, 2, 2, 2, 3, 3, 3 };
 
-        int[] dataNotExisting = { 0, 1, 2, 3, 4, 5, 6, 
-                                    11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34, 
+        private int[] dataNotExisting = { 0, 1, 2, 3, 4, 5, 6,
+                                    11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34,
                                     50, 60, 70, 80 };
 
         //[TestCase(false, false)]
@@ -50,16 +45,15 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
                 UseKononenko = useKononenko,
                 Fields2Discretize = numericFields
             };
-            
+
             descretizer.Discretize(ref trainData, ref testData);
 
             foreach (int fieldId in numericFields)
             {
                 if (trainData.DataStoreInfo.GetFieldInfo(fieldId).Cuts.Length == 0)
-                    Console.WriteLine(String.Format("Field {0}", fieldId));                
+                    Console.WriteLine(String.Format("Field {0}", fieldId));
             }
         }
-
 
         [TestCase(false, false)]
         [TestCase(false, true)]
@@ -76,11 +70,11 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
             disc.Compute(data, labels, null);
 
             ShowInfo<int, int>(disc, data, dataNotExisting);
-        }        
+        }
 
         public void ShowInfo<A, L>(Discretization<A, L> disc, A[] dataExisting, A[] dataNotExisting)
             where A : struct, IComparable, IFormattable, IComparable<A>, IEquatable<A>
-            where L : struct, IComparable, IFormattable, IComparable<L>, IEquatable<L>                     
+            where L : struct, IComparable, IFormattable, IComparable<L>, IEquatable<L>
         {
             Console.WriteLine(disc.ToString());
 
@@ -90,5 +84,5 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
             for (int i = 0; i < data.Length; i++)
                 Console.WriteLine("{0} {1}", dataNotExisting[i], disc.Search(dataNotExisting[i]));
         }
-    }   
+    }
 }

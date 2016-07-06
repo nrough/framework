@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using MiscUtil;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 {
-    
     public class Discretization<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
     {
@@ -18,7 +14,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         private bool useWeightPerInterval;
         public static int NumbericValueLimit = 10;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -29,14 +25,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             this.NumberOfBuckets = Discretization<T>.NumbericValueLimit;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
         public double WeightPerInterval
         {
             get { return this.weightPerInterval; }
-            set 
+            set
             {
                 if (value <= 0.0)
                     throw new InvalidOperationException("Weight per interval must be positive");
@@ -77,7 +73,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             set { cuts = value; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -86,7 +82,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             if (values == null)
                 throw new ArgumentException("Value array cannot be null", "values");
 
-            if(values.Length == 0)
+            if (values.Length == 0)
                 throw new ArgumentException("Value array does not contain any elements", "values");
 
             T min = values[0];
@@ -94,12 +90,12 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             double binWidth = 0.0;
             double entropy;
             double bestEntropy = Double.MaxValue;
-            int bestNumOfBins = 1;            
+            int bestNumOfBins = 1;
             double[] distribution;
 
             //Find min and max
             for (int i = 0; i < values.Length; i++)
-            {                
+            {
                 if (values[i].CompareTo(max) > 0)
                     max = values[i];
                 if (values[i].CompareTo(min) < 0)
@@ -114,14 +110,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             {
                 distribution = new double[i + 1];
                 binWidth = (maxD - minD) / (double)(i + 1);
- 
+
                 //Compute distribution
-                for(int j = 0; j < values.Length; j++)
-                {                    
+                for (int j = 0; j < values.Length; j++)
+                {
                     //TODO if missing
                     for (int k = 0; k < i + 1; k++)
-                    {                                                
-                        if( Operator.Convert<T, double>(values[j]) <= (minD + (((double)k + 1) * binWidth)) )
+                    {
+                        if (Operator.Convert<T, double>(values[j]) <= (minD + (((double)k + 1) * binWidth)))
                         {
                             distribution[k] += (weights != null) ? weights[j] : 1.0;
                             break;
@@ -141,21 +137,21 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     entropy -= (distribution[k] * System.Math.Log((distribution[k] - 1) / binWidth));
                 }
 
-                if(entropy < bestEntropy)
+                if (entropy < bestEntropy)
                 {
                     bestEntropy = entropy;
                     bestNumOfBins = i + 1;
                 }
             }
-                
+
             //Calculate custs
             double[] cutPoints = null;
             //Fix?
             binWidth = bestNumOfBins > 0 ? (maxD - minD) / bestNumOfBins : 0.0;
-            if((bestNumOfBins > 1) && (binWidth > 0))
-            {                                
+            if ((bestNumOfBins > 1) && (binWidth > 0))
+            {
                 cutPoints = new double[bestNumOfBins - 1];
-                for(int i = 1; i < bestNumOfBins; i++)
+                for (int i = 1; i < bestNumOfBins; i++)
                 {
                     cutPoints[i - 1] = minD + (binWidth * i);
                 }
@@ -174,7 +170,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             T max = Operator<T>.Zero;
             T min = Operator<T>.One;
             T currentValue;
-            for(int i = 0; i<values.Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
                 currentValue = values[i];
                 if (max.CompareTo(min) < 0)
@@ -186,7 +182,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 {
                     max = currentValue;
                 }
-                if(currentValue.CompareTo(min) < 0)
+                if (currentValue.CompareTo(min) < 0)
                 {
                     min = currentValue;
                 }
@@ -197,7 +193,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
             double binWidth = (maxD - minD) / (double)this.NumberOfBuckets;
             double[] cutPoints = null;
-            if((this.NumberOfBuckets > 1) && (binWidth > 0))
+            if ((this.NumberOfBuckets > 1) && (binWidth > 0))
             {
                 cutPoints = new double[this.NumberOfBuckets - 1];
                 for (int i = 1; i < this.NumberOfBuckets; i++)
@@ -213,7 +209,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         }
 
         protected void CalculateCutPointsByEqualFrequencyBinning(T[] values, double[] weights = null)
-        {           
+        {
             T[] data = (T[])values.Clone();
             Array.Sort<T>(data);
 
@@ -315,19 +311,19 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         public void Compute(T[] values, double[] weights = null)
         {
-            if(this.UseEntropy)
+            if (this.UseEntropy)
                 this.CalculateCutPointsByEntropy(values, weights);
             else if (this.UseEqualFrequency)
                 this.CalculateCutPointsByEqualFrequencyBinning(values, weights);
             else
                 this.CalculateCutPointsByEqualWidthBinning(values, weights);
         }
-        
+
         public int Search(T value)
         {
             if (this.cuts == null)
                 return 1;
-            
+
             for (int i = 0; i < cuts.Length; i++)
                 if (Operator.Convert<T, double>(value).CompareTo(cuts[i]) <= 0)
                     return i;
@@ -356,7 +352,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             return sb.ToString();
         }
 
-        #endregion
+        #endregion Methods
     }
 }
-

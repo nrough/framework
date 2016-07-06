@@ -29,7 +29,7 @@ namespace Infovision.Data
     {
         public static List<FieldTypes> basicTypes = null;
         public static object syncRoot = new object();
-        
+
         public static ICollection<FieldTypes> BasicFieldTypes
         {
             get

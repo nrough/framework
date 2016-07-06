@@ -35,8 +35,8 @@ namespace Infovision.Utils
                     {
                         if (randomSingleton == null)
                         {
-                            randomSingleton = (seed != null) 
-                                            ? new RandomSingleton((int) seed) 
+                            randomSingleton = (seed != null)
+                                            ? new RandomSingleton((int)seed)
                                             : new RandomSingleton();
                         }
                     }
@@ -44,7 +44,7 @@ namespace Infovision.Utils
 
                 return randomSingleton.systemRandom;
             }
-        }        
+        }
     }
 
     public sealed class ThreadSafeRandom : Random
@@ -85,6 +85,5 @@ namespace Infovision.Utils
         {
             lock (_lock) return base.NextDouble();
         }
-
     }
 }

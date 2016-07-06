@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
@@ -25,7 +22,7 @@ namespace DermoReducts
                 w[i] = Decimal.One;
 
             IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, w);
-            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34            
+            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
             Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.InternalValues().Count);
             foreach (long val in ageAttribute.InternalValues())
@@ -108,11 +105,10 @@ namespace DermoReducts
                     newFieldInfo.FieldValueType = typeof(string);
                     newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
                 }
-            }            
+            }
 
-            data.RemoveColumn(34);            
+            data.RemoveColumn(34);
             data.WriteToCSVFileExt(outputfile, ",", true, true);
-
-        }        
+        }
     }
 }

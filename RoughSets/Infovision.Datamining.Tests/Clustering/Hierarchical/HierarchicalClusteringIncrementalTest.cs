@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
 using Infovision.Utils;
@@ -11,27 +9,27 @@ using NUnit.Framework;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
-    [TestFixture]    
+    [TestFixture]
     public class HierarchicalClusteringIncrementalTest
     {
         [Test]
         public void AddToClusterTest()
         {
             Dictionary<int, double[]> data = HierarchicalClusteringTest.GetDataAsDict();
-            
+
             HierarchicalClustering sahn = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
             sahn.Instances = data;
             sahn.Compute();
-            DendrogramChart dc1 = new DendrogramChart(sahn, 640, 480);            
-            Bitmap b1 = dc1.GetAsBitmap(); 
+            DendrogramChart dc1 = new DendrogramChart(sahn, 640, 480);
+            Bitmap b1 = dc1.GetAsBitmap();
             string f1 = String.Format(@"sahn.bmp");
             b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
-            
+
             HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
 
             foreach (KeyValuePair<int, double[]> kvp in data)
                 sihc.AddToCluster(kvp.Key, kvp.Value);
-                        
+
             DendrogramChart dc2 = new DendrogramChart(sihc, 640, 480);
             Bitmap b2 = dc2.GetAsBitmap();
             string f2 = String.Format(@"sihc.bmp");
@@ -39,7 +37,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             HierarchicalClustering simple = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
             simple.Instances = data;
-            simple.Compute();            
+            simple.Compute();
             DendrogramChart dc3 = new DendrogramChart(simple, 640, 480);
             Bitmap b3 = dc3.GetAsBitmap();
             string f3 = String.Format(@"simple.bmp");
@@ -58,7 +56,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             DendrogramChart dc1 = new DendrogramChart(sahn, 640, 480);
             Bitmap b1 = dc1.GetAsBitmap();
             string f1 = String.Format(@"sahn_0.bmp");
-            b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);            
+            b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
 
             int[] keys = data.Keys.ToArray();
             for (int t = 0; t < 10; t++)
@@ -67,10 +65,10 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
                 HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
                 sihc.MinimumNumberOfInstances = 5;
-                
+
                 for (int i = 0; i < tmp.Length; i++)
                     sihc.AddToCluster(tmp[i], data[tmp[i]]);
-                
+
                 DendrogramChart dc2 = new DendrogramChart(sihc, 640, 480);
                 Bitmap b2 = dc2.GetAsBitmap();
                 string f2 = String.Format(@"sihc_{0}.bmp", t);

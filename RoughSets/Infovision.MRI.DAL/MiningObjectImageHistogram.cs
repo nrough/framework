@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
@@ -29,7 +26,7 @@ namespace Infovision.MRI.DAL
                 throw new InvalidOperationException("Image histogram is not properly initialized.");
             }
         }
-        
+
         public override XElement XMLParametersElement
         {
             get
@@ -62,7 +59,7 @@ namespace Infovision.MRI.DAL
             {
                 this.imageHistogram = new ImageHistogram();
                 this.imageHistogram.HistogramBucketSize = this.BucketSize;
-            }            
+            }
 
             if (this.imageHistogram.Image == null && this.RefId != 0)
             {

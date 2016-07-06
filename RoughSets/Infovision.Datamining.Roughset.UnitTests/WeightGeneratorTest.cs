@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class WeightGeneratorTest
     {
-        DataStore dataStore = null;
+        private DataStore dataStore = null;
 
         public WeightGeneratorTest()
         {
@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, 
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                 ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
@@ -50,7 +50,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                                  + classificationResult.Misclassified
                                                  + classificationResult.Unclassified);
 
-            
             double total = 0;
             double aprioriSum = 0;
             foreach (long decision in dataStoreTest.DataStoreInfo.GetDecisionValues())
@@ -78,16 +77,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
             redGenWgh.Epsilon = 0.1M;
 
             Args args = new Args(
-                new string[] { 
-                    ReductGeneratorParamHelper.FactoryKey, 
+                new string[] {
+                    ReductGeneratorParamHelper.FactoryKey,
                     ReductGeneratorParamHelper.TrainData
-                }, 
-                new object[] { 
-                    ReductFactoryKeyHelper.ApproximateReductRelative, 
+                },
+                new object[] {
+                    ReductFactoryKeyHelper.ApproximateReductRelative,
                     localDataStore
                 }
             );
-            
+
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
             PermutationCollection permutationList = permGen.Generate(20);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
@@ -109,7 +108,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Assert.AreEqual(reduct, redW);
             }
-
         }
 
         [Test]
@@ -121,17 +119,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 38, 18, 48, 13, 59, 5, 52, 23, 16, 53, 9, 37, 33, 57, 42, 1, 56, 47, 14, 22, 34, 29, 19, 12, 11, 27, 43, 30, 24, 39, 51, 20, 17, 2, 40, 50, 28, 21, 4, 55, 44, 60, 10, 32, 58, 35, 8, 45, 62, 54, 49, 41, 46, 6, 7, 36, 25, 3, 63, 61, 31, 15, 64, 26 }));
             permutationList.Add(new Permutation(new int[] { 26, 64, 15, 31, 61, 63, 3, 25, 36, 7, 6, 46, 41, 49, 54, 62, 45, 8, 35, 58, 32, 10, 60, 44, 55, 4, 21, 28, 50, 40, 2, 17, 20, 51, 39, 24, 30, 43, 27, 11, 12, 19, 29, 34, 22, 14, 47, 56, 1, 42, 57, 33, 37, 9, 53, 16, 23, 52, 5, 59, 13, 48, 18, 38 }));
             permutationList.Add(new Permutation(new int[] { 57, 1, 34, 12, 23, 29, 45, 38, 5, 11, 4, 26, 33, 58, 43, 61, 42, 8, 53, 47, 36, 13, 50, 15, 40, 25, 30, 19, 55, 46, 22, 7, 14, 21, 27, 16, 49, 24, 9, 37, 51, 64, 20, 54, 32, 62, 28, 6, 59, 63, 48, 2, 17, 44, 56, 35, 52, 10, 60, 3, 31, 39, 18, 41 }));
-                        
 
             string localFileName = @"Data\optdigits.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);            
+            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1M);            
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1M);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-
 
             IReductGenerator redGenStd = ReductFactory.GetReductGenerator(args);
             redGenStd.Run();
@@ -146,7 +142,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             int i = 0;
             foreach (IReduct reduct in redStore)
-            {                
+            {
                 IReduct redW = redStoreW.GetReduct(i);
                 i++;
 
@@ -158,7 +154,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Assert.AreEqual(reduct.Attributes, redW.Attributes);
             }
-
         }
 
         [Test]
@@ -199,7 +194,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Assert.NotNull(r2);
                 Assert.AreEqual(r1, r2);
             }
-
         }
 
         [Test]
@@ -240,7 +234,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Assert.NotNull(r2);
                 Assert.AreEqual(r1, r2);
             }
-
         }
 
         [Test]
@@ -323,7 +316,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Assert.NotNull(r2);
                 Assert.AreEqual(r1, r2);
             }
-                
         }
 
         [Test]
@@ -396,11 +388,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             decimal infoMeasureWeightsResult = infoMeasureWeights.Calc(reduct);
 
             Assert.AreEqual(Decimal.Round(infoMeasureResult, 17), Decimal.Round(infoMeasureWeightsResult, 17));
-        }        
+        }
 
         [Test]
         public void ReductMajorityTest()
-        {            
+        {
             string localFileName = @"Data\dna_modified.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
             int numberOfPermutations = 10;
@@ -437,14 +429,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int i = 0; i < reductStore1.Count; i++)
             {
                 IReduct reduct1 = reductStore1.GetReduct(i);
-                IReduct reduct2 = reductStore2.GetReduct(i);                
+                IReduct reduct2 = reductStore2.GetReduct(i);
                 Assert.AreEqual(reduct1, reduct2);
             }
         }
 
         [Test]
         public void ReductRelativeTest()
-        {            
+        {
             string localFileName = @"Data\dna_modified.trn";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
             int numberOfPermutations = 20;
@@ -468,7 +460,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             args2.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
             args2.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
             args2.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(localDataStore));
-
 
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
             reductGenerator2.Run();

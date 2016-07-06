@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infovision.Datamining.Roughset
-{    
+﻿namespace Infovision.Datamining.Roughset
+{
     public static class ReductGeneratorParamHelper
     {
         public static readonly string FactoryKey = "FactoryKey";
@@ -64,7 +58,7 @@ namespace Infovision.Datamining.Roughset
         public const string ApproximateReductMajorityWeights = "ApproximateReductMajorityWeights";
         public const string ApproximateReductMajority = "ApproximateReductMajority";
         public const string ReductEnsembleStream = "ReductEnsembleStream";
-        public const string ReductEnsemble = "ReductEnsemble";        
+        public const string ReductEnsemble = "ReductEnsemble";
         public const string ReductEnsembleBoosting = "ReductEnsembleBoosting";
         public const string ReductEnsembleBoostingWithDendrogram = "ReductEnsembleBoostingWithDendrogram";
         public const string ReductEnsembleBoostingWithDiversity = "ReductEnsembleBoostingWithDiversity";

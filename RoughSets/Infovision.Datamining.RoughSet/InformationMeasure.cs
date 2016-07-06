@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -16,6 +13,7 @@ namespace Infovision.Datamining.Roughset
     public interface IInformationMeasure
     {
         decimal Calc(IReduct reduct);
+
         string Description();
     }
 
@@ -23,10 +21,11 @@ namespace Infovision.Datamining.Roughset
     public abstract class InformationMeasureBase : IInformationMeasure, IReductMeasure
     {
         public string FactoryKey { get { return this.Description(); } }
-        
+
         #region Methods
 
         public abstract decimal Calc(IReduct reduct);
+
         public abstract string Description();
 
         public static IInformationMeasure Construct(InformationMeasureType measureType)
@@ -35,7 +34,7 @@ namespace Infovision.Datamining.Roughset
 
             switch (measureType)
             {
-                case InformationMeasureType.Positive :
+                case InformationMeasureType.Positive:
                     roughMeasure = new InformationMeasurePositive();
                     break;
 
@@ -63,7 +62,7 @@ namespace Infovision.Datamining.Roughset
             get { return SortDirection.Descending; }
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -78,8 +77,8 @@ namespace Infovision.Datamining.Roughset
                 if (e.NumberOfDecisions == 1)
                     result += e.NumberOfObjects;
 
-            return (reduct.ObjectSetInfo.NumberOfRecords != 0) 
-                ? result / (decimal)reduct.ObjectSetInfo.NumberOfRecords 
+            return (reduct.ObjectSetInfo.NumberOfRecords != 0)
+                ? result / (decimal)reduct.ObjectSetInfo.NumberOfRecords
                 : Decimal.Zero;
         }
 
@@ -93,7 +92,7 @@ namespace Infovision.Datamining.Roughset
             return "Positive";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -104,7 +103,7 @@ namespace Infovision.Datamining.Roughset
         public override decimal Calc(IReduct reduct)
         {
             decimal result = Decimal.Zero;
-            decimal maxValue, relativeCount;            
+            decimal maxValue, relativeCount;
 
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {
@@ -113,7 +112,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     //relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
                     relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
-                    
+
                     if (Decimal.Round(relativeCount, 17) > Decimal.Round(maxValue, 17))
                         maxValue = relativeCount;
                 }
@@ -121,7 +120,7 @@ namespace Infovision.Datamining.Roughset
                 result += maxValue;
             }
 
-            return result / (decimal) reduct.DataStore.DataStoreInfo.NumberOfDecisionValues;
+            return result / (decimal)reduct.DataStore.DataStoreInfo.NumberOfDecisionValues;
         }
 
         public override string Description()
@@ -134,7 +133,7 @@ namespace Infovision.Datamining.Roughset
             return "Relative";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -158,7 +157,7 @@ namespace Infovision.Datamining.Roughset
                 }
                 result += (decimal)maxDecisionProbability;
             }
-            return result / (decimal) reduct.DataStore.NumberOfRecords;
+            return result / (decimal)reduct.DataStore.NumberOfRecords;
         }
 
         public override string Description()
@@ -171,7 +170,7 @@ namespace Infovision.Datamining.Roughset
             return "Majority";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -181,7 +180,7 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            decimal result = Decimal.Zero;                    
+            decimal result = Decimal.Zero;
             result = Decimal.Zero;
             decimal maxValue, sum;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
@@ -189,7 +188,7 @@ namespace Infovision.Datamining.Roughset
                 maxValue = Decimal.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
                 {
-                    sum = e.GetDecisionWeight(decisionValue);                    
+                    sum = e.GetDecisionWeight(decisionValue);
                     if (sum > maxValue)
                         maxValue = sum;
                 }
@@ -209,6 +208,6 @@ namespace Infovision.Datamining.Roughset
             return "ObjectWeights";
         }
 
-        #endregion
+        #endregion Methods
     }
 }

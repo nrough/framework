@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute
@@ -12,7 +9,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         public virtual bool DiscretizeUsingEntropy { get; set; }
         public virtual bool DiscretizeUsingEqualFreq { get; set; }
         public virtual bool DiscretizeUsingEqualWidth { get; set; }
-        public virtual int NumberOfBins {get; set;}
+        public virtual int NumberOfBins { get; set; }
         public virtual IEnumerable<int> Fields2Discretize { get; set; }
         public virtual DiscretizationType DiscretizationType { get; set; }
 
@@ -22,14 +19,13 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
             this.DiscretizeUsingEntropy = true;
             this.DiscretizeUsingEqualFreq = false;
             this.DiscretizeUsingEqualWidth = false;
-            
         }
 
         public static DataStoreDiscretizer Construct(DiscretizationType discretizationType, IEnumerable<int> fields2Discretize = null)
-        {            
+        {
             switch (discretizationType)
             {
-                case DiscretizationType.Unsupervised_Entropy :
+                case DiscretizationType.Unsupervised_Entropy:
                     return new DataStoreDiscretizer()
                     {
                         DiscretizeUsingEntropy = true,
@@ -65,7 +61,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         public virtual double[] GetCuts(DataStore data, int fieldId, double[] weights = null)
         {
-            DataFieldInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);            
+            DataFieldInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);
             double[] cuts = null;
 
             if (localFieldInfoTrain.CanDiscretize())
@@ -75,14 +71,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 {
                     /*
                     case TypeCode.Decimal:
-                            
+
                         Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
                         discretizeDecimal.UseEntropy = this.DiscretizeUsingEntropy;
                         discretizeDecimal.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
 
                         decimal[] oldValuesDecimal = data.GetColumn<decimal>(fieldId);
                         discretizeDecimal.Compute(oldValuesDecimal);
-                        cuts = discretizeDecimal.Cuts;                        
+                        cuts = discretizeDecimal.Cuts;
                         break;
                     */
 
@@ -90,7 +86,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                         Discretization<int> discretizeInt = new Discretization<int>();
                         discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
                         discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-                        if(this.NumberOfBins > 1)
+                        if (this.NumberOfBins > 1)
                         {
                             discretizeInt.NumberOfBuckets = this.NumberOfBins;
                         }
@@ -105,14 +101,14 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             discretizeInt.Compute(oldValuesInt, weights);
                         }
 
-                        cuts = discretizeInt.Cuts;                        
+                        cuts = discretizeInt.Cuts;
                         break;
 
                     case TypeCode.Double:
                         Discretization<double> discretizeDouble = new Discretization<double>();
                         discretizeDouble.UseEntropy = this.DiscretizeUsingEntropy;
                         discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-                        if(this.NumberOfBins > 1)
+                        if (this.NumberOfBins > 1)
                         {
                             discretizeDouble.NumberOfBuckets = this.NumberOfBins;
                         }
@@ -139,17 +135,17 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
             return cuts;
         }
-        
+
         public virtual void Discretize(ref DataStore trainingData, ref DataStore testData, double[] weights = null)
         {
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
-            IEnumerable<int> localFields = Fields2Discretize != null 
+            IEnumerable<int> localFields = Fields2Discretize != null
                                          ? Fields2Discretize
                                          : trainingData.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             foreach (int fieldId in localFields)
             {
-                localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);                
+                localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
                 {
                     TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
@@ -160,7 +156,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     {
                         /*
                         case TypeCode.Decimal:
-                            
+
                             Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
                             discretizeDecimal.UseEntropy = this.DiscretizeUsingEntropy;
                             discretizeDecimal.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
@@ -177,7 +173,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             Discretization<int> discretizeInt = new Discretization<int>();
                             discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
                             discretizeInt.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-                            if(this.NumberOfBins > 1)
+                            if (this.NumberOfBins > 1)
                             {
                                 discretizeInt.NumberOfBuckets = this.NumberOfBins;
                             }
@@ -201,7 +197,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             Discretization<double> discretizeDouble = new Discretization<double>();
                             discretizeDouble.UseEntropy = this.DiscretizeUsingEntropy;
                             discretizeDouble.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-                            if(this.NumberOfBins > 1)
+                            if (this.NumberOfBins > 1)
                             {
                                 discretizeDouble.NumberOfBuckets = this.NumberOfBins;
                             }
@@ -223,7 +219,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
                         default:
                             throw new NotImplementedException(
-                                String.Format("Type {0} is not implemented for discretization", 
+                                String.Format("Type {0} is not implemented for discretization",
                                 Type.GetTypeCode(localFieldInfoTrain.FieldValueType)));
                     }
 
@@ -232,7 +228,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
                     localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);
                     //TypeCode testFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
-                    localFieldInfoTest.IsNumeric = false;                    
+                    localFieldInfoTest.IsNumeric = false;
 
                     newValues = new int[testData.NumberOfRecords];
                     switch (trainFieldTypeCode)
@@ -253,7 +249,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             for (int j = 0; j < testData.NumberOfRecords; j++)
                                 newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
                             break;
-                        */ 
+                        */
 
                         case TypeCode.Double:
                             Discretization<double> discretizeDouble = new Discretization<double>();
@@ -272,8 +268,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         }
 
         public virtual bool CanDiscretize(DataFieldInfo field)
-        {            
-            if(field.CanDiscretize())
+        {
+            if (field.CanDiscretize())
             {
                 if (this.NumberOfBins < field.Values().Count)
                     return true;

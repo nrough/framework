@@ -5,10 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.Datamining;
 using Infovision.Datamining.Filters;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
@@ -19,52 +17,54 @@ namespace DisesorTest
     public class Program
     {
         #region Member variables
-        
-        static string trainfile = @"c:\data\disesor\trainingData.csv";
-        static string trainfile_merge = @"c:\data\disesor\trainingData_merge.csv";
-        static string testfile = @"c:\data\disesor\testData.csv";
-        static string testfile_merge = @"c:\data\disesor\testData_merge.csv";
-        static string labelfile = @"c:\data\disesor\trainingLabels.csv";
-        static string outputfile = @"c:\data\disesor\result.csv";
-        static string columnNames = @"c:\data\disesor\columnNames.txt";
-        //static string weightsoutput = @"c:\data\disesor\weights.csv";                        
+
+        private static string trainfile = @"c:\data\disesor\trainingData.csv";
+        private static string trainfile_merge = @"c:\data\disesor\trainingData_merge.csv";
+        private static string testfile = @"c:\data\disesor\testData.csv";
+        private static string testfile_merge = @"c:\data\disesor\testData_merge.csv";
+        private static string labelfile = @"c:\data\disesor\trainingLabels.csv";
+        private static string outputfile = @"c:\data\disesor\result.csv";
+        private static string columnNames = @"c:\data\disesor\columnNames.txt";
+        //static string weightsoutput = @"c:\data\disesor\weights.csv";
 
         private Dictionary<string, string> metadataDict;
 
         //string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
-        string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+        private string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+
         //int numberOfPermutations = 100;
         //decimal epsilon = 0.0m;
 
-        RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
-        RuleQualityFunction voteFunction = RuleQuality.CoverageW;
-        WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
-        
-        bool useSupervisedDiscetization = true;
-        DiscretizationType discretizationType = DiscretizationType.Supervised_FayyadAndIranisMDL_BetterEncoding;
-        bool useWeightsInDiscretization = false;
-        bool useBetterEncoding = true;
-        bool useKokonenkoMDL = true;
-        int numberOfBins = 2;
+        private RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
+        private RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        private WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
-        string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;                
+        private bool useSupervisedDiscetization = true;
+        private DiscretizationType discretizationType = DiscretizationType.Supervised_FayyadAndIranisMDL_BetterEncoding;
+        private bool useWeightsInDiscretization = false;
+        private bool useBetterEncoding = true;
+        private bool useKokonenkoMDL = true;
+        private int numberOfBins = 2;
+
+        private string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
         //decimal innerEpsilon = 0.4m;
         //int boostingNumberOfReductsInWeakClassifier = 20;
         //int boostingMaxIterations = 100;
 
         //RuleQualityFunction boostingIdentificationFunction = null;
-        //RuleQualityFunction boostingVoteFunction = null;        
-        UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
-        CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
-        bool boostingCheckEnsambleErrorDuringTraining = false;
-        int numberOfWeightResets = 99;
+        //RuleQualityFunction boostingVoteFunction = null;
+        private UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 
-        decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
-        bool fixedPermutations = false;
-        double reductionStepRatio = 0.1;
-        double shuffleRatio = 1.0;
-        bool useClassificationCost = true;
-       
+        private CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+        private bool boostingCheckEnsambleErrorDuringTraining = false;
+        private int numberOfWeightResets = 99;
+
+        private decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
+        private bool fixedPermutations = false;
+        private double reductionStepRatio = 0.1;
+        private double shuffleRatio = 1.0;
+        private bool useClassificationCost = true;
+
         public Program()
         {
             //if (boostingIdentificationFunction == null)
@@ -74,7 +74,7 @@ namespace DisesorTest
             //    boostingVoteFunction = voteFunction;
         }
 
-        #endregion
+        #endregion Member variables
 
         public static void Main(string[] args)
         {
@@ -106,11 +106,11 @@ namespace DisesorTest
             Console.WriteLine("Minimum vote key: {0}", minimumVoteValue);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
             Console.WriteLine();
-                                    
-            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);            
+
+            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);
             Console.WriteLine("Is discretization (S)upervised or (U)nsupervised: {0}", useSupervisedDiscetization ? "S" : "U");
             Console.WriteLine();
-            
+
             if (useSupervisedDiscetization)
             {
                 Console.WriteLine("(S) Use better encoding: {0}", useSupervisedDiscetization);
@@ -121,10 +121,10 @@ namespace DisesorTest
             else
             {
                 Console.WriteLine("(U) Discretization type: {0}", discretizationType);
-                
+
                 if (discretizationType == DiscretizationType.Unsupervised_EqualWidth)
                     Console.WriteLine("(U) Number of bins: {0}", numberOfBins);
-                
+
                 Console.WriteLine();
             }
 
@@ -210,7 +210,7 @@ namespace DisesorTest
             Console.Write("Loading training data store...");
             DataStore train = DataStore.Load(trainfile_merge, FileFormat.Csv);
             Console.WriteLine("Done");
-            
+
             Console.Write("Loading test data...");
             DataStore test = DataStore.Load(testfile_merge, FileFormat.Csv, train.DataStoreInfo);
             test.SetDecisionFieldId(-1);
@@ -230,7 +230,7 @@ namespace DisesorTest
 
             int fieldId = 0;
             string[] names = System.IO.File.ReadAllLines(columnNames);
-            foreach(string name in names)
+            foreach (string name in names)
             {
                 fieldId++;
                 DataFieldInfo trainInfo = train.DataStoreInfo.GetFieldInfo(fieldId);
@@ -239,9 +239,9 @@ namespace DisesorTest
                 DataFieldInfo testInfo = test.DataStoreInfo.GetFieldInfo(fieldId);
                 testInfo.Alias = name;
             }
-            
+
             Console.Write("Discretizing data...");
-           
+
             if (!useSupervisedDiscetization)
             {
                 var discretizer = DataStoreDiscretizer.Construct(discretizationType);
@@ -249,13 +249,13 @@ namespace DisesorTest
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
-                    Console.WriteLine("Atribute {0} {1} has type {2} and {3} distinct values. {4} be discretized", 
+                    Console.WriteLine("Atribute {0} {1} has type {2} and {3} distinct values. {4} be discretized",
                         field.Id,
                         field.Alias,
                         field.FieldValueType,
                         field.Values().Count,
                         field.CanDiscretize() ? "Can" : "Cannot");
-                    
+
                     if (field.CanDiscretize())
                     {
                         double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
@@ -275,7 +275,7 @@ namespace DisesorTest
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
-                    Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized", 
+                    Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
                         field.Id,
                         field.Alias,
                         field.FieldValueType,
@@ -290,27 +290,27 @@ namespace DisesorTest
                 }
 
                 discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
-            }            
-            Console.WriteLine("Done");            
+            }
+            Console.WriteLine("Done");
 
             Args innerArgs = new Args();
             innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
-            //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);            
+            //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, 
+            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep,
                 (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * reductionStepRatio)); //10% reduction step
-            
-            innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, 
-                new PermutationGeneratorFieldQuality(train, wGen, eps, 
+
+            innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator,
+                new PermutationGeneratorFieldQuality(train, wGen, eps,
                     (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * shuffleRatio)));
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
             args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, 
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                 ReductFactory.GetPermutationGenerator(args).Generate(weakClassifiers));
             args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
 
@@ -347,14 +347,14 @@ namespace DisesorTest
 
             System.GC.Collect();
             System.GC.WaitForPendingFinalizers();
-            
+
             Console.WriteLine("Reduct generation...");
-            
+
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Run();
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             Console.WriteLine("Done");
-            
+
             //foreach (IReductStore reductStore in reductStoreCollection)
             //{
             //    foreach (IReduct reduct in reductStore)
@@ -364,19 +364,19 @@ namespace DisesorTest
             //    }
             //}
 
-            Console.Write("Classification...");            
+            Console.Write("Classification...");
             RoughClassifier classifier = new RoughClassifier(
                 reductStoreCollection,
                 identificationFunction,
                 voteFunction,
                 decisionValues);
-            
+
             classifier.MinimumVoteValue = minimumVoteValue;
-            
-            int unclassified = 0;                            
+
+            int unclassified = 0;
             decimal[] votes = new decimal[test.NumberOfRecords];
             int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();
-            
+
             for (int i = 0; i < test.NumberOfRecords; i++)
             {
                 DataRecordInternal record = test.GetRecordByIndex(i);
@@ -389,31 +389,31 @@ namespace DisesorTest
                         sum += kvp.Value;
                 }
 
-                if(prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
+                if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
                     unclassified++;
 
                 decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
-                votes[i] = sum > 0 ? warning / sum : Decimal.Zero;                 
+                votes[i] = sum > 0 ? warning / sum : Decimal.Zero;
             }
 
             Array.Sort(votes, indices);
 
             votes = null;
-                
+
             int[] rank = new int[test.NumberOfRecords];
             for (int i = 0; i < test.NumberOfRecords; i++)
             {
                 rank[indices[i]] = i;
             }
-            
-            using(StreamWriter file = new System.IO.StreamWriter(outputfile))
+
+            using (StreamWriter file = new System.IO.StreamWriter(outputfile))
             {
                 for (int i = 0; i < test.NumberOfRecords; i++)
                 {
                     file.WriteLine(rank[i].ToString(CultureInfo.InvariantCulture));
                 }
-            }            
-            
+            }
+
             Console.WriteLine("Done");
             Console.WriteLine("Unclassified: {0}", unclassified);
         }

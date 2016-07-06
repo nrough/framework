@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using MiscUtil;
 
@@ -41,7 +37,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             string[] result = new string[data.NumberOfRecords];
             int fieldIdx = data.DataStoreInfo.GetFieldIndex(fieldInfo.Id);
-            
+
             if (fieldInfo.HasMissingValues)
             {
                 for (int i = 0; i < data.NumberOfRecords; i++)
@@ -64,6 +60,5 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
             return result;
         }
-        
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infovision.Utils;
+﻿using Infovision.Utils;
 
 namespace Infovision.Statistics
 {
@@ -16,11 +11,11 @@ namespace Infovision.Statistics
         public static double BoxMullerTransform()
         {
             //these are uniform(0,1) random doubles
-            double u1 = RandomSingleton.Random.NextDouble(); 
+            double u1 = RandomSingleton.Random.NextDouble();
             double u2 = RandomSingleton.Random.NextDouble();
             double randStdNormal = System.Math.Sqrt(-2.0 * System.Math.Log(u1)) *
                          System.Math.Sin(2.0 * System.Math.PI * u2);
-            return randStdNormal; 
+            return randStdNormal;
         }
 
         /// <summary>

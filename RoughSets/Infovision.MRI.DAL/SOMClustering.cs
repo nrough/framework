@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
-using Infovision.MRI;
 
 namespace Infovision.MRI.DAL
 {
@@ -31,7 +27,7 @@ namespace Infovision.MRI.DAL
         {
         }
 
-        public int NumberOfClusters 
+        public int NumberOfClusters
         {
             get { return this.numberOfClusters; }
             set { SetField(ref this.numberOfClusters, value, () => NumberOfClusters); }
@@ -63,7 +59,7 @@ namespace Infovision.MRI.DAL
 
         public bool LoadFile
         {
-            get { return this.loadFile ; }
+            get { return this.loadFile; }
             set { SetField(ref this.loadFile, value, () => LoadFile); }
         }
 

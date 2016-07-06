@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Infovision.Datamining.Experimenter.Parms;
 using NUnit.Framework;
-using Infovision.Datamining.Experimenter.Parms;
-using System.Collections;
 
 namespace Infovision.Datamining.Experimenter.Test
 {
@@ -16,10 +10,10 @@ namespace Infovision.Datamining.Experimenter.Test
         public void ParameterValueEnumerator_GenerateIntegerList()
         {
             //Console.WriteLine("*** ParameterValueEnumerator_GenerateIntegerList ****");
-            
-            IParameter parmA = new ParameterValueCollection<int>("A", new int[] {0, 1});
-            IParameter parmB = new ParameterValueCollection<int>("B", new int[] {0, 1});
-            IParameter parmC = new ParameterValueCollection<int>("C", new int[] {0, 1});
+
+            IParameter parmA = new ParameterValueCollection<int>("A", new int[] { 0, 1 });
+            IParameter parmB = new ParameterValueCollection<int>("B", new int[] { 0, 1 });
+            IParameter parmC = new ParameterValueCollection<int>("C", new int[] { 0, 1 });
 
             ParameterCollection parmList = new ParameterCollection(new IParameter[] { parmA, parmB, parmC });
 
@@ -37,7 +31,7 @@ namespace Infovision.Datamining.Experimenter.Test
         public void ParameterValueEnumerator_GenerateStringList()
         {
             //Console.WriteLine("*** ParameterValueEnumerator_GenerateStringList ****");
-            
+
             IParameter parmA = new ParameterValueCollection<string>("A", new string[] { "1", "2", "3" });
             IParameter parmB = new ParameterValueCollection<string>("B", new string[] { "1", "2", "3" });
             IParameter parmC = new ParameterValueCollection<string>("C", new string[] { "1", "2", "3" });

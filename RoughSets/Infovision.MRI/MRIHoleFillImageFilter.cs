@@ -33,7 +33,7 @@ namespace Infovision.MRI
 
                 imageSeries.Add(sliceResult);
             }
-            
+
             itk.simple.Image result = SimpleITK.JoinSeries(imageSeries);
             return new ImageITK(result);
         }

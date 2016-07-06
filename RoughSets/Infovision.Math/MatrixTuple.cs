@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
@@ -56,13 +53,13 @@ namespace Infovision.Math
             if (obj is MatrixTuple)
             {
                 index = (MatrixTuple)obj;
-                return this.X == index.X && this.Y == index.Y;                         
+                return this.X == index.X && this.Y == index.Y;
             }
 
             return false;
         }
 
-        #endregion
+        #endregion System.Object Methods
     }
 
     public class MatrixTupleValueComparer : Comparer<MatrixTuple>
@@ -73,8 +70,8 @@ namespace Infovision.Math
                 return -1;
             if (t1.Value > t2.Value)
                 return 1;
-            
-            if(t1.X < t2.X)
+
+            if (t1.X < t2.X)
                 return -1;
             if (t1.X > t2.X)
                 return 1;

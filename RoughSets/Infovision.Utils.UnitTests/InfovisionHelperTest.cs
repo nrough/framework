@@ -1,10 +1,9 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Infovision.Utils.UnitTests
 {
     [TestFixture]
-    class UtilsTest
+    internal class UtilsTest
     {
         [Test]
         public void IntArray2String()

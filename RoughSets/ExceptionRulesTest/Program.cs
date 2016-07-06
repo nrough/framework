@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Common.Logging;
 using Common.Logging.Configuration;
@@ -17,9 +15,9 @@ namespace ExceptionRulesTest
     public class Program
     {
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations, int ensembleSize)
-        {            
+        {
             DataStore trainData = null, testData = null, data = null;
-            string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");            
+            string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");
             DataStoreSplitter splitter = null;
 
             ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
@@ -35,7 +33,7 @@ namespace ExceptionRulesTest
                 if (kvp.Value.DecisionFieldId != -1)
                     data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                
+                splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);
             }
 
             for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
@@ -47,13 +45,13 @@ namespace ExceptionRulesTest
                     splitter.ActiveFold = f;
                     splitter.Split(ref trainData, ref testData);
                 }
-                else if(f == 0)
+                else if (f == 0)
                 {
                     trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
                     if (kvp.Value.DecisionFieldId != -1)
                         trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);                    
+                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);
                     if (kvp.Value.DecisionFieldId != -1)
                         testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
                 }
@@ -67,25 +65,24 @@ namespace ExceptionRulesTest
 
                 for (int t = 0; t < numberOfTests; t++)
                 {
-                    var permGenerator = new PermutationGenerator(trainData);                                        
+                    var permGenerator = new PermutationGenerator(trainData);
                     var permList = permGenerator.Generate(numberOfPermutations);
-                    
+
                     log.InfoFormat(
-                        "{0} Test:{1}/{2} Fold:{3}/{4} M(A)={5}", 
-                        trainData.Name, 
-                        t, 
-                        numberOfTests-1, 
-                        f, 
-                        kvp.Value.CrossValidationFolds-1, 
+                        "{0} Test:{1}/{2} Fold:{3}/{4} M(A)={5}",
+                        trainData.Name,
+                        t,
+                        numberOfTests - 1,
+                        f,
+                        kvp.Value.CrossValidationFolds - 1,
                         mA);
 
-                    
                     ParallelOptions options = new ParallelOptions();
                     options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2);
-#if DEBUG  
+#if DEBUG
                     options.MaxDegreeOfParallelism = 1;
 #endif
-                    
+
                     Parallel.For(0, 100, options, i =>
                     //for(int i=0; i<100; i++)
                     {
@@ -97,20 +94,18 @@ namespace ExceptionRulesTest
                         results4[t, i, f] = accuracy.Item4;
                         results5[t, i, f] = accuracy.Item5;
 
-                        
                         Console.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
                         Console.WriteLine("ARD|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
                         Console.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
                         Console.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
                         Console.WriteLine("GAMDR+Gaps|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results5[t, i, f]);
                         Console.WriteLine();
-                        
                     }
                     );
 
                     this.SaveResults(filename, results1, results2, results3, results4, results5);
-                }                
-            }            
+                }
+            }
         }
 
         private void SaveResults(string filename,
@@ -123,7 +118,7 @@ namespace ExceptionRulesTest
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {
                 outputFile.WriteLine("Method|Fold|Test|Epsilon|{0}", ClassificationResult.ResultHeader());
-                
+
                 for (int t = 0; t < results1.GetLength(0); t++)
                 {
                     for (int i = 0; i < results1.GetLength(1); i++)
@@ -141,7 +136,7 @@ namespace ExceptionRulesTest
             }
         }
 
-        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult> 
+        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
             ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int ensembleSize)
         {
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
@@ -149,14 +144,14 @@ namespace ExceptionRulesTest
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
             ReductLengthComparer reductLengthComparer = new ReductLengthComparer();
             ReductStoreLengthComparer reductStoreLengthComparer = new ReductStoreLengthComparer(false);
-            
+
             Args parmsApprox = new Args();
             parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);            
+            parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneratorWeightsMajority generatorApprox =
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
@@ -175,14 +170,13 @@ namespace ExceptionRulesTest
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
 
-
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);            
+            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
             //parms_GMDR.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int) resultApprox.QualityRatio > 0 ? (int) resultApprox.QualityRatio : 1);
 
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
@@ -201,15 +195,14 @@ namespace ExceptionRulesTest
             result_GMDR.QualityRatio = filteredReductStoreCollection_GMDR.GetAvgMeasure(reductMeasureLength, false);
             result_GMDR.ModelCreationTime = generator_GMDR.ReductGenerationTime;
             result_GMDR.ClassificationTime = classifier_GMDR.ClassificationTime;
-            
-            
+
             Args parmsEx = new Args();
             parmsEx.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
             parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
             parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);                  
+            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -273,7 +266,7 @@ namespace ExceptionRulesTest
 
             parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultApprox.QualityRatio);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.QualityRatio);
-            
+
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
             generatorRandom.Run();
@@ -299,7 +292,7 @@ namespace ExceptionRulesTest
 
         private static ILog log;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length < 3)
                 throw new InvalidProgramException("number of tests, ensemble size followed by name of dataset ");
@@ -309,26 +302,26 @@ namespace ExceptionRulesTest
 
             string[] datasets = new string[args.Length - 2];
             Array.Copy(args, 2, datasets, 0, args.Length - 2);
-            
+
             Program program = new Program();
-            
+
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
 
             NameValueCollection properties = new NameValueCollection();
-            
+
             properties["showDateTime"] = "true";
             properties["showLogName"] = "true";
             properties["level"] = "All";
             properties["configType"] = "FILE";
             properties["configFile"] = "~/NLog.config";
-            
+
             //Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
 
             var dta = BenchmarkDataHelper.GetDataFiles("Data", datasets);
             foreach (var kvp in dta)
-            {                
+            {
                 program.ExceptiodnRulesTest(kvp, numberOfTests, ensembleSize * 10, ensembleSize);
             }
 

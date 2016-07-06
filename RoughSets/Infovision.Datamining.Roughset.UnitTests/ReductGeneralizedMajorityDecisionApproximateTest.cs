@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Utils;
-using NUnit.Framework;
 using Common.Logging;
 using Common.Logging.Configuration;
-using Infovision.Statistics;
-using Common.Logging.NLog;
-using NLog;
-using System.IO;
+using Infovision.Data;
 using Infovision.Datamining.Benchmark;
+using Infovision.Statistics;
+using Infovision.Utils;
+using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -23,17 +20,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles("Data",
-                new string[] {                     
+                new string[] {
                     //"zoo",
                     //"semeion",
-                    //"opt", 
-                    "dna" 
-                    //"letter", 
-                    //"monks-1", 
-                    //"monks-2", 
-                    //"monks-3", 
-                    //"spect", 
-                    //"pen"                     
+                    //"opt",
+                    "dna"
+                    //"letter",
+                    //"monks-1",
+                    //"monks-2",
+                    //"monks-3",
+                    //"spect",
+                    //"pen"
                 });
         }
 
@@ -66,12 +63,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
-            
+
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
 
             DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
-            
+
             log.InfoFormat(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -79,7 +76,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
-            
+
             Decimal dataQuality = new InformationMeasureWeights().Calc(
                 new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, weightGenerator.Weights));
 
@@ -92,13 +89,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 long elapsed_sum_1 = 0;
                 long elapsed_sum_2 = 0;
-                
+
                 int len_sum_1 = 0;
                 int len_sum_2 = 0;
-                
+
                 decimal avg_quality_1 = Decimal.Zero;
-                decimal avg_quality_2 = Decimal.Zero;                                          
-                
+                decimal avg_quality_2 = Decimal.Zero;
+
                 double[] accuracyResults_1 = new double[permList.Count];
                 double[] accuracyResults_2 = new double[permList.Count];
 
@@ -110,7 +107,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     var watch_1 = Stopwatch.StartNew();
                     IReduct reduct_1 = CalculateGeneralizedMajorityApproximateDecisionReduct(data, eps, attributes);
                     watch_1.Stop();
-                    
+
                     IReductStore store = new ReductStore(1);
                     store.AddReduct(reduct_1);
                     IReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
@@ -125,15 +122,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     avg_quality_1 += reductQuality_1;
 
                     RoughClassifier classifier_1 = new RoughClassifier(
-                        reductStoreCollection, 
-                        RuleQuality.ConfidenceW, 
-                        RuleQuality.ConfidenceW, 
+                        reductStoreCollection,
+                        RuleQuality.ConfidenceW,
+                        RuleQuality.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult result_1 = classifier_1.Classify(test, null);
 
-                    accuracyResults_1[i] = result_1.Accuracy;                    
-                    
+                    accuracyResults_1[i] = result_1.Accuracy;
+
                     log.InfoFormat("|A|{0}|{3}|{1}|{2}|{4}|",
                         reduct_1.ToString(),
                         reductQuality_1,
@@ -150,7 +147,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReductStoreCollection reductStoreCollection2 = new ReductStoreCollection(1);
                     reductStoreCollection2.AddStore(store2);
 
-
                     Assert.NotNull(reduct_2);
                     Decimal reductQuality_2 = new InformationMeasureWeights().Calc(reduct_2);
                     Assert.GreaterOrEqual(reductQuality_2, Decimal.Round(dataQuality * (Decimal.One - eps), 17));
@@ -160,13 +156,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     avg_quality_2 += reductQuality_2;
 
                     RoughClassifier classifier_2 = new RoughClassifier(
-                        reductStoreCollection2, 
-                        RuleQuality.ConfidenceW, 
+                        reductStoreCollection2,
+                        RuleQuality.ConfidenceW,
                         RuleQuality.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
-                    ClassificationResult result_2 = classifier_2.Classify(test, null); 
+                    ClassificationResult result_2 = classifier_2.Classify(test, null);
 
-                    accuracyResults_2[i] = result_2.Accuracy;                    
+                    accuracyResults_2[i] = result_2.Accuracy;
 
                     log.InfoFormat("|B|{0}|{3}|{1}|{2}|{4}|",
                         reduct_2.ToString(),
@@ -179,16 +175,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
 
                 log.InfoFormat(Environment.NewLine);
-                
+
                 log.InfoFormat("==========================================");
                 log.InfoFormat("Average reduct lenght of method A: {0}", (double)len_sum_1 / (double)permList.Count);
                 log.InfoFormat("Average reduct lenght of method B: {0}", (double)len_sum_2 / (double)permList.Count);
                 log.InfoFormat("Average computation time method A: {0}", (double)elapsed_sum_1 / (double)permList.Count);
                 log.InfoFormat("Average computation time method B: {0}", (double)elapsed_sum_2 / (double)permList.Count);
                 log.InfoFormat("Average reduct quality of method A: {0}", avg_quality_1 / (decimal)permList.Count);
-                log.InfoFormat("Average reduct quality of method B: {0}", avg_quality_2 / (decimal)permList.Count);                
-                                                             
-                log.InfoFormat("Accuracy A Min: {0} Max: {1} Mean: {2} StdDev: {3}", 
+                log.InfoFormat("Average reduct quality of method B: {0}", avg_quality_2 / (decimal)permList.Count);
+
+                log.InfoFormat("Accuracy A Min: {0} Max: {1} Mean: {2} StdDev: {3}",
                     Tools.Min(accuracyResults_1), Tools.Max(accuracyResults_1), Tools.Mean(accuracyResults_1), Tools.StdDev(accuracyResults_1));
                 log.InfoFormat("Accuracy B Min: {0} Max: {1} Mean: {2} StdDev: {3}",
                     Tools.Min(accuracyResults_2), Tools.Max(accuracyResults_2), Tools.Mean(accuracyResults_2), Tools.StdDev(accuracyResults_2));
@@ -203,7 +199,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            int numberOfTests = 10;            
+            int numberOfTests = 10;
 
             DataStore trainData = null, testData = null, data = null;
 
@@ -213,11 +209,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string name;
 
             if (kvp.Value.CrossValidationActive)
-            {                
+            {
                 data = DataStore.Load(kvp.Value.DataFile, FileFormat.Rses1);
                 name = data.Name;
-                DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);                                
-                
+                DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);
+
                 for (int f = 0; f <= kvp.Value.CrossValidationFolds; f++)
                 {
                     splitter.ActiveFold = f;
@@ -227,23 +223,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     {
                         PermutationGenerator permGenerator = new PermutationGenerator(trainData);
                         PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
-                        
+
                         Parallel.For(0, 100, i =>
                         {
                             var accuracy = ExceptionRulesSingleRun(trainData, testData, permList, i, t, f);
-                            
+
                             results[t, i, f] = accuracy.Item1;
                             results2[t, i, f] = accuracy.Item2;
 
                             log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                            log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2); 
+                            log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
                         });
                     }
                 }
             }
             else
             {
-                int f = 0;                
+                int f = 0;
                 trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
                 foreach (int fieldId in trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
                     trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
@@ -264,7 +260,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         results2[t, i, f] = accuracy.Item2;
 
                         log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                        log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2); 
+                        log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
                     });
                 }
             }
@@ -273,7 +269,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             SaveResults(filename, results, results2);
         }
 
-        private void SaveResults(string filename, double[,,] res1, double[,,] res2)
+        private void SaveResults(string filename, double[, ,] res1, double[, ,] res2)
         {
             using (StreamWriter outputFile = new StreamWriter(filename))
             {
@@ -289,7 +285,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                 }
             }
-
         }
 
         private Tuple<double, double> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int test, int fold)
@@ -323,27 +318,27 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 generator.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(testData, null);
-                        
+
             RoughClassifier classifier2 = new RoughClassifier(
                 generator2.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW, 
+                RuleQuality.ConfidenceW,
                 RuleQuality.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result2 = classifier2.Classify(testData, null);
-            
-            return new Tuple<double, double>(result.Accuracy, result2.Accuracy);                                                                        
+
+            return new Tuple<double, double>(result.Accuracy, result2.Accuracy);
         }
 
         private ILog log;
-                
+
         public ReductGeneralizedMajorityDecisionApproximateTest()
         {
             Random randSeed = new Random();
-            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();            
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
 
             NameValueCollection properties = new NameValueCollection();
             properties["showDateTime"] = "false";
@@ -356,8 +351,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
 
-            log = Common.Logging.LogManager.GetLogger(this.GetType());            
-        }        
+            log = Common.Logging.LogManager.GetLogger(this.GetType());
+        }
 
         public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, decimal epsilon, int[] attributeSubset)
         {
@@ -383,6 +378,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductGeneratorWeightsMajority reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
             return reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
-        }        
+        }
     }
 }

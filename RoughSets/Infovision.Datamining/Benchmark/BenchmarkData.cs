@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Benchmark
 {
     public class BenchmarkData
-    {        
+    {
         public virtual string Name { get; set; }
         public virtual string TestFile { get; set; }
         public virtual string TrainFile { get; set; }
@@ -18,11 +15,11 @@ namespace Infovision.Datamining.Benchmark
         public virtual int CrossValidationFolds { get; set; }
         public virtual FileFormat FileFormat { get; set; }
         public virtual int DecisionFieldId { get; set; }
-        
+
         public virtual bool DiscretizeUsingEntropy { get; set; }
         public virtual bool DiscretizeUsingEqualFreq { get; set; }
         public virtual bool DiscretizeUsingEqualWidth { get; set; }
-           
+
         private Dictionary<int, DataFieldInfo> fieldMetadata;
 
         protected BenchmarkData()
@@ -34,7 +31,7 @@ namespace Infovision.Datamining.Benchmark
 
             this.fieldMetadata = new Dictionary<int, DataFieldInfo>();
         }
-        
+
         public BenchmarkData(string name, string dataFile, int folds)
             : this()
         {
@@ -50,7 +47,7 @@ namespace Infovision.Datamining.Benchmark
         {
             this.Name = name;
             this.TrainFile = trainFile;
-            this.TestFile = testFile;                        
+            this.TestFile = testFile;
         }
 
         public void AddFieldInfo(int fieldId, DataFieldInfo fieldInfo)

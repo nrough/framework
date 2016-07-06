@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
@@ -10,12 +10,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class PermutationTest
     {
-        DataStore dataStore = null;
+        private DataStore dataStore = null;
 
         public PermutationTest()
         {
             dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);
-        
+
             Random randSeed = new Random();
             int seed = Guid.NewGuid().GetHashCode();
             RandomSingleton.Seed = seed;
@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                                 Assert.AreEqual(false, found);
                                 found = true;
                             }
-                        }                        
+                        }
                     }
                     else
                     {
@@ -136,7 +136,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test]        
+        [Test]
         public void FieldSelecitonRatio()
         {
             this.CalcAndPrintRatio(10, 10, 0);
@@ -174,7 +174,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10, 1000, 0.99M);
             this.CalcAndPrintRatio(10, 1000, 1);
             //Console.WriteLine();
-            
+
             this.CalcAndPrintRatio(1000, 10, 0);
             this.CalcAndPrintRatio(1000, 10, 0.01M);
             this.CalcAndPrintRatio(1000, 10, 0.2M);
@@ -193,7 +193,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             this.CalcAndPrintRatio(10000, 10, 1);
             //Console.WriteLine();
 
-            Assert.AreEqual(true, true);                                
+            Assert.AreEqual(true, true);
         }
 
         private decimal CalcAndPrintRatio(int numberOfFields, int numberOfObjects, decimal fieldSelectionRatio)
@@ -247,7 +247,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     }
                     else
                     {
-                        Assert.LessOrEqual(perm[i], 0); 
+                        Assert.LessOrEqual(perm[i], 0);
                     }
                 }
             }
@@ -256,7 +256,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void GenNextObjectIdTest()
         {
-            int[] array = new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3 }; 
+            int[] array = new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3 };
             List<int> list = new List<Int32>(array);
             int sumArray = 24;
 
@@ -286,34 +286,31 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void PermutationFieldGroup()
         {
-
             int[] fields = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            PermutatioGeneratorFieldGroup generator = new PermutatioGeneratorFieldGroup(new int[][] { 
+            PermutatioGeneratorFieldGroup generator = new PermutatioGeneratorFieldGroup(new int[][] {
                                                                                                         new int[] {},
                                                                                                         fields,
                                                                                                         new int[] {}});
-            
+
             PermutationCollection permutationList = generator.Generate(10);
             this.CheckPermutationCompletness(permutationList, fields, new int[] { });
-
 
             generator = new PermutatioGeneratorFieldGroup(this.dataStore);
 
             permutationList = generator.Generate(10);
             this.CheckPermutationCompletness(permutationList, fields, new int[] { });
 
-            generator = new PermutatioGeneratorFieldGroup(new int[][] { new int[] { 6, 4 }, new int[] { 5, 3 }, new int[] { }, new int[] { 2 }, new int[] { 1 }, new int[]{} });
+            generator = new PermutatioGeneratorFieldGroup(new int[][] { new int[] { 6, 4 }, new int[] { 5, 3 }, new int[] { }, new int[] { 2 }, new int[] { 1 }, new int[] { } });
 
             permutationList = generator.Generate(10);
             this.CheckPermutationCompletness(permutationList, fields, new int[] { });
-
         }
 
         [Test]
         public void PermutationGeneratorEnsemble()
         {
-            int[] attribute = new int[] {1,2,3,4,5,6,7,8,9};
+            int[] attribute = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             int[][] selectedAttributes = new int[][] {
                 new int[] {1,2,3},
                 new int[] {4,5,6},

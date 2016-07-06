@@ -1,27 +1,26 @@
 ﻿using System;
 
-
 namespace Infovision.Datamining.Roughset
 {
     [Serializable]
     public abstract class ReductMeasure : IReductMeasure
     {
-        #region Properties 
+        #region Properties
 
         public abstract string FactoryKey { get; }
-        
+
         public virtual SortDirection SortDirection
         {
-            get { return SortDirection.Ascending;  }
+            get { return SortDirection.Ascending; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
         public abstract decimal Calc(IReduct reduct);
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -39,8 +38,8 @@ namespace Infovision.Datamining.Roughset
             get { return Roughset.SortDirection.Ascending; }
         }
 
-        #endregion
-        
+        #endregion Properties
+
         #region Methods
 
         public override decimal Calc(IReduct reduct)
@@ -53,7 +52,7 @@ namespace Infovision.Datamining.Roughset
             return "Length";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -65,13 +64,13 @@ namespace Infovision.Datamining.Roughset
         {
             get { return "ReductMeasureNumberOfPartitions"; }
         }
-        
+
         public override SortDirection SortDirection
         {
             get { return SortDirection.Ascending; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -85,7 +84,7 @@ namespace Infovision.Datamining.Roughset
             return "Partitions";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -97,20 +96,20 @@ namespace Infovision.Datamining.Roughset
         {
             get { return "BireductMeasureMajority"; }
         }
-        
+
         public override SortDirection SortDirection
         {
             get { return SortDirection.Descending; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
         public override decimal Calc(IReduct reduct)
         {
             return Decimal.Divide(
-                reduct.ObjectSetInfo.NumberOfRecords, 
+                reduct.ObjectSetInfo.NumberOfRecords,
                 reduct.DataStore.NumberOfRecords);
         }
 
@@ -119,7 +118,7 @@ namespace Infovision.Datamining.Roughset
             return "SizeOfX";
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
@@ -137,7 +136,7 @@ namespace Infovision.Datamining.Roughset
             get { return SortDirection.Descending; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -160,8 +159,6 @@ namespace Infovision.Datamining.Roughset
             return ReductFactoryKeyHelper.BireductRelative;
         }
 
-        #endregion
+        #endregion Methods
     }
-    
-  
 }

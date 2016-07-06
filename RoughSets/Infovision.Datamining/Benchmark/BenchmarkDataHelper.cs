@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 
 namespace Infovision.Datamining.Benchmark
@@ -16,10 +13,10 @@ namespace Infovision.Datamining.Benchmark
                 return filename;
 
             return Path.Combine(path, filename);
-        }        
+        }
 
         public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles(
-            string dataPath = "Data", 
+            string dataPath = "Data",
             params string[] names)
         {
             int cvFolds = 5;
@@ -114,7 +111,6 @@ namespace Infovision.Datamining.Benchmark
             benchmark = new BenchmarkData("mashroom", GetFilePath(dataPath, "agaricus-lepiota.2.data"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
-
             benchmark = new BenchmarkData("german", GetFilePath(dataPath, "german.data"), cvFolds)
             {
                 DiscretizeUsingEntropy = false,
@@ -125,7 +121,6 @@ namespace Infovision.Datamining.Benchmark
             int[] numericFields = new int[] { 2, 5, 8, 11, 13, 16, 18 };
             for (int i = 0; i < numericFields.Length; i++)
                 benchmark.AddFieldInfo(numericFields[i], new DataFieldInfo(numericFields[i], typeof(int)) { IsNumeric = true });
-
 
             dataFiles.Add(benchmark.Name, benchmark);
 
@@ -141,7 +136,7 @@ namespace Infovision.Datamining.Benchmark
             if (names != null && names.Length > 0)
             {
                 Dictionary<string, BenchmarkData> result = new Dictionary<string, BenchmarkData>(names.Length);
-                for(int i=0; i<names.Length; i++)
+                for (int i = 0; i < names.Length; i++)
                 {
                     if (dataFiles.ContainsKey(names[i]))
                     {
@@ -150,8 +145,7 @@ namespace Infovision.Datamining.Benchmark
                 }
 
                 return result;
-                
-            }               
+            }
 
             return dataFiles;
         }

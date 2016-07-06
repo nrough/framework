@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Infovision.Data;
+﻿using Infovision.Data;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -8,10 +6,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class ReductCacheTest
     {
-        DataStore dataStoreTrain = null;
-        DataStore dataStoreTest = null;
+        private DataStore dataStoreTrain = null;
+        private DataStore dataStoreTest = null;
 
-        DataStoreInfo dataStoreTrainInfo = null;
+        private DataStoreInfo dataStoreTrainInfo = null;
 
         public ReductCacheTest()
         {
@@ -22,7 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
-        }               
+        }
 
         [Test]
         public void CacheReductFirstFoundTrue()

@@ -4,21 +4,21 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using itk.simple;
 
-
 namespace Infovision.MRI
 {
     [Serializable]
     public class ImageITK : ImageBase
     {
-        [NonSerialized] 
+        [NonSerialized]
         private itk.simple.Image image;
+
         [NonSerialized]
         private VectorUInt32 positionVector;
 
         public ImageITK()
         {
         }
-        
+
         public ImageITK(itk.simple.Image image)
             : this()
         {
@@ -44,28 +44,26 @@ namespace Infovision.MRI
 
             var getPixelMethod = typeof(IImage).GetMethod("GetPixel");
             var getPixelRef = getPixelMethod.MakeGenericMethod(this.PixelType);
-            
-            uint [] position = new uint[3];
 
-            for(uint z = 0; z < this.Depth; z++)
-                for(uint y = 0; y < this.Height; y++)
-                    for(uint x = 0; x < this.Width; x++)
+            uint[] position = new uint[3];
+
+            for (uint z = 0; z < this.Depth; z++)
+                for (uint y = 0; y < this.Height; y++)
+                    for (uint x = 0; x < this.Width; x++)
                     {
-                        position[0] = x; 
-                        position[1] = y; 
+                        position[0] = x;
+                        position[1] = y;
                         position[2] = z;
 
-                        setPixelRef.Invoke(this, new object[] { position, getPixelRef.Invoke(image, new object [] { position }) });
+                        setPixelRef.Invoke(this, new object[] { position, getPixelRef.Invoke(image, new object[] { position }) });
                     }
-                    
-
         }
 
         public itk.simple.Image ItkImage
         {
             get { return this.image; }
-            
-            set 
+
+            set
             {
                 this.image = value;
                 if (this.image != null)
@@ -75,7 +73,7 @@ namespace Infovision.MRI
                     this.Depth = image.GetDepth();
                     this.PixelType = SimpleITKHelper.PixelIdValue2Type(this.image.GetPixelIDValue());
                     this.PixelTypeId = SimpleITKHelper.ItkPixelIDValue2PixelType(this.image.GetPixelIDValue());
-                    
+
                     if (this.Depth > 0)
                     {
                         positionVector = new VectorUInt32(new uint[] { 0, 0, 0 });
@@ -95,7 +93,7 @@ namespace Infovision.MRI
 
         public override Bitmap GetBitmap(uint index)
         {
-            return SimpleITKHelper.ConvertToBitmap(this.ItkImage, (int) index);
+            return SimpleITKHelper.ConvertToBitmap(this.ItkImage, (int)index);
         }
 
         private void InitPositionVector()
@@ -116,7 +114,6 @@ namespace Infovision.MRI
         private void SetPositionVector(uint[] position)
         {
             this.InitPositionVector();
-
 
             positionVector[0] = position[0];
             positionVector[1] = position[1];
@@ -235,31 +232,31 @@ namespace Infovision.MRI
             Type t = typeof(T);
             if (t == typeof(double))
             {
-                this.SetPixel(position, (double) Convert.ChangeType(pixelValue, typeof(double)));
+                this.SetPixel(position, (double)Convert.ChangeType(pixelValue, typeof(double)));
             }
             else if (t == typeof(ushort))
             {
-                this.SetPixel(position, (ushort) Convert.ChangeType(pixelValue, typeof(ushort)));
+                this.SetPixel(position, (ushort)Convert.ChangeType(pixelValue, typeof(ushort)));
             }
             else if (t == typeof(short))
             {
-                this.SetPixel(position, (short) Convert.ChangeType(pixelValue, typeof(short)));
+                this.SetPixel(position, (short)Convert.ChangeType(pixelValue, typeof(short)));
             }
             else if (t == typeof(int))
             {
-                this.SetPixel(position, (int) Convert.ChangeType(pixelValue, typeof(int)));
+                this.SetPixel(position, (int)Convert.ChangeType(pixelValue, typeof(int)));
             }
             else if (t == typeof(byte))
             {
-                this.SetPixel(position, (byte) Convert.ChangeType(pixelValue, typeof(byte)));
+                this.SetPixel(position, (byte)Convert.ChangeType(pixelValue, typeof(byte)));
             }
             else if (t == typeof(sbyte))
             {
-                this.SetPixel(position, (sbyte) Convert.ChangeType(pixelValue, typeof(sbyte)));
+                this.SetPixel(position, (sbyte)Convert.ChangeType(pixelValue, typeof(sbyte)));
             }
             else if (t == typeof(uint))
             {
-                this.SetPixel(position, (uint) Convert.ChangeType(pixelValue, typeof(uint)));
+                this.SetPixel(position, (uint)Convert.ChangeType(pixelValue, typeof(uint)));
             }
             else if (t == typeof(float))
             {
@@ -269,7 +266,6 @@ namespace Infovision.MRI
             {
                 throw new System.InvalidOperationException();
             }
-                     
         }
 
         private void SetPixel(uint[] position, sbyte pixelValue)
@@ -345,7 +341,7 @@ namespace Infovision.MRI
 
             Array array = Array.CreateInstance(typeof(T), numerOfPixels);
             itk.simple.Image imageConverted = SimpleITK.Cast(itkImage, SimpleITKHelper.Type2PixelID(typeof(T)));
-            
+
             var @switch = new Dictionary<Type, Action> {
                 { typeof(sbyte), () => Marshal.Copy((IntPtr)imageConverted.GetBufferAsInt8(), (byte[])array, (int)0, (int)numerOfPixels) },
                 { typeof(short), () => Marshal.Copy((IntPtr)imageConverted.GetBufferAsInt16(), (short[])array, (int)0, (int)numerOfPixels) },
@@ -359,7 +355,7 @@ namespace Infovision.MRI
 
             @switch[typeof(T)]();
 
-            return (T[]) array;
+            return (T[])array;
         }
 
         public static ImageITK Construct(uint width, uint height, uint depth, Type pixelType)
@@ -442,17 +438,16 @@ namespace Infovision.MRI
                 throw new NotImplementedException();
             }
 
-
             ImportImageFilter importImageFilter = new ImportImageFilter();
             importImageFilter.SetSize(new VectorUInt32(new uint[] { width, height, depth }));
 
             VectorDouble direction = (depth > 0)
 
-                ? new VectorDouble(new double[] {1, 0, 0, 
-                                                 0, 1, 0, 
+                ? new VectorDouble(new double[] {1, 0, 0,
+                                                 0, 1, 0,
                                                  0, 0, 1})
 
-                : new VectorDouble(new double[] {1, 0, 
+                : new VectorDouble(new double[] {1, 0,
                                                  0, 1});
 
             importImageFilter.SetDirection(direction);
@@ -537,9 +532,8 @@ namespace Infovision.MRI
                                             new VectorInt32(new int[] { 0, 0, z }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
-            return new ImageITK(slice);    
+            return new ImageITK(slice);
         }
-
     }
 
     [Serializable]
@@ -549,18 +543,18 @@ namespace Infovision.MRI
             : base()
         {
         }
-        
+
         public ImageITKRaw(itk.simple.Image image)
             : base(image)
         {
         }
 
-        public ImageITKRaw(string fileName, 
-                           uint width, 
-                           uint height, 
-                           uint depth, 
-                           PixelType pixelType, 
-                           Endianness endianness = Endianness.LittleEndian, 
+        public ImageITKRaw(string fileName,
+                           uint width,
+                           uint height,
+                           uint depth,
+                           PixelType pixelType,
+                           Endianness endianness = Endianness.LittleEndian,
                            uint header = 0)
         {
             this.Width = width;
@@ -575,7 +569,6 @@ namespace Infovision.MRI
                                                          SimpleITKHelper.PixelType2ItkPixelIDValue(this.PixelTypeId),
                                                          endianness,
                                                          header);
-            
         }
     }
 
@@ -588,7 +581,7 @@ namespace Infovision.MRI
             : base()
         {
         }
-        
+
         public ImageBitmap(Bitmap image)
             : this()
         {
@@ -616,6 +609,6 @@ namespace Infovision.MRI
         public override Bitmap GetBitmap(uint z)
         {
             return this.bitmap;
-        }        
+        }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
 {
@@ -11,28 +7,28 @@ namespace Infovision.Datamining.Experimenter.Parms
     public class ParametersValueEnumerator : IEnumerator
     {
         #region Globals
-                           
+
         private bool isFirst;
         private ParameterCollection parameters;
-        private object[] currentValues;        
-        int lastIdx;
+        private object[] currentValues;
+        private int lastIdx;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
         public ParametersValueEnumerator(ParameterCollection parameters)
         {
-            this.parameters = (ParameterCollection) parameters.Clone();
+            this.parameters = (ParameterCollection)parameters.Clone();
             currentValues = new object[parameters.Count];
-            lastIdx = parameters.Count - 1;                       
+            lastIdx = parameters.Count - 1;
 
             this.Reset();
         }
 
-        #endregion        
+        #endregion Constructors
 
-        #region Methods        
+        #region Methods
 
         public object Current
         {
@@ -41,11 +37,11 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         public void Reset()
         {
-            isFirst = true;            
-        }        
+            isFirst = true;
+        }
 
         public bool MoveNext()
-        {           
+        {
             if (isFirst)
             {
                 isFirst = false;
@@ -95,7 +91,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
             return true;
         }
-        
-        #endregion
+
+        #endregion Methods
     }
 }

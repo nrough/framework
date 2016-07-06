@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Experimenter.Parms;
@@ -12,11 +8,11 @@ using Infovision.Utils;
 
 namespace ApproxReductBoostingCV
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            string dataFilename = args[0];            
+            string dataFilename = args[0];
             int numberOfTests = Int32.Parse(args[1]);
             int maxNumberOfIterations = Int32.Parse(args[2]);
             int startIteration = Int32.Parse(args[3]);
@@ -40,11 +36,11 @@ namespace ApproxReductBoostingCV
             Console.WriteLine("Number of attributes: {0}", data.DataStoreInfo.NumberOfFields);
             Console.WriteLine("Decision key position: {0}", data.DataStoreInfo.DecisionFieldId);
             Console.WriteLine("Missing Values: {0}", data.DataStoreInfo.HasMissingData);
-            
+
             int cvfolds = 5;
             DataStoreSplitter splitter = new DataStoreSplitter(data, cvfolds);
 
-            Console.WriteLine("Using Cross Validation with {0} splits", cvfolds);            
+            Console.WriteLine("Using Cross Validation with {0} splits", cvfolds);
 
             int numOfAttr = data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 
@@ -60,7 +56,7 @@ namespace ApproxReductBoostingCV
                                                                                 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
                                                                                 ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
                                                                                ),
-                    ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),                                                                                                                      
+                    ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
                     ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", (int) System.Math.Floor(System.Math.Log((decimal)numOfAttr + 1.0M, 2.0)))
@@ -70,7 +66,7 @@ namespace ApproxReductBoostingCV
             );
 
             Console.WriteLine(CSVFileHelper.GetRecord(' ',
-                                    "DATASET", 
+                                    "DATASET",
                                     "METHOD",
                                      "IDENTYFICATION",
                                      "VOTETYPE",
@@ -103,12 +99,12 @@ namespace ApproxReductBoostingCV
                 UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
                 //int minLen = (int)p[6];
                 int epsilon = (int)p[6];
-                
+
                 for (int f = 0; f < cvfolds; f++)
                 {
                     DataStore trnFoldOrig = null;
                     DataStore tstFoldOrig = null;
-                    
+
                     splitter.ActiveFold = f;
                     splitter.Split(ref trnFoldOrig, ref tstFoldOrig);
 
@@ -120,7 +116,7 @@ namespace ApproxReductBoostingCV
                     if (trnFoldOrig.DataStoreInfo.HasMissingData)
                     {
                         trnFoldReplaced = new ReplaceMissingValues().Compute(trnFoldOrig);
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldReplaced);                        
+                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldReplaced);
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -138,7 +134,7 @@ namespace ApproxReductBoostingCV
                     }
                     else
                     {
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldOrig);                        
+                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldOrig);
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -153,8 +149,8 @@ namespace ApproxReductBoostingCV
                                 weightGenerator = new WeightBoostingGenerator(trnFoldOrig);
                                 break;
                         }
-                    }                    
-                    
+                    }
+
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                     parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
@@ -170,21 +166,21 @@ namespace ApproxReductBoostingCV
 
                     RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(),
-                        reductGenerator.IdentyficationType, 
+                        reductGenerator.IdentyficationType,
                         reductGenerator.VoteType,
                         trnFoldOrig.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult resultTrn = classifierTrn.Classify(
-                        trnFoldOrig.DataStoreInfo.HasMissingData ? trnFoldReplaced : trnFoldOrig, 
+                        trnFoldOrig.DataStoreInfo.HasMissingData ? trnFoldReplaced : trnFoldOrig,
                         null);
 
                     RoughClassifier classifierTst = new RoughClassifier(
                         reductGenerator.GetReductGroups(),
-                        reductGenerator.IdentyficationType, 
+                        reductGenerator.IdentyficationType,
                         reductGenerator.VoteType,
                         data.DataStoreInfo.GetDecisionValues());
                     ClassificationResult resultTst = classifierTst.Classify(
-                        tstFoldOrig, 
+                        tstFoldOrig,
                         null);
 
                     string updWeightsMethodName = String.Empty;
@@ -237,7 +233,7 @@ namespace ApproxReductBoostingCV
                                         measureStdDev,
                                         splitter.ActiveFold,
                                         reductGenerator.Epsilon));
-                }                
+                }
             }
         }
     }

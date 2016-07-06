@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 using Infovision.MRI.DAL;
 
 namespace Infovision.MRI.UI
@@ -41,12 +41,12 @@ namespace Infovision.MRI.UI
 
         private void InitViewers()
         {
-            viewers.Add(MiningObjectType.Types.ImageRAW,        miningObjectViewImage_Viewing);
-            viewers.Add(MiningObjectType.Types.ImageITK,        miningObjectViewImage_Viewing);
-            viewers.Add(MiningObjectType.Types.ImageExtract,    miningObjectViewImage_Viewing);
-            viewers.Add(MiningObjectType.Types.ImageMask,       miningObjectViewImage_Viewing);
-            viewers.Add(MiningObjectType.Types.ImageEdge,       miningObjectViewImage_Viewing);
-            viewers.Add(MiningObjectType.Types.ImageHistogram,  miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageRAW, miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageITK, miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageExtract, miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageMask, miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageEdge, miningObjectViewImage_Viewing);
+            viewers.Add(MiningObjectType.Types.ImageHistogram, miningObjectViewImage_Viewing);
         }
 
         public void AddDefaultViewer(IMiningObject miningObject)
@@ -66,7 +66,7 @@ namespace Infovision.MRI.UI
             }
         }
 
-        void miningObjectViewImage_Viewing(object sender, MiningObjectEventArgs e)
+        private void miningObjectViewImage_Viewing(object sender, MiningObjectEventArgs e)
         {
             IMiningObjectViewImage imageView = e.MiningObject as IMiningObjectViewImage;
 
@@ -190,7 +190,7 @@ namespace Infovision.MRI.UI
             {
                 IMiningObject miningObject = MiningObject.Create(histParm);
                 miningObject.RefId = id;
-                this.AddMiningObject(miningObject);                
+                this.AddMiningObject(miningObject);
                 return miningObject;
             }
 
@@ -278,7 +278,7 @@ namespace Infovision.MRI.UI
         public IMiningObject ExtractImage(long id)
         {
             IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
-            
+
             ImageExtractDialog ImageExtractDialog = new ImageExtractDialog();
             ImageExtract imageExtract = new ImageExtract(selectedMiningObject.Image);
             ImageExtractDialog.ImageExtractBiningSource.Add(imageExtract);
@@ -304,7 +304,7 @@ namespace Infovision.MRI.UI
         {
             SOMClusteringDialog somClusteringDialog = new SOMClusteringDialog();
             IMiningObject selectedMiningObject = this.GetMiningObject(id) as IMiningObject;
-            IMiningObjectViewImage imageMiningObject = selectedMiningObject as IMiningObjectViewImage; 
+            IMiningObjectViewImage imageMiningObject = selectedMiningObject as IMiningObjectViewImage;
 
             Infovision.MRI.DAL.SOMClustering somClustering = new Infovision.MRI.DAL.SOMClustering
             {
@@ -376,7 +376,7 @@ namespace Infovision.MRI.UI
         public IMiningObject CreateNeighbour()
         {
             NeighbourDialog neighbourDialog = new NeighbourDialog();
-            
+
             ImageNeighbour imageNeighbour = new ImageNeighbour();
 
             var masks = from obj in this.GetMiningObjects()

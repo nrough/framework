@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -12,7 +10,7 @@ namespace Infovision.Datamining.Roughset
         private DataStore dataStore = null;
         protected decimal[] w;
         protected object syncRoot = new object();
-        
+
         public WeightGenerator(DataStore dataStore)
         {
             this.dataStore = dataStore;
@@ -29,8 +27,8 @@ namespace Infovision.Datamining.Roughset
 
         public virtual decimal[] Weights
         {
-            get 
-           {
+            get
+            {
                 if (!this.CalcFlag)
                 {
                     lock (syncRoot)
@@ -41,25 +39,25 @@ namespace Infovision.Datamining.Roughset
                         }
                     }
                 }
-                return this.w; 
+                return this.w;
             }
-            
-            set 
+
+            set
             {
                 if (value != null)
                 {
                     this.CalcFlag = false;
                 }
-                this.w = value;                
+                this.w = value;
             }
         }
 
         protected bool CalcFlag { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
-        
+
         public virtual void Generate()
         {
             this.CalcFlag = true;
@@ -71,7 +69,7 @@ namespace Infovision.Datamining.Roughset
             this.Generate();
         }
 
-        #endregion
+        #endregion Methods
 
         public static WeightGenerator Construct(WeightGeneratorType generatorType, DataStore dataStore)
         {
@@ -79,13 +77,13 @@ namespace Infovision.Datamining.Roughset
             {
                 case WeightGeneratorType.Majority:
                     return new WeightGeneratorMajority(dataStore);
-                
+
                 case WeightGeneratorType.Relative:
                     return new WeightGeneratorRelative(dataStore);
-                
+
                 case WeightGeneratorType.Random:
                     return new WeightGeneratorRandom(dataStore);
-                
+
                 case WeightGeneratorType.Constant:
                     return new WeightGeneratorConstant(dataStore, Decimal.Divide(Decimal.One, dataStore.NumberOfRecords));
 
@@ -95,7 +93,6 @@ namespace Infovision.Datamining.Roughset
 
             return null;
         }
-        
     }
 
     [Serializable]
@@ -113,7 +110,7 @@ namespace Infovision.Datamining.Roughset
 
             base.Generate();
 
-            decimal sum = 0;            
+            decimal sum = 0;
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
                 this.Weights[i] = RandomSingleton.Random.Next(0, this.DataStore.NumberOfRecords);
@@ -178,7 +175,7 @@ namespace Infovision.Datamining.Roughset
         public WeightGeneratorMajority(DataStore dataStore)
             : base(dataStore, Decimal.One / dataStore.NumberOfRecords)
         {
-        }        
+        }
     }
 
     [Serializable]
@@ -195,12 +192,12 @@ namespace Infovision.Datamining.Roughset
                 return;
 
             base.Generate();
-            for(int i=0; i<this.DataStore.NumberOfRecords; i++)
+            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
                 this.Weights[i] = Decimal.One
                     / (decimal)(this.DataStore.DataStoreInfo.NumberOfObjectsWithDecision(this.DataStore.GetDecisionValue(i))
                         * this.DataStore.DataStoreInfo.NumberOfDecisionValues);
-            }            
+            }
         }
-    }    
+    }
 }

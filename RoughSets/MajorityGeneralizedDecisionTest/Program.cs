@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
@@ -12,30 +10,30 @@ using Infovision.Utils;
 
 namespace MajorityGeneralizedDecisionTest
 {
-    class Program
+    internal class Program
     {
-        DataStore trainData, testData, data;        
-        decimal eps;
-        int ensembleSize;
-        int ratio;
-        int permutationSize;
-        ReductLengthComparer reductLengthComparer;
-        ReductMeasureLength reductMeasureLength;
-        
-        ReductStoreLengthComparer reductStoreLengthComparer;
+        private DataStore trainData, testData, data;
+        private decimal eps;
+        private int ensembleSize;
+        private int ratio;
+        private int permutationSize;
+        private ReductLengthComparer reductLengthComparer;
+        private ReductMeasureLength reductMeasureLength;
+
+        private ReductStoreLengthComparer reductStoreLengthComparer;
         //ReductStoreLengthComparer reductStoreLengthComparerGaps;
 
-        PermutationCollection permList;
-        int t;
-        StreamWriter fileStream;
-        Dictionary<string, IReductGenerator> reductGeneratorCache;
-        int[] sizes;
-        int maxTest;
-        int fold;
-        
+        private PermutationCollection permList;
+        private int t;
+        private StreamWriter fileStream;
+        private Dictionary<string, IReductGenerator> reductGeneratorCache;
+        private int[] sizes;
+        private int maxTest;
+        private int fold;
+
         public void MajorityGeneralizedDecisionPerformanceTest(
-            WeightGenerator weightGenerator, 
-            RuleQualityFunction identification, 
+            WeightGenerator weightGenerator,
+            RuleQualityFunction identification,
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
@@ -57,11 +55,10 @@ namespace MajorityGeneralizedDecisionTest
                 generator.Run();
 
                 reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecision, generator);
-                
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);            
+            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -71,14 +68,14 @@ namespace MajorityGeneralizedDecisionTest
             classifier.UseExceptionRules = false;
             ClassificationResult result = classifier.Classify(testData);
             result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
-            result.ModelCreationTime = generator.ReductGenerationTime;            
+            result.ModelCreationTime = generator.ReductGenerationTime;
 
-            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GMDR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);            
-        }        
+            this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GMDR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
+        }
 
         public void MajorityGeneralizedDecisionNoExceptionsPerformanceTest(
-            WeightGenerator weightGenerator, 
-            RuleQualityFunction identification, 
+            WeightGenerator weightGenerator,
+            RuleQualityFunction identification,
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
@@ -100,11 +97,10 @@ namespace MajorityGeneralizedDecisionTest
                 generator.Run();
 
                 reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate + "NoExp", generator);
-                
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);            
+            IReductStoreCollection filteredReductStoreCollection = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
@@ -117,15 +113,14 @@ namespace MajorityGeneralizedDecisionTest
 
             ClassificationResult result = classifier.Classify(testData);
             result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
-            result.ModelCreationTime = generator.ReductGenerationTime;            
+            result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "NOEX", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
-
         }
 
         public void MajorityGeneralizedDecisionGapsPerformanceTest(
-            WeightGenerator weightGenerator, 
-            RuleQualityFunction identification, 
+            WeightGenerator weightGenerator,
+            RuleQualityFunction identification,
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
@@ -183,7 +178,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = true;
 
             result = classifier.Classify(testData);
-            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);            
+            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GAPS", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
@@ -214,11 +209,10 @@ namespace MajorityGeneralizedDecisionTest
                 generator.Run();
 
                 reductGeneratorCache.Add(ReductFactoryKeyHelper.ApproximateReductMajorityWeights, generator);
-                
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);            
+            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollection.Filter(ensembleSize, reductLengthComparer);
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
@@ -233,8 +227,8 @@ namespace MajorityGeneralizedDecisionTest
             this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "ADR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result));
         }
 
-        static void Main(string[] args)
-        {            
+        private static void Main(string[] args)
+        {
             string[] names = args;
 
             foreach (var kvp in BenchmarkDataHelper.GetDataFiles(names: names))
@@ -247,9 +241,9 @@ namespace MajorityGeneralizedDecisionTest
                 GC.WaitForPendingFinalizers();
             }
         }
-        
+
         public void Init(BenchmarkData benchmarkData)
-        {            
+        {
             ensembleSize = 10;
             ratio = 5;
             permutationSize = ensembleSize * ratio;
@@ -279,7 +273,7 @@ namespace MajorityGeneralizedDecisionTest
 
             ensembleSize = sizes.First();
             permutationSize = ensembleSize * ratio;
-            
+
             for (int i = 0; i < maxTest; i++)
             {
                 t = i;
@@ -308,7 +302,7 @@ namespace MajorityGeneralizedDecisionTest
                     testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
 
                     this.InitPermutation(trainData);
-                }                                
+                }
 
                 for (int f = 0; f < benchmarkData.CrossValidationFolds; f++)
                 {
@@ -321,18 +315,18 @@ namespace MajorityGeneralizedDecisionTest
 
                         WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
                         trainData.SetWeights(weightGenerator.Weights);
-                    }                    
+                    }
 
                     for (int e = 0; e < 100; e++)
-                    {                       
+                    {
                         eps = (decimal)e / (decimal)100;
 
                         for (int w = 0; w < 2; w++)
                         {
-                            WeightGenerator weightGenerator = (w == 0) 
+                            WeightGenerator weightGenerator = (w == 0)
                                             ? new WeightGeneratorMajority(trainData) as WeightGenerator
                                             : new WeightGeneratorRelative(trainData) as WeightGenerator;
-                            
+
                             trainData.SetWeights(weightGenerator.Weights);
 
                             ClearCache();
@@ -340,11 +334,10 @@ namespace MajorityGeneralizedDecisionTest
                             foreach (int size in sizes)
                             {
                                 ensembleSize = size;
-                                
+
                                 //only confidenceW
                                 for (int j = 2; j <= 2; j++)
                                 {
-
                                     RuleQualityFunction v1, v2;
                                     switch (j)
                                     {
@@ -363,7 +356,7 @@ namespace MajorityGeneralizedDecisionTest
                                     }
 
                                     this.MajorityGeneralizedDecisionGapsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
-                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);                                    
+                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
                                     //this.MajorityGeneralizedDecisionPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
                                     this.ApproximateDecisionReduct(weightGenerator, RuleQuality.ConfidenceW, v2);
                                 }
@@ -381,7 +374,7 @@ namespace MajorityGeneralizedDecisionTest
         public void InitPermutation(DataStore d)
         {
             Args permParm = new Args();
-            
+
             permParm.SetParameter(ReductGeneratorParamHelper.TrainData, d);
             permParm.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(permParm);

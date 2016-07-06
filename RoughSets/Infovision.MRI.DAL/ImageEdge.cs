@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -9,7 +6,7 @@ namespace Infovision.MRI.DAL
     {
         private int background;
         private int foreground;
-        private double noise;        
+        private double noise;
         private IImage image;
 
         public int Background

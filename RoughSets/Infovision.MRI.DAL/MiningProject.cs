@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
@@ -12,6 +11,7 @@ namespace Infovision.MRI.DAL
         private long nextId;
         private Dictionary<long, IMiningObject> miningObjects;
         private string projectFileName = String.Empty;
+
         public MiningProject()
         {
             Name = "New project";
@@ -79,7 +79,7 @@ namespace Infovision.MRI.DAL
             }
 
             long id = miningObject.Id != 0 ? miningObject.Id : this.GetMiningObjectId();
-            
+
             miningObjects.Add(id, miningObject);
             miningObject.Id = id;
 
@@ -93,7 +93,7 @@ namespace Infovision.MRI.DAL
 
         public bool RemoveMiningObject(long miningObjectId)
         {
-            if(this.miningObjects.ContainsKey(miningObjectId))
+            if (this.miningObjects.ContainsKey(miningObjectId))
             {
                 this.miningObjects.Remove(miningObjectId);
                 this.IsDirty = true;
@@ -183,17 +183,17 @@ namespace Infovision.MRI.DAL
 
                 XElement parameters = mo.Element("Parameters");
                 IMiningObject miningObject = MiningObject.Create(miningObjectType);
-                
+
                 miningObject.Id = id;
                 miningObject.Name = name;
                 miningObject.XMLParseParameters(parameters);
-                
+
                 project.AddMiningObject(miningObject);
             }
 
             project.Reload();
             project.ProjectFileName = fileName;
-            
+
             return project;
         }
 
@@ -215,11 +215,11 @@ namespace Infovision.MRI.DAL
             XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-newInstance");
             XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
             //XNamespace ns = XNamespace.Get("http://schema.infovision.pl/MRI");
-            
+
             XDocument xmlDoc = new XDocument(
                                     new XDeclaration("1.0", "utf-8", null),
                                     new XElement(/* ns + */ "MiningProject",
-                                        //new XAttribute("xmlns", ns.NamespaceName),
+                //new XAttribute("xmlns", ns.NamespaceName),
                                         new XAttribute(XNamespace.Xmlns + "xsd", xsd.NamespaceName),
                                         new XAttribute(XNamespace.Xmlns + "xsi", xsi.NamespaceName),
                                         new XElement("Name", this.Name),
@@ -227,7 +227,7 @@ namespace Infovision.MRI.DAL
                                             from o in this.miningObjects
                                             select new XElement("MiningObject",
                                                 new XAttribute("Id", o.Value.Id),
-                                                new XAttribute("Type", o.Value.TypeId),                           
+                                                new XAttribute("Type", o.Value.TypeId),
                                                 new XElement("Name", o.Value.Name),
                                                 o.Value.XMLParametersElement
                                                 )))
@@ -242,6 +242,5 @@ namespace Infovision.MRI.DAL
                 mo.ReloadReferences(this);
             }
         }
-
     }
 }

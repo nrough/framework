@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Infovision.Math;
 using Infovision.Utils;
 
@@ -12,55 +8,55 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClustering : HierarchicalClusteringBase
-    {                        
-        private PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer> queue;        
-        private Dictionary<int, HierarchicalCluster> clusters;             
+    {
+        private PriorityQueue<HierarchicalClusterTuple, HierarchicalClusterTupleValueAscendingComparer> queue;
+        private Dictionary<int, HierarchicalCluster> clusters;
         private Dictionary<int, DendrogramNode> nodes;
 
         private Dictionary<int, int> nodeIdLookupSimple;
-        
+
         //TODO Do we need nodes dictionary?
         public Dictionary<int, DendrogramNode> Nodes
         {
             get { return this.nodes; }
             set { this.nodes = value; }
-        }       
+        }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
-        /// </summary>        
+        /// </summary>
         public HierarchicalClustering()
             : this(Infovision.Math.Similarity.SquaredEuclidean, ClusteringLinkage.Single) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
-        ///         
+        ///
         /// <param name="distance">The distance function to use. Default is to
         /// use the <see cref="Infovision.Math.Similarity.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
-        /// 
-        public HierarchicalClustering(Func<double[], double[], double> distance, 
+        ///
+        public HierarchicalClustering(Func<double[], double[], double> distance,
                                       Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(distance, linkage)
-        {            
+        {
         }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
-        ///         
+        ///
         /// <param name="distanceMatrix">The distance matrix to use. </param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
-        /// 
+        ///
         public HierarchicalClustering(DistanceMatrix matrix, Func<int[], int[], DistanceMatrix, double[][], double> linkage)
             : base(matrix, linkage)
         {
             if (matrix.Distance != null)
                 this.Distance = matrix.Distance;
-            
+
             this.Linkage = linkage;
 
             this.DistanceMatrix = new DistanceMatrix();
@@ -70,7 +66,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         private void Initialize()
-        {                                  
+        {
             bool calculateDistanceMatrix = false;
             if (this.DistanceMatrix == null)
             {
@@ -105,17 +101,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     if (calculateDistanceMatrix)
                         this.DistanceMatrix[instanceKeys[i], instanceKeys[j]] = this.Distance(this.Instances[instanceKeys[i]], this.Instances[instanceKeys[j]]);
 
-                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(instanceKeys[i], instanceKeys[j], this.DistanceMatrix[instanceKeys[i], instanceKeys[j]], 1, 1);                                       
+                    HierarchicalClusterTuple tuple = new HierarchicalClusterTuple(instanceKeys[i], instanceKeys[j], this.DistanceMatrix[instanceKeys[i], instanceKeys[j]], 1, 1);
                     queue.Enqueue(tuple);
                 }
-            }            
-        }                
+            }
+        }
 
         /// <summary>
-        ///  Creates a hierarchy of clusters 
+        ///  Creates a hierarchy of clusters
         /// </summary>
-        /// 
-        /// <param name="data">The data where to compute the algorithm.</param>        
+        ///
+        /// <param name="data">The data where to compute the algorithm.</param>
         public override void Compute()
         {
             if (this.Instances == null)
@@ -123,14 +119,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             if (this.Instances.Count == 0)
                 return;
-            
+
             this.Initialize();
             this.CreateClusters();
-                                                            
+
             this.Root = this.FindNode(this.nodes.Keys.Min());
-            
-            this.Cleanup();            
-        }               
+
+            this.Cleanup();
+        }
 
         protected int GetClusterSize(int clusterIdx)
         {
@@ -145,17 +141,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         protected bool HasMoreClustersToMerge()
         {
             return this.clusters.Count > 1;
-        }        
+        }
 
         protected virtual void CreateClusters()
-        {                                    
-            for (int i = 0; i < this.NumberOfInstances - 1; i++ )
+        {
+            for (int i = 0; i < this.NumberOfInstances - 1; i++)
             {
-                // use priority queue to find next best pair to cluster                
+                // use priority queue to find next best pair to cluster
                 HierarchicalClusterTuple t;
                 bool existsX = false, existsY = false;
                 do
-                {                    
+                {
                     t = queue.Dequeue();
 
                     if (t != null)
@@ -163,9 +159,8 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         existsX = clusters.ContainsKey(t.X);
                         existsY = clusters.ContainsKey(t.Y);
                     }
-
                 } while (t != null
-                            && (!(existsX && existsY) 
+                            && (!(existsX && existsY)
                                 || ((existsX && clusters[t.X].MemberObjects.Count != t.SizeX)
                                     || (existsY && clusters[t.Y].MemberObjects.Count != t.SizeY))));
 
@@ -182,48 +177,48 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                             int i2 = System.Math.Max(newClusterId, kvp.Key);
 
                             double distance = this.GetClusterDistance(i1, i2);
-                            HierarchicalClusterTuple newTuple = new HierarchicalClusterTuple(i1, 
-                                                                                             i2, 
-                                                                                              distance, 
-                                                                                             clusters[i1].MemberObjects.Count, 
+                            HierarchicalClusterTuple newTuple = new HierarchicalClusterTuple(i1,
+                                                                                             i2,
+                                                                                              distance,
+                                                                                             clusters[i1].MemberObjects.Count,
                                                                                              clusters[i2].MemberObjects.Count);
                             queue.Enqueue(newTuple);
                         }
-                    }                    
+                    }
                 }
             }
-        }        
+        }
 
         protected int MergeClusters(int x, int y, double distance)
-        {                    
+        {
             HierarchicalCluster destination = clusters[x];
             HierarchicalCluster source = clusters[y];
             HierarchicalCluster.MergeClustersInPlace(destination, source);
-            
+
             clusters.Remove(y); //remove empty cluster
             clusters.Add(this.NextClusterId, destination); //add new merged cluster under new id
             clusters.Remove(x); //remove old cluster id
-            
+
             int c1 = x;
             int c2 = y;
             if (c2 < c1)
             {
                 c1 = y;
                 c2 = x;
-            }            
+            }
 
             DendrogramNode leftNode = nodes[c1];
             DendrogramNode rightNode = nodes[c2];
-                                                   
+
             DendrogramNode newNode = new DendrogramNode
             {
                 Id = this.NextClusterId,
                 Parent = null,
 
-                LeftNode = leftNode,            
+                LeftNode = leftNode,
                 LeftLength = distance - leftNode.Height,
 
-                RightNode = rightNode,                
+                RightNode = rightNode,
                 RightLength = distance - rightNode.Height,
 
                 Height = distance
@@ -241,14 +236,14 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (this.nodeIdLookupSimple == null)
             {
                 this.nodeIdLookupSimple = new Dictionary<int, int>();
-                foreach(KeyValuePair<int, double[]> kvp in this.Instances)
+                foreach (KeyValuePair<int, double[]> kvp in this.Instances)
                     this.nodeIdLookupSimple.Add(kvp.Key, kvp.Key);
             }
 
             HierarchicalCluster destination = clusters[x];
             HierarchicalCluster source = clusters[y];
             HierarchicalCluster.MergeClustersInPlace(destination, source);
-                        
+
             //clusters.Remove(y); //remove empty cluster
             //clusters.Add(this.NextClusterId, destination); //add new merged cluster under new id
             //clusters.Remove(x); //remove old cluster id
@@ -260,7 +255,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 c1 = y;
                 c2 = x;
             }
-            
+
             DendrogramNode leftNode = nodes[this.nodeIdLookupSimple[c1]];
             DendrogramNode rightNode = nodes[this.nodeIdLookupSimple[c2]];
 
@@ -299,18 +294,18 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             if (clusters[i].Count == 1 && clusters[j].Count == 1)
                 //assume that clusterId and objectId at the beginning are the same
                 return this.DistanceMatrix.GetDistance(i, j);
-                        
+
             int[] cluster1 = clusters[i].MemberObjects.ToArray();
             int[] cluster2 = clusters[j].MemberObjects.ToArray();
-            
+
             return this.Linkage(cluster1, cluster2, this.DistanceMatrix, Instances.Values.ToArray());
-        }        
+        }
 
         protected void Cleanup()
         {
             this.clusters = null;
             this.nodeIdLookupSimple = null;
-        }                
+        }
 
         protected override DendrogramNode FindNode(int nodeId)
         {
@@ -318,11 +313,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         //TODO Implement toString()
-        /*        
+        /*
         public override string ToString()
         {
             //StringBuilder sb = new StringBuilder();
-            //Action<DendrogramNode> 
+            //Action<DendrogramNode>
             return DendrogramLinkCollection.ToString();
         }
         */

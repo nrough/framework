@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
 {
@@ -13,21 +10,21 @@ namespace Infovision.MRI.DAL
             : base()
         {
         }
-        
+
         public double Noise { get; set; }
-        public int Background { get; set; } 
+        public int Background { get; set; }
         public int Foreground { get; set; }
 
-        public IImage Image 
+        public IImage Image
         {
-            get; 
-            private set; 
+            get;
+            private set;
         }
-        
+
         public override XElement XMLParametersElement
         {
             get
-            {               
+            {
                 XElement parameters = new XElement("Parameters",
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.RefId),
@@ -102,7 +99,7 @@ namespace Infovision.MRI.DAL
                 this.Name = "Image edge";
 
                 InitImage(edgeModel.Image);
-            }                    
+            }
         }
     }
 }

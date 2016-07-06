@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{    
+{
     public class ReductRandomSubsetGenerator : ReductGenerator
-    {        
+    {
         private WeightGenerator weightGenerator;
 
         public int MinReductLength { get; set; }
         public int MaxReductLength { get; set; }
-        
+
         protected int NumberOfAttributes { get; set; }
 
         public WeightGenerator WeightGenerator
@@ -33,24 +29,24 @@ namespace Infovision.Datamining.Roughset
             {
                 this.weightGenerator = value;
             }
-        }        
+        }
 
         public override void InitFromArgs(Args args)
         {
             base.InitFromArgs(args);
-            
+
             if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
             this.MinReductLength = 0;
             this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
-            
+
             if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
                 this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
 
             if (args.Exist(ReductGeneratorParamHelper.MaxReductLength))
-                this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);            
-            
+                this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);
+
             if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard))
                 this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
 
@@ -63,16 +59,16 @@ namespace Infovision.Datamining.Roughset
             ReductStore localReductPool = new ReductStore();
             foreach (Permutation permutation in this.Permutations)
             {
-                int cut = this.MinReductLength == this.MaxReductLength 
-                        ? this.MaxReductLength 
-                        : (int) ((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                int cut = this.MinReductLength == this.MaxReductLength
+                        ? this.MaxReductLength
+                        : (int)((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)
                     attributes[i] = permutation[i];
 
                 localReductPool.DoAddReduct(this.CalculateReduct(attributes));
-            }            
+            }
 
             this.ReductPool = localReductPool;
         }
@@ -86,7 +82,7 @@ namespace Infovision.Datamining.Roughset
         {
             ReductWeights reduct
                 = (ReductWeights)this.CreateReductObject(
-                    attributes, this.Epsilon, this.GetNextReductId().ToString());            
+                    attributes, this.Epsilon, this.GetNextReductId().ToString());
             return reduct;
         }
 
@@ -124,5 +120,5 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
             return new PermutationGenerator(dataStore);
         }
-    }    
+    }
 }

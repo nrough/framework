@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
-{          
-    [Serializable]        
+{
+    [Serializable]
     public class DendrogramNode : IComparable, IComparable<DendrogramNode>
     {
         public int Id { get; set; }
         public DendrogramNode LeftNode { get; set; }
         public DendrogramNode RightNode { get; set; }
-        public DendrogramNode Parent { get; set; }        
+        public DendrogramNode Parent { get; set; }
         public double Height { get; set; }
         public double LeftLength { get; set; }
         public double RightLength { get; set; }
@@ -26,7 +23,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public virtual bool IsLeaf
         {
             get { return this.LeftNode == null && this.RightNode == null && this.Parent != null; }
-        } 
+        }
 
         public DendrogramNode()
         {
@@ -67,11 +64,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         }
 
         public int CompareTo(DendrogramNode other)
-        {            
+        {
             if (other == null)
                 return 1;
-            return this.Height.CompareTo(other.Height);            
-        }        
+            return this.Height.CompareTo(other.Height);
+        }
     }
 
     public class DendrogramNodeAscendingComparer : Comparer<DendrogramNode>

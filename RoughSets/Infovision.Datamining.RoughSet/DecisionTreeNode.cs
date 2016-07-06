@@ -46,10 +46,10 @@ namespace Infovision.Datamining.Roughset
                 return (IReadOnlyList<ITreeNode>)this.children;
             }
         }
-        
-        public bool IsLeaf 
-        { 
-            get 
+
+        public bool IsLeaf
+        {
+            get
             {
                 return this.children == null || this.children.Count == 0;
             }
@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset
 
         public void AddChild(DecisionTreeNode child)
         {
-            if(children == null)
+            if (children == null)
                 children = new List<DecisionTreeNode>();
             children.Add(child);
         }
@@ -100,11 +100,11 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         ///   Returns an enumerator that iterates through the node's subtree.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         ///   A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
         /// </returns>
-        /// 
+        ///
         public IEnumerator<DecisionTreeNode> GetEnumerator()
         {
             var stack = new Stack<DecisionTreeNode>(new[] { this });
@@ -124,11 +124,11 @@ namespace Infovision.Datamining.Roughset
         /// <summary>
         ///   Returns an enumerator that iterates through the node's subtree.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         ///   An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
         /// </returns>
-        /// 
+        ///
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -145,7 +145,7 @@ namespace Infovision.Datamining.Roughset
         /// </summary>
         /// <param name="node"></param>
         /// <param name="action"></param>
-        public static void TraverseLevelOrder(ITreeNode node, Action<ITreeNode> action) 
+        public static void TraverseLevelOrder(ITreeNode node, Action<ITreeNode> action)
         {
             Queue<ITreeNode> queue = new Queue<ITreeNode>();
             queue.Enqueue(node);
@@ -170,14 +170,14 @@ namespace Infovision.Datamining.Roughset
                 foreach (ITreeNode child in node.Children)
                     TreeNodeTraversal.TraversePreOrder(child, action);
         }
-        
+
         public static void TraverseInOrder(ITreeNode node, Action<ITreeNode> action)
         {
             if (node == null)
                 return;
 
             bool nodeActionFinished = false;
-            
+
             if (node.Children != null)
                 foreach (ITreeNode child in node.Children)
                 {
@@ -189,7 +189,7 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
         }
-        
+
         public static void TraversePostOrder(ITreeNode node, Action<ITreeNode> action)
         {
             if (node == null)
@@ -223,7 +223,7 @@ namespace Infovision.Datamining.Roughset
             treeFormatter.Indent = indent;
             return treeFormatter;
         }
-        
+
         private DecisionTreeFormatter()
         {
             this.Indent = 2;
@@ -235,14 +235,14 @@ namespace Infovision.Datamining.Roughset
 
         public override string ToString()
         {
- 	        StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             Build(this.Root, 0, sb);
             return sb.ToString();
         }
 
         private string NodeToString(ITreeNode node, int currentLevel)
         {
-            if(node is DecisionTreeNode)
+            if (node is DecisionTreeNode)
                 return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), ((DecisionTreeNode)node).ToString(this.Data.DataStoreInfo));
             return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), node.ToString());
         }
@@ -254,5 +254,5 @@ namespace Infovision.Datamining.Roughset
                 foreach (var child in node.Children)
                     Build(child, currentLevel + 1, sb);
         }
-    }    
+    }
 }

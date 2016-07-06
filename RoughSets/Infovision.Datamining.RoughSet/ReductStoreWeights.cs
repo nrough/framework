@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Infovision.Datamining.Roughset
+﻿namespace Infovision.Datamining.Roughset
 {
     public class ReductStoreWeights : ReductStore
     {

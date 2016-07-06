@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using Infovision.Datamining.Roughset;
 
 namespace Infovision.MRI.DAL
@@ -17,7 +16,7 @@ namespace Infovision.MRI.DAL
         public MiningObjectSOMCluster()
         {
         }
-        
+
         public double LearningRate { get; set; }
         public int NumberOfClusters { get; set; }
         public int NumberOfIterations { get; set; }
@@ -33,9 +32,9 @@ namespace Infovision.MRI.DAL
                                             new XAttribute("Value", ""),
                                             new XAttribute("Name", "RefId"),
                                             from item in this.refIds
-                                                select new XElement("Item",
-                                                    new XAttribute("Value", item),
-                                                    new XAttribute("Name", "RefId"))),
+                                            select new XElement("Item",
+                                                new XAttribute("Value", item),
+                                                new XAttribute("Name", "RefId"))),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.LearningRate),
                                             new XAttribute("Name", "LearningRate")),
@@ -52,7 +51,7 @@ namespace Infovision.MRI.DAL
                                             new XAttribute("Value", this.FileNameLoad),
                                             new XAttribute("Name", "NetworkFileName"))
                                     );
-                
+
                 return parameters;
             }
         }
@@ -60,7 +59,7 @@ namespace Infovision.MRI.DAL
         public override void XMLParseParameters(XElement parametersElement)
         {
             base.XMLParseParameters(parametersElement);
-            
+
             NumberFormatInfo provider = new NumberFormatInfo();
             provider.NumberDecimalSeparator = ".";
 
@@ -125,7 +124,7 @@ namespace Infovision.MRI.DAL
 
                     this.somCluster = clusterModel.Cluster;
                 }
-            }            
+            }
         }
 
         public override void InitFromViewModel(MiningObjectViewModel viewModel)
@@ -149,8 +148,8 @@ namespace Infovision.MRI.DAL
                 refIds.Add(item.Id);
             }
 
-            if (clusterModel.LoadFile 
-                && !String.IsNullOrEmpty(clusterModel.FileNameLoad) 
+            if (clusterModel.LoadFile
+                && !String.IsNullOrEmpty(clusterModel.FileNameLoad)
                 && File.Exists(clusterModel.FileNameLoad))
             {
                 clusterModel.LoadFromFile();
@@ -161,10 +160,10 @@ namespace Infovision.MRI.DAL
             else if (clusterModel.SelectedObjects.Count > 0)
             {
                 clusterModel.Train(clusterModel.GetImageArray());
-                this.somCluster = clusterModel.Cluster;                
+                this.somCluster = clusterModel.Cluster;
             }
-            
-            if (clusterModel.SaveFile 
+
+            if (clusterModel.SaveFile
                 && !String.IsNullOrEmpty(clusterModel.FileNameSave))
             {
                 clusterModel.Save(clusterModel.FileNameSave);
@@ -174,7 +173,6 @@ namespace Infovision.MRI.DAL
                     this.FileNameLoad = clusterModel.FileNameSave;
                 }
             }
-            
         }
     }
 }

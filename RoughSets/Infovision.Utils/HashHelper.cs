@@ -104,7 +104,7 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Gets a hashcode for a collection for that the order of items 
+        /// Gets a hashcode for a collection for that the order of items
         /// does not matter.
         /// So {1, 2, 3} and {3, 2, 1} will get same hash code.
         /// </summary>
@@ -124,7 +124,7 @@ namespace Infovision.Utils
         }
 
         /// <summary>
-        /// Alternative way to get a hashcode is to use a fluent 
+        /// Alternative way to get a hashcode is to use a fluent
         /// interface like this:<br />
         /// return 0.CombineHashCode(field1).CombineHashCode(field2).
         ///     CombineHashCode(field3);

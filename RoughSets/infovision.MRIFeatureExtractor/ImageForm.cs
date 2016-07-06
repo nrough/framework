@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using Infovision.MRI.DAL;
 
-
 namespace Infovision.MRI.UI
 {
     public partial class ImageForm : Form
@@ -33,7 +32,7 @@ namespace Infovision.MRI.UI
                 this.imageStatus = false;
 
                 /*
-                this.bmp = this.Image.Depth > 0 
+                this.bmp = this.Image.Depth > 0
                          ? this.Image[slice].Clone(new Rectangle(0, 0, this.Image.Width, this.Image.Height), this.Image[slice].PixelFormat)
                          : this.Image.Bitmap.Clone(new Rectangle(0, 0, this.Image.Width, this.Image.Height), this.Image.Bitmap.PixelFormat);
                 */
@@ -111,12 +110,12 @@ namespace Infovision.MRI.UI
                     slice++;
 
                     ShowImage(this.Image.Depth > 0 ? this.Image[slice] : this.Image.Bitmap);
-                    
+
                     /*
-                    this.bmp = this.Image.Depth > 0 
+                    this.bmp = this.Image.Depth > 0
                              ? this.Image[slice].Clone(new Rectangle(0,0, this.Image.Width, this.Image.Height), this.Image[slice].PixelFormat)
                              : this.Image.Bitmap.Clone(new Rectangle(0, 0, this.Image.Width, this.Image.Height), this.Image.Bitmap.PixelFormat);
-                    
+
                     ShowImage(bmp);
                     */
                 }
@@ -132,7 +131,6 @@ namespace Infovision.MRI.UI
 
         private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-
         }
 
         private void ImageForm_Resize(object sender, EventArgs e)
@@ -166,12 +164,12 @@ namespace Infovision.MRI.UI
 
         private int CursorRelativePositionX(int x)
         {
-            return x - (int) Math.Floor((double)(mainPanel.Width - this.Image.Width) / (double)2);
+            return x - (int)Math.Floor((double)(mainPanel.Width - this.Image.Width) / (double)2);
         }
 
         private int CursorRelativePositionY(int y)
         {
-            return y - (int) Math.Floor((double)(mainPanel.Height - this.Image.Height) / (double)2);
+            return y - (int)Math.Floor((double)(mainPanel.Height - this.Image.Height) / (double)2);
         }
 
         private bool IsCursorOverImageArea(int x, int y)
@@ -189,47 +187,38 @@ namespace Infovision.MRI.UI
 
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-
         }
 
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void groupBox1_Enter_1(object sender, EventArgs e)
         {
-
         }
 
         private void filterGroup_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void brightnessTrackbar_Scroll(object sender, EventArgs e)
         {
-            
         }
 
         private void contrastTrackbar_Scroll(object sender, EventArgs e)
         {
-            
         }
 
         private void brightnessTrackbar_ValueChanged(object sender, EventArgs e)
@@ -237,7 +226,7 @@ namespace Infovision.MRI.UI
             //Bitmap currentBitmap = this.Image.Depth > 0 ? this.Image[slice] : this.Image.Bitmap;
             //Bitmap pBitmap = System.Drawing.Image.currentBitmap.Clone(new Rectangle(0, 0, this.newBmp.Width, this.newBmp.Height), this.newBmp.PixelFormat);
             Bitmap pBitmap = this.Image.Depth > 0 ? this.Image[slice] : this.Image.Bitmap;
-            new BrightnessContrast().Adjust(pBitmap, brightnessTrackbar.Value , contrastTrackbar.Value);
+            new BrightnessContrast().Adjust(pBitmap, brightnessTrackbar.Value, contrastTrackbar.Value);
             ShowImage(pBitmap);
         }
 
@@ -249,6 +238,5 @@ namespace Infovision.MRI.UI
             new BrightnessContrast().Adjust(pBitmap, brightnessTrackbar.Value, contrastTrackbar.Value);
             ShowImage(pBitmap);
         }
-
     }
 }

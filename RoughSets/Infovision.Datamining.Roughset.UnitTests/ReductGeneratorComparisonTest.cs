@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Infovision.Data;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
-using Infovision.Math;
-using Infovision.Datamining.Clustering.Hierarchical;
-using Infovision.Datamining.Experimenter;
-using Infovision.Datamining.Experimenter.Parms;
 using System.Drawing;
-
-
+using System.Linq;
+using Infovision.Data;
+using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.Datamining.Experimenter.Parms;
+using Infovision.Math;
+using Infovision.Utils;
+using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
-{                
+{
     [TestFixture]
-    class ReductGeneratorComparisonTest
+    internal class ReductGeneratorComparisonTest
     {
         public ReductGeneratorComparisonTest()
         {
@@ -28,7 +21,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Console.WriteLine("class ReductGeneratorComparisonTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
-        
+
         public IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             int numberOfPermutations = 20;
@@ -36,17 +29,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
             int minEpsilon = 5;
             int maxEpsilon = 25;
-                        
+
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
-            decimal[] epsilons;            
+            decimal[] epsilons;
 
             epsilons = new decimal[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
                 epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
 
-            List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();                                                            
+            List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();
@@ -70,7 +63,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //    argSet = new Dictionary<string, object>(argSet);
             //    argSet[ReductGeneratorParamHelper.NumberOfClusters] = 2 + i;
             //    argsList.Add(argSet);
-            //}            
+            //}
 
             return argsList;
         }
@@ -95,16 +88,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
             Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
-            //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);  
-                     
-            Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition = (Func<IReduct, decimal[], RuleQualityFunction, double[]>) args[ReductGeneratorParamHelper.ReconWeights];
+            //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);
+
+            Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition = (Func<IReduct, decimal[], RuleQualityFunction, double[]>)args[ReductGeneratorParamHelper.ReconWeights];
             //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
-            
+
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
-                if(kvp.Key.Substring(0, 1) != "_")
-                    parms.SetParameter(kvp.Key, kvp.Value);           
-            
+                if (kvp.Key.Substring(0, 1) != "_")
+                    parms.SetParameter(kvp.Key, kvp.Value);
+
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
             reductGenerator.Run();
             IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection(numberOfClusters);
@@ -112,7 +105,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             numberOfClusters = System.Math.Min(numberOfClusters, reductGenerator.ReductPool.Count());
 
             Assert.AreEqual(numberOfClusters, reductStoreCollection.Count(), "Number of reduct stores");
-            
+
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             if (reductPool != null)
             {
@@ -134,16 +127,16 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
 
             //Console.WriteLine("------------------------ Reduct Groups ------------------------");
-            
+
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 IReductStoreCollection localStoreCollection = new ReductStoreCollection(1);
                 localStoreCollection.AddStore(reductStore);
-                
+
                 RoughClassifier rc = new RoughClassifier(
                     localStoreCollection,
-                    RuleQuality.Confidence, 
-                    RuleQuality.SingleVote, 
+                    RuleQuality.Confidence,
+                    RuleQuality.SingleVote,
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 
@@ -153,12 +146,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //return;
 
             //Console.WriteLine("------------------------ Ensembles ------------------------");
-            
+
             ParameterCollection clusterCollection = new ParameterCollection(numberOfClusters, 0);
             int counter = 0;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
-                ParameterObjectReferenceCollection<IReduct> valueCollection 
+                ParameterObjectReferenceCollection<IReduct> valueCollection
                         = new ParameterObjectReferenceCollection<IReduct>(String.Format("{0}", counter), reductStore.ToArray<IReduct>());
                 clusterCollection.Add(valueCollection);
                 counter++;
@@ -176,28 +169,27 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 reductStoreCollection.AddStore(tmpReductStore);
 
                 RoughClassifier rc = new RoughClassifier(
-                    tmpReductStoreCollection, 
-                    RuleQuality.ConfidenceW, 
-                    RuleQuality.ConfidenceW, 
+                    tmpReductStoreCollection,
+                    RuleQuality.ConfidenceW,
+                    RuleQuality.ConfidenceW,
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 
-                PrintResult(tmpReductStore, classificationResult);    
+                PrintResult(tmpReductStore, classificationResult);
             }
 
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
                 DendrogramChart dc = new DendrogramChart(ensembleGenerator.Dendrogram, 640, (int)ensembleGenerator.Dendrogram.Root.Height + 100);
-                Bitmap dendrogram = dc.GetAsBitmap();                
+                Bitmap dendrogram = dc.GetAsBitmap();
                 dendrogram.Save((string)args[ReductGeneratorParamHelper.DendrogramBitmapFile]);
             }
-
         }
 
         private void PrintResult(IReductStore reductStore, ClassificationResult classificationResult)
         {
-            //Console.WriteLine(reductStore);            
+            //Console.WriteLine(reductStore);
             //Console.WriteLine(classificationResult.ToString2());
         }
     }

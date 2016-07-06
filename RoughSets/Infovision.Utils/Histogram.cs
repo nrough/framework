@@ -5,7 +5,7 @@ namespace Infovision.Utils
 {
     [Serializable]
     public class Histogram<T>
-        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>  
+        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
     {
         #region Globals
 
@@ -14,7 +14,7 @@ namespace Infovision.Utils
         private T minValue;
         private T maxValue;
 
-        #endregion
+        #endregion Globals
 
         #region Properties
 
@@ -22,8 +22,8 @@ namespace Infovision.Utils
         public T Min { get { return minValue; } }
         public T Max { get { return maxValue; } }
         public int Count { get { return histogramData.Count; } }
-        
-        #endregion
+
+        #endregion Properties
 
         #region Constructors
 
@@ -36,9 +36,9 @@ namespace Infovision.Utils
 
             minValue = default(T);
             maxValue = default(T);
-        }        
+        }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -62,7 +62,6 @@ namespace Infovision.Utils
 
         private void SetMinMaxElement(T key)
         {
-            
             if (key.CompareTo(minValue) < 0)
                 minValue = key;
             if (key.CompareTo(maxValue) > 0)
@@ -90,9 +89,9 @@ namespace Infovision.Utils
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();    
+            throw new NotImplementedException();
         }
 
-        #endregion       
+        #endregion Methods
     }
 }

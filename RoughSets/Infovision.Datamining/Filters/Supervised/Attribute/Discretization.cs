@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Infovision.Statistics;
 using MiscUtil;
 
@@ -14,37 +13,38 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
     {
         #region Members
 
-        private double[] cuts;        
+        private double[] cuts;
         private Dictionary<L, int> labelDict;
         private int[] sortedIndices;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
         public Discretization()
-        {            
+        {
             this.labelDict = new Dictionary<L, int>();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
         public bool UseBetterEncoding { get; set; }
         public bool UseKononenko { get; set; }
+
         public double[] Cuts
         {
             get { return cuts; }
             set { cuts = value; }
         }
-        
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
         private double[] cutPointsForSubset(A[] values, L[] labels, int first, int lastPlusOne, double[] weights = null)
-        {                       
+        {
             double[][] counts, bestCounts;
             double[] priorCounts, left, right, cutPoints;
             double currentCutPoint = Double.MinValue;
@@ -62,9 +62,9 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
 
             // Compute class counts.
             counts = new double[2][];
-            for(int i = 0; i < counts.Length; i++)
-                counts[i] = new double[this.labelDict.Count]; 
-           
+            for (int i = 0; i < counts.Length; i++)
+                counts[i] = new double[this.labelDict.Count];
+
             for (int i = first; i < lastPlusOne; i++)
             {
                 numInstances += (weights != null) ? weights[this.sortedIndices[i]] : 1.0;
@@ -79,21 +79,21 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             priorEntropy = Tools.Entropy(priorCounts);
             bestEntropy = priorEntropy;
 
-            // Find best entropy.            
+            // Find best entropy.
             bestCounts = new double[2][];
-            for(int i = 0; i < bestCounts.Length; i++)
-                bestCounts[i] = new double[this.labelDict.Count]; 
+            for (int i = 0; i < bestCounts.Length; i++)
+                bestCounts[i] = new double[this.labelDict.Count];
 
             for (int i = first; i < (lastPlusOne - 1); i++)
             {
                 counts[0][labelDict[labels[sortedIndices[i]]]] += weights != null ? weights[this.sortedIndices[i]] : 1.0;
                 counts[1][labelDict[labels[sortedIndices[i]]]] -= weights != null ? weights[this.sortedIndices[i]] : 1.0;
 
-                if(values[sortedIndices[i]].CompareTo(values[sortedIndices[i + 1]]) < 0)                
+                if (values[sortedIndices[i]].CompareTo(values[sortedIndices[i + 1]]) < 0)
                 {
-                    currentCutPoint = (Operator.Convert<A, double>(values[sortedIndices[i]]) + Operator.Convert<A, double>(values[sortedIndices[i + 1]])) / 2.0;                    
+                    currentCutPoint = (Operator.Convert<A, double>(values[sortedIndices[i]]) + Operator.Convert<A, double>(values[sortedIndices[i + 1]])) / 2.0;
                     currentEntropy = Tools.EntropyConditionedOnRows(counts);
-                    
+
                     if (currentEntropy < bestEntropy)
                     {
                         bestCutPoint = currentCutPoint;
@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
 
             // Check if split is to be accepted
             if ((UseKononenko && KononenkosMDL(priorCounts, bestCounts, numInstances, numCutPoints))
-                || (!UseKononenko && FayyadAndIranisMDL(priorCounts, bestCounts, numInstances, numCutPoints))) 
+                || (!UseKononenko && FayyadAndIranisMDL(priorCounts, bestCounts, numInstances, numCutPoints)))
             {
                 // Select split points for the left and right subsets
                 left = cutPointsForSubset(values, labels, first, bestIndex + 1, weights);
@@ -133,13 +133,13 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                 {
                     cutPoints = new double[1];
                     cutPoints[0] = bestCutPoint;
-                } 
+                }
                 else if (right == null)
                 {
                     cutPoints = new double[left.Length + 1];
                     Array.Copy(left, 0, cutPoints, 0, left.Length);
                     cutPoints[left.Length] = bestCutPoint;
-                } 
+                }
                 else if (left == null)
                 {
                     cutPoints = new double[1 + right.Length];
@@ -155,7 +155,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                 }
 
                 return cutPoints;
-            } 
+            }
             else
             {
                 return null;
@@ -187,7 +187,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             before = instPrior + distPrior;
 
             // Encode distributions and instances after split.
-            foreach(double[] bestCount in bestCounts)
+            foreach (double[] bestCount in bestCounts)
             {
                 sum = Tools.Sum(bestCount);
                 distAfter += Tools.Log2Binomial(sum + numClassesTotal - 1, numClassesTotal - 1);
@@ -251,7 +251,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             entropyRight = Tools.Entropy(bestCounts[1]);
 
             // Compute terms for MDL formula
-            delta = Tools.Log2(System.Math.Pow(3, numClassesTotal) - 2) 
+            delta = Tools.Log2(System.Math.Pow(3, numClassesTotal) - 2)
                 - ((numClassesTotal * priorEntropy) - (numClassesRight * entropyRight) - (numClassesLeft * entropyLeft));
 
             // Check if split is to be accepted
@@ -259,13 +259,13 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
         }
 
         public void Compute(A[] values, L[] labels, double[] weights = null)
-        {            
+        {
             for (int i = 0, labelKey = 0; i < values.Length; i++)
-            {                
+            {
                 if (!labelDict.ContainsKey(labels[i]))
-                    labelDict.Add(labels[i], labelKey++);                
+                    labelDict.Add(labels[i], labelKey++);
             }
-            
+
             sortedIndices = Enumerable.Range(0, values.Length).ToArray();
             Array.Sort(sortedIndices, (a, b) => values[a].CompareTo(values[b]));
             this.cuts = cutPointsForSubset(values, labels, 0, sortedIndices.Length, weights);
@@ -309,6 +309,6 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             return sb.ToString();
         }
 
-        #endregion
+        #endregion Methods
     }
 }

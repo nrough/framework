@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GenericParsing;
 using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
@@ -16,17 +11,17 @@ using NUnit.Framework;
 namespace Infovision.Data.UnitTests
 {
     [TestFixture]
-    class DiscretizeTest
+    internal class DiscretizeTest
     {
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles("Data",
-                new string[] {                     
+                new string[] {
                     "german",
                     "sat"
                 });
-        }        
-        
+        }
+
         [Test, TestCaseSource("GetDataFiles")]
         public void UpdateColumnTest(KeyValuePair<string, BenchmarkData> kvp)
         {
@@ -48,7 +43,7 @@ namespace Infovision.Data.UnitTests
                 train = DataStore.Load(benchmark.TrainFile, benchmark.FileFormat);
                 test = DataStore.Load(benchmark.TestFile, benchmark.FileFormat, train.DataStoreInfo);
             }
-            
+
             for (int i = 0; i < benchmark.CrossValidationFolds; i++)
             {
                 if (splitter != null)
@@ -84,7 +79,7 @@ namespace Infovision.Data.UnitTests
                 Console.WriteLine("Accuracy: {0}", classificationResult.Accuracy);
 
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-                
+
                 if (benchmark.CheckDiscretize())
                 {
                     foreach (DataFieldInfo field in benchmark.GetNumericFields())
@@ -134,7 +129,7 @@ namespace Infovision.Data.UnitTests
 
                         localFieldInfoTrain.FieldValueType = typeof(int);
                         train.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x));
-                        
+
                         localFieldInfoTest = test.DataStoreInfo.GetFieldInfo(field.Id);
                         localFieldInfoTest.IsNumeric = false;
 
@@ -168,13 +163,13 @@ namespace Infovision.Data.UnitTests
                                     newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
                                 break;
                         }
-                        
+
                         localFieldInfoTest.FieldValueType = typeof(int);
                         localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
                         test.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
                     }
                 }
-                
+
                 args = new Args();
                 args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
                 args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
@@ -192,7 +187,7 @@ namespace Infovision.Data.UnitTests
                 {
                     reduct.EquivalenceClasses.ToString2();
                 }
-                
+
                 classifier = new RoughClassifier(
                     reductStoreCollection,
                     RuleQuality.ConfidenceW,
@@ -206,8 +201,7 @@ namespace Infovision.Data.UnitTests
                 //test.WriteToCSVFileExt(String.Format("disc_german_{0}.tst", i), " ");
 
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-            }                        
+            }
         }
-
     }
 }

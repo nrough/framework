@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Utils
-{        
+{
     [Serializable]
     public class PriorityQueue_DEL<TKey, TValue>
     {
@@ -23,7 +21,7 @@ namespace Infovision.Utils
             lockObj = new object();
             priorityQueue = new SortedDictionary<TKey, Queue<TValue>>(comparer);
         }
-        
+
         public void Enqueue(TKey key, TValue value)
         {
             lock (lockObj)
@@ -48,10 +46,10 @@ namespace Infovision.Utils
         public TValue Dequeue()
         {
             lock (lockObj)
-            {                
+            {
                 if (priorityQueue.Count == 0)
                     return default(TValue);
-                
+
                 KeyValuePair<TKey, Queue<TValue>> kvp = priorityQueue.First();
                 TValue value = kvp.Value.Dequeue();
                 if (kvp.Value.Count == 0)
@@ -75,7 +73,7 @@ namespace Infovision.Utils
             lock (lockObj)
             {
                 KeyValuePair<TKey, Queue<TValue>> kvp = priorityQueue.First();
-                return kvp.Value.Peek();                
+                return kvp.Value.Peek();
             }
         }
     }

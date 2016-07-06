@@ -11,7 +11,7 @@ namespace Infovision.Datamining.Roughset
 
         private int[] elements;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset
             Buffer.BlockCopy(elements, 0, this.elements, 0, elements.Length * sizeof(int));
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -35,13 +35,13 @@ namespace Infovision.Datamining.Roughset
             get { return elements.Length; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
         public int[] ToArray()
         {
-            return elements;            
+            return elements;
         }
 
         public virtual Permutation Reverse()
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         #region System.Object Methods
-        
+
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -66,9 +66,10 @@ namespace Infovision.Datamining.Roughset
             return stringBuilder.ToString();
         }
 
-        #endregion
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the Permutation, performing a deep copy.
         /// </summary>
@@ -78,8 +79,9 @@ namespace Infovision.Datamining.Roughset
             Permutation p = new Permutation(this.elements);
             return p;
         }
-        #endregion
 
-        #endregion
+        #endregion ICloneable Members
+
+        #endregion Methods
     }
 }

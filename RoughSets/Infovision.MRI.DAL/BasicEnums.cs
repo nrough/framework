@@ -1,5 +1,4 @@
-﻿
-namespace Infovision.MRI.DAL
+﻿namespace Infovision.MRI.DAL
 {
     public enum ImageType
     {

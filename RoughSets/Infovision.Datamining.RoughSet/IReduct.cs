@@ -8,14 +8,15 @@ namespace Infovision.Datamining.Roughset
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
         FieldSet Attributes { get; }
-        bool IsException { get; }        
+        bool IsException { get; }
         string ReductPartitionCacheKey { get; }
 
         //TODO Move to Bireduct Interface? (Exceptions?)
         ObjectSet ObjectSet { get; }
-        
+
         //TODO decide should this be stored in reduct or in data object
         decimal[] Weights { get; }
+
         decimal Epsilon { get; }
         string Id { get; set; }
 
@@ -23,10 +24,14 @@ namespace Infovision.Datamining.Roughset
         bool IsEquivalenceClassCollectionCalculated { get; }
 
         bool AddAttribute(int attributeId);
+
         bool ContainsAttribute(int attributeId);
+
         bool ContainsObject(int objectIndex);
+
         bool TryRemoveAttribute(int attributeId);
-        //bool TryRemoveAttributes(int[] attributeId);        
+
+        //bool TryRemoveAttributes(int[] attributeId);
 
         //TODO We want to display Reducts statistics
         //Cardinality
@@ -38,6 +43,7 @@ namespace Infovision.Datamining.Roughset
 
         //Each implementation of Reduct must define its hash code and equal method
         int GetHashCode();
+
         bool Equals(object obj);
     }
 }

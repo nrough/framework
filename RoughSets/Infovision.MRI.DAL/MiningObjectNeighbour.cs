@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
 {
     public class MiningObjectNeighbour : MiningObject
     {
-
         private IMiningObject maskObject;
         private IMiningObject labelsObject;
         private long maskId;
         private long labelsId;
-        
+
         public MiningObjectNeighbour()
             : base()
         {

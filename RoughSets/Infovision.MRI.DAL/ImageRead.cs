@@ -15,20 +15,20 @@ namespace Infovision.MRI.DAL
         private long? parentId = null;
 
         private string fileName = String.Empty;
-        
+
         private uint width = 0;
         private uint height = 0;
         private uint depth = 0;
-        
+
         private Endianness endianness = Endianness.LittleEndian;
         private PixelType pixelType = PixelType.Unknown;
         private int header = 0;
 
         private int sliceFrom = 0;
         private int sliceTo = 0;
-        
+
         private ImageType imageType = ImageType.Unknown;
-        
+
         private IImage image = null;
 
         private bool viewImage;
@@ -61,11 +61,12 @@ namespace Infovision.MRI.DAL
         }
 
         #region Properties
+
         public string FileName
         {
             get { return this.fileName; }
-            set 
-            { 
+            set
+            {
                 SetField(ref this.fileName, value, () => FileName);
                 SetField(ref this.name, value, () => Name);
             }
@@ -162,16 +163,16 @@ namespace Infovision.MRI.DAL
 
         public Bitmap this[int index]
         {
-            get { return this.image.GetBitmap((uint)index);}
+            get { return this.image.GetBitmap((uint)index); }
         }
 
-        #endregion
+        #endregion Properties
 
         public override Type GetMiningObjectType()
         {
             return typeof(MiningObjectImage);
         }
-        
+
         public double GetPixelValue(uint[] position)
         {
             return this.Image.GetPixel<double>(position);
@@ -182,18 +183,18 @@ namespace Infovision.MRI.DAL
             Infovision.MRI.IImage image;
             switch (this.ImageTypeId)
             {
-                case ImageType.ITKStandard :
+                case ImageType.ITKStandard:
                     image = new Infovision.MRI.ImageITK();
                     break;
 
-                case ImageType.ITKRawImage :
-                    image = new Infovision.MRI.ImageITKRaw(this.FileName, 
-                                                           this.Width, 
-                                                           this.Height, 
+                case ImageType.ITKRawImage:
+                    image = new Infovision.MRI.ImageITKRaw(this.FileName,
+                                                           this.Width,
+                                                           this.Height,
                                                            this.Depth,
-                                                           this.PixelType, 
-                                                           this.Endianness, 
-                                                           (uint) this.Header);
+                                                           this.PixelType,
+                                                           this.Endianness,
+                                                           (uint)this.Header);
                     break;
 
                 default:
@@ -202,11 +203,11 @@ namespace Infovision.MRI.DAL
 
             image.Load();
             this.Image = image;
-            
-            this.Width      = image.Width;
-            this.Height     = image.Height;
-            this.Depth      = image.Depth;
-            this.PixelType  = SimpleITKHelper.Type2PixelType(image.PixelType);
+
+            this.Width = image.Width;
+            this.Height = image.Height;
+            this.Depth = image.Depth;
+            this.PixelType = SimpleITKHelper.Type2PixelType(image.PixelType);
         }
     }
 }

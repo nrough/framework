@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.Logging;
 using Common.Logging.Configuration;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
-using Infovision.Datamining.Experimenter;
 using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Datamining.Roughset;
 using Infovision.Math;
@@ -18,12 +13,12 @@ using Infovision.Utils;
 
 namespace VotingVsRuleInduction
 {
-    class Program
+    internal class Program
     {
         private static ILog log;
         private Dictionary<int, PermutationCollection> permutationCollections = new Dictionary<int, PermutationCollection>();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             int numberOfTests = Int32.Parse(args[0]);
             string[] datasets = new string[args.Length - 1];
@@ -38,7 +33,7 @@ namespace VotingVsRuleInduction
             properties["level"] = "All";
             properties["configType"] = "FILE";
             properties["configFile"] = "~/NLog.config";
-            
+
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
 
@@ -46,12 +41,12 @@ namespace VotingVsRuleInduction
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
 
             foreach (var kvp in BenchmarkDataHelper.GetDataFiles("Data", datasets))
-            {                
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine("results", kvp.Key + ".result"), false)) 
+            {
+                using (StreamWriter outputFile = new StreamWriter(Path.Combine("results", kvp.Key + ".result"), false))
                 {
                     Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                         "Test",
-                        "Fold",                        
+                        "Fold",
                         ReductGeneratorParamHelper.FactoryKey,
                         ReductGeneratorParamHelper.NumberOfReducts,
                         ReductGeneratorParamHelper.Epsilon,
@@ -61,7 +56,7 @@ namespace VotingVsRuleInduction
                         );
 
                     outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
-                        "Test",                        
+                        "Test",
                         "Fold",
                         ReductGeneratorParamHelper.FactoryKey,
                         ReductGeneratorParamHelper.NumberOfReducts,
@@ -76,7 +71,7 @@ namespace VotingVsRuleInduction
                         ParameterCollection parms = program.Parameters(kvp.Value);
                         program.permutationCollections = new Dictionary<int, PermutationCollection>();
 
-                        string lastTrainName = null;                        
+                        string lastTrainName = null;
                         string lastFactoryKey = null;
                         decimal lastEpsilon = Decimal.MinusOne;
                         int lastNumberOfReducts = -1;
@@ -84,7 +79,7 @@ namespace VotingVsRuleInduction
                         IReductGenerator reductGenerator = null;
                         IReductStoreCollection origReductStoreCollection = null;
                         IReductStoreCollection filteredReductStoreCollection = null;
-                        bool emptyReductResult = false;                        
+                        bool emptyReductResult = false;
 
                         foreach (var parmVector in parms.Values())
                         {
@@ -97,8 +92,8 @@ namespace VotingVsRuleInduction
                             {
                                 emptyReductResult = false;
                             }
-                            
-                            if(lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name                                
+
+                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
                                 || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey)
                                 || lastEpsilon != (decimal)setup.GetParameter(ReductGeneratorParamHelper.Epsilon))
                             {
@@ -128,12 +123,12 @@ namespace VotingVsRuleInduction
                                 (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType),
                                 (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType),
                                 ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).DataStoreInfo.GetDecisionValues());
-                            
+
                             ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData));
                             result.QualityRatio = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
 
-                            result.ModelCreationTime = reductGenerator.ReductGenerationTime;                           
-    
+                            result.ModelCreationTime = reductGenerator.ReductGenerationTime;
+
                             if (DoubleEpsilonComparer.Instance.Equals(result.QualityRatio, 0.0d))
                             {
                                 emptyReductResult = true;
@@ -143,7 +138,7 @@ namespace VotingVsRuleInduction
                                 t,
                                 f,
                                 setup.GetParameter(ReductGeneratorParamHelper.FactoryKey),
-                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),                                
+                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),
                                 setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
@@ -154,14 +149,14 @@ namespace VotingVsRuleInduction
                                 t,
                                 f,
                                 setup.GetParameter(ReductGeneratorParamHelper.FactoryKey),
-                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),                                
+                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),
                                 setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
                                 ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
                                 result
                                 );
 
-                            lastTrainName = ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name;                            
+                            lastTrainName = ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name;
                             lastFactoryKey = (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey);
                             lastEpsilon = (decimal)setup.GetParameter(ReductGeneratorParamHelper.Epsilon);
                             lastNumberOfReducts = (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
@@ -175,7 +170,7 @@ namespace VotingVsRuleInduction
 
         public Args ConvertParameterVector(object[] parameterVector)
         {
-            Tuple<DataStore, DataStore, int> data = (Tuple<DataStore, DataStore, int>)parameterVector[0];            
+            Tuple<DataStore, DataStore, int> data = (Tuple<DataStore, DataStore, int>)parameterVector[0];
             int numberOfReducts = (int)parameterVector[3];
 
             PermutationCollection permuationCollection = null;
@@ -184,10 +179,10 @@ namespace VotingVsRuleInduction
                 permuationCollection = permutationCollections[numberOfReducts];
             }
             else
-            {                
+            {
                 permuationCollection = new PermutationGenerator(data.Item1).Generate(numberOfReducts * 10);
                 permutationCollections[numberOfReducts] = permuationCollection;
-            }            
+            }
 
             Args conf = new Args();
             conf.SetParameter(ReductGeneratorParamHelper.TrainData, data.Item1);
@@ -202,7 +197,6 @@ namespace VotingVsRuleInduction
             conf.SetParameter(ReductGeneratorParamHelper.CVActiveFold, data.Item3);
 
             return conf;
-
         }
 
         public ParameterCollection Parameters(BenchmarkData benchmark)
@@ -211,16 +205,16 @@ namespace VotingVsRuleInduction
             Tuple<DataStore, DataStore, int>[] dataTuple = new Tuple<DataStore, DataStore, int>[benchmark.CrossValidationFolds];
 
             if (benchmark.CrossValidationActive)
-            {                
+            {
                 DataStore data = DataStore.Load(benchmark.DataFile, benchmark.FileFormat);
-                
+
                 if (benchmark.DecisionFieldId > 0)
                     data.SetDecisionFieldId(benchmark.DecisionFieldId);
 
                 DataStoreSplitter splitter = new DataStoreSplitter(data, benchmark.CrossValidationFolds);
-                
+
                 for (int i = 0; i < benchmark.CrossValidationFolds; i++)
-                {                    
+                {
                     splitter.ActiveFold = i;
                     splitter.Split(ref t1, ref t2);
 
@@ -228,33 +222,33 @@ namespace VotingVsRuleInduction
                 }
             }
             else
-            {                
+            {
                 t1 = DataStore.Load(benchmark.TrainFile, benchmark.FileFormat);
-                
+
                 if (benchmark.DecisionFieldId > 0)
                     t1.SetDecisionFieldId(benchmark.DecisionFieldId);
 
                 t2 = DataStore.Load(benchmark.TestFile, benchmark.FileFormat, t1.DataStoreInfo);
                 dataTuple[0] = new Tuple<DataStore, DataStore, int>(t1, t2, 0);
-            }            
+            }
 
-            IParameter parmDataTuple = new ParameterObjectReferenceCollection<Tuple<DataStore, DataStore, int>>("Data", dataTuple);            
+            IParameter parmDataTuple = new ParameterObjectReferenceCollection<Tuple<DataStore, DataStore, int>>("Data", dataTuple);
 
             IParameter parmReductType = new ParameterValueCollection<string>(
-                ReductGeneratorParamHelper.FactoryKey, new string[] { 
-                    ReductFactoryKeyHelper.ApproximateReductRelativeWeights, 
+                ReductGeneratorParamHelper.FactoryKey, new string[] {
+                    ReductFactoryKeyHelper.ApproximateReductRelativeWeights,
                     ReductFactoryKeyHelper.ApproximateReductMajorityWeights
                 });
-            
-            IParameter parmEpsilon = new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, 
-                0.0m, 0.99m, 0.01m);                
 
-            IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductGeneratorParamHelper.NumberOfReducts, 
+            IParameter parmEpsilon = new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon,
+                0.0m, 0.99m, 0.01m);
+
+            IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductGeneratorParamHelper.NumberOfReducts,
                 new int[] { 20, 10, 2, 1 });
-            
+
             IParameter parmIdentification = new ParameterValueCollection<RuleQualityFunction>(
                 ReductGeneratorParamHelper.IdentificationType, new RuleQualityFunction[] {
-                    RuleQuality.ConfidenceW,                     
+                    RuleQuality.ConfidenceW,
                     RuleQuality.CoverageW,
                     RuleQuality.Confidence,
                     RuleQuality.Coverage,
@@ -276,7 +270,7 @@ namespace VotingVsRuleInduction
                 });
 
             ParameterCollection parameterList = new ParameterCollection(
-                new IParameter[] { 
+                new IParameter[] {
                     parmDataTuple,
                     parmReductType,
                     parmEpsilon,

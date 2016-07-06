@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using NUnit.Framework;
 using RDotNet;
-using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
-    [TestFixture]    
+    [TestFixture]
     public class RNetTest
     {
         [Ignore]
@@ -23,11 +17,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             engine.Evaluate("str(greetings)"); // print out in the console
             string[] a = engine.Evaluate("'Hi there .NET, from the R engine'").AsCharacter().ToArray();
             //Console.WriteLine("R answered: '{0}'", a[0]);
-            //Console.WriteLine("Press any key to exit the program");            
+            //Console.WriteLine("Press any key to exit the program");
             //Console.ReadKey();
             engine.Dispose();
         }
-
-
     }
 }

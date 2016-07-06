@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{ 
+{
     [Serializable]
     public class Reduct : IReduct, IFormattable
     {
@@ -17,10 +17,11 @@ namespace Infovision.Datamining.Roughset
 
         //TODO To Remove
         private decimal[] objectWeights;
+
         private DataStore dataStore;
         protected EquivalenceClassCollection eqClassMap;
-        
-        #endregion
+
+        #endregion Members
 
         #region Properties
 
@@ -30,7 +31,7 @@ namespace Infovision.Datamining.Roughset
         {
             get { return this.dataStore; }
         }
-                 
+
         public decimal[] Weights
         {
             get { return this.objectWeights; }
@@ -56,7 +57,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual EquivalenceClassCollection EquivalenceClasses
         {
-            get 
+            get
             {
                 if (this.eqClassMap == null)
                 {
@@ -69,8 +70,8 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
 
-                return this.eqClassMap; 
-            }                        
+                return this.eqClassMap;
+            }
         }
 
         public virtual bool IsEquivalenceClassCollectionCalculated
@@ -91,7 +92,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual bool IsException { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
@@ -117,7 +118,6 @@ namespace Infovision.Datamining.Roughset
                 for (int i = 0; i < dataStore.NumberOfRecords; i++)
                     this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
             }
-
         }
 
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
@@ -129,26 +129,24 @@ namespace Infovision.Datamining.Roughset
             this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
             decimal w = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                this.objectWeights[i] = w;            
+                this.objectWeights[i] = w;
         }
 
         public Reduct(DataStore dataStore, decimal epsilon)
             : this(dataStore, new int[] { }, epsilon)
-        {            
+        {
         }
 
         public Reduct(DataStore dataStore)
             : this(dataStore, new int[] { }, Decimal.Zero)
-        {            
+        {
         }
-
-        
 
         public Reduct(Reduct reduct)
         {
             this.attributeSet = new FieldSet(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
-            this.Epsilon = reduct.Epsilon;                                             
+            this.Epsilon = reduct.Epsilon;
             this.objectWeights = new decimal[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
@@ -156,7 +154,7 @@ namespace Infovision.Datamining.Roughset
             this.eqClassMap = (EquivalenceClassCollection)reduct.EquivalenceClasses.Clone();
         }
 
-        #endregion        
+        #endregion Constructors
 
         #region Methods
 
@@ -168,7 +166,7 @@ namespace Infovision.Datamining.Roughset
             if (useGlobalCache)
             {
                 partitionKey = this.ReductPartitionCacheKey;
-                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;                
+                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
             }
 
             if (result == null)
@@ -200,7 +198,7 @@ namespace Infovision.Datamining.Roughset
                 lock (mutex)
                 {
                     this.eqClassMap = null;
-                    this.attributeSet.AddElement(attributeId);                    
+                    this.attributeSet.AddElement(attributeId);
                 }
                 return true;
             }
@@ -215,12 +213,12 @@ namespace Infovision.Datamining.Roughset
 
         public virtual bool TryRemoveAttribute(int attributeId)
         {
-            if(this.CheckRemoveAttribute(attributeId))
+            if (this.CheckRemoveAttribute(attributeId))
             {
                 lock (mutex)
                 {
                     this.eqClassMap = null;
-                    this.attributeSet.RemoveElement(attributeId);                    
+                    this.attributeSet.RemoveElement(attributeId);
                 }
                 return true;
             }
@@ -239,6 +237,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the Reduct, performing a deep copy.
         /// </summary>
@@ -247,10 +246,11 @@ namespace Infovision.Datamining.Roughset
         {
             return new Reduct(this);
         }
-        #endregion
+
+        #endregion ICloneable Members
 
         #region IComparable Members
-        
+
         public virtual int CompareTo(object reduct)
         {
             Reduct r = reduct as Reduct;
@@ -285,8 +285,7 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
-        #endregion
-
+        #endregion IComparable Members
 
         #region System.Object Methods
 
@@ -311,7 +310,7 @@ namespace Infovision.Datamining.Roughset
                     this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count);
 
                 sb.Append("[");
-                
+
                 bool first = true;
                 foreach (EquivalenceClass eq in this.EquivalenceClasses)
                 {
@@ -366,16 +365,17 @@ namespace Infovision.Datamining.Roughset
         {
             if (obj == null)
                 return false;
-           
+
             Reduct reduct = obj as Reduct;
             if (reduct == null)
                 return false;
 
             return this.attributeSet.Equals(reduct.attributeSet);
         }
-        #endregion
 
-        #endregion
+        #endregion System.Object Methods
+
+        #endregion Methods
     }
 
     public class ReductNumericalEpsilonComparer : Comparer<IReduct>
@@ -384,7 +384,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (x == null)
             {
-                return y == null ? 0 : -1;                    
+                return y == null ? 0 : -1;
             }
             else
             {
@@ -407,7 +407,7 @@ namespace Infovision.Datamining.Roughset
                                 return -1;
                         }
 
-                        return x.Epsilon.CompareTo(y.Epsilon);                        
+                        return x.Epsilon.CompareTo(y.Epsilon);
                     }
                 }
             }

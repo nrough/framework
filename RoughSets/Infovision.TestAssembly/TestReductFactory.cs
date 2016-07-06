@@ -33,7 +33,7 @@ namespace Infovision.TestAssembly
     }
 
     public class TestReductGenerator : ReductGenerator
-    {        
+    {
         private IReductStore reductPool;
 
         public override IReductStore ReductPool
@@ -55,7 +55,6 @@ namespace Infovision.TestAssembly
             set;
         }
 
-        
         public TestReductGenerator()
         {
         }
@@ -66,13 +65,12 @@ namespace Infovision.TestAssembly
 
         public override void InitFromArgs(Args args)
         {
-
         }
 
         public override void Run()
         {
             this.Generate();
-        }         
+        }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
         {
@@ -86,7 +84,7 @@ namespace Infovision.TestAssembly
 
         protected override void Generate()
         {
-            this.ReductPool = new ReductStore();            
+            this.ReductPool = new ReductStore();
         }
 
         public override IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)

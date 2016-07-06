@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
@@ -13,7 +10,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         private readonly int y;
         private readonly double val;
         private readonly int sizeX;
-        private readonly int sizeY;        
+        private readonly int sizeY;
 
         public HierarchicalClusterTuple(int x, int y, double val, int sizeX, int sizeY)
         {
@@ -37,7 +34,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         public double Value
         {
             get { return this.val; }
-        }        
+        }
 
         public int SizeX
         {
@@ -74,16 +71,16 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             }
 
             return false;
-        }        
+        }
 
-        #endregion
+        #endregion System.Object Methods
     }
 
     internal class HierarchicalClusterTupleValueAscendingComparer : Comparer<HierarchicalClusterTuple>
     {
         public override int Compare(HierarchicalClusterTuple t1, HierarchicalClusterTuple t2)
         {
-            return t1.Value.CompareTo(t2.Value);            
+            return t1.Value.CompareTo(t2.Value);
         }
     }
 

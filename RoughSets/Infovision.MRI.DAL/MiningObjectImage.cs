@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using Infovision.MRI;
+using System.Text;
 using System.Xml.Linq;
+using Infovision.MRI;
 
 namespace Infovision.MRI.DAL
 {
@@ -13,7 +13,7 @@ namespace Infovision.MRI.DAL
     {
         public string FileName { get; set; }
         public int Width { get; set; }
-        public int Height { get; set;}
+        public int Height { get; set; }
         public int Depth { get; set; }
         public int Header { get; set; }
         public int SliceFrom { get; set; }
@@ -37,8 +37,8 @@ namespace Infovision.MRI.DAL
         {
             get
             {
-                if (this.image == null && 
-                    ! String.IsNullOrEmpty(this.FileName))
+                if (this.image == null &&
+                    !String.IsNullOrEmpty(this.FileName))
                 {
                     LoadImageFromFileName();
                 }
@@ -51,7 +51,7 @@ namespace Infovision.MRI.DAL
                 this.image = value;
             }
         }
-        
+
         public override XElement XMLParametersElement
         {
             get
@@ -74,10 +74,10 @@ namespace Infovision.MRI.DAL
                                             new XAttribute("Name", "Depth")),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.Endianness),
-                                            new XAttribute("Name", "Endianness")), 
+                                            new XAttribute("Name", "Endianness")),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.PixelType),
-                                            new XAttribute("Name", "PixelType")), 
+                                            new XAttribute("Name", "PixelType")),
                                         new XElement("Parameter",
                                             new XAttribute("Value", this.Header),
                                             new XAttribute("Name", "Header")),
@@ -106,7 +106,7 @@ namespace Infovision.MRI.DAL
             this.Height = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "Height"));
             this.Depth = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "Depth"));
             this.Header = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "Header"));
-            
+
             this.SliceFrom = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "SliceFrom"));
             this.SliceTo = Convert.ToInt32(this.XMLGetParameterValue(parametersElement, "SliceTo"));
 
@@ -129,16 +129,15 @@ namespace Infovision.MRI.DAL
                 && File.Exists(this.FileName))
             {
                 ImageITK imageItk = ImageITK.Construct(
-                    (uint) this.Width,
-                    (uint) this.Height,
-                    (uint) this.Depth,
+                    (uint)this.Width,
+                    (uint)this.Height,
+                    (uint)this.Depth,
                     SimpleITKHelper.PixelType2Type(this.PixelType));
-                    
 
                 imageItk.FileName = this.FileName;
-                imageItk.Width = (uint) this.Width;
-                imageItk.Height = (uint) this.Height;
-                imageItk.Depth = (uint) this.Depth;
+                imageItk.Width = (uint)this.Width;
+                imageItk.Height = (uint)this.Height;
+                imageItk.Depth = (uint)this.Depth;
                 imageItk.PixelTypeId = this.PixelType;
                 imageItk.EndiannessId = this.Endianness;
                 imageItk.Header = this.Header;
@@ -160,11 +159,11 @@ namespace Infovision.MRI.DAL
                 imageModel.Load();
 
                 this.Image = imageModel.Image;
-                
+
                 this.ImageType = imageModel.ImageTypeId;
-                this.Width = (int) imageModel.Width;
-                this.Height = (int) imageModel.Height;
-                this.Depth = (int) imageModel.Depth;
+                this.Width = (int)imageModel.Width;
+                this.Height = (int)imageModel.Height;
+                this.Depth = (int)imageModel.Depth;
                 this.Header = imageModel.Header;
                 this.SliceFrom = imageModel.SliceFrom;
                 this.SliceTo = imageModel.SliceTo;
@@ -183,7 +182,7 @@ namespace Infovision.MRI.DAL
                         this.TypeId = MiningObjectType.Types.ImageITK;
                         break;
                 }
-            }            
+            }
         }
     }
 }

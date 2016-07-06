@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Math;
@@ -12,7 +11,7 @@ namespace Infovision.Datamining.Roughset
 {
     //TODO Move to Infovision.Datamining namespace
     //TODO IReductStoreCollection must implement some other interface from Infovision.Datamining namespace
-    class NaiveBayes : IClassifier
+    internal class NaiveBayes : IClassifier
     {
         #region Members
 
@@ -20,7 +19,7 @@ namespace Infovision.Datamining.Roughset
 
         private int numberOfModels;
         private bool allModelsAreEqual;
-        
+
         private int decCount;
         private int decCountPlusOne;
         private long[] decisions;
@@ -29,15 +28,15 @@ namespace Infovision.Datamining.Roughset
         public RuleQualityFunction IdentificationFunction { get; set; }
 
         private IReductStoreCollection reductStoreCollection;
-        Dictionary<int, EquivalenceClassCollection> attributeEqClasses;
+        private Dictionary<int, EquivalenceClassCollection> attributeEqClasses;
 
         private object mutex = new object();
 
-        #endregion 
+        #endregion Members
 
         #region Properties
 
-        public ICollection<long> DecisionValues { get; set; }        
+        public ICollection<long> DecisionValues { get; set; }
         public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }
 
         public IReductStoreCollection ReductStoreCollection
@@ -67,16 +66,16 @@ namespace Infovision.Datamining.Roughset
         public bool UseExceptionRules { get; set; }
         public bool ExceptionRulesAsGaps { get; set; }
         public bool IdentifyMultipleDecision { get; set; }
-        
+
         public decimal MinimumVoteValue { get; set; }
-        
-        #endregion
+
+        #endregion Properties
 
         #region Constructors
 
         public NaiveBayes(
-            IReductStoreCollection reductStoreCollection, 
-            ICollection<int> attributes, 
+            IReductStoreCollection reductStoreCollection,
+            ICollection<int> attributes,
             ICollection<long> decisionValues,
             RuleQualityFunction identificationFunction)
         {
@@ -106,16 +105,16 @@ namespace Infovision.Datamining.Roughset
             //MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
             //this.singleVoteName = singleVoteMethod.Name;
             //this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;
-            
+
             attributeEqClasses = new Dictionary<int, EquivalenceClassCollection>();
-            
+
             foreach (var redStore in reductStoreCollection)
             {
                 foreach (var red in redStore.Where(x => x.IsException == false))
                 {
-                    foreach(int attribute in red.Attributes)
+                    foreach (int attribute in red.Attributes)
                     {
-                        if(!attributeEqClasses.ContainsKey(attribute))
+                        if (!attributeEqClasses.ContainsKey(attribute))
                         {
                             attributeEqClasses.Add(attribute, EquivalenceClassCollection
                                 .Create(new int[] { attribute }, red.DataStore, red.Epsilon, red.Weights));
@@ -125,7 +124,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        #endregion
+        #endregion Constructors
 
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null, bool calcFullEquivalenceClasses = true)
         {
@@ -256,8 +255,7 @@ namespace Infovision.Datamining.Roughset
                                 //TODO For Bayes rule we need prior probabilities for all decision classes in denominator
                                 identificationWeights[idx] = this.IdentificationFunction(decVal, reduct, eqClass);
                             }
-                            
-                            
+
                             if (identifiedDecisionWeight < identificationWeights[idx])
                             {
                                 identifiedDecisionWeight = identificationWeights[idx];

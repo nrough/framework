@@ -17,13 +17,12 @@ namespace Infovision.MRI.UnitTests
         private uint width = 181;
         private uint height = 217;
         private uint depth = 181;
-        
-        
+
         [Test]
         public void HistogramDistance()
         {
             IImage trainImage = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
-            
+
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
 
             histCluster.HistogramBucketSize = 4;
@@ -223,8 +222,8 @@ namespace Infovision.MRI.UnitTests
             IImage image = ImageITK.ReadImageRAW(fileName, 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             IImage result = histCluster.Execute(image);
 
-            ImageITK.Show((ImageITK) image, "Histogram clustering oryginal image");
-            ImageITK.Show((ImageITK) result, "Histogram clustering segmentation result");
+            ImageITK.Show((ImageITK)image, "Histogram clustering oryginal image");
+            ImageITK.Show((ImageITK)result, "Histogram clustering segmentation result");
 
             uint[] position = new uint[] { 0, 0, 0 };
 
@@ -298,7 +297,7 @@ namespace Infovision.MRI.UnitTests
             histCluster.Train();
 
             Assert.IsTrue(histCluster.Save(saveFileName), "ImageHistogramCluster cannot be saved");
-            
+
             histCluster = ImageHistogramCluster.Load(saveFileName);
             Assert.IsNotNull(histCluster.Image);
 

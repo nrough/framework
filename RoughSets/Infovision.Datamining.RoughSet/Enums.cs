@@ -3,7 +3,7 @@
     public enum VoteType
     {
         Unknown = 0,
-        
+
         Support = 1,
         Confidence = 2,
         Coverage = 3,
@@ -75,12 +75,12 @@
         No = 0,
         Yes = 1,
         Unknown = 2
-    }    
+    }
 
     public enum WeightingSchema
     {
         Unknown = 0,
         Majority = 1,
         Relative = 2
-    }    
+    }
 }

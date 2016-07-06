@@ -1,10 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Infovision.Utils;
-using Infovision.MRI;
 
 namespace Infovision.MRI.DAL
 {
@@ -17,7 +12,7 @@ namespace Infovision.MRI.DAL
                 throw new ArgumentOutOfRangeException("radius", "Radius must be positive integer key");
             }
 
-            if(label < 0)
+            if (label < 0)
             {
                 throw new ArgumentOutOfRangeException("label", "Label must be non negative");
             }
@@ -42,13 +37,13 @@ namespace Infovision.MRI.DAL
                     return this.Remove(localItem);
                 }
             }
-            catch 
-            { 
+            catch
+            {
             }
 
             return false;
         }
-        
+
         protected override bool SupportsSearchingCore
         {
             get { return true; }

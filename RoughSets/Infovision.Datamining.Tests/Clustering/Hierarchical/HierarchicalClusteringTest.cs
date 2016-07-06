@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
-using System.IO;
+using NUnit.Framework;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringTest
-    {        
+    {
         public static double[][] GetData()
         {
-            double[][] data = 
+            double[][] data =
             {
                 new double[] {7, 8, 0, 1, 0, 7, 1}, //0
                 new double[] {6, 7, 1, 1, 1, 7, 1}, //1
@@ -26,7 +23,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 new double[] {1, 2, 0, 0, 0, 7, 1}, //6
                 new double[] {0, 9, 1, 2, 1, 7, 1}, //7
                 new double[] {1, 5, 0, 0, 0, 7, 1}, //8
-                new double[] {1, 5, 1, 2, 0, 7, 1}  //9                
+                new double[] {1, 5, 1, 2, 0, 7, 1}  //9
             };
 
             return data;
@@ -43,9 +40,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             return result;
         }
 
-
         private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>[] DistancesAndLinkages =
-        {            
+        {
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single, 1),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Complete, 2),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
@@ -58,14 +54,14 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
             new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
-        };        
+        };
 
         [Test]
         public void ComputeTest()
-        {                                    
+        {
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
-            hClustering.Compute();            
+            hClustering.Compute();
             Assert.IsTrue(true);
         }
 
@@ -91,7 +87,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             //Assert.AreEqual(5, hClustering.GetLeafDistance(-9, 6));
             //Assert.AreEqual(5, hClustering.GetLeafDistance(6, -9));
             Assert.AreEqual(7, hClustering.GetLeafDistance(7, 5));
-            Assert.AreEqual(7, hClustering.GetLeafDistance(5, 7));            
+            Assert.AreEqual(7, hClustering.GetLeafDistance(5, 7));
         }
 
         /*
@@ -116,7 +112,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClustering aggregativeVersion = new HierarchicalClustering(distance, linkage);
             aggregativeVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
             aggregativeVersion.Compute();
-            
+
             HierarchicalClusteringSimple simpleVersion = new HierarchicalClusteringSimple(distance, linkage);
             simpleVersion.Instances = HierarchicalClusteringTest.GetDataAsDict();
             simpleVersion.Compute();
@@ -133,7 +129,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             Dictionary<int, DendrogramNode> nodesSimple = simpleVersion.Nodes;
             Dictionary<int, DendrogramNode> nodesAggregative = aggregativeVersion.Nodes;
-            
+
             foreach (KeyValuePair<int, DendrogramNode> kvp in nodesSimple)
             {
                 DendrogramNode otherNode = nodesAggregative[kvp.Key];
@@ -143,7 +139,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
                 if (otherNode.LeftNode != null && otherNode.RightNode != null)
                 {
-                    if(kvp.Value.LeftNode.Id != otherNode.LeftNode.Id
+                    if (kvp.Value.LeftNode.Id != otherNode.LeftNode.Id
                         && kvp.Value.LeftNode.Id != otherNode.RightNode.Id
                         && kvp.Value.Height != otherNode.Height)
                         Assert.True(false, String.Format("Node children are different."));
@@ -167,7 +163,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             }
 
             Assert.True(true);
-        }       
+        }
 
         [Test]
         public void ComputeLeafNodesFromTreeTest()
@@ -180,13 +176,13 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.IsTrue(true);
             //foreach (int i in leaves)
             //    Console.Write("{0} ", i);
-            //Console.WriteLine();    
+            //Console.WriteLine();
         }
 
         [Test]
         public void ComputeWithExternalDistanceMatrix()
-        {            
-            DistanceMatrix matrix = new DistanceMatrix();            
+        {
+            DistanceMatrix matrix = new DistanceMatrix();
             double[][] data = HierarchicalClusteringTest.GetData();
             for (int i = 0; i < data.Length; i++)
             {
@@ -204,9 +200,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.IsTrue(true);
             //foreach (int i in leaves)
             //    Console.Write("{0} ", i);
-            //Console.WriteLine();            
+            //Console.WriteLine();
         }
-
 
         [Test, TestCaseSource("DistancesAndLinkages")]
         public void GetDendrogramAsBitmapTest(Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int> t)
@@ -218,7 +213,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClustering hClustering = new HierarchicalClustering(distance, linkage);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
-            
+
             //Console.Write(hClustering.ToString());
             //Console.WriteLine();
 
@@ -227,7 +222,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             string fileName = String.Format(@"Dendrogram_{0}.bmp", id);
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
             Assert.IsTrue(true);
-        }       
+        }
 
         [Test]
         public void GetClusterMembershipTest()
@@ -244,9 +239,9 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Bitmap bitmap = dc.GetAsBitmap();
             string fileName = String.Format(@"HierarchicalClusteringTest_GetClusterMembershipTest.bmp");
             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Bmp);
-            
+
             Assert.AreEqual(membership.Count, membership2.Count);
-            foreach(KeyValuePair<int, int> kvp in membership)
+            foreach (KeyValuePair<int, int> kvp in membership)
             {
                 Assert.AreEqual(kvp.Value, membership2[kvp.Key]);
             }
@@ -258,7 +253,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.AreEqual(-6, membership[6]);
 
             Assert.AreEqual(3, membership[3]);
-            
+
             Assert.AreEqual(-5, membership[0]);
             Assert.AreEqual(-5, membership[1]);
             Assert.AreEqual(-5, membership[2]);
@@ -286,12 +281,12 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             HierarchicalClustering hClustering = new HierarchicalClustering(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
-            
+
             List<DendrogramNode> result = hClustering.GetCutOffNodes(1);
             Assert.AreEqual(hClustering.Root.Id, result[0].Id);
 
             result = hClustering.GetCutOffNodes(2);
-            
+
             Assert.AreEqual(hClustering.Root.LeftNode.Id, result[0].Id);
             Assert.AreEqual(hClustering.Root.RightNode.Id, result[1].Id);
 
@@ -299,14 +294,14 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.AreEqual(7, result[1].Id);
 
             result = hClustering.GetCutOffNodes(3);
-            
+
             Assert.AreEqual(-7, result[0].Id);
             Assert.AreEqual(-5, result[1].Id);
             Assert.AreEqual(7, result[2].Id);
 
             result = hClustering.GetCutOffNodes(4);
 
-            Assert.AreEqual(-6, result[0].Id);            
+            Assert.AreEqual(-6, result[0].Id);
             Assert.AreEqual(-5, result[1].Id);
             Assert.AreEqual(3, result[2].Id);
             Assert.AreEqual(7, result[3].Id);
@@ -373,8 +368,6 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             Assert.AreEqual(7, result[7].Id);
             Assert.AreEqual(6, result[8].Id);
             Assert.AreEqual(8, result[9].Id);
-            
-            
         }
     }
 }

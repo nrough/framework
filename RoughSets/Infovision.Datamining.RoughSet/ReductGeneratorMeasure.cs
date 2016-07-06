@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -16,7 +15,7 @@ namespace Infovision.Datamining.Roughset
         private IInformationMeasure informationMeasure;
         private decimal dataSetQuality;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -27,7 +26,7 @@ namespace Infovision.Datamining.Roughset
             this.UsePerformanceImprovements = true;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -48,9 +47,9 @@ namespace Infovision.Datamining.Roughset
             set { this.informationMeasure = value; }
         }
 
-        public bool UsePerformanceImprovements { get; set;}
+        public bool UsePerformanceImprovements { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -77,7 +76,7 @@ namespace Infovision.Datamining.Roughset
                 this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
             }
         }
-        
+
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
         {
             ParallelOptions options = new ParallelOptions()
@@ -102,7 +101,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override void Generate()
-        {            
+        {
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
@@ -123,7 +122,7 @@ namespace Infovision.Datamining.Roughset
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore, false, epsilon);
         }
-        
+
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, decimal epsilon)
         {
             IReduct reduct = null;
@@ -147,7 +146,7 @@ namespace Infovision.Datamining.Roughset
         {
             //IReduct reduct = this.CreateReductObject(new int[] { }, this.Epsilon, this.GetNextReductId().ToString());
             //this.Reach(reduct, attributes, null, false);
-            
+
             IReduct reduct = this.CreateReductObject(attributes, this.Epsilon, this.GetNextReductId().ToString());
             this.ReduceForward(reduct, attributes, null, false);
 
@@ -192,7 +191,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public virtual bool CheckIsReduct(IReduct reduct)
-        {           
+        {
             decimal partitionQuality = this.GetPartitionQuality(reduct);
             if (Decimal.Round(partitionQuality, 17) >= Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
                 return true;
@@ -255,7 +254,7 @@ namespace Infovision.Datamining.Roughset
             return stringBuilder.ToString();
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public abstract class ApproximateReductFactory : IReductFactory
@@ -283,7 +282,7 @@ namespace Infovision.Datamining.Roughset
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Relative);
         }
 
-        #endregion
+        #endregion Constructors
     }
 
     public class ApproximateReductRelativeFactory : ApproximateReductFactory
@@ -299,7 +298,7 @@ namespace Infovision.Datamining.Roughset
             rGen.InitFromArgs(args);
             return rGen;
         }
-    }        
+    }
 
     [Serializable]
     public class ReductGeneratorMajority : ReductGeneratorMeasure
@@ -313,7 +312,7 @@ namespace Infovision.Datamining.Roughset
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Majority);
         }
 
-        #endregion
+        #endregion Constructors
     }
 
     public class ApproximateReductMajorityFactory : ApproximateReductFactory
@@ -343,7 +342,7 @@ namespace Infovision.Datamining.Roughset
             this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Positive);
         }
 
-        #endregion
+        #endregion Constructors
     }
 
     public class ApproximateReductPositiveFactory : ApproximateReductFactory

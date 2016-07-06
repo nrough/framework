@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Infovision.Data.UnitTests
 {
@@ -22,7 +17,7 @@ namespace Infovision.Data.UnitTests
                 foreach (var field in subData.DataStoreInfo.Fields)
                 {
                     Assert.AreNotEqual(
-                        field.Histogram, 
+                        field.Histogram,
                         data.DataStoreInfo.GetFieldInfo(field.Id).Histogram);
                 }
             }

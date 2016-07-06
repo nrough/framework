@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
+using System.Linq;
 using Accord.Statistics.Filters;
 
 namespace Infovision.Data
@@ -13,7 +12,7 @@ namespace Infovision.Data
         {
             DataTable datatable = new DataTable(String.IsNullOrEmpty(source.Name) ? "DataTable converted from DataStore" : source.Name);
             int[] fieldIds = source.DataStoreInfo.GetFieldIds().ToArray();
-            for(int i=0; i<fieldIds.Length; i++)
+            for (int i = 0; i < fieldIds.Length; i++)
             {
                 DataFieldInfo field = source.DataStoreInfo.GetFieldInfo(fieldIds[i]);
                 datatable.Columns.Add(field.Name);
@@ -27,7 +26,7 @@ namespace Infovision.Data
                 for (int j = 0; j < fieldIds.Length; j++)
                 {
                     DataFieldInfo field = source.DataStoreInfo.GetFieldInfo(fieldIds[j]);
-                    object externalVal = field.Internal2External(record[j]);                    
+                    object externalVal = field.Internal2External(record[j]);
                     if (field.HasMissingValues && record[j] == field.MissingValueInternal)
                         recordStr[j] = source.DataStoreInfo.MissingValue;
                     else
@@ -39,8 +38,8 @@ namespace Infovision.Data
             }
 
             return datatable;
-        }        
-        
+        }
+
         [CLSCompliant(false)]
         public static DataStore ToDataStore(this DataTable source, Codification codification, int decisionIdx = -1, int idIdx = -1)
         {
@@ -64,7 +63,7 @@ namespace Infovision.Data
                 fieldInfo.Name = col.ColumnName;
                 fieldInfo.Alias = col.ColumnName;
                 fieldIds[i] = fieldInfo.Id;
-                
+
                 if (i == idIdx || codification == null)
                 {
                     //Get unchanged Id
@@ -77,13 +76,13 @@ namespace Infovision.Data
                 }
                 //Codification does not contain all columns e.g. continues attributes and id
                 else if (isFieldCodified)
-                {                    
+                {
                     foreach (KeyValuePair<string, int> kvp in codification.Columns[col.ColumnName].Mapping)
                     {
                         //We assume that all missing values are replaced
                         fieldInfo.AddInternal((long)kvp.Value, kvp.Key, false);
                     }
-                }  
+                }
 
                 if (i == decisionIdx)
                 {
@@ -112,7 +111,7 @@ namespace Infovision.Data
 
                 DataRecordInternal dataStoreRecord = new DataRecordInternal(fieldIds, vector);
                 dataStoreRecord.ObjectId = vector[idIdx];
-                                
+
                 //TODO Check this idIdx is this record index in DataStore?
                 dataStoreRecord.ObjectIdx = idIdx;
 
@@ -120,6 +119,6 @@ namespace Infovision.Data
             }
 
             return result;
-        }    
+        }
     }
 }

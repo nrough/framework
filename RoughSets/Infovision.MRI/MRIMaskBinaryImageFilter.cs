@@ -17,7 +17,7 @@ namespace Infovision.MRI
 
         public virtual IImage Execute(IImage image)
         {
-            MathNet.Numerics.Statistics.Histogram histogram 
+            MathNet.Numerics.Statistics.Histogram histogram
                 = ImageHistogram.GetHistogram(image, SimpleITKHelper.GetNumberOfHistogramBuckets(image, this.HistogramBucketSize));
 
             int j = ImageHistogram.FindLocalMinima(histogram, ImageHistogram.FindGlobalMaxima(histogram));
@@ -31,7 +31,7 @@ namespace Infovision.MRI
             ImageITK imageITK = ImageITK.GetImageITK(image);
 
             itk.simple.Image doubleImage;
-            if ( ! imageITK.PixelType.Equals(typeof(double)))
+            if (!imageITK.PixelType.Equals(typeof(double)))
             {
                 doubleImage = SimpleITK.Cast(imageITK.ItkImage, PixelIDValueEnum.sitkFloat64);
             }

@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
-    class ReductGeneratorTest
+    internal class ReductGeneratorTest
     {
         private DataStore dataStoreTrain = null;
         private DataStore dataStoreTest = null;
@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private IReductGenerator reductGeneratorMulti = null;
         private Args parms = new Args();
 
-        ManualResetEvent[] resetEvents;
+        private ManualResetEvent[] resetEvents;
 
         public ReductGeneratorTest()
         {
@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permGen.Generate(10));
-            
+
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
@@ -49,7 +49,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TestGolf([Values("GammaBireduct", "Bireduct", "BireductRelative")] string factoryKey)
         {
             bool showInfo = false;
-            
+
             //if (showInfo)
             //    Console.WriteLine(factoryKey);
 
@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                 IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations); 
+                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
 
                 for (int j = 0; j < 100; j++)
                 {
@@ -129,7 +129,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void TestBireductGolf_2()
         {
             DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            
+
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { -3, 1, 6, 8, 0, -4, 12, 11, 5, 4, 7, 3, 10, 2, 13, 9, -1, -2 }));
             permutationList.Add(new Permutation(new int[] { 6, 10, -3, 4, -4, 11, 2, 12, 3, 8, 0, 9, 5, 13, 7, 1, -2, -1 }));
@@ -160,7 +160,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]        
+        [Test, Ignore]
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]        
+        [Test, Ignore]
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -244,12 +244,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public void ThreadPoolItemTest(Object obj)
         {
-            WorkerTaskInfo task = (WorkerTaskInfo) obj;
+            WorkerTaskInfo task = (WorkerTaskInfo)obj;
             for (int i = 0; i < 10000; i += task.NumberOfThreads)
             {
                 task.Array[task.ThreadIndex].Superset(task.Array[i]);
             }
-            
+
             task.ResetEvent.Set();
             //resetEvents[task.ThreadIndex].Set();
         }

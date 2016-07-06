@@ -1,151 +1,148 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
-using Infovision.Utils;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-	public class ReductEnsembleBoostingWithDendrogramGenerator : ReductEnsembleBoostingGenerator
-	{		
-		private IReduct[] reducts;		
-		private int reductCounter;
-		private bool reductsCalculated;
-		private decimal[] weights;
-		private HierarchicalClustering hCluster;
-		
-		public Func<double[], double[], double> Distance { get; set; }
-		public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
+    public class ReductEnsembleBoostingWithDendrogramGenerator : ReductEnsembleBoostingGenerator
+    {
+        private IReduct[] reducts;
+        private int reductCounter;
+        private bool reductsCalculated;
+        private decimal[] weights;
+        private HierarchicalClustering hCluster;
 
-		public ReductEnsembleBoostingWithDendrogramGenerator()
-			: base()
-		{
-			reductCounter = 0;
-			reductsCalculated = false;
-		}
+        public Func<double[], double[], double> Distance { get; set; }
+        public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
 
-		public ReductEnsembleBoostingWithDendrogramGenerator(DataStore data)
-			: base(data)		
-		{
-			reductCounter = 0;
-			reductsCalculated = false;
-		}
+        public ReductEnsembleBoostingWithDendrogramGenerator()
+            : base()
+        {
+            reductCounter = 0;
+            reductsCalculated = false;
+        }
 
-		public override void InitDefaultParameters()
-		{
-			base.InitDefaultParameters();
-			this.Distance = Similarity.Manhattan;
-			this.Linkage = ClusteringLinkage.Average;
-		}
+        public ReductEnsembleBoostingWithDendrogramGenerator(DataStore data)
+            : base(data)
+        {
+            reductCounter = 0;
+            reductsCalculated = false;
+        }
 
-		public override void InitFromArgs(Args args)
-		{
-			base.InitFromArgs(args);
+        public override void InitDefaultParameters()
+        {
+            base.InitDefaultParameters();
+            this.Distance = Similarity.Manhattan;
+            this.Linkage = ClusteringLinkage.Average;
+        }
 
-			if (args.Exist(ReductGeneratorParamHelper.Distance))
-				this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
+        public override void InitFromArgs(Args args)
+        {
+            base.InitFromArgs(args);
 
-			if (args.Exist(ReductGeneratorParamHelper.Linkage))
-				this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
-		}
+            if (args.Exist(ReductGeneratorParamHelper.Distance))
+                this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
 
-		protected override void Generate()
-		{
-			this.GenerateReducts();
-			this.BuildDendrogram();			
-						
-			base.Generate();                        
-		}
+            if (args.Exist(ReductGeneratorParamHelper.Linkage))
+                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
+        }
 
-		private void BuildDendrogram()
-		{
-			hCluster = new HierarchicalClustering();
-			hCluster.Distance = this.Distance;
-			hCluster.Linkage = this.Linkage;
+        protected override void Generate()
+        {
+            this.GenerateReducts();
+            this.BuildDendrogram();
 
-			Dictionary<int, double[]> instances = new Dictionary<int, double[]>(this.MaxIterations);
-			for (int i = 0; i < reducts.Length; i++)
-				instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights, RuleQuality.ConfidenceW));
+            base.Generate();
+        }
 
-			hCluster.Instances = instances;
-			hCluster.Compute();            
-		}
-		
-		private void GenerateReducts()
-		{            
-			reductsCalculated = false;
+        private void BuildDendrogram()
+        {
+            hCluster = new HierarchicalClustering();
+            hCluster.Distance = this.Distance;
+            hCluster.Linkage = this.Linkage;
 
-			weights = new decimal[this.DataStore.NumberOfRecords];
-			for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-				weights[i] = Decimal.One / this.DataStore.NumberOfRecords;
+            Dictionary<int, double[]> instances = new Dictionary<int, double[]>(this.MaxIterations);
+            for (int i = 0; i < reducts.Length; i++)
+                instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights, RuleQuality.ConfidenceW));
 
-			this.reducts = new IReduct[this.MaxIterations];				
-			for (int i = 0; i < this.MaxIterations; i++)
-				this.reducts[i] = this.GetNextReduct(weights);								
+            hCluster.Instances = instances;
+            hCluster.Compute();
+        }
 
-			HierarchicalCluster cluster = new HierarchicalCluster(0);
-			cluster.AddMemberObject(0);
-			int[] oneElementCluster = new int[1];
+        private void GenerateReducts()
+        {
+            reductsCalculated = false;
 
-			for (int i = 1; i < this.MaxIterations; i++)
-			{
-				decimal d = Decimal.MinValue;
-				int bestIndex = -1;
+            weights = new decimal[this.DataStore.NumberOfRecords];
+            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+                weights[i] = Decimal.One / this.DataStore.NumberOfRecords;
 
-				for (int j = i + 1; j < this.MaxIterations; j++)
-				{                                        
-					oneElementCluster[0] = j;
-					
-					decimal reductDistance = (decimal)hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
-					if (d < reductDistance)
-					{
-						d = reductDistance;
-						bestIndex = j;
-					}
-				}
+            this.reducts = new IReduct[this.MaxIterations];
+            for (int i = 0; i < this.MaxIterations; i++)
+                this.reducts[i] = this.GetNextReduct(weights);
 
-				cluster.AddMemberObject(bestIndex);
+            HierarchicalCluster cluster = new HierarchicalCluster(0);
+            cluster.AddMemberObject(0);
+            int[] oneElementCluster = new int[1];
 
-				IReduct tmp = reducts[i];
-				reducts[i] = reducts[bestIndex];
-				reducts[bestIndex] = tmp;                
-			}
+            for (int i = 1; i < this.MaxIterations; i++)
+            {
+                decimal d = Decimal.MinValue;
+                int bestIndex = -1;
 
-			reductCounter = 0;
-			reductsCalculated = true;
-		}
+                for (int j = i + 1; j < this.MaxIterations; j++)
+                {
+                    oneElementCluster[0] = j;
 
-		public override IReduct GetNextReduct(decimal[] weights)
-		{
-			if (reductsCalculated)								
-				return reducts[reductCounter++];
-			  
-			return base.GetNextReduct(weights);
-		}						
-	}
+                    decimal reductDistance = (decimal)hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
+                    if (d < reductDistance)
+                    {
+                        d = reductDistance;
+                        bestIndex = j;
+                    }
+                }
 
-	public class ReductEnsembleBoostingWithDendrogramFactory : IReductFactory
-	{
-		public virtual string FactoryKey
-		{
-			get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithDendrogram; }
-		}
+                cluster.AddMemberObject(bestIndex);
 
-		public virtual IReductGenerator GetReductGenerator(Args args)
-		{
-			ReductEnsembleBoostingWithDendrogramGenerator rGen = new ReductEnsembleBoostingWithDendrogramGenerator();
-			rGen.InitFromArgs(args);
-			return rGen;
-		}
+                IReduct tmp = reducts[i];
+                reducts[i] = reducts[bestIndex];
+                reducts[bestIndex] = tmp;
+            }
 
-		public virtual IPermutationGenerator GetPermutationGenerator(Args args)
-		{
-			DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
-			return new PermutationGenerator(dataStore);
-		}
-	}
+            reductCounter = 0;
+            reductsCalculated = true;
+        }
+
+        public override IReduct GetNextReduct(decimal[] weights)
+        {
+            if (reductsCalculated)
+                return reducts[reductCounter++];
+
+            return base.GetNextReduct(weights);
+        }
+    }
+
+    public class ReductEnsembleBoostingWithDendrogramFactory : IReductFactory
+    {
+        public virtual string FactoryKey
+        {
+            get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithDendrogram; }
+        }
+
+        public virtual IReductGenerator GetReductGenerator(Args args)
+        {
+            ReductEnsembleBoostingWithDendrogramGenerator rGen = new ReductEnsembleBoostingWithDendrogramGenerator();
+            rGen.InitFromArgs(args);
+            return rGen;
+        }
+
+        public virtual IPermutationGenerator GetPermutationGenerator(Args args)
+        {
+            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            return new PermutationGenerator(dataStore);
+        }
+    }
 }

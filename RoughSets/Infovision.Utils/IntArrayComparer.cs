@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
@@ -12,9 +9,9 @@ namespace Infovision.Utils
         private static volatile Int64ArrayEqualityComparer instance;
         private static object syncRoot = new object();
 
-        public static Int64ArrayEqualityComparer Instance 
-        { 
-            get 
+        public static Int64ArrayEqualityComparer Instance
+        {
+            get
             {
                 if (instance == null)
                 {
@@ -26,10 +23,12 @@ namespace Infovision.Utils
                 }
 
                 return instance;
-            } 
+            }
         }
-        
-        private Int64ArrayEqualityComparer() { }
+
+        private Int64ArrayEqualityComparer()
+        {
+        }
 
         public bool Equals(long[] x, long[] y)
         {
@@ -41,12 +40,12 @@ namespace Infovision.Utils
 
             if (x.Length != y.Length)
                 return false;
-            
+
             for (int i = 0; i < x.Length; i++)
                 if (x[i] != y[i])
                     return false;
 
-            return true;    
+            return true;
         }
 
         public int GetHashCode(long[] array)
@@ -63,7 +62,7 @@ namespace Infovision.Utils
 
                 for (int i = 0; i < array.Length; i += step)
                     hash = 31 * hash + array[i].GetHashCode();
-                return hash; 
+                return hash;
                 */
 
                 if (array == null)
@@ -74,7 +73,6 @@ namespace Infovision.Utils
                     hash = 31 * hash + array[i].GetHashCode();
                 return hash;
             }
-            
         }
     }
 }

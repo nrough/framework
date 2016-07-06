@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Infovision.Data;
-using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -13,8 +10,8 @@ namespace Infovision.Datamining.Roughset
         #region Constructors
 
         public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] objectWeights)
-            : base(dataStore, fieldIds, epsilon, objectWeights)            
-        {            
+            : base(dataStore, fieldIds, epsilon, objectWeights)
+        {
         }
 
         public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] objectWeights, EquivalenceClassCollection equivalenceClasses)
@@ -27,9 +24,10 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the Reduct, performing a deep copy.
         /// </summary>
@@ -38,7 +36,8 @@ namespace Infovision.Datamining.Roughset
         {
             return new ReductWeights(this);
         }
-        #endregion
+
+        #endregion ICloneable Members
 
         #region System.Object Methods
 
@@ -50,10 +49,10 @@ namespace Infovision.Datamining.Roughset
             ReductWeights reduct = obj as ReductWeights;
             if (reduct == null)
                 return false;
-            
+
             if (base.Equals(obj) == false)
                 return false;
-            
+
             for (int i = 0; i < this.Weights.Length; i++)
                 if (reduct.Weights[i] != this.Weights[i])
                     return false;
@@ -68,12 +67,12 @@ namespace Infovision.Datamining.Roughset
             return HashHelper.GetHashCode(
                 HashHelper.GetHashCode(this.Attributes.Data),
                 HashHelper.GetHashCode(
-                    this.Weights[0], 
-                    this.Weights[(int)(this.Weights.Length - 1) / 2], 
+                    this.Weights[0],
+                    this.Weights[(int)(this.Weights.Length - 1) / 2],
                     this.Weights[this.Weights.Length - 1]));
             */
         }
 
-        #endregion
+        #endregion System.Object Methods
     }
 }

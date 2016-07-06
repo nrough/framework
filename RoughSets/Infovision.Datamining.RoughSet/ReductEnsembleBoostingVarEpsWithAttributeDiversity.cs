@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
-{    
+{
     public class ReductEnsembleBoostingVarEpsWithAttributeDiversityGenerator : ReductEnsembleBoostingVarEpsGenerator
     {
         public ReductEnsembleBoostingVarEpsWithAttributeDiversityGenerator()

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
@@ -10,7 +6,7 @@ namespace Infovision.Math
     /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html
     /// </summary>
     public static class Similarity
-    {        
+    {
         public static double Euclidean(double[] a, double[] b)
         {
             return System.Math.Sqrt(Similarity.SquaredEuclidean(a, b));
@@ -39,7 +35,7 @@ namespace Infovision.Math
             char[] bc = b.ToCharArray();
 
             return Hamming(ac, bc);
-        }        
+        }
 
         public static double Hamming(char[] a, char[] b)
         {
@@ -59,8 +55,8 @@ namespace Infovision.Math
             for (int i = 0; i < v1.Length; i++)
                 if (!DoubleEpsilonComparer.Instance.Equals(v1[i], v2[i]))
                     sum += System.Math.Max(v1[i], v2[i]);
-            
-            return v1.Length > 0 ? sum / (double) v1.Length : 0.0;
+
+            return v1.Length > 0 ? sum / (double)v1.Length : 0.0;
         }
 
         public static double JaccardFuzzy(double[] a, double[] b)
@@ -74,10 +70,10 @@ namespace Infovision.Math
                 maxSum += System.Math.Max(a[i], b[i]);
             }
 
-            if(maxSum == 0)
+            if (maxSum == 0)
                 return 1.0;
 
-            return 1.0 - (minSum / maxSum);    
+            return 1.0 - (minSum / maxSum);
         }
 
         public static double Levenshtein(string s, string t)
@@ -126,7 +122,7 @@ namespace Infovision.Math
             for (int i = 0; i < a.Length; i++)
                 sum += (a[i] - b[i]) * (a[i] - b[i]); //System.Math.Pow((a[i] - b[i]), 2.0);
             return sum;
-        }        
+        }
 
         public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
         {
@@ -192,7 +188,7 @@ namespace Infovision.Math
             };
 
             return tverskyDistance;
-        }                            
+        }
 
         public static double Cosine(double[] v1, double[] v2)
         {
@@ -203,7 +199,7 @@ namespace Infovision.Math
                 d1 += v1[i] * v1[i];
                 d2 += v2[i] * v2[i];
             }
-            return dot / (System.Math.Sqrt(d1) * System.Math.Sqrt(d2));            
+            return dot / (System.Math.Sqrt(d1) * System.Math.Sqrt(d2));
         }
 
         public static double CosineB(double[] v1, double[] v2, double[] w)
@@ -222,7 +218,7 @@ namespace Infovision.Math
             double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
-            double c = assoc[2];            
+            double c = assoc[2];
 
             double denominator = (a + c) * (b + c);
             return (2.0 * c) / denominator;
@@ -269,7 +265,7 @@ namespace Infovision.Math
             double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
-            double c = assoc[2];            
+            double c = assoc[2];
 
             double denominator = (a + b + c);
             return c / denominator;
@@ -280,7 +276,7 @@ namespace Infovision.Math
             double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
-            double c = assoc[2];            
+            double c = assoc[2];
 
             return 0.5 * ((c / (a + c)) + (c / (b + c)));
         }
@@ -345,7 +341,7 @@ namespace Infovision.Math
             double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
-            double c = assoc[2];            
+            double c = assoc[2];
 
             return c / System.Math.Min((a + c), (b + c));
         }
@@ -375,14 +371,14 @@ namespace Infovision.Math
             double c = assoc[2];
             double d = assoc[3];
 
-            return (2.0 * (a + b)) / (c + (2.0*(a * b)));
+            return (2.0 * (a + b)) / (c + (2.0 * (a * b)));
         }
 
         public static double BrayCurtis(double[] v1, double[] v2)
         {
             double d1 = 0.0, d2 = 0.0;
             for (int i = 0; i < v1.Length; i++)
-            {                
+            {
                 d1 += System.Math.Abs(v1[i] - v2[i]);
                 d2 += System.Math.Abs(v1[i] + v2[i]);
             }
@@ -409,29 +405,27 @@ namespace Infovision.Math
             return ((a + b - c) + v1.Length) / ((a + b) + v1.Length);
         }
 
-        //mahalanobis        
+        //mahalanobis
         //SokalMichener
 
-        
         public static double Minkowski(double[] v1, double[] v2, double p)
-        {            
+        {
             double ex = 0.0;
             double min_d = Double.PositiveInfinity;
             double max_d = Double.NegativeInfinity;
             for (int i = 0; i < v1.Length; i++)
-            { 
+            {
                 double d = System.Math.Abs(v1[i] - v2[i]);
                 ex += System.Math.Pow(d, p);
                 min_d = System.Math.Min(min_d, d);
                 max_d = System.Math.Max(max_d, d);
-            }            
-                
+            }
+
             return Double.IsNaN(ex) ? ex
                 : !ex.IsNormal() && p.SignBit() ? min_d
                 : !ex.IsNormal() && !p.SignBit() ? max_d
                 : System.Math.Pow(ex, 1.0 / p);
         }
-
 
         public static int[] BinaryAssociation(int[] vec1, int[] vec2)
         {
@@ -478,7 +472,7 @@ namespace Infovision.Math
             int a = 0; //0
             int b = 0; //1
             int c = 0; //2
-            int d = 0; //3            
+            int d = 0; //3
 
             for (int i = 0; i < vec1.Length; i++)
             {
@@ -505,7 +499,7 @@ namespace Infovision.Math
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="vec1"></param>
         /// <param name="vec2"></param>
@@ -516,7 +510,7 @@ namespace Infovision.Math
             double a = 0; //0
             double b = 0; //1
             double c = 0; //2
-            double d = 0; //3            
+            double d = 0; //3
 
             for (int i = 0; i < vec1.Length; i++)
             {

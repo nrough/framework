@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-
 using Infovision.Utils;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 
 namespace Infovision.Data
 {
@@ -16,7 +13,7 @@ namespace Infovision.Data
     public class DataStoreInfo : Infovision.Data.IObjectSetInfo
     {
         #region Members
-               
+
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;
         private int decisionFieldId;
@@ -25,13 +22,13 @@ namespace Infovision.Data
         private Dictionary<FieldTypes, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
 
-        #endregion
+        #endregion Members
 
         #region Properties
 
-        public int NumberOfRecords { get; set; }        
+        public int NumberOfRecords { get; set; }
         public int NumberOfFields { get; set; }
-        
+
         public int NumberOfDecisionValues
         {
             get { return this.GetFieldInfo(this.DecisionFieldId).InternalValues().Count; }
@@ -50,7 +47,7 @@ namespace Infovision.Data
         public int DecisionFieldId
         {
             get { return decisionFieldId; }
-            internal set 
+            internal set
             {
                 if (this.decisionFieldId != value)
                 {
@@ -59,7 +56,7 @@ namespace Infovision.Data
                         int prevDecisionFieldId = this.decisionFieldId;
                         fieldTypes[prevDecisionFieldId] = FieldTypes.Standard;
                     }
-                    
+
                     this.decisionFieldId = value;
 
                     if (this.decisionFieldId > 0)
@@ -86,7 +83,7 @@ namespace Infovision.Data
         public bool HasMissingData { get; set; }
         public string MissingValue { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Constructor
 
@@ -111,9 +108,9 @@ namespace Infovision.Data
                 fieldTypeCount.Add(ft, 0);
         }
 
-        #endregion        
+        #endregion Constructor
 
-        #region Methods        
+        #region Methods
 
         public ICollection<long> GetDecisionValues()
         {
@@ -121,7 +118,7 @@ namespace Infovision.Data
         }
 
         public int[] GetFieldIds_OLD(FieldTypes fieldTypeFlags)
-        {            
+        {
             int[] fieldIds = new int[this.GetNumberOfFields(fieldTypeFlags)];
             int i = 0;
             foreach (DataFieldInfo field in this.Fields)
@@ -144,8 +141,8 @@ namespace Infovision.Data
         public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags = FieldTypes.All)
         {
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
-                return this.Fields.Select(f => f.Id);                       
-                        
+                return this.Fields.Select(f => f.Id);
+
             return this.Fields
                 .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
                 .Select(f => f.Id);
@@ -155,7 +152,7 @@ namespace Infovision.Data
         {
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
                 return this.Fields;
-            return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
+            return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));
         }
 
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)
@@ -170,14 +167,14 @@ namespace Infovision.Data
             int numberOfFields = this.NumberOfFields;
             int numberOfNotIncludedFields = 0;
 
-            foreach(FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
             {
-                if(!fieldTypeFlags.HasFlag(ft))
+                if (!fieldTypeFlags.HasFlag(ft))
                 {
                     numberOfNotIncludedFields += this.fieldTypeCount[ft];
                 }
             }
-             
+
             return numberOfFields - numberOfNotIncludedFields;
         }
 
@@ -191,7 +188,7 @@ namespace Infovision.Data
             this.fieldTypeCount[fieldType]++;
 
             if (fieldType == FieldTypes.Decision)
-            {                
+            {
                 this.DecisionFieldId = fieldInfo.Id;
             }
 
@@ -228,7 +225,7 @@ namespace Infovision.Data
         }
 
         public DataFieldInfo GetFieldInfo(int fieldId)
-        {            
+        {
             return fields[fieldId];
         }
 
@@ -249,7 +246,7 @@ namespace Infovision.Data
                 minFieldId = fieldId;
             if (fieldId > maxFieldId)
                 maxFieldId = fieldId;
-        }        
+        }
 
         public int NumberOfObjectsWithDecision(long decisionValue)
         {
@@ -301,7 +298,7 @@ namespace Infovision.Data
         public void InitFromDataStoreInfo(DataStoreInfo dataStoreInfo, bool initValues, bool initMissingValues)
         {
             this.NumberOfRecords = 0;
-            
+
             this.decisionFieldId = dataStoreInfo.DecisionFieldId;
             this.NumberOfFields = dataStoreInfo.NumberOfFields;
 
@@ -320,7 +317,7 @@ namespace Infovision.Data
             }
 
             if (initMissingValues)
-                this.HasMissingData = dataStoreInfo.HasMissingData;            
+                this.HasMissingData = dataStoreInfo.HasMissingData;
         }
 
         public void CreateWeightHistogram(DataStore data, decimal[] weights, int fieldId)
@@ -344,7 +341,7 @@ namespace Infovision.Data
                 FieldTypes oldFieldType = this.fieldTypes[fieldId];
                 this.fieldTypes[fieldId] = fieldType;
                 this.fieldTypeCount[oldFieldType]--;
-                
+
                 int count = 0;
                 if (this.fieldTypeCount.TryGetValue(fieldType, out count))
                     this.fieldTypeCount[fieldType] = count + 1;
@@ -353,7 +350,6 @@ namespace Infovision.Data
             }
         }
 
-        #endregion
-
+        #endregion Methods
     }
 }

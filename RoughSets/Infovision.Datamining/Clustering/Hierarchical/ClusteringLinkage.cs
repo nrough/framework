@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Math;
 
 namespace Infovision.Datamining.Clustering.Hierarchical
@@ -47,11 +43,11 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             double sum = 0.0;
             int n = cluster1.Length * cluster2.Length;
 
-            foreach (int a in cluster1)            
-                foreach (int b in cluster2)                
-                    sum += distanceMatrix.GetDistance(a, b);                                    
-           
-            return n != 0 ? sum / (double) n : double.MaxValue;            
+            foreach (int a in cluster1)
+                foreach (int b in cluster2)
+                    sum += distanceMatrix.GetDistance(a, b);
+
+            return n != 0 ? sum / (double)n : double.MaxValue;
         }
 
         //aka Group average
@@ -67,13 +63,13 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     sum += distanceMatrix.GetDistance(merge[i], merge[j]);
 
             int n = merge.Length;
-            return n > 1 ? sum / (double) (n * (n - 1.0) / 2.0) : double.MaxValue;
+            return n > 1 ? sum / (double)(n * (n - 1.0) / 2.0) : double.MaxValue;
         }
 
         /// <summary>
         ///     <para>finds the distance of the change in caused by merging the cluster.</para>
         ///     <para>The information of a cluster is calculated as the error sum of squares</para>
-        ///     <para>of the centroids of the cluster and its members.</para>        
+        ///     <para>of the centroids of the cluster and its members.</para>
         /// </summary>
         /// <param name="cluster1"></param>
         /// <param name="cluster2"></param>
@@ -81,7 +77,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// <param name="data"></param>
         /// <returns></returns>
         public static double Ward(int[] cluster1, int[] cluster2, DistanceMatrix distanceMatrix, double[][] data)
-        {            
+        {
             double ESS1 = ClusteringLinkage.CalcESS(cluster1, distanceMatrix, data);
             double ESS2 = ClusteringLinkage.CalcESS(cluster2, distanceMatrix, data);
 
@@ -90,9 +86,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             Array.Copy(cluster2, 0, merged, cluster1.Length, cluster2.Length);
 
             double ESS = ClusteringLinkage.CalcESS(merged, distanceMatrix, data);
-            
-            return (ESS * merged.Length) 
-                    - (ESS1 * cluster1.Length) 
+
+            return (ESS * merged.Length)
+                    - (ESS1 * cluster1.Length)
                     - (ESS2 * cluster2.Length);
         }
 
@@ -107,17 +103,17 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         {
             if (distanceMatrix.Distance == null)
                 throw new InvalidOperationException("Distance method is not set.");
-            
+
             double[] centroid = new double[data[0].Length];
-            for (int i = 0; i < cluster.Length; i++)            
-                for (int j = 0; j < data[i].Length; j++)                
+            for (int i = 0; i < cluster.Length; i++)
+                for (int j = 0; j < data[i].Length; j++)
                     centroid[j] += data[cluster[i]][j];
 
             for (int j = 0; j < data[0].Length; j++)
-                centroid[j] /= cluster.Length;            
-            
+                centroid[j] /= cluster.Length;
+
             double fESS = 0;
-            for (int i = 0; i < cluster.Length; i++)                            
+            for (int i = 0; i < cluster.Length; i++)
                 fESS += distanceMatrix.Distance(centroid, data[cluster[i]]);
             return fESS / cluster.Length;
         }
@@ -128,7 +124,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
             // finds the distance of the centroids of the clusters
             double[] centroid1 = new double[data[0].Length];
             for (int i = 0; i < cluster1.Length; i++)
-                for (int j = 0; j < data[cluster1[i]].Length; j++)                
+                for (int j = 0; j < data[cluster1[i]].Length; j++)
                     centroid1[j] += data[cluster1[i]][j];
 
             double[] centroid2 = new double[data[0].Length];
@@ -141,7 +137,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 centroid1[j] /= cluster1.Length;
                 centroid2[j] /= cluster2.Length;
             }
-            
+
             return distanceMatrix.Distance(centroid1, centroid2);
         }
 
@@ -151,15 +147,15 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             // calculate adjustment, which is the largest within cluster distance
             double maxDistance = 0;
-            for (int i = 0; i < cluster1.Length; i++)            
+            for (int i = 0; i < cluster1.Length; i++)
                 for (int j = i + 1; j < cluster1.Length; j++)
-                {                    
+                {
                     double distance = distanceMatrix.GetDistance(cluster1[i], cluster1[j]);
-                    if (maxDistance < distance)                    
-                        maxDistance = distance;                    
-                }            
+                    if (maxDistance < distance)
+                        maxDistance = distance;
+                }
 
-            for (int i = 0; i < cluster2.Length; i++)                    
+            for (int i = 0; i < cluster2.Length; i++)
                 for (int j = i + 1; j < cluster2.Length; j++)
                 {
                     double distance = distanceMatrix.GetDistance(cluster2[i], cluster2[j]);
@@ -168,10 +164,10 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                         maxDistance = distance;
                     }
                 }
-            
+
             result -= maxDistance;
 
             return result;
-        }                
+        }
     }
 }

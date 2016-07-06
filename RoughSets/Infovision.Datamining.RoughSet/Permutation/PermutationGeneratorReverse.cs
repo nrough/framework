@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Infovision.Data;
-
 
 namespace Infovision.Datamining.Roughset
 {
@@ -19,7 +18,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -41,6 +40,6 @@ namespace Infovision.Datamining.Roughset
             return new PermutationCollection(permutationList);
         }
 
-        #endregion
+        #endregion Methods
     }
 }

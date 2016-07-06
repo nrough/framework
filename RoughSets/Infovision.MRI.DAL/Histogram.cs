@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -10,14 +7,14 @@ namespace Infovision.MRI.DAL
         private int sliceFrom;
         private int sliceTo;
         private int bucketSize = 4;
-        
+
         public Histogram()
             : base()
         {
         }
 
         public IImage Image { get; set; }
-        
+
         public int SliceFrom
         {
             get { return this.sliceFrom; }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
@@ -18,13 +15,14 @@ namespace Infovision.Utils
                 T value = list[k];
                 list[k] = list[n];
                 list[n] = value;
-            }            
+            }
         }
     }
 
     public class ListComparer<T> : IEqualityComparer<List<T>>
     {
         private IEqualityComparer<T> valueComparer;
+
         public ListComparer(IEqualityComparer<T> valueComparer = null)
         {
             this.valueComparer = valueComparer ?? EqualityComparer<T>.Default;

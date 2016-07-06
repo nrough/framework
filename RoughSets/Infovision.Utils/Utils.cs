@@ -39,7 +39,7 @@ namespace Infovision.Utils
         public static T SetFlag<T>(this Enum value, T append)
         {
             Debug.Assert(false, " do not use the extension due to performance reason, use binary operation with the explanatory comment instead \n flags |= flag;// SetFlag");
-            
+
             Type type = value.GetType();
 
             //determine the values
@@ -73,7 +73,7 @@ namespace Infovision.Utils
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            // Not as good as the .NET 4 version of this function, 
+            // Not as good as the .NET 4 version of this function,
             // but should be good enough
             if (!Enum.IsDefined(variable.GetType(), key))
             {
@@ -86,8 +86,7 @@ namespace Infovision.Utils
             ulong num = Convert.ToUInt64(key);
             return ((Convert.ToUInt64(variable) & num) == num);
         }
-        */ 
-
+        */
 
         /// <summary>
         /// Removes an enumerated type and returns the new key
@@ -119,8 +118,9 @@ namespace Infovision.Utils
         //cover any lesser key
         private class _Value
         {
-            //cached comparisons for tye to use            
+            //cached comparisons for tye to use
             private static readonly Type _UInt32 = typeof(long);
+
             private static readonly Type _UInt64 = typeof(ulong);
 
             public readonly long? Signed;
@@ -152,7 +152,7 @@ namespace Infovision.Utils
             }
         }
     }
-    
+
     public static class InfovisionHelper
     {
         public static int NumberOfCores()
@@ -343,16 +343,16 @@ namespace Infovision.Utils
             return (x != 0) && ((x & (x - 1)) == 0);
         }
     }
-    
+
     public static class Extension
     {
         #region Methods
-        
+
         public static IList<T> Clone<T>
             (this IList<T> listToClone) where T : ICloneable
         {
             return listToClone.Select(item => (T)item.Clone()).ToList();
-        }        
+        }
 
         public static StringBuilder Digits(this StringBuilder builder, int number)
         {
@@ -430,7 +430,7 @@ namespace Infovision.Utils
             return builder;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public static class Qickselect
@@ -457,14 +457,14 @@ namespace Infovision.Utils
             }
         }
 
-        static int RandomizedPartition(int[] a, int p, int r)
+        private static int RandomizedPartition(int[] a, int p, int r)
         {
             int i = RandomSingleton.Random.Next(p, r + 1);
             Swap(ref a[r], ref a[i]);
             return Partition(a, p, r);
         }
 
-        static int Partition(int[] a, int p, int r)
+        private static int Partition(int[] a, int p, int r)
         {
             int x = a[r];
             int i = p - 1;
@@ -480,7 +480,7 @@ namespace Infovision.Utils
             return i + 1;
         }
 
-        static void Swap(ref int a, ref int b)
+        private static void Swap(ref int a, ref int b)
         {
             int temp = a;
             a = b;
@@ -490,14 +490,14 @@ namespace Infovision.Utils
 
     public static class BitArrayExtensions
     {
-        static FieldInfo _internalArrayGetter = GetInternalArrayGetter();
+        private static FieldInfo _internalArrayGetter = GetInternalArrayGetter();
 
-        static FieldInfo GetInternalArrayGetter()
+        private static FieldInfo GetInternalArrayGetter()
         {
             return typeof(BitArray).GetField("m_array", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        static int[] GetInternalArray(BitArray array)
+        private static int[] GetInternalArray(BitArray array)
         {
             return (int[])_internalArrayGetter.GetValue(array);
         }
@@ -532,10 +532,10 @@ namespace Infovision.Utils
         /// <summary>
         ///   Returns a subtable extracted from the current table.
         /// </summary>
-        /// 
+        ///
         /// <param name="source">The table to return the subtable from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// 
+        ///
         public static DataTable Subtable(this DataTable source, int[] indexes)
         {
             if (source == null)
@@ -550,6 +550,6 @@ namespace Infovision.Utils
                 destination.ImportRow(row);
             }
             return destination;
-        }            
+        }
     }
 }

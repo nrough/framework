@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+
 //using System.Windows.Media;
 //using System.Windows.Media.Imaging;
 using itk.simple;
@@ -76,8 +77,8 @@ namespace Infovision.MRI
 
             @switch[type]();
 
-            return maxPixelValue;    
-        }        
+            return maxPixelValue;
+        }
 
         public static double GetPixelAsDouble(itk.simple.Image image, VectorUInt32 position)
         {
@@ -96,27 +97,27 @@ namespace Infovision.MRI
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkUInt16.swigValue)
             {
-                return BitConverter.GetBytes((ushort) image.GetPixelAsUInt16(position));
+                return BitConverter.GetBytes((ushort)image.GetPixelAsUInt16(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkUInt32.swigValue)
             {
-                return BitConverter.GetBytes((uint) image.GetPixelAsUInt32(position));
+                return BitConverter.GetBytes((uint)image.GetPixelAsUInt32(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkInt8.swigValue)
             {
-                return BitConverter.GetBytes((sbyte) image.GetPixelAsInt8(position));
+                return BitConverter.GetBytes((sbyte)image.GetPixelAsInt8(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkInt32.swigValue)
             {
-                return BitConverter.GetBytes((int) image.GetPixelAsInt32(position));
+                return BitConverter.GetBytes((int)image.GetPixelAsInt32(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkFloat32.swigValue)
             {
-                return BitConverter.GetBytes((float) image.GetPixelAsFloat(position));
+                return BitConverter.GetBytes((float)image.GetPixelAsFloat(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkFloat64.swigValue)
             {
-                return BitConverter.GetBytes((double) image.GetPixelAsDouble(position));
+                return BitConverter.GetBytes((double)image.GetPixelAsDouble(position));
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkInt64.swigValue)
             {
@@ -131,22 +132,22 @@ namespace Infovision.MRI
             message.AppendFormat("Unhandled Pixel ID Value = {0}", image.GetPixelIDValue());
 
             throw new System.InvalidOperationException(message.ToString());
-        } 
+        }
 
         public static byte[] GetImageAsBytes(itk.simple.Image image)
         {
-            int width = (int) image.GetWidth();
-            int height = (int) image.GetHeight();
-            int depth = image.GetDepth() > 0 ? (int) image.GetDepth() : 1;
+            int width = (int)image.GetWidth();
+            int height = (int)image.GetHeight();
+            int depth = image.GetDepth() > 0 ? (int)image.GetDepth() : 1;
             int numberOfPixels = width * height * depth;
             int bytesPerPixel = SimpleITKHelper.PixelSize(image.GetPixelIDValue());
             int bufferLength = numberOfPixels * bytesPerPixel;
             byte[] result = new byte[bufferLength];
-            
+
             IntPtr bufferPtr;
             if (image.GetPixelIDValue() == PixelIDValueEnum.sitkUInt8.swigValue)
             {
-                bufferPtr = image.GetBufferAsUInt8();                
+                bufferPtr = image.GetBufferAsUInt8();
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkInt16.swigValue)
             {
@@ -170,7 +171,7 @@ namespace Infovision.MRI
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkFloat32.swigValue)
             {
-                bufferPtr = image.GetBufferAsFloat();                
+                bufferPtr = image.GetBufferAsFloat();
             }
             else if (image.GetPixelIDValue() == PixelIDValueEnum.sitkFloat64.swigValue)
             {
@@ -311,7 +312,7 @@ namespace Infovision.MRI
             {
                 range = new AForge.Range(0, int.MaxValue);
             }
-            
+
             return new AForge.Range(0, 255);
         }
 
@@ -359,7 +360,7 @@ namespace Infovision.MRI
 
             return bmpResult;
         }
-        */ 
+        */
 
         public static Bitmap ConvertToBitmap(itk.simple.Image image)
         {
@@ -378,8 +379,7 @@ namespace Infovision.MRI
             Bitmap result = ImageHelper.Convert(pixelBytes, width, height, 12);
 
             return result;
-
-        }        
+        }
 
         public static Bitmap ConvertToBitmap(itk.simple.Image image, int sliceIdx)
         {
@@ -509,43 +509,42 @@ namespace Infovision.MRI
             int width = (int)image.GetWidth();
             int height = (int)image.GetHeight();
             int depth = (int)image.GetDepth();
-            
+
             VectorDouble direction = image.GetDirection();
             VectorDouble spacing = image.GetSpacing();
             VectorDouble origin = image.GetOrigin();
             uint dimension = image.GetDimension();
-            
 
             byte[] pixelBytes = SimpleITKHelper.GetImageAsBytes(image);
             int bits = SimpleITKHelper.PixelSize(image.GetPixelIDValue()) * 8;
 
             System.IO.File.WriteAllBytes(fileName, pixelBytes);
         }
-        
-        public static itk.simple.Image ReadImageRAW(string fileName, 
-                                                    uint width, 
-                                                    uint height, 
-                                                    uint depth, 
+
+        public static itk.simple.Image ReadImageRAW(string fileName,
+                                                    uint width,
+                                                    uint height,
+                                                    uint depth,
                                                     PixelIDValueEnum pixelIDValue,
                                                     Endianness endianness = Endianness.LittleEndian,
                                                     uint header = 0)
         {
             byte[] imageData = System.IO.File.ReadAllBytes(fileName);
-            
+
             int numberOfPixels = depth > 0
                 ? (int)width * (int)height * (int)depth
                 : (int)width * (int)height;
-            
+
             int pixelSize = SimpleITKHelper.PixelSize(pixelIDValue.swigValue);
 
             if (endianness == Endianness.BigEndian && pixelSize > 1)
             {
-                for(int i = (int)header; i<imageData.Length; i += pixelSize)
+                for (int i = (int)header; i < imageData.Length; i += pixelSize)
                 {
                     Array.Reverse(imageData, i, pixelSize);
                 }
             }
-            
+
             IntPtr imageDataPtr;
             if (pixelIDValue == PixelIDValueEnum.sitkUInt8)
             {
@@ -584,17 +583,16 @@ namespace Infovision.MRI
                 throw new NotImplementedException();
             }
 
-
             ImportImageFilter importImageFilter = new ImportImageFilter();
             importImageFilter.SetSize(new VectorUInt32(new uint[] { width, height, depth }));
 
             VectorDouble direction = (depth > 0)
-                
-                ? new VectorDouble(new double[] {1, 0, 0, 
-                                                 0, 1, 0, 
+
+                ? new VectorDouble(new double[] {1, 0, 0,
+                                                 0, 1, 0,
                                                  0, 0, 1})
 
-                : new VectorDouble(new double[] {1, 0, 
+                : new VectorDouble(new double[] {1, 0,
                                                  0, 1});
 
             importImageFilter.SetDirection(direction);
@@ -658,24 +656,33 @@ namespace Infovision.MRI
         {
             switch (pixelType)
             {
-                case PixelType.Int8 :
+                case PixelType.Int8:
                     return itk.simple.PixelIDValueEnum.sitkInt8;
+
                 case PixelType.Int16:
                     return itk.simple.PixelIDValueEnum.sitkInt16;
+
                 case PixelType.Int32:
                     return itk.simple.PixelIDValueEnum.sitkInt32;
+
                 case PixelType.Int64:
                     return itk.simple.PixelIDValueEnum.sitkInt64;
+
                 case PixelType.UInt8:
                     return itk.simple.PixelIDValueEnum.sitkUInt8;
+
                 case PixelType.UInt16:
                     return itk.simple.PixelIDValueEnum.sitkUInt16;
+
                 case PixelType.UInt32:
                     return itk.simple.PixelIDValueEnum.sitkUInt32;
+
                 case PixelType.UInt64:
                     return itk.simple.PixelIDValueEnum.sitkUInt64;
+
                 case PixelType.Float:
                     return itk.simple.PixelIDValueEnum.sitkFloat32;
+
                 case PixelType.Double:
                     return itk.simple.PixelIDValueEnum.sitkFloat64;
 
@@ -690,22 +697,31 @@ namespace Infovision.MRI
             {
                 case PixelType.Int8:
                     return typeof(short);
+
                 case PixelType.Int16:
                     return typeof(Int16);
+
                 case PixelType.Int32:
                     return typeof(Int32);
+
                 case PixelType.Int64:
                     return typeof(Int64);
+
                 case PixelType.UInt8:
                     return typeof(ushort);
+
                 case PixelType.UInt16:
                     return typeof(UInt16);
+
                 case PixelType.UInt32:
                     return typeof(UInt32);
+
                 case PixelType.UInt64:
                     return typeof(UInt64);
+
                 case PixelType.Float:
                     return typeof(float);
+
                 case PixelType.Double:
                     return typeof(double);
 
@@ -716,7 +732,7 @@ namespace Infovision.MRI
 
         public static PixelType ItkPixelIDValue2PixelType(int pixelIdValue)
         {
-            if(pixelIdValue == itk.simple.PixelIDValueEnum.sitkInt8.swigValue) return PixelType.Int8;
+            if (pixelIdValue == itk.simple.PixelIDValueEnum.sitkInt8.swigValue) return PixelType.Int8;
             else if (pixelIdValue == itk.simple.PixelIDValueEnum.sitkInt16.swigValue) return PixelType.Int16;
             else if (pixelIdValue == itk.simple.PixelIDValueEnum.sitkInt32.swigValue) return PixelType.Int32;
             else if (pixelIdValue == itk.simple.PixelIDValueEnum.sitkUInt8.swigValue) return PixelType.UInt8;
@@ -795,11 +811,11 @@ namespace Infovision.MRI
 
             VectorDouble direction = (depth > 0)
 
-                ? new VectorDouble(new double[] {1, 0, 0, 
-                                                 0, 1, 0, 
+                ? new VectorDouble(new double[] {1, 0, 0,
+                                                 0, 1, 0,
                                                  0, 0, 1})
 
-                : new VectorDouble(new double[] {1, 0, 
+                : new VectorDouble(new double[] {1, 0,
                                                  0, 1});
 
             itkImage.SetDirection(direction);
@@ -817,6 +833,6 @@ namespace Infovision.MRI
             itkImage.SetSpacing(spacing);
 
             return itkImage;
-        }        
+        }
     }
 }

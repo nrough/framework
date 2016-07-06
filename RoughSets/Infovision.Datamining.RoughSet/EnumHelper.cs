@@ -15,43 +15,52 @@ namespace Infovision.Datamining.Roughset
 
             switch (voteType)
             {
-                case VoteType.Support: 
-                    result = RuleVoteConseqentRating.Confidence; 
+                case VoteType.Support:
+                    result = RuleVoteConseqentRating.Confidence;
                     break;
-                case VoteType.Confidence: 
-                    result = RuleVoteConseqentRating.Confidence; 
+
+                case VoteType.Confidence:
+                    result = RuleVoteConseqentRating.Confidence;
                     break;
-                case VoteType.Coverage: 
-                    result = RuleVoteConseqentRating.Coverage; 
+
+                case VoteType.Coverage:
+                    result = RuleVoteConseqentRating.Coverage;
                     break;
-                case VoteType.Ratio: 
-                    result = RuleVoteConseqentRating.Coverage; 
+
+                case VoteType.Ratio:
+                    result = RuleVoteConseqentRating.Coverage;
                     break;
-                case VoteType.MajorDecision: 
-                    result = RuleVoteConseqentRating.Plain; 
+
+                case VoteType.MajorDecision:
+                    result = RuleVoteConseqentRating.Plain;
                     break;
-                case VoteType.Strength: 
-                    result = RuleVoteConseqentRating.Plain; 
+
+                case VoteType.Strength:
+                    result = RuleVoteConseqentRating.Plain;
                     break;
-                
-                case VoteType.WeightSupport: 
-                    result = RuleVoteConseqentRating.Confidence; 
+
+                case VoteType.WeightSupport:
+                    result = RuleVoteConseqentRating.Confidence;
                     break;
-                case VoteType.WeightConfidence: 
-                    result = RuleVoteConseqentRating.Confidence; 
+
+                case VoteType.WeightConfidence:
+                    result = RuleVoteConseqentRating.Confidence;
                     break;
+
                 case VoteType.WeightCoverage:
                     result = RuleVoteConseqentRating.Confidence;
                     break;
-                case VoteType.WeightRatio: 
-                    result = RuleVoteConseqentRating.Coverage; 
+
+                case VoteType.WeightRatio:
+                    result = RuleVoteConseqentRating.Coverage;
                     break;
-                case VoteType.WeightStrength: 
-                    result = RuleVoteConseqentRating.Coverage; 
+
+                case VoteType.WeightStrength:
+                    result = RuleVoteConseqentRating.Coverage;
                     break;
-                
-                case VoteType.ConfidenceRelative: 
-                    result = RuleVoteConseqentRating.Plain; 
+
+                case VoteType.ConfidenceRelative:
+                    result = RuleVoteConseqentRating.Plain;
                     break;
 
                 default:
@@ -70,45 +79,54 @@ namespace Infovision.Datamining.Roughset
         {
             RuleVoteAntecedentRating result = RuleVoteAntecedentRating.Unknown;
 
-            switch(voteType)
+            switch (voteType)
             {
-                case VoteType.Support: 
-                    result = RuleVoteAntecedentRating.Support; 
-                    break;
-                case VoteType.Confidence: 
-                    result = RuleVoteAntecedentRating.Single; 
-                    break;
-                case VoteType.Coverage: 
-                    result = RuleVoteAntecedentRating.Support; 
-                    break;
-                case VoteType.Ratio: 
-                    result = RuleVoteAntecedentRating.Single; 
-                    break;
-                case VoteType.MajorDecision: 
-                    result = RuleVoteAntecedentRating.Single; 
-                    break;
-                case VoteType.Strength: 
-                    result = RuleVoteAntecedentRating.Support; 
+                case VoteType.Support:
+                    result = RuleVoteAntecedentRating.Support;
                     break;
 
-                case VoteType.WeightSupport: 
-                    result = RuleVoteAntecedentRating.Support; 
+                case VoteType.Confidence:
+                    result = RuleVoteAntecedentRating.Single;
                     break;
-                case VoteType.WeightConfidence: 
-                    result = RuleVoteAntecedentRating.Single; 
+
+                case VoteType.Coverage:
+                    result = RuleVoteAntecedentRating.Support;
                     break;
+
+                case VoteType.Ratio:
+                    result = RuleVoteAntecedentRating.Single;
+                    break;
+
+                case VoteType.MajorDecision:
+                    result = RuleVoteAntecedentRating.Single;
+                    break;
+
+                case VoteType.Strength:
+                    result = RuleVoteAntecedentRating.Support;
+                    break;
+
+                case VoteType.WeightSupport:
+                    result = RuleVoteAntecedentRating.Support;
+                    break;
+
+                case VoteType.WeightConfidence:
+                    result = RuleVoteAntecedentRating.Single;
+                    break;
+
                 case VoteType.WeightCoverage:
                     result = RuleVoteAntecedentRating.Support;
                     break;
-                case VoteType.WeightRatio: 
-                    result = RuleVoteAntecedentRating.Single; 
-                    break;
-                case VoteType.WeightStrength: 
-                    result = RuleVoteAntecedentRating.Support; 
+
+                case VoteType.WeightRatio:
+                    result = RuleVoteAntecedentRating.Single;
                     break;
 
-                case VoteType.ConfidenceRelative: 
-                    result = RuleVoteAntecedentRating.Single; 
+                case VoteType.WeightStrength:
+                    result = RuleVoteAntecedentRating.Support;
+                    break;
+
+                case VoteType.ConfidenceRelative:
+                    result = RuleVoteAntecedentRating.Single;
                     break;
 
                 default:
@@ -135,8 +153,9 @@ namespace Infovision.Datamining.Roughset
                     switch (antecedentRating)
                     {
                         case RuleVoteAntecedentRating.Support:
-                            result = isWeighting ? VoteType.WeightSupport : VoteType.Support; 
+                            result = isWeighting ? VoteType.WeightSupport : VoteType.Support;
                             break;
+
                         case RuleVoteAntecedentRating.Single:
                             result = isWeighting ? VoteType.WeightConfidence : VoteType.Confidence;
                             break;
@@ -147,8 +166,9 @@ namespace Infovision.Datamining.Roughset
                     switch (antecedentRating)
                     {
                         case RuleVoteAntecedentRating.Support:
-                            result = isWeighting ? VoteType.WeightCoverage : VoteType.Coverage; 
+                            result = isWeighting ? VoteType.WeightCoverage : VoteType.Coverage;
                             break;
+
                         case RuleVoteAntecedentRating.Single:
                             result = isWeighting ? VoteType.WeightRatio : VoteType.Ratio;
                             break;
@@ -159,8 +179,9 @@ namespace Infovision.Datamining.Roughset
                     switch (antecedentRating)
                     {
                         case RuleVoteAntecedentRating.Support:
-                            result = isWeighting ? VoteType.WeightStrength : VoteType.Strength; 
+                            result = isWeighting ? VoteType.WeightStrength : VoteType.Strength;
                             break;
+
                         case RuleVoteAntecedentRating.Single:
                             result = VoteType.MajorDecision;
                             break;
@@ -181,14 +202,16 @@ namespace Infovision.Datamining.Roughset
         {
             IdentificationType result = IdentificationType.Unknown;
 
-            switch(decisionIdentificationType)
+            switch (decisionIdentificationType)
             {
                 case DecisionIdentificationType.Confidence:
                     result = isWeighting ? IdentificationType.WeightConfidence : IdentificationType.Confidence;
                     break;
+
                 case DecisionIdentificationType.Coverage:
                     result = isWeighting ? IdentificationType.WeightCoverage : IdentificationType.Coverage;
                     break;
+
                 case DecisionIdentificationType.Support:
                     result = isWeighting ? IdentificationType.WeightSupport : IdentificationType.Support;
                     break;
@@ -208,7 +231,7 @@ namespace Infovision.Datamining.Roughset
 
             switch (identificationType)
             {
-                case IdentificationType.Confidence :
+                case IdentificationType.Confidence:
                     result = DecisionIdentificationType.Confidence;
                     break;
 

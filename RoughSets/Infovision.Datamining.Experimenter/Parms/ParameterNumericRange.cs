@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
 {
@@ -20,14 +16,14 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         private T currentValue;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
         public ParameterNumericRange(string name, T lowerBound, T upperBound, T step)
         {
             Type type = typeof(T);
-            if( ! ( type == typeof(int)
+            if (!(type == typeof(int)
                     || type == typeof(short)
                     || type == typeof(byte)
                     || type == typeof(long)
@@ -66,7 +62,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -88,14 +84,14 @@ namespace Infovision.Datamining.Experimenter.Parms
         public override object Current
         {
             get
-            {                
+            {
                 return currentValue;
             }
         }
-        
-        #endregion
 
-        #region Methods        
+        #endregion Properties
+
+        #region Methods
 
         private void ResetCurrent()
         {
@@ -120,7 +116,6 @@ namespace Infovision.Datamining.Experimenter.Parms
             if (val.ToDouble(NumberFormatInfo.CurrentInfo).CompareTo(this.UpperBound.ToDouble(NumberFormatInfo.CurrentInfo)) <= 0
                     && val.ToDouble(NumberFormatInfo.CurrentInfo).CompareTo(this.LowerBound.ToDouble(NumberFormatInfo.CurrentInfo)) >= 0)
             {
-                
                 return true;
             }
 
@@ -133,7 +128,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return (IEnumerator)this;
         }
-        #endregion
+
+        #endregion IEnumerable Members
 
         #region IEnumerator Members
 
@@ -181,7 +177,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return true;
         }
 
-        #endregion
+        #endregion IEnumerator Members
 
         #region ICloneable Members
 
@@ -189,9 +185,9 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return new ParameterNumericRange<T>(this);
         }
-        #endregion
 
-        
+        #endregion ICloneable Members
+
         #region ICollection Members
 
         public virtual int Count
@@ -219,8 +215,8 @@ namespace Infovision.Datamining.Experimenter.Parms
             valueArray.CopyTo(array, index);
         }
 
-        #endregion       
+        #endregion ICollection Members
 
-        #endregion
+        #endregion Methods
     }
 }

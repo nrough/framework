@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.fieldSelectionRatio; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -95,7 +95,7 @@ namespace Infovision.Datamining.Roughset
 
                 localElements[j] = element;
             }
-            
+
             Permutation permutation = new Permutation(localElements);
             return permutation;
         }
@@ -135,12 +135,12 @@ namespace Infovision.Datamining.Roughset
             if (numberOfObjects <= 0)
                 throw new System.ArgumentOutOfRangeException("numberOfObjects", "Should be greater than zero");
 
-            if(numberOfFields < numberOfObjects)
+            if (numberOfFields < numberOfObjects)
                 return 2 * fieldSelectionRatio * ((decimal)numberOfFields / ((decimal)numberOfFields + (decimal)numberOfObjects));
 
             return fieldSelectionRatio * ((decimal)numberOfObjects / ((decimal)numberOfFields + (decimal)numberOfObjects));
         }
 
-        #endregion
+        #endregion Methods
     }
 }

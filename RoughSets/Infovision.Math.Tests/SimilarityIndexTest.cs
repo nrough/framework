@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using NUnit;
 using NUnit.Framework;
 
 namespace Infovision.Math.Tests
 {
     [TestFixture]
-    class SimilarityTest
-    {                                                
-        private double[][] vectors = new double[][] { 
+    internal class SimilarityTest
+    {
+        private double[][] vectors = new double[][] {
             new double[] { 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 0.33, 0.33, 0.33, 0.33 },
             new double[] { 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.33 },
             new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -26,7 +23,6 @@ namespace Infovision.Math.Tests
         [TestCase(0, 0, 0.3, 0.7)]
         [TestCase(0, 0, 0.7, 0.3)]
         [TestCase(0, 0, 0.0, 0.0)]
-
         [TestCase(1, 0, 1.0, 1.0)]
         [TestCase(1, 0, 1.0, 0.0)]
         [TestCase(1, 0, 0.0, 1.0)]
@@ -34,7 +30,6 @@ namespace Infovision.Math.Tests
         [TestCase(1, 0, 0.3, 0.7)]
         [TestCase(1, 0, 0.7, 0.3)]
         [TestCase(1, 0, 0.0, 0.0)]
-
         [TestCase(0, 1, 1.0, 1.0)]
         [TestCase(0, 1, 1.0, 0.0)]
         [TestCase(0, 1, 0.0, 1.0)]
@@ -42,7 +37,6 @@ namespace Infovision.Math.Tests
         [TestCase(0, 1, 0.3, 0.7)]
         [TestCase(0, 1, 0.7, 0.3)]
         [TestCase(0, 1, 0.0, 0.0)]
-
         [TestCase(2, 3, 1.0, 1.0)]
         [TestCase(2, 3, 1.0, 0.0)]
         [TestCase(2, 3, 0.0, 1.0)]
@@ -50,7 +44,6 @@ namespace Infovision.Math.Tests
         [TestCase(2, 3, 0.3, 0.7)]
         [TestCase(2, 3, 0.7, 0.3)]
         [TestCase(2, 3, 0.0, 0.0)]
-
         [TestCase(3, 2, 1.0, 1.0)]
         [TestCase(3, 2, 1.0, 0.0)]
         [TestCase(3, 2, 0.0, 1.0)]
@@ -58,7 +51,6 @@ namespace Infovision.Math.Tests
         [TestCase(3, 2, 0.3, 0.7)]
         [TestCase(3, 2, 0.7, 0.3)]
         [TestCase(3, 2, 0.0, 0.0)]
-
         [TestCase(2, 2, 1.0, 1.0)]
         [TestCase(2, 2, 1.0, 0.0)]
         [TestCase(2, 2, 0.0, 1.0)]
@@ -66,7 +58,6 @@ namespace Infovision.Math.Tests
         [TestCase(2, 2, 0.3, 0.7)]
         [TestCase(2, 2, 0.7, 0.3)]
         [TestCase(2, 2, 0.0, 0.0)]
-
         [TestCase(3, 3, 1.0, 1.0)]
         [TestCase(3, 3, 1.0, 0.0)]
         [TestCase(3, 3, 0.0, 1.0)]
@@ -120,11 +111,12 @@ namespace Infovision.Math.Tests
             //Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
-        
+
         private class DistanceFunctionResult
         {
             public double Distance { get; set; }
             public string Description { get; set; }
+
             public override string ToString()
             {
                 return this.Description;
@@ -151,7 +143,7 @@ namespace Infovision.Math.Tests
         /// <returns></returns>
         private static double[][] GetBinaryVectors()
         {
-            double[][] result = new double[32][];            
+            double[][] result = new double[32][];
             for (int i = 0; i < 32; i++)
             {
                 result[i] = new double[5];
@@ -174,12 +166,11 @@ namespace Infovision.Math.Tests
                 w[i] = 1.0;
             return w;
         }
-        
+
         public static IEnumerable<Func<double[], double[], double[], double>> GetSimilarityWeightedFunctions()
         {
-                        
             List<Func<double[], double[], double[], double>> list = new List<Func<double[], double[], double[], double>>();
-            
+
             list.Add(Similarity.CosineB);
             list.Add(Similarity.DiceB);
             list.Add(Similarity.EuclideanB);
@@ -202,18 +193,18 @@ namespace Infovision.Math.Tests
             //TODO Minkowski
 
             return list;
-        }       
+        }
 
         [Test, TestCaseSource("GetSimilarityWeightedFunctions")]
         public void WeightedFunctionsTest(Func<double[], double[], double[], double> distance)
-        {                        
+        {
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
             double[][] v = SimilarityTest.GetBinaryVectors();
             double[] w = SimilarityTest.GetWeights();
 
             List<DistanceFunctionResult> testResults = new List<DistanceFunctionResult>();
 
-            CalcDistanceWeighted("(0, 0)", distance, v[0], v[0], w, testResults);//1 
+            CalcDistanceWeighted("(0, 0)", distance, v[0], v[0], w, testResults);//1
             CalcDistanceWeighted("(0, 31)", distance, v[0], v[31], w, testResults);//2
             CalcDistanceWeighted("(7, 0)", distance, v[7], v[0], w, testResults);//3
             //CalcDistanceWeighted("(7, 1)", distance, v[7], v[1], w, testResults);//4
@@ -255,11 +246,10 @@ namespace Infovision.Math.Tests
             testResults.Sort(new DistanceFunctionResultComparer());
             //foreach (DistanceFunctionResult result in testResults)
             //    Console.WriteLine(result);
-                     
         }
 
         private double CalcDistanceWeighted(string id, Func<double[], double[], double[], double> distance, double[] v1, double[] v2, double[] w, List<DistanceFunctionResult> resultList)
-        {            
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0} ", id);
             sb.Append("d([");
@@ -312,7 +302,7 @@ namespace Infovision.Math.Tests
 
             List<DistanceFunctionResult> testResults = new List<DistanceFunctionResult>(41);
 
-            CalcDistanceNotWeighted("(0, 0)", distance, v[0], v[0], testResults);//1 
+            CalcDistanceNotWeighted("(0, 0)", distance, v[0], v[0], testResults);//1
             CalcDistanceNotWeighted("(0, 31)", distance, v[0], v[31], testResults);//2
             CalcDistanceNotWeighted("(7, 0)", distance, v[7], v[0], testResults);//3
             //CalcDistanceNotWeighted("(7, 1)", distance, v[7], v[1], testResults);//4
@@ -349,7 +339,7 @@ namespace Infovision.Math.Tests
             //CalcDistanceNotWeighted("(7, 29)", distance, v[7], v[29], testResults);//32
             //CalcDistanceNotWeighted("(7, 30)", distance, v[7], v[30], testResults);//33
             CalcDistanceNotWeighted("(7, 31)", distance, v[7], v[31], testResults);//34
-            CalcDistanceNotWeighted("(31, 31)", distance, v[31], v[31], testResults);//35 
+            CalcDistanceNotWeighted("(31, 31)", distance, v[31], v[31], testResults);//35
 
             testResults.Sort(new DistanceFunctionResultComparer());
             //foreach (DistanceFunctionResult result in testResults)
@@ -357,20 +347,20 @@ namespace Infovision.Math.Tests
         }
 
         private double CalcDistanceNotWeighted(string id, Func<double[], double[], double> distance, double[] v1, double[] v2, List<DistanceFunctionResult> resultList)
-        {                        
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("{0} ", id);
             sb.Append("d([");
             for (int i = 0; i < v1.Length; i++)
             {
                 sb.Append(v1[i]);
-                if(i != v1.Length - 1) sb.Append(' ');
+                if (i != v1.Length - 1) sb.Append(' ');
             }
             sb.Append("], [");
             for (int i = 0; i < v2.Length; i++)
-            { 
+            {
                 sb.Append(v2[i]);
-                if(i != v2.Length - 1) sb.Append(' ');
+                if (i != v2.Length - 1) sb.Append(' ');
             }
             double d = distance.Invoke(v1, v2);
             sb.Append("]) = ");
@@ -384,6 +374,6 @@ namespace Infovision.Math.Tests
             });
 
             return d;
-        }        
+        }
     }
 }

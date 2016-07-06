@@ -23,16 +23,16 @@ namespace Infovision.Datamining.Roughset
         public decimal Weight { get; set; }
         public bool AllowDuplicates { get; set; }
         public bool IsActive { get; set; }
-        
-        #endregion
 
-        #region Constructors        
+        #endregion Properties
+
+        #region Constructors
 
         public ReductStoreBase()
         {
             this.Weight = Decimal.One;
             this.IsActive = true;
-        }        
+        }
 
         protected ReductStoreBase(ReductStoreBase reductStore)
         {
@@ -40,19 +40,28 @@ namespace Infovision.Datamining.Roughset
             this.IsActive = true;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         public abstract IEnumerator<IReduct> GetEnumerator();
-        public abstract void AddReduct(IReduct reduct);        
+
+        public abstract void AddReduct(IReduct reduct);
+
         public abstract IReduct GetReduct(int index);
+
         public abstract bool IsSuperSet(IReduct reduct);
+
         public abstract IReductStore FilterReducts(int numberOfReducts, IComparer<IReduct> comparer);
+
         public abstract double GetAvgMeasure(IReductMeasure reductMeasure);
+
         public abstract double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceltions);
+
         public abstract void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
+
         public abstract void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
+
         public abstract bool Exist(IReduct reduct);
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -66,10 +75,11 @@ namespace Infovision.Datamining.Roughset
         {
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < this.Count; i++)
-                stringBuilder.Append(String.Format("{0}: ", i)).Append(this.GetReduct(i).ToString()).Append(Environment.NewLine);                               
+                stringBuilder.Append(String.Format("{0}: ", i)).Append(this.GetReduct(i).ToString()).Append(Environment.NewLine);
             return stringBuilder.ToString();
         }
-        #endregion        
+
+        #endregion System.Object Methods
 
         public void Save(string fileName)
         {
@@ -94,26 +104,26 @@ namespace Infovision.Datamining.Roughset
             return xmlDoc;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     [Serializable]
     public class ReductStore : ReductStoreBase
-    {                
+    {
         #region Members
 
         private List<IReduct> reducts;
 
-        #endregion
+        #endregion Members
 
         #region Properties
 
         public override int Count
         {
             get { return reducts.Count; }
-        }                
+        }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
@@ -137,13 +147,13 @@ namespace Infovision.Datamining.Roughset
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
                 this.DoAddReduct(reductClone);
-            }            
+            }
         }
 
-        #endregion        
+        #endregion Constructors
 
         #region Methods
-       
+
         /// <summary>
         /// Checks if passed-in reduct is a superset of reducts already existing in the store
         /// </summary>
@@ -164,7 +174,7 @@ namespace Infovision.Datamining.Roughset
                             break;
                         }
                     }
-                }                   
+                }
             }
             return ret;
         }
@@ -176,14 +186,14 @@ namespace Infovision.Datamining.Roughset
                 return this.reducts.ToList().AsReadOnly();
             }
         }
-        
+
         public virtual ReductStore RemoveDuplicates()
         {
             ReductStore copy = new ReductStore(this);
             copy.reducts.Sort(new ReductNumericalEpsilonComparer());
 
             ReductStore result = new ReductStore();
-            IReduct last = null;            
+            IReduct last = null;
             foreach (IReduct reduct in copy)
             {
                 if (reduct.CompareTo(last) != 0)
@@ -207,7 +217,7 @@ namespace Infovision.Datamining.Roughset
             {
                 this.DoAddReduct(reduct);
             }
-            
+
             lock (mutex)
             {
                 if (this.CanAddReduct(reduct))
@@ -223,7 +233,7 @@ namespace Infovision.Datamining.Roughset
             {
                 return true;
             }
-            
+
             lock (mutex)
             {
                 foreach (IReduct localReduct in reducts)
@@ -237,7 +247,7 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
             }
-                        
+
             return true;
         }
 
@@ -263,7 +273,7 @@ namespace Infovision.Datamining.Roughset
 
             ReductStore result = new ReductStore(System.Math.Min(numberOfReducts, reducts.Count));
             int i = 0;
-            
+
             foreach (IReduct reduct in reducts)
             {
                 IReduct reductClone = (IReduct)reduct.Clone();
@@ -278,7 +288,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override double GetAvgMeasure(IReductMeasure reductMeasure)
-        {            
+        {
             if (reductMeasure == null)
                 return 0;
 
@@ -302,11 +312,11 @@ namespace Infovision.Datamining.Roughset
             int count = 0;
 
             lock (mutex)
-            {                                
+            {
                 foreach (IReduct reduct in this)
                 {
-                    int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated 
-                        ? reduct.EquivalenceClasses.CountSupportedObjects() 
+                    int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated
+                        ? reduct.EquivalenceClasses.CountSupportedObjects()
                         : reduct.ObjectSetInfo.NumberOfRecords;
 
                     if (reduct.IsException && isGap == false)
@@ -336,7 +346,7 @@ namespace Infovision.Datamining.Roughset
             foreach (IReduct reduct in reducts)
                 values[i++] = (double)reductMeasure.Calc(reduct);
             mean = Tools.Mean(values);
-            stdDev = Tools.StdDev(values, mean);            
+            stdDev = Tools.StdDev(values, mean);
         }
 
         public override void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev)
@@ -351,13 +361,13 @@ namespace Infovision.Datamining.Roughset
             aveDev = Tools.AveDev(values, mean);
         }
 
-        
         public override bool Exist(IReduct reduct)
         {
             return reducts.Exists(r => r.Equals(reduct));
         }
 
         #region IEnumerable Members
+
         /// <summary>
         /// Returns an IEnumerator to enumerate through the reduct store.
         /// </summary>
@@ -367,12 +377,12 @@ namespace Infovision.Datamining.Roughset
             return this.GetReducts().GetEnumerator(); // return reducts.GetEnumerator();
         }
 
-        #endregion        
+        #endregion IEnumerable Members
 
         public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < data.NumberOfRecords; i++ )
+            for (int i = 0; i < data.NumberOfRecords; i++)
             {
                 sb.Append(separator).Append(String.Format("o{0}", i + 1));
             }
@@ -417,7 +427,7 @@ namespace Infovision.Datamining.Roughset
             }
             File.WriteAllText(filePath, sb.ToString());
         }
-        
-        #endregion
+
+        #endregion Methods
     }
 }

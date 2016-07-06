@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Infovision.Data.UnitTests
@@ -15,16 +12,16 @@ namespace Infovision.Data.UnitTests
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
-            Compare(data,FieldTypes.Standard);
-            Compare(data,FieldTypes.All);
-            Compare(data,FieldTypes.Decision);
-            Compare(data,FieldTypes.None);            
+            Compare(data, FieldTypes.Standard);
+            Compare(data, FieldTypes.All);
+            Compare(data, FieldTypes.Decision);
+            Compare(data, FieldTypes.None);
         }
 
         public void Compare(DataStore data, FieldTypes fieldType)
-        {            
+        {
             IEnumerable<int> fieldIds = data.DataStoreInfo.GetFieldIds(fieldType);
-            int[] fieldIdsOld = data.DataStoreInfo.GetFieldIds_OLD(fieldType);            
+            int[] fieldIdsOld = data.DataStoreInfo.GetFieldIds_OLD(fieldType);
             int count = 0;
             foreach (int fieldId in fieldIds)
             {
@@ -34,6 +31,5 @@ namespace Infovision.Data.UnitTests
 
             Assert.AreEqual(fieldIdsOld.Length, count);
         }
-
     }
 }

@@ -15,9 +15,9 @@ namespace Infovision.MRI
     public class ImageHistogramCluster : ISerializable
     {
         #region Globals
-        
+
         private Histogram histogram;
-        
+
         private int maxNumberOfRepresentatives;
         private int histogramBucketSize;
         private double bucketCountWeight;
@@ -31,8 +31,8 @@ namespace Infovision.MRI
 
         private List<int> slices;
         private IImage image;
-            
-        #endregion
+
+        #endregion Globals
 
         #region Constructors
 
@@ -53,24 +53,24 @@ namespace Infovision.MRI
             this.ApproximationDegree = si.GetDouble("ApproximationDegree");
             this.BucketCountWeight = si.GetDouble("BucketCountWeight");
             this.MinimumClusterDistance = si.GetDouble("MinimumClusterDistance");
-            
+
             Histogram localHistogram = new Histogram();
-            this.histogram = (Histogram) si.GetValue("histogram", localHistogram.GetType());
+            this.histogram = (Histogram)si.GetValue("histogram", localHistogram.GetType());
 
             List<int> localList = new List<int>();
-            this.candidates = (List<int>) si.GetValue("candidates", localList.GetType());
+            this.candidates = (List<int>)si.GetValue("candidates", localList.GetType());
 
-            this.representatives = (List<int>) si.GetValue("representatives", localList.GetType());
+            this.representatives = (List<int>)si.GetValue("representatives", localList.GetType());
 
             IntervalTree<int, double> localClusterRanges = new IntervalTree<int, double>();
-            this.clusterRanges = (IntervalTree<int, double>) si.GetValue("clusterRanges", localClusterRanges.GetType());
+            this.clusterRanges = (IntervalTree<int, double>)si.GetValue("clusterRanges", localClusterRanges.GetType());
 
-            this.slices = (List<int>) si.GetValue("slices", localList.GetType());
+            this.slices = (List<int>)si.GetValue("slices", localList.GetType());
 
-            this.IsTrained = si.GetBoolean("IsTrained");           
+            this.IsTrained = si.GetBoolean("IsTrained");
         }
- 
-        #endregion
+
+        #endregion Constructors
 
         #region Properties
 
@@ -125,16 +125,16 @@ namespace Infovision.MRI
             {
                 if (this.approximationDegree != value)
                     this.IsTrained = false;
-                this.approximationDegree = value;                
+                this.approximationDegree = value;
             }
         }
-        
+
         public IImage Image
         {
             get { return this.image; }
-            set 
-            { 
-                if(this.image != value)
+            set
+            {
+                if (this.image != value)
                     this.IsTrained = false;
                 this.image = value;
             }
@@ -144,21 +144,21 @@ namespace Infovision.MRI
         {
             get { return this.slices; }
             set
-            { 
-                if(this.slices != value)
+            {
+                if (this.slices != value)
                     this.IsTrained = false;
                 this.slices = value;
             }
         }
-        
-        public int NumberOfClusters 
+
+        public int NumberOfClusters
         {
             get { return this.representatives.Count; }
         }
 
         public bool IsTrained { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -177,10 +177,10 @@ namespace Infovision.MRI
             si.AddValue("representatives", this.representatives);
             si.AddValue("clusterRanges", this.clusterRanges);
             si.AddValue("slices", this.slices);
-            si.AddValue("IsTrained", this.IsTrained);            
+            si.AddValue("IsTrained", this.IsTrained);
         }
 
-        #endregion
+        #endregion Serialization methods
 
         public void Train()
         {
@@ -195,7 +195,6 @@ namespace Infovision.MRI
             {
                 imageBufferLength = (int)(image.Width * image.Height);
                 bufferLength = imageBufferLength * this.Slices.Count;
-                
             }
             else
             {
@@ -228,7 +227,7 @@ namespace Infovision.MRI
 
             this.FindRepresentatives();
             this.CreateClusters();
-            
+
             this.IsTrained = true;
         }
 
@@ -247,8 +246,8 @@ namespace Infovision.MRI
             this.AddRepresentative(this.GetNextRepresentative());
 
             int repsToFindLeft = this.MaxNumberOfRepresentatives - 1;
-            
-            while (candidates.Count > 0 
+
+            while (candidates.Count > 0
                     && (this.MaxNumberOfRepresentatives == 0 || repsToFindLeft > 0))
             {
                 int bucketIndex = this.GetNextRepresentative();
@@ -272,7 +271,7 @@ namespace Infovision.MRI
             ret.Append('{');
             ret.Append(' ');
             foreach (int rep in representatives)
-            {                
+            {
                 ret.Append(rep);
                 ret.Append(' ');
             }
@@ -280,12 +279,12 @@ namespace Infovision.MRI
 
             return ret.ToString();
         }
-        
+
         public string ClusterIntervalsToString()
         {
             StringBuilder ret = new StringBuilder();
 
-            foreach(Interval<int, double> interval in clusterRanges.Intervals)
+            foreach (Interval<int, double> interval in clusterRanges.Intervals)
             {
                 ret.AppendFormat("({0}; {1}) : {2}", interval.Start, interval.End, interval.Data);
                 ret.Append(Environment.NewLine);
@@ -317,7 +316,7 @@ namespace Infovision.MRI
                     {
                         secondMinDistance = minDistance;
                         secondMinDistanceIndex = minDistanceIndex;
-                        
+
                         minDistance = distance;
                         minDistanceIndex = j;
                     }
@@ -329,9 +328,9 @@ namespace Infovision.MRI
                 }
 
                 //Console.WriteLine("{0} {1}:{2} {3}:{4}", i, minDistanceIndex, minDistance, secondMinDistanceIndex, secondMinDistance);
-                
+
                 //x in BND(xi, xi+1) <=> min(d(x, xi), d(x, x(i+1))) > eps
-                
+
                 double val1, val2, min;
                 if (minDistanceIndex > -1 && secondMinDistance > -1)
                 {
@@ -364,10 +363,9 @@ namespace Infovision.MRI
                         clusterLabels[i] = (secondMinDistanceIndex * 10) + minDistanceIndex;
                         //clusterLabels[i] = (minDistanceIndex + secondMinDistanceIndex) / 2;
                     }
-
                 }
                 //Lower approximations
-                else 
+                else
                 {
                     clusterLabels[i] = minDistanceIndex;
                 }
@@ -375,11 +373,11 @@ namespace Infovision.MRI
                 if ((i > 0 && clusterLabels[i - 1] != clusterLabels[i]) || (i == histogram.BucketCount - 1))
                 {
                     Interval<int, double> clusterInterval = new Interval<int, double>(histogram[fromIndex].LowerBound,
-                                                                                      histogram[toIndex].UpperBound, clusterLabels[i-1]);
-                    
-                    intervalList.Add(clusterInterval);                    
-                    
-                    //Console.WriteLine(" {0} {1} : {2}", clusterInterval.Start, clusterInterval.End, clusterInterval.Label);                    
+                                                                                      histogram[toIndex].UpperBound, clusterLabels[i - 1]);
+
+                    intervalList.Add(clusterInterval);
+
+                    //Console.WriteLine(" {0} {1} : {2}", clusterInterval.Start, clusterInterval.End, clusterInterval.Label);
                     fromIndex = i;
                     toIndex = fromIndex;
                 }
@@ -388,7 +386,7 @@ namespace Infovision.MRI
                     toIndex = i;
                 }
             }
-            
+
             clusterRanges = new IntervalTree<int, double>(intervalList);
         }
 
@@ -405,7 +403,7 @@ namespace Infovision.MRI
 
             int maxIndex = -1;
             double maxValue = -1;
-            
+
             foreach (int cand in candidates)
             {
                 double weightedDistance = this.GetMinDistanceFromReps(cand) + (this.BucketCountWeight * histogram[cand].Count);
@@ -430,7 +428,7 @@ namespace Infovision.MRI
                     minDistance = distance;
                 }
             }
-            
+
             return minDistance;
         }
 
@@ -438,7 +436,7 @@ namespace Infovision.MRI
         {
             double maxValue = -1;
             int maxIndex = -1;
-            
+
             foreach (int can in candidates)
             {
                 if (histogram[can].Count > maxValue)
@@ -476,7 +474,7 @@ namespace Infovision.MRI
         {
             List<Interval<int, double>> intervalList = clusterRanges.GetIntervals(histogram.LowerBound, histogram.UpperBound);
             List<ImageHistogramInterval> ret = new List<ImageHistogramInterval>(intervalList.Count);
-            foreach(Interval<int, double> interval in intervalList)
+            foreach (Interval<int, double> interval in intervalList)
             {
                 ret.Add(new ImageHistogramInterval(interval.Start, interval.End, interval.Data));
             }
@@ -516,7 +514,7 @@ namespace Infovision.MRI
         private int GetClusterId(double pixelValue)
         {
             List<int> clusters = clusterRanges.Get(pixelValue, StubMode.ContainsStart);
-            
+
             if (clusters.Count == 0)
             {
                 return 0;
@@ -536,7 +534,7 @@ namespace Infovision.MRI
                 histogramCluster = (ImageHistogramCluster)formatter.Deserialize(stream);
                 stream.Close();
             }
-            
+
             return histogramCluster;
         }
 
@@ -565,7 +563,7 @@ namespace Infovision.MRI
 
             return bSuccess;
         }
-   
-        #endregion
+
+        #endregion Methods
     }
 }

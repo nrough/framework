@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{       
+{
     [Serializable]
     public class ParameterCollection : IEnumerable<IParameter>, ICloneable
-    {                
+    {
         #region Members
 
         private static double resizeFactor = 1.2;
@@ -18,9 +15,9 @@ namespace Infovision.Datamining.Experimenter.Parms
         protected Dictionary<string, int> name2index;
         private int parmCount;
         protected IParameter[][] exclusions;
-        protected int exclusionCount;        
+        protected int exclusionCount;
 
-        #endregion
+        #endregion Members
 
         #region Constructors
 
@@ -46,7 +43,6 @@ namespace Infovision.Datamining.Experimenter.Parms
         public ParameterCollection(IParameter[] parameters)
             : this(parameters.Length, 20)
         {
-            
             this.parmCount = parameters.Length;
             for (int i = 0; i < this.parameters.Length; i++)
             {
@@ -57,18 +53,18 @@ namespace Infovision.Datamining.Experimenter.Parms
 
         public ParameterCollection(ParameterCollection parameterList)
             : this(parameterList.Count, parameterList.exclusionCount)
-        {            
+        {
             int i = 0;
             foreach (IParameter parm in parameterList)
             {
-                this[i] = (IParameter) parm.Clone();
+                this[i] = (IParameter)parm.Clone();
                 name2index.Add(this[i].Name, i);
                 i++;
             }
             this.parmCount = i;
             this.exclusionCount = parameterList.exclusionCount;
 
-            for (i = 0; i < parameterList.exclusionCount; i++ )
+            for (i = 0; i < parameterList.exclusionCount; i++)
             {
                 for (int j = 0; j < parmCount; j++)
                 {
@@ -77,17 +73,17 @@ namespace Infovision.Datamining.Experimenter.Parms
                         exclusions[i][j] = (IParameter)parameterList.exclusions[i][j].Clone();
                     }
                 }
-            }                        
-        }        
+            }
+        }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
         public int Count
         {
             get { return this.parmCount; }
-        }        
+        }
 
         public IParameter this[int idx]
         {
@@ -95,7 +91,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             set { this.parameters[idx] = value; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -119,7 +115,7 @@ namespace Infovision.Datamining.Experimenter.Parms
 
                 Array.Resize<IParameter>(ref parameters, newSize);
             }
-                
+
             this.name2index[parameter.Name] = parmCount;
             this.parameters[parmCount] = parameter;
             parmCount++;
@@ -130,7 +126,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             ParametersValueEnumerator i_values = new ParametersValueEnumerator(this);
             while (i_values.MoveNext())
             {
-                yield return (object[]) i_values.Current;
+                yield return (object[])i_values.Current;
             }
         }
 
@@ -157,11 +153,11 @@ namespace Infovision.Datamining.Experimenter.Parms
             for (int i = 0; i < exclusions.Length; i++)
             {
                 int j;
-                for(j = 0; j<parameters.Length; j++)
+                for (j = 0; j < parameters.Length; j++)
                 {
                     if (exclusions[i][j] != null)
                     {
-                        if (! exclusions[i][j].InRange(parameters[j].Current))
+                        if (!exclusions[i][j].InRange(parameters[j].Current))
                         {
                             break;
                         }
@@ -196,7 +192,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
 
             return false;
-        }        
+        }
 
         #region IEnumberable Methods
 
@@ -214,7 +210,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             //return parameters.Cast<IParameter>().GetEnumerator();
         }
 
-        #endregion
+        #endregion IEnumberable Methods
 
         #region ICloneable methods
 
@@ -237,8 +233,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         }
         */
 
-        #endregion
+        #endregion ICloneable methods
 
-        #endregion
+        #endregion Methods
     }
 }

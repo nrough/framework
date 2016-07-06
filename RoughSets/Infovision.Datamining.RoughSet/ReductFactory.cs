@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Infovision.Data;
 using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
@@ -14,20 +13,21 @@ namespace Infovision.Datamining.Roughset
     {
         string FactoryKey { get; }
     }
-    
+
     public interface IReductFactory : IFactoryProduct
     {
         IReductGenerator GetReductGenerator(Args args);
+
         IPermutationGenerator GetPermutationGenerator(Args args);
     }
 
     public class ReductFactory
     {
         private static volatile ReductFactory reductFactoryInstance = null;
-        private static object syncRoot = new object();        
+        private static object syncRoot = new object();
 
-        ListDictionary registeredReductFactories = new ListDictionary();
-        ListDictionary registeredReductMeasures = new ListDictionary();
+        private ListDictionary registeredReductFactories = new ListDictionary();
+        private ListDictionary registeredReductMeasures = new ListDictionary();
 
         private ReductFactory()
         {
@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     this.RegisterFactory(type);
                 }
-            }            
+            }
         }
 
         private void RegisterFactory(Type type)
@@ -63,9 +63,9 @@ namespace Infovision.Datamining.Roughset
         }
 
         public void RegisterFactory(string className)
-        {            
+        {
             StringBuilder assemblyName = new StringBuilder();
-            string [] assemblyNameParts = className.Split(new char[] {'.'});
+            string[] assemblyNameParts = className.Split(new char[] { '.' });
             for (int i = 0; i < assemblyNameParts.Length - 1; i++)
             {
                 assemblyName.Append(assemblyNameParts[i]);
@@ -133,12 +133,12 @@ namespace Infovision.Datamining.Roughset
                 {
                     throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Class {0} does not implement interface {1}", type.Name, "IReductFactory"), "type");
                 }
-            }            
+            }
         }
 
         public static string[] GetReductFactoryKeys()
         {
-            string [] keys = new string[ReductFactory.Instance.registeredReductFactories.Keys.Count];
+            string[] keys = new string[ReductFactory.Instance.registeredReductFactories.Keys.Count];
             ReductFactory.Instance.registeredReductFactories.Keys.CopyTo(keys, 0);
             return keys;
         }
@@ -156,21 +156,21 @@ namespace Infovision.Datamining.Roughset
                 throw new ArgumentNullException("key", "Invalid key supplied, must be non-empty string.");
 
             Type type = (Type)ReductFactory.Instance.registeredReductFactories[key];
-                        
+
             if (type != null)
             {
-                object reductFactory = type.Assembly.CreateInstance(type.FullName, 
-                                        true, 
-                                        BindingFlags.CreateInstance, 
-                                        null, 
-                                        null, 
-                                        null, 
+                object reductFactory = type.Assembly.CreateInstance(type.FullName,
+                                        true,
+                                        BindingFlags.CreateInstance,
+                                        null,
+                                        null,
+                                        null,
                                         null);
 
                 if (reductFactory == null)
                     throw new InvalidOperationException("Null factory newInstance. Unable to create necessary reduct factory class.");
 
-                IReductFactory iReductFactory = (IReductFactory) reductFactory;
+                IReductFactory iReductFactory = (IReductFactory)reductFactory;
                 return iReductFactory;
             }
             else
@@ -183,7 +183,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
-            string factoryKey = (string) args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
+            string factoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
             return ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);
         }
 
@@ -234,7 +234,7 @@ namespace Infovision.Datamining.Roughset
         {
             Comparer<IReduct> comparer;
 
-            switch(measureKey)
+            switch (measureKey)
             {
                 //default case
                 //case "ReductMeasureLength":
@@ -278,6 +278,6 @@ namespace Infovision.Datamining.Roughset
 
                 return reductFactoryInstance;
             }
-        }        
-    }               
+        }
+    }
 }

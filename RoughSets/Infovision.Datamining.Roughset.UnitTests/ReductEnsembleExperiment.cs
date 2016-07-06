@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Clustering.Hierarchical;
@@ -23,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int seed = Guid.NewGuid().GetHashCode();
             //Console.WriteLine("class ReductEnsembleExperiment Seed: {0}", seed);
             RandomSingleton.Seed = seed;
-        }        
+        }
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
@@ -40,7 +39,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int minEpsilon = 0;
             int maxEpsilon = 25;
 
-            WeightGenerator weightGenerator = new WeightGeneratorMajority(data);            
+            WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
 
             RuleQualityFunction identificationType = RuleQuality.ConfidenceW;
             RuleQualityFunction voteType = RuleQuality.ConfidenceW;
@@ -99,7 +98,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                         RoughClassifier rc = new RoughClassifier(
                             reductStoreCollection,
-                            identificationType, 
+                            identificationType,
                             voteType,
                             data.DataStoreInfo.GetDecisionValues());
                         ClassificationResult classificationResult = rc.Classify(testData, weightGenerator.Weights);
@@ -145,10 +144,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                         RoughClassifier rc2 = new RoughClassifier(
                             localReductStoreCollection,
-                            identificationType, 
-                            voteType, 
+                            identificationType,
+                            voteType,
                             data.DataStoreInfo.GetDecisionValues());
-                        ClassificationResult classificationResult2 = rc2.Classify(testData, null); 
+                        ClassificationResult classificationResult2 = rc2.Classify(testData, null);
 
                         experimentResults.Add(new ReductEnsembleExperimentResult
                         {
@@ -185,7 +184,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 experimentResults.SaveToFile(resultFileName, true, false);
                 experimentResults = new List<ReductEnsembleExperimentResult>();
-            } //testData No            
+            } //testData No
         }
     }
 
@@ -211,7 +210,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public int NumberOfClassified { get; set; }
         public int NumberOfMisclassified { get; set; }
         public int NumberOfUnclassifed { get; set; }
-        
+
         public int ClusterId { get; set; }
         public string TestType { get; set; }
 
@@ -226,7 +225,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             string separator = ";";
             StringBuilder sb = new StringBuilder();
 
-            //header            
+            //header
             if (addHeader)
             {
                 sb.Append("Id").Append(separator)
@@ -264,12 +263,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append(result.MinEpsilon).Append(separator)
                     .Append(result.MaxEpsilon).Append(separator)
                     .Append(result.NumberOfPermuations).Append(separator)
-                    .Append(result.NumberOfReducts).Append(separator)                    
-                    .Append(String.Format("{0}", result.Distance.Method.Name)).Append(separator)                    
+                    .Append(result.NumberOfReducts).Append(separator)
+                    .Append(String.Format("{0}", result.Distance.Method.Name)).Append(separator)
                     .Append(String.Format("{0}", result.Linkage.Method.Name)).Append(separator)
                     .Append(result.Dataset.Name).Append(separator)
-                    .Append(result.WeightGenerator.GetType().Name).Append(separator)                    
-                    .Append(String.Format("{0}", result.DiscernibiltyVector.Method.Name)).Append(separator)                    
+                    .Append(result.WeightGenerator.GetType().Name).Append(separator)
+                    .Append(String.Format("{0}", result.DiscernibiltyVector.Method.Name)).Append(separator)
                     .Append(result.Accuracy).Append(separator)
                     .Append(result.BalancedAccuracy).Append(separator)
                     .Append(result.Coverage).Append(separator)
@@ -279,14 +278,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     .Append(result.NumberOfUnclassifed).Append(separator)
                     .Append(result.IdentificationType).Append(separator)
                     .Append(result.VoteType).Append(separator);
-                
+
                 sb.Append(Environment.NewLine);
             }
-            
+
             if (append)
                 File.AppendAllText(fileName, sb.ToString());
             else
                 File.WriteAllText(fileName, sb.ToString());
         }
-    }        
+    }
 }

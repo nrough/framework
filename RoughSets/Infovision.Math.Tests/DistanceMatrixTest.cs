@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Accord.Math;
-using Infovision.Math;
+﻿using NUnit.Framework;
 
 namespace Infovision.Math.Tests
 {
@@ -14,7 +8,7 @@ namespace Infovision.Math.Tests
         [Test]
         public void CalcDistanceMatrix()
         {
-            double[][] data = 
+            double[][] data =
             {
                 new double[] {7, 8, 0, 1, 0, 7, 1}, //0
                 new double[] {6, 7, 1, 1, 1, 7, 1}, //1
@@ -81,7 +75,6 @@ namespace Infovision.Math.Tests
             d(7, 9) = 18
             d(8, 9) = 5
                          * */
-
         }
     }
 }

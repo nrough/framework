@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Infovision.Datamining.Roughset
@@ -11,19 +9,25 @@ namespace Infovision.Datamining.Roughset
     public interface IReductStoreCollection : IEnumerable<IReductStore>
     {
         void AddStore(IReductStore reductStore);
+
         IReadOnlyList<IReductStore> GetStoreList();
+
         int Count { get; }
         bool ReductPerStore { get; set; }
+
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
+
         IReductStoreCollection FilterInEnsemble(int ensembleSize, IComparer<IReductStore> comparer);
     }
 
     [Serializable]
     public class ReductStoreCollection : IReductStoreCollection
     {
-        List<IReductStore> stores;
+        private List<IReductStore> stores;
         protected object mutex = new object();
 
         public int Count { get { return this.stores.Count; } }
@@ -32,14 +36,14 @@ namespace Infovision.Datamining.Roughset
 
         public ReductStoreCollection()
         {
-            this.stores = new List<IReductStore>();            
+            this.stores = new List<IReductStore>();
         }
 
         public ReductStoreCollection(int capacity)
-        {            
+        {
             this.stores = new List<IReductStore>(capacity);
         }
-        
+
         public void AddStore(IReductStore reductStore)
         {
             lock (mutex)
@@ -64,7 +68,7 @@ namespace Infovision.Datamining.Roughset
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetStoreList().GetEnumerator(); //return stores.GetEnumerator();
-        }        
+        }
 
         public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
         {
@@ -114,7 +118,7 @@ namespace Infovision.Datamining.Roughset
                         if (reduct.IsException && includeExceptions == false)
                         {
                             count += numberOfSupportedObjects;
-                        }                                                    
+                        }
                         else
                         {
                             measureSum += (double)reductMeasure.Calc(reduct) * numberOfSupportedObjects;
@@ -180,5 +184,5 @@ namespace Infovision.Datamining.Roughset
                                             )));
             return xmlDoc;
         }
-    } 
+    }
 }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Infovision.Math;
 using NUnit.Framework;
-using Infovision.Datamining.Clustering.Hierarchical;
-using Accord.Math;
-using Infovision.Math;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 {
@@ -14,7 +8,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
     {
         [Test]
         public void CalcDistanceMatrix()
-        {            
+        {
             DistanceMatrix matrix = new DistanceMatrix(Accord.Math.Distance.SquareEuclidean);
             matrix.Initialize(HierarchicalClusteringTest.GetData());
             Assert.IsTrue(true);
@@ -31,7 +25,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             for (int i = 0; i < data.Length; i++)
             {
                 for (int j = i + 1; j < data.Length; j++)
-                {                    
+                {
                     double distance = Infovision.Math.Similarity.SquaredEuclidean(data[i], data[j]);
 
                     //Console.WriteLine("{0}, {1}, {2}", i, j, distance);
@@ -44,14 +38,13 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
 
             //Console.Write(matrix.ToString());
             //Console.WriteLine();
-
         }
 
         [Test]
         public void InitializeTest()
         {
             double[][] data = HierarchicalClusteringTest.GetData();
-            DistanceMatrix matrix = new DistanceMatrix(data.Length, Infovision.Math.Similarity.SquaredEuclidean);            
+            DistanceMatrix matrix = new DistanceMatrix(data.Length, Infovision.Math.Similarity.SquaredEuclidean);
             matrix.Initialize(data);
 
             for (int i = 0; i < data.Length; i++)
@@ -59,7 +52,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
                 for (int j = i + 1; j < data.Length; j++)
                 {
                     double distance = Infovision.Math.Similarity.SquaredEuclidean(data[i], data[j]);
-                    Assert.AreEqual(distance, matrix.GetDistance(i, j));                    
+                    Assert.AreEqual(distance, matrix.GetDistance(i, j));
                 }
             }
         }

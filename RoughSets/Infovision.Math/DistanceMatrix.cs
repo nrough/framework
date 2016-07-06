@@ -19,7 +19,7 @@ namespace Infovision.Math
     [Serializable]
     public class DistanceMatrix : IDistanceMatrix, IEnumerable<KeyValuePair<MatrixKey, double>>
     {
-        private Dictionary<MatrixKey, double> matrix;        
+        private Dictionary<MatrixKey, double> matrix;
         private ReadOnlyDictionary<MatrixKey, double> readOnlyMatrix;
         private Func<double[], double[], double> distance;
         private int numberOfInstances;
@@ -28,7 +28,7 @@ namespace Infovision.Math
         ///   Gets or sets the distance function used
         ///   as a distance metric between data points.
         /// </summary>
-        /// 
+        ///
         public Func<double[], double[], double> Distance
         {
             get { return this.distance; }
@@ -75,25 +75,24 @@ namespace Infovision.Math
             set;
         }
 
-
         public DistanceMatrix()
-        {            
-            matrix = new Dictionary<MatrixKey, double>();            
+        {
+            matrix = new Dictionary<MatrixKey, double>();
             readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
         }
-        
+
         public DistanceMatrix(Func<double[], double[], double> distance)
         {
             this.Distance = distance;
             matrix = new Dictionary<MatrixKey, double>();
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
         }
 
-        public DistanceMatrix(int size, Func<double[], double[], double> distance)            
+        public DistanceMatrix(int size, Func<double[], double[], double> distance)
         {
             this.Distance = distance;
             matrix = new Dictionary<MatrixKey, double>(size);
-            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);            
+            readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(matrix);
         }
 
         public DistanceMatrix(DistanceMatrix distanceMatrix)
@@ -101,7 +100,7 @@ namespace Infovision.Math
             this.matrix = new Dictionary<MatrixKey, double>(distanceMatrix.matrix);
             this.readOnlyMatrix = new ReadOnlyDictionary<MatrixKey, double>(this.matrix);
             this.distance = distanceMatrix.Distance;
-            this.ReverseDistanceFunction = distanceMatrix.ReverseDistanceFunction;            
+            this.ReverseDistanceFunction = distanceMatrix.ReverseDistanceFunction;
         }
 
         public void Initialize(double[][] points)
@@ -123,10 +122,10 @@ namespace Infovision.Math
                         distance = System.Math.Exp(-distance);
                     }
 
-                    matrix.Add(key, distance);                                        
+                    matrix.Add(key, distance);
                 }
-            }            
-        }        
+            }
+        }
 
         public double GetDistance(int x, int y)
         {
@@ -134,7 +133,7 @@ namespace Infovision.Math
             if (!matrix.ContainsKey(new MatrixKey(x, y)))
                 key = new MatrixKey(y, x);
             return matrix[key];
-        }        
+        }
 
         public override string ToString()
         {
@@ -144,11 +143,11 @@ namespace Infovision.Math
                 sb.AppendLine(String.Format("d({0}, {1}) = {2}", kvp.Key.X, kvp.Key.Y, kvp.Value));
             }
             return sb.ToString();
-        }        
+        }
 
         public void Add(MatrixKey key, double distance)
-        {            
-            matrix.Add(key, distance);                       
+        {
+            matrix.Add(key, distance);
         }
 
         public void Remove(MatrixKey key)
@@ -164,11 +163,11 @@ namespace Infovision.Math
         /// <summary>
         ///   Returns an enumerator that iterates through a collection.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
-        /// 
+        ///
         public IEnumerator<KeyValuePair<MatrixKey, double>> GetEnumerator()
         {
             return this.ReadOnlyMatrix.GetEnumerator();
@@ -177,11 +176,11 @@ namespace Infovision.Math
         /// <summary>
         ///   Returns an enumerator that iterates through a collection.
         /// </summary>
-        /// 
+        ///
         /// <returns>
         ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
-        /// 
+        ///
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.ReadOnlyMatrix.GetEnumerator();

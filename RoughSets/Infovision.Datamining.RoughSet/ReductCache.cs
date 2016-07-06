@@ -1,13 +1,13 @@
 ﻿using System.Runtime.Caching;
 
 namespace Infovision.Datamining.Roughset
-{    
+{
     public class ReductCache : MemoryCache
     {
         private static ReductCache reductCacheInstance = null;
         private static object syncRoot = new object();
         private static CacheItemPolicy defaultCacheItemPolicy = null;
-        
+
         private ReductCache(string name)
             : base(name)
         {
@@ -78,7 +78,7 @@ namespace Infovision.Datamining.Roughset
         */
 
         public virtual void Set(string key, object value, string regionName = null)
-        {  
+        {
             this.Set(key, value, ReductCache.DefaultCacheItemPolicy, regionName);
         }
 
@@ -115,6 +115,6 @@ namespace Infovision.Datamining.Roughset
         {
             return (region == null ? "region=DEFAULT;" : "region=" + region + ";") + key;
         }
-        */ 
+        */
     }
 }

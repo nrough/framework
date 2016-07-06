@@ -9,16 +9,16 @@ namespace Infovision.Data
     public class DataReaderFileCsv : DataReaderFile
     {
         #region Members
-        
+
         private char[] fieldDelimiter = new char[] { ' ', ';', '\t', ',' };
         private int header = 0;
         private int expectedColums = -1;
-        private int expectedRows = -1;        
+        private int expectedRows = -1;
         private Dictionary<int, Type> typePool = new Dictionary<int, Type>();
         private Dictionary<int, int> missingValuesCount = new Dictionary<int, int>();
         private Dictionary<int, HashSet<string>> valueCount = new Dictionary<int, HashSet<string>>();
- 
-        #endregion
+
+        #endregion Members
 
         #region Properties
 
@@ -34,7 +34,7 @@ namespace Infovision.Data
             set { this.expectedRows = value; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
@@ -53,10 +53,10 @@ namespace Infovision.Data
         public DataReaderFileCsv(string fileName, int header, char[] fieldDelimiter)
             : this(fileName, header)
         {
-            this.fieldDelimiter = fieldDelimiter;        
+            this.fieldDelimiter = fieldDelimiter;
         }
 
-        #endregion        
+        #endregion Constructors
 
         #region Methods
 
@@ -66,7 +66,7 @@ namespace Infovision.Data
         }
 
         public override DataStoreInfo Analyze()
-        {            
+        {
             string line = String.Empty;
             int rows = 0;
 
@@ -83,7 +83,7 @@ namespace Infovision.Data
                         line = streamReader.ReadLine();
                     }
                 }
-            }            
+            }
 
             if (!this.CheckNumberOfRows(rows))
             {
@@ -115,11 +115,11 @@ namespace Infovision.Data
                     referenceFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(i);
                 }
 
-                DataFieldInfo fieldInfo = 
+                DataFieldInfo fieldInfo =
                     new DataFieldInfo(
                         i,
-                        (referenceFieldInfo == null) 
-                            ? this.AttributeType(i-1)
+                        (referenceFieldInfo == null)
+                            ? this.AttributeType(i - 1)
                             : referenceFieldInfo.FieldValueType,
                         this.valueCount[i - 1].Count);
 
@@ -196,7 +196,7 @@ namespace Infovision.Data
             int[] fieldId = new int[numberOfFields];
             long[] fieldValue = new long[numberOfFields];
             string line = String.Empty;
-            int linenum = 0; 
+            int linenum = 0;
             int i = 0;
 
             try
@@ -216,9 +216,9 @@ namespace Infovision.Data
                                 throw new System.InvalidOperationException();
 
                             IComparable[] typedFieldValues = new IComparable[fileLine.Length];
-                            
+
                             for (i = 0; i < fileLine.Length; i++)
-                            {                                
+                            {
                                 if (this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue))
                                 {
                                     switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
@@ -268,7 +268,7 @@ namespace Infovision.Data
                                     }
                                 }
                             }
-                             
+
                             for (i = 0; i < dataStoreInfo.NumberOfFields; i++)
                             {
                                 fieldId[i] = i + 1;
@@ -314,8 +314,8 @@ namespace Infovision.Data
             dataStore.NormalizeWeights();
             if (this.DecisionId != -1)
                 dataStore.DataStoreInfo.CreateWeightHistogram(
-                    dataStore, 
-                    dataStore.Weights, 
+                    dataStore,
+                    dataStore.Weights,
                     this.DecisionId);
         }
 
@@ -323,8 +323,8 @@ namespace Infovision.Data
         {
             int i = 0;
             while (i < this.header && streamReader.ReadLine() != null)
-            { 
-                i++; 
+            {
+                i++;
             }
         }
 
@@ -365,7 +365,7 @@ namespace Infovision.Data
                         missingValuesCount[i] = 1;
                 }
                 else if (this.ReferenceDataStoreInfo == null)
-                {                    
+                {
                     this.AddValue2TypePool(i, value);
                 }
 
@@ -392,7 +392,7 @@ namespace Infovision.Data
         }
 
         private void AddValue2TypePool(int fieldIndex, string value)
-        {            
+        {
             //TODO change == to Equals
 
             Type previousType = null;
@@ -400,32 +400,32 @@ namespace Infovision.Data
 
             if (previousType != null && previousType == typeof(string))
                 return;
-                        
+
             Type type = InfovisionHelper.String2Type(value);
-            
+
             if (previousType == null)
             {
                 this.typePool[fieldIndex] = type;
                 return;
             }
-            
-            if ((type == typeof(double) 
-                //|| type == typeof(decimal) 
+
+            if ((type == typeof(double)
+                //|| type == typeof(decimal)
                 || type == typeof(string))
                 && type != previousType)
             {
                 this.typePool[fieldIndex] = type;
-                return;       
+                return;
             }
-            
+
             return;
         }
 
-        #endregion
+        #endregion Methods
     }
 
     public class DataReaderFileRses : DataReaderFileCsv
-    {   
+    {
         public DataReaderFileRses(string filePath)
             : this(filePath, 1)
         {
@@ -439,7 +439,7 @@ namespace Infovision.Data
         protected override void AnalyzeHeader(StreamReader streamReader)
         {
             string line = streamReader.ReadLine();
-            if(! String.IsNullOrEmpty(line))
+            if (!String.IsNullOrEmpty(line))
             {
                 this.DecodeFileInfo(line);
             }
@@ -457,7 +457,7 @@ namespace Infovision.Data
             if (!Int32.TryParse(fields[0], out tmp))
                 throw new InvalidDataException("FileFormat error");
             this.ExpectedRows = tmp;
-            
+
             if (this.ReferenceDataStoreInfo != null && this.ReferenceDataStoreInfo.DecisionFieldId > 0)
             {
                 this.DecisionId = this.ReferenceDataStoreInfo.DecisionFieldId;
@@ -474,7 +474,7 @@ namespace Infovision.Data
         public DataReaderFileRses11(string filePath)
             : base(filePath, 1)
         {
-        }        
+        }
 
         protected override void DecodeFileInfo(string fileInfo)
         {
@@ -482,7 +482,7 @@ namespace Infovision.Data
 
             base.DecodeFileInfo(fileInfo);
 
-            this.DecisionId = Int32.Parse(fields[2], CultureInfo.InvariantCulture);                        
+            this.DecisionId = Int32.Parse(fields[2], CultureInfo.InvariantCulture);
         }
     }
 }

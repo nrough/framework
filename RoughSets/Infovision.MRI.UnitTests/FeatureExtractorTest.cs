@@ -7,12 +7,12 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {
-    [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]    
+    [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     public class FeatureExtractorTest
     {
         [Test, Ignore]
         public void FeatureGroupExtractor()
-        {                        
+        {
             uint imageWidth = 181;
             uint imageHeight = 217;
             uint imageDepth = 181;
@@ -32,39 +32,37 @@ namespace Infovision.MRI.UnitTests
 
             //order is important
             histogramParamList.Add(new ParameterObjectReferenceCollection<ImageHistogramCluster>("Cluster", new ImageHistogramCluster()));
-            
+
             //histogramParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", new IImage[] {imageT1, imageT2, imagePD} ));
             histogramParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", new IImage[] { imageT1 }));
-            
+
             //histogramParamList.Add(new ParameterObjectReferenceCollection<List<int>>("Slices", new List<int>(new int [] {89, 90})));
             histogramParamList.Add(new ParameterObjectReferenceCollection<List<int>>("Slices", new List<int>(new int[] { 89 })));
-            
+
             //histogramParamList.Add(new ParameterNumericRange<int>("HistogramBucketSize", 1, 9, 2));
             histogramParamList.Add(new ParameterNumericRange<int>("HistogramBucketSize", 4, 4, 1));
-            
+
             //histogramParamList.Add(new ParameterNumericRange<int>("MinimumClusterDistance", 0, 300, 50));
             histogramParamList.Add(new ParameterNumericRange<int>("MinimumClusterDistance", 150, 150, 50));
-            
+
             histogramParamList.Add(new ParameterNumericRange<double>("BucketCountWeight", 1, 2, 0.5));
             histogramParamList.Add(new ParameterNumericRange<double>("ApproximationDegree", 0, 8, 2));
             histogramParamList.Add(new ParameterNumericRange<int>("MaxNumberOfRepresentatives", 2, 5, 1));
-                        
+
             featureExtractor.AddFeatureGenerator("Historgram", new ImageFeatureHistogramCluster(), histogramParamList);
 
-            
             ParameterCollection phantomParamList = new ParameterCollection();
             phantomParamList.Add(new ParameterObjectReferenceCollection<IImage>("Image", imagePH));
             featureExtractor.AddFeatureGenerator("Phantom", new ImageFeatureVoxelMagnitude(), phantomParamList);
 
-
-            DataTable dataTable = featureExtractor.GetDataTable(60,61,60,61,60,61);
+            DataTable dataTable = featureExtractor.GetDataTable(60, 61, 60, 61, 60, 61);
             Assert.IsNotNull(dataTable);
 
             dataTable.WriteToCSVFile(@"mri.csv", ";");
             Assert.IsTrue(System.IO.File.Exists(@"mri.csv"));
         }
 
-        [Test, Ignore]        
+        [Test, Ignore]
         public void FeatureExtractor()
         {
             uint imageWidth = 181;
@@ -91,7 +89,7 @@ namespace Infovision.MRI.UnitTests
 
             int iterations = 100;
             double learningRate = 0.1;
-            int radius = 15;            
+            int radius = 15;
 
             ImageHistogramCluster histClusterT1 = new ImageHistogramCluster();
             histClusterT1.HistogramBucketSize = 4;
@@ -100,7 +98,7 @@ namespace Infovision.MRI.UnitTests
             histClusterT1.ApproximationDegree = 0.1;
             histClusterT1.MaxNumberOfRepresentatives = 3;
             histClusterT1.Image = imageT1;
-            histClusterT1.Slices = new List<int>(new int[] {trainingSliceId});
+            histClusterT1.Slices = new List<int>(new int[] { trainingSliceId });
             histClusterT1.Train();
             featureExtractor.AddFeature(new ImageFeatureHistogramCluster { Image = imageT1, Cluster = histClusterT1 }, "HistogramT1");
 
@@ -141,7 +139,7 @@ namespace Infovision.MRI.UnitTests
             featureExtractor.AddFeature(new ImageFeatureMask { Image = imageT1 }, "Mask");
 
             EdgeThresholdFilter edgeFilterT1 = new EdgeThresholdFilter();
-            featureExtractor.AddFeature(new ImageFeatureEdge { Image = imageT1, EdgeFilter = edgeFilterT1}, "EdgeT1");
+            featureExtractor.AddFeature(new ImageFeatureEdge { Image = imageT1, EdgeFilter = edgeFilterT1 }, "EdgeT1");
 
             EdgeThresholdFilter edgeFilterT2 = new EdgeThresholdFilter();
             featureExtractor.AddFeature(new ImageFeatureEdge { Image = imageT2, EdgeFilter = edgeFilterT2 }, "EdgeT2");

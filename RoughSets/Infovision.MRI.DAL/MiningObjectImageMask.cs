@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Infovision.MRI.DAL
@@ -9,7 +7,7 @@ namespace Infovision.MRI.DAL
     public class MiningObjectImageMask : MiningObject, IMiningObjectViewImage
     {
         private ImageMask imageMask;
-        
+
         public MiningObjectImageMask()
             : base()
         {
@@ -22,7 +20,7 @@ namespace Infovision.MRI.DAL
                 return imageMask.Image;
             }
         }
-        
+
         public override XElement XMLParametersElement
         {
             get
@@ -57,10 +55,9 @@ namespace Infovision.MRI.DAL
             var maskItemsParm = from maskItemParameter in parametersElement.Descendants("Parameter")
                                 where maskItemParameter.Attribute("Name").Value == "MaskItems"
                                 select maskItemParameter;
-            
+
             var maskItems = from maskItem in maskItemsParm.Single<XElement>().Descendants("Item")
                             select maskItem;
-                            
 
             ImageMask localImageMask = new ImageMask();
             foreach (XElement item in maskItems)
@@ -76,7 +73,7 @@ namespace Infovision.MRI.DAL
 
         public override void ReloadReferences(MiningProject project)
         {
- 	        base.ReloadReferences(project);
+            base.ReloadReferences(project);
 
             if (this.imageMask == null)
             {
@@ -114,7 +111,7 @@ namespace Infovision.MRI.DAL
                 this.TypeId = MiningObjectType.Types.ImageMask;
                 this.Name = "Image mask";
                 this.imageMask = maskModel;
-            }            
+            }
         }
     }
 }

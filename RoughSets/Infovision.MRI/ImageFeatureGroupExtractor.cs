@@ -18,13 +18,13 @@ namespace Infovision.MRI
 
         public DataTable GetDataTable()
         {
-            return this.GetDataTable(0, (int) this.ImageWidth - 1, 0, (int) this.ImageHeight - 1, 0, (int) this.ImageDepth - 1);
+            return this.GetDataTable(0, (int)this.ImageWidth - 1, 0, (int)this.ImageHeight - 1, 0, (int)this.ImageDepth - 1);
         }
 
         public DataTable GetDataTable(int xStart, int xEnd, int yStart, int yEnd, int zStart, int zEnd)
         {
             int objectId = 0;
-            DataTable dataTable = new DataTable();            
+            DataTable dataTable = new DataTable();
             DataColumn objectIdColumn = dataTable.Columns.Add("Id", typeof(long));
             DataColumn positionXColumn = dataTable.Columns.Add("Position_X", typeof(uint));
             DataColumn positionYColumn = dataTable.Columns.Add("Position_Y", typeof(uint));
@@ -40,47 +40,47 @@ namespace Infovision.MRI
                         objectId++;
                         dataRow = dataTable.NewRow();
                         dataRow["Id"] = objectId;
-                        
-                        dataRow["Position_X"] = (uint) x;
-                        dataRow["Position_Y"] = (uint) y;
-                        dataRow["Position_Z"] = (uint) z;
+
+                        dataRow["Position_X"] = (uint)x;
+                        dataRow["Position_Y"] = (uint)y;
+                        dataRow["Position_Z"] = (uint)z;
 
                         dataTable.Rows.Add(dataRow);
                     }
                 }
             }
 
-            uint[] position = new uint[3];            
+            uint[] position = new uint[3];
             foreach (KeyValuePair<string, IImageFeature> kvp in generators)
             {
                 string generatorName = kvp.Key;
                 IImageFeature generator = kvp.Value;
-                ParameterCollection parameterCollection = generatorsParms[generatorName];                
+                ParameterCollection parameterCollection = generatorsParms[generatorName];
                 int i = 0;
 
                 if (parameterCollection != null)
-                {        
+                {
                     foreach (object[] p in parameterCollection.Values())
-                    {                                                
+                    {
                         this.SetGeneratorProperties(generator, new Args(parameterCollection.GetParameterNames(), p));
                         string columnName = generatorName + Convert.ToString(i++);
                         DataColumn newColumn = new DataColumn(columnName);
-                        
+
                         newColumn.AllowDBNull = true;
                         dataTable.Columns.Add(newColumn);
 
                         foreach (DataRow row in dataTable.Rows)
                         {
-                            position[0] = (uint) row["Position_X"];
-                            position[1] = (uint) row["Position_Y"];
-                            position[2] = (uint) row["Position_Z"];
+                            position[0] = (uint)row["Position_X"];
+                            position[1] = (uint)row["Position_Y"];
+                            position[2] = (uint)row["Position_Z"];
 
                             row[columnName] = generator.GetValue(position);
                         }
                     }
                 }
             }
-            
+
             return dataTable;
         }
 
@@ -90,7 +90,7 @@ namespace Infovision.MRI
             {
                 generator.GetType().InvokeMember(arg.Key,
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty,
-                    Type.DefaultBinder, generator, new object[] { arg.Value } );
+                    Type.DefaultBinder, generator, new object[] { arg.Value });
             }
         }
 

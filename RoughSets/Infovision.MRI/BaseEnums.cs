@@ -1,5 +1,4 @@
-﻿
-namespace Infovision.MRI
+﻿namespace Infovision.MRI
 {
     public enum Endianness
     {
@@ -29,6 +28,4 @@ namespace Infovision.MRI
         ITKRawImage = 1,
         ITKStandardImage = 2
     }
-
-
 }

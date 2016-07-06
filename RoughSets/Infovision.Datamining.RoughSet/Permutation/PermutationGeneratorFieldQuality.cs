@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -44,18 +40,18 @@ namespace Infovision.Datamining.Roughset
 
             //Console.WriteLine("W: {0}", fieldQualityOrig.ToStr());
         }
-        
+
         protected override Permutation CreatePermutation()
         {
             int[] fieldIds = new int[fieldIdsSorted.Length];
 
             Array.Copy(fieldIdsSorted, fieldIds, fieldIdsSorted.Length);
-            fieldIds.ShuffleFwd(this.NumberOfShuffles);                                    
+            fieldIds.ShuffleFwd(this.NumberOfShuffles);
             Permutation permutation = new Permutation(fieldIds);
             return permutation;
 
             /*
-            //Normalize 
+            //Normalize
             for (int i = 0; i < fieldQuality.Length; i++)
             {
                 fieldQuality[i] /= fieldQualitySum;

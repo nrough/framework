@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -10,7 +7,7 @@ namespace Infovision.MRI.DAL
         public MiningObjectImageExtract()
             : base()
         {
-        }        
+        }
 
         public override void ReloadReferences(MiningProject project)
         {
@@ -31,7 +28,7 @@ namespace Infovision.MRI.DAL
             base.InitFromViewModel(viewModel);
 
             ImageExtract extractModel = viewModel as ImageExtract;
-            
+
             if (extractModel != null)
             {
                 this.TypeId = MiningObjectType.Types.ImageExtract;
@@ -42,8 +39,8 @@ namespace Infovision.MRI.DAL
 
                 IImage image = extractModel.Image as IImage;
 
-                this.Width = (int) image.Width;
-                this.Height = (int) image.Height;
+                this.Width = (int)image.Width;
+                this.Height = (int)image.Height;
                 this.Depth = 0;
 
                 this.Header = 0;

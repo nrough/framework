@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using NUnit.Framework;
-using Infovision.Data;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
-using Infovision.Math;
-using Infovision.Datamining.Clustering.Hierarchical;
 using System.IO;
+using System.Text;
+using Infovision.Data;
+using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.Math;
+using Infovision.Utils;
+using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
-{                
+{
     [TestFixture]
-    class ReductEnsembleGeneratorTest
+    internal class ReductEnsembleGeneratorTest
     {
         public ReductEnsembleGeneratorTest()
         {
@@ -24,19 +20,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Console.WriteLine("class ReductEnsembleGeneratorTest Seed: {0}", seed);
             RandomSingleton.Seed = seed;
         }
-        
+
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
-            
+
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            
+
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 2;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
-            weightGenerator.Value = 1.0M;            
+            weightGenerator.Value = 1.0M;
 
             decimal[] epsilons = new decimal[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
@@ -50,39 +46,38 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);            
+            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
             argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
             argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
             argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 3);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);                
+            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
             argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
             argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"euclidean");
             argSet.Add("ReductWeightFileName", @"euclidean");
             argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             argSet.Add(ReductGeneratorParamHelper.ReconWeights, reconWeights);
             argsList.Add(argSet);
-                        
+
             return argsList;
         }
 
         [Test, TestCaseSource("GetGenerateTestArgs")]
         public void GenerateTest(Dictionary<string, object> args)
         {
-            
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];            
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
-                        
+
             Args parms = new Args();
             foreach (KeyValuePair<string, object> kvp in args)
             {
                 parms.SetParameter(kvp.Key, kvp.Value);
-            }                                 
-                                                            
+            }
+
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             reductGenerator.Run();
             IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args[ReductGeneratorParamHelper.NumberOfClusters]);
 
-            DataStore data = (DataStore) parms.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.TrainData);
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
 
@@ -97,9 +92,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
             File.WriteAllText((string)parms.GetParameter("ReductWeightFileName"), sb.ToString());
 
-            
-            //Console.WriteLine("All reducts");            
-            for(int j=0; j<reductGenerator.ReductPool.Count; j++)
+            //Console.WriteLine("All reducts");
+            for (int j = 0; j < reductGenerator.ReductPool.Count; j++)
             {
                 IReduct r = reductGenerator.ReductPool.GetReduct(j);
                 //Console.WriteLine("{0}: {1}", j, r);
@@ -128,29 +122,26 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
             */
 
-             
             //int k=1;
             foreach (IReductStore reductStore in reductStoreCollection)
             {
                 //Console.WriteLine("Reduct Group Name {0}:", k++);
                 //Console.WriteLine("======================");
-                
+
                 foreach (IReduct reduct in reductStore)
                 {
-                    //Console.WriteLine("{0}", reduct);                    
+                    //Console.WriteLine("{0}", reduct);
                 }
             }
-            
+
             /*
             ReductEnsembleGenerator ensembleGenerator = reductGenerator as ReductEnsembleGenerator;
             if (ensembleGenerator != null)
             {
                 Bitmap dendrogramLinkCollection = ensembleGenerator.Dendrogram.GetDendrogramAsBitmap(640, (int) ensembleGenerator.Dendrogram.DendrogramLinkCollection.MaxHeight + 100);
-                dendrogramLinkCollection.Save((string) args[ReductGeneratorParamHelper.DendrogramBitmapFile]);                
+                dendrogramLinkCollection.Save((string) args[ReductGeneratorParamHelper.DendrogramBitmapFile]);
             }
             */
         }
-     
-
     }
 }

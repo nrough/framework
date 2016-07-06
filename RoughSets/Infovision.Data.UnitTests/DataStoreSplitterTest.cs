@@ -1,13 +1,11 @@
-﻿using System;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Infovision.Data.UnitTests
 {
     [TestFixture]
     public class DataStoreSplitterTest
     {
-        DataStore dataStore;
+        private DataStore dataStore;
 
         [SetUp]
         public void Init()
@@ -24,7 +22,7 @@ namespace Infovision.Data.UnitTests
 
             for (int i = 0; i <= 100; i += 10)
             {
-                DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (double)i/(double)100);
+                DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (double)i / (double)100);
                 dataStoreSplitter.ActiveFold = 0;
                 dataStoreSplitter.Split(ref dataStore1, ref dataStore2);
 
@@ -106,7 +104,7 @@ namespace Infovision.Data.UnitTests
         }
 
         [Test]
-        public void  Ratio()
+        public void Ratio()
         {
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
@@ -141,7 +139,7 @@ namespace Infovision.Data.UnitTests
                     elementSum += (int)dataStore.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
 
-                foreach(long internalValue in dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
+                foreach (long internalValue in dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues())
                 {
                     elementSum1 += (int)dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Histogram.GetBinValue(internalValue);
                 }
@@ -153,7 +151,6 @@ namespace Infovision.Data.UnitTests
 
                 Assert.AreEqual(elementSum, elementSum1 + elementSum2);
             }
-            
         }
     }
 }

@@ -94,7 +94,7 @@ namespace Infovision.MRI
     [Serializable]
     public class ImageFeatureVoxelPositionX : ImageFeatrueVoxelPosition
     {
-        public ImageFeatureVoxelPositionX() 
+        public ImageFeatureVoxelPositionX()
             : base()
         {
             this.Dimension = 0;
@@ -174,14 +174,15 @@ namespace Infovision.MRI
         private double minimumClusterDistance;
         private double approximationDegree;
 
-        public ImageFeatureHistogramCluster() : base() 
+        public ImageFeatureHistogramCluster()
+            : base()
         {
         }
 
         public override IImage Image
         {
             get { return base.Image; }
-            set 
+            set
             {
                 if (base.Image != value)
                 {
@@ -208,7 +209,7 @@ namespace Infovision.MRI
             }
         }
 
-        public ImageHistogramCluster Cluster 
+        public ImageHistogramCluster Cluster
         {
             get
             {
@@ -228,24 +229,24 @@ namespace Infovision.MRI
                     this.Image = this.cluster.Image;
                     this.Slices = this.cluster.Slices;
                 }
-                
+
                 this.IsCalculated = false;
             }
         }
-        
-        public int MaxNumberOfRepresentatives 
+
+        public int MaxNumberOfRepresentatives
         {
             get { return this.maxNumberOfRepresentatives; }
             set
             {
                 this.maxNumberOfRepresentatives = value;
-                if(this.Cluster != null)
+                if (this.Cluster != null)
                     this.Cluster.MaxNumberOfRepresentatives = value;
                 this.IsCalculated = false;
             }
         }
-        
-        public int HistogramBucketSize 
+
+        public int HistogramBucketSize
         {
             get { return this.histogramBucketSize; }
             set
@@ -254,10 +255,10 @@ namespace Infovision.MRI
                 if (this.Cluster != null)
                     this.Cluster.HistogramBucketSize = value;
                 this.IsCalculated = false;
-            } 
+            }
         }
-        
-        public double BucketCountWeight 
+
+        public double BucketCountWeight
         {
             get { return this.bucketCountWeight; }
             set
@@ -266,10 +267,10 @@ namespace Infovision.MRI
                 if (this.Cluster != null)
                     this.Cluster.BucketCountWeight = value;
                 this.IsCalculated = false;
-            } 
+            }
         }
 
-        public double MinimumClusterDistance 
+        public double MinimumClusterDistance
         {
             get { return this.minimumClusterDistance; }
             set
@@ -278,10 +279,10 @@ namespace Infovision.MRI
                 if (this.Cluster != null)
                     this.Cluster.MinimumClusterDistance = value;
                 this.IsCalculated = false;
-            } 
+            }
         }
-        
-        public double ApproximationDegree 
+
+        public double ApproximationDegree
         {
             get { return this.approximationDegree; }
             set
@@ -290,7 +291,7 @@ namespace Infovision.MRI
                 if (this.Cluster != null)
                     this.Cluster.ApproximationDegree = value;
                 this.IsCalculated = false;
-            } 
+            }
         }
 
         protected override void Calc()
@@ -316,7 +317,7 @@ namespace Infovision.MRI
             this.Cluster.ApproximationDegree = this.ApproximationDegree;
             this.Cluster.Image = this.Image;
             this.Cluster.Slices = this.Slices;
-            
+
             segmentationResult = this.Cluster.Execute(this.Image);
 
             base.Calc();
@@ -327,20 +328,21 @@ namespace Infovision.MRI
     public class ImageFeatureSOMCluster : ImageFeatureFilter
     {
         public ImageFeatureSOMCluster()
-            : base ()
+            : base()
         {
         }
 
         public ImageSOMCluster Cluster
         {
-            get; set;
+            get;
+            set;
         }
 
         protected override void Calc()
         {
             segmentationResult = this.Cluster.Execute(this.Image);
             base.Calc();
-        }        
+        }
     }
 
     [Serializable]
@@ -377,7 +379,8 @@ namespace Infovision.MRI
 
         public EdgeThresholdFilter EdgeFilter
         {
-            get; set;
+            get;
+            set;
         }
 
         protected override void Calc()
@@ -398,7 +401,8 @@ namespace Infovision.MRI
 
         public EdgeThresholdFilter EdgeFilter
         {
-            get; set;
+            get;
+            set;
         }
     }
 
@@ -407,12 +411,13 @@ namespace Infovision.MRI
     {
         public ImageFeatureEdgeNeighbourSOM()
             : base()
-        {            
+        {
         }
 
         public ImageSOMCluster Cluster
         {
-            get; set;
+            get;
+            set;
         }
 
         protected override void Calc()
@@ -446,6 +451,4 @@ namespace Infovision.MRI
             base.Calc();
         }
     }
-
-
 }

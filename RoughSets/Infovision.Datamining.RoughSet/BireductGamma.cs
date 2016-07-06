@@ -25,24 +25,22 @@ namespace Infovision.Datamining.Roughset
         }
 
         public BireductGamma(BireductGamma gammaBireduct)
-            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(), 
+            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(),
                    gammaBireduct.Epsilon)
         {
-
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
         protected override bool CheckRemoveAttribute(int attributeId)
         {
-
             if (base.CheckRemoveAttribute(attributeId) == false)
                 return false;
-            
-            FieldSet newAttributeSet = (FieldSet) (this.Attributes - attributeId);
-            
+
+            FieldSet newAttributeSet = (FieldSet)(this.Attributes - attributeId);
+
             //TODO Performance killer !!!!!!
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(newAttributeSet, this.DataStore);
@@ -70,7 +68,7 @@ namespace Infovision.Datamining.Roughset
             //TODO  Performance killer !!!!!!
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(this.Attributes, this.DataStore);
-                        
+
             EquivalenceClass eqClass = localPartition.GetEquivalenceClass(dataVector);
 
             if (eqClass.NumberOfDecisions > 1)
@@ -81,7 +79,7 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        #endregion
+        #endregion Methods
 
         #region System.Object Methods
 
@@ -99,12 +97,13 @@ namespace Infovision.Datamining.Roughset
             if (gammaBireduct == null)
                 return false;
 
-            return base.Equals( (Bireduct) obj);
+            return base.Equals((Bireduct)obj);
         }
 
-        #endregion
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the GammaBireduct, performing a deep copy.
         /// </summary>
@@ -113,6 +112,7 @@ namespace Infovision.Datamining.Roughset
         {
             return new BireductGamma(this);
         }
-        #endregion
+
+        #endregion ICloneable Members
     }
 }

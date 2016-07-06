@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infovision.Data;
-using NUnit.Framework;
-using Accord.MachineLearning;
-using Accord.Math;
 using System.Data;
-using Accord.Statistics.Filters;
+using System.Linq;
 using Accord.MachineLearning.DecisionTrees;
-using DecTrees = Accord.MachineLearning.DecisionTrees;
 using Accord.MachineLearning.DecisionTrees.Learning;
-using Accord.MachineLearning.DecisionTrees.Rules;
+using Accord.Math;
+using Accord.Statistics.Filters;
+using Infovision.Data;
 using Infovision.Utils;
+using NUnit.Framework;
+
+using DecTrees = Accord.MachineLearning.DecisionTrees;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -30,7 +26,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            
+
             Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
             Console.WriteLine(treeID3.Classify(data, null));
             Console.WriteLine(treeID3.Classify(test, null));
@@ -45,11 +41,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            
+
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
             Console.WriteLine(treeC45.Classify(data, null));
             Console.WriteLine(treeC45.Classify(test, null));
-
         }
 
         [Test]
@@ -68,7 +63,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeC45 c45tree = new DecisionTreeC45();
             c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(c45tree.Classify(test, null));
-
         }
 
         [Test]
@@ -90,7 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
                 randomForest.Size = size;
-                randomForest.NumberOfRandomAttributes = (int)roughForest.AverageReductLength;
+                randomForest.NumberOfRandomAttributes = (int)(0.1 * data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                 randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(randomForest.Classify(test, null));
 
@@ -101,7 +95,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
                 semiRoughForest.Size = size;
-                semiRoughForest.Epsilon = 0.1m;
+                semiRoughForest.Epsilon = 0.05m;
+                semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                 semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(semiRoughForest.Classify(test, null));
 
@@ -209,7 +204,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             C45Learning c45learning = new C45Learning(tree);
 
             Codification codebook = new Codification(data);
-            DataTable symbols = codebook.Apply(data); 
+            DataTable symbols = codebook.Apply(data);
             double[][] inputs = symbols.ToArray<double>(this.AttributeNames(ds));
             int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
 
@@ -280,7 +275,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     correct++;
             }
 
-            Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);            
+            Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);
         }
 
         public void PrintTree(DecisionNode node, int indentSize, int currentLevel, Codification codebook, string decisionName)
@@ -291,9 +286,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine(currentNode);
                 if (node.Output != null)
                 {
-                    currentNode = string.Format("{0}({2} == {1})", 
-                        new string(' ', indentSize * (currentLevel + 1)), 
-                        codebook.Translate(decisionName, (int)node.Output), 
+                    currentNode = string.Format("{0}({2} == {1})",
+                        new string(' ', indentSize * (currentLevel + 1)),
+                        codebook.Translate(decisionName, (int)node.Output),
                         decisionName);
 
                     Console.WriteLine(currentNode);
@@ -347,6 +342,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return data.DataStoreInfo.DecisionInfo.Name;
         }
 
-        #endregion 
+        #endregion Accord Trees
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -64,7 +61,6 @@ namespace Infovision.MRI.DAL
             set;
         }
 
-
         public override Type GetMiningObjectType()
         {
             return typeof(MiningObjectImageExtract);
@@ -72,7 +68,7 @@ namespace Infovision.MRI.DAL
 
         public IImage GetExtractedImage()
         {
-            Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK) this.ImageRef;
+            Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)this.ImageRef;
             return new Infovision.MRI.ImageITK(SimpleITKHelper.GetSlice(itkImage.ItkImage, this.Slice));
         }
     }

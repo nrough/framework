@@ -8,8 +8,7 @@ namespace Infovision.Data
     //TODO T obe removed -  use PascalSet<int> instead!
     [Serializable]
     public class FieldSet : PascalSet<int>
-    {        
-
+    {
         #region Properties
 
         public string CacheKey
@@ -17,7 +16,7 @@ namespace Infovision.Data
             get { return this.ToString(); }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
@@ -46,7 +45,7 @@ namespace Infovision.Data
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -71,7 +70,7 @@ namespace Infovision.Data
         {
             return new FieldSet(dataStoreInfo);
         }
-        
+
         #region System.Object Methods
 
         public override bool Equals(object obj)
@@ -83,27 +82,29 @@ namespace Infovision.Data
             if (attr == null)
                 return false;
 
-            return base.Equals((PascalSet<int>) obj);
+            return base.Equals((PascalSet<int>)obj);
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
-        #endregion
+
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the FieldSet, performing a deep copy.
         /// </summary>
         /// <returns>A new instance of a FieldSet, using a deep copy.</returns>
         public override Object Clone()
         {
-            return new FieldSet(this);            
+            return new FieldSet(this);
         }
-        
-        #endregion
 
-        #endregion
+        #endregion ICloneable Members
+
+        #endregion Methods
     }
 }

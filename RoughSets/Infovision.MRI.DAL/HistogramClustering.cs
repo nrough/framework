@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Infovision.MRI.DAL
 {
@@ -32,13 +29,13 @@ namespace Infovision.MRI.DAL
             set;
         }
 
-        public int MaxNumberOfRepresentatives 
+        public int MaxNumberOfRepresentatives
         {
             get { return this.maxNumberOfRepresentatives; }
             set { SetField(ref this.maxNumberOfRepresentatives, value, () => MaxNumberOfRepresentatives); }
         }
 
-        public int HistogramBucketSize 
+        public int HistogramBucketSize
         {
             get { return this.histogramBucketSize; }
             set { SetField(ref this.histogramBucketSize, value, () => HistogramBucketSize); }

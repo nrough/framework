@@ -9,15 +9,16 @@ namespace Infovision.Data
     public class DataRecordInternal
     {
         #region Members
-           
+
         private Dictionary<int, long> fields;
 
-        #endregion
+        #endregion Members
 
         #region Properties
 
         public long ObjectId { get; set; }
         public int ObjectIdx { get; set; }
+
         public long this[int fieldId]
         {
             get { return fields[fieldId]; }
@@ -27,14 +28,14 @@ namespace Infovision.Data
         public int Length
         {
             get { return fields.Count; }
-        }        
+        }
 
-        #endregion
+        #endregion Properties
 
-        #region Constructors                
+        #region Constructors
 
         public DataRecordInternal(int[] fieldIds, long[] fieldValues)
-        {            
+        {
             this.fields = new Dictionary<int, long>(fieldIds.Length);
 
             if (fieldIds.Length != fieldValues.Length)
@@ -54,7 +55,7 @@ namespace Infovision.Data
             this.fields = valueMap;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -71,10 +72,10 @@ namespace Infovision.Data
         #region System.Object Methods
 
         public override int GetHashCode()
-        {           
-            return HashHelper.GetHashCode<long>(fields.Values.Concat(fields.Keys.Select( i => (long) i)));
+        {
+            return HashHelper.GetHashCode<long>(fields.Values.Concat(fields.Keys.Select(i => (long)i)));
         }
-        
+
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -104,8 +105,8 @@ namespace Infovision.Data
             return true;
         }
 
-        #endregion
+        #endregion System.Object Methods
 
-        #endregion
+        #endregion Methods
     }
 }

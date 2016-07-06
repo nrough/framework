@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing.Imaging;
-using System.Drawing;
-
-namespace Infovision.MRI.DAL
+﻿namespace Infovision.MRI.DAL
 {
     public class ImageHelper
     {
@@ -15,7 +8,7 @@ namespace Infovision.MRI.DAL
 
             switch (imageType)
             {
-                case ImageType.ITKStandard :
+                case ImageType.ITKStandard:
                     ret = ITKImageType.ITKStandardImage;
                     break;
 
@@ -23,7 +16,7 @@ namespace Infovision.MRI.DAL
                     ret = ITKImageType.ITKRawImage;
                     break;
 
-                default :
+                default:
                     ret = ITKImageType.Unknown;
                     break;
             }

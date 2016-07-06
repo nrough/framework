@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Utils
 {
     public static class DictionaryExtensions
     {
-        static Dictionary<TKey, TValue>
+        private static Dictionary<TKey, TValue>
             Merge<TKey, TValue>(this IEnumerable<Dictionary<TKey, TValue>> enumerable)
         {
             return enumerable.SelectMany(x => x).ToDictionary(x => x.Key, y => y.Value);
@@ -17,7 +15,7 @@ namespace Infovision.Utils
         // Works in C#3/VS2008:
         // Returns a new dictionary of this ... others merged leftward.
         // Keeps the type of 'this', which must be default-instantiable.
-        // Example: 
+        // Example:
         //   result = map.MergeLeft(other1, other2, ...)
         public static T MergeLeft<T, K, V>(this T me, params IDictionary<K, V>[] others)
             where T : IDictionary<K, V>, new()
@@ -45,7 +43,7 @@ namespace Infovision.Utils
                 ret.Add((TKey)entry.Key.Clone(), (TValue)entry.Value.Clone());
             return ret;
         }
-        
+
         public static TKey FindMaxValueKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
         {
             return dictionary.FindMaxValuePair(comparer).Key;
@@ -73,10 +71,12 @@ namespace Infovision.Utils
             IEqualityComparer<Dictionary<TKey, TValue>>
     {
         private IEqualityComparer<TValue> valueComparer;
+
         public DictionaryComparer(IEqualityComparer<TValue> valueComparer = null)
         {
             this.valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
         }
+
         public bool Equals(Dictionary<TKey, TValue> x, Dictionary<TKey, TValue> y)
         {
             if (x.Count != y.Count)

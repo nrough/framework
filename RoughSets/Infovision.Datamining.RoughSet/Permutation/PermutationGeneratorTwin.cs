@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -47,6 +47,6 @@ namespace Infovision.Datamining.Roughset
             return permutation;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

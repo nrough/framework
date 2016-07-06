@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
-{    
+{
     [Serializable]
     public class ParameterObjectCollection<T> : ParameterBase<T>
         where T : ICloneable
@@ -16,7 +13,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         private T[] values;
         private int currentIndex;
 
-        #endregion
+        #endregion Globals
 
         #region Constructors
 
@@ -66,16 +63,15 @@ namespace Infovision.Datamining.Experimenter.Parms
             this.ResetCurrent();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
-        
         public virtual int Count
         {
             get { return this.values.Length; }
         }
-        
+
         public override object Current
         {
             get
@@ -88,7 +84,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -118,7 +114,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return (IEnumerator)this;
         }
-        #endregion
+
+        #endregion IEnumerable Members
 
         #region IEnumerator Members
 
@@ -135,7 +132,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return true;
         }
 
-        #endregion
+        #endregion IEnumerator Members
 
         #region ICloneable Members
 
@@ -143,9 +140,9 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             return new ParameterObjectCollection<T>(this);
         }
-        #endregion
 
-        
+        #endregion ICloneable Members
+
         #region ICollection Members
 
         /// <summary>
@@ -163,9 +160,8 @@ namespace Infovision.Datamining.Experimenter.Parms
             valueArray.CopyTo(array, index);
         }
 
-        #endregion
-        
+        #endregion ICollection Members
 
-        #endregion
+        #endregion Methods
     }
 }

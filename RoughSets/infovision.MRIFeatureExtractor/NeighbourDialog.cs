@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Infovision.MRI.UI
@@ -25,17 +18,14 @@ namespace Infovision.MRI.UI
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void NeighbourDialog_Load(object sender, EventArgs e)
         {
-
         }
 
         private void label2_Click(object sender, EventArgs e)
         {
-
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -57,10 +47,10 @@ namespace Infovision.MRI.UI
             {
                 throw new InvalidOperationException("Unexpected error");
             }
-            
-            ComboBox comboBox = (ComboBox) sender;
 
-            imageNeighbour.Labels = imageNeighbour.GetSelectedLabel((long) comboBox.SelectedValue);
+            ComboBox comboBox = (ComboBox)sender;
+
+            imageNeighbour.Labels = imageNeighbour.GetSelectedLabel((long)comboBox.SelectedValue);
         }
 
         private void dlgMaskObject_SelectedIndexChanged(object sender, EventArgs e)
@@ -71,7 +61,7 @@ namespace Infovision.MRI.UI
                 throw new InvalidOperationException("Unexpected error");
             }
 
-            ComboBox comboBox = (ComboBox) sender;
+            ComboBox comboBox = (ComboBox)sender;
 
             imageNeighbour.Mask = imageNeighbour.GetSelectedMask((long)comboBox.SelectedValue);
         }

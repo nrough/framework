@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infovision.Datamining
+﻿namespace Infovision.Datamining
 {
     public interface IConvergence
     {
@@ -12,13 +6,13 @@ namespace Infovision.Datamining
         double OldValue { get; set; }
         bool HasConverged { get; set; }
     }
-    
+
     public class Convergence : IConvergence
     {
         private double newValue;
-        private double oldValue;        
-        
-        public double NewValue 
+        private double oldValue;
+
+        public double NewValue
         {
             get
             {
@@ -44,6 +38,5 @@ namespace Infovision.Datamining
         }
 
         public bool HasConverged { get; set; }
-        
     }
 }

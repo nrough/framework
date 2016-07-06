@@ -11,17 +11,17 @@ namespace Infovision.MRI
         {
             switch (pixelType)
             {
-                case PixelType.Double : return (double) Double.MaxValue;
-                case PixelType.Int16 : return (double) Int16.MaxValue;
-                case PixelType.UInt8 : return (double) Byte.MaxValue;
-                case PixelType.UInt16 : return (double) UInt16.MaxValue;
-                case PixelType.UInt32 : return (double) UInt32.MaxValue;
-                case PixelType.Int8 : return (double) sbyte.MaxValue;
-                case PixelType.Int32 : return (double) Int32.MaxValue;
-                case PixelType.Float : return (double) float.MaxValue;
+                case PixelType.Double: return (double)Double.MaxValue;
+                case PixelType.Int16: return (double)Int16.MaxValue;
+                case PixelType.UInt8: return (double)Byte.MaxValue;
+                case PixelType.UInt16: return (double)UInt16.MaxValue;
+                case PixelType.UInt32: return (double)UInt32.MaxValue;
+                case PixelType.Int8: return (double)sbyte.MaxValue;
+                case PixelType.Int32: return (double)Int32.MaxValue;
+                case PixelType.Float: return (double)float.MaxValue;
                 case PixelType.Int64: return (double)Int64.MaxValue;
                 case PixelType.UInt64: return (double)Int64.MaxValue;
-                
+
                 default:
                     throw new InvalidOperationException("Unknown pixel type");
             }
@@ -46,12 +46,11 @@ namespace Infovision.MRI
 
             @switch[pixelType]();
 
-            return maxPixelValue; 
+            return maxPixelValue;
         }
 
         public static int PixelSize(PixelType pixelType)
         {
-
             switch (pixelType)
             {
                 case PixelType.Double: return sizeof(double);
@@ -67,7 +66,7 @@ namespace Infovision.MRI
 
                 default:
                     throw new InvalidOperationException("Unknown pixel type");
-            } 
+            }
         }
 
         public static int GetNumberOfHistogramBuckets(IImage image, int bucketSize)
@@ -77,7 +76,7 @@ namespace Infovision.MRI
                 throw new ArgumentOutOfRangeException("bucketSize", "Parameter bucketSize should be grater than zero");
             }
 
-            return (int) Math.Ceiling(ImageHelper.MaxPixelValue(image.PixelType) / (double) bucketSize);
+            return (int)Math.Ceiling(ImageHelper.MaxPixelValue(image.PixelType) / (double)bucketSize);
         }
 
         public static Bitmap Convert(byte[] input, int width, int height, int bits)
@@ -90,14 +89,14 @@ namespace Infovision.MRI
             return bitmap;
         }
 
-        static unsafe void ConvertCore(int width, int height, int bits, byte[] input, BitmapData output, uint[] lut)
+        private static unsafe void ConvertCore(int width, int height, int bits, byte[] input, BitmapData output, uint[] lut)
         {
             // Copy pixels from input to output, applying LUT
             ushort mask = (ushort)((1 << bits) - 1);
-            
+
             int inStride = output.Stride;
             int outStride = width * 2;
-            
+
             byte* outData = (byte*)output.Scan0;
 
             fixed (byte* inData = input)
@@ -106,7 +105,7 @@ namespace Infovision.MRI
                 {
                     ushort* inRow = (ushort*)(inData + (y * outStride));
                     uint* outRow = (uint*)(outData + (y * inStride));
-                    
+
                     for (int x = 0; x < width; x++)
                     {
                         ushort inPixel = (ushort)(inRow[x] & mask);
@@ -116,7 +115,7 @@ namespace Infovision.MRI
             }
         }
 
-        static uint[] CreateLut(int bits)
+        private static uint[] CreateLut(int bits)
         {
             // Construct a linear LUT to convert from grayscale to ARGB
             int maxInput = 1 << bits;
@@ -133,7 +132,7 @@ namespace Infovision.MRI
             return lut;
         }
 
-        static byte[] Wedge(int width, int height, int bits)
+        private static byte[] Wedge(int width, int height, int bits)
         {
             // horizontal wedge
             int max = 1 << bits;

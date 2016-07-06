@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Linq;
 using NUnit.Framework;
 
 namespace Infovision.Data.UnitTests
 {
     [TestFixture]
-    class DataStoreTest
+    internal class DataStoreTest
     {
-        DataStore dataStoreTrain = null;
-        DataStore dataStoreTest = null;
+        private DataStore dataStoreTrain = null;
+        private DataStore dataStoreTest = null;
 
-        DataStoreInfo dataStoreTrainInfo = null;
-        DataStoreInfo dataStoreTestInfo = null;
+        private DataStoreInfo dataStoreTrainInfo = null;
+        private DataStoreInfo dataStoreTestInfo = null;
 
         public DataStoreTest()
         {
@@ -32,10 +31,10 @@ namespace Infovision.Data.UnitTests
         {
             Assert.AreEqual(7, dataStoreTrainInfo.DecisionFieldId);
             Assert.AreEqual(7, dataStoreTestInfo.DecisionFieldId);
-            
+
             Assert.AreEqual(432, dataStoreTestInfo.NumberOfRecords);
             Assert.AreEqual(124, dataStoreTrainInfo.NumberOfRecords);
-            
+
             Assert.AreEqual(7, dataStoreTrainInfo.NumberOfFields);
             Assert.AreEqual(7, dataStoreTestInfo.NumberOfFields);
 
@@ -70,14 +69,13 @@ namespace Infovision.Data.UnitTests
             Assert.AreEqual(4, dataStoreTestInfo.GetFieldInfo(5).Values().Count);
             Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(6).Values().Count);
             Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(7).Values().Count);
-
         }
 
         [Test]
         public void ExternalFieldEncoding()
         {
             //First newInstance
-            //1 1 1 1 3 1 1 
+            //1 1 1 1 3 1 1
 
             long internalValue = dataStoreTrain.GetFieldValue(0, 1);
             Object externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
@@ -107,7 +105,7 @@ namespace Infovision.Data.UnitTests
             Assert.AreEqual(1, (int)externalValue);
 
             //60th newInstance
-            //2 1 2 3 4 1 0 
+            //2 1 2 3 4 1 0
 
             internalValue = dataStoreTrain.GetFieldValue(60, 1);
             externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
@@ -134,7 +132,7 @@ namespace Infovision.Data.UnitTests
                     long internalValue = dataStoreTrain.GetFieldValue(i, fieldId);
                     Object externalValue = dataStoreTrainInfo.GetFieldInfo(fieldId).Internal2External(internalValue);
                     Object externalValueFromRecord = dataStoreTrainInfo.GetFieldInfo(fieldId).Internal2External(dataRecord[fieldId]);
-                    Assert.AreEqual((int)externalValueFromRecord, (int)externalValue);                    
+                    Assert.AreEqual((int)externalValueFromRecord, (int)externalValue);
                 }
             }
         }
@@ -169,10 +167,10 @@ namespace Infovision.Data.UnitTests
             {
                 DataRecordInternal dataRecord1 = dataStoreTest.GetRecordByIndex(i);
                 DataRecordInternal dataRecord2 = dataStoreTest.GetRecordByIndex(i);
-                
+
                 Assert.AreEqual(dataRecord1, dataRecord2);
                 Assert.AreNotSame(dataRecord1, dataRecord2);
-                
+
                 dict[dataRecord1] = dict.TryGetValue(dataRecord1, out count) ? ++count : 1;
             }
 
@@ -180,8 +178,8 @@ namespace Infovision.Data.UnitTests
             {
                 Assert.AreEqual(1, kvp.Value);
                 DataRecordInternal record = kvp.Key;
-                
-                foreach(int fieldId in record.GetFields())
+
+                foreach (int fieldId in record.GetFields())
                 {
                     Assert.AreEqual(dataStoreTest.GetFieldValue((int)record.ObjectId - 1, fieldId), record[fieldId]);
                 }
@@ -222,13 +220,12 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void OrderByTest()
         {
-            
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-                
-            int[][] orderBy = new int[][] 
-            { 
-                new int[] { 1, 3, 5 }, 
-                new int[] { 2, 1}, 
+
+            int[][] orderBy = new int[][]
+            {
+                new int[] { 1, 3, 5 },
+                new int[] { 2, 1},
                 new int[] { 5, 3, 2},
                 new int[] { 19, 17, 18, 15, 14, 13, 12, 11, 7, 6, 4, 3, 2, 1},
                 new int[] { 19, 11, 15, 14, 10, 12, 7, 6, 5, 3, 2, 1}
@@ -241,11 +238,11 @@ namespace Infovision.Data.UnitTests
 
                 for (int j = 1; j < data.NumberOfRecords; j++)
                 {
-                    AttributeValueVector record = data.GetDataVector(sortedArray[j - 1], orderBy[i]);                                        
-                    
+                    AttributeValueVector record = data.GetDataVector(sortedArray[j - 1], orderBy[i]);
+
                     int result = comparer.Compare(sortedArray[j - 1], sortedArray[j]);
                     Assert.AreNotEqual(1, result);
-                    
+
                     //Console.WriteLine(record);
                 }
             }
@@ -276,12 +273,12 @@ namespace Infovision.Data.UnitTests
         public void SwapTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            for(int i=0; i<data.NumberOfRecords; i++)
+            for (int i = 0; i < data.NumberOfRecords; i++)
                 for (int j = 0; j < data.NumberOfRecords; j++)
                 {
                     var rec1 = data.GetDataVector(i);
                     var rec2 = data.GetDataVector(j);
-                    
+
                     data.Swap(i, j);
 
                     var rec3 = data.GetDataVector(i);
@@ -290,7 +287,6 @@ namespace Infovision.Data.UnitTests
                     Assert.AreEqual(rec2, rec3);
                     Assert.AreEqual(rec1, rec4);
                 }
-
         }
 
         [Test]
@@ -299,6 +295,5 @@ namespace Infovision.Data.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             data.Shuffle();
         }
-
     }
 }

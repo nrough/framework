@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infovision.Math
+﻿namespace Infovision.Math
 {
     public enum AgregateFunction
     {
@@ -12,6 +6,6 @@ namespace Infovision.Math
         Sum = 1,
         Min = 2,
         Max = 3,
-        Avg = 4        
+        Avg = 4
     }
 }

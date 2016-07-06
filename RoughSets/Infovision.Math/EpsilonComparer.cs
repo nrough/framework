@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
@@ -14,20 +11,20 @@ namespace Infovision.Math
             get;
             protected set;
         }
-        
-        public EpsilonComparer(T epsilon)            
+
+        public EpsilonComparer(T epsilon)
         {
             this.Epsilon = epsilon;
-        }                
+        }
 
         public override bool Equals(T a, T b)
-        {            
+        {
             return NearlyEqual(a, b, this.Epsilon);
         }
 
         public virtual int Compare(T a, T b)
         {
-            return a.CompareTo(b);            
+            return a.CompareTo(b);
         }
 
         public override int GetHashCode(T a)
@@ -37,25 +34,25 @@ namespace Infovision.Math
 
         public virtual bool NearlyEqual(T a, T b, T epsilon)
         {
-            return a.Equals(b);            
+            return a.Equals(b);
         }
     }
 
     public class DoubleEpsilonComparer : EpsilonComparer<double>
-    {        
+    {
         private static volatile DoubleEpsilonComparer instance;
         private static object syncRoot = new Object();
         private static double DefaultEpsilon = 1E-9;
-        
+
         public static DoubleEpsilonComparer Instance
         {
-            get 
+            get
             {
                 if (instance == null)
                 {
-                    lock (syncRoot) 
+                    lock (syncRoot)
                     {
-                        if (instance == null) 
+                        if (instance == null)
                             instance = new DoubleEpsilonComparer(DoubleEpsilonComparer.DefaultEpsilon);
                     }
                 }
@@ -66,11 +63,10 @@ namespace Infovision.Math
         public DoubleEpsilonComparer(double epsilon)
             : base(epsilon)
         {
-
         }
 
         public override int Compare(double a, double b)
-        {            
+        {
             double dif = a - b;
             if (dif > this.Epsilon)
                 return 1;
@@ -80,12 +76,12 @@ namespace Infovision.Math
         }
 
         public override bool Equals(double a, double b)
-        {            
+        {
             return NearlyEqual(a, b, this.Epsilon);
         }
 
         public override bool NearlyEqual(double a, double b, double epsilon)
-        {            
+        {
             double absA = System.Math.Abs(a);
             double absB = System.Math.Abs(b);
             double diff = System.Math.Abs(a - b);
@@ -110,20 +106,20 @@ namespace Infovision.Math
     }
 
     public class DecimalEpsilonComparer : EpsilonComparer<decimal>
-    {        
+    {
         private static volatile DecimalEpsilonComparer instance;
         private static object syncRoot = new Object();
         private static decimal DefaultEpsilon = 0.00000000000000001m;
-        
+
         public static DecimalEpsilonComparer Instance
         {
-            get 
+            get
             {
                 if (instance == null)
                 {
-                    lock (syncRoot) 
+                    lock (syncRoot)
                     {
-                        if (instance == null) 
+                        if (instance == null)
                             instance = new DecimalEpsilonComparer(DecimalEpsilonComparer.DefaultEpsilon);
                     }
                 }
@@ -137,7 +133,7 @@ namespace Infovision.Math
         }
 
         public override int Compare(decimal a, decimal b)
-        {            
+        {
             decimal dif = a - b;
             if (dif > this.Epsilon)
                 return 1;
@@ -147,12 +143,12 @@ namespace Infovision.Math
         }
 
         public override bool Equals(decimal a, decimal b)
-        {            
+        {
             return NearlyEqual(a, b, this.Epsilon);
         }
 
         public override bool NearlyEqual(decimal a, decimal b, decimal epsilon)
-        {            
+        {
             decimal absA = System.Math.Abs(a);
             decimal absB = System.Math.Abs(b);
             decimal diff = System.Math.Abs(a - b);
@@ -175,5 +171,4 @@ namespace Infovision.Math
             }
         }
     }
-    
 }

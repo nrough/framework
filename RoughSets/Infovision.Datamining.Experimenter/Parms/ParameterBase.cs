@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Experimenter.Parms
 {
@@ -15,7 +11,7 @@ namespace Infovision.Datamining.Experimenter.Parms
         private readonly object syncRoot = new object();
         private string name;
 
-        #endregion
+        #endregion Global
 
         #region Properties
 
@@ -64,16 +60,17 @@ namespace Infovision.Datamining.Experimenter.Parms
             get { return false; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
         public virtual bool InRange(object value)
         {
-             throw new NotImplementedException("Method InRange() not implemented");
+            throw new NotImplementedException("Method InRange() not implemented");
         }
-        
+
         /*
+
         #region ICollection Members
 
         /// <summary>
@@ -83,7 +80,9 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             throw new NotImplementedException("Method CopyTo(Array, Int32) not implemented");
         }
-        #endregion
+
+        #endregion ICollection Members
+
         */
 
         #region ICloneable
@@ -93,7 +92,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             throw new NotImplementedException("Method Clone() not implemented");
         }
 
-        #endregion
+        #endregion ICloneable
 
         #region IEnumerable Members
 
@@ -101,7 +100,8 @@ namespace Infovision.Datamining.Experimenter.Parms
         {
             throw new NotImplementedException("Method GetEnumerator() not implemented");
         }
-        #endregion
+
+        #endregion IEnumerable Members
 
         #region IEnumerator Members
 
@@ -115,8 +115,8 @@ namespace Infovision.Datamining.Experimenter.Parms
             throw new NotImplementedException("Method MoveNext() not implemented");
         }
 
-        #endregion
+        #endregion IEnumerator Members
 
-        #endregion
+        #endregion Methods
     }
 }

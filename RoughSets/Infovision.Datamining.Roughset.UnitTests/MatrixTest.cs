@@ -1,5 +1,4 @@
-﻿using System;
-using Infovision.Utils;
+﻿using Infovision.Utils;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -31,12 +30,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void AddElementTest()
         {
             Matrix<int, int, int> matrix = new Matrix<int, int, int>();
-            
+
             this.AddElements(matrix);
 
             Assert.AreEqual(3, matrix.NumberOfCols);
             Assert.AreEqual(3, matrix.NumberOfRows);
-            
+
             Assert.AreEqual(true, matrix.ContainsElement(1, 1));
             Assert.AreEqual(true, matrix.ContainsElement(1, 2));
             Assert.AreEqual(true, matrix.ContainsElement(1, 3));
@@ -50,7 +49,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.AreEqual(false, matrix.ContainsElement(1, 4));
             Assert.AreEqual(false, matrix.ContainsElement(2, 4));
             Assert.AreEqual(false, matrix.ContainsElement(3, 4));
-
         }
 
         [Test]
@@ -122,11 +120,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.AreEqual(false, matrix.ContainsElement(1, 1));
             Assert.AreEqual(false, matrix.ContainsElement(1, 2));
             Assert.AreEqual(false, matrix.ContainsElement(1, 3));
-            
+
             Assert.AreEqual(true, matrix.ContainsElement(2, 1));
             Assert.AreEqual(true, matrix.ContainsElement(2, 2));
             Assert.AreEqual(true, matrix.ContainsElement(2, 3));
-            
+
             Assert.AreEqual(true, matrix.ContainsElement(3, 1));
             Assert.AreEqual(true, matrix.ContainsElement(3, 2));
             Assert.AreEqual(true, matrix.ContainsElement(3, 3));

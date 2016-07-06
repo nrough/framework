@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Math
 {
@@ -13,31 +11,31 @@ namespace Infovision.Math
         {
             if (current.Count() != other.Count())
                 throw new ArgumentException("Both collections of data must contain an equal number of elements");
- 
+
             double[] ranksX = GetRanking(current);
             double[] ranksY = GetRanking(other);
- 
+
             var diffPair = ranksX.Zip(ranksY, (x, y) => new { x, y });
             double sigmaDiff = diffPair.Sum(s => System.Math.Pow(s.x - s.y, 2));
             int n = current.Count();
- 
+
             // Spearman's Coefficient of Correlation
             // ρ = 1 - ((6 * sum of rank differences^2) / (n(n^2 - 1))
             double rho = 1.0 - ((6.0 * sigmaDiff) / (System.Math.Pow(n, 3) - n));
- 
+
             return rho;
         }
-        
-        static double[] GetRanking(IEnumerable<int> values)
+
+        private static double[] GetRanking(IEnumerable<int> values)
         {
             var groupedValues = values.OrderByDescending(n => n)
                                       .Select((val, i) => new { Value = val, IndexedRank = i + 1 })
                                       .GroupBy(i => i.Value);
- 
+
             double[] rankings = (from n in values
                                  join grp in groupedValues on n equals grp.Key
                                  select grp.Average(g => g.IndexedRank)).ToArray();
- 
+
             return rankings;
         }
 
@@ -90,7 +88,5 @@ namespace Infovision.Math
 
             return covariance / stdX / stdY;
         }
-
-
     }
 }

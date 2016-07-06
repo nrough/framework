@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Infovision.Utils
-{       
+{
     [Serializable]
     public class Args
         : IEnumerable<KeyValuePair<string, object>>, ICloneable
@@ -23,7 +23,7 @@ namespace Infovision.Utils
             get { return this.GetParameter(id); }
             set { this.SetParameter(id, value); }
         }
-        
+
         public Args()
         {
             this.parameters = new Dictionary<string, object>();
@@ -87,7 +87,7 @@ namespace Infovision.Utils
 
             this.parameters[key] = value;
         }
-        
+
         public void RemoveParameter(string key)
         {
             this.parameters.Remove(key);
@@ -130,7 +130,7 @@ namespace Infovision.Utils
         public string GetParameterName(int index)
         {
             return this.parameterOrder[index];
-        }        
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {

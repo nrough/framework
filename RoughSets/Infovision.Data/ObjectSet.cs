@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Infovision.Utils;
 
@@ -7,10 +6,10 @@ namespace Infovision.Data
 {
     public class ObjectSet : PascalSet<int>, IObjectSetInfo
     {
-        DataStore dataStore = null;        
-        Dictionary<long, int> decisionCount;
+        private DataStore dataStore = null;
+        private Dictionary<long, int> decisionCount;
         private object mutex = new object();
-                
+
         #region Properties
 
         public DataStore DataStore
@@ -33,22 +32,21 @@ namespace Infovision.Data
             get { return this.ToString(); }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors
 
-        
         public ObjectSet(DataStore dataStore, IEnumerable<int> initialData)
             : base(0, dataStore.NumberOfRecords - 1, initialData)
         {
             this.dataStore = dataStore;
-            this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);            
-            int decisionIdx = this.dataStore.DataStoreInfo.DecisionFieldIndex;            
-            foreach(int objectIdx in initialData)
+            this.decisionCount = new Dictionary<long, int>(this.dataStore.DataStoreInfo.NumberOfDecisionValues);
+            int decisionIdx = this.dataStore.DataStoreInfo.DecisionFieldIndex;
+            foreach (int objectIdx in initialData)
             {
-                long decisionValue = this.dataStore.GetFieldIndexValue(objectIdx, decisionIdx);                
+                long decisionValue = this.dataStore.GetFieldIndexValue(objectIdx, decisionIdx);
                 int count = 0;
-                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;                                
+                this.decisionCount[decisionValue] = this.decisionCount.TryGetValue(decisionValue, out count) ? ++count : 1;
             }
         }
 
@@ -62,7 +60,7 @@ namespace Infovision.Data
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -106,7 +104,7 @@ namespace Infovision.Data
         public static ObjectSet ConstructEmptyObjectSet(DataStore dataStore)
         {
             return new ObjectSet(dataStore);
-        }        
+        }
 
         public int NumberOfObjectsWithDecision(long decisionValue)
         {
@@ -114,7 +112,7 @@ namespace Infovision.Data
             if (this.decisionCount.TryGetValue(decisionValue, out count))
                 return count;
             return 0;
-        }        
+        }
 
         #region System.Object Methods
 
@@ -148,9 +146,11 @@ namespace Infovision.Data
 
             return base.Equals((PascalSet<int>)obj);
         }
-        #endregion
+
+        #endregion System.Object Methods
 
         #region ICloneable Members
+
         /// <summary>
         /// Clones the ObjectSet, performing a deep copy.
         /// </summary>
@@ -160,8 +160,8 @@ namespace Infovision.Data
             return new ObjectSet(this);
         }
 
-        #endregion
+        #endregion ICloneable Members
 
-        #endregion
+        #endregion Methods
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset
 {
     public delegate decimal RuleQualityFunction(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
-    
+
     public static class RuleQuality
     {
         //P(X,E)
@@ -17,12 +14,12 @@ namespace Infovision.Datamining.Roughset
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)count_U;
             return 0;
         }
-      
+
         //Pw(X,E)
         public static decimal SupportW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
         {
             return eqClass != null ? eqClass.GetDecisionWeight(decisionValue) : 0;
-        }        
+        }
 
         // P(X|E) = P(X,E)/P(E)
         public static decimal Confidence(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -30,7 +27,7 @@ namespace Infovision.Datamining.Roughset
             if (eqClass != null && eqClass.NumberOfObjects > 0)
                 return (decimal)eqClass.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)eqClass.NumberOfObjects;
             return 0;
-        }        
+        }
 
         // Pw(X|E) = Pw(X,E)/Pw(E)
         public static decimal ConfidenceW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -38,8 +35,8 @@ namespace Infovision.Datamining.Roughset
             if (eqClass == null) return 0;
             decimal weightSum_XE = eqClass.GetDecisionWeight(decisionValue);
             decimal weightSum_E = eqClass.WeightSum;
-            return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;            
-        }        
+            return weightSum_E != 0 ? weightSum_XE / weightSum_E : 0;
+        }
 
         //P(E|X) = P(X,E)/P(X)
         public static decimal Coverage(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -47,9 +44,9 @@ namespace Infovision.Datamining.Roughset
             if (eqClass == null) return 0;
             int count_XE = eqClass.GetNumberOfObjectsWithDecision(decisionValue);
             if (count_XE == 0) return 0;
-            int count_X = (int) reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+            int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
             return count_X != 0 ? (decimal)count_XE / (decimal)count_X : 0;
-        }        
+        }
 
         //Pw(E|X) = Pw(X,E)/Pw(X)
         public static decimal CoverageW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -59,7 +56,7 @@ namespace Infovision.Datamining.Roughset
             if (weight_XE == 0) return 0;
             decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_X != 0) ? weight_XE / weight_X : 0;
-        }        
+        }
 
         //P(X,E)/P(E) / P(X) = P(X|E)/P(X)
         public static decimal Ratio(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -70,7 +67,7 @@ namespace Infovision.Datamining.Roughset
             if (count_E == 0) return 0;
             int count_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
             return (count_E * count_X) != 0 ? ((decimal)count_XE / (decimal)(count_E * count_X)) : 0;
-        }        
+        }
 
         //Pw(X|E)/Pw(X) = Pw(X,E)/(Pw(E) * Pw(X))
         public static decimal RatioW(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -81,7 +78,7 @@ namespace Infovision.Datamining.Roughset
             if (weight_E == 0) return 0;
             decimal weight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[decisionValue];
             return (weight_E * weight_X) != 0 ? weight_XE / (weight_E * weight_X) : 0;
-        }        
+        }
 
         //P(E)
         public static decimal Strength(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -131,7 +128,7 @@ namespace Infovision.Datamining.Roughset
             decimal sum = 0;
 
             //TODO should we consider all decision in case of intersections?
-            foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues()) 
+            foreach (long dec in reduct.ObjectSetInfo.GetDecisionValues())
             {
                 decimal localWeight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[dec];
                 if (localWeight_X > 0)
@@ -147,7 +144,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             return 0;
-        }        
+        }
 
         //Used for rule voting, returns one
         public static decimal SingleVote(long decisionValue, IReduct reduct, EquivalenceClass eqClass)

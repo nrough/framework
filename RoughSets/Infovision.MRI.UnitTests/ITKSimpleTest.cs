@@ -10,14 +10,14 @@ using itk.simple;
 using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
-{    
-    [TestFixture]    
+{
+    [TestFixture]
     public class ITKSimpleTest
-    {                       
-        [Test]        
+    {
+        [Test]
         public void ReadImagePNG()
         {
-            string fileName = @"Data\Brain-MRI.png";      
+            string fileName = @"Data\Brain-MRI.png";
             ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
             itk.simple.Image image = reader.Execute();
@@ -27,7 +27,7 @@ namespace Infovision.MRI.UnitTests
             ImageInfo(image);
         }
 
-        [Test]        
+        [Test]
         public void WriteImagePNG()
         {
             string inputFileName = @"Brain-MRI.png";
@@ -38,7 +38,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image input = reader.Execute();
 
             ImageInfo(input);
-            
+
             SmoothingRecursiveGaussianImageFilter gaussian = new SmoothingRecursiveGaussianImageFilter();
             gaussian.SetSigma(2.0);
             itk.simple.Image blurredImage = gaussian.Execute(input);
@@ -56,7 +56,7 @@ namespace Infovision.MRI.UnitTests
             Assert.IsTrue(File.Exists(outputFileName));
         }
 
-        [Test]        
+        [Test]
         public void ReadImageAnalyze()
         {
             string fileName = @"ANA_3CRISP00001.img";
@@ -64,7 +64,7 @@ namespace Infovision.MRI.UnitTests
             ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
             itk.simple.Image image = reader.Execute();
-            
+
             Assert.IsNotNull(image);
 
             ImageInfo(image);
@@ -80,7 +80,7 @@ namespace Infovision.MRI.UnitTests
         public void ReadImageMNC1()
         {
             string fileName = @"Data\t1_icbm_normal_1mm_pn3_rf20.mnc";
-            ImageFileReader reader = new ImageFileReader();            
+            ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
             itk.simple.Image image = reader.Execute();
             Assert.IsNotNull(image);
@@ -92,7 +92,6 @@ namespace Infovision.MRI.UnitTests
         public void ReadImageMNC2()
         {
             string fileName = @"Data\t1_icbm_normal_1mm_pn3_rf20_3.mnc";
-         
 
             ImageFileReader reader = new ImageFileReader();
             reader.SetFileName(fileName);
@@ -115,7 +114,7 @@ namespace Infovision.MRI.UnitTests
             SimpleITK.Show(importedImage);
         }
 
-        [Test]        
+        [Test]
         public void TestImageJ()
         {
             string fileName = @"Brain-MRI.png";
@@ -144,7 +143,7 @@ namespace Infovision.MRI.UnitTests
             {
                 p.Kill();
             }
-            
+
             SimpleITK.Show(image);
 
             // get associated processes
@@ -157,14 +156,14 @@ namespace Infovision.MRI.UnitTests
             }
 
             Assert.IsTrue(imageJApp.Count > 0);
-            
+
             foreach (Process p in imageJApp)
             {
                 p.Kill();
             }
         }
 
-        [Test]        
+        [Test]
         public void ReadImageBrainwebAnalyze75()
         {
             string fileName = @"t1_icbm_normal_1mm_pn3_rf20.img";
@@ -175,7 +174,7 @@ namespace Infovision.MRI.UnitTests
             ImageInfo(image);
         }
 
-        [Test]        
+        [Test]
         public void ReadImageAndPhantomVoxels()
         {
             string imageFileName = @"t1_icbm_normal_1mm_pn3_rf20.img";
@@ -213,7 +212,7 @@ namespace Infovision.MRI.UnitTests
             }
         }
 
-        [Test]        
+        [Test]
         public void CheckPhantomValues()
         {
             string imageFileName = @"Data\t1_icbm_normal_1mm_pn3_rf20.img";
@@ -249,7 +248,7 @@ namespace Infovision.MRI.UnitTests
             }
         }
 
-        [Test]        
+        [Test]
         public void ExtractImageFromImageSeries()
         {
             string imageFileName = @"Data\t1_icbm_normal_1mm_pn3_rf20.img";
@@ -345,7 +344,6 @@ namespace Infovision.MRI.UnitTests
             {
                 for (uint y = 0; y < image.GetHeight(); y++)
                 {
-
                     sliceLocation[0] = x;
                     sliceLocation[1] = y;
 
@@ -374,9 +372,9 @@ namespace Infovision.MRI.UnitTests
             uint width = 181, height = 217;
             int sliceId = 89;
             itk.simple.Image image = SimpleITK.ReadImage(@"Data\t1_icbm_normal_1mm_pn3_rf20.img");
-            itk.simple.Image slice = SimpleITK.Extract(image, 
-                                            new VectorUInt32(new uint[] { width, height, 0 }), 
-                                            new VectorInt32(new int[] { 0, 0, sliceId }), 
+            itk.simple.Image slice = SimpleITK.Extract(image,
+                                            new VectorUInt32(new uint[] { width, height, 0 }),
+                                            new VectorInt32(new int[] { 0, 0, sliceId }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
             Assert.IsNotNull(slice);
             SimpleITK.Show(slice, "Extracted slice 89");
@@ -409,7 +407,7 @@ namespace Infovision.MRI.UnitTests
             SimpleITK.Show(neighbourhood, "Neighbourhood");
         }
 
-        [Test]        
+        [Test]
         public void ImageStatistics()
         {
             uint width = 181, height = 217;
@@ -419,7 +417,7 @@ namespace Infovision.MRI.UnitTests
                                             new VectorUInt32(new uint[] { width, height, 0 }),
                                             new VectorInt32(new int[] { 0, 0, sliceId }),
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
-            
+
             StatisticsImageFilter imageStats = new StatisticsImageFilter();
             imageStats.Execute(slice);
 
@@ -434,11 +432,10 @@ namespace Infovision.MRI.UnitTests
         [Test]
         public void ImageSOMClassifierTest()
         {
-
             Assert.IsNotNull(SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8));
             Assert.IsNotNull(SimpleITKHelper.ReadImageRAW(@"Data\t2_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8));
             Assert.IsNotNull(SimpleITKHelper.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8));
-            
+
             ImageSOMCluster som = new ImageSOMCluster(3, 9);
             som.Train(new IImage[] {
                         ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8),
@@ -455,13 +452,11 @@ namespace Infovision.MRI.UnitTests
                                         ImageITK.ReadImageRAW(@"Data\pd_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8)});
 
             ImageITK.Show((ImageITK)result);
-                    
         }
 
         [Test]
         public void ImageSOMClassifierSingleModalityTest()
         {
-
             Assert.IsNotNull(SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8));
 
             ImageSOMCluster som = new ImageSOMCluster(1, 9);
@@ -474,7 +469,7 @@ namespace Infovision.MRI.UnitTests
             IImage image = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             IImage result = som.Execute(image);
             ImageITK.Show((ImageITK)result);
-        }        
+        }
 
         [Test]
         public void SimpleContourExtractorImageFilter()
@@ -482,7 +477,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.Image trainImage = SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
 
             HConvexImageFilter convexImage = new HConvexImageFilter();
-            itk.simple.Image img  = convexImage.Execute(trainImage, 80, true);
+            itk.simple.Image img = convexImage.Execute(trainImage, 80, true);
             SimpleITK.Show(img);
         }
 
@@ -493,13 +488,13 @@ namespace Infovision.MRI.UnitTests
 
             MRIMaskBinaryImageFilter mriMaskImageFilter = new MRIMaskBinaryImageFilter();
             IImage result = mriMaskImageFilter.Execute(image);
-            ImageITK.Show((ImageITK) result);
+            ImageITK.Show((ImageITK)result);
 
             for (int i = 60; i < 80; i++)
             {
                 IImage slice = image.Extract(i);
                 result = mriMaskImageFilter.Execute(slice);
-                ImageITK.Show((ImageITK) result);
+                ImageITK.Show((ImageITK)result);
             }
         }
 
@@ -508,9 +503,9 @@ namespace Infovision.MRI.UnitTests
         {
             itk.simple.Image image = SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             SimpleITK.Show(image);
-            
+
             itk.simple.Image doubleImage = SimpleITK.Cast(image, PixelIDValueEnum.sitkFloat64);
-            int numberOfBuckets = (int) Math.Ceiling(SimpleITKHelper.MaxPixelValue(image.GetPixelIDValue()) / (double) 4);
+            int numberOfBuckets = (int)Math.Ceiling(SimpleITKHelper.MaxPixelValue(image.GetPixelIDValue()) / (double)4);
             MathNet.Numerics.Statistics.Histogram histogram = ImageHistogram.GetHistogram(doubleImage, numberOfBuckets);
 
             int j = ImageHistogram.FindLocalMinima(histogram, ImageHistogram.FindGlobalMaxima(histogram));
@@ -539,7 +534,6 @@ namespace Infovision.MRI.UnitTests
 
             SimpleITK.Show(substractedImage, "Result");
 
-            
             /*
             OtsuThresholdImageFilter otsuImageFilter = new OtsuThresholdImageFilter();
             otsuImageFilter.SetInsideValue(0);
@@ -567,7 +561,7 @@ namespace Infovision.MRI.UnitTests
             itk.simple.ImageRead result3 = holeFillingBinaryIterative.Execute(otsuImage);
 
             SimpleITK.Show(result3, "Voting Binary Hole Filling Iterative");
-            */            
+            */
         }
 
         [Test]
@@ -593,10 +587,10 @@ namespace Infovision.MRI.UnitTests
         public void MRIHoleFillImageFilter()
         {
             IImage image = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
-            ImageITK.Show((ImageITK) image);
+            ImageITK.Show((ImageITK)image);
 
             IImage thresholdImage = new MRIMaskBinaryImageFilter().Execute(image);
-            ImageITK.Show((ImageITK) thresholdImage);
+            ImageITK.Show((ImageITK)thresholdImage);
 
             IImage holeFillImage = new MRIHoleFillImageFilter().Execute(thresholdImage);
             ImageITK.Show((ImageITK)holeFillImage);
@@ -609,7 +603,7 @@ namespace Infovision.MRI.UnitTests
             SimpleITK.Show(image);
 
             ShrinkImageFilter shrinkFilter = new ShrinkImageFilter();
-            shrinkFilter.SetShrinkFactors(new VectorUInt32(new uint[] {2, 1, 1}));
+            shrinkFilter.SetShrinkFactors(new VectorUInt32(new uint[] { 2, 1, 1 }));
 
             itk.simple.Image shrinkImage = shrinkFilter.Execute(image);
             SimpleITK.Show(shrinkImage);
@@ -621,7 +615,7 @@ namespace Infovision.MRI.UnitTests
             IImage image = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
             ImageITK.Show((ImageITK)image);
 
-            ImageITK maskImage = (ImageITK) new MRIMaskBinaryImageFilter().Execute(image);
+            ImageITK maskImage = (ImageITK)new MRIMaskBinaryImageFilter().Execute(image);
             ImageITK.Show(maskImage);
 
             BinaryErodeImageFilter binaryErode20 = new BinaryErodeImageFilter();
@@ -651,13 +645,13 @@ namespace Infovision.MRI.UnitTests
         public void MRIBinaryMask()
         {
             IImage image = ImageITK.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 181, 217, 181, PixelIDValueEnum.sitkUInt8);
-            ImageITK.Show((ImageITK) image);
+            ImageITK.Show((ImageITK)image);
 
             IImage maskImage = new MRIMaskBinaryImageFilter().Execute(image);
             //SimpleITK.Show(image);
 
             MRIMaskConcentricImageFilter binarySubMask = new MRIMaskConcentricImageFilter();
-            
+
             binarySubMask.AddMaskItem(new MRIMaskItem { LabelValue = 10, Radius = 10 });
             binarySubMask.AddMaskItem(new MRIMaskItem { LabelValue = 20, Radius = 10 });
             binarySubMask.AddMaskItem(new MRIMaskItem { LabelValue = 30, Radius = 10 });
@@ -666,7 +660,7 @@ namespace Infovision.MRI.UnitTests
             binarySubMask.AddMaskItem(new MRIMaskItem { LabelValue = 60, Radius = 10 });
 
             IImage maskConcentric = binarySubMask.Execute(maskImage);
-            ImageITK.Show((ImageITK) maskConcentric);
+            ImageITK.Show((ImageITK)maskConcentric);
         }
 
         [Test]
@@ -736,15 +730,14 @@ namespace Infovision.MRI.UnitTests
             uint depth = 181;
             int sliceIdx = 69;
 
-
-            itk.simple.Image image = SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb", 
-                                                                 width, 
-                                                                 height, 
-                                                                 depth, 
+            itk.simple.Image image = SimpleITKHelper.ReadImageRAW(@"Data\t1_icbm_normal_1mm_pn3_rf20.rawb",
+                                                                 width,
+                                                                 height,
+                                                                 depth,
                                                                  PixelIDValueEnum.sitkUInt8);
-            
+
             itk.simple.Image slice = SimpleITKHelper.GetSlice(image, sliceIdx);
-            
+
             byte[] pixels = new byte[width * height];
             Marshal.Copy(slice.GetBufferAsUInt8(), pixels, 0, (int)width * (int)height);
             VectorUInt32 position = new VectorUInt32(new uint[] { 0, 0 });

@@ -421,6 +421,7 @@ namespace Infovision.Datamining.Roughset
         public decimal Epsilon { get; set; }
         public int NumberOfPermutationsPerTree { get; set; }
         public string ReductGeneratorFactory { get; set; }
+        public virtual PermutationCollection PermutationCollection { get; set; }
 
         public RoughForest()
             : base()
@@ -434,7 +435,11 @@ namespace Infovision.Datamining.Roughset
         protected virtual IReduct CalculateReduct(DataStore data)
         {
             //WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
-            PermutationCollection permutations = new PermutationGenerator(data).Generate(this.NumberOfPermutationsPerTree);
+            PermutationCollection permutations = null;
+            if(this.PermutationCollection != null)
+                permutations = this.PermutationCollection;
+            else
+                permutations = new PermutationGenerator(data).Generate(this.NumberOfPermutationsPerTree);
 
             decimal localEpsilon = Decimal.MinValue;
             if (this.Epsilon >= 0)
@@ -536,14 +541,50 @@ namespace Infovision.Datamining.Roughset
     public class DummyForest<T> : RoughForest<T>
         where T : IRandomForestTree, new()
     {
+        protected bool firstReduct = true;
+        protected int[][] attributes = null;
+        protected int localIterationNum = 0;
+
         protected override IReduct CalculateReduct(DataStore data)
         {
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-            int len = attributes.Length;
-            attributes = attributes.RandomSubArray(RandomSingleton.Random.Next(1, len));
-            IReduct reduct = new ReductWeights(data, attributes, 0, data.Weights);
+            if(this.firstReduct == true)
+            {
+                if(this.PermutationCollection != null)
+                {
+                    this.attributes = new int[this.PermutationCollection.Count][];
+                    int i = 0;
+                    foreach(var permutation in this.PermutationCollection)
+                        this.attributes[i++] = permutation.ToArray();
+                }
+                else
+                {
+                    this.attributes = new int[this.Size][];
+                    for(int i=0; i<this.Size; i++)
+                    {
+                        this.attributes[i] = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                        int len = this.attributes[i].Length;
+                        this.attributes[i] = this.attributes[i].RandomSubArray(RandomSingleton.Random.Next(1, len));
+                    }
+                }
+
+                this.firstReduct = false;
+            }
+
+
+            IReduct reduct = new ReductWeights(data, this.attributes[this.localIterationNum], 0, data.Weights);
+            this.localIterationNum++;
 
             return reduct;
+        }
+
+        public override double Learn(DataStore data, int[] attributes)
+        {
+ 	        double result = base.Learn(data, attributes);
+
+            this.firstReduct = true;
+            this.localIterationNum = 0;
+
+            return result;
         }
     }
 
@@ -552,12 +593,31 @@ namespace Infovision.Datamining.Roughset
     {
         protected override IReduct CalculateReduct(DataStore data)
         {
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-            int len = attributes.Length;
-            attributes = attributes.RandomSubArray(RandomSingleton.Random.Next(1, len));
+            if(this.firstReduct == true)
+            {
+                if(this.PermutationCollection != null)
+                {
+                    this.attributes = new int[this.PermutationCollection.Count][];
+                    int i = 0;
+                    foreach(var permutation in this.PermutationCollection)
+                        this.attributes[i++] = permutation.ToArray();
+                }
+                else
+                {
+                    this.attributes = new int[this.Size][];
+                    for(int i=0; i<this.Size; i++)
+                    {
+                        this.attributes[i] = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                        int len = this.attributes[i].Length;
+                        this.attributes[i] = this.attributes[i].RandomSubArray(RandomSingleton.Random.Next(1, len));
+                    }
+                }
 
-            PermutationCollection permutations = new PermutationCollection(new Permutation(attributes));
-            IReduct r = new ReductWeights(data, attributes, 0, data.Weights);
+                this.firstReduct = false;
+            }
+
+            PermutationCollection permutations = new PermutationCollection(new Permutation(this.attributes[this.localIterationNum]));
+            IReduct r = new ReductWeights(data, this.attributes[this.localIterationNum], 0, data.Weights);
             InformationMeasureWeights m = new InformationMeasureWeights();
             decimal q = m.Calc(r);
 
@@ -574,6 +634,8 @@ namespace Infovision.Datamining.Roughset
 
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
             IReduct reduct = reductStoreCollection.First().First();
+
+            this.localIterationNum++;
 
             return reduct;
         }

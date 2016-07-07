@@ -88,14 +88,25 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(randomForest.Classify(test, null));
 
+                PermutationCollection permutations = new PermutationCollection();
+                for (int j = 0; j < size; j++)
+                {
+                    int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                    int len = attributes.Length;
+                    attributes = attributes.RandomSubArray(RandomSingleton.Random.Next(1, len));
+                    permutations.Add(new Permutation(attributes));
+                }
+                
                 DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
                 dummyForest.Size = size;
+                dummyForest.PermutationCollection = permutations;
                 dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(dummyForest.Classify(test, null));
 
                 SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
                 semiRoughForest.Size = size;
                 semiRoughForest.Epsilon = 0.05m;
+                semiRoughForest.PermutationCollection = permutations;
                 semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                 semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 Console.WriteLine(semiRoughForest.Classify(test, null));

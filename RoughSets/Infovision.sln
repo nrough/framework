@@ -246,9 +246,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRIExceptions", "MRIExcepti
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionForestTest", "DecisionForestTest\DecisionForestTest.csproj", "{49B766A1-58E9-4943-A597-1572C4A30030}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 32
+		SccNumberOfProjects = 33
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -369,6 +371,10 @@ Global
 		SccProjectTopLevelParentUniqueName31 = Infovision.sln
 		SccProjectName31 = MRIExceptions
 		SccLocalPath31 = MRIExceptions
+		SccProjectUniqueName32 = DecisionForestTest\\DecisionForestTest.csproj
+		SccProjectTopLevelParentUniqueName32 = Infovision.sln
+		SccProjectName32 = DecisionForestTest
+		SccLocalPath32 = DecisionForestTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1139,6 +1145,29 @@ Global
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Release|x64.ActiveCfg = Release|x64
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Release|x64.Build.0 = Release|x64
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Release|x86.ActiveCfg = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|x64.ActiveCfg = Debug|x64
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|x64.Build.0 = Debug|x64
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|Mixed Platforms.Build.0 = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|Win32.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|x64.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Development|x86.ActiveCfg = Debug|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|Win32.ActiveCfg = Release|Any CPU
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|x64.ActiveCfg = Release|x64
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|x64.Build.0 = Release|x64
+		{49B766A1-58E9-4943-A597-1572C4A30030}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1175,5 +1204,6 @@ Global
 		{36B5C6E2-7E39-4144-9A59-F43ABB4B2463} = {2579FDB4-410B-488A-986A-FCD52A161761}
 		{F1EC55B6-A756-4391-8D3E-38291F532E12} = {2579FDB4-410B-488A-986A-FCD52A161761}
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
+		{49B766A1-58E9-4943-A597-1572C4A30030} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection
 EndGlobal

@@ -294,10 +294,20 @@ namespace Infovision.Datamining.Roughset
         where T : IRandomForestTree, new()
     {
         private List<IRandomForestMember> trees;
+        private int attributeLengthSum;
 
         public int Size { get; set; }
         public int BagSizePercent { get; set; }
         public int NumberOfRandomAttributes { get; set; }
+        public DataSampler DataSampler { get; set; }
+
+        public virtual double AverageNumberOfAttributes
+        {
+            get
+            {
+                return (double)this.attributeLengthSum / (double)this.Size;
+            }
+        }
 
         public RandomForest()
         {
@@ -310,9 +320,10 @@ namespace Infovision.Datamining.Roughset
 
         public virtual double Learn(DataStore data, int[] attributes)
         {
-            DataSampler sampler = new DataSampler(data);
+            DataSampler sampler = (this.DataSampler != null) ? this.DataSampler : new DataSampler(data);
             if (this.BagSizePercent != -1)
                 sampler.BagSizePercent = this.BagSizePercent;
+            
             for (int iter = 0; iter < this.Size; iter++)
             {
                 DataStore baggedData = sampler.GetData(iter);
@@ -323,7 +334,14 @@ namespace Infovision.Datamining.Roughset
 
                 double error = tree.Learn(baggedData, attributes);
                 this.AddTree(tree, error);
+
+                attributeLengthSum += ((DecisionTreeNode)tree.Root)
+                    .GroupBy(x => x.Key)
+                    .Select(g => g.First().Key)
+                    .Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId)
+                    .OrderBy(x => x).ToArray().Length;
             }
+
             ClassificationResult trainResult = this.Classify(data, data.Weights);
             return 1 - trainResult.Accuracy;
         }
@@ -410,7 +428,7 @@ namespace Infovision.Datamining.Roughset
         private int reductLengthSum;
         private Dictionary<int, int> attributeCount;
 
-        public double AverageReductLength
+        public override double AverageNumberOfAttributes
         {
             get
             {
@@ -445,7 +463,7 @@ namespace Infovision.Datamining.Roughset
             if (this.Epsilon >= 0)
                 localEpsilon = this.Epsilon;
             else
-                localEpsilon = (decimal)((double)RandomSingleton.Random.Next(0, 30) / 100.0);
+                localEpsilon = (decimal)((double)RandomSingleton.Random.Next(0, 20) / 100.0);
 
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
@@ -507,7 +525,7 @@ namespace Infovision.Datamining.Roughset
         public override double Learn(DataStore data, int[] attributes)
         {
             this.reductLengthSum = 0;
-            DataSampler sampler = new DataSampler(data);
+            DataSampler sampler = (this.DataSampler != null) ? this.DataSampler : new DataSampler(data);
             if (this.BagSizePercent != -1)
                 sampler.BagSizePercent = this.BagSizePercent;
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Infovision.Statistics;
 using Infovision.Utils;
@@ -8,9 +10,11 @@ namespace Infovision.Data
     public class DataSampler
     {
         private int bagSizePercent;
+        private Dictionary<int, DataStore> bagCache;
 
         public DataStore Data { get; set; }
         public double[] Weights { get; set; }
+        public bool CacheResults { get; set; }
 
         public int BagSizePercent
         {
@@ -27,6 +31,7 @@ namespace Infovision.Data
         {
             this.BagSizePercent = 100;
             this.Weights = null;
+            this.CacheResults = false;
         }
 
         public DataSampler(DataStore data)
@@ -36,8 +41,23 @@ namespace Infovision.Data
             this.Weights = (data.Weights != null) ? Array.ConvertAll(data.Weights, x => (double)x) : this.Weights;
         }
 
+        public DataSampler(DataStore data, bool cacheResults)
+            : this(data)
+        {
+            this.CacheResults = cacheResults;
+            if (this.CacheResults)
+            {
+                bagCache = new Dictionary<int, DataStore>();
+            }
+        }
+
         public DataStore GetData(int iteration)
         {
+            DataStore baggedData = null;
+            
+            if(this.CacheResults && bagCache.TryGetValue(iteration, out baggedData))
+                return baggedData;
+            
             int bagsize = this.Data.NumberOfRecords * (this.BagSizePercent / 100);
 
             double[] localWeigths = null;
@@ -51,9 +71,12 @@ namespace Infovision.Data
                 localWeigths.SetAll((double)1 / (double)this.Data.NumberOfRecords);
             }
 
-            DataStore baggedData = this.ResampleWithWeights(localWeigths);
+            baggedData = this.ResampleWithWeights(localWeigths);
             baggedData.Shuffle();
             baggedData = DataStore.Copy(baggedData, 0, bagsize);
+
+            if (this.CacheResults)
+                this.bagCache[iteration] = baggedData;
 
             return baggedData;
         }

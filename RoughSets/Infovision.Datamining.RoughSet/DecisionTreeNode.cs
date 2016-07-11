@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset
             if (children == null)
                 children = new List<DecisionTreeNode>();
             children.Add(child);
-        }
+        } 
 
         public override string ToString()
         {

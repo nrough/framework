@@ -210,6 +210,13 @@ namespace Infovision.Datamining
         public int ExceptionRuleLengthSum { get; set; }
         public int StandardRuleLengthSum { get; set; }
 
+        public string ModelName { get; set; }
+        public decimal Epsilon { get; set; }
+        public int TestNum { get; set; }
+        public int Fold { get; set; }
+        public string DatasetName { get; set; }
+        public int EnsembleSize { get; set; }
+
         #endregion Properties
 
         #region Constructors
@@ -245,6 +252,7 @@ namespace Infovision.Datamining
             this.counter = 0;
             this.ModelCreationTime = -1;
             this.ClassificationTime = -1;
+            this.EnsembleSize = 1;
         }
 
         #endregion Constructors
@@ -428,6 +436,19 @@ namespace Infovision.Datamining
         public static string ResultHeader()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("Data");
+            stringBuilder.Append('|');
+            stringBuilder.Append("ModelName");
+            stringBuilder.Append('|');
+            stringBuilder.Append("TestNum");
+            stringBuilder.Append('|');
+            stringBuilder.Append("Fold");
+            stringBuilder.Append('|');
+            stringBuilder.Append("Epsilon");
+            stringBuilder.Append('|');
+            stringBuilder.Append("EnsembleSize");
+            stringBuilder.Append('|');
+
             stringBuilder.Append("Classified");
             stringBuilder.Append('|');
             stringBuilder.Append("Misclassified");
@@ -472,6 +493,20 @@ namespace Infovision.Datamining
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendFormat("{0,15}", this.DatasetName);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,15}", this.ModelName);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,2}", this.TestNum);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,1}", this.Fold);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00}", this.Epsilon);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0,3}", this.EnsembleSize);
+            stringBuilder.Append('|');
+
+
             stringBuilder.AppendFormat("{0,5}", this.Classified);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,5}", this.Misclassified);
@@ -509,40 +544,6 @@ namespace Infovision.Datamining
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,7}", this.StandardRuleLengthSum);
             stringBuilder.Append('|');
-
-            return stringBuilder.ToString();
-        }
-
-        public string ToString2()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("Number of classified: ");
-            stringBuilder.Digits(this.Classified);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Number of misclassified: ");
-            stringBuilder.Digits(this.Misclassified);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Number of unclassified: ");
-            stringBuilder.Digits(this.Unclassified);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Accuracy: ");
-            stringBuilder.AppendFormat("{0:0.0000}", this.Accuracy);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Balanced Accuracy: ");
-            stringBuilder.AppendFormat("{0:0.0000}", this.BalancedAccuracy);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Confidence: ");
-            stringBuilder.AppendFormat("{0:0.0000}", this.Confidence);
-            stringBuilder.Append('\n');
-
-            stringBuilder.Append("Coverage: ");
-            stringBuilder.AppendFormat("{0:0.0000}", this.Coverage);
-            stringBuilder.Append('\n');
 
             return stringBuilder.ToString();
         }

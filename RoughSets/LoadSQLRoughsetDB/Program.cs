@@ -337,7 +337,7 @@ namespace LoadSQLRoughsetDB
                 dataSetRow["BALANCEDACCURACY"] = Double.Parse(row["BalancedAccuracy"].ToString());
                 dataSetRow["CONFIDENCE"] = Double.Parse(row["Confidence"].ToString());
                 dataSetRow["COVERAGE"] = Double.Parse(row["Coverage"].ToString());
-                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
+                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageNumberOfAttributes"].ToString());
                 dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
                 dataSetRow["WEIGHTINGTYPEID"] = this.WeightTypeToInt_MajorityGeneralizedDecisionTest(row["Weight"].ToString());
@@ -462,7 +462,7 @@ namespace LoadSQLRoughsetDB
                 dataSetRow["BALANCEDACCURACY"] = Double.Parse(row["BalancedAccuracy"].ToString());
                 dataSetRow["CONFIDENCE"] = Double.Parse(row["Confidence"].ToString());
                 dataSetRow["COVERAGE"] = Double.Parse(row["Coverage"].ToString());
-                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageReductLength"].ToString());
+                dataSetRow["AVERAGEREDUCTLENGTH"] = Double.Parse(row["AverageNumberOfAttributes"].ToString());
                 dataSetRow["MODELCREATIONTIME"] = Int64.Parse(row["ModelCreationTime"].ToString());
                 dataSetRow["CLASSIFICATIONTIME"] = Int64.Parse(row["ClassificationTime"].ToString());
                 dataSetRow["WEIGHTINGTYPEID"] = this.WeightTypeToInt_VotingVsRuleInduction(row["FactoryKey"].ToString());

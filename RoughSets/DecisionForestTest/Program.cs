@@ -60,10 +60,7 @@ namespace DecisionForestTest
                     if (splitter != null)
                     {
                         splitter.ActiveFold = fold;
-                        splitter.Split(ref trainData, ref testData);
-
-                        WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
-                        trainData.SetWeights(weightGenerator.Weights);
+                        splitter.Split(ref trainData, ref testData);                        
                     }
 
                     DataSampler sampler = new DataSampler(trainData, true);
@@ -92,7 +89,7 @@ namespace DecisionForestTest
                     dummyForestResult.QualityRatio = dummyForest.AverageNumberOfAttributes;
                     dummyForestResult.EnsembleSize = size;
                     dummyForestResult.DatasetName = testData.Name;
-                    Console.WriteLine(dummyForestResult);
+                    this.WriteLine(dummyForestResult);
 
                     DecisionTreeC45 c45tree = new DecisionTreeC45();
                     c45tree.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -110,7 +107,7 @@ namespace DecisionForestTest
                         .OrderBy(x => x).ToArray().Length;
                     c45treeResult.EnsembleSize = size;
                     c45treeResult.DatasetName = testData.Name;
-                    Console.WriteLine(c45treeResult);
+                    this.WriteLine(c45treeResult);
 
                     for (int e = 0; e < 100; e++)
                     {
@@ -130,7 +127,7 @@ namespace DecisionForestTest
                         randomForestResult.QualityRatio = randomForest.AverageNumberOfAttributes;
                         randomForestResult.EnsembleSize = size;
                         randomForestResult.DatasetName = testData.Name;
-                        Console.WriteLine(randomForestResult);
+                        this.WriteLine(randomForestResult);
                         
                         SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;
@@ -148,7 +145,7 @@ namespace DecisionForestTest
                         semiRoughForestResult.QualityRatio = semiRoughForest.AverageNumberOfAttributes;
                         semiRoughForestResult.EnsembleSize = size;
                         semiRoughForestResult.DatasetName = testData.Name;
-                        Console.WriteLine(semiRoughForestResult);
+                        this.WriteLine(semiRoughForestResult);
 
                         RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
                         roughForest.DataSampler = sampler;
@@ -165,9 +162,9 @@ namespace DecisionForestTest
                         roughForestResult.QualityRatio = roughForest.AverageNumberOfAttributes;
                         roughForestResult.EnsembleSize = size;
                         roughForestResult.DatasetName = testData.Name;
-                        Console.WriteLine(roughForestResult);
+                        this.WriteLine(roughForestResult);
 
-                        Console.WriteLine(); 
+                        this.WriteLine(); 
                     }
                 }
             }
@@ -200,6 +197,28 @@ namespace DecisionForestTest
             }
 
             Console.WriteLine(format, paramteters);
+        }
+
+        public void WriteLine(object parm)
+        {
+            if (fileStream != null)
+            {
+                fileStream.WriteLine(parm.ToString());
+                fileStream.Flush();
+            }
+
+            Console.WriteLine(parm.ToString());
+        }
+
+        public void WriteLine()
+        {
+            if (fileStream != null)
+            {
+                fileStream.WriteLine();
+                fileStream.Flush();
+            }
+
+            Console.WriteLine();
         }
     }
 }

@@ -144,6 +144,12 @@ namespace Infovision.Utils
 
         public static T[] SubArray<T>(this T[] array, int index, int length)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            if (index + length > array.Length)
+                throw new IndexOutOfRangeException("index + length > array.Length");
+
             T[] result = new T[length];
             Array.Copy(array, index, result, 0, length);
             return result;
@@ -189,19 +195,24 @@ namespace Infovision.Utils
 
         public static void SetAll<T>(this T[] array, T value)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
             for (int i = 0; i < array.Length; i++)
                 array[i] = value;
         }
 
         public static T[] RandomSubArray<T>(this T[] array, int size)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
             if (size < 0)
                 throw new ArgumentException("size < 0", "size");
             if (size > array.Length)
                 throw new ArgumentException("size > array.Length", "size");
 
             T[] result = new T[size];
-            int[] tmpArray = Enumerable.Range(0, array.Length - 1).ToArray();
+            int[] tmpArray = Enumerable.Range(0, array.Length).ToArray();
             tmpArray.Shuffle();
             for (int i = 0; i < size; i++)
                 result[i] = array[tmpArray[i]];

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +48,6 @@ namespace Infovision.Datamining.Roughset
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
             EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, 0, data.Weights);
             this.GenerateSplits(eqClasscollection, this.root);
-
             ClassificationResult trainResult = this.Classify(data, data.Weights);
             return 1 - trainResult.Accuracy;
         }
@@ -126,6 +126,7 @@ namespace Infovision.Datamining.Roughset
         {
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
 
+
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
@@ -168,6 +169,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual int GetNextSplit(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
         {
+            double currentScore = this.GetCurrentScore(eqClassCollection, decisions);
             int[] localAttributes = eqClassCollection.Attributes;
             if (this.NumberOfRandomAttributes != -1)
             {
@@ -175,10 +177,56 @@ namespace Infovision.Datamining.Roughset
                 localAttributes = localAttributes.RandomSubArray(m);
             }
 
+            object tmpLock = new object();
+            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length);
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
+            };
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
+
+            Pair<int, double> bestAttribute = new Pair<int, double>(-1, Double.MinValue);
+            Parallel.ForEach(
+                rangePrtitioner,
+                options,
+                () => new Pair<int, double>(-1, Double.MinValue),
+                (range, loopState, initialValue) =>
+                {
+                    Pair<int, double> partialBestAttribute = initialValue;
+                    for (int i = range.Item1; i < range.Item2; i++)
+                    {
+                        EquivalenceClassCollection attributeEqClasses
+                            = EquivalenceClassCollection.Create(new int[] { localAttributes[i] }, eqClassCollection, 0);
+                        attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
+                        double score = this.GetSplitScore(attributeEqClasses, currentScore);
+
+                        if (partialBestAttribute.Item2 < score)
+                        {
+                            partialBestAttribute.Item2 = score;
+                            partialBestAttribute.Item1 = localAttributes[i];
+                        }
+                    }
+                    return partialBestAttribute;
+                },
+                (localPartialBestAttribute) =>
+                {
+                    lock (tmpLock)
+                    {
+                        if (bestAttribute.Item2 < localPartialBestAttribute.Item2)
+                        {
+                            bestAttribute.Item2 = localPartialBestAttribute.Item2;
+                            bestAttribute.Item1 = localPartialBestAttribute.Item1;
+                        }
+                    }
+                });
+
+            return bestAttribute.Item1;
+
+            /*
             int result = 0;
             double maxScore = Double.MinValue;
-            double currentScore = this.GetCurrentScore(eqClassCollection, decisions);
-
             foreach (int attribute in localAttributes)
             {
                 EquivalenceClassCollection attributeEqClasses
@@ -186,6 +234,7 @@ namespace Infovision.Datamining.Roughset
                 attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
 
                 double score = this.GetSplitScore(attributeEqClasses, currentScore);
+                
                 if (maxScore < score)
                 {
                     maxScore = score;
@@ -194,6 +243,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             return result;
+            */
         }
 
         protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)

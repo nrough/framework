@@ -74,7 +74,7 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void ExternalFieldEncoding()
         {
-            //First newInstance
+            //Item1 newInstance
             //1 1 1 1 3 1 1
 
             long internalValue = dataStoreTrain.GetFieldValue(0, 1);

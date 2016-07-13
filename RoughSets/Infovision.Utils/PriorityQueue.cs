@@ -22,7 +22,7 @@ namespace Infovision.Utils
             //Initialize the array that will hold the values
             storedValues = new List<T>();
 
-            //Fill the first cell in the array with an empty key
+            //Fill the item1 cell in the array with an empty key
             storedValues.Add(default(T));
 
             //Create comparer instance
@@ -70,10 +70,10 @@ namespace Infovision.Utils
                 return default(T); //queue is empty
             else
             {
-                //The smallest key in the Priority Queue is the first item in the array
+                //The smallest key in the Priority Queue is the item1 item in the array
                 T minValue = this.storedValues[1];
 
-                //If there's more than one item, replace the first item in the array with the last one
+                //If there's more than one item, replace the item1 item in the array with the last one
                 if (this.storedValues.Count > 2)
                 {
                     T lastValue = this.storedValues[storedValues.Count - 1];

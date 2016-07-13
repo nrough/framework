@@ -3,19 +3,20 @@
 namespace Infovision.Utils
 {
     [Serializable]
-    public class Pair<TFirst, TSecond>
+    public class Pair<T1, T2>
     {
-        public Pair()
+        private Pair()
         {
         }
 
-        public Pair(TFirst first, TSecond second)
+        public Pair(T1 item1, T2 item2)
+            : this()
         {
-            this.First = first;
-            this.Second = second;
+            this.Item1 = item1;
+            this.Item2 = item2;
         }
 
-        public TFirst First { get; set; }
-        public TSecond Second { get; set; }
+        public T1 Item1 { get; set; }
+        public T2 Item2 { get; set; }
     };
 }

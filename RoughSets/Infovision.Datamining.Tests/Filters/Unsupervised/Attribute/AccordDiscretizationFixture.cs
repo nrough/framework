@@ -155,7 +155,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                         histCode.Add(j.ToString(), j);
                     }
 
-                    //in the second pass codification is already created, we need to substitute the coding
+                    //in the item2 pass codification is already created, we need to substitute the coding
                     if (codebook.Columns.Contains(continuesAttributes[i]))
                         codebook.Columns.Remove(continuesAttributes[i]);
 

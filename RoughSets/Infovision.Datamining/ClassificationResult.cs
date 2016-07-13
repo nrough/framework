@@ -223,6 +223,7 @@ namespace Infovision.Datamining
 
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
         {
+            this.DatasetName = dataStore.Name;
             this.TestData = dataStore;
 
             this.decCount = decisionValues.Count;

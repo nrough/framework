@@ -502,7 +502,6 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual IReduct CalculateReduct(DataStore data)
         {
-            //WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
             PermutationCollection permutations = null;
             if(this.PermutationCollection != null)
                 permutations = this.PermutationCollection;
@@ -515,10 +514,9 @@ namespace Infovision.Datamining.Roughset
             else
                 localEpsilon = (decimal)((double)RandomSingleton.Random.Next(0, 20) / 100.0);
 
-            Args parms = new Args();
+            Args parms = new Args(5);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
-            //parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, localEpsilon);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
@@ -560,16 +558,6 @@ namespace Infovision.Datamining.Roughset
                     break;
             }
             return bestReduct;
-
-            /*
-            IReductStoreCollection reductsFiltered = null;
-            if (reductStoreCollection.ReductPerStore)
-                reductsFiltered = reductStoreCollection.FilterInEnsemble(1, new ReductStoreLengthComparer(false));
-            else
-                reductsFiltered = reductStoreCollection.Filter(1, new ReductLengthComparer());
-
-            return reductsFiltered.FirstOrDefault().FirstOrDefault();
-            */
         }
 
         public override double Learn(DataStore data, int[] attributes)
@@ -689,7 +677,7 @@ namespace Infovision.Datamining.Roughset
             InformationMeasureWeights m = new InformationMeasureWeights();
             decimal q = m.Calc(r);
 
-            Args parms = new Args();
+            Args parms = new Args(6);
             parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
             parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, this.Epsilon);

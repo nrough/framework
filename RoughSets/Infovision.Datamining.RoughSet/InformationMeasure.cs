@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Roughset
                     //relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
                     relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
 
-                    if (Decimal.Round(relativeCount, 17) > Decimal.Round(maxValue, 17))
+                    if (relativeCount > maxValue)
                         maxValue = relativeCount;
                 }
 

@@ -42,10 +42,16 @@ namespace Infovision.Datamining.Roughset
             this.NumberOfRandomAttributes = -1;
         }
 
-        public double Learn(DataStore data, int[] attributes)
+        protected void Init(DataStore data)
         {
             this.root = new DecisionTreeNode(-1, -1);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
+        }
+
+        public virtual double Learn(DataStore data, int[] attributes)
+        {
+            this.Init(data);
+
             EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, 0, data.Weights);
             this.GenerateSplits(eqClasscollection, this.root);
             ClassificationResult trainResult = this.Classify(data, data.Weights);
@@ -125,7 +131,8 @@ namespace Infovision.Datamining.Roughset
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
-
+            result.QualityRatio = ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count;
+            result.EnsembleSize = 1;
 
             ParallelOptions options = new ParallelOptions()
             {
@@ -223,27 +230,6 @@ namespace Infovision.Datamining.Roughset
                 });
 
             return bestAttribute.Item1;
-
-            /*
-            int result = 0;
-            double maxScore = Double.MinValue;
-            foreach (int attribute in localAttributes)
-            {
-                EquivalenceClassCollection attributeEqClasses
-                    = EquivalenceClassCollection.Create(new int[] { attribute }, eqClassCollection, 0);
-                attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
-
-                double score = this.GetSplitScore(attributeEqClasses, currentScore);
-                
-                if (maxScore < score)
-                {
-                    maxScore = score;
-                    result = attribute;
-                }
-            }
-
-            return result;
-            */
         }
 
         protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
@@ -315,16 +301,70 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
+    /// <summary>
+    /// CART Tree implementation
+    /// </summary>
+    /// <remarks>
+    /// Based on the following example http://csucidatamining.weebly.com/assign-4.html
+    /// </remarks>
     public class DecisionTreeCART : DecisionTree
     {
+        
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double gini)
         {
-            throw new NotImplementedException();
+            double attributeGini = 0;
+            foreach (var eq in attributeEqClasses)
+            {
+                double pA = (double)(eq.WeightSum / attributeEqClasses.WeightSum);
+
+                double s2 = 0;
+                foreach (long dec in eq.DecisionSet)
+                {
+                    double pD = (double)(eq.GetDecisionWeight(dec) / eq.WeightSum); 
+                    s2 += (pD * pD);
+                }
+                attributeGini += (pA * (1.0 - s2));
+            }
+            return gini - attributeGini;
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
         {
-            throw new NotImplementedException();
+            double s2 = 0;
+            foreach (long dec in decisions)
+            {
+                decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
+                double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
+                s2 += (p * p);
+            }
+            return 1.0 - s2;
+        }
+    }
+
+
+    public class DecisionTreeRough : DecisionTree
+    {
+        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double dummy)
+        {
+            decimal result = Decimal.Zero;            
+            decimal maxValue, sum;
+            foreach (var eq in attributeEqClasses)
+            {
+                maxValue = Decimal.MinValue;
+                foreach (long decisionValue in eq.DecisionValues)
+                {
+                    sum = eq.GetDecisionWeight(decisionValue);
+                    if (sum > maxValue)
+                        maxValue = sum;
+                }
+                result += maxValue;
+            }
+            return (double)result;
+        }
+
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        {
+            return 0;
         }
     }
 
@@ -390,6 +430,13 @@ namespace Infovision.Datamining.Roughset
                     .Select(g => g.First().Key)
                     .Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId)
                     .OrderBy(x => x).ToArray().Length;
+
+                int a = ((DecisionTreeNode)tree.Root).GetChildUniqueKeys().Count;
+                int b = ((DecisionTreeNode)tree.Root)
+                    .GroupBy(x => x.Key)
+                    .Select(g => g.First().Key)
+                    .Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId)
+                    .OrderBy(x => x).ToArray().Length;
             }
 
             ClassificationResult trainResult = this.Classify(data, data.Weights);
@@ -437,6 +484,9 @@ namespace Infovision.Datamining.Roughset
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
+
+            result.QualityRatio = this.AverageNumberOfAttributes;
+            result.EnsembleSize = this.Size;
 
             ParallelOptions options = new ParallelOptions()
             {

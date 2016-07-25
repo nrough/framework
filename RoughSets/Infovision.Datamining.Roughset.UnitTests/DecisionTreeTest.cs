@@ -48,6 +48,38 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
         [Test]
+        public void CARTLearnTest()
+        {
+            Console.WriteLine("CARTLearnTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            DecisionTreeCART treeCART = new DecisionTreeCART();
+            treeCART.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
+            Console.WriteLine(treeCART.Classify(data, null));
+            Console.WriteLine(treeCART.Classify(test, null));
+        }
+
+        [Test]
+        public void RoughTreeLearnTest()
+        {
+            Console.WriteLine("RoughTreeLearnTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
+            Console.WriteLine(treeRough.Classify(data, null));
+            Console.WriteLine(treeRough.Classify(test, null));
+        }
+
+        
+
+        [Test]
         public void RandomForestTest()
         {
             Console.WriteLine("RandomForestTest");
@@ -63,6 +95,42 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeC45 c45tree = new DecisionTreeC45();
             c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(c45tree.Classify(test, null));
+        }
+
+        [Test]
+        public void RandomForestCARTTest()
+        {
+            Console.WriteLine("RandomForestCARTTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            RandomForest<DecisionTreeCART> randomForest = new RandomForest<DecisionTreeCART>();
+            randomForest.Size = 10;
+            randomForest.NumberOfRandomAttributes = 5;
+            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(randomForest.Classify(test, null));
+
+            DecisionTreeCART cartTree = new DecisionTreeCART();
+            cartTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(cartTree.Classify(test, null));
+        }
+
+        [Test]
+        public void RandomForestRoughTest()
+        {
+            Console.WriteLine("RandomForestRoughTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            RandomForest<DecisionTreeRough> randomForest = new RandomForest<DecisionTreeRough>();
+            randomForest.Size = 100;
+            randomForest.NumberOfRandomAttributes = 5;
+            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(randomForest.Classify(test, null));
+
+            DecisionTreeRough roughTree = new DecisionTreeRough();
+            roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(roughTree.Classify(test, null));
         }
 
         [Test]

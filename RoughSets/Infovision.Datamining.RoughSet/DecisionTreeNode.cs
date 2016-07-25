@@ -133,6 +133,14 @@ namespace Infovision.Datamining.Roughset
         {
             return GetEnumerator();
         }
+
+        public ICollection<int> GetChildUniqueKeys()
+        {
+            return this.Where(x => x.IsLeaf == false && x.Key != -1)
+                    .GroupBy(x => x.Key)
+                    .Select(g => g.First().Key)
+                    .OrderBy(x => x).ToArray().ToArray();
+        }
     }
 
     /// <summary>

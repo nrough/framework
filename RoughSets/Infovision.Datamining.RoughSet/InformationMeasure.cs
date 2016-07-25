@@ -180,8 +180,7 @@ namespace Infovision.Datamining.Roughset
 
         public override decimal Calc(IReduct reduct)
         {
-            decimal result = Decimal.Zero;
-            result = Decimal.Zero;
+            decimal result = Decimal.Zero;            
             decimal maxValue, sum;
             foreach (EquivalenceClass e in reduct.EquivalenceClasses)
             {

@@ -22,7 +22,7 @@ namespace Infovision.Data
             set
             {
                 if (value < 1 || value > 100)
-                    throw new IndexOutOfRangeException("Value of bag size should be in range <1, 100>");
+                    throw new IndexOutOfRangeException("value < 1 || value > 100");
                 this.bagSizePercent = value;
             }
         }

@@ -139,18 +139,14 @@ namespace Infovision.Datamining.Roughset
 
     [Serializable]
     public class WeightGeneratorConstant : WeightGenerator
-    {
-        private decimal value = 1.0M;
-
-        public decimal Value
-        {
-            get { return this.value; }
-            set { this.value = value; }
-        }
+    {        
+        public decimal Value { get; set; }
 
         public WeightGeneratorConstant(DataStore dataStore)
             : base(dataStore)
         {
+
+            this.Value = dataStore.NumberOfRecords > 0 ? Decimal.One / (decimal)dataStore.NumberOfRecords : 1;
         }
 
         public WeightGeneratorConstant(DataStore dataStore, decimal value)
@@ -165,7 +161,7 @@ namespace Infovision.Datamining.Roughset
                 return;
             base.Generate();
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                this.Weights[i] = value;
+                this.Weights[i] = this.Value;
         }
     }
 

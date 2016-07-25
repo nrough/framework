@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
             Console.WriteLine(treeID3.Classify(data, null));
             Console.WriteLine(treeID3.Classify(test, null));
         }
@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
             Console.WriteLine(treeC45.Classify(data, null));
             Console.WriteLine(treeC45.Classify(test, null));
         }
@@ -57,7 +57,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeCART treeCART = new DecisionTreeCART();
             treeCART.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
             Console.WriteLine(treeCART.Classify(data, null));
             Console.WriteLine(treeCART.Classify(test, null));
         }
@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DecisionTreeRough treeRough = new DecisionTreeRough();
             treeRough.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
             Console.WriteLine(treeRough.Classify(data, null));
             Console.WriteLine(treeRough.Classify(test, null));
         }
@@ -116,7 +116,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         }
 
         [Test]
-        public void RandomForestRoughTest()
+        public void RandomForestRoughMTest()
         {
             Console.WriteLine("RandomForestRoughTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -125,6 +125,28 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RandomForest<DecisionTreeRough> randomForest = new RandomForest<DecisionTreeRough>();
             randomForest.Size = 100;
             randomForest.NumberOfRandomAttributes = 5;
+            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(randomForest.Classify(test, null));
+
+            DecisionTreeRough roughTree = new DecisionTreeRough();
+            roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            Console.WriteLine(roughTree.Classify(test, null));
+        }
+
+        [Test]
+        public void RoughForestRoughGammaTest()
+        {
+            Console.WriteLine("RandomForestRoughGammaTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            RoughForest<DecisionTreeRough> randomForest = new RoughForest<DecisionTreeRough>();
+            randomForest.Size = 2;
+            randomForest.NumberOfRandomAttributes = 5;
+            randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+            randomForest.Epsilon = 0.4m;
+            
+
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(randomForest.Classify(test, null));
 

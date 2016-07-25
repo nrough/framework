@@ -16,6 +16,7 @@ namespace DecisionForestTest
     {
         private DataStore trainData, testData, data;
         private StreamWriter fileStream;
+        int[] sizes = new int[] { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
 
         private static void Main(string[] args)
         {
@@ -31,15 +32,35 @@ namespace DecisionForestTest
             }
         }
 
-        public void Run(BenchmarkData benchmarkData)
-        {            
-            DataStoreSplitter splitter;
+        private void ProcessResult<T>(RandomForest<T> forest, DataStore testData, string name, int test, int fold, decimal epsilon)
+            where T : IRandomForestTree, new()
+        {
+            int origSize = forest.Size;
+            foreach (int size in sizes)
+            {
+                forest.Size = size;
+                ClassificationResult result = forest.Classify(testData, null);
 
+                result.ModelName = name;
+                result.TestNum = test;
+                result.Fold = fold;
+                result.Epsilon = Decimal.Zero;
+                result.QualityRatio = forest.AverageNumberOfAttributes;
+                result.EnsembleSize = size;
+                
+                this.WriteLine(result);
+            }
+            forest.Size = origSize;
+        }
+
+        public void Run(BenchmarkData benchmarkData)
+        {
+            
             this.OpenStream(Path.Combine(@"results", benchmarkData.Name + ".result"));
             
             for (int t = 0; t < 20; t++)
             {
-                splitter = null;
+                DataStoreSplitter splitter = null;
                 if (benchmarkData.CrossValidationActive)
                 {
                     data = DataStore.Load(benchmarkData.DataFile, benchmarkData.FileFormat);
@@ -60,7 +81,7 @@ namespace DecisionForestTest
                     if (splitter != null)
                     {
                         splitter.ActiveFold = fold;
-                        splitter.Split(ref trainData, ref testData);                        
+                        splitter.Split(ref trainData, ref testData);
                     }
 
                     DataSampler sampler = new DataSampler(trainData, true);
@@ -76,99 +97,44 @@ namespace DecisionForestTest
                     }
 
                     // ###################### Dummy Forest ######################
-
                     DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
                     dummyForest.DataSampler = sampler;
                     dummyForest.Size = size;
                     dummyForest.PermutationCollection = permutations;
                     dummyForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                    ClassificationResult dummyForestResult = dummyForest.Classify(testData, null);
-                    dummyForestResult.ModelName = "Dummy";
-                    dummyForestResult.TestNum = t;
-                    dummyForestResult.Fold = fold;
-                    dummyForestResult.Epsilon = Decimal.Zero;
-                    dummyForestResult.QualityRatio = dummyForest.AverageNumberOfAttributes;
-                    dummyForestResult.EnsembleSize = size;                    
-                    this.WriteLine(dummyForestResult);
+                    this.ProcessResult<DecisionTreeC45>(dummyForest, testData, "Dummy", t, fold, Decimal.Zero);
 
                     // ###################### Rough Forest Var Eps ######################
-
                     RoughForest<DecisionTreeC45> roughForestNoEps = new RoughForest<DecisionTreeC45>();
                     roughForestNoEps.DataSampler = sampler;
                     roughForestNoEps.Size = size;
                     roughForestNoEps.NumberOfPermutationsPerTree = 20;
                     roughForestNoEps.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                     roughForestNoEps.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                    ClassificationResult roughForestResultNoEps = roughForestNoEps.Classify(testData, null);
-                    roughForestResultNoEps.ModelName = "RoughVarEps";
-                    roughForestResultNoEps.TestNum = t;
-                    roughForestResultNoEps.Fold = fold;
-                    roughForestResultNoEps.Epsilon = Decimal.Zero;
-                    roughForestResultNoEps.QualityRatio = roughForestNoEps.AverageNumberOfAttributes;
-                    roughForestResultNoEps.EnsembleSize = size;
-                    this.WriteLine(roughForestResultNoEps);
+                    this.ProcessResult<DecisionTreeC45>(roughForestNoEps, testData, "RoughVarEps", t, fold, Decimal.Zero);
 
                     // ###################### Rough Forest Measure M ######################
-
                     RoughForest<DecisionTreeRough> roughForestRough = new RoughForest<DecisionTreeRough>();
                     roughForestRough.DataSampler = sampler;
                     roughForestRough.Size = size;
                     roughForestRough.NumberOfPermutationsPerTree = 20;
                     roughForestRough.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                     roughForestRough.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                    ClassificationResult roughForestResultRough = roughForestRough.Classify(testData, null);
-                    roughForestResultRough.ModelName = "RoughForestM";
-                    roughForestResultRough.TestNum = t;
-                    roughForestResultRough.Fold = fold;
-                    roughForestResultRough.Epsilon = Decimal.Zero;
-                    roughForestResultRough.QualityRatio = roughForestRough.AverageNumberOfAttributes;
-                    roughForestResultRough.EnsembleSize = size;
-                    this.WriteLine(roughForestResultRough);
-
-                    // ###################### C45 ######################
-                    
-                    DecisionTreeC45 c45tree = new DecisionTreeC45();
-                    c45tree.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                    ClassificationResult c45treeResult = c45tree.Classify(testData, null);
-                    c45treeResult.ModelName = "C45Tree";
-                    c45treeResult.TestNum = t;
-                    c45treeResult.Fold = fold;
-                    c45treeResult.Epsilon = Decimal.Zero;
-                    c45treeResult.QualityRatio = ((DecisionTreeNode)c45tree.Root)
-                        .GroupBy(x => x.Key)
-                        .Select(g => g.First().Key)
-                        .Where(x => x != -1 && x != trainData.DataStoreInfo.DecisionFieldId)
-                        .OrderBy(x => x).ToArray().Length;
-                    c45treeResult.EnsembleSize = size;
-                    this.WriteLine(c45treeResult);
+                    this.ProcessResult<DecisionTreeRough>(roughForestRough, testData, "RoughForestM", t, fold, Decimal.Zero);
 
                     for (int e = 0; e < 100; e++)
                     {
                         decimal eps = (decimal)e / (decimal)100;
 
                         // ###################### Random Forest ######################
-
                         RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
                         randomForest.DataSampler = sampler;
                         randomForest.Size = size;
                         randomForest.NumberOfRandomAttributes = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                         randomForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                        ClassificationResult randomForestResult = randomForest.Classify(testData, null);
-                        randomForestResult.ModelName = "RandomC45";
-                        randomForestResult.TestNum = t;
-                        randomForestResult.Fold = fold;
-                        randomForestResult.Epsilon = eps;
-                        randomForestResult.QualityRatio = randomForest.AverageNumberOfAttributes;
-                        randomForestResult.EnsembleSize = size;
-                        this.WriteLine(randomForestResult);
+                        this.ProcessResult<DecisionTreeC45>(randomForest, testData, "RandomC45", t, fold, eps);
 
                         // ###################### Reducted Random subsets ######################
-                        
                         SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;
                         semiRoughForest.Size = size;
@@ -176,18 +142,9 @@ namespace DecisionForestTest
                         semiRoughForest.PermutationCollection = permutations;
                         semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                         semiRoughForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                        ClassificationResult semiRoughForestResult = semiRoughForest.Classify(testData, null);
-                        semiRoughForestResult.ModelName = "SemiRough";
-                        semiRoughForestResult.TestNum = t;
-                        semiRoughForestResult.Fold = fold;
-                        semiRoughForestResult.Epsilon = eps;
-                        semiRoughForestResult.QualityRatio = semiRoughForest.AverageNumberOfAttributes;
-                        semiRoughForestResult.EnsembleSize = size;
-                        this.WriteLine(semiRoughForestResult);
+                        this.ProcessResult<DecisionTreeC45>(semiRoughForest, testData, "SemiRough", t, fold, eps);
 
                         // ###################### Rough Forest ######################
-
                         RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
                         roughForest.DataSampler = sampler;
                         roughForest.Size = size;
@@ -195,18 +152,9 @@ namespace DecisionForestTest
                         roughForest.Epsilon = eps;
                         roughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                         roughForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                        ClassificationResult roughForestResult = roughForest.Classify(testData, null);
-                        roughForestResult.ModelName = "Rough";
-                        roughForestResult.TestNum = t;
-                        roughForestResult.Fold = fold;
-                        roughForestResult.Epsilon = eps;
-                        roughForestResult.QualityRatio = roughForest.AverageNumberOfAttributes;
-                        roughForestResult.EnsembleSize = size;
-                        this.WriteLine(roughForestResult);
+                        this.ProcessResult<DecisionTreeC45>(roughForest, testData, "Rough", t, fold, eps);
 
                         // ###################### Rough Forest Measure M ######################
-
                         RoughForest<DecisionTreeRough> roughForestM = new RoughForest<DecisionTreeRough>();
                         roughForestM.DataSampler = sampler;
                         roughForestM.Size = size;
@@ -214,15 +162,17 @@ namespace DecisionForestTest
                         roughForestM.Epsilon = eps;
                         roughForestM.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                         roughForestM.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                        this.ProcessResult<DecisionTreeRough>(roughForestM, testData, "RoughM", t, fold, eps);
 
-                        ClassificationResult roughForestMResult = roughForestM.Classify(testData, null);
-                        roughForestMResult.ModelName = "RoughM";
-                        roughForestMResult.TestNum = t;
-                        roughForestMResult.Fold = fold;
-                        roughForestMResult.Epsilon = eps;
-                        roughForestMResult.QualityRatio = roughForestM.AverageNumberOfAttributes;
-                        roughForestMResult.EnsembleSize = size;
-                        this.WriteLine(roughForestMResult);
+                        // ###################### Rough Forest Measure M ######################
+                        RoughForest<DecisionTreeRough> roughForestGamma = new RoughForest<DecisionTreeRough>();
+                        roughForestGamma.DataSampler = sampler;
+                        roughForestGamma.Size = size;
+                        roughForestGamma.NumberOfPermutationsPerTree = 20;
+                        roughForestGamma.Epsilon = eps;
+                        roughForestGamma.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
+                        roughForestGamma.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                        this.ProcessResult<DecisionTreeRough>(roughForestGamma, testData, "RoughGamma", t, fold, eps);
 
                         this.WriteLine(); 
                     }

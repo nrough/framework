@@ -453,7 +453,7 @@ namespace Infovision.Datamining.Roughset
                 if (votes.ContainsKey(result))
                     votes[result] += (1 - member.Error);
                 else
-                    votes.Add(result, (1 - member.Error));                
+                    votes.Add(result, (1 - member.Error));
 
                 if (i >= this.Size)
                     break;

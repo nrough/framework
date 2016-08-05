@@ -136,7 +136,7 @@ namespace Infovision.Datamining.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 2)
+                MaxDegreeOfParallelism = Environment.ProcessorCount
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
@@ -188,7 +188,7 @@ namespace Infovision.Datamining.Roughset
             var rangePrtitioner = Partitioner.Create(0, localAttributes.Length);
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 2)
+                MaxDegreeOfParallelism = Environment.ProcessorCount
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
@@ -482,7 +482,7 @@ namespace Infovision.Datamining.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount - 2)
+                MaxDegreeOfParallelism = Environment.ProcessorCount
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;

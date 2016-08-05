@@ -44,7 +44,7 @@ namespace DecisionForestTest
                 result.ModelName = name;
                 result.TestNum = test;
                 result.Fold = fold;
-                result.Epsilon = Decimal.Zero;
+                result.Epsilon = epsilon;
                 result.QualityRatio = forest.AverageNumberOfAttributes;
                 result.EnsembleSize = size;
                 

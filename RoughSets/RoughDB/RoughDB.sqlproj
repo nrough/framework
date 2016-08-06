@@ -91,6 +91,7 @@
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Views" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\WEIGHTINGTYPE.sql" />
@@ -101,5 +102,6 @@
     <Build Include="dbo\Tables\EXPERIMENT.sql" />
     <Build Include="dbo\Tables\RESULT.sql" />
     <Build Include="dbo\Views\RESULTVIEW.sql" />
+    <Build Include="dbo\Views\RESULTVIEWSTAT.sql" />
   </ItemGroup>
 </Project>

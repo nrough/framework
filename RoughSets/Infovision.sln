@@ -237,8 +237,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OLAP", "OLAP", "{2579FDB4-4
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RoughDB", "RoughDB\RoughDB.sqlproj", "{36B5C6E2-7E39-4144-9A59-F43ABB4B2463}"
 EndProject
-Project("{D2ABAB84-BF74-430A-B69E-9DC6D40DDA17}") = "RoughOLAP", "RoughOLAP\RoughOLAP.dwproj", "{F1EC55B6-A756-4391-8D3E-38291F532E12}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRIExceptions", "MRIExceptions\MRIExceptions.csproj", "{6BBF1A65-3D72-4F26-807B-82689E2AA90E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D23E210-FFB7-46EF-AD27-18B5DE007EE3} = {2D23E210-FFB7-46EF-AD27-18B5DE007EE3}
@@ -250,7 +248,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionForestTest", "Decis
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 33
+		SccNumberOfProjects = 32
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -363,18 +361,14 @@ Global
 		SccProjectTopLevelParentUniqueName29 = Infovision.sln
 		SccProjectName29 = RoughDB
 		SccLocalPath29 = RoughDB
-		SccProjectUniqueName30 = RoughOLAP\\RoughOLAP.dwproj
+		SccProjectUniqueName30 = MRIExceptions\\MRIExceptions.csproj
 		SccProjectTopLevelParentUniqueName30 = Infovision.sln
-		SccProjectName30 = RoughOLAP
-		SccLocalPath30 = RoughOLAP
-		SccProjectUniqueName31 = MRIExceptions\\MRIExceptions.csproj
+		SccProjectName30 = MRIExceptions
+		SccLocalPath30 = MRIExceptions
+		SccProjectUniqueName31 = DecisionForestTest\\DecisionForestTest.csproj
 		SccProjectTopLevelParentUniqueName31 = Infovision.sln
-		SccProjectName31 = MRIExceptions
-		SccLocalPath31 = MRIExceptions
-		SccProjectUniqueName32 = DecisionForestTest\\DecisionForestTest.csproj
-		SccProjectTopLevelParentUniqueName32 = Infovision.sln
-		SccProjectName32 = DecisionForestTest
-		SccLocalPath32 = DecisionForestTest
+		SccProjectName31 = DecisionForestTest
+		SccLocalPath31 = DecisionForestTest
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1079,49 +1073,6 @@ Global
 		{36B5C6E2-7E39-4144-9A59-F43ABB4B2463}.Release|x64.ActiveCfg = Release|x64
 		{36B5C6E2-7E39-4144-9A59-F43ABB4B2463}.Release|x64.Build.0 = Release|x64
 		{36B5C6E2-7E39-4144-9A59-F43ABB4B2463}.Release|x86.ActiveCfg = Release|Any CPU
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Any CPU.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Any CPU.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Any CPU.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Mixed Platforms.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Mixed Platforms.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Mixed Platforms.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Win32.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Win32.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|Win32.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|x64.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|x86.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|x86.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Debug|x86.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Any CPU.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Any CPU.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Any CPU.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Mixed Platforms.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Mixed Platforms.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Mixed Platforms.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Win32.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Win32.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|Win32.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x64.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x64.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x64.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x86.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x86.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Development|x86.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Any CPU.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Any CPU.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Any CPU.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Mixed Platforms.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Mixed Platforms.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Mixed Platforms.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Win32.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Win32.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|Win32.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x64.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x64.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x64.Deploy.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x86.ActiveCfg = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x86.Build.0 = Development
-		{F1EC55B6-A756-4391-8D3E-38291F532E12}.Release|x86.Deploy.0 = Development
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -1202,7 +1153,6 @@ Global
 		{D460989F-C801-44DA-B74F-E5187D99F446} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{387979CB-4468-4EDD-A6CD-38E3303CFC92} = {2579FDB4-410B-488A-986A-FCD52A161761}
 		{36B5C6E2-7E39-4144-9A59-F43ABB4B2463} = {2579FDB4-410B-488A-986A-FCD52A161761}
-		{F1EC55B6-A756-4391-8D3E-38291F532E12} = {2579FDB4-410B-488A-986A-FCD52A161761}
 		{6BBF1A65-3D72-4F26-807B-82689E2AA90E} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{49B766A1-58E9-4943-A597-1572C4A30030} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 	EndGlobalSection

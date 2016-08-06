@@ -65,7 +65,9 @@ namespace Infovision.Datamining.Roughset
 
         protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
         {
-            if (eqClassCollection.ObjectsCount == 0 || eqClassCollection.Attributes.Length == 0)
+            if (eqClassCollection.ObjectsCount == 0 
+                || eqClassCollection.Attributes.Length == 0 
+                || this.NumberOfRandomAttributes == 0)
             {
                 this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
                 return;
@@ -79,6 +81,11 @@ namespace Infovision.Datamining.Roughset
             }
 
             int maxAttribute = this.GetNextSplit(eqClassCollection, decisions);
+            if(maxAttribute == -1)
+            {
+                this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
+                return;
+            }
 
             //Generate split on result
             Dictionary<long, EquivalenceClassCollection> subEqClasses = EquivalenceClassCollection.Split(eqClassCollection, maxAttribute);
@@ -419,7 +426,7 @@ namespace Infovision.Datamining.Roughset
                 DataStore baggedData = sampler.GetData(iter);
                 T tree = new T();
 
-                if (this.NumberOfRandomAttributes > 0)
+                if (this.NumberOfRandomAttributes > -1)
                     tree.NumberOfRandomAttributes = this.NumberOfRandomAttributes;
 
                 double error = tree.Learn(baggedData, attributes);

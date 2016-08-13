@@ -78,7 +78,7 @@ namespace ExceptionRulesTest
                         mA);
 
                     ParallelOptions options = new ParallelOptions();
-                    options.MaxDegreeOfParallelism = Environment.ProcessorCount;
+                    options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount);
 #if DEBUG
                     options.MaxDegreeOfParallelism = 1;
 #endif

@@ -111,7 +111,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="DecisionForest.cs" />
     <Compile Include="DecisionTree.cs" />
+    <Compile Include="DecisionTreeHelper.cs" />
     <Compile Include="DecisionTreeNode.cs" />
     <Compile Include="EquivalenceClassSortedMap.cs" />
     <Compile Include="NaiveBayes.cs" />

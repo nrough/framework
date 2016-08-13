@@ -68,6 +68,14 @@ namespace Infovision.Data
             set { this.values[index] = value; }
         }
 
+        public int Length
+        {
+            get
+            {
+                return this.attributes.Length;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -96,6 +104,12 @@ namespace Infovision.Data
             return new AttributeValueVector(
                 attributes.RemoveAt<int>(index),
                 values.RemoveAt<long>(index), false);
+        }
+
+        public void Set(int index, int attribute, long value)
+        {
+            this.attributes[index] = attribute;
+            this.values[index] = value;
         }
 
         #region System.Object Methods

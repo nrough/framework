@@ -45,7 +45,7 @@ namespace Infovision.Datamining.Roughset
             {
                 ParallelOptions options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount
+                    MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount)
                 };
 
 #if DEBUG

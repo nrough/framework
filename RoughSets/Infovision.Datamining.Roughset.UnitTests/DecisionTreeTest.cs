@@ -17,6 +17,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
     public class DecisionTreeTest
     {
         [Test]
+        public void CountLeavesTest()
+        {
+            Console.WriteLine("CountLeavesTest");
+
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            DecisionTreeID3 treeID3 = new DecisionTreeID3();
+            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            
+            Console.WriteLine(DecisionTreeHelper.CountLeaves(treeID3.Root));
+        }
+
+        [Test]
         public void ID3LearnTest()
         {
             Console.WriteLine("ID3LearnTest");

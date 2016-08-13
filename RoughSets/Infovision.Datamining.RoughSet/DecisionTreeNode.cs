@@ -15,6 +15,8 @@ namespace Infovision.Datamining.Roughset
         long Value { get; }
         bool IsLeaf { get; }
         bool IsRoot { get; }
+        ITreeNode Parent { get; }
+        int Level { get; }
     }
 
     public class DecisionTreeNode : ITreeNode, IEnumerable<DecisionTreeNode>
@@ -22,21 +24,11 @@ namespace Infovision.Datamining.Roughset
         private List<DecisionTreeNode> children;
         public static readonly string ROOT = "ROOT";
 
-        public DecisionTreeNode(int key, long value)
-            : this(key)
-        {
-            this.Value = value;
-        }
-
-        public DecisionTreeNode(int key)
-            : this()
+        public DecisionTreeNode(int key, long value, ITreeNode parent)
         {
             this.Key = key;
-        }
-
-        private DecisionTreeNode()
-        {
-            this.Value = Int64.MinValue;
+            this.Value = value;
+            this.Parent = parent;
         }
 
         public IReadOnlyList<ITreeNode> Children
@@ -59,7 +51,28 @@ namespace Infovision.Datamining.Roughset
         {
             get
             {
-                return this.Key == -1 && this.Value == -1;
+                return this.Parent == null;
+            }
+        }
+
+        public ITreeNode Parent
+        {
+            get;
+            set;
+        }
+
+        public int Level
+        {
+            get
+            {
+                int level = 0;
+                ITreeNode n = this;
+                while(n.Parent != null)
+                {
+                    n = n.Parent;
+                    level++;
+                }
+                return level;
             }
         }
 

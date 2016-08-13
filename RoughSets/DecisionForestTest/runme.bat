@@ -1,4 +1,4 @@
 ﻿@echo off
 REM Decision Forest Test
-start DecisionForestTest.exe semeion letter
+start DecisionForestTest.exe dna spect semeion letter 
 

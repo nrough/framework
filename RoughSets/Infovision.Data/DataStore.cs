@@ -470,6 +470,12 @@ namespace Infovision.Data
             return result;
         }
 
+        public void GetFieldIndexValues(int objectIndex, int[] fieldIdxs, ref long[] cursor)
+        {
+            for (int i = 0; i < fieldIdxs.Length; i++)
+                cursor[i] = this.GetFieldIndexValue(objectIndex, fieldIdxs[i]);
+        }
+
         public long GetFieldValue(int objectIndex, int fieldId)
         {
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.GetFieldIndex(fieldId));

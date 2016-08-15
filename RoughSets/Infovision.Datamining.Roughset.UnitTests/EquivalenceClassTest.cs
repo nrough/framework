@@ -25,8 +25,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CreatePerformanceTest()
         {
-            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
-            //DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
             Stopwatch s = new Stopwatch();

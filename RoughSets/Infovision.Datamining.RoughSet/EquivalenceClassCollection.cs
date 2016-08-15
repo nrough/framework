@@ -227,12 +227,14 @@ namespace Infovision.Datamining.Roughset
             if (weights == null)
                 weights = data.Weights;
 
+            long[] cursor = new long[attributes.Length];
             decimal sum = 0;
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
-                eqClassCollection.AddRecordInitial(data.GetFieldIndexValues(i, attributesIdx),
-                                                    data.GetFieldIndexValue(i, decisionIdx),
-                                                    weights[i], data, i);
+                data.GetFieldIndexValues(i, attributesIdx, ref cursor);
+                eqClassCollection.AddRecordInitial(cursor,
+                                                   data.GetFieldIndexValue(i, decisionIdx),
+                                                   weights[i], data, i);
                 sum += weights[i];
             }
 
@@ -263,8 +265,10 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass eq = null;
                 if (!this.partitions.TryGetValue(attributeInternalValues, out eq))
                 {
-                    eq = new EquivalenceClass(attributeInternalValues, dataStore);
-                    this.partitions.Add(attributeInternalValues, eq);
+                    long[] attributeIntValuesCopy = new long[attributeInternalValues.Length];
+                    Array.Copy(attributeInternalValues, attributeIntValuesCopy, attributeInternalValues.Length);
+                    eq = new EquivalenceClass(attributeIntValuesCopy, dataStore);
+                    this.partitions.Add(attributeIntValuesCopy, eq);
                 }
 
                 if (objectIdx != -1)

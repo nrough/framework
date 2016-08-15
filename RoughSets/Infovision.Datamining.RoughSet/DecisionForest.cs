@@ -8,32 +8,27 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
-    public interface IRandomForestTree : IDecisionTree
-    {
-        int NumberOfRandomAttributes { get; set; }
-    }
-
     public interface IRandomForestMember
     {
-        IRandomForestTree Tree { get; }
+        IDecisionTree Tree { get; }
         double Error { get; }
     }
 
     public class RandomForestMember : IRandomForestMember
     {
-        public IRandomForestTree Tree { get; set; }
+        public IDecisionTree Tree { get; set; }
         public double Error { get; set; }
     }
 
     public class RandomForest<T> : ILearner, IEnumerable<IRandomForestMember>
-        where T : IRandomForestTree, new()
+        where T : IDecisionTree, new()
     {
         private List<IRandomForestMember> trees;
         private int attributeLengthSum;
 
         public int Size { get; set; }
         public int BagSizePercent { get; set; }
-        public int NumberOfRandomAttributes { get; set; }
+        public int NumberOfAttributesToCheckForSplit { get; set; }
         public DataSampler DataSampler { get; set; }
 
         public virtual double AverageNumberOfAttributes
@@ -48,7 +43,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.Size = 500;
             this.BagSizePercent = 100;
-            this.NumberOfRandomAttributes = -1;
+            this.NumberOfAttributesToCheckForSplit = -1;
 
             this.trees = new List<IRandomForestMember>(this.Size);
         }
@@ -64,8 +59,8 @@ namespace Infovision.Datamining.Roughset
                 DataStore baggedData = sampler.GetData(iter);
                 T tree = new T();
 
-                if (this.NumberOfRandomAttributes > 0)
-                    tree.NumberOfRandomAttributes = this.NumberOfRandomAttributes;
+                if (this.NumberOfAttributesToCheckForSplit > 0)
+                    tree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
 
                 double error = tree.Learn(baggedData, attributes);
                 this.AddTree(tree, error);
@@ -75,7 +70,7 @@ namespace Infovision.Datamining.Roughset
             return 1 - trainResult.Accuracy;
         }
 
-        protected void AddTree(IRandomForestTree tree, double error)
+        protected void AddTree(IDecisionTree tree, double error)
         {
             IRandomForestMember newMember = new RandomForestMember()
             {
@@ -169,7 +164,7 @@ namespace Infovision.Datamining.Roughset
     }
 
     public class RoughForest<T> : RandomForest<T>
-        where T : IRandomForestTree, new()
+        where T : IDecisionTree, new()
     {
         private Dictionary<int, int> attributeCount;
 
@@ -267,7 +262,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 T tree = new T();
-                tree.NumberOfRandomAttributes = -1;
+                tree.NumberOfAttributesToCheckForSplit = -1;
                 double error = tree.Learn(baggedData, reduct.Attributes.ToArray());
                 this.AddTree(tree, error);
             }
@@ -278,7 +273,7 @@ namespace Infovision.Datamining.Roughset
     }
 
     public class DummyForest<T> : RoughForest<T>
-        where T : IRandomForestTree, new()
+        where T : IDecisionTree, new()
     {
         protected bool firstReduct = true;
         protected int[][] attributes = null;
@@ -327,7 +322,7 @@ namespace Infovision.Datamining.Roughset
     }
 
     public class SemiRoughForest<T> : DummyForest<T>
-        where T : IRandomForestTree, new()
+        where T : IDecisionTree, new()
     {
         protected override IReduct CalculateReduct(DataStore data)
         {

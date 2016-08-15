@@ -128,7 +128,7 @@
     <Compile Include="BireductTest.cs" />
     <Compile Include="ApproximateReductWeightsTest.cs" />
     <Compile Include="DecisionTreeTest.cs" />
-    <Compile Include="EquivalenceClassSortedMapTest.cs" />
+    <Compile Include="EquivalenceClassTest.cs" />
     <Compile Include="MatrixTest.cs" />
     <Compile Include="PermutationTest.cs" />
     <Compile Include="ApproximateReductTest.cs" />

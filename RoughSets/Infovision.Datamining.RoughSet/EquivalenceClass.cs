@@ -118,7 +118,7 @@ namespace Infovision.Datamining.Roughset
             DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
             this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
             this.instances = new Dictionary<int, decimal>(instances);
-            int numberOfDecisions = decisionField.InternalValues().Count;
+            int numberOfDecisions = decisionField.NumberOfValues;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
@@ -134,7 +134,7 @@ namespace Infovision.Datamining.Roughset
             else
                 this.instances = new Dictionary<int, decimal>();
 
-            int numberOfDecisions = decisionField.InternalValues().Count;
+            int numberOfDecisions = decisionField.NumberOfValues;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
@@ -142,11 +142,10 @@ namespace Infovision.Datamining.Roughset
         public EquivalenceClass(long[] dataVector, DataStore data)
         {
             this.dataVector = dataVector;
-            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+            //DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
+            this.decisionSet = new PascalSet<long>(data.DataStoreInfo.DecisionInfo.MinValue, data.DataStoreInfo.DecisionInfo.MaxValue);
             this.instances = new Dictionary<int, decimal>();
-
-            int numberOfDecisions = decisionField.InternalValues().Count;
+            int numberOfDecisions = data.DataStoreInfo.DecisionInfo.NumberOfValues;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
@@ -155,12 +154,10 @@ namespace Infovision.Datamining.Roughset
         {
             this.dataVector = new long[eqClass.dataVector.Length];
             Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);
-
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
             this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
-
             this.WeightSum = eqClass.WeightSum;
             this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
             this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
@@ -187,11 +184,11 @@ namespace Infovision.Datamining.Roughset
                 this.decisionWeightSums = new Dictionary<long, decimal>(decCount);
                 this.decisionCount = new Dictionary<long, int>(decCount);
 
-                foreach (var decision in this.DecisionSet)
-                {
-                    this.decisionWeightSums[decision] = 0;
-                    this.decisionCount[decision] = 0;
-                }
+                //foreach (var decision in this.DecisionSet)
+                //{
+                //    this.decisionWeightSums[decision] = 0;
+                //    this.decisionCount[decision] = 0;
+                //}
 
                 int decisionIndex = data.DataStoreInfo.DecisionFieldIndex;
                 foreach (var instance in this.instances)

@@ -83,9 +83,10 @@ namespace Infovision.Utils
 
         public static int GetHashCode<T>(T[] list)
         {
+            if (list == null) return 0;
             unchecked
             {
-                int hash = 0;
+                int hash = 17;
                 foreach (var item in list)
                     hash = 31 * hash + item.GetHashCode();
                 return hash;
@@ -96,7 +97,7 @@ namespace Infovision.Utils
         {
             unchecked
             {
-                int hash = 0;
+                int hash = 17;
                 foreach (var item in list)
                     hash = 31 * hash + item.GetHashCode();
                 return hash;

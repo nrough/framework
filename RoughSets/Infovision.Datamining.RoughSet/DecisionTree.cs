@@ -5,40 +5,51 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
+using Infovision.Math;
 
 namespace Infovision.Datamining.Roughset
 {
     public interface IDecisionTree : ILearner, IPredictionModel
     {
         ITreeNode Root { get; }
+        decimal Epsilon { get; }
+        int NumberOfAttributesToCheckForSplit { get; set; }
     }
 
-    public abstract class DecisionTree : IDecisionTree, IRandomForestTree
+    public abstract class DecisionTree : IDecisionTree
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
+        private decimal mA;
 
         public ITreeNode Root { get { return this.root; } }
-        public int NumberOfRandomAttributes { get; set; }
+        public int NumberOfAttributesToCheckForSplit { get; set; }
+        public decimal Epsilon { get; set; }
 
         public DecisionTree()
         {
             this.root = null;
             this.decisionAttributeId = -1;
-            this.NumberOfRandomAttributes = -1;
+            this.NumberOfAttributesToCheckForSplit = -1;
+            this.Epsilon = decimal.MinusOne;
         }
 
-        protected void Init(DataStore data)
+        protected void Init(DataStore data, int[] attributes)
         {
             this.root = new DecisionTreeNode(-1, -1, null);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
+
+            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(attributes, data, data.Weights);
+            IReduct reduct = new ReductWeights(data, attributes, Decimal.Zero, data.Weights, eqClassCollection);
+            this.mA = new InformationMeasureWeights().Calc(reduct);
+
         }
 
         public virtual double Learn(DataStore data, int[] attributes)
         {
-            this.Init(data);
+            this.Init(data, attributes);
 
-            EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, 0, data.Weights);
+            EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, data.Weights);
             this.GenerateSplits(eqClasscollection, this.root);
             ClassificationResult trainResult = this.Classify(data, data.Weights);
             return 1 - trainResult.Accuracy;
@@ -64,10 +75,21 @@ namespace Infovision.Datamining.Roughset
                 return;
             }
 
+            if (this.Epsilon >= Decimal.Zero)
+            {
+                decimal m = DecisionTreeHelper.CalcMajorityMeasureFromTree(this.root, eqClassCollection.Data, eqClassCollection.Data.Weights);
+                if ((Decimal.One - this.Epsilon) * this.mA <= m)
+                {
+                    this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
+                    return;
+                }
+            }
+
             int maxAttribute = this.GetNextSplit(eqClassCollection, decisions);
 
             //Generate split on result
-            Dictionary<long, EquivalenceClassCollection> subEqClasses = EquivalenceClassCollection.Split(eqClassCollection, maxAttribute);
+            Dictionary<long, EquivalenceClassCollection> subEqClasses 
+                = EquivalenceClassCollection.Split(eqClassCollection, maxAttribute);
             foreach (var kvp in subEqClasses)
             {
                 DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, parent);
@@ -172,9 +194,10 @@ namespace Infovision.Datamining.Roughset
         {
             double currentScore = this.GetCurrentScore(eqClassCollection, decisions);
             int[] localAttributes = eqClassCollection.Attributes;
-            if (this.NumberOfRandomAttributes != -1)
+
+            if (this.NumberOfAttributesToCheckForSplit != -1)
             {
-                int m = System.Math.Min(localAttributes.Length, this.NumberOfRandomAttributes);
+                int m = System.Math.Min(localAttributes.Length, this.NumberOfAttributesToCheckForSplit);
                 localAttributes = localAttributes.RandomSubArray(m);
             }
 
@@ -182,7 +205,7 @@ namespace Infovision.Datamining.Roughset
             var rangePrtitioner = Partitioner.Create(0, localAttributes.Length);
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount)
+                MaxDegreeOfParallelism = Environment.ProcessorCount
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;
@@ -199,7 +222,7 @@ namespace Infovision.Datamining.Roughset
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
                         EquivalenceClassCollection attributeEqClasses
-                            = EquivalenceClassCollection.Create(new int[] { localAttributes[i] }, eqClassCollection, 0);
+                            = EquivalenceClassCollection.Create(new int[] { localAttributes[i] }, eqClassCollection);
                         attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
                         double score = this.GetSplitScore(attributeEqClasses, currentScore);
 

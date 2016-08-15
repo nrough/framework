@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Roughset
                     {
                         if (this.eqClassMap == null)
                         {
-                            this.eqClassMap = EquivalenceClassCollection.Create(this, this.DataStore, this.Weights);
+                            this.eqClassMap = EquivalenceClassCollection.Create(this.Attributes.ToArray(), this.DataStore, this.Weights);
                         }
                     }
                 }
@@ -158,7 +158,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public virtual EquivalenceClassCollection CreateEquivalenceClassCollection(bool useGlobalCache = false)
+        public virtual EquivalenceClassCollection DEL_CreateEquivalenceClassCollection(bool useGlobalCache = false)
         {
             EquivalenceClassCollection result = null;
             string partitionKey = null;

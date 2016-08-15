@@ -253,7 +253,7 @@ namespace DisesorTest
                         field.Id,
                         field.Alias,
                         field.FieldValueType,
-                        field.Values().Count,
+                        field.NumberOfValues,
                         field.CanDiscretize() ? "Can" : "Cannot");
 
                     if (field.CanDiscretize())
@@ -279,7 +279,7 @@ namespace DisesorTest
                         field.Id,
                         field.Alias,
                         field.FieldValueType,
-                        field.Values().Count,
+                        field.NumberOfValues,
                         field.CanDiscretize() ? "Can" : "Cannot");
 
                     if (field.CanDiscretize())

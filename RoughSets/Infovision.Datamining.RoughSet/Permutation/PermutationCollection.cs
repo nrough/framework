@@ -43,20 +43,11 @@ namespace Infovision.Datamining.Roughset
             this.internalList.Add(permutation);
         }
 
-        public PermutationCollection(int count, int[] elements)
+        public PermutationCollection(int size, int[] elements)
         {
-            if (elements == null)
-                throw new ArgumentNullException("elements");
-
-            this.internalList = new List<Permutation>(count);
-            for (int i = 0; i < count; i++)
-            {
-                int[] tmp = new int[elements.Length];
-                Array.Copy(elements, tmp, elements.Length);
-                tmp.Shuffle();
-
-                this.internalList.Add(new Permutation(tmp));
-            }
+            this.internalList = new List<Permutation>(size);
+            for (int i = 0; i < size; i++)
+                this.internalList.Add(new Permutation(elements.ShuffleDuplicate()));
         }
 
         #endregion Constructors

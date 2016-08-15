@@ -74,25 +74,21 @@ namespace Infovision.Datamining.Roughset
         public EquivalenceClassCollection(DataStore data, int[] attrCopy, int initialPartitionSize)
         {
             this.data = data;
-
-            this.decisionWeight = new Dictionary<long, decimal>(data.DataStoreInfo.GetDecisionValues().Count);
-            this.decisionCount = new Dictionary<long, int>(data.DataStoreInfo.GetDecisionValues().Count);
-
+            int decisionCount = data.DataStoreInfo.GetDecisionValues().Count;
+            this.decisionWeight = new Dictionary<long, decimal>(decisionCount);
+            this.decisionCount = new Dictionary<long, int>(decisionCount);
             this.attributes = attrCopy;
-
             this.InitPartitions(initialPartitionSize);
         }
 
         public EquivalenceClassCollection(DataStore data, int[] attr)
         {
             this.data = data;
-
-            this.decisionWeight = new Dictionary<long, decimal>(data.DataStoreInfo.GetDecisionValues().Count);
-            this.decisionCount = new Dictionary<long, int>(data.DataStoreInfo.GetDecisionValues().Count);
-
+            int numOfDecisions = data.DataStoreInfo.GetDecisionValues().Count;
+            this.decisionWeight = new Dictionary<long, decimal>(numOfDecisions);
+            this.decisionCount = new Dictionary<long, int>(numOfDecisions);
             this.attributes = new int[attr.Length];
             Array.Copy(attr, this.attributes, attr.Length);
-
             this.InitPartitions();
         }
 
@@ -188,7 +184,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion MethodsInProgress
 
-        public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights = null, bool useGlobalCache = false)
+        public static EquivalenceClassCollection DEL_Create(IReduct reduct, DataStore data, decimal[] weights = null, bool useGlobalCache = false)
         {
             EquivalenceClassCollection result = null;
             string partitionKey = null;
@@ -218,46 +214,31 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public static EquivalenceClassCollection Create(int[] attributes, DataStore dataStore, decimal epsilon, decimal[] weights = null)
+        public static EquivalenceClassCollection Create(int[] attributes, DataStore data, decimal[] weights = null)
         {
-            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(dataStore, attributes);
-            int decisionIdx = dataStore.DataStoreInfo.DecisionFieldIndex;
+            EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(data, attributes);
+
+            int decisionIdx = data.DataStoreInfo.DecisionFieldIndex;
+
+            int[] attributesIdx = new int[attributes.Length];
+            for (int i = 0; i < attributes.Length; i++)
+                attributesIdx[i] = data.DataStoreInfo.GetFieldIndex(attributes[i]);
 
             if (weights == null)
+                weights = data.Weights;
+
+            decimal sum = 0;
+            for (int i = 0; i < data.NumberOfRecords; i++)
             {
-                decimal w = Decimal.Divide(1, dataStore.NumberOfRecords);
-                for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                {
-                    eqClassCollection.AddRecordInitial(dataStore.GetFieldValues(i, attributes),
-                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
-                                                        w,
-                                                        dataStore,
-                                                        i);
-                }
-
-                eqClassCollection.ObjectsCount = dataStore.NumberOfRecords;
-                eqClassCollection.WeightSum = Decimal.One;
-            }
-            else
-            {
-                decimal sum = 0;
-                for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                {
-                    eqClassCollection.AddRecordInitial(dataStore.GetFieldValues(i, attributes),
-                                                        dataStore.GetFieldIndexValue(i, decisionIdx),
-                                                        weights[i],
-                                                        dataStore,
-                                                        i);
-
-                    sum += weights[i];
-                }
-
-                eqClassCollection.ObjectsCount = dataStore.NumberOfRecords;
-                eqClassCollection.WeightSum = sum;
+                eqClassCollection.AddRecordInitial(data.GetFieldIndexValues(i, attributesIdx),
+                                                    data.GetFieldIndexValue(i, decisionIdx),
+                                                    weights[i], data, i);
+                sum += weights[i];
             }
 
+            eqClassCollection.ObjectsCount = data.NumberOfRecords;
+            eqClassCollection.WeightSum = sum;
             eqClassCollection.CalcAvgConfidence();
-
             return eqClassCollection;
         }
 
@@ -515,21 +496,20 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass newEqClass = new EquivalenceClass(newInstance, eqClass.Instances, eqClass.DecisionSet);
 
                 //TODO Decision tries: Update eq class statistics
-                newEqClass.WeightSum = eqClass.WeightSum;
+                //WeigthSum is calculated in RecalcEquivalenceClassStatistic
+                //newEqClass.WeightSum = eqClass.WeightSum;
 
                 tmpCollection.Partitions.Add(newInstance, newEqClass);
             }
 
+            //TODO Remove this Recalc, try to update stat in previous loop
             foreach (var kvp in result)
                 kvp.Value.RecalcEquivalenceClassStatistic(collectionToSplit.data);
 
             return result;
         }
 
-        public static EquivalenceClassCollection Create(
-            int[] attributes,
-            EquivalenceClassCollection eqClassCollection,
-            decimal epsilon)
+        public static EquivalenceClassCollection Create(int[] attributes, EquivalenceClassCollection eqClassCollection)
         {
             //TODO Decision tries : Update statistics
 

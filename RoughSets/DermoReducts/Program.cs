@@ -24,7 +24,7 @@ namespace DermoReducts
             IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, w);
             DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
-            Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.InternalValues().Count);
+            Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.NumberOfValues);
             foreach (long val in ageAttribute.InternalValues())
                 if (val != ageAttribute.MissingValueInternal)
                     countVals.Add(val, (int)ageAttribute.Histogram.GetBinValue(val));
@@ -44,7 +44,7 @@ namespace DermoReducts
             decimal tmp = Decimal.Zero;
             int k = 0;
             int origNumberOfRecords = data.NumberOfRecords;
-            Array.Resize<decimal>(ref w, w.Length + (missingRecs.Length * ageAttribute.InternalValues().Count));
+            Array.Resize<decimal>(ref w, w.Length + (missingRecs.Length * ageAttribute.NumberOfValues));
             foreach (DataRecordInternal rec in missingRecs)
             {
                 foreach (KeyValuePair<long, int> kvp in countVals)

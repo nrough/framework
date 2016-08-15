@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset
                     n = n.Parent;
                     level++;
                 }
-                return level;
+                  return level;
             }
         }
 

@@ -117,7 +117,7 @@ namespace Infovision.Datamining.Roughset
                         if (!attributeEqClasses.ContainsKey(attribute))
                         {
                             attributeEqClasses.Add(attribute, EquivalenceClassCollection
-                                .Create(new int[] { attribute }, red.DataStore, red.Epsilon, red.Weights));
+                                .Create(new int[] { attribute }, red.DataStore, red.Weights));
                         }
                     }
                 }
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
+                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount)
             };
 #if DEBUG
             options.MaxDegreeOfParallelism = 1;

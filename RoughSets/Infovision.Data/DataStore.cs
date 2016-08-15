@@ -381,7 +381,7 @@ namespace Infovision.Data
             });
 
             int newFieldId = this.DataStoreInfo.MaxFieldId + 1;
-            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.Values().Count : 0);
+            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
             for (int row = 0; row < this.NumberOfRecords; row++)
             {
                 isMissing = this.DataStoreInfo.HasMissingData && String.Equals(columnData[row], newFieldInfo.MissingValue);
@@ -459,6 +459,14 @@ namespace Infovision.Data
             {
                 result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
             }
+            return result;
+        }
+
+        public long[] GetFieldIndexValues(int objectIndex, int[] fieldIdxs)
+        {
+            long[] result = new long[fieldIdxs.Length];
+            for (int i = 0; i < fieldIdxs.Length; i++)
+                result[i] = this.GetFieldIndexValue(objectIndex, fieldIdxs[i]);
             return result;
         }
 

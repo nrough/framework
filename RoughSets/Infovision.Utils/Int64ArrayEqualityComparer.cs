@@ -26,20 +26,13 @@ namespace Infovision.Utils
             }
         }
 
-        private Int64ArrayEqualityComparer()
-        {
-        }
+        private Int64ArrayEqualityComparer() { }
 
         public bool Equals(long[] x, long[] y)
         {
-            if (x == y)
-                return true;
-
-            if (x == null || y == null)
-                return false;
-
-            if (x.Length != y.Length)
-                return false;
+            if (x == y) return true;
+            if (x == null || y == null) return false;
+            if (x.Length != y.Length) return false;
 
             for (int i = 0; i < x.Length; i++)
                 if (x[i] != y[i])
@@ -50,29 +43,7 @@ namespace Infovision.Utils
 
         public int GetHashCode(long[] array)
         {
-            unchecked
-            {
-                /*
-                int hash = 0;
-                int step = array.Length <= 30
-                         ? 1
-                         : array.Length <= 100 ? 2
-                         : array.Length <= 200 ? 4
-                         : array.Length <= 500 ? 8 : 16;
-
-                for (int i = 0; i < array.Length; i += step)
-                    hash = 31 * hash + array[i].GetHashCode();
-                return hash;
-                */
-
-                if (array == null)
-                    return 0;
-
-                int hash = 17;
-                for (int i = 0; i < array.Length; i += 1)
-                    hash = 31 * hash + array[i].GetHashCode();
-                return hash;
-            }
+            return HashHelper.GetHashCode<long>(array);
         }
     }
 }

@@ -38,37 +38,21 @@ namespace Infovision.Data.UnitTests
             Assert.AreEqual(7, dataStoreTrainInfo.NumberOfFields);
             Assert.AreEqual(7, dataStoreTestInfo.NumberOfFields);
 
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(1).InternalValues().Count);
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(2).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(3).InternalValues().Count);
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(4).InternalValues().Count);
-            Assert.AreEqual(4, dataStoreTrainInfo.GetFieldInfo(5).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(6).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(7).InternalValues().Count);
+            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(1).NumberOfValues);
+            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(2).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(3).NumberOfValues);
+            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(4).NumberOfValues);
+            Assert.AreEqual(4, dataStoreTrainInfo.GetFieldInfo(5).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(6).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(7).NumberOfValues);
 
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(1).Values().Count);
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(2).Values().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(3).Values().Count);
-            Assert.AreEqual(3, dataStoreTrainInfo.GetFieldInfo(4).Values().Count);
-            Assert.AreEqual(4, dataStoreTrainInfo.GetFieldInfo(5).Values().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(6).Values().Count);
-            Assert.AreEqual(2, dataStoreTrainInfo.GetFieldInfo(7).Values().Count);
-
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(1).InternalValues().Count);
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(2).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(3).InternalValues().Count);
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(4).InternalValues().Count);
-            Assert.AreEqual(4, dataStoreTestInfo.GetFieldInfo(5).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(6).InternalValues().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(7).InternalValues().Count);
-
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(1).Values().Count);
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(2).Values().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(3).Values().Count);
-            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(4).Values().Count);
-            Assert.AreEqual(4, dataStoreTestInfo.GetFieldInfo(5).Values().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(6).Values().Count);
-            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(7).Values().Count);
+            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(1).NumberOfValues);
+            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(2).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(3).NumberOfValues);
+            Assert.AreEqual(3, dataStoreTestInfo.GetFieldInfo(4).NumberOfValues);
+            Assert.AreEqual(4, dataStoreTestInfo.GetFieldInfo(5).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(6).NumberOfValues);
+            Assert.AreEqual(2, dataStoreTestInfo.GetFieldInfo(7).NumberOfValues);
         }
 
         [Test]

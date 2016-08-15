@@ -35,8 +35,8 @@ namespace Infovision.Data.UnitTests
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
+                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
+                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
                 }
 
                 foreach (long objectId in dataStore.GetObjectIds())
@@ -80,8 +80,8 @@ namespace Infovision.Data.UnitTests
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).InternalValues().Count);
+                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
+                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
                 }
 
                 foreach (long objectId in dataStore.GetObjectIds())

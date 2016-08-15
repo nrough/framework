@@ -8,8 +8,8 @@ using Accord.Statistics.Filters;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
-
 using DecTrees = Accord.MachineLearning.DecisionTrees;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -28,6 +28,51 @@ namespace Infovision.Datamining.Roughset.UnitTests
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             
             Console.WriteLine(DecisionTreeHelper.CountLeaves(treeID3.Root));
+        }
+
+        [Test]
+        public void GetRulesFromTreeTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int prevCount = Int32.MaxValue;
+
+            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+            {                
+                DecisionTreeID3 treeID3 = new DecisionTreeID3();
+                treeID3.Epsilon = eps;
+                treeID3.Learn(data, attributes);
+                List<AttributeValueVector> ruleConditions = DecisionTreeHelper.GetRulesFromTree(treeID3.Root, data);
+                Console.WriteLine(ruleConditions.Count);
+                Assert.AreEqual(
+                    ruleConditions.Count, 
+                    DecisionTreeHelper.CountLeaves(treeID3.Root));
+
+                Assert.GreaterOrEqual(prevCount, ruleConditions.Count);
+                prevCount = ruleConditions.Count;
+            }
+        }
+
+        [Test]
+        public void CheckTreeConvergedTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+            {
+                DecisionTreeID3 treeID3 = new DecisionTreeID3();
+                treeID3.Epsilon = eps;
+                double errorTrain = treeID3.Learn(data, attributes);
+                double errorTest = 1.0 - treeID3.Classify(test).Accuracy;
+
+                Console.WriteLine("eps={0} numrul={1} errtrn={2} errtst={3}",
+                    eps,
+                    DecisionTreeHelper.CountLeaves(treeID3.Root),
+                    errorTrain,
+                    errorTest);
+            }
         }
 
         [Test]
@@ -102,7 +147,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
             randomForest.Size = 20;
-            randomForest.NumberOfRandomAttributes = 5;
+            randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(randomForest.Classify(test, null));
 
@@ -120,7 +165,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RandomForest<DecisionTreeCART> randomForest = new RandomForest<DecisionTreeCART>();
             randomForest.Size = 10;
-            randomForest.NumberOfRandomAttributes = 5;
+            randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(randomForest.Classify(test, null));
 
@@ -138,7 +183,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RandomForest<DecisionTreeRough> randomForest = new RandomForest<DecisionTreeRough>();
             randomForest.Size = 100;
-            randomForest.NumberOfRandomAttributes = 5;
+            randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(randomForest.Classify(test, null));
 
@@ -156,7 +201,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             RoughForest<DecisionTreeRough> randomForest = new RoughForest<DecisionTreeRough>();
             randomForest.Size = 2;
-            randomForest.NumberOfRandomAttributes = 5;
+            randomForest.NumberOfAttributesToCheckForSplit = 5;
             randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
             randomForest.Epsilon = 0.4m;
             
@@ -246,7 +291,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
                 randomForest.DataSampler = sampler;
                 randomForest.Size = size;
-                randomForest.NumberOfRandomAttributes = (int)(0.1 * data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                randomForest.NumberOfAttributesToCheckForSplit = (int)(0.1 * data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                 randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());                
 
                 ClassificationResult randomForestResult = randomForest.Classify(test, null);

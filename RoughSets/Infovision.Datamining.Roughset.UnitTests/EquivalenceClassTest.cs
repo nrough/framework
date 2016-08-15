@@ -3,17 +3,38 @@ using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using System.Diagnostics;
+using System.Collections.Specialized;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class EquivalenceClassTest
     {
-        public EquivalenceClassTest()
+        [Test]
+        public void CreateTest()
         {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
+            Assert.NotNull(eqClasses);
+        }
+
+        [Test]
+        public void CreatePerformanceTest()
+        {
+            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
+            //DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            Stopwatch s = new Stopwatch();
+            s.Start(); 
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
+            s.Stop();
+
+            Console.WriteLine("Hashing: {0}ms", s.ElapsedMilliseconds);
         }
 
         [Test]
@@ -61,5 +82,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 }
             }
         }
+
+
+         
     }
 }

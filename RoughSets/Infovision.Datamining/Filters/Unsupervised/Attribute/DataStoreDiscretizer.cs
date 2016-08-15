@@ -271,7 +271,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         {
             if (field.CanDiscretize())
             {
-                if (this.NumberOfBins < field.Values().Count)
+                if (this.NumberOfBins < field.NumberOfValues)
                     return true;
             }
 

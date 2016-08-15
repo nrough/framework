@@ -269,7 +269,7 @@ namespace DisesorTuning
                     Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
                         field.Id,
                         field.FieldValueType,
-                        field.Values().Count,
+                        field.NumberOfValues,
                         discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
                     if (discretizer.CanDiscretize(field))
@@ -294,7 +294,7 @@ namespace DisesorTuning
                     Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
                         field.Id,
                         field.FieldValueType,
-                        field.Values().Count,
+                        field.NumberOfValues,
                         discretizer.CanDiscretize(field) ? "Can" : "Cannot");
 
                     if (discretizer.CanDiscretize(field))

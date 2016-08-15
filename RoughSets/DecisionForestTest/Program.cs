@@ -38,7 +38,7 @@ namespace DecisionForestTest
         }
 
         private void ProcessResult<T>(RandomForest<T> forest, DataStore testData, string name, int test, int fold, decimal epsilon)
-            where T : IRandomForestTree, new()
+            where T : IDecisionTree, new()
         {
             int origSize = forest.Size;
             foreach (int size in sizes)
@@ -104,7 +104,7 @@ namespace DecisionForestTest
                         roughForestNoEps.Size = size;
                         roughForestNoEps.NumberOfPermutationsPerTree = 20;
                         roughForestNoEps.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
-                        roughForestNoEps.NumberOfRandomAttributes = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        roughForestNoEps.NumberOfAttributesToCheckForSplit = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                         roughForestNoEps.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                         this.ProcessResult<DecisionTreeC45>(roughForestNoEps, testData, "RoughVarEps", t, fold, Decimal.Zero);
 
@@ -114,7 +114,7 @@ namespace DecisionForestTest
                         roughForestRough.Size = size;
                         roughForestRough.NumberOfPermutationsPerTree = 20;
                         roughForestRough.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
-                        roughForestRough.NumberOfRandomAttributes = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        roughForestRough.NumberOfAttributesToCheckForSplit = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                         roughForestRough.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                         this.ProcessResult<DecisionTreeRough>(roughForestRough, testData, "RoughForestM", t, fold, Decimal.Zero);
 
@@ -123,7 +123,7 @@ namespace DecisionForestTest
                         dummyForest.DataSampler = sampler;
                         dummyForest.Size = size;
                         dummyForest.PermutationCollection = permutations;
-                        dummyForest.NumberOfRandomAttributes = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        dummyForest.NumberOfAttributesToCheckForSplit = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                         dummyForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                         this.ProcessResult<DecisionTreeC45>(dummyForest, testData, "Dummy", t, fold, Decimal.Zero);
 
@@ -131,7 +131,7 @@ namespace DecisionForestTest
                         RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
                         randomForest.DataSampler = sampler;
                         randomForest.Size = size;
-                        randomForest.NumberOfRandomAttributes = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        randomForest.NumberOfAttributesToCheckForSplit = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
                         randomForest.Learn(trainData, trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                         this.ProcessResult<DecisionTreeC45>(randomForest, testData, "RandomC45", t, fold, eps);
 

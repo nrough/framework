@@ -17,6 +17,7 @@ namespace Infovision.Data
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;
         private int decisionFieldId;
+        private DataFieldInfo decisionFieldInfo;
         private Dictionary<int, DataFieldInfo> fields;
         private Dictionary<int, FieldTypes> fieldTypes;
         private Dictionary<FieldTypes, int> fieldTypeCount;
@@ -31,7 +32,8 @@ namespace Infovision.Data
 
         public int NumberOfDecisionValues
         {
-            get { return this.GetFieldInfo(this.DecisionFieldId).InternalValues().Count; }
+            get { return this.decisionFieldInfo.NumberOfValues; }
+            //get { return this.GetFieldInfo(this.DecisionFieldId).NumberOfValues; }
         }
 
         public int MinFieldId
@@ -60,7 +62,10 @@ namespace Infovision.Data
                     this.decisionFieldId = value;
 
                     if (this.decisionFieldId > 0)
+                    {
                         fieldTypes[this.decisionFieldId] = FieldTypes.Decision;
+                        decisionFieldInfo = fields[this.decisionFieldId];
+                    }
                 }
             }
         }
@@ -72,7 +77,11 @@ namespace Infovision.Data
 
         public DataFieldInfo DecisionInfo
         {
-            get { return this.GetFieldInfo(this.DecisionFieldId); }
+            get
+            {
+                return this.decisionFieldInfo;
+                //return this.GetFieldInfo(this.DecisionFieldId);
+            }
         }
 
         public IEnumerable<DataFieldInfo> Fields
@@ -275,7 +284,7 @@ namespace Infovision.Data
                 stringBuilder.AppendFormat("Attribute {0} is {1} and has {2} distinct values",
                                            fieldInfo.Name,
                                            fieldInfo.FieldValueType,
-                                           fieldInfo.Values().Count); //fieldInfo.Histogram.Elements);
+                                           fieldInfo.NumberOfValues); //fieldInfo.Histogram.Elements);
                 stringBuilder.Append(Environment.NewLine);
 
                 stringBuilder.AppendFormat("{0,-10}{1,-10}{2,10}", "Value", "Internal", "Count");

@@ -13,24 +13,34 @@ namespace Infovision.Datamining.Roughset
         public static int CountLeaves(ITreeNode node)
         {
             int count = 0;
-            TreeNodeTraversal.TraverseInOrder(node, n => count += (n.IsLeaf) ? 1 : 0);
+            TreeNodeTraversal.TraversePostOrder(node, n => count += (n.IsLeaf) ? 1 : 0);
             return count;
         }
 
-        public static List<AttributeValueVector> GetRulesFromTree(ITreeNode node, DataStore data)
+        public static AttributeValueVector[] GetRulesFromTree(ITreeNode node, DataStore data)
         {
-            List<AttributeValueVector> conditions = new List<AttributeValueVector>(CountLeaves(node));
+            int count = CountLeaves(node);
+
+            AttributeValueVector[] conditions = count > 1 
+                ? new AttributeValueVector[count] 
+                : new AttributeValueVector[1];
+
+            int i = 0;
             Action<ITreeNode> addConditions = n =>
             {
                 if (n.IsRoot && n.Children == null)
                 {
-                    conditions.Add(new AttributeValueVector(0));
+                    conditions[i++] = new AttributeValueVector(0);
+                }
+                else if (n.Children == null && n.Key != data.DataStoreInfo.DecisionFieldId)
+                {
+                    conditions[i++] = DecisionTreeHelper.CreateRuleConditionFromNode(n);
                 }
                 else if (n.Children != null && n.Children.First().Key == data.DataStoreInfo.DecisionFieldId)
                 {
-                    conditions.Add(DecisionTreeHelper.CreateRuleConditionFromNode(n));
+                    conditions[i++] = DecisionTreeHelper.CreateRuleConditionFromNode(n);
                 }
-
+                
             };
             TreeNodeTraversal.TraversePreOrder(node, addConditions);
             return conditions;
@@ -38,23 +48,21 @@ namespace Infovision.Datamining.Roughset
 
         public static decimal CalcMajorityMeasureFromTree(ITreeNode node, DataStore data, decimal[] weights = null)
         {
-            List<AttributeValueVector> conditions = DecisionTreeHelper.GetRulesFromTree(node, data);
-
             if (weights == null)
                 weights = data.Weights;
 
-            Dictionary<AttributeValueVector, EquivalenceClass> map 
-                = new Dictionary<AttributeValueVector, EquivalenceClass>(conditions.Count);
+            AttributeValueVector[] conditions = DecisionTreeHelper.GetRulesFromTree(node, data);
+            EquivalenceClass[] map = new EquivalenceClass[conditions.Length];
+            int[] fieldIndexLookup = data.DataStoreInfo.GetFieldIndexLookupTable();
+
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
-                DataRecordInternal record = data.GetRecordByIndex(i);
-                foreach (AttributeValueVector condition in conditions)
+                for(int j = 0; j < conditions.Length; j++)
                 {
                     bool flag = true;
-
-                    for (int j = 0; j < condition.Length; j++)
+                    for (int k = 0; k < conditions[j].Length; k++)
                     {
-                        if (record[condition.Attributes[j]] != condition.Values[j])
+                        if(conditions[j].Values[k] != data.GetFieldIndexValue(i, fieldIndexLookup[conditions[j].Attributes[k]]))
                         {
                             flag = false;
                             break;
@@ -63,22 +71,17 @@ namespace Infovision.Datamining.Roughset
 
                     if (flag)
                     {
-                        EquivalenceClass eq = null;
-                        if (!map.TryGetValue(condition, out eq))
-                        {
-                            eq = new EquivalenceClass(condition.Values, data);
-                            map.Add(condition, eq);
-                        }
-                        eq.AddObject(i, data.GetDecisionValue(i), weights[i]);
+                        if (map[j] == null)
+                            map[j] = new EquivalenceClass(conditions[j].Values, data);
+                        map[j].AddObject(i, data.GetDecisionValue(i), weights[i]);
                         break;
                     }
                 }
             }
 
             decimal sum = Decimal.Zero;
-            foreach (var kvp in map)
-                sum += kvp.Value.DecisionWeights.FindMaxValuePair().Value;
-
+            foreach (var eq in map)
+                sum += eq.DecisionWeights.FindMaxValuePair().Value;
             return sum;
         }
 

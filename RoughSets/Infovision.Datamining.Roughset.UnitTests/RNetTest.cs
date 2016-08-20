@@ -6,7 +6,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class RNetTest
     {
-        [Ignore]
+        [Ignore("NoReason")]
         public void HelloWorldTest()
         {
             REngine.SetEnvironmentVariables(); // <-- May be omitted; the next line would call it.

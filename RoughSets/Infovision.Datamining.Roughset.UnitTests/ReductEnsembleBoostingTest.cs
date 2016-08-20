@@ -223,7 +223,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return argsList;
         }
 
-        [Test, TestCaseSource("GetGenerateTestArgs"), Ignore]
+        [Test, TestCaseSource("GetGenerateTestArgs"), Ignore("NoReason")]
         public void GenerateTest(Dictionary<string, object> args)
         {
             Args parms = new Args();
@@ -539,7 +539,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void GenerateExperimentBoostingWithDiversity()
         {
             //Console.WriteLine("GenerateExperimentBoostingWithDiversity");

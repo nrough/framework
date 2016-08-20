@@ -52,20 +52,9 @@ namespace Infovision.Datamining.Roughset
         }
 
         internal decimal WeightSum { get; set; }
-        internal int ObjectsCount { get; set; }
+        internal int NumberOfObjects { get; set; }
 
         public DataStore Data { get { return this.data; } }
-
-        public PascalSet<long> DecisionSet
-        {
-            get
-            {
-                return new PascalSet<long>(
-                    this.data.DataStoreInfo.DecisionInfo.MinValue,
-                    this.data.DataStoreInfo.DecisionInfo.MaxValue,
-                    this.decisionCount.Where(kvp => kvp.Value != 0).Select(kvp => kvp.Key));
-            }
-        }
 
         #endregion Properties
 
@@ -237,10 +226,10 @@ namespace Infovision.Datamining.Roughset
                                                    weights[i], data, i);
                 sum += weights[i];
             }
-
-            eqClassCollection.ObjectsCount = data.NumberOfRecords;
+            eqClassCollection.NumberOfObjects = data.NumberOfRecords;
             eqClassCollection.WeightSum = sum;
             eqClassCollection.CalcAvgConfidence();
+
             return eqClassCollection;
         }
 
@@ -292,7 +281,7 @@ namespace Infovision.Datamining.Roughset
             else
                 this.partitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
 
-            this.ObjectsCount = 0;
+            this.NumberOfObjects = 0;
             this.WeightSum = 0;
         }
 
@@ -307,7 +296,7 @@ namespace Infovision.Datamining.Roughset
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, w);
             }
 
-            this.ObjectsCount = dataStore.NumberOfRecords;
+            this.NumberOfObjects = dataStore.NumberOfRecords;
             this.WeightSum = Decimal.One;
         }
 
@@ -322,7 +311,7 @@ namespace Infovision.Datamining.Roughset
                 sum += objectWeights[objectIdx];
             }
 
-            this.ObjectsCount = dataStore.NumberOfRecords;
+            this.NumberOfObjects = dataStore.NumberOfRecords;
             this.WeightSum = sum;
 
             this.CalcAvgConfidence();
@@ -429,21 +418,8 @@ namespace Infovision.Datamining.Roughset
             int numOfDec = data.DataStoreInfo.NumberOfDecisionValues;
             this.decisionCount = new Dictionary<long, int>(numOfDec);
             this.decisionWeight = new Dictionary<long, decimal>(numOfDec);
-            this.ObjectsCount = 0;
+            this.NumberOfObjects = 0;
             this.WeightSum = 0;
-
-            /*
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount / 2)
-            };
-
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
-
-            Parallel.ForEach(this, options, eq =>
-            */
 
             foreach (var eq in this)
             {
@@ -465,26 +441,73 @@ namespace Infovision.Datamining.Roughset
                 eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
 
-                this.ObjectsCount += eq.Instances.Count;
+                this.NumberOfObjects += eq.Instances.Count;
                 this.WeightSum += eq.Instances.Sum(x => x.Value);
             }
-            //);
         }
 
-        public static Dictionary<long, EquivalenceClassCollection> Split(
-            EquivalenceClassCollection collectionToSplit,
-            int attributeId)
+        public static Dictionary<long, EquivalenceClassCollection> Split(int attributeId, EquivalenceClassCollection collectionToSplit)
         {
-            int attributeIdx = collectionToSplit.Attributes.IndexOf(attributeId);
+            if (collectionToSplit == null)
+                throw new ArgumentNullException("collectionToSplit");
 
-            int[] newAttributes = collectionToSplit.Attributes.RemoveAt(attributeIdx);
+            if (collectionToSplit.Attributes.Length != 1)
+                throw new ArgumentException("collectionToSplit.Attributes.Length != 0", "collectionToSplit");
+
+            int[] attributeIdxs = new int[] { collectionToSplit.Data.DataStoreInfo.GetFieldIndex(attributeId) };
+            long[] cursor = new long[1];
+
             DataFieldInfo attributeInfo = collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId);
+
             Dictionary<long, EquivalenceClassCollection> result
                 = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
 
             foreach (var eqClass in collectionToSplit)
             {
-                long[] newInstance = eqClass.Instance.RemoveAt(attributeIdx);
+                long attributeValue = eqClass.Instance[0];
+
+                EquivalenceClassCollection tmpCollection = new EquivalenceClassCollection(
+                        collectionToSplit.data,
+                        new int[] { attributeId },
+                        collectionToSplit.data.DataStoreInfo.DecisionInfo.NumberOfValues);
+
+                result.Add(attributeValue, tmpCollection);
+
+                //TODO we can add whole EqClasses!
+                foreach (var kvp in eqClass.Instances)
+                {
+                    collectionToSplit.Data.GetFieldIndexValues(
+                        kvp.Key, 
+                        attributeIdxs, 
+                        ref cursor);
+
+                    tmpCollection.AddRecordInitial(
+                        cursor, 
+                        collectionToSplit.Data.GetDecisionValue(kvp.Key), 
+                        kvp.Value, 
+                        collectionToSplit.Data, 
+                        kvp.Key);
+                }
+
+                tmpCollection.WeightSum = eqClass.WeightSum;
+                tmpCollection.NumberOfObjects = eqClass.NumberOfObjects;
+                tmpCollection.CalcAvgConfidence();
+            }
+
+            return result;
+        }
+
+        public static Dictionary<long, EquivalenceClassCollection> DEL_Split(int attributeId, EquivalenceClassCollection collectionToSplit)
+        {
+            int attributeIdx = collectionToSplit.Attributes.IndexOf(attributeId);
+            int[] newAttributes = collectionToSplit.Attributes.RemoveAt(attributeIdx);
+            DataFieldInfo attributeInfo = collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId);
+
+            Dictionary<long, EquivalenceClassCollection> result
+                = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
+
+            foreach (var eqClass in collectionToSplit)
+            {                
                 long attributeValue = eqClass.Instance[attributeIdx];
                 EquivalenceClassCollection tmpCollection = null;
                 if (!result.TryGetValue(attributeValue, out tmpCollection))
@@ -493,10 +516,12 @@ namespace Infovision.Datamining.Roughset
                     tmpCollection = new EquivalenceClassCollection(
                         collectionToSplit.data,
                         newAttributes,
-                        (int)(collectionToSplit.NumberOfPartitions / attributeInfo.NumberOfValues));
+                        (collectionToSplit.NumberOfPartitions / attributeInfo.NumberOfValues));
+
                     result.Add(attributeValue, tmpCollection);
                 }
 
+                long[] newInstance = eqClass.Instance.RemoveAt(attributeIdx);
                 EquivalenceClass newEqClass = new EquivalenceClass(newInstance, eqClass.Instances, eqClass.DecisionSet);
 
                 //TODO Decision tries: Update eq class statistics
@@ -513,40 +538,102 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public static EquivalenceClassCollection Create(int[] attributes, EquivalenceClassCollection eqClassCollection)
+        //new array is created on call
+        public static EquivalenceClassCollection DEL_Create(int[] attributes, EquivalenceClassCollection eqClassCollection)
         {
-            //TODO Decision tries : Update statistics
-
+            //we have single attribute so this seems not neccessary
             int combinations = 1;
             for (int i = 0; i < attributes.Length; i++)
                 combinations *= eqClassCollection.data.DataStoreInfo.GetFieldInfo(attributes[i]).NumberOfValues;
 
+            //Initialize new collection
             EquivalenceClassCollection result = new EquivalenceClassCollection(eqClassCollection.data, attributes, combinations);
             int[] attributeIndices = eqClassCollection.Attributes.IndicesOfOrderedByValue(attributes);
 
             foreach (var eq in eqClassCollection)
             {
-                long[] newInstance = eq.Instance.KeepIndices(attributeIndices);
+                long[] newInstance = eq.Instance.KeepIndices(attributeIndices);  //? new array
                 EquivalenceClass newEqClass = null;
                 if (!result.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
+                    //new array is only neccessary when creating new Eq class
                     newEqClass = new EquivalenceClass(newInstance, eq.Instances, eq.DecisionSet);
-                    newEqClass.WeightSum = eq.WeightSum;
+                    newEqClass.WeightSum = eq.WeightSum; //? this is later recalculated
                     result.Partitions.Add(newInstance, newEqClass);
                 }
                 else
                 {
                     newEqClass.AddObjectInstances(eq.Instances);
-                    newEqClass.WeightSum += eq.WeightSum;
+                    newEqClass.WeightSum += eq.WeightSum; //? this is later recalculated
                     newEqClass.DecisionSet = newEqClass.DecisionSet.UnionFast(eq.DecisionSet);
                 }
 
-                result.ObjectsCount += eq.Instances.Count;
-                result.WeightSum += eq.Instances.Sum(x => x.Value);
+                result.NumberOfObjects += eq.Instances.Count; //? this is later recalculated
+                result.WeightSum += eq.Instances.Sum(x => x.Value); //? this is later recalculated
             }
+
+            //recalculating whole stats for each eq class and eq class collection
+            result.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
 
             return result;
         }
+
+        public static EquivalenceClassCollection Create(int attributeId, EquivalenceClassCollection eqClassCollection)
+        {
+            int[] attributes = new int[] { attributeId };
+            int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
+            long[] cursor = new long[1];
+
+            EquivalenceClassCollection result = new EquivalenceClassCollection(
+                eqClassCollection.data, 
+                attributes, 
+                eqClassCollection.data.DataStoreInfo.GetFieldInfo(attributeId).NumberOfValues);
+
+            foreach (var eq in eqClassCollection)
+            {
+                foreach (var kvp in eq.Instances)
+                {
+                    eqClassCollection.Data.GetFieldIndexValues(kvp.Key, attributesIdx, ref cursor);
+                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetDecisionValue(kvp.Key), kvp.Value, eqClassCollection.Data, kvp.Key);
+                }
+            }
+
+            result.NumberOfObjects = eqClassCollection.NumberOfObjects;
+            result.WeightSum = eqClassCollection.WeightSum;
+            result.CalcAvgConfidence();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns decision id and its weight when only a single decision exist with non-zero weight, otherwise -1 is returned
+        /// </summary>
+        /// <returns>decision id or -1 and zero weight</returns>
+        public KeyValuePair<long, decimal> GetSingleDecision()
+        {
+            int countDec = 0;
+            decimal minValue = Decimal.Zero;
+            KeyValuePair<long, decimal> result = new KeyValuePair<long, decimal>(-1, Decimal.Zero);
+            foreach (var kvp in this.DecisionWeights)
+            {
+                if (kvp.Value > Decimal.Zero)
+                {
+                    countDec++;
+                    if (kvp.Value > minValue)
+                    {
+                        result = new KeyValuePair<long, decimal>(kvp.Key, kvp.Value);
+                        minValue = kvp.Value;
+                    }
+                }
+            }
+
+            if (countDec == 1)
+                return result;
+
+            return new KeyValuePair<long, decimal>(-1, Decimal.Zero);
+        }
+
+        
 
         #region IEnumerable Members
 

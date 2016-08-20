@@ -181,7 +181,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
         }
 
-        [Test, TestCaseSource("GetDataFiles"), Ignore]
+        [Test, TestCaseSource("GetDataFiles"), Ignore("NoReason")]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 20;

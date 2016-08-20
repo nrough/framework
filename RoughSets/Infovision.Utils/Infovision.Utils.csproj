@@ -106,6 +106,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="StopwatchExtensions.cs" />
+    <Compile Include="Triple.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

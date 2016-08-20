@@ -50,11 +50,11 @@ namespace Infovision.Utils
 
         public static T[] RemoveAt<T>(this T[] array, int idx)
         {
-            //if (idx < 0)
-            //    throw new ArgumentOutOfRangeException("idx");
+            if (idx < 0)
+                throw new ArgumentOutOfRangeException("idx", "idx < 0");
 
-            //if (idx >= array.Length)
-            //    throw new ArgumentOutOfRangeException("idx");
+            if (idx >= array.Length)
+                throw new ArgumentOutOfRangeException("idx", "idx >= array.Length");
 
             T[] newArray = new T[array.Length - 1];
 
@@ -65,38 +65,7 @@ namespace Infovision.Utils
                 Array.Copy(array, idx + 1, newArray, idx, array.Length - idx - 1);
 
             return newArray;
-        }
-
-        /*
-        public static T[] RemoveAt<T>(this T[] array, int idx, int len)
-        {
-            T[] newArray;
-
-            if (len > 0)
-            {
-                if (idx + len > array.Length)
-                    len = array.Length - idx;
-
-                newArray = new T[array.Length - len];
-                if (idx > 0)
-                    Array.Copy(array, 0, newArray, 0, idx);
-
-                if (idx < array.Length - 1)
-                    Array.Copy(array, idx + len, newArray, idx, array.Length - idx - len);
-            }
-            else
-            {
-                newArray = new T[array.Length + len];
-                if (idx > 0)
-                    Array.Copy(array, 0, newArray, 0, idx + len);
-
-                if (idx < array.Length - 1)
-                    Array.Copy(array, idx, newArray, idx + len, array.Length - idx);
-            }
-
-            return newArray;
-        }
-        */
+        }        
 
         //Code reviwed
         //http://codereview.stackexchange.com/questions/132630/removing-n-elements-from-array-starting-from-index/132635#132635
@@ -177,10 +146,9 @@ namespace Infovision.Utils
 
         public static int[] IndicesOfOrderedByValue<T>(this T[] array, T[] values)
         {
-            int[] result = new int[values.Length];
-            int j = 0;
-            for (int i = 0; i < array.Length; i++)
-                if (Array.IndexOf<T>(values, array[i]) != -1)
+            int[] result = new int[values.Length];            
+            for (int i = 0, j = 0; i < array.Length; i++)
+                if(values.IndexOf(array[i]) != -1)
                     result[j++] = i;
             return result;
         }
@@ -212,6 +180,13 @@ namespace Infovision.Utils
                 throw new ArgumentException("size > array.Length", "size");
 
             T[] result = new T[size];
+
+            if (size == array.Length)
+            {
+                Array.Copy(array, result, array.Length);
+                return result;
+            }
+            
             int[] tmpArray = Enumerable.Range(0, array.Length).ToArray();
             tmpArray.Shuffle();
             for (int i = 0; i < size; i++)

@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class RoughClassifierTest
     {
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void RoughClassifierNewTest()
         {
             for (IdentificationType identType = IdentificationType.Support; identType <= IdentificationType.WeightCoverage; identType++)

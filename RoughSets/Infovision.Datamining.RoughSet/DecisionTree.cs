@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 using Infovision.Math;
+using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset
 {
+    /// <summary>
+    /// Interface of a decision tree
+    /// </summary>
     public interface IDecisionTree : ILearner, IPredictionModel
     {
         ITreeNode Root { get; }
@@ -16,15 +20,20 @@ namespace Infovision.Datamining.Roughset
         int NumberOfAttributesToCheckForSplit { get; set; }
     }
 
+    /// <summary>
+    /// Base class for decision tree implementations
+    /// </summary>
     public abstract class DecisionTree : IDecisionTree
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private decimal mA;
+        private long[] decisions;
 
         public ITreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public decimal Epsilon { get; set; }
+        protected IEnumerable<long> Decisions { get { return this.decisions; } }
 
         public DecisionTree()
         {
@@ -38,19 +47,26 @@ namespace Infovision.Datamining.Roughset
         {
             this.root = new DecisionTreeNode(-1, -1, null);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
-
+            this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
+            int i = 0;
+            foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
+                this.decisions[i++] = decisionValue;
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(attributes, data, data.Weights);
-            IReduct reduct = new ReductWeights(data, attributes, Decimal.Zero, data.Weights, eqClassCollection);
-            this.mA = new InformationMeasureWeights().Calc(reduct);
-
+            if (this.Epsilon >= Decimal.Zero)
+                this.mA = InformationMeasureWeights.Instance.Calc(eqClassCollection);
         }
 
         public virtual double Learn(DataStore data, int[] attributes)
         {
             this.Init(data, attributes);
 
-            EquivalenceClassCollection eqClasscollection = EquivalenceClassCollection.Create(attributes, data, data.Weights);
-            this.GenerateSplits(eqClasscollection, this.root);
+            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
+
+            if (this.Epsilon >= Decimal.Zero)
+                this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
+
+            this.GenerateSplits(eqClassCollection, this.root, attributes);
+
             ClassificationResult trainResult = this.Classify(data, data.Weights);
             return 1 - trainResult.Accuracy;
         }
@@ -60,24 +76,34 @@ namespace Infovision.Datamining.Roughset
             parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, parent));
         }
 
-        protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
+        protected void CreateLeaf(DecisionTreeNode parent, long decisionValue, decimal decisionWeight)
         {
-            if (eqClassCollection.ObjectsCount == 0 || eqClassCollection.Attributes.Length == 0)
+            parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, decisionWeight, parent));
+        }
+
+        protected void DEL_GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
+        {
+            if (eqClassCollection.Attributes.Length == 0 || eqClassCollection.NumberOfObjects == 0)
             {
                 this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
                 return;
             }
 
-            PascalSet<long> decisions = eqClassCollection.DecisionSet;
-            if (decisions.Count == 1)
+            long singleDecision = eqClassCollection.GetSingleDecision().Key;
+            if (singleDecision != -1)
             {
-                this.CreateLeaf(parent, decisions.First());
+                this.CreateLeaf(parent, singleDecision);
                 return;
             }
 
+            //TODO This code needs to be checked only for the last child 
             if (this.Epsilon >= Decimal.Zero)
             {
-                decimal m = DecisionTreeHelper.CalcMajorityMeasureFromTree(this.root, eqClassCollection.Data, eqClassCollection.Data.Weights);
+                decimal m = DecisionTreeHelper.CalcMajorityMeasureFromTree(
+                    this.root,
+                    eqClassCollection.Data,
+                    eqClassCollection.Data.Weights);
+
                 if ((Decimal.One - this.Epsilon) * this.mA <= m)
                 {
                     this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
@@ -85,17 +111,94 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            int maxAttribute = this.GetNextSplit(eqClassCollection, decisions);
+            int maxAttribute = this.DEL_GetNextSplit(eqClassCollection);
 
             //Generate split on result
-            Dictionary<long, EquivalenceClassCollection> subEqClasses 
-                = EquivalenceClassCollection.Split(eqClassCollection, maxAttribute);
+            Dictionary<long, EquivalenceClassCollection> subEqClasses = EquivalenceClassCollection.Split(maxAttribute, eqClassCollection);
             foreach (var kvp in subEqClasses)
             {
                 DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, parent);
                 parent.AddChild(newNode);
 
-                this.GenerateSplits(kvp.Value, newNode);
+                this.DEL_GenerateSplits(kvp.Value, newNode);
+            }
+        }
+
+        protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
+        {
+            Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> splitInfo 
+                = new Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
+
+            Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>> queue 
+                = new Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>>();
+
+            queue.Enqueue(splitInfo);
+            bool isConverged = false;
+
+            while (queue.Count != 0)
+            {
+                Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> currentInfo = queue.Dequeue();
+                EquivalenceClassCollection currentEqClassCollection = currentInfo.Item1;
+                DecisionTreeNode currentParent = currentInfo.Item2;
+                int[] currentAttributes = currentInfo.Item3;
+
+                if (isConverged 
+                    || currentAttributes.Length == 0 
+                    || currentEqClassCollection.NumberOfObjects == 0)
+                {
+                    var decision = currentEqClassCollection.DecisionWeights.FindMaxValuePair();
+                    this.CreateLeaf(currentParent, decision.Key, decision.Value);
+                    continue;
+                }
+
+                var singleDecision = currentEqClassCollection.GetSingleDecision();
+                if (singleDecision.Key != -1)
+                {
+                    this.CreateLeaf(currentParent, singleDecision.Key, singleDecision.Value);
+                    continue;
+                }
+
+                if (this.Epsilon >= Decimal.Zero)
+                {
+                    /*
+                    decimal m1 = DecisionTreeHelper.CalcMajorityMeasureFromTree(
+                        this.root,
+                        currentEqClassCollection.Data,
+                        currentEqClassCollection.Data.Weights);
+                    */
+
+                    decimal m = this.MeasureSum(this.root);
+
+                    if ((Decimal.One - this.Epsilon) * this.mA <= m)
+                    {
+                        this.CreateLeaf(currentParent, currentEqClassCollection.DecisionWeights.FindMaxValueKey());
+                        isConverged = true;
+                        continue;
+                    }
+                }
+
+                Tuple<int, double, EquivalenceClassCollection> nextSplit 
+                    = this.GetNextSplit(currentEqClassCollection, currentAttributes);
+                int maxAttribute = nextSplit.Item1;
+
+                //Generate split on result
+                Dictionary<long, EquivalenceClassCollection> subEqClasses 
+                    = EquivalenceClassCollection.Split(maxAttribute, nextSplit.Item3);
+
+                foreach (var kvp in subEqClasses)
+                {
+                    DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, currentParent);
+                    currentParent.AddChild(newNode);
+                    if (this.Epsilon >= Decimal.Zero)
+                        newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
+
+                    int[] newAttributes = currentAttributes.RemoveValue(maxAttribute);
+
+                    Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> newSplitInfo
+                        = new Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>(kvp.Value, newNode, newAttributes);
+
+                    queue.Enqueue(newSplitInfo);
+                }
             }
         }
 
@@ -146,6 +249,10 @@ namespace Infovision.Datamining.Roughset
 
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
+            Stopwatch s = new Stopwatch();
+
+            s.Start();
+
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
             result.QualityRatio = ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count;
             result.EnsembleSize = 1;
@@ -184,15 +291,15 @@ namespace Infovision.Datamining.Roughset
                 );
             }
 
-            result.ClassificationTime = 0;
-            result.QualityRatio = 0;
+            s.Stop();
 
+            result.ClassificationTime = s.ElapsedMilliseconds ;
             return result;
         }
 
-        protected virtual int GetNextSplit(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected virtual int DEL_GetNextSplit(EquivalenceClassCollection eqClassCollection)
         {
-            double currentScore = this.GetCurrentScore(eqClassCollection, decisions);
+            double currentScore = this.GetCurrentScore(eqClassCollection);
             int[] localAttributes = eqClassCollection.Attributes;
 
             if (this.NumberOfAttributesToCheckForSplit != -1)
@@ -202,7 +309,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             object tmpLock = new object();
-            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length);
+            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length, System.Math.Max(1, localAttributes.Length / Environment.ProcessorCount));
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount
@@ -221,9 +328,9 @@ namespace Infovision.Datamining.Roughset
                     Pair<int, double> partialBestAttribute = initialValue;
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        EquivalenceClassCollection attributeEqClasses
-                            = EquivalenceClassCollection.Create(new int[] { localAttributes[i] }, eqClassCollection);
-                        attributeEqClasses.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
+                        EquivalenceClassCollection attributeEqClasses 
+                            = EquivalenceClassCollection.DEL_Create(new int[] { localAttributes[i] }, eqClassCollection);
+
                         double score = this.GetSplitScore(attributeEqClasses, currentScore);
 
                         if (partialBestAttribute.Item2 < score)
@@ -249,7 +356,68 @@ namespace Infovision.Datamining.Roughset
             return bestAttribute.Item1;
         }
 
-        protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
+        {
+            double currentScore = this.GetCurrentScore(eqClassCollection);
+            int[] localAttributes = attributesToTest;
+
+            if (this.NumberOfAttributesToCheckForSplit != -1)
+            {
+                int m = System.Math.Min(localAttributes.Length, this.NumberOfAttributesToCheckForSplit);
+                localAttributes = localAttributes.RandomSubArray(m);
+            }
+
+            object tmpLock = new object();
+            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length, System.Math.Max(1, localAttributes.Length / Environment.ProcessorCount));
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+#if DEBUG
+            options.MaxDegreeOfParallelism = 1;
+#endif
+
+            Triple<int, double, EquivalenceClassCollection> bestAttribute = new Triple<int, double, EquivalenceClassCollection>(-1, Double.MinValue, null);
+            Parallel.ForEach(
+                rangePrtitioner,
+                options,
+                () => new Triple<int, double, EquivalenceClassCollection>(-1, Double.MinValue, null),
+                (range, loopState, initialValue) =>
+                {
+                    Triple<int, double, EquivalenceClassCollection> partialBestAttribute = initialValue;
+                    for (int i = range.Item1; i < range.Item2; i++)
+                    {
+                        EquivalenceClassCollection attributeEqClasses
+                            = EquivalenceClassCollection.Create(localAttributes[i], eqClassCollection);
+
+                        double score = this.GetSplitScore(attributeEqClasses, currentScore);
+
+                        if (partialBestAttribute.Item2 < score)
+                        {
+                            partialBestAttribute.Item2 = score;
+                            partialBestAttribute.Item1 = localAttributes[i];
+                            partialBestAttribute.Item3 = attributeEqClasses;
+                        }
+                    }
+                    return partialBestAttribute;
+                },
+                (localPartialBestAttribute) =>
+                {
+                    lock (tmpLock)
+                    {
+                        if (bestAttribute.Item2 < localPartialBestAttribute.Item2)
+                        {
+                            bestAttribute.Item2 = localPartialBestAttribute.Item2;
+                            bestAttribute.Item1 = localPartialBestAttribute.Item1;
+                            bestAttribute.Item3 = localPartialBestAttribute.Item3;
+                        }
+                    }
+                });
+
+            return new Tuple<int, double, EquivalenceClassCollection>(bestAttribute.Item1, bestAttribute.Item2, bestAttribute.Item3);
+        }
+
+        protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             throw new NotImplementedException();
         }
@@ -258,8 +426,22 @@ namespace Infovision.Datamining.Roughset
         {
             throw new NotImplementedException();
         }
+
+        private decimal MeasureSum(ITreeNode node)
+        {
+            decimal sum = 0;
+            TreeNodeTraversal.TraversePostOrder(node, n => 
+            {
+                if (n.IsLeaf)
+                    sum += n.Measure;
+            });
+            return sum;
+        }
     }
 
+    /// <summary>
+    /// ID3 Tree Implementation
+    /// </summary>
     public class DecisionTreeID3 : DecisionTree
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
@@ -282,10 +464,10 @@ namespace Infovision.Datamining.Roughset
             return entropy - result;
         }
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             double entropy = 0;
-            foreach (long dec in decisions)
+            foreach (long dec in this.Decisions)
             {
                 decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
                 double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
@@ -296,6 +478,9 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
+    /// <summary>
+    /// C4.5 Tree Implemetation
+    /// </summary>
     public class DecisionTreeC45 : DecisionTreeID3
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
@@ -322,7 +507,7 @@ namespace Infovision.Datamining.Roughset
     /// CART Tree implementation
     /// </summary>
     /// <remarks>
-    /// Based on the following example http://csucidatamining.weebly.com/assign-4.html
+    /// Implementation is based on the following example http://csucidatamining.weebly.com/assign-4.html
     /// </remarks>
     public class DecisionTreeCART : DecisionTree
     {
@@ -345,10 +530,10 @@ namespace Infovision.Datamining.Roughset
             return gini - attributeGini;
         }
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             double s2 = 0;
-            foreach (long dec in decisions)
+            foreach (long dec in this.Decisions)
             {
                 decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
                 double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
@@ -357,7 +542,6 @@ namespace Infovision.Datamining.Roughset
             return 1.0 - s2;
         }
     }
-
 
     public class DecisionTreeRough : DecisionTree
     {
@@ -379,9 +563,60 @@ namespace Infovision.Datamining.Roughset
             return (double)result;
         }
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection, PascalSet<long> decisions)
+        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             return 0;
+        }
+    }
+
+    public class DecisionTreeReduct : DecisionTreeRough
+    {
+        public string ReductFactoryKey { get; set; }
+        public WeightGenerator WeightGenerator { get; set; }
+        public PermutationCollection PermutationCollection { get; set; }
+        public int Iterations { get; set; }
+
+        public DecisionTreeReduct()
+            : base()
+        {
+            this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.Iterations = 1;
+            this.Epsilon = Decimal.Zero;
+        }
+
+        public override double Learn(DataStore data, int[] attributes)
+        {
+            if (this.WeightGenerator == null)
+                this.WeightGenerator = new WeightGeneratorMajority(data);
+
+            if (this.PermutationCollection == null)
+                this.PermutationCollection = new PermutationCollection(this.Iterations, attributes);
+
+            Args parms = new Args();
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductFactoryKey);
+            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, this.WeightGenerator);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, this.PermutationCollection);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, this.Iterations);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.Iterations);
+
+            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            if (generator is ReductGeneratorMeasure)
+                ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = false;
+            generator.Run();
+
+            IReductStoreCollection reducts = generator.GetReductStoreCollection();
+            IReductStoreCollection reductsfiltered = null;
+            if (generator is ReductGeneratorMeasure)
+                reductsfiltered = reducts.Filter(1, new ReductLengthComparer());
+            else
+                reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
+
+            IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
+
+            return base.Learn(data, reduct.Attributes.ToArray());
         }
     }
 }

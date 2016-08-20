@@ -160,7 +160,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void IsSuperSetMultiThreadTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void IsSuperSetSingleTiming()
         {
             ReductCache.Instance.Trim(100);
@@ -184,7 +184,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void ThreadPoolTest()
         {
             PascalSet<int>[] resource = new PascalSet<int>[10000];

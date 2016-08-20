@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Infovision.MRI.UnitTests
 {
-    [TestFixture, Ignore]
+    [TestFixture, Ignore("NoReason")]
     public class HistogramTest
     {
         private uint width = 181;
@@ -305,7 +305,7 @@ namespace Infovision.MRI.UnitTests
             Assert.IsNotNull(result);
         }
 
-        [Test, ExpectedException("System.InvalidOperationException")]
+        [Test]
         public void ImageHistogramNoTrain()
         {
             string fileName = @"Data\t2_icbm_normal_1mm_pn3_rf20.rawb";
@@ -313,8 +313,8 @@ namespace Infovision.MRI.UnitTests
             ImageHistogramCluster histCluster = new ImageHistogramCluster();
             //histCluster.Train(trainImage, trainSliceId);
 
-            //should throw an exception
-            IImage result = histCluster.Execute(image);
+            IImage result = null;
+            Assert.Throws<InvalidOperationException>(() => { result = histCluster.Execute(image); } );
         }
 
         [Test]

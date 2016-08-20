@@ -158,7 +158,7 @@ namespace Infovision.Datamining.Roughset
             int len = permutation.Length;
 
             eqClasses.WeightSum = this.DataSetQuality;
-            eqClasses.ObjectsCount = this.DataStore.NumberOfRecords;
+            eqClasses.NumberOfObjects = this.DataStore.NumberOfRecords;
 
             this.KeepMajorDecisions(eqClasses, epsilon);
 
@@ -221,7 +221,7 @@ namespace Infovision.Datamining.Roughset
                 eqClasses.Partitions.Count);
 
             newEqClasses.WeightSum = eqClasses.WeightSum;
-            newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
+            newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
             foreach (EquivalenceClass eq in eqClasses)
             {

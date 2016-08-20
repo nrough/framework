@@ -10,7 +10,7 @@ namespace Infovision.MRI.UnitTests
     [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     public class FeatureExtractorTest
     {
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void FeatureGroupExtractor()
         {
             uint imageWidth = 181;
@@ -62,7 +62,7 @@ namespace Infovision.MRI.UnitTests
             Assert.IsTrue(System.IO.File.Exists(@"mri.csv"));
         }
 
-        [Test, Ignore]
+        [Test, Ignore("NoReason")]
         public void FeatureExtractor()
         {
             uint imageWidth = 181;

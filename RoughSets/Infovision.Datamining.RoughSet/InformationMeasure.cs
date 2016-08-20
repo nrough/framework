@@ -25,6 +25,7 @@ namespace Infovision.Datamining.Roughset
         #region Methods
 
         public abstract decimal Calc(IReduct reduct);
+        public abstract decimal Calc(EquivalenceClassCollection equivalenceClassCollection);
 
         public abstract string Description();
 
@@ -82,6 +83,18 @@ namespace Infovision.Datamining.Roughset
                 : Decimal.Zero;
         }
 
+        public override decimal Calc(EquivalenceClassCollection equivalenceClassCollection)
+        {
+            decimal result = 0;
+            foreach (EquivalenceClass e in equivalenceClassCollection)
+                if (e.NumberOfDecisions == 1)
+                    result += e.NumberOfObjects;
+
+            return (equivalenceClassCollection.NumberOfObjects != 0)
+                ? result / (decimal)equivalenceClassCollection.NumberOfObjects
+                : Decimal.Zero;
+        }
+
         public override string Description()
         {
             return "Positive";
@@ -111,7 +124,8 @@ namespace Infovision.Datamining.Roughset
                 foreach (long decisionValue in e.DecisionValues)
                 {
                     //relativeCount = (decimal) e.GetNumberOfObjectsWithDecision(decisionValue) / (decimal)reduct.EquivalenceClasses.CountDecision(decisionValue);
-                    relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+                    relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) 
+                        / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
 
                     if (relativeCount > maxValue)
                         maxValue = relativeCount;
@@ -121,6 +135,29 @@ namespace Infovision.Datamining.Roughset
             }
 
             return result / (decimal)reduct.DataStore.DataStoreInfo.NumberOfDecisionValues;
+        }
+
+        public override decimal Calc(EquivalenceClassCollection equivalenceClassCollection)
+        {
+            decimal result = Decimal.Zero;
+            decimal maxValue, relativeCount;
+
+            foreach (EquivalenceClass e in equivalenceClassCollection)
+            {
+                maxValue = Decimal.MinValue;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    relativeCount = (decimal)e.GetNumberOfObjectsWithDecision(decisionValue) 
+                        / equivalenceClassCollection.Data.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+
+                    if (relativeCount > maxValue)
+                        maxValue = relativeCount;
+                }
+
+                result += maxValue;
+            }
+
+            return result / equivalenceClassCollection.Data.DataStoreInfo.NumberOfDecisionValues;
         }
 
         public override string Description()
@@ -160,6 +197,25 @@ namespace Infovision.Datamining.Roughset
             return result / (decimal)reduct.DataStore.NumberOfRecords;
         }
 
+        public override decimal Calc(EquivalenceClassCollection equivalenceClassCollection)
+        {
+            decimal result = Decimal.Zero;
+            int maxDecisionProbability = Int32.MinValue;
+            int majorCount;
+            foreach (EquivalenceClass e in equivalenceClassCollection)
+            {
+                maxDecisionProbability = Int32.MinValue;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    majorCount = e.GetNumberOfObjectsWithDecision(decisionValue);
+                    if (majorCount > maxDecisionProbability)
+                        maxDecisionProbability = majorCount;
+                }
+                result += (decimal)maxDecisionProbability;
+            }
+            return result / (decimal)equivalenceClassCollection.NumberOfObjects;
+        }
+
         public override string Description()
         {
             return "Majority";
@@ -176,6 +232,28 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class InformationMeasureWeights : InformationMeasureBase
     {
+        private static InformationMeasureWeights instance = null;
+        private static object syncRoot = new object();
+
+        public static InformationMeasureWeights Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new InformationMeasureWeights();
+                        }
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Methods
 
         public override decimal Calc(IReduct reduct)
@@ -195,6 +273,25 @@ namespace Infovision.Datamining.Roughset
             }
 
             return Decimal.Round(result, 17);
+        }
+
+        public override decimal Calc(EquivalenceClassCollection equivalenceClassCollection)
+        {
+            decimal result = Decimal.Zero;
+            decimal maxValue, sum;
+            foreach (EquivalenceClass e in equivalenceClassCollection)
+            {
+                maxValue = Decimal.MinValue;
+                foreach (long decisionValue in e.DecisionValues)
+                {
+                    sum = e.GetDecisionWeight(decisionValue);
+                    if (sum > maxValue)
+                        maxValue = sum;
+                }
+                result += maxValue;
+            }
+
+            return result;
         }
 
         public override string Description()

@@ -506,7 +506,7 @@ namespace Infovision.Data
 
         public long GetDecisionValue(int objectIndex)
         {
-            return this.GetFieldValue(objectIndex, this.DataStoreInfo.DecisionFieldId);
+            return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.DecisionFieldIndex);
         }
 
         public long ObjectIndex2ObjectId(int objectIndex)

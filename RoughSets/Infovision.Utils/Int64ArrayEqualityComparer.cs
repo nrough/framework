@@ -34,7 +34,7 @@ namespace Infovision.Utils
             if (x == null || y == null) return false;
             if (x.Length != y.Length) return false;
 
-            for (int i = 0; i < x.Length; i++)
+            for (int i = x.Length - 1; i >= 0 ; i--)
                 if (x[i] != y[i])
                     return false;
 

@@ -1,4 +1,5 @@
-﻿using Infovision.Data;
+﻿using System;
+using Infovision.Data;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -78,7 +79,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Assert.AreEqual(NoYesUnknown.No, reductInfo.CheckIsReduct(7));
         }
 
-        [Test, ExpectedException("System.InvalidOperationException")]
+        [Test]
         public void EpsilonRangeException()
         {
             FieldSet attributeSet = new FieldSet(dataStoreTrainInfo, new int[] { 1, 2, 3 });
@@ -94,8 +95,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             reductInfo.SetApproximationRanges(true, 20);
             reductInfo.SetApproximationRanges(true, 50);
 
-            //Should throw exception
-            reductInfo.SetApproximationRanges(false, 60);
+            Assert.Throws<InvalidOperationException>(() => reductInfo.SetApproximationRanges(false, 60));
         }
     }
 }

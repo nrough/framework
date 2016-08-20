@@ -17,18 +17,29 @@ namespace Infovision.Datamining.Roughset
         bool IsRoot { get; }
         ITreeNode Parent { get; }
         int Level { get; }
+        decimal Measure { get; }
     }
 
     public class DecisionTreeNode : ITreeNode, IEnumerable<DecisionTreeNode>
     {
         private List<DecisionTreeNode> children;
         public static readonly string ROOT = "ROOT";
+        int level;
+        decimal m;
 
         public DecisionTreeNode(int key, long value, ITreeNode parent)
         {
             this.Key = key;
             this.Value = value;
             this.Parent = parent;
+            this.level = parent == null ? 0 : parent.Level + 1;
+            this.m = Decimal.Zero;
+        }
+
+        public DecisionTreeNode(int key, long value, decimal measure, ITreeNode parent)
+            : this(key, value, parent)
+        {
+            this.m = measure;
         }
 
         public IReadOnlyList<ITreeNode> Children
@@ -63,17 +74,7 @@ namespace Infovision.Datamining.Roughset
 
         public int Level
         {
-            get
-            {
-                int level = 0;
-                ITreeNode n = this;
-                while(n.Parent != null)
-                {
-                    n = n.Parent;
-                    level++;
-                }
-                  return level;
-            }
+            get { return this.level; }
         }
 
         public long Value
@@ -86,6 +87,12 @@ namespace Infovision.Datamining.Roughset
         {
             get;
             private set;
+        }
+
+        public decimal Measure
+        {
+            get { return this.m; }
+            set { this.m = value; }
         }
 
         public void AddChild(DecisionTreeNode child)
@@ -202,7 +209,7 @@ namespace Infovision.Datamining.Roughset
             if (node.Children != null)
                 foreach (ITreeNode child in node.Children)
                 {
-                    TreeNodeTraversal.TraversePreOrder(child, action);
+                    TreeNodeTraversal.TraverseInOrder(child, action);
                     if (nodeActionFinished == false)
                     {
                         action.Invoke(node);

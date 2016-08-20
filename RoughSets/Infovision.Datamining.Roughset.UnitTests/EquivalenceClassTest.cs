@@ -25,15 +25,23 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CreatePerformanceTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            long sum = 0;
+            long total = 30;
+            for (int i = 0; i < total; i++)
+            {
+                DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
+                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                attributes = attributes.RemoveAt(attributes.Length / 2, (attributes.Length / 2) - 1);
 
-            Stopwatch s = new Stopwatch();
-            s.Start(); 
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
-            s.Stop();
+                Stopwatch s = new Stopwatch();
+                s.Start();
+                EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
+                s.Stop();
 
-            Console.WriteLine("Hashing: {0}ms", s.ElapsedMilliseconds);
+                sum += s.ElapsedMilliseconds;
+            }
+
+            Console.WriteLine("EquivalenceClassCollection.Create(attributes, data) took {0}ms", sum / total);
         }
 
         [Test]

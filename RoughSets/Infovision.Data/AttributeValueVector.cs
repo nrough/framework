@@ -137,7 +137,7 @@ namespace Infovision.Data
 
         public override int GetHashCode()
         {
-            return HashHelper.GetHashCode<Int64>(values);
+            return HashHelper.GetHashCode<long>(values);
         }
 
         public override string ToString()

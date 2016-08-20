@@ -183,29 +183,13 @@ namespace Infovision.Datamining.Roughset
                 int decCount = this.DecisionSet.Count;
                 this.decisionWeightSums = new Dictionary<long, decimal>(decCount);
                 this.decisionCount = new Dictionary<long, int>(decCount);
-
-                //foreach (var decision in this.DecisionSet)
-                //{
-                //    this.decisionWeightSums[decision] = 0;
-                //    this.decisionCount[decision] = 0;
-                //}
-
                 int decisionIndex = data.DataStoreInfo.DecisionFieldIndex;
                 foreach (var instance in this.instances)
                 {
                     long decision = data.GetFieldIndexValue(instance.Key, decisionIndex);
-                    decimal w = 0;
-                    if (this.decisionWeightSums.TryGetValue(decision, out w))
-                    {
-                        this.decisionWeightSums[decision] = (w + instance.Value);
-                    }
-
-                    int count = 0;
-                    if (this.decisionCount.TryGetValue(decision, out count))
-                    {
-                        this.decisionCount[decision] = (count + 1);
-                    }
-
+                    decimal w = 0; int count = 0;
+                    this.decisionWeightSums[decision] = this.decisionWeightSums.TryGetValue(decision, out w) ? (w + instance.Value) : instance.Value;
+                    this.decisionCount[decision] = this.decisionCount.TryGetValue(decision, out count) ? ++count : 1;
                     this.WeightSum += instance.Value;
                 }
             }

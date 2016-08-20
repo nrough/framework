@@ -93,7 +93,7 @@ namespace Infovision.Datamining.Roughset
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
-            newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
+            newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
             this.SortEquivalenceClassArray(eqArray);
@@ -130,7 +130,7 @@ namespace Infovision.Datamining.Roughset
                     else
                     {
                         newEqClasses.WeightSum -= eq.WeightSum;
-                        newEqClasses.ObjectsCount -= eq.NumberOfObjects;
+                        newEqClasses.NumberOfObjects -= eq.NumberOfObjects;
 
                         if (newEqClasses.WeightSum < this.WeightDropLimit)
                             return eqClasses;
@@ -212,7 +212,7 @@ namespace Infovision.Datamining.Roughset
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
-            newEqClasses.ObjectsCount = eqClasses.ObjectsCount;
+            newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
             EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
             this.SortEquivalenceClassArray(eqArray);
@@ -246,7 +246,7 @@ namespace Infovision.Datamining.Roughset
                     else
                     {
                         newEqClasses.WeightSum -= eq.WeightSum;
-                        newEqClasses.ObjectsCount -= eq.NumberOfObjects;
+                        newEqClasses.NumberOfObjects -= eq.NumberOfObjects;
 
                         if (newEqClasses.WeightSum < this.WeightDropLimit)
                             return eqClasses;

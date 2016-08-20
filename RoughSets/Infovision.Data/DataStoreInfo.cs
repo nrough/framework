@@ -22,6 +22,7 @@ namespace Infovision.Data
         private Dictionary<int, FieldTypes> fieldTypes;
         private Dictionary<FieldTypes, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
+        private int[] fieldIndexLookup;
 
         #endregion Members
 
@@ -69,7 +70,7 @@ namespace Infovision.Data
                 }
             }
         }
-
+         
         public int DecisionFieldIndex
         {
             get { return this.GetFieldIndex(this.DecisionFieldId); }
@@ -140,6 +141,21 @@ namespace Infovision.Data
                 }
             }
             return fieldIds;
+        }
+
+        public int[] GetFieldIndexLookupTable()
+        {
+            //TODO add mutex
+            if (this.fieldIndexLookup == null)
+            {
+                this.fieldIndexLookup = new int[this.maxFieldId + 1];
+                foreach (var kvp in this.fieldId2Index)
+                {
+                    this.fieldIndexLookup[kvp.Key] = kvp.Value;
+                }
+            }
+
+            return this.fieldIndexLookup;
         }
 
         public int GetFieldIndex(int fieldId)
@@ -307,8 +323,6 @@ namespace Infovision.Data
         public void InitFromDataStoreInfo(DataStoreInfo dataStoreInfo, bool initValues, bool initMissingValues)
         {
             this.NumberOfRecords = 0;
-
-            this.decisionFieldId = dataStoreInfo.DecisionFieldId;
             this.NumberOfFields = dataStoreInfo.NumberOfFields;
 
             if (initValues)
@@ -324,6 +338,8 @@ namespace Infovision.Data
                 dfi.InitFromDataFieldInfo(kvp.Value, initValues, initMissingValues);
                 this.AddFieldInfo(dfi, dataStoreInfo.fieldTypes[kvp.Key]);
             }
+
+            this.DecisionFieldId = dataStoreInfo.DecisionFieldId;
 
             if (initMissingValues)
                 this.HasMissingData = dataStoreInfo.HasMissingData;

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
-using Infovision.Math;
 using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset
@@ -48,26 +47,31 @@ namespace Infovision.Datamining.Roughset
             this.root = new DecisionTreeNode(-1, -1, null);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
             this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
+
             int i = 0;
             foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
                 this.decisions[i++] = decisionValue;
-            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(attributes, data, data.Weights);
+
             if (this.Epsilon >= Decimal.Zero)
-                this.mA = InformationMeasureWeights.Instance.Calc(eqClassCollection);
+                this.mA = InformationMeasureWeights.Instance.Calc(
+                    EquivalenceClassCollection.Create(attributes, data, data.Weights));
         }
 
         public virtual double Learn(DataStore data, int[] attributes)
         {
+            //Stopwatch s = new Stopwatch();
+            //s.Start();
+
             this.Init(data, attributes);
-
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
-
             if (this.Epsilon >= Decimal.Zero)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
-
             this.GenerateSplits(eqClassCollection, this.root, attributes);
 
+            //s.Stop();
+
             ClassificationResult trainResult = this.Classify(data, data.Weights);
+            //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             return 1 - trainResult.Accuracy;
         }
 
@@ -126,18 +130,14 @@ namespace Infovision.Datamining.Roughset
 
         protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
         {
-            Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> splitInfo 
-                = new Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
-
-            Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>> queue 
-                = new Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>>();
-
+            var splitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
+            var queue = new Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>>();
             queue.Enqueue(splitInfo);
             bool isConverged = false;
 
             while (queue.Count != 0)
             {
-                Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> currentInfo = queue.Dequeue();
+                var currentInfo = queue.Dequeue();
                 EquivalenceClassCollection currentEqClassCollection = currentInfo.Item1;
                 DecisionTreeNode currentParent = currentInfo.Item2;
                 int[] currentAttributes = currentInfo.Item3;
@@ -160,15 +160,7 @@ namespace Infovision.Datamining.Roughset
 
                 if (this.Epsilon >= Decimal.Zero)
                 {
-                    /*
-                    decimal m1 = DecisionTreeHelper.CalcMajorityMeasureFromTree(
-                        this.root,
-                        currentEqClassCollection.Data,
-                        currentEqClassCollection.Data.Weights);
-                    */
-
                     decimal m = this.MeasureSum(this.root);
-
                     if ((Decimal.One - this.Epsilon) * this.mA <= m)
                     {
                         this.CreateLeaf(currentParent, currentEqClassCollection.DecisionWeights.FindMaxValueKey());
@@ -177,25 +169,22 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
 
-                Tuple<int, double, EquivalenceClassCollection> nextSplit 
-                    = this.GetNextSplit(currentEqClassCollection, currentAttributes);
+                var nextSplit = this.GetNextSplit(currentEqClassCollection, currentAttributes);
                 int maxAttribute = nextSplit.Item1;
-
-                //Generate split on result
-                Dictionary<long, EquivalenceClassCollection> subEqClasses 
-                    = EquivalenceClassCollection.Split(maxAttribute, nextSplit.Item3);
+                var subEqClasses = EquivalenceClassCollection.Split(maxAttribute, nextSplit.Item3);
 
                 foreach (var kvp in subEqClasses)
                 {
                     DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, currentParent);
                     currentParent.AddChild(newNode);
+
                     if (this.Epsilon >= Decimal.Zero)
                         newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
 
-                    int[] newAttributes = currentAttributes.RemoveValue(maxAttribute);
-
-                    Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]> newSplitInfo
-                        = new Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>(kvp.Value, newNode, newAttributes);
+                    var newSplitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(
+                            kvp.Value, 
+                            newNode, 
+                            currentAttributes.RemoveValue(maxAttribute));
 
                     queue.Enqueue(newSplitInfo);
                 }
@@ -259,11 +248,8 @@ namespace Infovision.Datamining.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount)
+                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
             };
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
 
             if (weights == null)
             {
@@ -312,11 +298,8 @@ namespace Infovision.Datamining.Roughset
             var rangePrtitioner = Partitioner.Create(0, localAttributes.Length, System.Math.Max(1, localAttributes.Length / Environment.ProcessorCount));
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
+                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
             };
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
 
             Pair<int, double> bestAttribute = new Pair<int, double>(-1, Double.MinValue);
             Parallel.ForEach(
@@ -368,53 +351,45 @@ namespace Infovision.Datamining.Roughset
             }
 
             object tmpLock = new object();
-            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length, System.Math.Max(1, localAttributes.Length / Environment.ProcessorCount));
+            var rangePartitioner = Partitioner.Create(
+                0, 
+                localAttributes.Length, 
+                System.Math.Max(1, localAttributes.Length / InfovisionConfiguration.MaxDegreeOfParallelism));
+
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
+                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
             };
-#if DEBUG
-            options.MaxDegreeOfParallelism = 1;
-#endif
 
-            Triple<int, double, EquivalenceClassCollection> bestAttribute = new Triple<int, double, EquivalenceClassCollection>(-1, Double.MinValue, null);
-            Parallel.ForEach(
-                rangePrtitioner,
-                options,
-                () => new Triple<int, double, EquivalenceClassCollection>(-1, Double.MinValue, null),
-                (range, loopState, initialValue) =>
+            Tuple<int, double, EquivalenceClassCollection>[] scores 
+                = new Tuple<int, double, EquivalenceClassCollection>[localAttributes.Length];
+
+            Parallel.ForEach(rangePartitioner, options,
+                (range) =>
                 {
-                    Triple<int, double, EquivalenceClassCollection> partialBestAttribute = initialValue;
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        EquivalenceClassCollection attributeEqClasses
-                            = EquivalenceClassCollection.Create(localAttributes[i], eqClassCollection);
+                        var attributeEqClasses = EquivalenceClassCollection.Create(
+                            localAttributes[i], eqClassCollection);
 
-                        double score = this.GetSplitScore(attributeEqClasses, currentScore);
-
-                        if (partialBestAttribute.Item2 < score)
-                        {
-                            partialBestAttribute.Item2 = score;
-                            partialBestAttribute.Item1 = localAttributes[i];
-                            partialBestAttribute.Item3 = attributeEqClasses;
-                        }
-                    }
-                    return partialBestAttribute;
-                },
-                (localPartialBestAttribute) =>
-                {
-                    lock (tmpLock)
-                    {
-                        if (bestAttribute.Item2 < localPartialBestAttribute.Item2)
-                        {
-                            bestAttribute.Item2 = localPartialBestAttribute.Item2;
-                            bestAttribute.Item1 = localPartialBestAttribute.Item1;
-                            bestAttribute.Item3 = localPartialBestAttribute.Item3;
-                        }
+                        scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
+                                localAttributes[i],
+                                this.GetSplitScore(attributeEqClasses, currentScore),
+                                attributeEqClasses);
                     }
                 });
 
-            return new Tuple<int, double, EquivalenceClassCollection>(bestAttribute.Item1, bestAttribute.Item2, bestAttribute.Item3);
+            double max = Double.MinValue;
+            int maxIndex = -1;
+            for (int i = 0; i < scores.Length; i++)
+            {
+                if(max < scores[i].Item2)
+                {
+                    max = scores[i].Item2;
+                    maxIndex = i;
+                }
+            }
+            return scores[maxIndex];
         }
 
         protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

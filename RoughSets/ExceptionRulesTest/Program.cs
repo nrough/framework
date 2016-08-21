@@ -78,10 +78,7 @@ namespace ExceptionRulesTest
                         mA);
 
                     ParallelOptions options = new ParallelOptions();
-                    options.MaxDegreeOfParallelism = System.Math.Max(1, Environment.ProcessorCount);
-#if DEBUG
-                    options.MaxDegreeOfParallelism = 1;
-#endif
+                    options.MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism;
 
                     Parallel.For(0, 100, options, i =>
                     //for(int i=0; i<100; i++)

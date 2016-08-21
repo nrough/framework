@@ -19,9 +19,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class DecisionTreeTest
     {
-        [Test]
+        [Test, Repeat(10)]
         public void TreeLearnPerformanceTest()
         {
+            InfovisionConfiguration.MaxDegreeOfParallelism = 6;
+
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.Combine(path, "Data", "dna_modified.trn");
 
@@ -83,7 +85,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, Ignore("NoReason")]
+        [Test]
         public void CheckTreeConvergedTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -97,11 +99,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 double errorTrain = treeID3.Learn(data, attributes);
                 double errorTest = 1.0 - treeID3.Classify(test).Accuracy;
 
+                /*
                 Console.WriteLine("eps={0} numrul={1} errtrn={2} errtst={3}",
                     eps,
                     DecisionTreeHelper.CountLeaves(treeID3.Root),
                     errorTrain,
                     errorTest);
+                */
             }
         }
 
@@ -114,6 +118,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
+            treeID3.Epsilon = 0;
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
@@ -121,16 +126,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine(treeID3.Classify(test, null));
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void C45LearnTest()
         {
+            InfovisionConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
+
             Console.WriteLine("C45LearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
+            
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
             Console.WriteLine(treeC45.Classify(data, null));
             Console.WriteLine(treeC45.Classify(test, null));
@@ -144,6 +151,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
+            treeCART.Epsilon = 0;
             treeCART.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
@@ -160,6 +168,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.Epsilon = 0;
             treeRough.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
@@ -167,22 +176,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine(treeRough.Classify(test, null));
         }
 
-        public DataStore GetDataStore()
-        {
-            /*
-            DataStore data = DataStore.Load(@"Data\playgolf.train", FileFormat.Rses1);
-            data.DataStoreInfo.GetFieldInfo(1).Name = "Outlook";
-            data.DataStoreInfo.GetFieldInfo(2).Name = "Temperature";
-            data.DataStoreInfo.GetFieldInfo(3).Name = "Humidity";
-            data.DataStoreInfo.GetFieldInfo(4).Name = "Wind";
-            data.DataStoreInfo.GetFieldInfo(5).Name = "Play";
-            */
-
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-
-            return data;
-        }
-
+        
         #region Accord Trees
 
         [Test]
@@ -190,8 +184,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("AccordC45Test");
 
-            DataStore ds = this.GetDataStore();
+            DataStore ds = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore tst = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, ds.DataStoreInfo);
+
             DataTable data = ds.ToDataTable();
+            DataTable data_tst = tst.ToDataTable();
+
             DecisionVariable[] attributes = this.AccordAttributes(ds);
             int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
             DecTrees.DecisionTree tree = new DecTrees.DecisionTree(attributes, classCount);
@@ -201,6 +199,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataTable symbols = codebook.Apply(data);
             double[][] inputs = symbols.ToArray<double>(this.AttributeNames(ds));
             int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
+
+            DataTable symbols_tst = codebook.Apply(data_tst);
+            int[][] inputs_tst = symbols_tst.ToArray<int>(this.AttributeNames(ds));
+            int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
+
 
             // Learn the training instances!
             c45learning.Run(inputs, outputs);
@@ -225,7 +228,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     correct++;
             }
 
-            //Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);
+            Console.WriteLine("Accuracy train: {0:0.0000}", (double)correct / (double)count);
+
+            count = 0;
+            correct = 0;
+            foreach (DataRow row in data_tst.Rows)
+            {
+                var rec = row.ToArray<string>(conditionalAttributes);
+                string actual = row[decisionName].ToString();
+                int[] query = codebook.Translate(conditionalAttributes, rec);
+                int output = tree.Compute(query);
+                string answer = codebook.Translate(decisionName, output);
+
+                count++;
+                if (actual == answer)
+                    correct++;
+            }
+
+            Console.WriteLine("Accuracy test: {0:0.0000}", (double)correct / (double)count);
         }
 
         [Test]
@@ -233,8 +253,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("AccordID3Test");
 
-            DataStore ds = this.GetDataStore();
+            DataStore ds = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore tst = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, ds.DataStoreInfo);
+
             DataTable data = ds.ToDataTable();
+            DataTable data_tst = tst.ToDataTable();
+
             DecisionVariable[] attributes = this.AccordAttributes(ds);
             int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
 
@@ -245,6 +269,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataTable symbols = codebook.Apply(data);
             int[][] inputs = symbols.ToArray<int>(this.AttributeNames(ds));
             int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
+
+            DataTable symbols_tst = codebook.Apply(data_tst);
+            int[][] inputs_tst = symbols_tst.ToArray<int>(this.AttributeNames(ds));
+            int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
 
             // Learn the training instances!
             id3learning.Run(inputs, outputs);
@@ -269,7 +297,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     correct++;
             }
 
-            //Console.WriteLine("Accuracy: {0:0.0000}", (double)correct / (double)count);
+            Console.WriteLine("Accuracy train: {0:0.0000}", (double)correct / (double)count);
+
+            count = 0;
+            correct = 0;
+            foreach (DataRow row in data_tst.Rows)
+            {
+                var rec = row.ToArray<string>(conditionalAttributes);
+                string actual = row[decisionName].ToString();
+                int[] query = codebook.Translate(conditionalAttributes, rec);
+                int output = tree.Compute(query);
+                string answer = codebook.Translate(decisionName, output);
+
+                count++;
+                if (actual == answer)
+                    correct++;
+            }
+
+            Console.WriteLine("Accuracy test: {0:0.0000}", (double)correct / (double)count);
         }
 
         public void PrintTree(DecisionNode node, int indentSize, int currentLevel, Codification codebook, string decisionName)

@@ -150,10 +150,22 @@ namespace Infovision.Datamining.Roughset
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
-        private EquivalenceClass(EquivalenceClass eqClass)
+        public EquivalenceClass(EquivalenceClass eqClass)
         {
             this.dataVector = new long[eqClass.dataVector.Length];
             Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);
+            this.instances = new Dictionary<int, decimal>(eqClass.instances);
+            this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
+            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
+            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
+            this.WeightSum = eqClass.WeightSum;
+            this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
+            this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
+        }
+
+        public EquivalenceClass(EquivalenceClass eqClass, long[] dataVector)
+        {
+            this.dataVector = dataVector;
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);

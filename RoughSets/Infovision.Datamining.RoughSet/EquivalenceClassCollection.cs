@@ -39,7 +39,14 @@ namespace Infovision.Datamining.Roughset
         public Dictionary<long, decimal> DecisionWeights
         {
             get { return this.decisionWeight; }
+            //set { this.decisionWeight = value; }
         }
+
+        //public Dictionary<long, int> DecisionCount
+        //{
+        //    get { return this.decisionCount; }
+        //    set { this.decisionCount = value; }
+        //}
 
         public int NumberOfPartitions
         {
@@ -206,9 +213,6 @@ namespace Infovision.Datamining.Roughset
         public static EquivalenceClassCollection Create(int[] attributes, DataStore data, decimal[] weights = null)
         {
             EquivalenceClassCollection eqClassCollection = new EquivalenceClassCollection(data, attributes);
-
-            int decisionIdx = data.DataStoreInfo.DecisionFieldIndex;
-
             int[] attributesIdx = new int[attributes.Length];
             for (int i = 0; i < attributes.Length; i++)
                 attributesIdx[i] = data.DataStoreInfo.GetFieldIndex(attributes[i]);
@@ -222,7 +226,7 @@ namespace Infovision.Datamining.Roughset
             {
                 data.GetFieldIndexValues(i, attributesIdx, ref cursor);
                 eqClassCollection.AddRecordInitial(cursor,
-                                                   data.GetFieldIndexValue(i, decisionIdx),
+                                                   data.GetFieldIndexValue(i, data.DataStoreInfo.DecisionFieldIndex),
                                                    weights[i], data, i);
                 sum += weights[i];
             }
@@ -268,6 +272,7 @@ namespace Infovision.Datamining.Roughset
                 int count = 0;
                 this.decisionCount[decisionInternalValue]
                     = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
+
                 decimal w = 0;
                 this.decisionWeight[decisionInternalValue]
                     = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
@@ -452,45 +457,22 @@ namespace Infovision.Datamining.Roughset
                 throw new ArgumentNullException("collectionToSplit");
 
             if (collectionToSplit.Attributes.Length != 1)
-                throw new ArgumentException("collectionToSplit.Attributes.Length != 0", "collectionToSplit");
-
-            int[] attributeIdxs = new int[] { collectionToSplit.Data.DataStoreInfo.GetFieldIndex(attributeId) };
-            long[] cursor = new long[1];
-
-            DataFieldInfo attributeInfo = collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId);
+                throw new ArgumentException("collectionToSplit.Attributes.Length != 1", "collectionToSplit");
 
             Dictionary<long, EquivalenceClassCollection> result
-                = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
+                = new Dictionary<long, EquivalenceClassCollection>(
+                    collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId).NumberOfValues);
 
             foreach (var eqClass in collectionToSplit)
             {
-                long attributeValue = eqClass.Instance[0];
-
-                EquivalenceClassCollection tmpCollection = new EquivalenceClassCollection(
-                        collectionToSplit.data,
-                        new int[] { attributeId },
-                        collectionToSplit.data.DataStoreInfo.DecisionInfo.NumberOfValues);
-
-                result.Add(attributeValue, tmpCollection);
-
-                //TODO we can add whole EqClasses!
-                foreach (var kvp in eqClass.Instances)
-                {
-                    collectionToSplit.Data.GetFieldIndexValues(
-                        kvp.Key, 
-                        attributeIdxs, 
-                        ref cursor);
-
-                    tmpCollection.AddRecordInitial(
-                        cursor, 
-                        collectionToSplit.Data.GetDecisionValue(kvp.Key), 
-                        kvp.Value, 
-                        collectionToSplit.Data, 
-                        kvp.Key);
-                }
-
-                tmpCollection.WeightSum = eqClass.WeightSum;
-                tmpCollection.NumberOfObjects = eqClass.NumberOfObjects;
+                EquivalenceClassCollection tmpCollection = new EquivalenceClassCollection(collectionToSplit.data, new int[] { }, 1);
+                result.Add(eqClass.Instance[0], tmpCollection);
+                EquivalenceClass newEqClass = new EquivalenceClass(eqClass, eqClass.Instance.RemoveAt(0));
+                tmpCollection.partitions.Add(new long[] { }, newEqClass);
+                tmpCollection.decisionCount = new Dictionary<long, int>(newEqClass.DecisionCount);
+                tmpCollection.decisionWeight = new Dictionary<long, decimal>(newEqClass.DecisionWeights);
+                tmpCollection.WeightSum = newEqClass.WeightSum;
+                tmpCollection.NumberOfObjects = newEqClass.NumberOfObjects;
                 tmpCollection.CalcAvgConfidence();
             }
 

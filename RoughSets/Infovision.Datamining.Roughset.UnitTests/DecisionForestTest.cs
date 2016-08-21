@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
-            randomForest.Size = 20;
+            randomForest.Size = 100;
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             Console.WriteLine(randomForest.Classify(test, null));

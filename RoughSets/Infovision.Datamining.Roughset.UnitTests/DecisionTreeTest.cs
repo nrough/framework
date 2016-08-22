@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, Repeat(10)]
         public void TreeLearnPerformanceTest()
         {
-            InfovisionConfiguration.MaxDegreeOfParallelism = 6;
+            InfovisionConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.Combine(path, "Data", "dna_modified.trn");

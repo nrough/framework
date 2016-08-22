@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class InformationMeasureWeights : InformationMeasureBase
     {
-        private static InformationMeasureWeights instance = null;
+        private static volatile InformationMeasureWeights instance = null;
         private static object syncRoot = new object();
 
         public static InformationMeasureWeights Instance

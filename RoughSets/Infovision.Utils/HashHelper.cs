@@ -6,7 +6,9 @@ namespace Infovision.Utils
 {
     public static class HashHelper
     {
-        public static int Fnv(Int64[] array)
+        public const int HASH_ARRAY_MAX_ELEMENTS = 6;
+
+        public static int Fnv(long[] array)
         {
             unchecked
             {
@@ -31,8 +33,48 @@ namespace Infovision.Utils
             }
         }
 
+        public static int Xor<T>(T[] array)
+        {
+            if (array == null) return 0;
+            unchecked
+            {
+                int hash = 17;
+                for (int i = array.Length - 1; i >= 0; i--)
+                    hash ^= array[i].GetHashCode();
+                return hash;
+            }
+        }
+
+        public static int ArrayHashShort<T>(T[] array)
+        {
+            if (array == null) return 0;
+            if (array.Length == 0) return 17;
+            unchecked
+            {
+                int hash = 17;
+                hash = 31 * hash + array[0].GetHashCode();
+                hash = 31 * hash + array[array.Length / 2].GetHashCode();
+                hash = 31 * hash + array[array.Length - 1].GetHashCode();
+                return hash;
+            }
+        }
+
+        public static int ArrayHashMedium<T>(T[] array)
+        {
+            if (array == null) return 0;
+            unchecked
+            {
+                int hash = 17;
+                for(int i = 0; i < array.Length; i += 2)
+                    hash = 31 * hash + array[i].GetHashCode();
+                return hash;
+            }
+        }
+
         public static int GetHashCode(BitArray array)
         {
+            if (array == null) return 0;
+
             uint hash = 17;
             int bitsRemaining = array.Length;
             foreach (int value in array.GetInternalValues())
@@ -83,7 +125,7 @@ namespace Infovision.Utils
 
         public static int GetHashCode<T>(T[] list)
         {
-            if (list == null) return 0;
+            //if (list == null) return 0;
             unchecked
             {
                 int hash = 17;
@@ -95,6 +137,7 @@ namespace Infovision.Utils
 
         public static int GetHashCode<T>(IEnumerable<T> list)
         {
+            if (list == null) return 0;
             unchecked
             {
                 int hash = 17;

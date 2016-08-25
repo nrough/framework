@@ -9,10 +9,10 @@ using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
 using DecTrees = Accord.MachineLearning.DecisionTrees;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Infovision.Datamining.Roughset.DecisionTrees;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DataStore data = DataStore.Load(path, FileFormat.Rses1);
 
-            int total = 10;
+            int total = 20;
             long sum = 0;
             for (int i = 0; i < total; i++)
             {   

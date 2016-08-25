@@ -820,7 +820,6 @@ namespace Infovision.Utils
 
         public override int GetHashCode()
         {
-            //return HashHelper.GetHashCode<int>(Data.GetInternalValues());
             return HashHelper.GetHashCode(this.Data);
         }
 

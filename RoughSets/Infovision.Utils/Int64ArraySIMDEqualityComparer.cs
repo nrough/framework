@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Infovision.Utils
 {
     [Serializable]
-    public class Int64ArrayEqualityComparer : IEqualityComparer<long[]>
+    public class Int64ArraySIMDEqualityComparer : IEqualityComparer<long[]>
     {
-        private static volatile Int64ArrayEqualityComparer instance;
+        private static volatile Int64ArraySIMDEqualityComparer instance;
         private static object syncRoot = new object();
 
-        public static Int64ArrayEqualityComparer Instance
+        public static Int64ArraySIMDEqualityComparer Instance
         {
             get
             {
@@ -18,7 +19,7 @@ namespace Infovision.Utils
                     lock (syncRoot)
                     {
                         if (instance == null)
-                            instance = new Int64ArrayEqualityComparer();
+                            instance = new Int64ArraySIMDEqualityComparer();
                     }
                 }
 
@@ -26,7 +27,7 @@ namespace Infovision.Utils
             }
         }
 
-        private Int64ArrayEqualityComparer() { }
+        private Int64ArraySIMDEqualityComparer() { }
 
         public bool Equals(long[] x, long[] y)
         {
@@ -34,7 +35,16 @@ namespace Infovision.Utils
             if (x == null || y == null) return false;
             if (x.Length != y.Length) return false;
 
-            for (int i = x.Length - 1; i >= 0 ; i--)
+            //TODO
+            /*
+            for (int i = 0; i < x.Length; i += Vector<long>.Count)
+            {
+                Vector<int> v = new Vector<int>(A, i) + new Vector<int>(B, i);
+                v.CopyTo(C, i);
+            }
+            */
+
+            for (int i = x.Length - 1; i >= 0; i--)
                 if (x[i] != y[i])
                     return false;
 
@@ -44,8 +54,6 @@ namespace Infovision.Utils
         public int GetHashCode(long[] array)
         {
             return HashHelper.GetHashCode<long>(array);
-            //return HashHelper.ArrayHashMedium<long>(array);
-            //return HashHelper.LongArrayHash(array);
         }
     }
 }

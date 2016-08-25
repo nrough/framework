@@ -12,6 +12,7 @@ using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using Infovision.Datamining.Roughset.DecisionTrees;
 
 namespace DecisionForestTest
 {

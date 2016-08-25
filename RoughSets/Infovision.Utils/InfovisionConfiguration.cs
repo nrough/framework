@@ -25,9 +25,9 @@ namespace Infovision.Utils
                     {
 #if DEBUG
                         maxDegreeOfParallelism = 1;
-                        return 1;
-#endif
+#else
                         maxDegreeOfParallelism = Environment.ProcessorCount;
+#endif
                         return maxDegreeOfParallelism;
                     }
                     else
@@ -35,10 +35,11 @@ namespace Infovision.Utils
                         if (!Int32.TryParse(result, out maxDegreeOfParallelism))
                         {
 #if DEBUG
-                        maxDegreeOfParallelism = 1;
-                        return 1;
-#endif
+                            maxDegreeOfParallelism = 1;
+#else
                             maxDegreeOfParallelism = Environment.ProcessorCount;
+#endif
+
                             return maxDegreeOfParallelism;
                         }
                         else

@@ -7,18 +7,8 @@ using Infovision.Data;
 using Infovision.Utils;
 using System.Diagnostics;
 
-namespace Infovision.Datamining.Roughset
+namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    /// <summary>
-    /// Interface of a decision tree
-    /// </summary>
-    public interface IDecisionTree : ILearner, IPredictionModel
-    {
-        ITreeNode Root { get; }
-        decimal Epsilon { get; }
-        int NumberOfAttributesToCheckForSplit { get; set; }
-    }
-
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
@@ -85,6 +75,7 @@ namespace Infovision.Datamining.Roughset
             parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, decisionWeight, parent));
         }
 
+        [Obsolete("This methiod is obsolete")]
         protected void DEL_GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
         {
             if (eqClassCollection.Attributes.Length == 0 || eqClassCollection.NumberOfObjects == 0)
@@ -283,6 +274,7 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
+        [Obsolete("This method is obsolete")]
         protected virtual int DEL_GetNextSplit(EquivalenceClassCollection eqClassCollection)
         {
             double currentScore = this.GetCurrentScore(eqClassCollection);
@@ -413,185 +405,5 @@ namespace Infovision.Datamining.Roughset
             return sum;
         }
     }
-
-    /// <summary>
-    /// ID3 Tree Implementation
-    /// </summary>
-    public class DecisionTreeID3 : DecisionTree
-    {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
-        {
-            double result = 0;
-            foreach (var eq in attributeEqClasses)
-            {
-                double localEntropy = 0;
-                foreach (var dec in eq.DecisionSet)
-                {
-                    decimal decWeight = eq.GetDecisionWeight(dec);
-                    double p = (double)(decWeight / eq.WeightSum);
-                    if (p != 0)
-                        localEntropy -= p * System.Math.Log(p, 2);
-                }
-
-                result += (double)(eq.WeightSum / attributeEqClasses.WeightSum) * localEntropy;
-            }
-
-            return entropy - result;
-        }
-
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
-        {
-            double entropy = 0;
-            foreach (long dec in this.Decisions)
-            {
-                decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
-                double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
-                if (p != 0)
-                    entropy -= p * System.Math.Log(p, 2);
-            }
-            return entropy;
-        }
-    }
-
-    /// <summary>
-    /// C4.5 Tree Implemetation
-    /// </summary>
-    public class DecisionTreeC45 : DecisionTreeID3
-    {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
-        {
-            double gain = base.GetSplitScore(attributeEqClasses, entropy);
-            double splitInfo = this.SplitInfo(attributeEqClasses);
-            return (splitInfo == 0) ? 0 : gain / splitInfo;
-        }
-
-        private double SplitInfo(EquivalenceClassCollection eqClassCollection)
-        {
-            double result = 0;
-            foreach (var eq in eqClassCollection)
-            {
-                double p = (double)(eq.WeightSum / eqClassCollection.WeightSum);
-                if (p != 0)
-                    result -= p * System.Math.Log(p, 2);
-            }
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// CART Tree implementation
-    /// </summary>
-    /// <remarks>
-    /// Implementation is based on the following example http://csucidatamining.weebly.com/assign-4.html
-    /// </remarks>
-    public class DecisionTreeCART : DecisionTree
-    {
-        
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double gini)
-        {
-            double attributeGini = 0;
-            foreach (var eq in attributeEqClasses)
-            {
-                double pA = (double)(eq.WeightSum / attributeEqClasses.WeightSum);
-
-                double s2 = 0;
-                foreach (long dec in eq.DecisionSet)
-                {
-                    double pD = (double)(eq.GetDecisionWeight(dec) / eq.WeightSum); 
-                    s2 += (pD * pD);
-                }
-                attributeGini += (pA * (1.0 - s2));
-            }
-            return gini - attributeGini;
-        }
-
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
-        {
-            double s2 = 0;
-            foreach (long dec in this.Decisions)
-            {
-                decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
-                double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
-                s2 += (p * p);
-            }
-            return 1.0 - s2;
-        }
-    }
-
-    public class DecisionTreeRough : DecisionTree
-    {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double dummy)
-        {
-            decimal result = Decimal.Zero;            
-            decimal maxValue, sum;
-            foreach (var eq in attributeEqClasses)
-            {
-                maxValue = Decimal.MinValue;
-                foreach (long decisionValue in eq.DecisionValues)
-                {
-                    sum = eq.GetDecisionWeight(decisionValue);
-                    if (sum > maxValue)
-                        maxValue = sum;
-                }
-                result += maxValue;
-            }
-            return (double)result;
-        }
-
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
-        {
-            return 0;
-        }
-    }
-
-    public class DecisionTreeReduct : DecisionTreeRough
-    {
-        public string ReductFactoryKey { get; set; }
-        public WeightGenerator WeightGenerator { get; set; }
-        public PermutationCollection PermutationCollection { get; set; }
-        public int Iterations { get; set; }
-
-        public DecisionTreeReduct()
-            : base()
-        {
-            this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
-            this.Iterations = 1;
-            this.Epsilon = Decimal.Zero;
-        }
-
-        public override double Learn(DataStore data, int[] attributes)
-        {
-            if (this.WeightGenerator == null)
-                this.WeightGenerator = new WeightGeneratorMajority(data);
-
-            if (this.PermutationCollection == null)
-                this.PermutationCollection = new PermutationCollection(this.Iterations, attributes);
-
-            Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductFactoryKey);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, this.WeightGenerator);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, this.PermutationCollection);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, this.Iterations);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.Iterations);
-
-            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-            if (generator is ReductGeneratorMeasure)
-                ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = false;
-            generator.Run();
-
-            IReductStoreCollection reducts = generator.GetReductStoreCollection();
-            IReductStoreCollection reductsfiltered = null;
-            if (generator is ReductGeneratorMeasure)
-                reductsfiltered = reducts.Filter(1, new ReductLengthComparer());
-            else
-                reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
-
-            IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
-
-            return base.Learn(data, reduct.Attributes.ToArray());
-        }
-    }
+ 
 }

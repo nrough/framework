@@ -36,24 +36,24 @@ namespace Infovision.Datamining.Roughset
             switch (measureType)
             {
                 case InformationMeasureType.Positive:
-                    roughMeasure = new InformationMeasurePositive();
+                    roughMeasure = InformationMeasurePositive.Instance;;
                     break;
 
                 case InformationMeasureType.Relative:
-                    roughMeasure = new InformationMeasureRelative();
+                    roughMeasure = InformationMeasureRelative.Instance;;
                     break;
 
                 case InformationMeasureType.Majority:
-                    roughMeasure = new InformationMeasureMajority();
+                    roughMeasure = InformationMeasureMajority.Instance;;
                     break;
 
                 case InformationMeasureType.ObjectWeights:
-                    roughMeasure = new InformationMeasureWeights();
+                    roughMeasure = InformationMeasureWeights.Instance;
                     break;
             }
 
             if (roughMeasure == null)
-                throw new System.InvalidOperationException();
+                throw new InvalidOperationException();
 
             return roughMeasure;
         }
@@ -69,6 +69,28 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class InformationMeasurePositive : InformationMeasureBase
     {
+        private static volatile InformationMeasurePositive instance = null;
+        private static object syncRoot = new object();
+
+        public static InformationMeasurePositive Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new InformationMeasurePositive();
+                        }
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Methods
 
         public override decimal Calc(IReduct reduct)
@@ -111,6 +133,28 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class InformationMeasureRelative : InformationMeasureBase
     {
+        private static volatile InformationMeasureRelative instance = null;
+        private static object syncRoot = new object();
+
+        public static InformationMeasureRelative Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new InformationMeasureRelative();
+                        }
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Methods
 
         public override decimal Calc(IReduct reduct)
@@ -176,6 +220,28 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public class InformationMeasureMajority : InformationMeasureBase
     {
+        private static volatile InformationMeasureMajority instance = null;
+        private static object syncRoot = new object();
+
+        public static InformationMeasureMajority Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new InformationMeasureMajority();
+                        }
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Methods
 
         public override decimal Calc(IReduct reduct)

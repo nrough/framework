@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 
-namespace Infovision.Datamining.Roughset
+namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public static class DecisionTreeHelper
     {
@@ -83,21 +83,6 @@ namespace Infovision.Datamining.Roughset
             foreach (var eq in map)
                 sum += eq.DecisionWeights.FindMaxValuePair().Value;
             return sum;
-        }
-
-        public static bool CheckTreeConverged(ITreeNode node, DataStore data, decimal epsilon, decimal[] weights = null)
-        {            
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(attributes, data, weights);
-            IReduct reduct = new ReductWeights(data, attributes, Decimal.Zero, weights, eqClassCollection);
-            decimal MA = new InformationMeasureWeights().Calc(reduct);
-
-            decimal m = DecisionTreeHelper.CalcMajorityMeasureFromTree(node, data, weights);
-
-            if ((Decimal.One - epsilon) * MA <= m)
-                return true;
-                
-            return false;
         }
 
         public static AttributeValueVector CreateRuleConditionFromNode(ITreeNode node)

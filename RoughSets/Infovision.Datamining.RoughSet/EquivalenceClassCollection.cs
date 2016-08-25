@@ -39,14 +39,7 @@ namespace Infovision.Datamining.Roughset
         public Dictionary<long, decimal> DecisionWeights
         {
             get { return this.decisionWeight; }
-            //set { this.decisionWeight = value; }
         }
-
-        //public Dictionary<long, int> DecisionCount
-        //{
-        //    get { return this.decisionCount; }
-        //    set { this.decisionCount = value; }
-        //}
 
         public int NumberOfPartitions
         {

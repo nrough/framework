@@ -21,14 +21,13 @@ namespace Infovision.Datamining.Roughset
             this.NumberOfShuffles = numberOfShuffles;
 
             //Calculate quality measure for each field
-            InformationMeasureWeights measure = new InformationMeasureWeights();
             this.fieldIdsSorted = new int[this.Data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard)];
             decimal[] fieldQualityOrig = new decimal[fieldIdsSorted.Length];
             int c = 0;
             foreach (var field in this.Data.DataStoreInfo.GetFields(FieldTypes.Standard))
             {
                 fieldIdsSorted[c] = field.Id;
-                fieldQualityOrig[c] = measure.Calc(
+                fieldQualityOrig[c] = InformationMeasureWeights.Instance.Calc(
                     new ReductWeights(this.Data, new int[] { field.Id }, this.Epsilon, this.WeightGenerator.Weights));
                 c++;
             }

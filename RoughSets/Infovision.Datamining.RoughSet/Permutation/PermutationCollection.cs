@@ -50,6 +50,18 @@ namespace Infovision.Datamining.Roughset
                 this.internalList.Add(new Permutation(elements.ShuffleDuplicate()));
         }
 
+        public double GetAverageLength()
+        {
+            double sum = 0.0;
+
+            foreach (var permutation in this.internalList)
+                sum += permutation.Length;
+
+            return (this.internalList != null && this.internalList.Count != 0) 
+                 ? sum / (double) this.internalList.Count 
+                 : 0;
+        }
+
         #endregion Constructors
 
         #region Properties

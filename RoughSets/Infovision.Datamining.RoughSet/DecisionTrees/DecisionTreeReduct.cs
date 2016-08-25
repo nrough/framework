@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             if (generator is ReductGeneratorMeasure)
-                ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = false;
+                ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = true;
             generator.Run();
 
             IReductStoreCollection reducts = generator.GetReductStoreCollection();

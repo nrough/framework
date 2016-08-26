@@ -9,10 +9,10 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public class RandomForest<T> : ILearner, IEnumerable<IRandomForestMember>
+    public class DecisionForestRandom<T> : ILearner, IEnumerable<Tuple<IDecisionTree, double>>
         where T : IDecisionTree, new()
     {
-        private List<IRandomForestMember> trees;
+        private List<Tuple<IDecisionTree, double>> trees;
         private int attributeLengthSum;
 
         public int Size { get; set; }
@@ -28,13 +28,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
-        public RandomForest()
+        public DecisionForestRandom()
         {
             this.Size = 500;
             this.BagSizePercent = 100;
             this.NumberOfAttributesToCheckForSplit = -1;
 
-            this.trees = new List<IRandomForestMember>(this.Size);
+            this.trees = new List<Tuple<IDecisionTree, double>>(this.Size);
         }
 
         public virtual double Learn(DataStore data, int[] attributes)
@@ -61,12 +61,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected void AddTree(IDecisionTree tree, double error)
         {
-            IRandomForestMember newMember = new RandomForestMember()
-            {
-                Tree = tree,
-                Error = error
-            };
-
+            var newMember = Tuple.Create<IDecisionTree, double>(tree, error);
             this.trees.Add(newMember);
         }
 
@@ -77,12 +72,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             foreach (var member in this)
             {
                 i++;
-                long result = member.Tree.Compute(record);
+                long result = member.Item1.Compute(record);
 
                 if (votes.ContainsKey(result))
-                    votes[result] += (1 - member.Error);
+                    votes[result] += (1 - member.Item2);
                 else
-                    votes.Add(result, (1 - member.Error));
+                    votes.Add(result, (1 - member.Item2));
 
                 if (i >= this.Size)
                     break;
@@ -91,7 +86,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return votes.Count > 0 ? votes.FindMaxValueKey() : -1;
         }
 
-        public IEnumerator<IRandomForestMember> GetEnumerator()
+        public IEnumerator<Tuple<IDecisionTree, double>> GetEnumerator()
         {
             return this.trees.GetEnumerator();
         }
@@ -141,7 +136,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             foreach (var member in this)
             {
                 i++;
-                this.attributeLengthSum += ((DecisionTreeNode)member.Tree.Root).GetChildUniqueKeys().Count;
+                this.attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
                 if (i >= this.Size)
                     break;
             }

@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SemiRoughForest<T> : DummyForest<T>
+    public class DecisionForestDummyRough<T> : DecisionForestDummy<T>
         where T : IDecisionTree, new()
     {
         protected override IReduct CalculateReduct(DataStore data)

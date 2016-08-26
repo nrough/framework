@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public class DummyForest<T> : RoughForest<T>
+    public class DecisionForestDummy<T> : DecisionForestReduct<T>
         where T : IDecisionTree, new()
     {
         protected bool firstReduct = true;

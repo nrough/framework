@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// Represents a class that implements <c>IDecisionTree</c> 
     /// interface and is resposble for decision tree construction
     /// </typeparam>
-    public class RoughForest<T> : RandomForest<T>
+    public class DecisionForestReduct<T> : DecisionForestRandom<T>
         where T : IDecisionTree, new()
     {
         private Dictionary<int, int> attributeCount;
@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public string ReductGeneratorFactory { get; set; }
         public virtual PermutationCollection PermutationCollection { get; set; }
 
-        public RoughForest()
+        public DecisionForestReduct()
             : base()
         {
             this.attributeCount = new Dictionary<int, int>();

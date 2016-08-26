@@ -38,7 +38,7 @@ namespace DecisionForestTest
             }
         }
 
-        private void ProcessResult<T>(RandomForest<T> forest, DataStore testData, string name, int test, int fold, decimal epsilon)
+        private void ProcessResult<T>(DecisionForestRandom<T> forest, DataStore testData, string name, int test, int fold, decimal epsilon)
             where T : IDecisionTree, new()
         {
             int origSize = forest.Size;
@@ -100,7 +100,7 @@ namespace DecisionForestTest
                         decimal eps = (decimal)e / (decimal)100;
 
                         // ###################### Rough Forest Var Eps ######################
-                        RoughForest<DecisionTreeC45> roughForestNoEps = new RoughForest<DecisionTreeC45>();
+                        DecisionForestReduct<DecisionTreeC45> roughForestNoEps = new DecisionForestReduct<DecisionTreeC45>();
                         roughForestNoEps.DataSampler = sampler;
                         roughForestNoEps.Size = size;
                         roughForestNoEps.NumberOfPermutationsPerTree = 20;
@@ -110,7 +110,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeC45>(roughForestNoEps, testData, "RoughVarEps", t, fold, Decimal.Zero);
 
                         // ###################### Rough Forest Measure M ######################
-                        RoughForest<DecisionTreeRough> roughForestRough = new RoughForest<DecisionTreeRough>();
+                        DecisionForestReduct<DecisionTreeRough> roughForestRough = new DecisionForestReduct<DecisionTreeRough>();
                         roughForestRough.DataSampler = sampler;
                         roughForestRough.Size = size;
                         roughForestRough.NumberOfPermutationsPerTree = 20;
@@ -120,7 +120,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeRough>(roughForestRough, testData, "RoughForestM", t, fold, Decimal.Zero);
 
                         // ###################### Dummy Forest ######################
-                        DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
+                        DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
                         dummyForest.DataSampler = sampler;
                         dummyForest.Size = size;
                         dummyForest.PermutationCollection = permutations;
@@ -129,7 +129,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeC45>(dummyForest, testData, "Dummy", t, fold, Decimal.Zero);
 
                         // ###################### Random Forest ######################
-                        RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
+                        DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
                         randomForest.DataSampler = sampler;
                         randomForest.Size = size;
                         randomForest.NumberOfAttributesToCheckForSplit = (int)((1 - eps) * trainData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
@@ -137,7 +137,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeC45>(randomForest, testData, "RandomC45", t, fold, eps);
 
                         // ###################### Reducted Random subsets ######################
-                        SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
+                        DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;
                         semiRoughForest.Size = size;
                         semiRoughForest.Epsilon = eps;
@@ -147,7 +147,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeC45>(semiRoughForest, testData, "SemiRough", t, fold, eps);
 
                         // ###################### Rough Forest ######################
-                        RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
+                        DecisionForestReduct<DecisionTreeC45> roughForest = new DecisionForestReduct<DecisionTreeC45>();
                         roughForest.DataSampler = sampler;
                         roughForest.Size = size;
                         roughForest.NumberOfPermutationsPerTree = 20;
@@ -157,7 +157,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeC45>(roughForest, testData, "Rough", t, fold, eps);
 
                         // ###################### Rough Forest Measure M ######################
-                        RoughForest<DecisionTreeRough> roughForestM = new RoughForest<DecisionTreeRough>();
+                        DecisionForestReduct<DecisionTreeRough> roughForestM = new DecisionForestReduct<DecisionTreeRough>();
                         roughForestM.DataSampler = sampler;
                         roughForestM.Size = size;
                         roughForestM.NumberOfPermutationsPerTree = 20;
@@ -167,7 +167,7 @@ namespace DecisionForestTest
                         this.ProcessResult<DecisionTreeRough>(roughForestM, testData, "RoughM", t, fold, eps);
 
                         // ###################### Rough Forest Measure M ######################
-                        RoughForest<DecisionTreeRough> roughForestGamma = new RoughForest<DecisionTreeRough>();
+                        DecisionForestReduct<DecisionTreeRough> roughForestGamma = new DecisionForestReduct<DecisionTreeRough>();
                         roughForestGamma.DataSampler = sampler;
                         roughForestGamma.Size = size;
                         roughForestGamma.NumberOfPermutationsPerTree = 20;

@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
+            DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
             randomForest.Size = 100;
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            RandomForest<DecisionTreeCART> randomForest = new RandomForest<DecisionTreeCART>();
+            DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
             randomForest.Size = 10;
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -56,7 +56,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            RandomForest<DecisionTreeRough> randomForest = new RandomForest<DecisionTreeRough>();
+            DecisionForestRandom<DecisionTreeRough> randomForest = new DecisionForestRandom<DecisionTreeRough>();
             randomForest.Size = 100;
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -74,7 +74,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            RoughForest<DecisionTreeRough> randomForest = new RoughForest<DecisionTreeRough>();
+            DecisionForestReduct<DecisionTreeRough> randomForest = new DecisionForestReduct<DecisionTreeRough>();
             randomForest.Size = 2;
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
@@ -115,7 +115,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     permutations.Add(new Permutation(attributes));
                 }
 
-                DummyForest<DecisionTreeC45> dummyForest = new DummyForest<DecisionTreeC45>();
+                DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
                 dummyForest.DataSampler = sampler;
                 dummyForest.Size = size;
                 dummyForest.PermutationCollection = permutations;
@@ -130,7 +130,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine(dummyForestResult);
 
 
-                SemiRoughForest<DecisionTreeC45> semiRoughForest = new SemiRoughForest<DecisionTreeC45>();
+                DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
                 semiRoughForest.DataSampler = sampler;
                 semiRoughForest.Size = size;
                 semiRoughForest.Epsilon = 0.05m;
@@ -147,7 +147,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine(semiRoughForestResult);
 
 
-                RoughForest<DecisionTreeC45> roughForest = new RoughForest<DecisionTreeC45>();
+                DecisionForestReduct<DecisionTreeC45> roughForest = new DecisionForestReduct<DecisionTreeC45>();
                 roughForest.DataSampler = sampler;
                 roughForest.Size = size;
                 roughForest.NumberOfPermutationsPerTree = 20;
@@ -163,7 +163,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine(roughForestResult);
 
 
-                RandomForest<DecisionTreeC45> randomForest = new RandomForest<DecisionTreeC45>();
+                DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
                 randomForest.DataSampler = sampler;
                 randomForest.Size = size;
                 randomForest.NumberOfAttributesToCheckForSplit = (int)(0.1 * data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));

@@ -9,139 +9,25 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public class DecisionForestRandom<T> : ILearner, IEnumerable<Tuple<IDecisionTree, double>>
+    public class DecisionForestRandom<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()
     {
-        private List<Tuple<IDecisionTree, double>> trees;
-        private int attributeLengthSum;
-
-        public int Size { get; set; }
-        public int BagSizePercent { get; set; }
         public int NumberOfAttributesToCheckForSplit { get; set; }
-        public DataSampler DataSampler { get; set; }
-
-        public virtual double AverageNumberOfAttributes
-        {
-            get
-            {
-                return (double)this.attributeLengthSum / (double)this.Size;
-            }
-        }
 
         public DecisionForestRandom()
+            : base()
         {
-            this.Size = 500;
-            this.BagSizePercent = 100;
             this.NumberOfAttributesToCheckForSplit = -1;
-
-            this.trees = new List<Tuple<IDecisionTree, double>>(this.Size);
         }
 
-        public virtual double Learn(DataStore data, int[] attributes)
+        protected override T InitDecisionTree()
         {
-            DataSampler sampler = (this.DataSampler != null) ? this.DataSampler : new DataSampler(data);
-            if (this.BagSizePercent != -1)
-                sampler.BagSizePercent = this.BagSizePercent;
+            T tree = base.InitDecisionTree();
 
-            for (int iter = 0; iter < this.Size; iter++)
-            {
-                DataStore baggedData = sampler.GetData(iter);
-                T tree = new T();
+            if (this.NumberOfAttributesToCheckForSplit > 0)
+                tree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
 
-                if (this.NumberOfAttributesToCheckForSplit > 0)
-                    tree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
-
-                double error = tree.Learn(baggedData, attributes);
-                this.AddTree(tree, error);
-            }
-
-            ClassificationResult trainResult = this.Classify(data, data.Weights);
-            return 1 - trainResult.Accuracy;
-        }
-
-        protected void AddTree(IDecisionTree tree, double error)
-        {
-            var newMember = Tuple.Create<IDecisionTree, double>(tree, error);
-            this.trees.Add(newMember);
-        }
-
-        public long Compute(DataRecordInternal record)
-        {
-            int i = 0;
-            var votes = new Dictionary<long, double>(this.trees.Count);
-            foreach (var member in this)
-            {
-                i++;
-                long result = member.Item1.Compute(record);
-
-                if (votes.ContainsKey(result))
-                    votes[result] += (1 - member.Item2);
-                else
-                    votes.Add(result, (1 - member.Item2));
-
-                if (i >= this.Size)
-                    break;
-            }
-
-            return votes.Count > 0 ? votes.FindMaxValueKey() : -1;
-        }
-
-        public IEnumerator<Tuple<IDecisionTree, double>> GetEnumerator()
-        {
-            return this.trees.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        //TODO Move to some global blace this method will always be used
-        public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
-        {
-            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
-
-            result.QualityRatio = this.AverageNumberOfAttributes;
-            result.EnsembleSize = this.Size;
-
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
-            };
-
-            if (weights == null)
-            {
-                double w = 1.0 / testData.NumberOfRecords;
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
-                }
-                );
-            }
-            else
-            {
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
-                }
-                );
-            }
-
-            int i = 0;
-            this.attributeLengthSum = 0;
-            foreach (var member in this)
-            {
-                i++;
-                this.attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
-                if (i >= this.Size)
-                    break;
-            }
-
-            return result;
-        }
+            return tree;
+        }        
     }
 }

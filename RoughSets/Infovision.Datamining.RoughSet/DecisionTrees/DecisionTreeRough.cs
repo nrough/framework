@@ -1,29 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
+    /// <summary>
+    /// Decision tree learning where in each node a split is selected based on attribute generating highest measure M. 
+    /// Measure M is calculated based on object weights.
+    /// </summary>
     public class DecisionTreeRough : DecisionTree
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double dummy)
         {
-            decimal result = Decimal.Zero;
-            decimal maxValue, sum;
-            foreach (var eq in attributeEqClasses)
-            {
-                maxValue = Decimal.MinValue;
-                foreach (long decisionValue in eq.DecisionValues)
-                {
-                    sum = eq.GetDecisionWeight(decisionValue);
-                    if (sum > maxValue)
-                        maxValue = sum;
-                }
-                result += maxValue;
-            }
-            return (double)result;
+            return (double) InformationMeasureWeights.Instance.Calc(attributeEqClasses);
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

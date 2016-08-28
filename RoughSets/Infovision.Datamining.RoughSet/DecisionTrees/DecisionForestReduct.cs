@@ -9,52 +9,60 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     /// <summary>
-    /// Generates <i>NumberOfPermutationsPerTree</i> Reducts with <i>Epsilon</i> 
-    /// approximation level. A reduct that is minimal in terms of length and then 
-    /// in terms of least number of decision rules is selected for a single decision tree.
+    /// Generates <i>NumberOfPermutationsPerTree</i> Reducts with <i>Epsilon</i><br /> 
+    /// approximation level. A reduct that is minimal in terms of length and then<br /> 
+    /// in terms of least number of decision rules is selected for a single decision tree.<br />
     /// A decision tree is constructed based on attributes belonging to selected decision reduct.
     /// </summary>
     /// <typeparam name="T">
     /// Represents a class that implements <c>IDecisionTree</c> 
     /// interface and is resposble for decision tree construction
     /// </typeparam>
-    public class DecisionForestReduct<T> : DecisionForestRandom<T>
+    public class DecisionForestReduct<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()
     {
         private Dictionary<int, int> attributeCount;
 
-        public decimal Epsilon { get; set; }
-        public int NumberOfPermutationsPerTree { get; set; }
         public string ReductGeneratorFactory { get; set; }
-        public virtual PermutationCollection PermutationCollection { get; set; }
+        public decimal MaxRandomEpsilon { get; set; }
 
         public DecisionForestReduct()
             : base()
         {
             this.attributeCount = new Dictionary<int, int>();
-            this.Epsilon = Decimal.MinValue;
-            this.NumberOfPermutationsPerTree = 20;
             this.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.MaxRandomEpsilon = 0.2m;
         }
 
-        protected virtual IReduct CalculateReduct(DataStore data)
+        protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            PermutationCollection permutations = null;
-            if (this.PermutationCollection != null)
-                permutations = this.PermutationCollection;
-            else
-                permutations = new PermutationGenerator(data).Generate(this.NumberOfPermutationsPerTree);
+            PermutationCollection permutations = new PermutationGenerator(attributes).Generate(this.NumberOfTreeProbes);
 
-            decimal localEpsilon = Decimal.MinValue;
-            if (this.Epsilon >= Decimal.Zero)
-                localEpsilon = this.Epsilon;
-            else
-                localEpsilon = (decimal)((double)RandomSingleton.Random.Next(0, 20) / 100.0);
+            decimal localEpsilon = this.Epsilon >= Decimal.Zero 
+                                 ? this.Epsilon 
+                                 : (decimal)((double)RandomSingleton.Random.Next(0, (int)this.MaxRandomEpsilon * 100) / 100.0);
 
+            IReduct reduct = this.CalculateReduct(data, permutations, localEpsilon);
+
+            foreach (int attr in reduct.Attributes)
+            {
+                if (!this.attributeCount.ContainsKey(attr))
+                    this.attributeCount[attr] = 1;
+                else
+                    this.attributeCount[attr] += 1;
+            }
+
+            T tree = this.InitDecisionTree();
+            double error = tree.Learn(data, reduct.Attributes.ToArray());
+            return new Tuple<T, double>(tree, error);
+        }
+
+        protected IReduct CalculateReduct(DataStore data, PermutationCollection permutations, decimal epsilon)
+        {
             Args parms = new Args(5);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, localEpsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
@@ -63,10 +71,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
 
-            int bestScore = Int32.MaxValue;
-            IReduct bestReduct = null;
-
-            List<IReduct> reducts = new List<IReduct>(this.NumberOfPermutationsPerTree);
+            List<IReduct> reducts = new List<IReduct>(this.NumberOfTreeProbes);
             foreach (var store in reductStoreCollection)
                 foreach (var reduct in store)
                 {
@@ -75,7 +80,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             //reducts.Sort(new ReductLengthComparer());
             reducts.Sort(new ReductRuleNumberComparer());
+            IReduct bestReduct = reducts.First();
 
+            //TODO What is this?
+            /*
+            int bestScore = Int32.MaxValue;
             foreach (var reduct in reducts)
             {
                 int count = 0;
@@ -94,36 +103,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 if (bestScore == 0)
                     break;
             }
+            */
+
             return bestReduct;
-        }
-
-        public override double Learn(DataStore data, int[] attributes)
-        {
-            DataSampler sampler = (this.DataSampler != null) ? this.DataSampler : new DataSampler(data);
-            if (this.BagSizePercent != -1)
-                sampler.BagSizePercent = this.BagSizePercent;
-
-            for (int iter = 0; iter < this.Size; iter++)
-            {
-                DataStore baggedData = sampler.GetData(iter);
-
-                IReduct reduct = this.CalculateReduct(baggedData);
-                foreach (int attr in reduct.Attributes)
-                {
-                    if (!this.attributeCount.ContainsKey(attr))
-                        this.attributeCount[attr] = 1;
-                    else
-                        this.attributeCount[attr] += 1;
-                }
-
-                T tree = new T();
-                tree.NumberOfAttributesToCheckForSplit = -1;
-                double error = tree.Learn(baggedData, reduct.Attributes.ToArray());
-                this.AddTree(tree, error);
-            }
-
-            ClassificationResult trainResult = this.Classify(data, data.Weights);
-            return 1 - trainResult.Accuracy;
         }
     }
 }

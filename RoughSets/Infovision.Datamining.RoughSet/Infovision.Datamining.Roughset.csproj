@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="DecisionTrees\DecisionForestBase.cs" />
     <Compile Include="DecisionTrees\DecisionTreeC45.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCART.cs" />
     <Compile Include="DecisionTrees\DecisionTreeID3.cs" />

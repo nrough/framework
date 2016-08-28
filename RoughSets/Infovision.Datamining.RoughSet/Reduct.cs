@@ -294,20 +294,25 @@ namespace Infovision.Datamining.Roughset
             if (this.IsException == false)
             {
                 return String.Format(
-                    "[Id:{0}] {1} (eps:{2}, #objects:{3})",
+                    //"[Id:{0}] {1} (eps:{2}, #objects:{3})",
+                    "[Id:{0}] {1} (eps:{2})",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon,
-                    this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count);
+                    this.Epsilon
+                    //,this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count
+                    );
             }
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("[Id:{0}] {1} (eps:{2}, #objects:{3}) ",
+                sb.AppendFormat(
+                    //"[Id:{0}] {1} (eps:{2}, #objects:{3}) ",
+                    "[Id:{0}] {1} (eps:{2}) ",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon,
-                    this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count);
+                    this.Epsilon
+                    //,this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count
+                    );
 
                 sb.Append("[");
 

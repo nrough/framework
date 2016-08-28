@@ -41,10 +41,10 @@ namespace Infovision.Data
             this.Weights = (data.Weights != null) ? Array.ConvertAll(data.Weights, x => (double)x) : this.Weights;
         }
 
-        public DataSampler(DataStore data, bool cacheResults)
+        public DataSampler(DataStore data, bool cacheDataChunks)
             : this(data)
         {
-            this.CacheResults = cacheResults;
+            this.CacheResults = cacheDataChunks;
             if (this.CacheResults)
             {
                 bagCache = new Dictionary<int, DataStore>();

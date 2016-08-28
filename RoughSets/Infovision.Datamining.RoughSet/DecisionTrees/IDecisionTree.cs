@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infovision.Datamining.Roughset.DecisionTrees
+﻿namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     /// <summary>
     /// Interface of a decision tree
@@ -12,7 +6,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public interface IDecisionTree : ILearner, IPredictionModel
     {
         ITreeNode Root { get; }
-        decimal Epsilon { get; }
+        decimal Epsilon { get; set; }
         int NumberOfAttributesToCheckForSplit { get; set; }
     }
 }

@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GenericParsing;
 using Infovision.Data;
 using Infovision.Datamining;
 using Infovision.Datamining.Benchmark;
 using Infovision.Datamining.Roughset;
-using Infovision.Utils;
 using Infovision.Datamining.Roughset.DecisionTrees;
 
 namespace DecisionForestTest
@@ -45,7 +41,7 @@ namespace DecisionForestTest
             foreach (int size in sizes)
             {
                 forest.Size = size;
-                ClassificationResult result = forest.Classify(testData, null);
+                ClassificationResult result = Classifier.Instance.Classify(forest, testData, null);
 
                 result.ModelName = name;
                 result.TestNum = test;
@@ -223,7 +219,8 @@ namespace DecisionForestTest
         }
 
 
-        //###################################  SQL RESULT LOAD ######################################
+        #region SQL
+
         private void LoadResults()
         {
             this.InsertDB(this.GetTableResult_MRIExceptionsTest(@"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\DecisionForestTest\bin\x64\Release\results\breast.result"));
@@ -236,7 +233,6 @@ namespace DecisionForestTest
             this.InsertDB(this.GetTableResult_MRIExceptionsTest(@"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\DecisionForestTest\bin\x64\Release\results\spect.result"));
             this.InsertDB(this.GetTableResult_MRIExceptionsTest(@"C:\Users\Sebastian\Source\Workspaces\RoughSets\RoughSets\DecisionForestTest\bin\x64\Release\results\zoo.result"));
         }
-
 
         private void InsertDB(DataTable table)
         {
@@ -328,5 +324,7 @@ namespace DecisionForestTest
 
             return table;
         }
+
+        #endregion
     }
 }

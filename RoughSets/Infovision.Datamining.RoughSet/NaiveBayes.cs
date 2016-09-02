@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Math;
 using Infovision.Utils;
+using Infovision.Datamining;
 
 namespace Infovision.Datamining.Roughset
 {
     //TODO Move to Infovision.Datamining namespace
     //TODO IReductStoreCollection must implement some other interface from Infovision.Datamining namespace
-    internal class NaiveBayes : IClassifier
+    internal class NaiveBayes : IPredictionModel
     {
         #region Members
 
@@ -68,6 +69,9 @@ namespace Infovision.Datamining.Roughset
         public bool IdentifyMultipleDecision { get; set; }
 
         public decimal MinimumVoteValue { get; set; }
+
+        public int EnsembleSize { get { return 1; } }
+        public double QualityRatio { get { return 0.0; } }
 
         #endregion Properties
 
@@ -179,7 +183,12 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
-        public Dictionary<long, decimal> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)
+        public long Compute(DataRecordInternal record)
+        {
+            return this.Classify(record, true).FindMaxValueKey();
+        }
+
+        private Dictionary<long, decimal> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)
         {
             decimal[] globalVotes = new decimal[this.decCountPlusOne];
             decimal[] reductsVotes = new decimal[this.decCountPlusOne];

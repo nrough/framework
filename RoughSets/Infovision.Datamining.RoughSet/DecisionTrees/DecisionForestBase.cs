@@ -2,18 +2,19 @@
 using Infovision.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : ILearner, IEnumerable<Tuple<T, double>>
+    public abstract class DecisionForestBase<T> : ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
         where T : IDecisionTree, new()
     {
         private List<Tuple<T, double>> trees;
         private int attributeLengthSum;
-
+        KeyValuePair<T, double> test;
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
         public decimal Epsilon { get; set; }
@@ -23,6 +24,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             get { return (double)this.attributeLengthSum / (double)this.Size; }
         }
+        public virtual double QualityRatio { get { return this.AverageNumberOfAttributes; } }
+        public virtual int EnsembleSize { get { return this.Size; } }
 
         public DecisionForestBase()
         {
@@ -78,17 +81,35 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             this.InitDataSampler(data);
 
+            Stopwatch s = new Stopwatch();
+            s.Start();  
+
             for (int iter = 0; iter < this.Size; iter++)
             {
                 DataStore baggedData = this.DataSampler.GetData(iter);
                 this.AddTree(this.LearnDecisionTree(baggedData, attributes, iter));
             }
 
-            ClassificationResult trainResult = this.Classify(data, data.Weights);
+            s.Stop();
+
+            int i = 0;
+            this.attributeLengthSum = 0;
+            foreach (var member in this)
+            {
+                i++;
+                this.attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
+                if (i >= this.Size)
+                    break;
+            }
+
+            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
+            //this.Classify(data, data.Weights);
+            trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             return 1 - trainResult.Accuracy;
         }
 
-        //TODO Move to some global blace this method will always be used
+        
+        /*
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
@@ -135,6 +156,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             return result;
         }
+        */
 
         public long Compute(DataRecordInternal record)
         {

@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
-    public abstract class DecisionTree : IDecisionTree
+    public abstract class DecisionTree : IDecisionTree, IPredictionModel
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
@@ -23,6 +23,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public decimal Epsilon { get; set; }
         protected IEnumerable<long> Decisions { get { return this.decisions; } }
+
+        public int EnsembleSize { get { return 1; } }
+        public double QualityRatio { get { return this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0; } }
+
 
         public DecisionTree()
         {
@@ -60,7 +64,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             //s.Stop();
 
-            ClassificationResult trainResult = this.Classify(data, data.Weights);
+            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
             //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             return 1 - trainResult.Accuracy;
         }
@@ -227,6 +231,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return -1;
         }
 
+        /*
         public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
         {
             Stopwatch s = new Stopwatch();
@@ -273,6 +278,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             result.ClassificationTime = s.ElapsedMilliseconds ;
             return result;
         }
+        */
 
         [Obsolete("This method is obsolete")]
         protected virtual int DEL_GetNextSplit(EquivalenceClassCollection eqClassCollection)

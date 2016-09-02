@@ -70,6 +70,7 @@ namespace DecisionForestTest
 
             for (int t = 0; t < maxTest; t++)
             {
+                int[] attributes = null;
                 DataStoreSplitter splitter = null;
                 if (benchmarkData.CrossValidationActive)
                 {
@@ -77,6 +78,7 @@ namespace DecisionForestTest
                     if (benchmarkData.DecisionFieldId > 0)
                         data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
                     splitter = new DataStoreSplitter(data, benchmarkData.CrossValidationFolds);
+                    attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
                 }
                 else
                 {
@@ -84,10 +86,8 @@ namespace DecisionForestTest
                     if (benchmarkData.DecisionFieldId > 0)
                         trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
                     testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
-                }
-
-                int[] attributes = trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-
+                    attributes = trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                }                
 
                 for (int fold = 0; fold < benchmarkData.CrossValidationFolds; fold++)
                 {

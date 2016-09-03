@@ -7,5 +7,6 @@ namespace Infovision.Datamining
         long Compute(DataRecordInternal record);
         int EnsembleSize { get; }
         double QualityRatio { get; }
+        decimal Epsilon { get; set; }
     }
 }

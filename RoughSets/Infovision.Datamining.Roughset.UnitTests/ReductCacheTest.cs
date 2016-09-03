@@ -1,6 +1,7 @@
 ﻿using System;
 using Infovision.Data;
 using NUnit.Framework;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -26,7 +27,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CacheReductFirstFoundTrue()
         {
-            FieldSet attributeSet = new FieldSet(dataStoreTrainInfo, new int[] { 1, 2, 3 });
+            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
             string key = "#$#$#$" + attributeSet.ToString();
             ReductCache.Instance.Set(key, new ReductCacheInfo(true, 10));
 
@@ -56,7 +57,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CacheReductFirstFoundFalse()
         {
-            FieldSet attributeSet = new FieldSet(dataStoreTrainInfo, new int[] { 1, 2, 3 });
+            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
             string key = "#$#$#$" + attributeSet.ToString();
             ReductCache.Instance.Set(key, new ReductCacheInfo(false, 8), null);
 
@@ -82,7 +83,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EpsilonRangeException()
         {
-            FieldSet attributeSet = new FieldSet(dataStoreTrainInfo, new int[] { 1, 2, 3 });
+            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
             string key = "#$#$#$" + attributeSet.ToString();
             ReductCache.Instance.Set(key, new ReductCacheInfo(false, 8), null);
 

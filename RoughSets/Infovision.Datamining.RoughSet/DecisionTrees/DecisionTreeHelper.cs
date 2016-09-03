@@ -43,45 +43,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return conditions;
         }
 
-        public static decimal CalcMajorityMeasureFromTree(ITreeNode node, DataStore data, decimal[] weights = null)
-        {
-            if (weights == null)
-                weights = data.Weights;
-
-            AttributeValueVector[] conditions = DecisionTreeHelper.GetRulesFromTree(node, data);
-            EquivalenceClass[] map = new EquivalenceClass[conditions.Length];
-            int[] fieldIndexLookup = data.DataStoreInfo.GetFieldIndexLookupTable();
-
-            for (int i = 0; i < data.NumberOfRecords; i++)
-            {
-                for(int j = 0; j < conditions.Length; j++)
-                {
-                    bool flag = true;
-                    for (int k = 0; k < conditions[j].Length; k++)
-                    {
-                        if(conditions[j].Values[k] != data.GetFieldIndexValue(i, fieldIndexLookup[conditions[j].Attributes[k]]))
-                        {
-                            flag = false;
-                            break;
-                        }
-                    }
-
-                    if (flag)
-                    {
-                        if (map[j] == null)
-                            map[j] = new EquivalenceClass(conditions[j].Values, data);
-                        map[j].AddObject(i, data.GetDecisionValue(i), weights[i]);
-                        break;
-                    }
-                }
-            }
-
-            decimal sum = Decimal.Zero;
-            foreach (var eq in map)
-                sum += eq.DecisionWeights.FindMaxValuePair().Value;
-            return sum;
-        }
-
         public static AttributeValueVector CreateRuleConditionFromNode(ITreeNode node)
         {            
             AttributeValueVector result = new AttributeValueVector(node.Level);

@@ -35,7 +35,7 @@ namespace Infovision.Utils
             if (x == null || y == null) return false;
             if (x.Length != y.Length) return false;
 
-            //TODO
+            //TODO Implement Vector Hash calculation
             /*
             for (int i = 0; i < x.Length; i += Vector<long>.Count)
             {

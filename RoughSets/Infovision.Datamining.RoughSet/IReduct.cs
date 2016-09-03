@@ -1,5 +1,6 @@
 ﻿using System;
 using Infovision.Data;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -7,9 +8,9 @@ namespace Infovision.Datamining.Roughset
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
-        FieldSet Attributes { get; }
+        PascalSet<int> Attributes { get; }
         bool IsException { get; }
-        string ReductPartitionCacheKey { get; }
+        
 
         //TODO Move to Bireduct Interface? (Exceptions?)
         ObjectSet ObjectSet { get; }

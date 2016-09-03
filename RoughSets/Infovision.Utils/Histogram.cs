@@ -77,7 +77,6 @@ namespace Infovision.Utils
             if (p == null)
                 return false;
 
-            //TODO compare two dictionaries
             if (!p.minValue.Equals(this.minValue))
                 return false;
 

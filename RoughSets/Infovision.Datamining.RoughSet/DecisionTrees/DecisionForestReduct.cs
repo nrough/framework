@@ -21,18 +21,26 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public class DecisionForestReduct<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()
     {
-        private Dictionary<int, int> attributeCount;
+        //private Dictionary<int, int> attributeCount;
 
         public string ReductGeneratorFactory { get; set; }
         public decimal MaxRandomEpsilon { get; set; }
 
         public DecisionForestReduct()
             : base()
-        {
-            this.attributeCount = new Dictionary<int, int>();
+        {            
             this.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
             this.MaxRandomEpsilon = 0.2m;
         }
+
+        /*
+        public override ClassificationResult Learn(DataStore data, int[] attributes)
+        {
+            //this.attributeCount = new Dictionary<int, int>(attributes.Length);
+
+            return base.Learn(data, attributes);
+        }
+        */
 
         protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
@@ -44,16 +52,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             IReduct reduct = this.CalculateReduct(data, permutations, localEpsilon);
 
+            /*
             foreach (int attr in reduct.Attributes)
-            {
                 if (!this.attributeCount.ContainsKey(attr))
                     this.attributeCount[attr] = 1;
                 else
                     this.attributeCount[attr] += 1;
-            }
+            */
 
             T tree = this.InitDecisionTree();
-            double error = tree.Learn(data, reduct.Attributes.ToArray());
+            double error = 1.0 - tree.Learn(data, reduct.Attributes.ToArray()).Accuracy;
             return new Tuple<T, double>(tree, error);
         }
 
@@ -67,6 +75,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            
             generator.Run();
 
             IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
@@ -74,15 +83,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             List<IReduct> reducts = new List<IReduct>(this.NumberOfTreeProbes);
             foreach (var store in reductStoreCollection)
                 foreach (var reduct in store)
-                {
                     reducts.Add(reduct);
-                }
 
             //reducts.Sort(new ReductLengthComparer());
             reducts.Sort(new ReductRuleNumberComparer());
             IReduct bestReduct = reducts.First();
-
-            //TODO What is this?
+            
             /*
             int bestScore = Int32.MaxValue;
             foreach (var reduct in reducts)

@@ -51,8 +51,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private Dictionary<int, Dictionary<long, long>> CalcMissingValues(DataStore dataStore)
         {
-            //TODO WTF?!
-
             //fieldId --> decision --> field key --> value
             Dictionary<int, Dictionary<long, Dictionary<long, int>>> fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
             for (int i = 0; i < dataStore.NumberOfRecords; i++)

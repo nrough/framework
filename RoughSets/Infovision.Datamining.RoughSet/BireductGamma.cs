@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -39,7 +40,7 @@ namespace Infovision.Datamining.Roughset
             if (base.CheckRemoveAttribute(attributeId) == false)
                 return false;
 
-            FieldSet newAttributeSet = (FieldSet)(this.Attributes - attributeId);
+            PascalSet<int> newAttributeSet = this.Attributes - attributeId;
 
             //TODO Performance killer !!!!!!
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
@@ -65,7 +66,7 @@ namespace Infovision.Datamining.Roughset
                 return false;
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
 
-            //TODO  Performance killer !!!!!!
+            //TODO Performance killer !!!!!!
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(this.Attributes, this.DataStore);
 

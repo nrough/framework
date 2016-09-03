@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
 
-        private FieldSet attributeSet;
+        private PascalSet<int> attributeSet;
         protected object mutex = new object();
 
         //TODO To Remove
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset
             protected set { this.objectWeights = value; }
         }
 
-        public FieldSet Attributes
+        public PascalSet<int> Attributes
         {
             get { return this.attributeSet; }
         }
@@ -77,18 +77,7 @@ namespace Infovision.Datamining.Roughset
         public virtual bool IsEquivalenceClassCollectionCalculated
         {
             get { return this.eqClassMap != null; }
-        }
-
-        public virtual string ReductPartitionCacheKey
-        {
-            get
-            {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("m=Prt");
-                stringBuilder.Append("|a=").Append(this.attributeSet.CacheKey);
-                return stringBuilder.ToString();
-            }
-        }
+        }        
 
         public virtual bool IsException { get; set; }
 
@@ -105,7 +94,7 @@ namespace Infovision.Datamining.Roughset
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights)
         {
             this.dataStore = dataStore;
-            this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
+            this.attributeSet = new PascalSet<int>(dataStore.DataStoreInfo.MinFieldId, dataStore.DataStoreInfo.MaxFieldId, fieldIds);
             this.Epsilon = epsilon;
 
             if (weights != null)
@@ -123,7 +112,7 @@ namespace Infovision.Datamining.Roughset
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
         {
             this.dataStore = dataStore;
-            this.attributeSet = new FieldSet(dataStore.DataStoreInfo, fieldIds);
+            this.attributeSet = new PascalSet<int>(dataStore.DataStoreInfo.MinFieldId, dataStore.DataStoreInfo.MaxFieldId, fieldIds);
             this.Epsilon = epsilon;
 
             this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
@@ -144,7 +133,7 @@ namespace Infovision.Datamining.Roughset
 
         public Reduct(Reduct reduct)
         {
-            this.attributeSet = new FieldSet(reduct.attributeSet);
+            this.attributeSet = new PascalSet<int>(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
             this.Epsilon = reduct.Epsilon;
             this.objectWeights = new decimal[dataStore.NumberOfRecords];
@@ -157,29 +146,6 @@ namespace Infovision.Datamining.Roughset
         #endregion Constructors
 
         #region Methods
-
-        public virtual EquivalenceClassCollection DEL_CreateEquivalenceClassCollection(bool useGlobalCache = false)
-        {
-            EquivalenceClassCollection result = null;
-            string partitionKey = null;
-
-            if (useGlobalCache)
-            {
-                partitionKey = this.ReductPartitionCacheKey;
-                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
-            }
-
-            if (result == null)
-            {
-                result = new EquivalenceClassCollection(this.dataStore);
-                result.Calc(this.attributeSet, this.dataStore, this.objectWeights);
-            }
-
-            if (useGlobalCache)
-                ReductCache.Instance.Set(partitionKey, result);
-
-            return result;
-        }
 
         public virtual void SetEquivalenceClassCollection(EquivalenceClassCollection equivalenceClasses)
         {

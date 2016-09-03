@@ -64,7 +64,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             int yMajorScalePx = (int)System.Math.Floor((double)(dendrogramHeight - 40) / (maxHeight + 1));
 
-            //TODO Scale
+            //TODO scale
             int yScalePx = yMajorScalePx;
 
             if (yMajorScalePx <= 1)

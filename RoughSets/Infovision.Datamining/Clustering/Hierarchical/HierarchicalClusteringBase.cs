@@ -661,7 +661,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         /// </summary>
         public virtual void CalcLCASparseTable()
         {
-            //TODO
+            //TODO Implement CalcLCASparseTable
 
             int i = 0, j, nodeIdx, l = 0;
             int[] leaves = new int[this.NumberOfInstances];

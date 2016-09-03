@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// <remarks>
     /// Implementation is based on the following example http://csucidatamining.weebly.com/assign-4.html
     /// </remarks>
-    public class DecisionTreeCART : DecisionTree
+    public class DecisionTreeCART : DecisionTreeBase
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double gini)
         {

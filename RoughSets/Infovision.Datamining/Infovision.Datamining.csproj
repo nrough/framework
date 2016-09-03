@@ -131,6 +131,7 @@
     <Compile Include="Filters\DiscretizationType.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\ReplaceMissingValues.cs" />
     <Compile Include="ILearner.cs" />
+    <Compile Include="IModel.cs" />
     <Compile Include="IPredictionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />

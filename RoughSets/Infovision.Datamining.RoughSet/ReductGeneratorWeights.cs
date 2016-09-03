@@ -13,9 +13,7 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorWeights()
             : base()
         {
-            this.InformationMeasure =
-                (IInformationMeasure)InformationMeasureBase
-                .Construct(InformationMeasureType.ObjectWeights);
+            this.InformationMeasure = InformationMeasureWeights.Instance;
         }
 
         #endregion Constructors

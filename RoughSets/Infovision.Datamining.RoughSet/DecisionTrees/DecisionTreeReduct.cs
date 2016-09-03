@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Epsilon = Decimal.Zero;
         }
 
-        public override double Learn(DataStore data, int[] attributes)
+        public override ClassificationResult Learn(DataStore data, int[] attributes)
         {
             if (this.WeightGenerator == null)
                 this.WeightGenerator = new WeightGeneratorMajority(data);

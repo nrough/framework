@@ -16,7 +16,7 @@ namespace DecisionForestTest
     {
         private DataStore trainData, testData, data;
         private StreamWriter fileStream;
-        int[] sizes = new int[] { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+        int[] sizes = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
 
         private static void Main(string[] args)
         {
@@ -34,7 +34,7 @@ namespace DecisionForestTest
             }
         }
 
-        private void ProcessResult<T>(DecisionForestBase<T> forest, DataStore testData, string name, int test, int fold, decimal epsilon)
+        private void Classify<T>(DecisionForestBase<T> forest, DataStore testData, string name, int test, int fold)
             where T : IDecisionTree, new()
         {
             int origSize = forest.Size;
@@ -43,12 +43,11 @@ namespace DecisionForestTest
                 forest.Size = size;
                 ClassificationResult result = Classifier.Instance.Classify(forest, testData, null);
 
+                result.ModelCreationTime = forest.LearningResult.ModelCreationTime;
+
                 result.ModelName = name;
                 result.TestNum = test;
                 result.Fold = fold;
-                result.Epsilon = epsilon;
-                result.QualityRatio = forest.AverageNumberOfAttributes;
-                result.EnsembleSize = size;
                 
                 this.WriteLine(result);
             }
@@ -61,8 +60,7 @@ namespace DecisionForestTest
 
             int maxTest = 20;
             int size = 100;
-            int numberOfTreeProbes = 10;
-            int numberOfAttributesToCheckForSplit = 5;
+            int numberOfTreeProbes = 10;            
 
             for (int t = 0; t < maxTest; t++)
             {
@@ -83,7 +81,8 @@ namespace DecisionForestTest
                         trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
                     testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
                     attributes = trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
-                }                
+                }
+                int numberOfAttributesToCheckForSplit = (int)((double)attributes.Length * 0.33);
 
                 for (int fold = 0; fold < benchmarkData.CrossValidationFolds; fold++)
                 {
@@ -106,7 +105,7 @@ namespace DecisionForestTest
                         reductForestC45.NumberOfTreeProbes = numberOfTreeProbes;
                         reductForestC45.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         reductForestC45.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(reductForestC45, testData, "ReductC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(reductForestC45, testData, "ReductC45", t, fold);
 
                         DecisionForestReduct<DecisionTreeC45> roughForestGamma = new DecisionForestReduct<DecisionTreeC45>();
                         roughForestGamma.DataSampler = sampler;
@@ -115,7 +114,7 @@ namespace DecisionForestTest
                         roughForestGamma.Epsilon = eps;
                         roughForestGamma.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
                         roughForestGamma.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(roughForestGamma, testData, "RoughGammaC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(roughForestGamma, testData, "RoughGammaC45", t, fold);
 
                         DecisionForestReduct<DecisionTreeRough> roughForestM = new DecisionForestReduct<DecisionTreeRough>();
                         roughForestM.DataSampler = sampler;
@@ -124,7 +123,7 @@ namespace DecisionForestTest
                         roughForestM.NumberOfTreeProbes = numberOfTreeProbes;
                         roughForestM.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         roughForestM.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeRough>(roughForestM, testData, "ReductRoughM", t, fold, eps);
+                        this.Classify<DecisionTreeRough>(roughForestM, testData, "ReductRoughM", t, fold);
                         
                         DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
                         dummyForest.DataSampler = sampler;
@@ -132,7 +131,7 @@ namespace DecisionForestTest
                         dummyForest.Epsilon = eps;
                         dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
                         dummyForest.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(dummyForest, testData, "DummyC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(dummyForest, testData, "DummyC45", t, fold);
 
                         DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;
@@ -141,7 +140,7 @@ namespace DecisionForestTest
                         semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
                         semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         semiRoughForest.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(semiRoughForest, testData, "SemiRoughC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(semiRoughForest, testData, "SemiRoughC45", t, fold);
 
                         DecisionForestDummyRough<DecisionTreeC45> semiRoughGammaForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughGammaForest.DataSampler = sampler;
@@ -150,7 +149,7 @@ namespace DecisionForestTest
                         semiRoughGammaForest.NumberOfTreeProbes = numberOfTreeProbes;
                         semiRoughGammaForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
                         semiRoughGammaForest.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(semiRoughGammaForest, testData, "SemiRoughGammaC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(semiRoughGammaForest, testData, "SemiRoughGammaC45", t, fold);
 
                         DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
                         randomForest.DataSampler = sampler;
@@ -159,9 +158,9 @@ namespace DecisionForestTest
                         randomForest.NumberOfTreeProbes = numberOfTreeProbes;
                         randomForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                         randomForest.Learn(trainData, attributes);
-                        this.ProcessResult<DecisionTreeC45>(randomForest, testData, "RandomC45", t, fold, eps);
+                        this.Classify<DecisionTreeC45>(randomForest, testData, "RandomC45", t, fold);
 
-                        this.WriteLine();
+                        Console.WriteLine();
                     }
                 }
             }

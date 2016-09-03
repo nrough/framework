@@ -148,8 +148,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 if (!reduct.Attributes.Equals(redW.Attributes))
                 {
-                    FieldSet f1 = reduct.Attributes;
-                    FieldSet f2 = redW.Attributes;
+                    PascalSet<int> f1 = reduct.Attributes;
+                    PascalSet<int> f2 = redW.Attributes;
                 }
 
                 Assert.AreEqual(reduct.Attributes, redW.Attributes);

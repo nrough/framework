@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// <summary>
     /// ID3 Tree Implementation
     /// </summary>
-    public class DecisionTreeID3 : DecisionTree
+    public class DecisionTreeID3 : DecisionTreeBase
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
         {

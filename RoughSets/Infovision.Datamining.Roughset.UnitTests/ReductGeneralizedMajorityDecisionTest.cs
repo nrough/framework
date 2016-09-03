@@ -205,8 +205,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public bool IsSupersetOf(DataStore data, int[] setToCheck, int[] set)
         {
-            FieldSet fieldSetToCheck = new FieldSet(data.DataStoreInfo, setToCheck);
-            FieldSet fielsSet = new FieldSet(data.DataStoreInfo, set);
+            PascalSet<int> fieldSetToCheck = new PascalSet<int>(data.DataStoreInfo.MinFieldId, data.DataStoreInfo.MaxFieldId, setToCheck);
+            PascalSet<int> fielsSet = new PascalSet<int>(data.DataStoreInfo.MinFieldId, data.DataStoreInfo.MaxFieldId, set);
             return fieldSetToCheck.Superset(set);
         }
 

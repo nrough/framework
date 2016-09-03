@@ -12,12 +12,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
-    public abstract class DecisionTree : IDecisionTree, IPredictionModel
+    public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private decimal mA;
         private long[] decisions;
+        
 
         public ITreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
@@ -26,9 +27,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public int EnsembleSize { get { return 1; } }
         public double QualityRatio { get { return this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0; } }
-
-
-        public DecisionTree()
+        
+        public DecisionTreeBase()
         {
             this.root = null;
             this.decisionAttributeId = -1;
@@ -51,10 +51,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     EquivalenceClassCollection.Create(attributes, data, data.Weights));
         }
 
-        public virtual double Learn(DataStore data, int[] attributes)
+        public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
-            //Stopwatch s = new Stopwatch();
-            //s.Start();
+            Stopwatch s = new Stopwatch();
+            s.Start();
 
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
@@ -62,11 +62,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.GenerateSplits(eqClassCollection, this.root, attributes);
 
-            //s.Stop();
+            s.Stop();
 
             ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
-            //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
-            return 1 - trainResult.Accuracy;
+            trainResult.ModelCreationTime = s.ElapsedMilliseconds;
+            return trainResult;
         }
 
         protected void CreateLeaf(DecisionTreeNode parent, long decisionValue)
@@ -77,50 +77,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected void CreateLeaf(DecisionTreeNode parent, long decisionValue, decimal decisionWeight)
         {
             parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, decisionWeight, parent));
-        }
-
-        [Obsolete("This methiod is obsolete")]
-        protected void DEL_GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent)
-        {
-            if (eqClassCollection.Attributes.Length == 0 || eqClassCollection.NumberOfObjects == 0)
-            {
-                this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
-                return;
-            }
-
-            long singleDecision = eqClassCollection.GetSingleDecision().Key;
-            if (singleDecision != -1)
-            {
-                this.CreateLeaf(parent, singleDecision);
-                return;
-            }
-
-            //TODO This code needs to be checked only for the last child 
-            if (this.Epsilon >= Decimal.Zero)
-            {
-                decimal m = DecisionTreeHelper.CalcMajorityMeasureFromTree(
-                    this.root,
-                    eqClassCollection.Data,
-                    eqClassCollection.Data.Weights);
-
-                if ((Decimal.One - this.Epsilon) * this.mA <= m)
-                {
-                    this.CreateLeaf(parent, eqClassCollection.DecisionWeights.FindMaxValueKey());
-                    return;
-                }
-            }
-
-            int maxAttribute = this.DEL_GetNextSplit(eqClassCollection);
-
-            //Generate split on result
-            Dictionary<long, EquivalenceClassCollection> subEqClasses = EquivalenceClassCollection.Split(maxAttribute, eqClassCollection);
-            foreach (var kvp in subEqClasses)
-            {
-                DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, parent);
-                parent.AddChild(newNode);
-
-                this.DEL_GenerateSplits(kvp.Value, newNode);
-            }
         }
 
         protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
@@ -231,112 +187,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return -1;
         }
 
-        /*
-        public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
-        {
-            Stopwatch s = new Stopwatch();
-
-            s.Start();
-
-            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
-            result.QualityRatio = ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count;
-            result.EnsembleSize = 1;
-
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
-            };
-
-            if (weights == null)
-            {
-                double w = 1.0 / testData.NumberOfRecords;
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
-                }
-                );
-            }
-            else
-            {
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(
-                        objectIndex,
-                        prediction,
-                        record[testData.DataStoreInfo.DecisionFieldId],
-                        (double)weights[objectIndex]);
-                }
-                );
-            }
-
-            s.Stop();
-
-            result.ClassificationTime = s.ElapsedMilliseconds ;
-            return result;
-        }
-        */
-
-        [Obsolete("This method is obsolete")]
-        protected virtual int DEL_GetNextSplit(EquivalenceClassCollection eqClassCollection)
-        {
-            double currentScore = this.GetCurrentScore(eqClassCollection);
-            int[] localAttributes = eqClassCollection.Attributes;
-
-            if (this.NumberOfAttributesToCheckForSplit != -1)
-            {
-                int m = System.Math.Min(localAttributes.Length, this.NumberOfAttributesToCheckForSplit);
-                localAttributes = localAttributes.RandomSubArray(m);
-            }
-
-            object tmpLock = new object();
-            var rangePrtitioner = Partitioner.Create(0, localAttributes.Length, System.Math.Max(1, localAttributes.Length / Environment.ProcessorCount));
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
-            };
-
-            Pair<int, double> bestAttribute = new Pair<int, double>(-1, Double.MinValue);
-            Parallel.ForEach(
-                rangePrtitioner,
-                options,
-                () => new Pair<int, double>(-1, Double.MinValue),
-                (range, loopState, initialValue) =>
-                {
-                    Pair<int, double> partialBestAttribute = initialValue;
-                    for (int i = range.Item1; i < range.Item2; i++)
-                    {
-                        EquivalenceClassCollection attributeEqClasses 
-                            = EquivalenceClassCollection.DEL_Create(new int[] { localAttributes[i] }, eqClassCollection);
-
-                        double score = this.GetSplitScore(attributeEqClasses, currentScore);
-
-                        if (partialBestAttribute.Item2 < score)
-                        {
-                            partialBestAttribute.Item2 = score;
-                            partialBestAttribute.Item1 = localAttributes[i];
-                        }
-                    }
-                    return partialBestAttribute;
-                },
-                (localPartialBestAttribute) =>
-                {
-                    lock (tmpLock)
-                    {
-                        if (bestAttribute.Item2 < localPartialBestAttribute.Item2)
-                        {
-                            bestAttribute.Item2 = localPartialBestAttribute.Item2;
-                            bestAttribute.Item1 = localPartialBestAttribute.Item1;
-                        }
-                    }
-                });
-
-            return bestAttribute.Item1;
-        }
-
         protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
         {
             double currentScore = this.GetCurrentScore(eqClassCollection);
@@ -344,8 +194,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             if (this.NumberOfAttributesToCheckForSplit != -1)
             {
-                int m = System.Math.Min(localAttributes.Length, this.NumberOfAttributesToCheckForSplit);
-                localAttributes = localAttributes.RandomSubArray(m);
+                int m = System.Math.Min(attributesToTest.Length, this.NumberOfAttributesToCheckForSplit);
+                localAttributes = attributesToTest.RandomSubArray(m);
             }
 
             object tmpLock = new object();

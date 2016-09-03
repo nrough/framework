@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Roughset
                 return false;
             }
 
-            FieldSet newAttributeSet = (FieldSet)(this.Attributes - attributeId);
+            PascalSet<int> newAttributeSet = this.Attributes - attributeId;
             return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
         }
 

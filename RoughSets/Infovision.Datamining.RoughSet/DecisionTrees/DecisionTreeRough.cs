@@ -6,7 +6,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// Decision tree learning where in each node a split is selected based on attribute generating highest measure M. 
     /// Measure M is calculated based on object weights.
     /// </summary>
-    public class DecisionTreeRough : DecisionTree
+    public class DecisionTreeRough : DecisionTreeBase
     {
         protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double dummy)
         {

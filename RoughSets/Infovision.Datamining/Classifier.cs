@@ -1,5 +1,6 @@
 ﻿using Infovision.Data;
 using Infovision.Utils;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining
@@ -35,10 +36,14 @@ namespace Infovision.Datamining
 
         public ClassificationResult Classify(IPredictionModel model, DataStore testData, decimal[] weights = null)
         {
+            Stopwatch s = new Stopwatch();
+            s.Start();
+
             ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
 
             result.QualityRatio = model.QualityRatio;
             result.EnsembleSize = model.EnsembleSize;
+            result.Epsilon = model.Epsilon;
 
             ParallelOptions options = new ParallelOptions()
             {
@@ -66,6 +71,9 @@ namespace Infovision.Datamining
                 }
                 );
             }
+
+            s.Stop();
+            result.ClassificationTime = s.ElapsedMilliseconds;
 
             return result;
         }

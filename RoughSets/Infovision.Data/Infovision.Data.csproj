@@ -106,7 +106,6 @@
     <Compile Include="DataFieldInfo.cs" />
     <Compile Include="DataStoreSplitter.cs" />
     <Compile Include="AttributeValueVector.cs" />
-    <Compile Include="FieldSet.cs" />
     <Compile Include="FileFormat.cs" />
     <Compile Include="IDataTable.cs" />
     <Compile Include="IObjectSetInfo.cs" />

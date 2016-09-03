@@ -117,7 +117,7 @@
     <Compile Include="DecisionTrees\DecisionTreeID3.cs" />
     <Compile Include="DecisionTrees\DecisionTreeReduct.cs" />
     <Compile Include="DecisionTrees\DecisionTreeRough.cs" />
-    <Compile Include="DecisionTrees\DecisionTree.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeBase.cs" />
     <Compile Include="DecisionTrees\DecisionTreeFormatter.cs" />
     <Compile Include="DecisionTrees\DecisionTreeHelper.cs" />
     <Compile Include="DecisionTrees\DecisionTreeNode.cs" />
@@ -128,7 +128,6 @@
     <Compile Include="DecisionTrees\DecisionForestReduct.cs" />
     <Compile Include="DecisionTrees\DecisionForestDummyRough.cs" />
     <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
-    <Compile Include="EquivalenceClassSortedMap.cs" />
     <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="Permutation\PermutationGeneratorFieldQuality.cs" />

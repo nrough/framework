@@ -13,17 +13,45 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         where T : IDecisionTree, new()
     {
         private List<Tuple<T, double>> trees;
-        private int attributeLengthSum;
-        KeyValuePair<T, double> test;
+        private ClassificationResult learningResult;
+
+        public ClassificationResult LearningResult
+        {
+            get
+            {
+                return this.learningResult;
+            }
+
+            protected set
+            {
+                this.learningResult = value;
+            }
+        }
+
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
         public decimal Epsilon { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
+
         public virtual double AverageNumberOfAttributes
         {
-            get { return (double)this.attributeLengthSum / (double)this.Size; }
+            get
+            {
+                int i = 0;
+                int attributeLengthSum = 0;
+                foreach (var member in this)
+                {
+                    i++;
+                    attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
+                    if (i >= this.Size)
+                        break;
+                }
+
+                return (double)attributeLengthSum / (double)this.Size;
+            }
         }
+
         public virtual double QualityRatio { get { return this.AverageNumberOfAttributes; } }
         public virtual int EnsembleSize { get { return this.Size; } }
 
@@ -64,11 +92,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             for (int probe = 0; probe < this.NumberOfTreeProbes; probe++)
             {
                 T tree = this.InitDecisionTree();
-
-                double error = tree.Learn(data, attributes);
+                double error = 1.0 - tree.Learn(data, attributes).Accuracy;
                 int numOfLeaves = DecisionTreeHelper.CountLeaves(tree.Root);
+
                 if (numOfLeaves < minNumberOfLeaves)
-                {
+                {                    
                     minNumberOfLeaves = numOfLeaves;
                     bestTree = new Tuple<T, double>(tree, error);
                 }
@@ -77,7 +105,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return bestTree;
         }
 
-        public virtual double Learn(DataStore data, int[] attributes)
+        public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
             this.InitDataSampler(data);
 
@@ -91,77 +119,18 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             s.Stop();
-
-            int i = 0;
-            this.attributeLengthSum = 0;
-            foreach (var member in this)
-            {
-                i++;
-                this.attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
-                if (i >= this.Size)
-                    break;
-            }
-
-            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
-            //this.Classify(data, data.Weights);
+          
+            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);            
             trainResult.ModelCreationTime = s.ElapsedMilliseconds;
-            return 1 - trainResult.Accuracy;
-        }
+            this.learningResult = trainResult;
 
-        
-        /*
-        public ClassificationResult Classify(DataStore testData, decimal[] weights = null)
-        {
-            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
-
-            result.QualityRatio = this.AverageNumberOfAttributes;
-            result.EnsembleSize = this.Size;
-
-            ParallelOptions options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
-            };
-
-            if (weights == null)
-            {
-                double w = 1.0 / testData.NumberOfRecords;
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
-                }
-                );
-            }
-            else
-            {
-                Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
-                {
-                    DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
-                    var prediction = this.Compute(record);
-                    result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
-                }
-                );
-            }
-
-            int i = 0;
-            this.attributeLengthSum = 0;
-            foreach (var member in this)
-            {
-                i++;
-                this.attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
-                if (i >= this.Size)
-                    break;
-            }
-
-            return result;
-        }
-        */
+            return trainResult;
+        }              
 
         public long Compute(DataRecordInternal record)
         {
             int i = 0;
-            var votes = new Dictionary<long, double>(this.trees.Count);
+            var votes = new Dictionary<long, double>(System.Math.Min(this.trees.Count, this.Size));
             foreach (var member in this)
             {
                 i++;

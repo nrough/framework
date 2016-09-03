@@ -72,6 +72,11 @@ namespace Infovision.Datamining.Roughset
 
         public int EnsembleSize { get { return 1; } }
         public double QualityRatio { get { return 0.0; } }
+        public decimal Epsilon
+        {
+            get { return Decimal.Zero; }
+            set { }
+        }
 
         #endregion Properties
 

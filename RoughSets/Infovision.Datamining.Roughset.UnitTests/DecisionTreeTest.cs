@@ -96,7 +96,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             {
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
                 treeID3.Epsilon = eps;
-                double errorTrain = treeID3.Learn(data, attributes);
+                double errorTrain = 1.0 - treeID3.Learn(data, attributes).Accuracy;
                 double errorTest = 1.0 - Classifier.Instance.Classify(treeID3, test).Accuracy;
 
                 /*

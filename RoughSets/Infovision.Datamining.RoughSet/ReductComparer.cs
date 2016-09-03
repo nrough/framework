@@ -70,11 +70,12 @@ namespace Infovision.Datamining.Roughset
         }
     }
 
+    //TODO Implement Reduct DiversityComparer
     public class DiversityComparer : ReductBaseComparer
     {
         public override int Compare(IReduct left, IReduct right)
         {
-            //TODO DiversityComparer.Compare(...)
+            
             return 0;
         }
     }

@@ -23,6 +23,7 @@ namespace Infovision.Data
         private Dictionary<FieldTypes, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
         private int[] fieldIndexLookup;
+        private object syncRoot = new object();
 
         #endregion Members
 
@@ -144,14 +145,19 @@ namespace Infovision.Data
         }
 
         public int[] GetFieldIndexLookupTable()
-        {
-            //TODO add mutex
+        {            
             if (this.fieldIndexLookup == null)
             {
-                this.fieldIndexLookup = new int[this.maxFieldId + 1];
-                foreach (var kvp in this.fieldId2Index)
+                lock (syncRoot)
                 {
-                    this.fieldIndexLookup[kvp.Key] = kvp.Value;
+                    if (this.fieldIndexLookup == null)
+                    {
+                        this.fieldIndexLookup = new int[this.maxFieldId + 1];
+                        foreach (var kvp in this.fieldId2Index)
+                        {
+                            this.fieldIndexLookup[kvp.Key] = kvp.Value;
+                        }
+                    }
                 }
             }
 

@@ -5,8 +5,7 @@
     /// </summary>
     public interface IDecisionTree : ILearner, IPredictionModel
     {
-        ITreeNode Root { get; }
-        decimal Epsilon { get; set; }
+        ITreeNode Root { get; }        
         int NumberOfAttributesToCheckForSplit { get; set; }
     }
 }

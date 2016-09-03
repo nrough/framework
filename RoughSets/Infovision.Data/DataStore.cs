@@ -412,7 +412,7 @@ namespace Infovision.Data
             return new AttributeValueVector(fieldIds, this.GetFieldValues(objectIndex, fieldIds), false);
         }
 
-        public AttributeValueVector GetDataVector(int objectIndex, FieldSet fieldSet)
+        public AttributeValueVector GetDataVector(int objectIndex, PascalSet<int> fieldSet)
         {
             return new AttributeValueVector(fieldSet.ToArray(), this.GetFieldValues(objectIndex, fieldSet), false);
         }
@@ -440,7 +440,7 @@ namespace Infovision.Data
             return result;
         }
 
-        public long[] GetFieldValues(int objectIndex, FieldSet fieldSet)
+        public long[] GetFieldValues(int objectIndex, PascalSet<int> fieldSet)
         {
             long[] data = new long[fieldSet.Count];
             int j = 0;

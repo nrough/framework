@@ -171,30 +171,7 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
-        #endregion MethodsInProgress
-
-        public static EquivalenceClassCollection DEL_Create(IReduct reduct, DataStore data, decimal[] weights = null, bool useGlobalCache = false)
-        {
-            EquivalenceClassCollection result = null;
-            string partitionKey = null;
-
-            if (useGlobalCache)
-            {
-                partitionKey = reduct.ReductPartitionCacheKey;
-                result = ReductCache.Instance.Get(partitionKey) as EquivalenceClassCollection;
-            }
-
-            if (result == null)
-            {
-                result = new EquivalenceClassCollection(data);
-                result.Calc(reduct.Attributes, data, weights);
-            }
-
-            if (useGlobalCache)
-                ReductCache.Instance.Set(partitionKey, result);
-
-            return result;
-        }
+        #endregion MethodsInProgress        
 
         public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, decimal[] weights, ObjectSet objectSet)
         {
@@ -283,7 +260,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = 0;
         }
 
-        public virtual void Calc(FieldSet attributeSet, DataStore dataStore)
+        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore)
         {
             this.InitPartitions();
 
@@ -298,7 +275,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = Decimal.One;
         }
 
-        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, decimal[] objectWeights)
+        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore, decimal[] objectWeights)
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
@@ -315,7 +292,7 @@ namespace Infovision.Datamining.Roughset
             this.CalcAvgConfidence();
         }
 
-        public virtual void Calc(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
+        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
@@ -352,7 +329,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public static bool CheckRegionPositive(FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet)
+        public static bool CheckRegionPositive(PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet)
         {
             decimal[] weights = new decimal[dataStore.NumberOfRecords];
             for (int i = 0; i < weights.Length; i++)
@@ -361,9 +338,8 @@ namespace Infovision.Datamining.Roughset
         }
 
         public static bool CheckRegionPositive(
-            FieldSet attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
-        {
-            //TODO Capacity
+            PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
+        {            
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();
             int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
@@ -459,9 +435,12 @@ namespace Infovision.Datamining.Roughset
             foreach (var eqClass in collectionToSplit)
             {
                 EquivalenceClassCollection tmpCollection = new EquivalenceClassCollection(collectionToSplit.data, new int[] { }, 1);
+
                 result.Add(eqClass.Instance[0], tmpCollection);
-                EquivalenceClass newEqClass = new EquivalenceClass(eqClass, eqClass.Instance.RemoveAt(0));
-                tmpCollection.partitions.Add(new long[] { }, newEqClass);
+
+                EquivalenceClass newEqClass = new EquivalenceClass(eqClass, new long[] { });
+
+                tmpCollection.partitions.Add(newEqClass.Instance, newEqClass);
                 tmpCollection.decisionCount = new Dictionary<long, int>(newEqClass.DecisionCount);
                 tmpCollection.decisionWeight = new Dictionary<long, decimal>(newEqClass.DecisionWeights);
                 tmpCollection.WeightSum = newEqClass.WeightSum;
@@ -470,88 +449,7 @@ namespace Infovision.Datamining.Roughset
             }
 
             return result;
-        }
-
-        public static Dictionary<long, EquivalenceClassCollection> DEL_Split(int attributeId, EquivalenceClassCollection collectionToSplit)
-        {
-            int attributeIdx = collectionToSplit.Attributes.IndexOf(attributeId);
-            int[] newAttributes = collectionToSplit.Attributes.RemoveAt(attributeIdx);
-            DataFieldInfo attributeInfo = collectionToSplit.data.DataStoreInfo.GetFieldInfo(attributeId);
-
-            Dictionary<long, EquivalenceClassCollection> result
-                = new Dictionary<long, EquivalenceClassCollection>(attributeInfo.NumberOfValues);
-
-            foreach (var eqClass in collectionToSplit)
-            {                
-                long attributeValue = eqClass.Instance[attributeIdx];
-                EquivalenceClassCollection tmpCollection = null;
-                if (!result.TryGetValue(attributeValue, out tmpCollection))
-                {
-                    //TODO Decision tries: do we know better estimation of partition size?
-                    tmpCollection = new EquivalenceClassCollection(
-                        collectionToSplit.data,
-                        newAttributes,
-                        (collectionToSplit.NumberOfPartitions / attributeInfo.NumberOfValues));
-
-                    result.Add(attributeValue, tmpCollection);
-                }
-
-                long[] newInstance = eqClass.Instance.RemoveAt(attributeIdx);
-                EquivalenceClass newEqClass = new EquivalenceClass(newInstance, eqClass.Instances, eqClass.DecisionSet);
-
-                //TODO Decision tries: Update eq class statistics
-                //WeigthSum is calculated in RecalcEquivalenceClassStatistic
-                //newEqClass.WeightSum = eqClass.WeightSum;
-
-                tmpCollection.Partitions.Add(newInstance, newEqClass);
-            }
-
-            //TODO Remove this Recalc, try to update stat in previous loop
-            foreach (var kvp in result)
-                kvp.Value.RecalcEquivalenceClassStatistic(collectionToSplit.data);
-
-            return result;
-        }
-
-        //new array is created on call
-        public static EquivalenceClassCollection DEL_Create(int[] attributes, EquivalenceClassCollection eqClassCollection)
-        {
-            //we have single attribute so this seems not neccessary
-            int combinations = 1;
-            for (int i = 0; i < attributes.Length; i++)
-                combinations *= eqClassCollection.data.DataStoreInfo.GetFieldInfo(attributes[i]).NumberOfValues;
-
-            //Initialize new collection
-            EquivalenceClassCollection result = new EquivalenceClassCollection(eqClassCollection.data, attributes, combinations);
-            int[] attributeIndices = eqClassCollection.Attributes.IndicesOfOrderedByValue(attributes);
-
-            foreach (var eq in eqClassCollection)
-            {
-                long[] newInstance = eq.Instance.KeepIndices(attributeIndices);  //? new array
-                EquivalenceClass newEqClass = null;
-                if (!result.Partitions.TryGetValue(newInstance, out newEqClass))
-                {
-                    //new array is only neccessary when creating new Eq class
-                    newEqClass = new EquivalenceClass(newInstance, eq.Instances, eq.DecisionSet);
-                    newEqClass.WeightSum = eq.WeightSum; //? this is later recalculated
-                    result.Partitions.Add(newInstance, newEqClass);
-                }
-                else
-                {
-                    newEqClass.AddObjectInstances(eq.Instances);
-                    newEqClass.WeightSum += eq.WeightSum; //? this is later recalculated
-                    newEqClass.DecisionSet = newEqClass.DecisionSet.UnionFast(eq.DecisionSet);
-                }
-
-                result.NumberOfObjects += eq.Instances.Count; //? this is later recalculated
-                result.WeightSum += eq.Instances.Sum(x => x.Value); //? this is later recalculated
-            }
-
-            //recalculating whole stats for each eq class and eq class collection
-            result.RecalcEquivalenceClassStatistic(eqClassCollection.Data);
-
-            return result;
-        }
+        }        
 
         public static EquivalenceClassCollection Create(int attributeId, EquivalenceClassCollection eqClassCollection)
         {

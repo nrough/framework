@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             IReduct bestReduct = reducts.First();
 
             T tree = this.InitDecisionTree();   
-            double error = tree.Learn(data, bestReduct.Attributes.ToArray());
+            double error = 1.0 - tree.Learn(data, bestReduct.Attributes.ToArray()).Accuracy;
 
             return new Tuple<T, double>(tree, error);
         }

@@ -219,7 +219,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             return new ParameterCollection(this);
         }
 
-        //TODO
+        //TODO Implement Member wise Clone
         /*
         public object Clone()
         {

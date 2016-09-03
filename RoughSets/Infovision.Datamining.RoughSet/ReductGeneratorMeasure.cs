@@ -246,7 +246,7 @@ namespace Infovision.Datamining.Roughset
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("m=").Append(this.GetType().Name);
             stringBuilder.Append("|d=").Append(this.DataStore.Name);
-            stringBuilder.Append("|a=").Append(reduct.Attributes.CacheKey);
+            stringBuilder.Append("|a=").Append(reduct.Attributes.ToArray().ToStr(' '));
             return stringBuilder.ToString();
         }
 
@@ -273,9 +273,8 @@ namespace Infovision.Datamining.Roughset
 
         public ReductGeneratorRelative()
             : base()
-        {
-            //TODO Move to InitDefaultParameters()
-            this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Relative);
+        {            
+            this.InformationMeasure = InformationMeasureRelative.Instance;
         }
 
         #endregion Constructors
@@ -303,9 +302,8 @@ namespace Infovision.Datamining.Roughset
 
         public ReductGeneratorMajority()
             : base()
-        {
-            //TODO Move to InitDefaultParameters()
-            this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Majority);
+        {            
+            this.InformationMeasure = InformationMeasureMajority.Instance;
         }
 
         #endregion Constructors
@@ -334,8 +332,7 @@ namespace Infovision.Datamining.Roughset
         public ReductGeneratorPositive()
             : base()
         {
-            //TODO Move to InitDefaultParameters()
-            this.InformationMeasure = (IInformationMeasure)InformationMeasureBase.Construct(InformationMeasureType.Positive);
+            this.InformationMeasure = InformationMeasurePositive.Instance;
         }
 
         #endregion Constructors

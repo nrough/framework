@@ -169,9 +169,8 @@ namespace Infovision.Datamining.Roughset
 
                 if (reductFactory == null)
                     throw new InvalidOperationException("Null factory newInstance. Unable to create necessary reduct factory class.");
-
-                IReductFactory iReductFactory = (IReductFactory)reductFactory;
-                return iReductFactory;
+                
+                return (IReductFactory)reductFactory;
             }
             else
             {

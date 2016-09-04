@@ -14,6 +14,7 @@ namespace Infovision.Datamining.Roughset
 
         private IInformationMeasure informationMeasure;
         private decimal dataSetQuality;
+        protected EquivalenceClassCollection initialEqClasses;
 
         #endregion Members
 
@@ -59,6 +60,13 @@ namespace Infovision.Datamining.Roughset
 
             if (args.Exist(ReductGeneratorParamHelper.DataSetQuality))
                 this.dataSetQuality = args.GetParameter<decimal>(ReductGeneratorParamHelper.DataSetQuality);
+
+            if (args.Exist(ReductGeneratorParamHelper.InitialEquivalenceClassCollection))
+            {
+                this.initialEqClasses = args.GetParameter<EquivalenceClassCollection>(
+                    ReductGeneratorParamHelper.InitialEquivalenceClassCollection);
+                this.dataSetQuality = this.InformationMeasure.Calc(this.initialEqClasses);
+            }
 
             this.CalcDataSetQuality();
         }
@@ -110,7 +118,9 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
-            return this.CreateReductObject(fieldIds, epsilon, id);
+            Reduct r = new Reduct(this.DataStore, fieldIds, epsilon, this.DataStore.Weights, equivalenceClasses);
+            r.Id = id;
+            return r;
         }
 
         public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
@@ -125,14 +135,33 @@ namespace Infovision.Datamining.Roughset
 
             if (this.UsePerformanceImprovements)
             {
-                reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
-                this.Reach(reduct, permutation, reductStore, useCache);
-                this.Reduce(reduct, permutation, reductStore, useCache);
+                if (this.initialEqClasses != null
+                    && this.Epsilon < 0.5m
+                    && permutation.Length < this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2)
+                {
+                    reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
+                    this.Reduce(reduct, permutation, reductStore, useCache);
+                }
+                else
+                {
+
+                    reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
+                    this.Reach(reduct, permutation, reductStore, useCache);
+                    this.Reduce(reduct, permutation, reductStore, useCache);
+                }
             }
             else
             {
-                reduct = this.CreateReductObject(permutation, epsilon, this.GetNextReductId().ToString());
-                this.Reduce(reduct, permutation, reductStore, useCache);
+                if (this.initialEqClasses != null)
+                {
+                    reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
+                    this.Reduce(reduct, permutation, reductStore, useCache);
+                }
+                else
+                {
+                    reduct = this.CreateReductObject(permutation, epsilon, this.GetNextReductId().ToString());
+                    this.Reduce(reduct, permutation, reductStore, useCache);
+                }
             }
 
             return reduct;

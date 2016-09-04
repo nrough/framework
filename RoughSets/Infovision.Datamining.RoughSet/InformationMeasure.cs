@@ -13,6 +13,7 @@ namespace Infovision.Datamining.Roughset
     public interface IInformationMeasure
     {
         decimal Calc(IReduct reduct);
+        decimal Calc(EquivalenceClassCollection eqClasses);
 
         string Description();
     }

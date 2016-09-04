@@ -19,17 +19,18 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            int length = RandomSingleton.Random.Next(1, attributes.Length);
-            var permutationCollection = new PermutationCollection(this.NumberOfTreeProbes, attributes, length);
-
-            List<IReduct> reducts = new List<IReduct>(this.NumberOfTreeProbes);
-
-            foreach (var perm in permutationCollection)
+            var permutationCollection = new PermutationCollection(
+                this.NumberOfTreeProbes, attributes, RandomSingleton.Random.Next(1, attributes.Length));
+                       
+            ParallelOptions options = new ParallelOptions
             {
-                IReduct r = new ReductWeights(data, perm.ToArray(), 0, data.Weights);
-                decimal q = InformationMeasureWeights.Instance.Calc(r);
+                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+            };
 
-                var localPermutationCollection = new PermutationCollection(perm);
+            IReduct[] reducts = new IReduct[this.NumberOfTreeProbes];
+            Parallel.For(0, this.NumberOfTreeProbes, options, i =>
+            {                
+                var localPermutationCollection = new PermutationCollection(permutationCollection[i]);
 
                 Args parms = new Args(6);
                 parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
@@ -37,22 +38,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
                 parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, localPermutationCollection);
                 parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
-                parms.SetParameter<decimal>(ReductGeneratorParamHelper.DataSetQuality, q);
+
+                if (this.ReductGeneratorFactory != ReductFactoryKeyHelper.GeneralizedMajorityDecision
+                    && this.ReductGeneratorFactory != ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate)
+                {
+                    parms.SetParameter<EquivalenceClassCollection>(ReductGeneratorParamHelper.InitialEquivalenceClassCollection,
+                        EquivalenceClassCollection.Create(permutationCollection[i].ToArray(), data, data.Weights));
+                }
 
                 IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                 generator.Run();
-
-                IReductStoreCollection reductStoreCollection = generator.GetReductStoreCollection();
-                IReduct reduct = reductStoreCollection.First().First();
-
-                reducts.Add(reduct);
+                reducts[i] = generator.GetReductStoreCollection().First().First();
             }
-
-            reducts.Sort(new ReductRuleNumberComparer());
-            IReduct bestReduct = reducts.First();
-
-            T tree = this.InitDecisionTree();   
-            double error = 1.0 - tree.Learn(data, bestReduct.Attributes.ToArray()).Accuracy;
+            );
+            
+            Array.Sort(reducts, new ReductRuleNumberComparer());            
+            T tree = this.InitDecisionTree();
+            double error = 1.0 - tree.Learn(data, reducts[0].Attributes.ToArray()).Accuracy;
 
             return new Tuple<T, double>(tree, error);
         }

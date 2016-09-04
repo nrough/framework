@@ -50,6 +50,9 @@ namespace Infovision.Utils
 
         public static T[] RemoveAt<T>(this T[] array, int idx)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
             if (idx < 0)
                 throw new ArgumentOutOfRangeException("idx", "idx < 0");
 
@@ -96,7 +99,8 @@ namespace Infovision.Utils
         public static T[] RemoveValue<T>(this T[] array, T value)
         {
             int numIndex = Array.IndexOf(array, value);
-            return array.Where((val, idx) => idx != numIndex).ToArray();
+            return array.RemoveAt(numIndex);
+            //return array.Where((val, idx) => idx != numIndex).ToArray();
         }
 
         public static string ToStr<T>(this T[] array, char separator = '|')

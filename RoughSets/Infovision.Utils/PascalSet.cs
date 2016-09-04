@@ -681,7 +681,7 @@ namespace Infovision.Utils
             int size = this.Count;
             T[] array = new T[size];
             if (size == 0) return array;
-            int j = 0;
+            int j = 0;            
             for (int i = 0; i < this.Data.Length; i++)
             {
                 if (this.Data.Get(i))
@@ -727,7 +727,7 @@ namespace Infovision.Utils
             get
             {
                 //return this.GetCardinality();
-
+                
                 int elements = 0;
                 for (int i = 0; i < this.Data.Length; i++)
                     if (this.Data.Get(i))

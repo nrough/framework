@@ -105,7 +105,6 @@
     <Compile Include="Int64ArraySIMDEqualityComparer.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Matrix.cs" />
-    <Compile Include="Pair.cs" />
     <Compile Include="PascalSet.cs" />
     <Compile Include="PrimeTool.cs" />
     <Compile Include="PrimeToolHash.cs" />

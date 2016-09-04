@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            PermutationCollection permutations = new PermutationGenerator(attributes).Generate(this.NumberOfTreeProbes);
+            PermutationCollection permutations = new PermutationCollection(this.NumberOfTreeProbes, attributes);
 
             decimal localEpsilon = this.Epsilon >= Decimal.Zero 
                                  ? this.Epsilon 

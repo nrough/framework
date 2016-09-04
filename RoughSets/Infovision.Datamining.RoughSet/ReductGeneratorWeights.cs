@@ -51,7 +51,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
-        {
+        {            
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
@@ -59,7 +59,9 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
-            return this.CreateReductObject(fieldIds, epsilon, id);
+            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
+            r.Id = id;
+            return r;
         }
 
         protected virtual WeightGenerator CreateWeightGenerator()

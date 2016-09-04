@@ -71,8 +71,8 @@ namespace Infovision.Datamining
                 }
                 );
             }
-
             s.Stop();
+
             result.ClassificationTime = s.ElapsedMilliseconds;
 
             return result;

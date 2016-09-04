@@ -98,6 +98,14 @@ namespace DecisionForestTest
                     
                     for (decimal eps = Decimal.Zero; eps < decimal.One; eps += 0.01m)
                     {
+                        DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
+                        dummyForest.DataSampler = sampler;
+                        dummyForest.Size = size;
+                        dummyForest.Epsilon = eps;
+                        dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
+                        dummyForest.Learn(trainData, attributes);
+                        this.Classify<DecisionTreeC45>(dummyForest, testData, "DummyC45", t, fold);
+
                         DecisionForestReduct<DecisionTreeC45> reductForestC45 = new DecisionForestReduct<DecisionTreeC45>();
                         reductForestC45.DataSampler = sampler;
                         reductForestC45.Size = size;
@@ -124,14 +132,6 @@ namespace DecisionForestTest
                         roughForestM.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         roughForestM.Learn(trainData, attributes);
                         this.Classify<DecisionTreeRough>(roughForestM, testData, "ReductRoughM", t, fold);
-                        
-                        DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
-                        dummyForest.DataSampler = sampler;
-                        dummyForest.Size = size;
-                        dummyForest.Epsilon = eps;
-                        dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
-                        dummyForest.Learn(trainData, attributes);
-                        this.Classify<DecisionTreeC45>(dummyForest, testData, "DummyC45", t, fold);
 
                         DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;

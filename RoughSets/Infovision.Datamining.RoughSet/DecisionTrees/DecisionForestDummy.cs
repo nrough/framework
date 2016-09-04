@@ -9,9 +9,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         where T : IDecisionTree, new()
     {       
         protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
-        {
-            int length = RandomSingleton.Random.Next(1, attributes.Length);
-            var permutationCollection = new PermutationCollection(this.NumberOfTreeProbes, attributes, length);
+        {            
+            var permutationCollection = new PermutationCollection(
+                this.NumberOfTreeProbes, attributes, RandomSingleton.Random.Next(1, attributes.Length));
 
             Tuple<T, double> bestTree = null;
             int minNumberOfLeaves = int.MaxValue;
@@ -25,6 +25,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 {
                     minNumberOfLeaves = numOfLeaves;                    
                     bestTree = new Tuple<T, double>(tree, error);
+
                     if (minNumberOfLeaves == 0)
                         break;
                 }

@@ -124,6 +124,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 int maxAttribute = nextSplit.Item1;
                 var subEqClasses = EquivalenceClassCollection.Split(maxAttribute, nextSplit.Item3);
 
+                currentAttributes = currentAttributes.RemoveValue(maxAttribute);
+
                 foreach (var kvp in subEqClasses)
                 {
                     DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, currentParent);
@@ -135,7 +137,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     var newSplitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(
                             kvp.Value, 
                             newNode, 
-                            currentAttributes.RemoveValue(maxAttribute));
+                            currentAttributes);
 
                     queue.Enqueue(newSplitInfo);
                 }
@@ -187,7 +189,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return -1;
         }
 
-        protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
+        protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(
+            EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
         {
             double currentScore = this.GetCurrentScore(eqClassCollection);
             int[] localAttributes = attributesToTest;

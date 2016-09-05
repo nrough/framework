@@ -35,7 +35,7 @@ namespace Infovision.Utils.UnitTests
         public void HashSetTest()
         {
             Stopwatch s1 = new Stopwatch();
-            s1.Start();
+            s1.Start();            
             for (int i = 0; i < 10000; i++)
             {
                 PascalSet<long> set1 = new PascalSet<long>(0, 10, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
@@ -43,8 +43,9 @@ namespace Infovision.Utils.UnitTests
 
                 //PascalSet<int> union = set1 + set2;
                 //PascalSet<int> intersection = set1 * set2;
-                //PascalSet<int> difference = set1 - set2;
+                PascalSet<long> difference = set1.Difference(set2);
                 bool isSuperSet = set1.Superset(set2);
+                bool isProperSuperSet = set1.ProperSubset(set2);
             }
             s1.Stop();
             Console.WriteLine("Pascal {0}", s1.ElapsedMilliseconds);
@@ -62,6 +63,7 @@ namespace Infovision.Utils.UnitTests
                 //set3.ExceptWith(set4);
 
                 bool isSuperSet = set3.IsSupersetOf(set3);
+                bool isProperSuperSet = set3.IsProperSubsetOf(set3);
             }
             s2.Stop();
             Console.WriteLine("HashSet {0}", s2.ElapsedMilliseconds);

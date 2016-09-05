@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.Utils;
+using System.Linq;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -40,7 +41,8 @@ namespace Infovision.Datamining.Roughset
             if (base.CheckRemoveAttribute(attributeId) == false)
                 return false;
 
-            PascalSet<int> newAttributeSet = this.Attributes - attributeId;
+            HashSet<int> newAttributeSet = new HashSet<int>(this.Attributes);
+            newAttributeSet.Remove(attributeId);
 
             //TODO Performance killer !!!!!!
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);

@@ -3,6 +3,7 @@ using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -148,8 +149,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 if (!reduct.Attributes.Equals(redW.Attributes))
                 {
-                    PascalSet<int> f1 = reduct.Attributes;
-                    PascalSet<int> f2 = redW.Attributes;
+                    HashSet<int> f1 = reduct.Attributes;
+                    HashSet<int> f2 = redW.Attributes;
                 }
 
                 Assert.AreEqual(reduct.Attributes, redW.Attributes);

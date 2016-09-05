@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Datamining.Benchmark;
 using Infovision.Utils;
@@ -205,9 +206,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public bool IsSupersetOf(DataStore data, int[] setToCheck, int[] set)
         {
-            PascalSet<int> fieldSetToCheck = new PascalSet<int>(data.DataStoreInfo.MinFieldId, data.DataStoreInfo.MaxFieldId, setToCheck);
-            PascalSet<int> fielsSet = new PascalSet<int>(data.DataStoreInfo.MinFieldId, data.DataStoreInfo.MaxFieldId, set);
-            return fieldSetToCheck.Superset(set);
+            HashSet<int> fieldSetToCheck = new HashSet<int>(setToCheck);
+            HashSet<int> fielsSet = new HashSet<int>(set);
+            return fieldSetToCheck.IsSupersetOf(set);
         }
 
         [Test, TestCaseSource("GetDataFiles")]

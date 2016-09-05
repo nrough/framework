@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
 
         //private decimal totalWeightSum; //sum of object weights belonging to this class
 
-        private PascalSet<long> decisionSet;  //set containing all decisions within this class
+        private HashSet<long> decisionSet;  //set containing all decisions within this class
 
         private Dictionary<long, decimal> decisionWeightSums; //map decisionInternalValue -> objectWeight
         private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value
@@ -74,7 +74,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.decisionSet; }
         }
 
-        public PascalSet<long> DecisionSet
+        public HashSet<long> DecisionSet
         {
             get { return decisionSet; }
             internal set { this.decisionSet = value; }
@@ -102,10 +102,10 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public EquivalenceClass(long[] dataVector, Dictionary<int, decimal> instances, PascalSet<long> decSet)
+        public EquivalenceClass(long[] dataVector, Dictionary<int, decimal> instances, HashSet<long> decSet)
         {
             this.dataVector = dataVector;
-            this.decisionSet = new PascalSet<long>(decSet);
+            this.decisionSet = new HashSet<long>(decSet);
             this.instances = new Dictionary<int, decimal>(instances);
             int numberOfDecisions = decisionSet.Count;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
@@ -116,7 +116,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.dataVector = dataVector;
             DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+            this.decisionSet = new HashSet<long>();
             this.instances = new Dictionary<int, decimal>(instances);
             int numberOfDecisions = decisionField.NumberOfValues;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
@@ -127,7 +127,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.dataVector = dataVector;
             DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new PascalSet<long>(decisionField.MinValue, decisionField.MaxValue);
+            this.decisionSet = new HashSet<long>();
 
             if (capacity > 0)
                 this.instances = new Dictionary<int, decimal>(capacity);
@@ -143,7 +143,7 @@ namespace Infovision.Datamining.Roughset
         {
             this.dataVector = dataVector;
             //DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new PascalSet<long>(data.DataStoreInfo.DecisionInfo.MinValue, data.DataStoreInfo.DecisionInfo.MaxValue);
+            this.decisionSet = new HashSet<long>();
             this.instances = new Dictionary<int, decimal>();
             int numberOfDecisions = data.DataStoreInfo.DecisionInfo.NumberOfValues;
             this.decisionWeightSums = new Dictionary<long, decimal>(numberOfDecisions);
@@ -157,7 +157,7 @@ namespace Infovision.Datamining.Roughset
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
-            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
+            this.decisionSet = new HashSet<long>(eqClass.DecisionSet);
             this.WeightSum = eqClass.WeightSum;
             this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
             this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
@@ -169,7 +169,7 @@ namespace Infovision.Datamining.Roughset
             this.instances = new Dictionary<int, decimal>(eqClass.instances);
             this.decisionWeightSums = new Dictionary<long, decimal>(eqClass.decisionWeightSums);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
-            this.decisionSet = new PascalSet<long>(eqClass.DecisionSet);
+            this.decisionSet = new HashSet<long>(eqClass.DecisionSet);
             this.WeightSum = eqClass.WeightSum;
             this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
             this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
@@ -211,7 +211,7 @@ namespace Infovision.Datamining.Roughset
         {
             lock (mutex)
             {
-                this.decisionSet += decisionValue;
+                this.decisionSet.Add(decisionValue);
                 this.WeightSum += weight;
 
                 decimal weightSum = Decimal.Zero;
@@ -306,7 +306,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     if (Decimal.Round(list[i].Value, 17) < threshold)
                     {
-                        this.DecisionSet.RemoveElement(list[i].Key);
+                        this.DecisionSet.Remove(list[i].Key);
                         this.decisionWeightSums.Remove(list[i].Key);
                         this.decisionCount.Remove(list[i].Key);
                     }

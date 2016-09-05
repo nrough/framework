@@ -4,6 +4,7 @@ using System.Threading;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -187,14 +188,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, Ignore("NoReason")]
         public void ThreadPoolTest()
         {
-            PascalSet<int>[] resource = new PascalSet<int>[10000];
+            HashSet<int>[] resource = new HashSet<int>[10000];
             for (int i = 0; i < 10000; i++)
             {
-                resource[i] = new PascalSet<int>(0, 1000);
-                for (int j = 0; j < 1000; j++)
-                {
-                    resource[i].AddElement(j);
-                }
+                resource[i] = new HashSet<int>(Enumerable.Range(0,10000));                
             }
 
             long[] results = new long[64];
@@ -228,7 +225,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private class WorkerTaskInfo
         {
-            public WorkerTaskInfo(int threadIndex, int numberOfThreads, PascalSet<int>[] array, ManualResetEvent resetEvent)
+            public WorkerTaskInfo(int threadIndex, int numberOfThreads, HashSet<int>[] array, ManualResetEvent resetEvent)
             {
                 this.ThreadIndex = threadIndex;
                 this.NumberOfThreads = numberOfThreads;
@@ -238,7 +235,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             public int ThreadIndex { get; set; }
             public int NumberOfThreads { get; set; }
-            public PascalSet<int>[] Array { get; set; }
+            public HashSet<int>[] Array { get; set; }
             public ManualResetEvent ResetEvent { get; set; }
         }
 
@@ -247,7 +244,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WorkerTaskInfo task = (WorkerTaskInfo)obj;
             for (int i = 0; i < 10000; i += task.NumberOfThreads)
             {
-                task.Array[task.ThreadIndex].Superset(task.Array[i]);
+                task.Array[task.ThreadIndex].IsSupersetOf(task.Array[i]);
             }
 
             task.ResetEvent.Set();

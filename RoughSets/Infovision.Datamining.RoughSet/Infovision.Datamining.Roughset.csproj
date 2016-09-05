@@ -176,7 +176,6 @@
     <Compile Include="ReductRandomSubsetGenerator.cs" />
     <Compile Include="ReductStore.cs" />
     <Compile Include="ReductStoreCollection.cs" />
-    <Compile Include="ReductStoreMulti.cs" />
     <Compile Include="ReductStoreWeights.cs" />
     <Compile Include="ReductStoreWorkerTaskInfo.cs" />
     <Compile Include="ReductWeight.cs" />

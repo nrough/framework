@@ -220,7 +220,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 var rec = row.ToArray<string>(conditionalAttributes);
                 string actual = row[decisionName].ToString();
                 int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Compute(query);
+                int output = tree.Decide(query);
                 string answer = codebook.Translate(decisionName, output);
 
                 count++;
@@ -237,7 +237,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 var rec = row.ToArray<string>(conditionalAttributes);
                 string actual = row[decisionName].ToString();
                 int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Compute(query);
+                int output = tree.Decide(query);
                 string answer = codebook.Translate(decisionName, output);
 
                 count++;
@@ -289,7 +289,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 var rec = row.ToArray<string>(conditionalAttributes);
                 string actual = row[decisionName].ToString();
                 int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Compute(query);
+                int output = tree.Decide(query);
                 string answer = codebook.Translate(decisionName, output);
 
                 count++;
@@ -306,7 +306,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 var rec = row.ToArray<string>(conditionalAttributes);
                 string actual = row[decisionName].ToString();
                 int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Compute(query);
+                int output = tree.Decide(query);
                 string answer = codebook.Translate(decisionName, output);
 
                 count++;

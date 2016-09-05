@@ -160,23 +160,21 @@ namespace Infovision.Datamining.Roughset
         /// <param name="reduct"></param>
         /// <returns></returns>
         public override bool IsSuperSet(IReduct reduct)
-        {
-            bool ret = false;
+        {            
             lock (mutex)
             {
                 foreach (IReduct localReduct in this)
                 {
                     if (localReduct.Epsilon <= reduct.Epsilon)
                     {
-                        if (reduct.Attributes.SupersetFast(localReduct.Attributes))
+                        if (reduct.Attributes.IsSupersetOf(localReduct.Attributes))
                         {
-                            ret = true;
-                            break;
+                            return true;
                         }
                     }
                 }
             }
-            return ret;
+            return false;
         }
 
         public IReadOnlyList<IReduct> GetReducts()
@@ -241,7 +239,7 @@ namespace Infovision.Datamining.Roughset
                     if (reduct.GetType() == localReduct.GetType()
                         && localReduct.IsException == reduct.IsException
                         && DecimalEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
-                        && reduct.Attributes.Superset(localReduct.Attributes))
+                        && reduct.Attributes.IsSupersetOf(localReduct.Attributes))
                     {
                         return false;
                     }

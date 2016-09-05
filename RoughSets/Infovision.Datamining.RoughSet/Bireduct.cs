@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 
@@ -89,7 +90,9 @@ namespace Infovision.Datamining.Roughset
                 return false;
             }
 
-            PascalSet<int> newAttributeSet = this.Attributes - attributeId;
+            HashSet<int> newAttributeSet = new HashSet<int>(this.Attributes);
+            newAttributeSet.Remove(attributeId);
+
             return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
         }
 
@@ -108,7 +111,7 @@ namespace Infovision.Datamining.Roughset
             {
                 long decisionValue = this.DataStore.GetDecisionValue(objectIndex);
 
-                if (eqClass.NumberOfDecisions == 0 || eqClass.DecisionSet.ContainsElement(decisionValue))
+                if (eqClass.NumberOfDecisions == 0 || eqClass.DecisionSet.Contains(decisionValue))
                 {
                     return true;
                 }

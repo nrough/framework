@@ -227,7 +227,7 @@ namespace Infovision.Datamining.Roughset
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
                     //Update m_d
-                    newEqClass.DecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+                    newEqClass.DecisionSet.IntersectWith(eq.DecisionSet);
 
                     if (newEqClass.DecisionSet.Count == 0)
                         return eqClasses;

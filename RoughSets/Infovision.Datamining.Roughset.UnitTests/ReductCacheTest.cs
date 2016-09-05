@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Data;
 using NUnit.Framework;
 using Infovision.Utils;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -27,8 +29,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CacheReductFirstFoundTrue()
         {
-            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
-            string key = "#$#$#$" + attributeSet.ToString();
+            HashSet<int> attributeSet = new HashSet<int>(new int[] { 1, 2, 3 });
+            string key = "#$#$#$" + attributeSet.ToArray().ToStr(' ');
             ReductCache.Instance.Set(key, new ReductCacheInfo(true, 10));
 
             ReductCacheInfo reductInfo = ReductCache.Instance.Get(key, null) as ReductCacheInfo;
@@ -57,8 +59,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void CacheReductFirstFoundFalse()
         {
-            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
-            string key = "#$#$#$" + attributeSet.ToString();
+            HashSet<int> attributeSet = new HashSet<int>(new int[] { 1, 2, 3 });
+            string key = "#$#$#$" + attributeSet.ToArray().ToStr(' ');
             ReductCache.Instance.Set(key, new ReductCacheInfo(false, 8), null);
 
             ReductCacheInfo reductInfo = ReductCache.Instance.Get(key, null) as ReductCacheInfo;
@@ -83,8 +85,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EpsilonRangeException()
         {
-            PascalSet<int> attributeSet = new PascalSet<int>(dataStoreTrainInfo.MinFieldId, dataStoreTrainInfo.MaxFieldId, new int[] { 1, 2, 3 });
-            string key = "#$#$#$" + attributeSet.ToString();
+            HashSet<int> attributeSet = new HashSet<int>(new int[] { 1, 2, 3 });
+            string key = "#$#$#$" + attributeSet.ToArray().ToString();
             ReductCache.Instance.Set(key, new ReductCacheInfo(false, 8), null);
 
             ReductCacheInfo reductInfo = ReductCache.Instance.Get(key, null) as ReductCacheInfo;

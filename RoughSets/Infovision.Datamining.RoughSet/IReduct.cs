@@ -1,6 +1,7 @@
 ﻿using System;
 using Infovision.Data;
 using Infovision.Utils;
+using System.Collections.Generic;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -8,11 +9,11 @@ namespace Infovision.Datamining.Roughset
     {
         IObjectSetInfo ObjectSetInfo { get; }
         DataStore DataStore { get; }
-        PascalSet<int> Attributes { get; }
+        HashSet<int> Attributes { get; }
         bool IsException { get; }
         
-
         //TODO Move to Bireduct Interface? (Exceptions?)
+        //TODO This should be based on Eqialence Class Collection
         ObjectSet ObjectSet { get; }
 
         //TODO decide should this be stored in reduct or in data object
@@ -24,27 +25,13 @@ namespace Infovision.Datamining.Roughset
         EquivalenceClassCollection EquivalenceClasses { get; }
         bool IsEquivalenceClassCollectionCalculated { get; }
 
-        bool AddAttribute(int attributeId);
-
-        bool ContainsAttribute(int attributeId);
-
-        bool ContainsObject(int objectIndex);
-
+        bool AddAttribute(int attributeId);                
         bool TryRemoveAttribute(int attributeId);
-
-        //bool TryRemoveAttributes(int[] attributeId);
-
-        //TODO We want to display Reducts statistics
-        //Cardinality
-        //Number of objects recognizable in DS
-        //Number of objects not recognizable in DS
-        //Accuracy on training data
-
+        
         void SetEquivalenceClassCollection(EquivalenceClassCollection equivalenceClasses);
 
         //Each implementation of Reduct must define its hash code and equal method
         int GetHashCode();
-
         bool Equals(object obj);
     }
 }

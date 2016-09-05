@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
     {
         #region Members
 
-        private PascalSet<int> attributeSet;
+        private HashSet<int> attributeSet;
         protected object mutex = new object();
 
         //TODO To Remove
@@ -38,13 +38,14 @@ namespace Infovision.Datamining.Roughset
             protected set { this.objectWeights = value; }
         }
 
-        public PascalSet<int> Attributes
+        public HashSet<int> Attributes
         {
             get { return this.attributeSet; }
         }
 
         public decimal Epsilon { get; private set; }
 
+        //TODO Solve to return obejcts from Eq Class collection
         public virtual ObjectSet ObjectSet
         {
             get { return new ObjectSet(this.dataStore, Enumerable.Range(0, this.dataStore.NumberOfRecords).ToArray()); }
@@ -77,7 +78,7 @@ namespace Infovision.Datamining.Roughset
         public virtual bool IsEquivalenceClassCollectionCalculated
         {
             get { return this.eqClassMap != null; }
-        }        
+        }
 
         public virtual bool IsException { get; set; }
 
@@ -94,7 +95,7 @@ namespace Infovision.Datamining.Roughset
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights)
         {
             this.dataStore = dataStore;
-            this.attributeSet = new PascalSet<int>(dataStore.DataStoreInfo.MinFieldId, dataStore.DataStoreInfo.MaxFieldId, fieldIds);
+            this.attributeSet = new HashSet<int>(fieldIds);
             this.Epsilon = epsilon;
 
             if (weights != null)
@@ -112,7 +113,7 @@ namespace Infovision.Datamining.Roughset
         public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
         {
             this.dataStore = dataStore;
-            this.attributeSet = new PascalSet<int>(dataStore.DataStoreInfo.MinFieldId, dataStore.DataStoreInfo.MaxFieldId, fieldIds);
+            this.attributeSet = new HashSet<int>(fieldIds);
             this.Epsilon = epsilon;
 
             this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
@@ -133,7 +134,7 @@ namespace Infovision.Datamining.Roughset
 
         public Reduct(Reduct reduct)
         {
-            this.attributeSet = new PascalSet<int>(reduct.attributeSet);
+            this.attributeSet = new HashSet<int>(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
             this.Epsilon = reduct.Epsilon;
             this.objectWeights = new decimal[dataStore.NumberOfRecords];
@@ -152,51 +153,38 @@ namespace Infovision.Datamining.Roughset
             this.eqClassMap = equivalenceClasses;
         }
 
-        protected virtual bool CheckAddAttribute(int attributeId)
+        protected virtual bool CheckRemoveAttribute(int attributeId)
         {
-            return this.attributeSet.ContainsElement(attributeId) == false;
+            return this.Attributes.Contains(attributeId);
         }
 
         public virtual bool AddAttribute(int attributeId)
         {
-            if (this.CheckAddAttribute(attributeId))
+            lock (mutex)
             {
-                lock (mutex)
+                if (this.attributeSet.Add(attributeId))
                 {
                     this.eqClassMap = null;
-                    this.attributeSet.AddElement(attributeId);
+                    return true;
                 }
-                return true;
             }
-
             return false;
-        }
-
-        protected virtual bool CheckRemoveAttribute(int attributeId)
-        {
-            return this.attributeSet.ContainsElement(attributeId);
-        }
+        }        
 
         public virtual bool TryRemoveAttribute(int attributeId)
         {
-            if (this.CheckRemoveAttribute(attributeId))
+            lock (mutex)
             {
-                lock (mutex)
+                if (this.attributeSet.Remove(attributeId))
                 {
                     this.eqClassMap = null;
-                    this.attributeSet.RemoveElement(attributeId);
+                    return true;
                 }
-                return true;
             }
-
-            return false;
+            return false;           
         }
 
-        public virtual bool ContainsAttribute(int attributeId)
-        {
-            return this.attributeSet.ContainsElement(attributeId);
-        }
-
+        //TODO ContainsObject remove this method
         public virtual bool ContainsObject(int objectIndex)
         {
             return true;
@@ -234,18 +222,15 @@ namespace Infovision.Datamining.Roughset
             if (retval != 0)
                 return retval;
 
+            int[] thisAttributes = this.Attributes.ToArray();
+            int[] rAttributes = r.Attributes.ToArray();
+
             for (int i = 0; i < attrCount; i++)
-            {
-                int xval = Convert.ToInt32(this.Attributes.Data.Get(i));
-                int yval = Convert.ToInt32(r.Attributes.Data.Get(i));
-                if (xval < yval)
-                {
+            {                
+                if (thisAttributes[i] < rAttributes[i])
                     return -1;
-                }
-                else if (xval > yval)
-                {
+                else if (thisAttributes[i] > rAttributes[i])
                     return 1;
-                }
             }
 
             return 0;
@@ -259,25 +244,21 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.IsException == false)
             {
-                return String.Format(
-                    //"[Id:{0}] {1} (eps:{2}, #objects:{3})",
+                return String.Format(                    
                     "[Id:{0}] {1} (eps:{2})",
                     this.Id,
-                    this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon
-                    //,this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
+                    this.Epsilon                    
                     );
             }
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(
-                    //"[Id:{0}] {1} (eps:{2}, #objects:{3}) ",
+                sb.AppendFormat(                    
                     "[Id:{0}] {1} (eps:{2}) ",
                     this.Id,
-                    this.attributeSet.Count > 0 ? this.attributeSet.ToString() : "empty",
-                    this.Epsilon
-                    //,this.eqClassMap != null ? this.eqClassMap.CountSupportedObjects() : this.ObjectSet.Count
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
+                    this.Epsilon                    
                     );
 
                 sb.Append("[");
@@ -329,7 +310,7 @@ namespace Infovision.Datamining.Roughset
 
         public override int GetHashCode()
         {
-            return HashHelper.GetHashCode(this.attributeSet.Data);
+            return HashHelper.GetHashCode(this.attributeSet.ToArray());
         }
 
         public override bool Equals(object obj)
@@ -341,7 +322,7 @@ namespace Infovision.Datamining.Roughset
             if (reduct == null)
                 return false;
 
-            return this.attributeSet.Equals(reduct.attributeSet);
+            return this.attributeSet.SetEquals(reduct.attributeSet);
         }
 
         #endregion System.Object Methods
@@ -368,13 +349,14 @@ namespace Infovision.Datamining.Roughset
                         return retval;
                     else
                     {
-                        for (int i = 0; i < x.Attributes.Data.Count; i++)
-                        {
-                            int xval = Convert.ToInt32(x.Attributes.Data.Get(i));
-                            int yval = Convert.ToInt32(y.Attributes.Data.Get(i));
-                            if (xval < yval)
+                        int[] xAttributes = x.Attributes.ToArray();
+                        int[] yAttributes = y.Attributes.ToArray();
+
+                        for (int i = 0; i < x.Attributes.Count; i++)
+                        {                            
+                            if (xAttributes[i] < yAttributes[i])
                                 return 1;
-                            else if (xval > yval)
+                            else if (xAttributes[i] > yAttributes[i])
                                 return -1;
                         }
 

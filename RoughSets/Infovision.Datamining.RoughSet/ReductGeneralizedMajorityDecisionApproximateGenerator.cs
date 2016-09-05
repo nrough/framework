@@ -104,7 +104,10 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
-                    PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+                    //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+
+                    HashSet<long> newDecisionSet = new HashSet<long>(newEqClass.DecisionSet);
+                    newDecisionSet.IntersectWith(eq.DecisionSet);
 
                     if (newDecisionSet.Count > 0)
                     {
@@ -220,7 +223,9 @@ namespace Infovision.Datamining.Roughset
                 EquivalenceClass newEqClass = null;
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
-                    PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+                    //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+                    HashSet<long> newDecisionSet = new HashSet<long>(newEqClass.DecisionSet);
+                    newDecisionSet.IntersectWith(eq.DecisionSet);
 
                     if (newDecisionSet.Count > 0)
                     {

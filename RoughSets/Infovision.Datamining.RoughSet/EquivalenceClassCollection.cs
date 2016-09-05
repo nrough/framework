@@ -260,7 +260,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = 0;
         }
 
-        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore)
+        public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore)
         {
             this.InitPartitions();
 
@@ -275,7 +275,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = Decimal.One;
         }
 
-        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore, decimal[] objectWeights)
+        public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore, decimal[] objectWeights)
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
@@ -292,7 +292,7 @@ namespace Infovision.Datamining.Roughset
             this.CalcAvgConfidence();
         }
 
-        public virtual void Calc(PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
+        public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {
             this.InitPartitions();
             this.attributes = attributeSet.ToArray();
@@ -329,7 +329,7 @@ namespace Infovision.Datamining.Roughset
             }
         }
 
-        public static bool CheckRegionPositive(PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet)
+        public static bool CheckRegionPositive(HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet)
         {
             decimal[] weights = new decimal[dataStore.NumberOfRecords];
             for (int i = 0; i < weights.Length; i++)
@@ -338,7 +338,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public static bool CheckRegionPositive(
-            PascalSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
+            HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, decimal[] objectWeights)
         {            
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();

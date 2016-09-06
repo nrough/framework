@@ -152,7 +152,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (node.Children == null)
                 throw new InvalidOperationException("node.Children == null");
 
-            if (node.Children.First().Key == this.decisionAttributeId)
+            if (node.Children[0].Key == this.decisionAttributeId)
                 return true;
 
             return false;

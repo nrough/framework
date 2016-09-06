@@ -22,7 +22,7 @@ namespace Infovision.Data
         private Dictionary<long, int> objectId2Index;
 
         private long[] index2ObjectId;
-        private decimal[] weights;
+        private double[] weights;
 
         private DataStoreInfo dataStoreInfo;
 
@@ -45,7 +45,7 @@ namespace Infovision.Data
             get { return this.DataStoreInfo.NumberOfRecords; }
         }
 
-        public decimal[] Weights
+        public double[] Weights
         {
             get { return this.weights; }
         }
@@ -68,7 +68,7 @@ namespace Infovision.Data
             this.lastIndex = -1;
             this.objectId2Index = new Dictionary<long, int>(capacity);
             this.index2ObjectId = new long[capacity];
-            this.weights = new decimal[capacity];
+            this.weights = new double[capacity];
         }
 
         #endregion Constructors
@@ -99,7 +99,7 @@ namespace Infovision.Data
             if (capacity == 0)
                 return true;
 
-            //if ((decimal)lastIndex > (decimal)capacity * (1.0M - capacityFactor) + 1.0M)
+            //if ((double)lastIndex > (double)capacity * (1.0M - capacityFactor) + 1.0M)
             //    return true;
 
             if (lastIndex >= capacity)
@@ -117,7 +117,7 @@ namespace Infovision.Data
             long[] newIndex2ObjectId = new long[newCapacity];
             Array.Copy(index2ObjectId, newIndex2ObjectId, this.index2ObjectId.Length);
 
-            decimal[] newWeights = new decimal[newCapacity];
+            double[] newWeights = new double[newCapacity];
             Array.Copy(weights, newWeights, this.weights.Length);
 
             this.capacity = newCapacity;
@@ -195,7 +195,7 @@ namespace Infovision.Data
             return ret;
         }
 
-        public void SetWeights(decimal[] w)
+        public void SetWeights(double[] w)
         {
             if (w.Length != this.weights.Length)
                 throw new ArgumentException("Invalid length of value vector", "w");
@@ -220,22 +220,22 @@ namespace Infovision.Data
             Tools.Normalize(this.weights, this.weights.Sum());
         }
 
-        public decimal GetWeight(int objectIdx)
+        public double GetWeight(int objectIdx)
         {
             return this.weights[objectIdx];
         }
 
-        public void SetWeight(int objectIdx, decimal weight)
+        public void SetWeight(int objectIdx, double weight)
         {
             this.weights[objectIdx] = weight;
         }
 
-        public decimal GetWeightByObjectId(long objectId)
+        public double GetWeightByObjectId(long objectId)
         {
             return this.weights[this.objectId2Index[objectId]];
         }
 
-        public void SetWeightByObjectId(long objectId, decimal weight)
+        public void SetWeightByObjectId(long objectId, double weight)
         {
             this.weights[this.objectId2Index[objectId]] = weight;
         }
@@ -792,7 +792,7 @@ namespace Infovision.Data
 
             if (weights != null)
             {
-                decimal tmpWeigth = weights[aidx];
+                double tmpWeigth = weights[aidx];
                 weights[aidx] = weights[bidx];
                 weights[bidx] = tmpWeigth;
             }

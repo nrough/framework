@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public abstract decimal Calc(IReduct reduct);
+        public abstract double Calc(IReduct reduct);
 
         #endregion Methods
     }
@@ -42,9 +42,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override decimal Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return (decimal)reduct.Attributes.Count;
+            return (double)reduct.Attributes.Count;
         }
 
         public override string ToString()
@@ -74,9 +74,9 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override decimal Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return (decimal)reduct.EquivalenceClasses.NumberOfPartitions;
+            return (double)reduct.EquivalenceClasses.NumberOfPartitions;
         }
 
         public override string ToString()
@@ -106,11 +106,11 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override decimal Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            return Decimal.Divide(
-                reduct.ObjectSetInfo.NumberOfRecords,
-                reduct.DataStore.NumberOfRecords);
+            return 
+                (double) reduct.ObjectSetInfo.NumberOfRecords
+                / (double) reduct.DataStore.NumberOfRecords;
         }
 
         public override string ToString()
@@ -140,15 +140,15 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override decimal Calc(IReduct reduct)
+        public override double Calc(IReduct reduct)
         {
-            decimal result = 0;
+            double result = 0;
             foreach (int objectIdx in reduct.ObjectSet)
             {
                 long decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
-                result += Decimal.Divide(
-                    reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue),
-                    reduct.ObjectSetInfo.NumberOfRecords);
+                result += 
+                    ((double)reduct.ObjectSet.NumberOfObjectsWithDecision(decisionValue)
+                    / (double) reduct.ObjectSetInfo.NumberOfRecords);
             }
 
             return result;

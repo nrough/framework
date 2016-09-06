@@ -18,24 +18,24 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, decimal epsilon, decimal[] weights)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, double epsilon, double[] weights)
             : base(dataStore, fieldIds, epsilon, weights)
         {
             this.objectSet = new ObjectSet(dataStore, objectIndexes);
         }
 
-        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, decimal epsilon)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, double epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
             this.objectSet = new ObjectSet(dataStore, objectIndexes);
         }
 
-        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
+        public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon)
             : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }
 
-        public Bireduct(DataStore dataStore, decimal epsilon)
+        public Bireduct(DataStore dataStore, double epsilon)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, epsilon)
         {
         }
@@ -136,7 +136,7 @@ namespace Infovision.Datamining.Roughset
                 eq.AddObject(
                     objectIdx,
                     this.DataStore.GetDecisionValue(objectIdx),
-                    Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords));
+                    1.0 / this.DataStore.NumberOfRecords);
 
                 objectSet.AddElement(objectIdx);
 

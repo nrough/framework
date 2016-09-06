@@ -49,7 +49,7 @@ namespace Infovision.TestAssembly
             }
         }
 
-        public override decimal Epsilon
+        public override double Epsilon
         {
             get;
             set;
@@ -72,12 +72,12 @@ namespace Infovision.TestAssembly
             this.Generate();
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             throw new NotImplementedException();
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection eqClasses)
         {
             throw new NotImplementedException();
         }
@@ -87,7 +87,7 @@ namespace Infovision.TestAssembly
             this.ReductPool = new ReductStore();
         }
 
-        public override IReduct CreateReduct(int[] attributes, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        public override IReduct CreateReduct(int[] attributes, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }

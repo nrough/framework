@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
-        public decimal Epsilon { get; set; }
+        public double Epsilon { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
 
@@ -60,7 +60,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Size = 100;
             this.NumberOfTreeProbes = 20;
             this.BagSizePercent = 100;
-            this.Epsilon = Decimal.MinValue;
+            this.Epsilon = Double.MinValue;
 
             this.trees = new List<Tuple<T, double>>(this.Size);
         }
@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             T tree = new T();
 
-            if (this.Epsilon >= Decimal.Zero)
+            if (this.Epsilon >= 0.0)
                 tree.Epsilon = this.Epsilon;
 
             return tree;

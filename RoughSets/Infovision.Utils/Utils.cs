@@ -168,7 +168,6 @@ namespace Infovision.Utils
         public static Type String2Type(string value)
         {
             int intResult;
-            //decimal decimalResult;
             double doubleResult;
 
             if (Int32.TryParse(value, out intResult))
@@ -179,10 +178,6 @@ namespace Infovision.Utils
             {
                 return typeof(double);
             }
-            //else if (Decimal.TryParse(key, out decimalResult))
-            //{
-            //    return typeof(decimal);
-            //}
 
             if (Convert.ToChar(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator) != '.'
                 && value.Contains('.'))
@@ -193,10 +188,6 @@ namespace Infovision.Utils
                 {
                     return typeof(double);
                 }
-                //else if (Decimal.TryParse(valueTmp, out decimalResult))
-                //{
-                //    return typeof(decimal);
-                //}
             }
 
             return typeof(string);

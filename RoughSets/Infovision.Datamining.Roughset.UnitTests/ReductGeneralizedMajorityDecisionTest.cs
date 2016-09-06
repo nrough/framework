@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore trainData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
             DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1);
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
-            decimal eps = 0.0m;
+            double eps = 0.0;
             int ensembleSize = 10;
             int ratio = 1;
             int permutationSize = ensembleSize * ratio;
@@ -106,7 +106,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int numberOfPermutations = 1;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.1m)
+            for (double eps = 0.0; eps < 1.0; eps += 0.1)
             {
                 Args parms = new Args();
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
@@ -143,20 +143,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.0M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.1M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.2M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.3M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.4M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.5M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.6M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.7M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.8M, attributes);
-                CalculateGeneralizedDecisionReductFromSubset(data, 0.9M, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.0, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.1, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.2, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.3, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.4, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.5, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.6, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.7, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.8, attributes);
+                CalculateGeneralizedDecisionReductFromSubset(data, 0.9, attributes);
             }
         }
 
-        public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
+        public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
@@ -169,7 +169,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return reductGenerator.CalculateReduct(attributeSubset);
         }
 
-        public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
+        public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
@@ -190,7 +190,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(trainData);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.001M)
+            for (double eps = 0.0; eps < 1.0; eps += 0.001)
             {
                 foreach (Permutation permutation in permutations)
                 {
@@ -220,21 +220,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
-            decimal dataQuality = measure.Calc(allAttributes);
+            double dataQuality = measure.Calc(allAttributes);
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01M)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
                 foreach (Permutation permutation in permutations)
                 {
                     IReduct gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
-                    decimal gdQuality = measure.Calc(gdReduct);
+                    double gdQuality = measure.Calc(gdReduct);
 
                     Assert.GreaterOrEqual(
-                        Decimal.Round(gdQuality, 17),
-                        Decimal.Round(((Decimal.One - eps) * dataQuality), 17),
+                        gdQuality,
+                        (1.0 - eps) * dataQuality,
                         String.Format("{0} M(B)={1}", gdReduct, gdQuality));
                 }
             }
@@ -249,19 +249,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
-            decimal dataQuality = measure.Calc(allAttributes);
+            double dataQuality = measure.Calc(allAttributes);
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
                 foreach (Permutation permutation in permutations)
                 {
                     IReduct gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
-                    decimal gdQuality = measure.Calc(gdReduct);
+                    double gdQuality = measure.Calc(gdReduct);
 
-                    Assert.LessOrEqual(Decimal.Round(dataQuality - gdQuality, 17), eps);
+                    Assert.LessOrEqual(dataQuality - gdQuality, eps);
                 }
             }
         }

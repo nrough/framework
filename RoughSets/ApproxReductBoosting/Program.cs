@@ -116,12 +116,12 @@ namespace ApproxReductBoosting
                     parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnDataOrig);
 
                 parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
-                parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, decimal>)RuleQuality.ConfidenceW);
+                parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
+                parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
                 parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
                 parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
                 parms.SetParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, (decimal)epsilon / 100.0M);
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, (double)epsilon / 100.0);
 
                 WeightGenerator weightGenerator;
                 switch (weightingSchema)

@@ -211,7 +211,7 @@ namespace Infovision.Datamining
         public int StandardRuleLengthSum { get; set; }
 
         public string ModelName { get; set; }
-        public decimal Epsilon { get; set; }
+        public double Epsilon { get; set; }
         public int TestNum { get; set; }
         public int Fold { get; set; }
         public string DatasetName { get; set; }

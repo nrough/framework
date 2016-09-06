@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private List<DecisionTreeNode> children;
         public static readonly string ROOT = "ROOT";
         int level;
-        decimal m;
+        double m;
 
         public DecisionTreeNode(int key, long value, ITreeNode parent)
         {
@@ -21,10 +21,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Value = value;
             this.Parent = parent;
             this.level = parent == null ? 0 : parent.Level + 1;
-            this.m = Decimal.Zero;
+            this.m = 0.0;
         }
 
-        public DecisionTreeNode(int key, long value, decimal measure, ITreeNode parent)
+        public DecisionTreeNode(int key, long value, double measure, ITreeNode parent)
             : this(key, value, parent)
         {
             this.m = measure;
@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             private set;
         }
 
-        public decimal Measure
+        public double Measure
         {
             get { return this.m; }
             set { this.m = value; }

@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Roughset
             base.InitFromArgs(args);
         }
 
-        public override IReduct GetNextReduct(decimal[] weights)
+        public override IReduct GetNextReduct(double[] weights)
         {
             Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
             return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);

@@ -17,11 +17,11 @@ namespace DermoReducts
         public static void HandleMissingData(string filename, string outputfile, string weightsfile)
         {
             DataStore data = DataStore.Load(filename, FileFormat.Csv);
-            decimal[] w = new decimal[data.NumberOfRecords];
+            double[] w = new double[data.NumberOfRecords];
             for (int i = 0; i < data.NumberOfRecords; i++)
-                w[i] = Decimal.One;
+                w[i] = 1.0;
 
-            IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, w);
+            IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, w);
             DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
             Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.NumberOfValues);
@@ -41,15 +41,15 @@ namespace DermoReducts
             }
 
             List<long> newRecIds = new List<long>();
-            decimal tmp = Decimal.Zero;
+            double tmp = 0.0;
             int k = 0;
             int origNumberOfRecords = data.NumberOfRecords;
-            Array.Resize<decimal>(ref w, w.Length + (missingRecs.Length * ageAttribute.NumberOfValues));
+            Array.Resize<double>(ref w, w.Length + (missingRecs.Length * ageAttribute.NumberOfValues));
             foreach (DataRecordInternal rec in missingRecs)
             {
                 foreach (KeyValuePair<long, int> kvp in countVals)
                 {
-                    tmp = (decimal)kvp.Value / (decimal)(origNumberOfRecords - missingRecs.Length);
+                    tmp = (double)kvp.Value / (double)(origNumberOfRecords - missingRecs.Length);
                     w[origNumberOfRecords + k] = tmp;
                     DataRecordInternal recBis = new DataRecordInternal(rec);
                     recBis[34] = kvp.Key;

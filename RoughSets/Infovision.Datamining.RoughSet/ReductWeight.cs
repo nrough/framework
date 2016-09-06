@@ -9,12 +9,12 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] objectWeights)
+        public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon, double[] objectWeights)
             : base(dataStore, fieldIds, epsilon, objectWeights)
         {
         }
 
-        public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] objectWeights, EquivalenceClassCollection equivalenceClasses)
+        public ReductWeights(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon, double[] objectWeights, EquivalenceClassCollection equivalenceClasses)
             : base(dataStore, fieldIds, epsilon, objectWeights, equivalenceClasses)
         {
         }

@@ -33,9 +33,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
-            decimal[] epsilons;
+            double[] epsilons;
 
-            epsilons = new decimal[numberOfPermutations];
+            epsilons = new double[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
                 epsilons[i] = RandomSingleton.Random.Next(minEpsilon, maxEpsilon);
 
@@ -54,7 +54,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
             argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
             argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
             argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 
@@ -90,7 +90,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
             //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);
 
-            Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition = (Func<IReduct, decimal[], RuleQualityFunction, double[]>)args[ReductGeneratorParamHelper.ReconWeights];
+            Func<IReduct, double[], RuleQualityFunction, double[]> recognition = (Func<IReduct, double[], RuleQualityFunction, double[]>)args[ReductGeneratorParamHelper.ReconWeights];
             //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
 
             Args parms = new Args();

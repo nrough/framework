@@ -7,7 +7,7 @@ namespace Infovision.Datamining
 {
     public interface IClassifier
     {
-        ClassificationResult Classify(IPredictionModel model, DataStore testData, decimal[] weights = null);
+        ClassificationResult Classify(IPredictionModel model, DataStore testData, double[] weights = null);
     }
 
     public class Classifier : IClassifier
@@ -34,7 +34,7 @@ namespace Infovision.Datamining
             }
         }
 
-        public ClassificationResult Classify(IPredictionModel model, DataStore testData, decimal[] weights = null)
+        public ClassificationResult Classify(IPredictionModel model, DataStore testData, double[] weights = null)
         {
             Stopwatch s = new Stopwatch();
             s.Start();

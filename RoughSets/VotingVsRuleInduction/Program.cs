@@ -73,7 +73,7 @@ namespace VotingVsRuleInduction
 
                         string lastTrainName = null;
                         string lastFactoryKey = null;
-                        decimal lastEpsilon = Decimal.MinusOne;
+                        double lastEpsilon = -1.0;;
                         int lastNumberOfReducts = -1;
 
                         IReductGenerator reductGenerator = null;
@@ -95,7 +95,7 @@ namespace VotingVsRuleInduction
 
                             if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
                                 || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey)
-                                || lastEpsilon != (decimal)setup.GetParameter(ReductGeneratorParamHelper.Epsilon))
+                                || lastEpsilon != (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon))
                             {
                                 if (emptyReductResult == false)
                                 {
@@ -109,7 +109,7 @@ namespace VotingVsRuleInduction
 
                             if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
                                 || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey)
-                                || lastEpsilon != (decimal)setup.GetParameter(ReductGeneratorParamHelper.Epsilon)
+                                || lastEpsilon != (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon)
                                 || lastNumberOfReducts != (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts)
                                 || regeneratedReducts)
                             {
@@ -158,7 +158,7 @@ namespace VotingVsRuleInduction
 
                             lastTrainName = ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name;
                             lastFactoryKey = (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey);
-                            lastEpsilon = (decimal)setup.GetParameter(ReductGeneratorParamHelper.Epsilon);
+                            lastEpsilon = (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon);
                             lastNumberOfReducts = (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
                         }
                     }
@@ -240,8 +240,8 @@ namespace VotingVsRuleInduction
                     ReductFactoryKeyHelper.ApproximateReductMajorityWeights
                 });
 
-            IParameter parmEpsilon = new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon,
-                0.0m, 0.99m, 0.01m);
+            IParameter parmEpsilon = new ParameterNumericRange<double>(ReductGeneratorParamHelper.Epsilon,
+                0.0, 0.99, 0.01);
 
             IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductGeneratorParamHelper.NumberOfReducts,
                 new int[] { 20, 10, 2, 1 });

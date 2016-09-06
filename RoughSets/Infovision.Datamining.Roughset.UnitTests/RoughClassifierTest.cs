@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        decimal epsilon = 0.1m;
+                        double epsilon = 0.1;
                         int numberOfPermutations = 10;
                         string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
 
@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int loops = 100;
             int numberOfPerm = 10;
 
-            decimal epsilon = 0.05m;
+            double epsilon = 0.05;
             string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
 
             string trainFileName = @"Data\dna_modified.trn";
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 Console.WriteLine("Accuracy 2: {0}", classificationResult.Accuracy);
                 Console.WriteLine();
             }
-            Console.WriteLine("Classifier 2: {0}", (decimal)sum_2 / (decimal)loops);
+            Console.WriteLine("Classifier 2: {0}", (double)sum_2 / (double)loops);
         }
     }
 }

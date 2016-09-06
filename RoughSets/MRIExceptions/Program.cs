@@ -176,7 +176,7 @@ namespace MRIExceptions
                 testImageT1, testImageT2, testImagePD, testImagePH, testDataFilename, testSlice,
                 trainImageT1, trainImageT2, trainImagePD, trainImagePH, trainDataFilename, trainSlice);
 
-            for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon += 0.02m)
+            for (double epsilon = 0.0; epsilon < 1.0; epsilon += 0.02)
             {
                 Console.WriteLine("Segmentation model learning and test eps={0}", epsilon);
 
@@ -388,7 +388,7 @@ namespace MRIExceptions
             return new Tuple<DataStore, DataStore>(trainingData, testData);
         }
 
-        private RoughClassifier Learn(DataStore train, int testId, decimal epsilon, int trainSlice, int testSlice, PermutationCollection permutations)
+        private RoughClassifier Learn(DataStore train, int testId, double epsilon, int trainSlice, int testSlice, PermutationCollection permutations)
         {
             int epsilonInt = (int)(epsilon * 100);
             string testFolder = this.GetTestFolder(testId);
@@ -466,7 +466,7 @@ namespace MRIExceptions
 
         private void Test(
             RoughClassifier model, DataStore test, DataStore train,
-            int testId, decimal epsilon, int trainSlice, int testSlice)
+            int testId, double epsilon, int trainSlice, int testSlice)
         {
             string testFolder = this.GetTestFolder(testId);
             int epsilonInt = (int)(epsilon * 100);

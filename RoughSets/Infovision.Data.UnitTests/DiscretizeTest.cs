@@ -25,7 +25,7 @@ namespace Infovision.Data.UnitTests
         [Test, TestCaseSource("GetDataFiles")]
         public void UpdateColumnTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            decimal epsilon = 0.05m;
+            double epsilon = 0.05;
             int numberOfPermutations = 20;
 
             BenchmarkData benchmark = kvp.Value;
@@ -91,19 +91,6 @@ namespace Infovision.Data.UnitTests
 
                         switch (Type.GetTypeCode(localFieldInfoTrain.FieldValueType))
                         {
-                            /*
-                            case TypeCode.Decimal:
-                                Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                                discretizeDecimal.UseEntropy = benchmark.DiscretizeUsingEntropy;
-                                discretizeDecimal.UseEqualFrequency = benchmark.DiscretizeUsingEqualFreq;
-                                decimal[] oldValuesDecimal = train.GetColumn<decimal>(field.Id);
-                                discretizeDecimal.Compute(oldValuesDecimal);
-                                localFieldInfoTrain.Cuts = discretizeDecimal.Cuts;
-                                for (int j = 0; j < train.NumberOfRecords; j++)
-                                    newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                                break;
-                            */
-
                             case TypeCode.Int32:
                                 Discretization<int> discretizeInt = new Discretization<int>();
                                 discretizeInt.UseEntropy = benchmark.DiscretizeUsingEntropy;
@@ -144,16 +131,6 @@ namespace Infovision.Data.UnitTests
                                 for (int j = 0; j < test.NumberOfRecords; j++)
                                     newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                                 break;
-
-                            /*
-                            case TypeCode.Decimal:
-                                Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                                discretizeDecimal.Cuts = localFieldInfoTrain.Cuts;
-                                decimal[] oldValuesDecimal = test.GetColumn<decimal>(field.Id);
-                                for (int j = 0; j < test.NumberOfRecords; j++)
-                                    newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                                break;
-                            */
 
                             case TypeCode.Double:
                                 Discretization<double> discretizeDouble = new Discretization<double>();

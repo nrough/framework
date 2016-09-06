@@ -351,12 +351,12 @@ namespace Infovision.Data
                 this.HasMissingData = dataStoreInfo.HasMissingData;
         }
 
-        public void CreateWeightHistogram(DataStore data, decimal[] weights, int fieldId)
+        public void CreateWeightHistogram(DataStore data, double[] weights, int fieldId)
         {
             this.CreateWeightHistogram(data, weights, new int[] { fieldId });
         }
 
-        public void CreateWeightHistogram(DataStore data, decimal[] weights, IEnumerable<int> fieldIds)
+        public void CreateWeightHistogram(DataStore data, double[] weights, IEnumerable<int> fieldIds)
         {
             foreach (int fieldId in fieldIds)
             {

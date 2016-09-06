@@ -20,9 +20,9 @@ namespace Infovision.Datamining.Roughset
 
         public bool UseExceptionRules { get; set; }
         public SortDirection EquivalenceClassSortDirection { get; set; }
-        public decimal Gamma { get; set; }
-        protected decimal WeightDropLimit { get; set; }
-        protected decimal ObjectWeightSum { get; set; }
+        public double Gamma { get; set; }
+        protected double WeightDropLimit { get; set; }
+        protected double ObjectWeightSum { get; set; }
 
         #endregion Properties
 
@@ -224,6 +224,7 @@ namespace Infovision.Datamining.Roughset
                 if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
                 {
                     //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+
                     HashSet<long> newDecisionSet = new HashSet<long>(newEqClass.DecisionSet);
                     newDecisionSet.IntersectWith(eq.DecisionSet);
 
@@ -298,7 +299,7 @@ namespace Infovision.Datamining.Roughset
             this.Epsilon = 0;
 
             this.ObjectWeightSum = this.WeightGenerator.Weights.Sum();
-            this.WeightDropLimit = (Decimal.One - this.Gamma) * this.ObjectWeightSum;
+            this.WeightDropLimit = (1.0 - this.Gamma) * this.ObjectWeightSum;
         }
 
         #endregion Methods

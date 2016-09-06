@@ -33,7 +33,7 @@ namespace DisesorTest
         private string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
 
         //int numberOfPermutations = 100;
-        //decimal epsilon = 0.0m;
+        //double epsilon = 0.0m;
 
         private RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
         private RuleQualityFunction voteFunction = RuleQuality.CoverageW;
@@ -47,7 +47,7 @@ namespace DisesorTest
         private int numberOfBins = 2;
 
         private string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
-        //decimal innerEpsilon = 0.4m;
+        //double innerEpsilon = 0.4m;
         //int boostingNumberOfReductsInWeakClassifier = 20;
         //int boostingMaxIterations = 100;
 
@@ -59,7 +59,7 @@ namespace DisesorTest
         private bool boostingCheckEnsambleErrorDuringTraining = false;
         private int numberOfWeightResets = 99;
 
-        private decimal minimumVoteValue = Decimal.MinValue; //0.00001m;
+        private double minimumVoteValue = Double.MinValue; //0.00001m;
         private bool fixedPermutations = false;
         private double reductionStepRatio = 0.1;
         private double shuffleRatio = 1.0;
@@ -89,14 +89,14 @@ namespace DisesorTest
 
             int iter = Int32.Parse(args[0]);
             int weak = Int32.Parse(args[1]);
-            decimal eps = Decimal.Parse(args[2], CultureInfo.InvariantCulture);
+            double eps = Double.Parse(args[2], CultureInfo.InvariantCulture);
 
             p.FinalTest(iter, weak, eps);
 
             Console.Beep();
         }
 
-        private void FinalTest(int iterations, int weakClassifiers, decimal eps)
+        private void FinalTest(int iterations, int weakClassifiers, double eps)
         {
             Console.WriteLine("Algorithm: {0}", factoryKey);
             Console.WriteLine("Number of permutations: {0}", weakClassifiers);
@@ -341,7 +341,7 @@ namespace DisesorTest
             */
 
             //InformationMeasureWeights measure = new InformationMeasureWeights();
-            //decimal q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
+            //double q = measure.Calc(new ReductWeights(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard), wGen.Weights, epsilon));
             //Console.WriteLine("Traing dataset quality: {0}", q);
             //measure = null;
 
@@ -374,7 +374,7 @@ namespace DisesorTest
             classifier.MinimumVoteValue = minimumVoteValue;
 
             int unclassified = 0;
-            decimal[] votes = new decimal[test.NumberOfRecords];
+            double[] votes = new double[test.NumberOfRecords];
             int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();
 
             for (int i = 0; i < test.NumberOfRecords; i++)
@@ -382,7 +382,7 @@ namespace DisesorTest
                 DataRecordInternal record = test.GetRecordByIndex(i);
                 var prediction = classifier.Classify(record);
 
-                decimal sum = Decimal.Zero;
+                double sum = 0.0;
                 foreach (var kvp in prediction)
                 {
                     if (kvp.Key != -1)
@@ -392,8 +392,8 @@ namespace DisesorTest
                 if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
                     unclassified++;
 
-                decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
-                votes[i] = sum > 0 ? warning / sum : Decimal.Zero;
+                double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;
+                votes[i] = sum > 0 ? warning / sum : 0.0;
             }
 
             Array.Sort(votes, indices);

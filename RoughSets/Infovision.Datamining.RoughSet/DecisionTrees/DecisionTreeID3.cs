@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 double localEntropy = 0;
                 foreach (var dec in eq.DecisionSet)
                 {
-                    decimal decWeight = eq.GetDecisionWeight(dec);
+                    double decWeight = eq.GetDecisionWeight(dec);
                     double p = (double)(decWeight / eq.WeightSum);
                     if (p != 0)
                         localEntropy -= p * System.Math.Log(p, 2);
@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             double entropy = 0;
             foreach (long dec in this.Decisions)
             {
-                decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
+                double decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
                 double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
                 if (p != 0)
                     entropy -= p * System.Math.Log(p, 2);

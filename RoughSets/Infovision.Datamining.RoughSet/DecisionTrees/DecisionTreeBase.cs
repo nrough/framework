@@ -16,13 +16,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     {
         private DecisionTreeNode root;
         private int decisionAttributeId;
-        private decimal mA;
+        private double mA;
         private long[] decisions;
         
 
         public ITreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
-        public decimal Epsilon { get; set; }
+        public double Epsilon { get; set; }
         protected IEnumerable<long> Decisions { get { return this.decisions; } }
 
         public int EnsembleSize { get { return 1; } }
@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.root = null;
             this.decisionAttributeId = -1;
             this.NumberOfAttributesToCheckForSplit = -1;
-            this.Epsilon = decimal.MinusOne;
+            this.Epsilon = -1.0;
         }
 
         protected void Init(DataStore data, int[] attributes)
@@ -46,7 +46,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
                 this.decisions[i++] = decisionValue;
 
-            if (this.Epsilon >= Decimal.Zero)
+            if (this.Epsilon >= 0.0)
                 this.mA = InformationMeasureWeights.Instance.Calc(
                     EquivalenceClassCollection.Create(attributes, data, data.Weights));
         }
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
-            if (this.Epsilon >= Decimal.Zero)
+            if (this.Epsilon >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.GenerateSplits(eqClassCollection, this.root, attributes);
 
@@ -74,7 +74,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, parent));
         }
 
-        protected void CreateLeaf(DecisionTreeNode parent, long decisionValue, decimal decisionWeight)
+        protected void CreateLeaf(DecisionTreeNode parent, long decisionValue, double decisionWeight)
         {
             parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, decisionWeight, parent));
         }
@@ -109,10 +109,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     continue;
                 }
 
-                if (this.Epsilon >= Decimal.Zero)
+                if (this.Epsilon >= 0.0)
                 {
-                    decimal m = this.MeasureSum(this.root);
-                    if ((Decimal.One - this.Epsilon) * this.mA <= m)
+                    double m = this.MeasureSum(this.root);
+                    if ((1.0 - this.Epsilon) * this.mA <= m)
                     {
                         this.CreateLeaf(currentParent, currentEqClassCollection.DecisionWeights.FindMaxValueKey());
                         isConverged = true;
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, currentParent);
                     currentParent.AddChild(newNode);
 
-                    if (this.Epsilon >= Decimal.Zero)
+                    if (this.Epsilon >= 1.0)
                         newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
 
                     var newSplitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(
@@ -253,9 +253,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             throw new NotImplementedException();
         }
 
-        private decimal MeasureSum(ITreeNode node)
+        private double MeasureSum(ITreeNode node)
         {
-            decimal sum = 0;
+            double sum = 0;
             TreeNodeTraversal.TraversePostOrder(node, n => 
             {
                 if (n.IsLeaf)

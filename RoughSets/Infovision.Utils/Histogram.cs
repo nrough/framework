@@ -10,7 +10,7 @@ namespace Infovision.Utils
         #region Globals
 
         protected object syncRoot = new object();
-        private Dictionary<T, decimal> histogramData;
+        private Dictionary<T, double> histogramData;
         private T minValue;
         private T maxValue;
 
@@ -18,7 +18,7 @@ namespace Infovision.Utils
 
         #region Properties
 
-        public decimal this[T value] { get { return this.histogramData.ContainsKey(value) ? this.histogramData[value] : 0; } }
+        public double this[T value] { get { return this.histogramData.ContainsKey(value) ? this.histogramData[value] : 0; } }
         public T Min { get { return minValue; } }
         public T Max { get { return maxValue; } }
         public int Count { get { return histogramData.Count; } }
@@ -30,9 +30,9 @@ namespace Infovision.Utils
         public Histogram(int capacity = 0)
         {
             if (capacity != 0)
-                histogramData = new Dictionary<T, decimal>(capacity);
+                histogramData = new Dictionary<T, double>(capacity);
             else
-                histogramData = new Dictionary<T, decimal>();
+                histogramData = new Dictionary<T, double>();
 
             minValue = default(T);
             maxValue = default(T);
@@ -42,9 +42,9 @@ namespace Infovision.Utils
 
         #region Methods
 
-        public void Increase(T key, decimal value = Decimal.One)
+        public void Increase(T key, double value = 1.0)
         {
-            decimal count;
+            double count;
             lock (syncRoot)
             {
                 histogramData[key] = histogramData.TryGetValue(key, out count) ? (count + value) : value;
@@ -52,9 +52,9 @@ namespace Infovision.Utils
             }
         }
 
-        public decimal GetBinValue(T key)
+        public double GetBinValue(T key)
         {
-            decimal value;
+            double value;
             if (histogramData.TryGetValue(key, out value))
                 return value;
             return 0;
@@ -83,7 +83,7 @@ namespace Infovision.Utils
             if (p.maxValue.Equals(this.maxValue))
                 return false;
 
-            return new DictionaryComparer<T, decimal>().Equals(p.histogramData, this.histogramData);
+            return new DictionaryComparer<T, double>().Equals(p.histogramData, this.histogramData);
         }
 
         public override int GetHashCode()

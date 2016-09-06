@@ -63,12 +63,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 for (int i = 0; i <= cutoff; i++)
                     attributes[i] = permutation[i];
 
-                IReduct reduct = new ReductWeights(data, attributes, 0.0M, weightGenerator.Weights);
+                IReduct reduct = new ReductWeights(data, attributes, 0.0, weightGenerator.Weights);
 
                 foreach (EquivalenceClass eq in reduct.EquivalenceClasses)
                 {
                     int origNumberOfDecisionValues = eq.DecisionValues.Count();
-                    eq.KeepMajorDecisions(Decimal.Zero);
+                    eq.KeepMajorDecisions(0.0);
 
                     if (origNumberOfDecisionValues > 1)
                         Assert.LessOrEqual(eq.DecisionValues.Count(), origNumberOfDecisionValues);

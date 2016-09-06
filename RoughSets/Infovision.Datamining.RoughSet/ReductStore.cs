@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset
         #region Properties
 
         public abstract int Count { get; }
-        public decimal Weight { get; set; }
+        public double Weight { get; set; }
         public bool AllowDuplicates { get; set; }
         public bool IsActive { get; set; }
 
@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset
 
         public ReductStoreBase()
         {
-            this.Weight = Decimal.One;
+            this.Weight = 1.0;
             this.IsActive = true;
         }
 
@@ -238,7 +238,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     if (reduct.GetType() == localReduct.GetType()
                         && localReduct.IsException == reduct.IsException
-                        && DecimalEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
+                        && DoubleEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
                         && reduct.Attributes.IsSupersetOf(localReduct.Attributes))
                     {
                         return false;
@@ -377,7 +377,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion IEnumerable Members
 
-        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ";")
+        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, double[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)
@@ -401,7 +401,7 @@ namespace Infovision.Datamining.Roughset
             File.WriteAllText(filePath, sb.ToString());
         }
 
-        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, decimal[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ",")
+        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, double[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)

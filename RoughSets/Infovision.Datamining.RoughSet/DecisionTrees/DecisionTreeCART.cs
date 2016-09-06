@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             double s2 = 0;
             foreach (long dec in this.Decisions)
             {
-                decimal decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
+                double decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
                 double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
                 s2 += (p * p);
             }

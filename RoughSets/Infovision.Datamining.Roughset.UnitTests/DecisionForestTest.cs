@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            decimal epsilon = 0.07m;
+            double epsilon = 0.07;
 
             DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
             randomForest.Size = 10;
@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RandomForestCARTTest()
         {
-            decimal epsilon = 0.07m;
+            double epsilon = 0.07;
 
             Console.WriteLine("RandomForestCARTTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RandomForestRoughMTest()
         {
-            decimal epsilon = 0.07m;
+            double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -83,7 +83,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RoughForestRoughGammaTest()
         {
-            decimal epsilon = 0.07m;
+            double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughGammaTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -109,7 +109,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("RoughForestTest");
 
-            decimal epsilon = 0.07m;
+            double epsilon = 0.07;
             int numberOfAttributesToCheckForSplit = 5;
             int numberOfTreeProbes = 10;
             int size = 10;
@@ -197,7 +197,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             for (int t = 0; t < 1; t++)
             {
-                for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.05m)
+                for (double eps = 0.0; eps < 1.0; eps += 0.05)
                 {
                     string factoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                     WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
@@ -207,7 +207,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
                     parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                     parms.SetParameter<WeightGenerator>(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, eps);
+                    parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, eps);
                     parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, permList);
                     parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
 
@@ -229,7 +229,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Assert.NotNull(reduct);
 
                     DecisionTreeC45 treeC45 = new DecisionTreeC45();
-                    treeC45.Epsilon = Decimal.Zero; //eps
+                    treeC45.Epsilon = 0.0; //eps
                     treeC45.Learn(data, reduct.Attributes.ToArray());
 
                     ClassificationResult resultC45 = Classifier.Instance.Classify(treeC45, test);

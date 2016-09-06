@@ -105,9 +105,7 @@ namespace Infovision.Data
             if (this.HasMissingValues)
                 return false;
 
-            if ((this.IsNumeric
-                //|| Type.GetTypeCode(this.FieldValueType) == TypeCode.Decimal
-                    || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
+            if ((this.IsNumeric || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
                 return true;
 
             if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32)
@@ -267,12 +265,12 @@ namespace Infovision.Data
             return (int)histogram.GetBinValue(value);
         }
 
-        public decimal GetAttribiteValueWeight(long value)
+        public double GetAttribiteValueWeight(long value)
         {
             return histogramWeights.GetBinValue(value);
         }
 
-        public void CreateWeightHistogram(DataStore data, decimal[] weights)
+        public void CreateWeightHistogram(DataStore data, double[] weights)
         {
             int len = 0;
             if (histogramWeights != null)

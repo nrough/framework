@@ -28,19 +28,6 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                 TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
                 switch (trainFieldTypeCode)
                 {
-                    /*
-                    case TypeCode.Decimal:
-
-                        Discretization<decimal, long> discretizeDecimal = new Discretization<decimal, long>();
-                        discretizeInt.UseKononenko = this.UseKononenko;
-                        discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
-
-                        decimal[] oldValuesDecimal = data.GetColumn<decimal>(fieldId);
-                        discretizeDecimal.Compute(oldValuesDecimal);
-                        cuts = discretizeDecimal.Cuts;
-                        break;
-                    */
-
                     case TypeCode.Int32:
                         Discretization<int, long> discretizeInt = new Discretization<int, long>();
                         discretizeInt.UseKononenko = this.UseKononenko;
@@ -123,21 +110,6 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
 
                     switch (trainFieldTypeCode)
                     {
-                        /*
-                        case TypeCode.Decimal:
-
-                            Discretization<decimal, long> discretizeDecimal = new Discretization<decimal, long>();
-                            discretizeInt.UseKononenko = this.UseKononenko;
-                            discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
-
-                            decimal[] oldValuesDecimal = trainingData.GetColumn<decimal>(fieldId);
-                            discretizeDecimal.Compute(oldValuesDecimal);
-                            localFieldInfoTrain.Cuts = discretizeDecimal.Cuts;
-                            for (int j = 0; j < trainingData.NumberOfRecords; j++)
-                                newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                            break;
-                        */
-
                         case TypeCode.Int32:
                             Discretization<int, long> discretizeInt = new Discretization<int, long>();
                             discretizeInt.UseKononenko = this.UseKononenko;
@@ -217,16 +189,6 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                             for (int j = 0; j < testData.NumberOfRecords; j++)
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                             break;
-
-                        /*
-                        case TypeCode.Decimal:
-                            Discretization<decimal, long>> discretizeDecimal = new Discretization<decimal, long>>();
-                            discretizeDecimal.Cuts = localFieldInfoTrain.Cuts;
-                            decimal[] oldValuesDecimal = testData.GetColumn<decimal>(fieldId);
-                            for (int j = 0; j < testData.NumberOfRecords; j++)
-                                newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                            break;
-                        */
 
                         case TypeCode.Double:
                             Discretization<double, long> discretizeDouble = new Discretization<double, long>();

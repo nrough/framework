@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset
         public virtual bool UseCache { get; private set; }
         public virtual PermutationCollection Permutations { get; protected set; }
         public virtual DataStore DataStore { get; private set; }
-        public virtual decimal Epsilon { get; set; }
+        public virtual double Epsilon { get; set; }
         public virtual int ReductionStep { get; set; }
 
         public virtual int[][] FieldGroups
@@ -98,11 +98,11 @@ namespace Infovision.Datamining.Roughset
 
         protected abstract void Generate();
 
-        protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, double epsilon, string id);
 
-        protected abstract IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection eqClasses);
+        protected abstract IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection eqClasses);
 
-        public abstract IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null);
+        public abstract IReduct CreateReduct(int[] permutation, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null);
 
         public virtual void Run()
         {
@@ -185,7 +185,7 @@ namespace Infovision.Datamining.Roughset
                 this.UseCache = true;
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                this.Epsilon = (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
+                this.Epsilon = (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
 
             if (args.Exist(ReductGeneratorParamHelper.ReductionStep))
                 this.ReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.ReductionStep);

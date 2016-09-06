@@ -13,7 +13,7 @@ namespace MajorityGeneralizedDecisionTest
     internal class Program
     {
         private DataStore trainData, testData, data;
-        private decimal eps;
+        private double eps;
         private int ensembleSize;
         private int ratio;
         private int permutationSize;
@@ -134,7 +134,7 @@ namespace MajorityGeneralizedDecisionTest
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
                 parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
                 parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter<decimal>(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, eps);
                 //parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
 
                 parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
@@ -319,7 +319,7 @@ namespace MajorityGeneralizedDecisionTest
 
                     for (int e = 0; e < 100; e++)
                     {
-                        eps = (decimal)e / (decimal)100;
+                        eps = (double)e / (double)100;
 
                         for (int w = 0; w < 2; w++)
                         {

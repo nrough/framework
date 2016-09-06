@@ -33,7 +33,7 @@ namespace DisesorTuning
         {
             double reductionStepRatio = 0.025;
             double shuffleRatio = 0.33;
-            decimal minimumVoteValue = Decimal.MinValue;
+            double minimumVoteValue = Double.MinValue;
             bool boostingCheckEnsambleErrorDuringTraining = false;
             int numberOfWeightResets = 99;
 
@@ -50,8 +50,8 @@ namespace DisesorTuning
 						ReductFactoryKeyHelper.ApproximateReductRelativeWeights),
 					ParameterValueCollection<int>.CreateFromElements("NumberOfReductsInWeakClassifier", //2
 						1, 2, 5, 10, 20, 50, 100, 200, 300),
-					new ParameterNumericRange<decimal>(ReductGeneratorParamHelper.Epsilon, //3
-						0.0m, 0.50m, 0.05m),
+					new ParameterNumericRange<double>(ReductGeneratorParamHelper.Epsilon, //3
+						0.0, 0.50, 0.05),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Voting", //4
 						RuleQuality.CoverageW,
 						RuleQuality.ConfidenceW,
@@ -82,7 +82,7 @@ namespace DisesorTuning
                 int iterations = (int)p[0];
                 string innerFactoryKey = (string)p[1];
                 int weakClassifierSize = (int)p[2];
-                decimal eps = (decimal)p[3];
+                double eps = (double)p[3];
                 RuleQualityFunction voting = (RuleQualityFunction)p[4];
                 RuleQualityFunction identification = (RuleQualityFunction)p[5];
                 DiscretizationType discretizationType = (DiscretizationType)p[6];
@@ -134,7 +134,7 @@ namespace DisesorTuning
                 classifier.MinimumVoteValue = minimumVoteValue;
 
                 int unclassified = 0;
-                decimal[] votes = new decimal[test.NumberOfRecords];
+                double[] votes = new double[test.NumberOfRecords];
                 int[] indices = Enumerable.Range(0, test.NumberOfRecords).ToArray();
 
                 for (int k = 0; k < test.NumberOfRecords; k++)
@@ -142,7 +142,7 @@ namespace DisesorTuning
                     DataRecordInternal record = test.GetRecordByIndex(k);
                     var prediction = classifier.Classify(record);
 
-                    decimal sum = Decimal.Zero;
+                    double sum = 0.0;
                     foreach (var kvp in prediction)
                     {
                         if (kvp.Key != -1)
@@ -152,8 +152,8 @@ namespace DisesorTuning
                     if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
                         unclassified++;
 
-                    decimal warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : Decimal.Zero;
-                    votes[i] = sum > 0 ? warning / sum : Decimal.Zero;
+                    double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;
+                    votes[i] = sum > 0 ? warning / sum : 0.0;
                 }
 
                 Array.Sort(votes, indices);

@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             int prevCount = Int32.MaxValue;
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {                
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
                 treeID3.Epsilon = eps;
@@ -92,7 +92,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            for (decimal eps = Decimal.Zero; eps < Decimal.One; eps += 0.01m)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
                 treeID3.Epsilon = eps;

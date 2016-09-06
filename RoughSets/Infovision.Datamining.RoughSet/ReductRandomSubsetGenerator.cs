@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset
             {
                 int cut = this.MinReductLength == this.MaxReductLength
                         ? this.MaxReductLength
-                        : (int)((1.0m - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        : (int)((1.0 - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)
@@ -73,7 +73,7 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = localReductPool;
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             throw new NotImplementedException("CreteReduct() method was not implemented.");
         }
@@ -86,14 +86,14 @@ namespace Infovision.Datamining.Roughset
             return reduct;
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
             ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
             r.Id = id;

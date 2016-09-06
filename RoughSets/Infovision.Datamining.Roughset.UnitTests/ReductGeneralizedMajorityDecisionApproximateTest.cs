@@ -77,15 +77,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
-            Decimal dataQuality = new InformationMeasureWeights().Calc(
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, weightGenerator.Weights));
+            double dataQuality = new InformationMeasureWeights().Calc(
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, weightGenerator.Weights));
 
-            Decimal dataQuality_2 = new InformationMeasureWeights().Calc(
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), Decimal.Zero, weightGenerator.Weights));
+            double dataQuality_2 = new InformationMeasureWeights().Calc(
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, weightGenerator.Weights));
 
-            Assert.AreEqual(Decimal.Round(dataQuality, 17), Decimal.Round(dataQuality_2, 17));
+            Assert.AreEqual(dataQuality, dataQuality_2, 0.0000001);
 
-            for (decimal eps = Decimal.Zero; eps <= Decimal.One; eps += 0.01m)
+            for (double eps = 0.0; eps <= 1.0; eps += 0.01)
             {
                 long elapsed_sum_1 = 0;
                 long elapsed_sum_2 = 0;
@@ -93,8 +93,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 int len_sum_1 = 0;
                 int len_sum_2 = 0;
 
-                decimal avg_quality_1 = Decimal.Zero;
-                decimal avg_quality_2 = Decimal.Zero;
+                double avg_quality_1 = 0.0;
+                double avg_quality_2 = 0.0;
 
                 double[] accuracyResults_1 = new double[permList.Count];
                 double[] accuracyResults_2 = new double[permList.Count];
@@ -114,8 +114,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     reductStoreCollection.AddStore(store);
 
                     Assert.NotNull(reduct_1);
-                    Decimal reductQuality_1 = new InformationMeasureWeights().Calc(reduct_1);
-                    Assert.GreaterOrEqual(reductQuality_1, Decimal.Round(dataQuality * (Decimal.One - eps), 17));
+                    double reductQuality_1 = new InformationMeasureWeights().Calc(reduct_1);
+                    Assert.GreaterOrEqual(reductQuality_1, dataQuality * (1.0 - eps));
 
                     elapsed_sum_1 += watch_1.ElapsedMilliseconds;
                     len_sum_1 += reduct_1.Attributes.Count;
@@ -148,8 +148,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     reductStoreCollection2.AddStore(store2);
 
                     Assert.NotNull(reduct_2);
-                    Decimal reductQuality_2 = new InformationMeasureWeights().Calc(reduct_2);
-                    Assert.GreaterOrEqual(reductQuality_2, Decimal.Round(dataQuality * (Decimal.One - eps), 17));
+                    double reductQuality_2 = new InformationMeasureWeights().Calc(reduct_2);
+                    Assert.GreaterOrEqual(reductQuality_2, dataQuality * (1.0 - eps));
 
                     elapsed_sum_2 += watch_2.ElapsedMilliseconds;
                     len_sum_2 += reduct_2.Attributes.Count;
@@ -181,8 +181,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 log.InfoFormat("Average reduct lenght of method B: {0}", (double)len_sum_2 / (double)permList.Count);
                 log.InfoFormat("Average computation time method A: {0}", (double)elapsed_sum_1 / (double)permList.Count);
                 log.InfoFormat("Average computation time method B: {0}", (double)elapsed_sum_2 / (double)permList.Count);
-                log.InfoFormat("Average reduct quality of method A: {0}", avg_quality_1 / (decimal)permList.Count);
-                log.InfoFormat("Average reduct quality of method B: {0}", avg_quality_2 / (decimal)permList.Count);
+                log.InfoFormat("Average reduct quality of method A: {0}", avg_quality_1 / (double)permList.Count);
+                log.InfoFormat("Average reduct quality of method B: {0}", avg_quality_2 / (double)permList.Count);
 
                 log.InfoFormat("Accuracy A Min: {0} Max: {1} Mean: {2} StdDev: {3}",
                     Tools.Min(accuracyResults_1), Tools.Max(accuracyResults_1), Tools.Mean(accuracyResults_1), Tools.StdDev(accuracyResults_1));
@@ -290,7 +290,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         private Tuple<double, double> ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int test, int fold)
         {
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
-            decimal eps = Decimal.Divide(epsilon, 100);
+            double eps = (double) epsilon / 100.0;
 
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
@@ -354,7 +354,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             log = Common.Logging.LogManager.GetLogger(this.GetType());
         }
 
-        public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, decimal epsilon, int[] attributeSubset)
+        public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
@@ -367,7 +367,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             return reductGenerator.CalculateReduct(attributeSubset);
         }
 
-        public IReduct CalculateApproximateReductFromSubset(DataStore data, decimal epsilon, int[] attributeSubset)
+        public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);

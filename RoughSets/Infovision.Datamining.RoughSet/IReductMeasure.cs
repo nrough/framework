@@ -4,6 +4,6 @@
     {
         SortDirection SortDirection { get; }
 
-        decimal Calc(IReduct reduct);
+        double Calc(IReduct reduct);
     }
 }

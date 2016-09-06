@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
 
         public Func<double[], double[], double> Distance { get; set; }
         public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
-        public Func<IReduct, decimal[], RuleQualityFunction, double[]> ReconWeights { get; set; }
+        public Func<IReduct, double[], RuleQualityFunction, double[]> ReconWeights { get; set; }
         public int NumberOfReductsToTest { get; set; }
         public AgregateFunction AgregateFunction { get; set; }
 
@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset
                 this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
 
             if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-                this.ReconWeights = (Func<IReduct, decimal[], RuleQualityFunction, double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+                this.ReconWeights = (Func<IReduct, double[], RuleQualityFunction, double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
 
             if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsToTest))
                 this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
@@ -64,7 +64,7 @@ namespace Infovision.Datamining.Roughset
                 this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
         }
 
-        public override IReduct GetNextReduct(decimal[] weights)
+        public override IReduct GetNextReduct(double[] weights)
         {
             if (clusterInstances2.Count == 0 || this.NumberOfReductsToTest == 1)
                 return base.GetNextReduct(weights);

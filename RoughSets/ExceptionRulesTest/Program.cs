@@ -56,11 +56,11 @@ namespace ExceptionRulesTest
                         testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
                 }
 
-                decimal mA = new InformationMeasureMajority().Calc(
+                double mA = new InformationMeasureMajority().Calc(
                     new Reduct(
                         trainData,
                         trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
-                        Decimal.Zero,
+                        0.0,
                         new WeightGeneratorMajority(trainData).Weights));
 
                 for (int t = 0; t < numberOfTests; t++)
@@ -137,7 +137,7 @@ namespace ExceptionRulesTest
             ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int ensembleSize)
         {
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
-            decimal eps = Decimal.Divide(epsilon, 100);
+            double eps = (double)epsilon / 100;
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
             ReductLengthComparer reductLengthComparer = new ReductLengthComparer();
             ReductStoreLengthComparer reductStoreLengthComparer = new ReductStoreLengthComparer(false);

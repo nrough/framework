@@ -68,13 +68,13 @@ namespace Infovision.Datamining.Roughset
         public bool ExceptionRulesAsGaps { get; set; }
         public bool IdentifyMultipleDecision { get; set; }
 
-        public decimal MinimumVoteValue { get; set; }
+        public double MinimumVoteValue { get; set; }
 
         public int EnsembleSize { get { return 1; } }
         public double QualityRatio { get { return 0.0; } }
-        public decimal Epsilon
+        public double Epsilon
         {
-            get { return Decimal.Zero; }
+            get { return 0.0; }
             set { }
         }
 
@@ -109,7 +109,7 @@ namespace Infovision.Datamining.Roughset
                 k++;
             }
 
-            this.MinimumVoteValue = Decimal.MinValue;
+            this.MinimumVoteValue = Double.MinValue;
 
             //MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
             //this.singleVoteName = singleVoteMethod.Name;
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset
 
         #endregion Constructors
 
-        public ClassificationResult Classify(DataStore testData, decimal[] weights = null, bool calcFullEquivalenceClasses = true)
+        public ClassificationResult Classify(DataStore testData, double[] weights = null, bool calcFullEquivalenceClasses = true)
         {
             timer.Reset();
             timer.Start();
@@ -193,18 +193,18 @@ namespace Infovision.Datamining.Roughset
             return this.Classify(record, true).FindMaxValueKey();
         }
 
-        private Dictionary<long, decimal> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)
+        private Dictionary<long, double> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)
         {
-            decimal[] globalVotes = new decimal[this.decCountPlusOne];
-            decimal[] reductsVotes = new decimal[this.decCountPlusOne];
-            decimal[] identificationWeights = new decimal[this.decCountPlusOne];
+            double[] globalVotes = new double[this.decCountPlusOne];
+            double[] reductsVotes = new double[this.decCountPlusOne];
+            double[] identificationWeights = new double[this.decCountPlusOne];
             int identifiedDecision;
-            decimal identifiedDecisionWeight;
+            double identifiedDecisionWeight;
 
             foreach (IReductStore rs in this.ReductStoreCollection.Where(r => r.IsActive))
             {
                 for (int k = 0; k < this.decCountPlusOne; k++)
-                    reductsVotes[k] = Decimal.Zero;
+                    reductsVotes[k] = 0.0;
 
                 foreach (IReduct reduct in rs)
                 {
@@ -220,9 +220,9 @@ namespace Infovision.Datamining.Roughset
                     }
 
                     for (int k = 0; k < this.decCountPlusOne; k++)
-                        identificationWeights[k] = Decimal.Zero;
+                        identificationWeights[k] = 0.0;
                     identifiedDecision = 0; // -1 (unclassified)
-                    identifiedDecisionWeight = Decimal.Zero;
+                    identifiedDecisionWeight = 0.0;
 
                     EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
 
@@ -279,7 +279,7 @@ namespace Infovision.Datamining.Roughset
                             foreach (var decVal in eqClass.DecisionSet)
                             {
                                 int idx = dec2index[decVal];
-                                if (DecimalEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
+                                if (DoubleEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
                                 {
                                     if ((this.MinimumVoteValue <= 0) || (identificationWeights[idx] >= this.MinimumVoteValue))
                                     {
@@ -308,7 +308,7 @@ namespace Infovision.Datamining.Roughset
 
                 if (this.numberOfModels == 1)
                 {
-                    var result = new Dictionary<long, decimal>(this.decCountPlusOne);
+                    var result = new Dictionary<long, double>(this.decCountPlusOne);
                     for (int k = 0; k < this.decCountPlusOne; k++)
                         result[decisions[k]] = reductsVotes[k];
                     return result;
@@ -322,7 +322,7 @@ namespace Infovision.Datamining.Roughset
                 else
                 {
                     int maxDec = 0; // -1 (unclassified)
-                    decimal maxDecWeight = Decimal.Zero;
+                    double maxDecWeight = 0.0;
                     for (int k = 0; k < this.decCountPlusOne; k++)
                     {
                         if (maxDecWeight < reductsVotes[k])
@@ -335,7 +335,7 @@ namespace Infovision.Datamining.Roughset
                 }
             }
 
-            var resultGlobal = new Dictionary<long, decimal>(this.decCountPlusOne);
+            var resultGlobal = new Dictionary<long, double>(this.decCountPlusOne);
             for (int k = 0; k < this.decCountPlusOne; k++)
                 resultGlobal[decisions[k]] = globalVotes[k];
 

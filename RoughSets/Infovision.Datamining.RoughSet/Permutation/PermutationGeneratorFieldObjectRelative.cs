@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset
             this.dataStore = dataStore;
         }
 
-        public PermutationGeneratorFieldObjectRelative(DataStore dataStore, decimal fieldSelectionRatio)
+        public PermutationGeneratorFieldObjectRelative(DataStore dataStore, double fieldSelectionRatio)
             : base(dataStore, fieldSelectionRatio)
         {
             this.dataStore = dataStore;

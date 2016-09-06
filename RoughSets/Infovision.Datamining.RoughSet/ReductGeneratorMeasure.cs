@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private IInformationMeasure informationMeasure;
-        private decimal dataSetQuality;
+        private double dataSetQuality;
         protected EquivalenceClassCollection initialEqClasses;
 
         #endregion Members
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset
         protected ReductGeneratorMeasure()
             : base()
         {
-            this.dataSetQuality = Decimal.MinValue;
+            this.dataSetQuality = Double.MinValue;
             this.UsePerformanceImprovements = true;
         }
 
@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        protected decimal DataSetQuality
+        protected double DataSetQuality
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Infovision.Datamining.Roughset
             base.InitFromArgs(args);
 
             if (args.Exist(ReductGeneratorParamHelper.DataSetQuality))
-                this.dataSetQuality = args.GetParameter<decimal>(ReductGeneratorParamHelper.DataSetQuality);
+                this.dataSetQuality = args.GetParameter<double>(ReductGeneratorParamHelper.DataSetQuality);
 
             if (args.Exist(ReductGeneratorParamHelper.InitialEquivalenceClassCollection))
             {
@@ -109,34 +109,34 @@ namespace Infovision.Datamining.Roughset
             this.CreateReductStoreFromPermutationCollection(this.Permutations);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             Reduct r = new Reduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
             Reduct r = new Reduct(this.DataStore, fieldIds, epsilon, this.DataStore.Weights, equivalenceClasses);
             r.Id = id;
             return r;
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore, false, epsilon);
         }
 
-        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, decimal epsilon)
+        protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore, bool useCache, double epsilon)
         {
             IReduct reduct = null;
 
             if (this.UsePerformanceImprovements)
             {
                 if (this.initialEqClasses != null
-                    && this.Epsilon < 0.5m
+                    && this.Epsilon < 0.5
                     && permutation.Length < this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2)
                 {
                     reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
@@ -217,8 +217,8 @@ namespace Infovision.Datamining.Roughset
 
         public virtual bool CheckIsReduct(IReduct reduct)
         {
-            decimal partitionQuality = this.GetPartitionQuality(reduct);
-            if (Decimal.Round(partitionQuality, 17) >= Decimal.Round((Decimal.One - this.Epsilon) * this.DataSetQuality, 17))
+            double partitionQuality = this.GetPartitionQuality(reduct);
+            if (partitionQuality >= (1.0 - this.Epsilon) * this.DataSetQuality)
                 return true;
             return false;
         }
@@ -253,7 +253,7 @@ namespace Infovision.Datamining.Roughset
             return isReduct;
         }
 
-        protected virtual decimal GetPartitionQuality(IReduct reduct)
+        protected virtual double GetPartitionQuality(IReduct reduct)
         {
             return this.InformationMeasure.Calc(reduct);
         }

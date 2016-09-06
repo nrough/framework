@@ -6,7 +6,7 @@ namespace Infovision.Utils
     [Serializable]
     public class Range
     {
-        public Range(decimal lowerBound, decimal upperBound)
+        public Range(double lowerBound, double upperBound)
         {
             this.LowerBound = lowerBound;
             this.UpperBound = upperBound;
@@ -14,19 +14,19 @@ namespace Infovision.Utils
 
         #region Properties
 
-        public decimal LowerBound
+        public double LowerBound
         {
             get;
             private set;
         }
 
-        public decimal UpperBound
+        public double UpperBound
         {
             get;
             private set;
         }
 
-        public decimal Length
+        public double Length
         {
             get { return this.UpperBound - this.LowerBound; }
         }

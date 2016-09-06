@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset
         private IReduct[] reducts;
         private int reductCounter;
         private bool reductsCalculated;
-        private decimal[] weights;
+        private double[] weights;
         private HierarchicalClustering hCluster;
 
         public Func<double[], double[], double> Distance { get; set; }
@@ -76,9 +76,9 @@ namespace Infovision.Datamining.Roughset
         {
             reductsCalculated = false;
 
-            weights = new decimal[this.DataStore.NumberOfRecords];
+            weights = new double[this.DataStore.NumberOfRecords];
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                weights[i] = Decimal.One / this.DataStore.NumberOfRecords;
+                weights[i] = 1.0 / this.DataStore.NumberOfRecords;
 
             this.reducts = new IReduct[this.MaxIterations];
             for (int i = 0; i < this.MaxIterations; i++)
@@ -90,14 +90,14 @@ namespace Infovision.Datamining.Roughset
 
             for (int i = 1; i < this.MaxIterations; i++)
             {
-                decimal d = Decimal.MinValue;
+                double d = Double.MinValue;
                 int bestIndex = -1;
 
                 for (int j = i + 1; j < this.MaxIterations; j++)
                 {
                     oneElementCluster[0] = j;
 
-                    decimal reductDistance = (decimal)hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
+                    double reductDistance = hCluster.GetClusterDistance(cluster.MemberObjects.ToArray(), oneElementCluster);
                     if (d < reductDistance)
                     {
                         d = reductDistance;
@@ -116,7 +116,7 @@ namespace Infovision.Datamining.Roughset
             reductsCalculated = true;
         }
 
-        public override IReduct GetNextReduct(decimal[] weights)
+        public override IReduct GetNextReduct(double[] weights)
         {
             if (reductsCalculated)
                 return reducts[reductCounter++];

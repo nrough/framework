@@ -190,10 +190,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);            
-            decimal result = InformationMeasureRelative.Instance.Calc(reduct);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            double result = InformationMeasureRelative.Instance.Calc(reduct);
 
-            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
+            Assert.AreEqual(result, 1.0, 0.0000001);
         }
 
         [Test]
@@ -201,10 +201,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);            
-            decimal result = InformationMeasureMajority.Instance.Calc(reduct);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            double result = InformationMeasureMajority.Instance.Calc(reduct);
 
-            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
+            Assert.AreEqual(result, 1.0, 0.0000001);
         }
 
         [Test]
@@ -217,9 +217,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
 
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
-            decimal result = roughMeasure.Calc(reduct);
+            double result = roughMeasure.Calc(reduct);
 
-            Assert.AreEqual(Decimal.Round(result, 17), Decimal.One);
+            Assert.AreEqual(result, 1.0, 0.0000001);
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
                 ReductFactory.GetPermutationGenerator(parms).Generate(1000));
 
-            for (decimal epsilon = Decimal.Zero; epsilon < Decimal.One; epsilon += 0.01m)
+            for (double epsilon = 0.0; epsilon < 1.0; epsilon += 0.01)
             {
                 parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
 
@@ -318,7 +318,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductMajorityTest()
         {
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
-            decimal allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
+            double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
                                                  ReductGeneratorParamHelper.TrainData },
@@ -336,7 +336,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                decimal localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
+                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
                 Assert.GreaterOrEqual(1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
                 Assert.LessOrEqual(-1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
             }
@@ -346,7 +346,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReductRelativeTest()
         {
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
-            decimal allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
+            double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
                                                  ReductGeneratorParamHelper.TrainData },
@@ -363,7 +363,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                decimal localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
+                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
                 Assert.GreaterOrEqual(1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
                 Assert.LessOrEqual(-1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
             }

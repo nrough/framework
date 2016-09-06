@@ -46,20 +46,20 @@ namespace Infovision.Datamining.Roughset
             this.ReductPool = reductStore;
         }
 
-        public override IReduct CreateReduct(int[] permutation, decimal epsilon, decimal[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             IReductStore localReductStore = this.CreateReductStore();
             return this.CalculateReduct(permutation, localReductStore);
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             Bireduct r = new Bireduct(this.DataStore, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id, EquivalenceClassCollection equivalenceClasses)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
             return this.CreateReductObject(fieldIds, epsilon, id);
         }
@@ -106,7 +106,7 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                return new PermutationGeneratorFieldObject(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
+                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
 
             return new PermutationGeneratorFieldObject(dataStore);
         }
@@ -153,7 +153,7 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                return new PermutationGeneratorFieldObjectRelative(dataStore, (decimal)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
 
             return new PermutationGeneratorFieldObjectRelative(dataStore);
         }
@@ -173,7 +173,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        protected override IReduct CreateReductObject(int[] fieldIds, decimal epsilon, string id)
+        protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
             BireductGamma r = new BireductGamma(this.DataStore, epsilon);
             r.Id = id;

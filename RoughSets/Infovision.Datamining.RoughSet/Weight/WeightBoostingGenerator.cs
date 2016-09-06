@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (this.isFirst)
             {
-                decimal w = Decimal.Divide(Decimal.One, this.DataStore.NumberOfRecords);
+                double w = 1.0 / this.DataStore.NumberOfRecords;
                 for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
                     this.w[i] = w;
                 this.isFirst = false;

@@ -96,7 +96,7 @@ namespace DecisionForestTest
                     sampler.BagSizePercent = 100;
                     PermutationCollection permutations = new PermutationCollection(size, attributes);
                     
-                    for (decimal eps = Decimal.Zero; eps < decimal.One; eps += 0.01m)
+                    for (double eps = 0; eps < 1.0; eps += 0.01)
                     {
                         DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
                         dummyForest.DataSampler = sampler;

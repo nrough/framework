@@ -32,15 +32,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorConstant weightGenerator = new WeightGeneratorConstant(data);
-            weightGenerator.Value = 1.0M;
+            weightGenerator.Value = 1.0;
 
-            decimal[] epsilons = new decimal[numberOfPermutations];
+            double[] epsilons = new double[numberOfPermutations];
             for (int i = 0; i < numberOfPermutations; i++)
             {
-                epsilons[i] = (decimal)(RandomSingleton.Random.Next(36) / 100.0);
+                epsilons[i] = (double)(RandomSingleton.Random.Next(36) / 100.0);
             }
 
-            Func<IReduct, decimal[], RuleQualityFunction, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            Func<IReduct, double[], RuleQualityFunction, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();

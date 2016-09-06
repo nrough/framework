@@ -253,7 +253,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [TestCase(0.8, 100, 10)]
         [TestCase(0.9, 100, 10)]
         [TestCase(0.0, 100, 10)]
-        public void GenerateBoostingTestNullExceptionError(decimal epsilon, int iterations, int weak)
+        public void GenerateBoostingTestNullExceptionError(double epsilon, int iterations, int weak)
         {
             DataStore train = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, train.DataStoreInfo);
@@ -268,7 +268,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
             string innerFactoryKey = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
-            decimal innerEpsilon = 0.1m;
+            double innerEpsilon = 0.1;
 
             RuleQualityFunction boostingIdentificationFunction = null;
             RuleQualityFunction boostingVoteFunction = null;
@@ -567,7 +567,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
                     parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, decimal[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
                     parms.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
                     parms.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);

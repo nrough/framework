@@ -68,7 +68,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                 Args args = new Args();
                 args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-                args.SetParameter(ReductGeneratorParamHelper.Epsilon, (decimal)(i / 100.0));
+                args.SetParameter(ReductGeneratorParamHelper.Epsilon, (double)(i / 100.0));
                 args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
                 IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
@@ -140,7 +140,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
 
@@ -167,7 +167,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductCache.Instance.Trim(100);
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGeneratorMulti.Epsilon = epsilon / 100.0M;
+                reductGeneratorMulti.Epsilon = epsilon / 100.0;
                 reductGeneratorMulti.Run();
                 IReductStore reductStore = reductGeneratorMulti.ReductPool;
             }
@@ -179,7 +179,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ReductCache.Instance.Trim(100);
             for (int epsilon = 20; epsilon < 50; epsilon++)
             {
-                reductGenerator.Epsilon = epsilon / 100.0M;
+                reductGenerator.Epsilon = epsilon / 100.0;
                 reductGenerator.Run();
                 IReductStore reductStore = reductGenerator.ReductPool;
             }

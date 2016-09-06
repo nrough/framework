@@ -15,6 +15,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         bool IsRoot { get; }
         ITreeNode Parent { get; }
         int Level { get; }
-        decimal Measure { get; }
+        double Measure { get; }
     }
 }

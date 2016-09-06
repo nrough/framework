@@ -65,8 +65,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RelativeMeasureTest()
         {
-            Dictionary<int, decimal> elementWeights = new Dictionary<int, decimal>(dataStoreTrain.NumberOfRecords);
-            decimal sumWeights = 0;
+            Dictionary<int, double> elementWeights = new Dictionary<int, double>(dataStoreTrain.NumberOfRecords);
+            double sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
 
@@ -74,7 +74,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
                 long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
-                decimal p = Decimal.One / (decimal)(dataStoreTrain.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue) * dataStoreTrain.DataStoreInfo.NumberOfDecisionValues);
+                double p = 1.0 / (dataStoreTrain.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue) * dataStoreTrain.DataStoreInfo.NumberOfDecisionValues);
 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -83,31 +83,31 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
             Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
 
-            decimal r = roughMeasure.Calc(reduct);
-            decimal u = sumWeights;
+            double r = roughMeasure.Calc(reduct);
+            double u = sumWeights;
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
+            Assert.AreEqual(r, u, 0.0000001);
 
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(dataStoreTrain);
             ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
-            decimal w = weightMeasure.Calc(reductWeights);
+            double w = weightMeasure.Calc(reductWeights);
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));
+            Assert.AreEqual(r, w, 0.0000001);
         }
 
         [Test]
         public void MajorityMeasureTest()
         {
-            Dictionary<int, decimal> elementWeights = new Dictionary<int, decimal>(dataStoreTrain.NumberOfRecords);
-            decimal sumWeights = 0;
+            Dictionary<int, double> elementWeights = new Dictionary<int, double>(dataStoreTrain.NumberOfRecords);
+            double sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
             int decisionIndex = dataStoreTrain.DataStoreInfo.DecisionFieldIndex;
             for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
                 long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
-                decimal p = Decimal.One / (decimal)dataStoreTrain.NumberOfRecords;
+                double p = 1.0 / dataStoreTrain.NumberOfRecords;
 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -116,17 +116,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
             InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
             Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldTypes.Standard), 0);
 
-            decimal r = roughMeasure.Calc(reduct);
-            decimal u = sumWeights;
+            double r = roughMeasure.Calc(reduct);
+            double u = sumWeights;
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(u, 17));
+            Assert.AreEqual(r, u, 0.0000001);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(dataStoreTrain);
             ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
-            decimal w = weightMeasure.Calc(reductWeights);
+            double w = weightMeasure.Calc(reductWeights);
 
-            Assert.AreEqual(Decimal.Round(r, 17), Decimal.Round(w, 17));
+            Assert.AreEqual(r, w, 0.0000001);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, Decimal.Zero);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
             args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
@@ -236,8 +236,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0M, null);
-                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0M, null);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++)
@@ -454,8 +454,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (Permutation perm in permutations)
             {
-                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), Decimal.Zero, null);
-                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), Decimal.Zero, null);
+                IReduct r1 = bireductGenerator.CreateReduct(perm.ToArray(), 0.0, null);
+                IReduct r2 = gammaGenerator.CreateReduct(perm.ToArray(), 0.0, null);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < perm.Length; i++)

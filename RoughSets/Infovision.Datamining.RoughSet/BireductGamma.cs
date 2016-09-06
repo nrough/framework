@@ -11,17 +11,17 @@ namespace Infovision.Datamining.Roughset
     {
         #region Constructors
 
-        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, decimal epsilon)
+        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, int[] objectIndexes, double epsilon)
             : base(dataStore, fieldIds, objectIndexes, epsilon)
         {
         }
 
-        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
+        public BireductGamma(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon)
             : this(dataStore, fieldIds, new int[] { }, epsilon)
         {
         }
 
-        public BireductGamma(DataStore dataStore, decimal epsilon)
+        public BireductGamma(DataStore dataStore, double epsilon)
             : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, epsilon)
         {
         }

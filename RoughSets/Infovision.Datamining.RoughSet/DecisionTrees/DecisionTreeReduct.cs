@@ -20,7 +20,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
             this.Iterations = 1;
-            this.Epsilon = Decimal.Zero;
+            this.Epsilon = 0.0;
         }
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)

@@ -24,13 +24,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         //private Dictionary<int, int> attributeCount;
 
         public string ReductGeneratorFactory { get; set; }
-        public decimal MaxRandomEpsilon { get; set; }
+        public double MaxRandomEpsilon { get; set; }
 
         public DecisionForestReduct()
             : base()
         {            
             this.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
-            this.MaxRandomEpsilon = 0.2m;
+            this.MaxRandomEpsilon = 0.2;
         }
 
         /*
@@ -46,9 +46,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             PermutationCollection permutations = new PermutationCollection(this.NumberOfTreeProbes, attributes);
 
-            decimal localEpsilon = this.Epsilon >= Decimal.Zero 
+            double localEpsilon = this.Epsilon >= 0.0 
                                  ? this.Epsilon 
-                                 : (decimal)((double)RandomSingleton.Random.Next(0, (int)this.MaxRandomEpsilon * 100) / 100.0);
+                                 : (double)((double)RandomSingleton.Random.Next(0, (int)this.MaxRandomEpsilon * 100) / 100.0);
 
             IReduct reduct = this.CalculateReduct(data, permutations, localEpsilon);
 
@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new Tuple<T, double>(tree, error);
         }
 
-        protected IReduct CalculateReduct(DataStore data, PermutationCollection permutations, decimal epsilon)
+        protected IReduct CalculateReduct(DataStore data, PermutationCollection permutations, double epsilon)
         {
             Args parms = new Args(5);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);

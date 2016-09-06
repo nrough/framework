@@ -69,19 +69,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
                 switch (trainFieldTypeCode)
                 {
-                    /*
-                    case TypeCode.Decimal:
-
-                        Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                        discretizeDecimal.UseEntropy = this.DiscretizeUsingEntropy;
-                        discretizeDecimal.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-
-                        decimal[] oldValuesDecimal = data.GetColumn<decimal>(fieldId);
-                        discretizeDecimal.Compute(oldValuesDecimal);
-                        cuts = discretizeDecimal.Cuts;
-                        break;
-                    */
-
                     case TypeCode.Int32:
                         Discretization<int> discretizeInt = new Discretization<int>();
                         discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
@@ -154,21 +141,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     int[] newValues = new int[trainingData.NumberOfRecords];
                     switch (trainFieldTypeCode)
                     {
-                        /*
-                        case TypeCode.Decimal:
-
-                            Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                            discretizeDecimal.UseEntropy = this.DiscretizeUsingEntropy;
-                            discretizeDecimal.UseEqualFrequency = this.DiscretizeUsingEqualFreq;
-
-                            decimal[] oldValuesDecimal = trainingData.GetColumn<decimal>(fieldId);
-                            discretizeDecimal.Compute(oldValuesDecimal);
-                            localFieldInfoTrain.Cuts = discretizeDecimal.Cuts;
-                            for (int j = 0; j < trainingData.NumberOfRecords; j++)
-                                newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                            break;
-                        */
-
                         case TypeCode.Int32:
                             Discretization<int> discretizeInt = new Discretization<int>();
                             discretizeInt.UseEntropy = this.DiscretizeUsingEntropy;
@@ -240,16 +212,6 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                             for (int j = 0; j < testData.NumberOfRecords; j++)
                                 newValues[j] = discretizeInt.Search(oldValuesInt[j]);
                             break;
-
-                        /*
-                        case TypeCode.Decimal:
-                            Discretization<decimal> discretizeDecimal = new Discretization<decimal>();
-                            discretizeDecimal.Cuts = localFieldInfoTrain.Cuts;
-                            decimal[] oldValuesDecimal = testData.GetColumn<decimal>(fieldId);
-                            for (int j = 0; j < testData.NumberOfRecords; j++)
-                                newValues[j] = discretizeDecimal.Search(oldValuesDecimal[j]);
-                            break;
-                        */
 
                         case TypeCode.Double:
                             Discretization<double> discretizeDouble = new Discretization<double>();

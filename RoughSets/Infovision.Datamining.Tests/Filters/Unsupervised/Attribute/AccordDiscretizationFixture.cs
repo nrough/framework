@@ -77,7 +77,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
         //[TestCase(2, 7, 0.5)]
         //[TestCase(2, 7, 0.10)]
         [TestCase(2, 7, 0.2)]
-        public void LoadDataTable(int cvFolds, int numberOfReducts, decimal epsilon)
+        public void LoadDataTable(int cvFolds, int numberOfReducts, double epsilon)
         {
             //Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);
             permutationList = new PermutationGenerator(attributes).Generate(numberOfReducts);
@@ -250,7 +250,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
         }
 
         [TestCase(7, 0.1)]
-        public void DiscernibilityVectorTest(int numberOfReducts, decimal epsilon)
+        public void DiscernibilityVectorTest(int numberOfReducts, double epsilon)
         {
             //Console.WriteLine("------ numberOfReducts: {0}, epsilon: {1} ------", numberOfReducts, epsilon);
 

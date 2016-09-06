@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         protected object mutex = new object();
 
         //TODO To Remove
-        private decimal[] objectWeights;
+        private double[] objectWeights;
 
         private DataStore dataStore;
         protected EquivalenceClassCollection eqClassMap;
@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.dataStore; }
         }
 
-        public decimal[] Weights
+        public double[] Weights
         {
             get { return this.objectWeights; }
             protected set { this.objectWeights = value; }
@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset
             get { return this.attributeSet; }
         }
 
-        public decimal Epsilon { get; private set; }
+        public double Epsilon { get; private set; }
 
         //TODO Solve to return obejcts from Eq Class collection
         public virtual ObjectSet ObjectSet
@@ -86,13 +86,13 @@ namespace Infovision.Datamining.Roughset
 
         #region Constructors
 
-        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights, EquivalenceClassCollection equivalenceClasses)
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon, double[] weights, EquivalenceClassCollection equivalenceClasses)
             : this(dataStore, fieldIds, epsilon, weights)
         {
             this.eqClassMap = equivalenceClasses;
         }
 
-        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon, decimal[] weights)
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon, double[] weights)
         {
             this.dataStore = dataStore;
             this.attributeSet = new HashSet<int>(fieldIds);
@@ -104,31 +104,31 @@ namespace Infovision.Datamining.Roughset
             }
             else
             {
-                this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
+                this.objectWeights = new double[this.dataStore.NumberOfRecords];
                 for (int i = 0; i < dataStore.NumberOfRecords; i++)
-                    this.objectWeights[i] = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
+                    this.objectWeights[i] = 1.0 / this.dataStore.NumberOfRecords;
             }
         }
 
-        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, decimal epsilon)
+        public Reduct(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon)
         {
             this.dataStore = dataStore;
             this.attributeSet = new HashSet<int>(fieldIds);
             this.Epsilon = epsilon;
 
-            this.objectWeights = new decimal[this.dataStore.NumberOfRecords];
-            decimal w = Decimal.Divide(Decimal.One, this.dataStore.NumberOfRecords);
+            this.objectWeights = new double[this.dataStore.NumberOfRecords];
+            double w = 1.0 / this.dataStore.NumberOfRecords;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
                 this.objectWeights[i] = w;
         }
 
-        public Reduct(DataStore dataStore, decimal epsilon)
+        public Reduct(DataStore dataStore, double epsilon)
             : this(dataStore, new int[] { }, epsilon)
         {
         }
 
         public Reduct(DataStore dataStore)
-            : this(dataStore, new int[] { }, Decimal.Zero)
+            : this(dataStore, new int[] { }, 0.0)
         {
         }
 
@@ -137,7 +137,7 @@ namespace Infovision.Datamining.Roughset
             this.attributeSet = new HashSet<int>(reduct.attributeSet);
             this.dataStore = reduct.DataStore;
             this.Epsilon = reduct.Epsilon;
-            this.objectWeights = new decimal[dataStore.NumberOfRecords];
+            this.objectWeights = new double[dataStore.NumberOfRecords];
             this.Id = reduct.Id;
             Array.Copy(reduct.Weights, this.objectWeights, reduct.DataStore.NumberOfRecords);
             this.IsException = reduct.IsException;

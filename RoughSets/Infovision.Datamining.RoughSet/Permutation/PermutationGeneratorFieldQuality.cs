@@ -7,13 +7,13 @@ namespace Infovision.Datamining.Roughset
     public class PermutationGeneratorFieldQuality : PermutationGenerator
     {
         public DataStore Data { get; set; }
-        public decimal Epsilon { get; set; }
+        public double Epsilon { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
         public int NumberOfShuffles { get; set; }
 
         private int[] fieldIdsSorted;
 
-        public PermutationGeneratorFieldQuality(DataStore data, WeightGenerator weightGenerator, decimal epsilon, int numberOfShuffles = 0)
+        public PermutationGeneratorFieldQuality(DataStore data, WeightGenerator weightGenerator, double epsilon, int numberOfShuffles = 0)
         {
             this.Data = data;
             this.WeightGenerator = weightGenerator;
@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset
 
             //Calculate quality measure for each field
             this.fieldIdsSorted = new int[this.Data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard)];
-            decimal[] fieldQualityOrig = new decimal[fieldIdsSorted.Length];
+            double[] fieldQualityOrig = new double[fieldIdsSorted.Length];
             int c = 0;
             foreach (var field in this.Data.DataStoreInfo.GetFields(FieldTypes.Standard))
             {

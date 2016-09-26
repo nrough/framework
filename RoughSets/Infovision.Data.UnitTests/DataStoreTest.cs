@@ -106,14 +106,17 @@ namespace Infovision.Data.UnitTests
             long internalValue = dataStoreTrain.GetFieldValue(0, 1);
             Object externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
+            Assert.AreEqual(1, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(0, 5);
             externalValue = dataStoreTrainInfo.GetFieldInfo(5).Internal2External(internalValue);
             Assert.AreEqual(3, (int)externalValue);
+            Assert.AreEqual(3, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(0, 7);
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
+            Assert.AreEqual(1, (int)internalValue); //added to test numeric attributes
 
             //Last newInstance
             //3 3 2 3 4 2 1
@@ -121,14 +124,17 @@ namespace Infovision.Data.UnitTests
             internalValue = dataStoreTrain.GetFieldValue(dataStoreTrainInfo.NumberOfRecords - 1, 1);
             externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
             Assert.AreEqual(3, (int)externalValue);
+            Assert.AreEqual(3, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(dataStoreTrainInfo.NumberOfRecords - 1, 5);
             externalValue = dataStoreTrainInfo.GetFieldInfo(5).Internal2External(internalValue);
             Assert.AreEqual(4, (int)externalValue);
+            Assert.AreEqual(4, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(dataStoreTrainInfo.NumberOfRecords - 1, 7);
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(1, (int)externalValue);
+            Assert.AreEqual(1, (int)internalValue); //added to test numeric attributes
 
             //60th newInstance
             //2 1 2 3 4 1 0
@@ -136,14 +142,17 @@ namespace Infovision.Data.UnitTests
             internalValue = dataStoreTrain.GetFieldValue(60, 1);
             externalValue = dataStoreTrainInfo.GetFieldInfo(1).Internal2External(internalValue);
             Assert.AreEqual(2, (int)externalValue);
+            Assert.AreEqual(2, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(60, 5);
             externalValue = dataStoreTrainInfo.GetFieldInfo(5).Internal2External(internalValue);
             Assert.AreEqual(4, (int)externalValue);
+            Assert.AreEqual(4, (int)internalValue); //added to test numeric attributes
 
             internalValue = dataStoreTrain.GetFieldValue(60, 7);
             externalValue = dataStoreTrainInfo.GetFieldInfo(7).Internal2External(internalValue);
             Assert.AreEqual(0, (int)externalValue);
+            Assert.AreEqual(0, (int)internalValue); //added to test numeric attributes
         }
 
         [Test]

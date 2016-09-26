@@ -35,8 +35,117 @@ namespace Infovision.Data.UnitTests
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType, 
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        string.Format("Field Id {0}", fieldId));
+
+
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        string.Format("Field Id {0}", fieldId));
                 }
 
                 foreach (long objectId in dataStore.GetObjectIds())
@@ -80,8 +189,117 @@ namespace Infovision.Data.UnitTests
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore1.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
-                    Assert.AreEqual(dataStore.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues, dataStore2.DataStoreInfo.GetFieldInfo(fieldId).NumberOfValues);
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        string.Format("Field Id {0}", fieldId));
+
+
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Alias,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Id,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).Name,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).HasMissingValues,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).MissingValueInternal,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).MissingValue,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsOrdered,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsSymbolic,
+                        string.Format("Field Id {0}", fieldId));
+
+                    Assert.AreEqual(
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).IsUnique,
+                        string.Format("Field Id {0}", fieldId));
                 }
 
                 foreach (long objectId in dataStore.GetObjectIds())

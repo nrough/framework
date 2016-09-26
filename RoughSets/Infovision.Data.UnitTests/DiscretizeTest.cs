@@ -13,7 +13,7 @@ namespace Infovision.Data.UnitTests
     [TestFixture]
     internal class DiscretizeTest
     {
-        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
+        public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles("Data",
                 new string[] {

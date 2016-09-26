@@ -21,7 +21,7 @@ namespace Infovision.Data.UnitTests
         public void Compare(DataStore data, FieldTypes fieldType)
         {
             IEnumerable<int> fieldIds = data.DataStoreInfo.GetFieldIds(fieldType);
-            int[] fieldIdsOld = data.DataStoreInfo.GetFieldIds_OLD(fieldType);
+            int[] fieldIdsOld = this.GetFieldIds_OLD(data.DataStoreInfo, fieldType);
             int count = 0;
             foreach (int fieldId in fieldIds)
             {
@@ -30,6 +30,23 @@ namespace Infovision.Data.UnitTests
             }
 
             Assert.AreEqual(fieldIdsOld.Length, count);
+        }
+
+        //An old method from DataStoreInfo class
+        public int[] GetFieldIds_OLD(DataStoreInfo dataStoreInfo, FieldTypes fieldTypeFlags)
+        {
+            int[] fieldIds = new int[dataStoreInfo.GetNumberOfFields(fieldTypeFlags)];
+            int i = 0;
+            foreach (DataFieldInfo field in dataStoreInfo.Fields)
+            {
+                if (fieldTypeFlags == FieldTypes.All
+                    || fieldTypeFlags == FieldTypes.None
+                    || dataStoreInfo.GetFieldType(field.Id).HasFlag(fieldTypeFlags))
+                {
+                    fieldIds[i++] = field.Id;
+                }
+            }
+            return fieldIds;
         }
     }
 }

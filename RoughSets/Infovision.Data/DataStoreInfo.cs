@@ -126,23 +126,7 @@ namespace Infovision.Data
         public ICollection<long> GetDecisionValues()
         {
             return this.DecisionInfo.InternalValues();
-        }
-
-        public int[] GetFieldIds_OLD(FieldTypes fieldTypeFlags)
-        {
-            int[] fieldIds = new int[this.GetNumberOfFields(fieldTypeFlags)];
-            int i = 0;
-            foreach (DataFieldInfo field in this.Fields)
-            {
-                if (fieldTypeFlags == FieldTypes.All
-                    || fieldTypeFlags == FieldTypes.None
-                    || this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
-                {
-                    fieldIds[i++] = field.Id;
-                }
-            }
-            return fieldIds;
-        }
+        }        
 
         public int[] GetFieldIndexLookupTable()
         {            
@@ -379,6 +363,11 @@ namespace Infovision.Data
                 else
                     this.fieldTypeCount.Add(fieldType, 1);
             }
+        }
+
+        public FieldTypes GetFieldType(int fieldId)
+        {
+            return this.fieldTypes[fieldId];
         }
 
         #endregion Methods

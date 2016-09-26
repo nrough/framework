@@ -167,34 +167,35 @@ namespace Infovision.Data
             this.Name = dataFieldInfo.Name;
             this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
+
             this.IsNumeric = dataFieldInfo.IsNumeric;
             this.IsUnique = dataFieldInfo.IsUnique;
             this.IsSymbolic = dataFieldInfo.IsSymbolic;
             this.IsOrdered = dataFieldInfo.IsOrdered;
+
             this.initialNumberOfValues = dataFieldInfo.initialNumberOfValues;
             this.NumberOfDecimals = dataFieldInfo.NumberOfDecimals;
 
             if (initMissingValues)
             {
                 this.HasMissingValues = dataFieldInfo.HasMissingValues;
+                this.MissingValueInternal = dataFieldInfo.MissingValueInternal;
+                this.MissingValue = dataFieldInfo.MissingValue;
             }
         }
 
         public long External2Internal(object externalValue)
         {
             if (this.IsNumeric)
-            {
-                if (DataFieldInfo.IsNumericType(externalValue.GetType()))
+            {                
+                switch (Type.GetTypeCode(externalValue.GetType()))
                 {
-                    switch (Type.GetTypeCode(externalValue.GetType()))
-                    {
-                        case TypeCode.Int32:
-                            return (long) (int) externalValue;
+                    case TypeCode.Int32:
+                        return (long) (int) externalValue;
 
-                        case TypeCode.Double:
-                            double tmp = (double)externalValue;
-                            return (long)(tmp * Math.Pow(10, this.NumberOfDecimals));
-                    }    
+                    case TypeCode.Double:
+                        double tmp = (double)externalValue;
+                        return (long)(tmp * Math.Pow(10, this.NumberOfDecimals));
                 }
             }
 
@@ -246,8 +247,7 @@ namespace Infovision.Data
 
                 return internalValue;
             }
-
-            //TODO BUG IT WILL ADD SAME VALUES BECAUSE THESE ARE DIFFERENT OBJECTS?
+            
             if (!valueDictionary.ContainsKey(value))
             {
                 maxValueInternalId++;

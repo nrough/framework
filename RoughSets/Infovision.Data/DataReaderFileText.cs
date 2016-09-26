@@ -126,7 +126,12 @@ namespace Infovision.Data
 
                 if (referenceFieldInfo != null)
                 {
-                    fieldInfo.IsNumeric = referenceFieldInfo.IsNumeric;
+                    fieldInfo.IsNumeric = referenceFieldInfo.IsNumeric;                    
+                    fieldInfo.IsSymbolic = referenceFieldInfo.IsSymbolic;
+                    fieldInfo.IsOrdered = referenceFieldInfo.IsOrdered;
+                    fieldInfo.IsUnique = referenceFieldInfo.IsUnique;
+                    fieldInfo.MissingValue = referenceFieldInfo.MissingValue;
+                    fieldInfo.MissingValueInternal = referenceFieldInfo.MissingValueInternal;
                     fieldInfo.NumberOfDecimals = referenceFieldInfo.NumberOfDecimals;
                     
                     foreach (long internalValue in referenceFieldInfo.InternalValues())
@@ -140,12 +145,16 @@ namespace Infovision.Data
                 else
                 {
                     fieldInfo.IsNumeric = DataFieldInfo.IsNumericType(fieldInfo.FieldValueType);
+                    fieldInfo.IsSymbolic = !fieldInfo.IsNumeric;
+                    fieldInfo.IsOrdered = fieldInfo.IsNumeric;                    
+                    //fieldInfo.IsUnique = referenceFieldInfo.IsUnique; 
                     fieldInfo.NumberOfDecimals = this.GetNumberOfDecimals(i - 1);
                 }
 
                 if (this.missingValuesCount.ContainsKey(i - 1))
                 {
                     fieldInfo.HasMissingValues = true;
+
                 }
 
                 dataStoreInfo.AddFieldInfo(fieldInfo, fieldType);

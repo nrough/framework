@@ -22,9 +22,7 @@ namespace Infovision.Data
         private Dictionary<long, int> objectId2Index;
 
         private long[] index2ObjectId;
-        private double[] weights;
-
-        private DataStoreInfo dataStoreInfo;
+        private double[] weights;        
 
         private object mutex = new object();
 
@@ -33,13 +31,8 @@ namespace Infovision.Data
         #region Properties
 
         public string Name { get; set; }
-
-        public DataStoreInfo DataStoreInfo
-        {
-            get { return dataStoreInfo; }
-            set { DataStoreInfo = value; }
-        }
-
+        public DataStoreInfo DataStoreInfo { get; set; }
+        
         public int NumberOfRecords
         {
             get { return this.DataStoreInfo.NumberOfRecords; }
@@ -56,7 +49,7 @@ namespace Infovision.Data
 
         public DataStore(DataStoreInfo dataStoreInfo)
         {
-            this.dataStoreInfo = dataStoreInfo;
+            this.DataStoreInfo = dataStoreInfo;
             this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.1);
         }
 
@@ -111,7 +104,7 @@ namespace Infovision.Data
         private void Resize()
         {
             long newCapacity = capacity != 0 ? Convert.ToInt64((double)capacity * (1 + capacityFactor)) + 1 : 1;
-            long[] newStorage = new long[newCapacity * this.dataStoreInfo.NumberOfFields];
+            long[] newStorage = new long[newCapacity * this.DataStoreInfo.NumberOfFields];
             Buffer.BlockCopy(data, 0, newStorage, 0, data.Length * sizeof(long));
 
             long[] newIndex2ObjectId = new long[newCapacity];
@@ -155,8 +148,8 @@ namespace Infovision.Data
             foreach (int fieldId in record.GetFields())
             {
                 long value = record[fieldId];
-                data[lastIndex * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
-                this.dataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
+                data[lastIndex * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
+                this.DataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
             }
 
             //index2ObjectId.Add(lastIndex, record.ObjectId);
@@ -181,9 +174,9 @@ namespace Infovision.Data
 
         public DataRecordInternal GetRecordByIndex(int objectIndex, bool setObjectId = true)
         {
-            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.dataStoreInfo.NumberOfFields);
+            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.DataStoreInfo.NumberOfFields);
 
-            foreach (int fieldId in this.dataStoreInfo.GetFieldIds())
+            foreach (int fieldId in this.DataStoreInfo.GetFieldIds())
                 valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
 
             DataRecordInternal ret = new DataRecordInternal(valueMap);
@@ -309,7 +302,7 @@ namespace Infovision.Data
                 {
                     internalValue = fieldInfo.Add(data[i], isMissing);
                 }
-                this.data[i * this.dataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
+                this.data[i * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
                 fieldInfo.IncreaseHistogramCount(internalValue);
             }
         }
@@ -329,7 +322,7 @@ namespace Infovision.Data
                 }
 
                 this.DataStoreInfo.SetFieldIndex(fieldId1, fieldIdx2);
-                this.dataStoreInfo.SetFieldIndex(fieldId2, fieldIdx1);
+                this.DataStoreInfo.SetFieldIndex(fieldId2, fieldIdx1);
             }
         }
 
@@ -343,11 +336,11 @@ namespace Infovision.Data
 
                 for (int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
                     fieldIdx < this.data.Length;
-                    fieldIdx += this.dataStoreInfo.NumberOfFields)
+                    fieldIdx += this.DataStoreInfo.NumberOfFields)
                 {
-                    count = (fieldIdx + this.dataStoreInfo.NumberOfFields - 1) > this.data.Length
+                    count = (fieldIdx + this.DataStoreInfo.NumberOfFields - 1) > this.data.Length
                           ? this.data.Length - fieldIdx - 1
-                          : this.dataStoreInfo.NumberOfFields - 1;
+                          : this.DataStoreInfo.NumberOfFields - 1;
 
                     Buffer.BlockCopy(
                         this.data,
@@ -360,7 +353,7 @@ namespace Infovision.Data
                 }
 
                 Array.Resize<long>(ref this.data, this.data.Length - this.NumberOfRecords);
-                this.dataStoreInfo.RemoveFieldInfo(fieldId);
+                this.DataStoreInfo.RemoveFieldInfo(fieldId);
             }
         }
 
@@ -376,7 +369,7 @@ namespace Infovision.Data
             {
                 for (int col = 0; col < this.DataStoreInfo.NumberOfFields; col++)
                 {
-                    newData[(row * (this.dataStoreInfo.NumberOfFields + 1)) + col] = this.data[(row * this.dataStoreInfo.NumberOfFields) + col];
+                    newData[(row * (this.DataStoreInfo.NumberOfFields + 1)) + col] = this.data[(row * this.DataStoreInfo.NumberOfFields) + col];
                 }
             });
 
@@ -390,7 +383,7 @@ namespace Infovision.Data
                     : newFieldInfo.Add(columnData[row], isMissing);
                 newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
                 newFieldInfo.IncreaseHistogramCount(internalValue);
-                newData[row * (this.dataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
+                newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
             }
 
             this.data = newData;
@@ -454,7 +447,7 @@ namespace Infovision.Data
             long[] result = new long[this.DataStoreInfo.NumberOfFields];
             for (int i = 0; i < this.DataStoreInfo.NumberOfFields; i++)
             {
-                result[i] = data[objectIdx * this.dataStoreInfo.NumberOfFields + i];
+                result[i] = data[objectIdx * this.DataStoreInfo.NumberOfFields + i];
             }
             return result;
         }
@@ -480,12 +473,12 @@ namespace Infovision.Data
 
         private void SetFieldIndexValue(int objectIdx, int fieldIdx, long internalValue)
         {
-            data[objectIdx * this.dataStoreInfo.NumberOfFields + fieldIdx] = internalValue;
+            data[objectIdx * this.DataStoreInfo.NumberOfFields + fieldIdx] = internalValue;
         }
 
         public long GetFieldIndexValue(int objectIdx, int fieldIdx)
         {
-            return data[objectIdx * this.dataStoreInfo.NumberOfFields + fieldIdx];
+            return data[objectIdx * this.DataStoreInfo.NumberOfFields + fieldIdx];
         }
 
         public IEnumerable<long> GetObjectIds()
@@ -774,7 +767,7 @@ namespace Infovision.Data
 
         public void Swap(int aidx, int bidx)
         {
-            int numOfFields = this.dataStoreInfo.NumberOfFields;
+            int numOfFields = this.DataStoreInfo.NumberOfFields;
             for (int i = 0; i < numOfFields; i++)
             {
                 long tmpValue = this.GetFieldIndexValue(aidx, i);

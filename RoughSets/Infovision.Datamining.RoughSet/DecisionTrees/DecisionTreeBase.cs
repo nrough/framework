@@ -53,8 +53,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
-            Stopwatch s = new Stopwatch();
-            s.Start();
+            //Stopwatch s = new Stopwatch();
+            //s.Start();
 
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
@@ -62,10 +62,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.GenerateSplits(eqClassCollection, this.root, attributes);
 
-            s.Stop();
+            //s.Stop();
 
             ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
-            trainResult.ModelCreationTime = s.ElapsedMilliseconds;
+            //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             return trainResult;
         }
 

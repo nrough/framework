@@ -7,28 +7,61 @@ namespace Infovision.Data.UnitTests
 {
     [TestFixture]
     internal class DataStoreTest
-    {
-        private DataStore dataStoreTrain = null;
-        private DataStore dataStoreTest = null;
-
-        private DataStoreInfo dataStoreTrainInfo = null;
-        private DataStoreInfo dataStoreTestInfo = null;
-
-        public DataStoreTest()
+    {        
+        [Test]
+        public void NumericAttributeTest()
         {
-            string trainFileName = @"Data\monks-1.train";
-            string testFileName = @"Data\monks-1.test";
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(2).IsNumeric, "Field 2 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(5).IsNumeric, "Field 5 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(8).IsNumeric, "Field 8 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(11).IsNumeric, "Field 11 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(13).IsNumeric, "Field 13 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(16).IsNumeric, "Field 16 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(18).IsNumeric, "Field 18 is not numeric");
+            Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(21).IsNumeric, "Field 21 is not numeric");
 
-            dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
-            dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).External2Internal(48), 48);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).Internal2External(48), 48);
+
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).External2Internal(0), 0);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).Internal2External(0), 0);
+
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).External2Internal(1), 1);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).Internal2External(1), 1);
+
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).External2Internal(-1), -1);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(2).Internal2External(-1), -1);
+
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(5).External2Internal(5951), 5951);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(5).Internal2External(5951), 5951);
+
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(5).External2Internal(-5951), -5951);
+            Assert.AreEqual(data.DataStoreInfo.GetFieldInfo(5).Internal2External(-5951), -5951);
+        }
+
+        [Test]
+        public void TestNumbercInternalValueEncoding()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+            Assert.AreEqual(data.GetFieldIndexValue(1, 1), 48);
         }
 
         [Test]
         public void TestData()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             Assert.AreEqual(7, dataStoreTrainInfo.DecisionFieldId);
             Assert.AreEqual(7, dataStoreTestInfo.DecisionFieldId);
 
@@ -58,6 +91,15 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void ExternalFieldEncoding()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             //Item1 newInstance
             //1 1 1 1 3 1 1
 
@@ -107,6 +149,15 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void TrainDataFieldEncoding()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             for (int i = 0; i < dataStoreTrainInfo.NumberOfRecords; i++)
             {
                 DataRecordInternal dataRecord = dataStoreTrain.GetRecordByIndex(i, false);
@@ -124,6 +175,15 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void TestDataFieldEncoding()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             for (int i = 0; i < dataStoreTestInfo.NumberOfRecords; i++)
             {
                 DataRecordInternal dataRecord = dataStoreTest.GetRecordByIndex(i, false);
@@ -144,6 +204,15 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void DataRecordInternal()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             Dictionary<DataRecordInternal, int> dict = new Dictionary<DataRecordInternal, int>(dataStoreTestInfo.NumberOfRecords);
             int count = 0;
 
@@ -173,6 +242,15 @@ namespace Infovision.Data.UnitTests
         [Test]
         public void DataStoreInfoTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+            DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
+
             foreach (int fieldId in dataStoreTestInfo.GetFieldIds(FieldTypes.All))
             {
                 foreach (long internalValue in dataStoreTestInfo.GetFieldInfo(fieldId).InternalValues())
@@ -258,6 +336,7 @@ namespace Infovision.Data.UnitTests
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             for (int i = 0; i < data.NumberOfRecords; i++)
+            {
                 for (int j = 0; j < data.NumberOfRecords; j++)
                 {
                     var rec1 = data.GetDataVector(i);
@@ -271,6 +350,7 @@ namespace Infovision.Data.UnitTests
                     Assert.AreEqual(rec2, rec3);
                     Assert.AreEqual(rec1, rec4);
                 }
+            }
         }
 
         [Test]

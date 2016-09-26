@@ -15,6 +15,7 @@ namespace Infovision.Data
         private int expectedColums = -1;
         private int expectedRows = -1;
         private Dictionary<int, Type> typePool = new Dictionary<int, Type>();
+        private Dictionary<int, int> numberOfDecimals = new Dictionary<int, int>();
         private Dictionary<int, int> missingValuesCount = new Dictionary<int, int>();
         private Dictionary<int, HashSet<string>> valueCount = new Dictionary<int, HashSet<string>>();
 
@@ -125,12 +126,21 @@ namespace Infovision.Data
 
                 if (referenceFieldInfo != null)
                 {
+                    fieldInfo.IsNumeric = referenceFieldInfo.IsNumeric;
+                    fieldInfo.NumberOfDecimals = referenceFieldInfo.NumberOfDecimals;
+                    
                     foreach (long internalValue in referenceFieldInfo.InternalValues())
                     {
                         object externalValue = referenceFieldInfo.Internal2External(internalValue);
                         bool isMissing = referenceFieldInfo.MissingValueInternal == internalValue;
                         fieldInfo.AddInternal(internalValue, externalValue, isMissing);
                     }
+                    
+                }
+                else
+                {
+                    fieldInfo.IsNumeric = DataFieldInfo.IsNumericType(fieldInfo.FieldValueType);
+                    fieldInfo.NumberOfDecimals = this.GetNumberOfDecimals(i - 1);
                 }
 
                 if (this.missingValuesCount.ContainsKey(i - 1))
@@ -300,7 +310,7 @@ namespace Infovision.Data
             }
             catch (Exception e)
             {
-                throw new InvalidProgramException(String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message));
+                throw new InvalidProgramException(String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message), e);
             }
 
             dataStore.NormalizeWeights();
@@ -339,7 +349,7 @@ namespace Infovision.Data
             else if (!this.CheckNumberOfColumns(fields.Length))
             {
                 throw new System.MissingFieldException(String.Format(CultureInfo.InvariantCulture,
-                                                                     "Wrong fileLine number in row {0} (Was: {1} Expected: {2}",
+                                                                     "Wrong number of columns in row {0} (was: {1} expected: {2}",
                                                                      lineNum,
                                                                      fields.Length,
                                                                      this.ExpectedColumns));
@@ -358,7 +368,8 @@ namespace Infovision.Data
                 }
                 else if (this.ReferenceDataStoreInfo == null)
                 {
-                    this.AddValue2TypePool(i, value);
+                    this.AddValue2TypePool(i, value);  
+                    this.CheckMaxNumberOfDecimals(i, value);
                 }
 
                 HashSet<string> fieldValues = null;
@@ -370,6 +381,14 @@ namespace Infovision.Data
 
                 fieldValues.Add(value);
             }
+        }        
+
+        private int GetNumberOfDecimals(int fieldIndex)
+        {
+            int result;
+            if (this.numberOfDecimals.TryGetValue(fieldIndex, out result))
+                return result;
+            return 0;
         }
 
         private Type AttributeType(int fieldIndex)
@@ -381,6 +400,25 @@ namespace Infovision.Data
             }
 
             return typeof(string);
+        }
+
+        private void CheckMaxNumberOfDecimals(int fieldIndex, string value)
+        {
+            if (!DataFieldInfo.IsNumericType(this.AttributeType(fieldIndex)))
+                return;
+
+            int count = value.GetNumberOfDecimals();
+            int maxNumberOfDec = 0;
+
+            if (numberOfDecimals.TryGetValue(fieldIndex, out maxNumberOfDec))
+            {
+                if (maxNumberOfDec < count)
+                    numberOfDecimals[fieldIndex] = count;
+            }
+            else
+            {
+                numberOfDecimals[fieldIndex] = count;
+            }
         }
 
         private void AddValue2TypePool(int fieldIndex, string value)

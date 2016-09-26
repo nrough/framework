@@ -59,7 +59,7 @@ namespace DecisionForestTest
             this.OpenStream(Path.Combine(@"results", benchmarkData.Name + ".result"));
 
             int maxTest = 20;
-            int size = 100;
+            int size = 40;
             int numberOfTreeProbes = 10;            
 
             for (int t = 0; t < maxTest; t++)

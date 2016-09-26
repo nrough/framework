@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Args.cs" />
     <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="DecimalExtensions.cs" />
     <Compile Include="InfovisionConfiguration.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="DateTimeUtils.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Int64ArrayEqualityComparer.cs" />
     <Compile Include="Int64ArraySIMDEqualityComparer.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="LongExtensions.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="PascalSet.cs" />
     <Compile Include="PrimeTool.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="StopwatchExtensions.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

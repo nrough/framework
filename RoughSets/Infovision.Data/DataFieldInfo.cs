@@ -8,20 +8,62 @@ namespace Infovision.Data
     [Serializable]
     public class DataFieldInfo
     {
-        private Type fieldValueType;
+        #region Members
+
         private Dictionary<long, object> indexDictionary;
         private Dictionary<object, long> valueDictionary;
-        private long maxValueInternalId;
+        
         private Histogram<long> histogram;
         private Histogram<long> histogramWeights;
+
         private int initialNumberOfValues;
+        private long maxValueInternalId;
+
+        public static long DefaultMissingValue = Int64.MinValue;
+
+        #endregion
+
+        #region Properties
+
+        public string Name { get; set; }
+        public string Alias { get; set; }
+        public int Id { get; set; }
+        public Type FieldValueType { get; set; }
+    
+        public Histogram<long> Histogram { get { return histogram; } }
+        public Histogram<long> HistogramWeights { get { return histogramWeights; } }
+
+        public long MinValue { get { return histogram.Min; } }
+        public long MaxValue { get { return histogram.Max; } }
+
+        public bool HasMissingValues { get; set; }
+        public object MissingValue { get; set; }
+        public long MissingValueInternal { get; set; }
+
+        public bool IsNumeric { get; set; }
+        public bool IsUnique { get; set; }
+        public bool IsSymbolic { get; set; }
+        public bool IsOrdered { get; set; }
+
+        public double[] Cuts { get; set; }
+
+        //TODO NumberOfValues property needs to be changed for numeric data
+        public int NumberOfValues
+        {
+            get { return this.Histogram.Count; }
+        }
+
+        public int NumberOfDecimals { get; set; }
+
+        #endregion Properties
+
 
         #region Constructors
 
         public DataFieldInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)
         {
             this.initialNumberOfValues = initialNumberOfValues;
-            this.fieldValueType = fieldValueType;
+            this.FieldValueType = fieldValueType;
             this.maxValueInternalId = 0;
 
             if (this.initialNumberOfValues == 0)
@@ -43,41 +85,10 @@ namespace Infovision.Data
             this.Name = String.Format(CultureInfo.InvariantCulture, "a{0}", attributeId);
             this.HasMissingValues = false;
             this.MissingValue = null;
+            this.NumberOfDecimals = 0;
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        public string Name { get; set; }
-        public string Alias { get; set; }
-        public int Id { get; set; }
-
-        public Type FieldValueType
-        {
-            get { return fieldValueType; }
-            set { fieldValueType = value; }
-        }
-
-        public Histogram<long> Histogram { get { return histogram; } }
-        public Histogram<long> HistogramWeights { get { return histogramWeights; } }
-
-        public long MinValue { get { return histogram.Min; } }
-        public long MaxValue { get { return histogram.Max; } }
-
-        public bool HasMissingValues { get; set; }
-        public object MissingValue { get; set; }
-        public long MissingValueInternal { get; set; }
-
-        public bool IsNumeric { get; set; }
-        public double[] Cuts { get; set; }
-
-        public int NumberOfValues
-        {
-            get { return this.Histogram.Count; }
-        }
-
-        #endregion Properties
 
         #region Methods
 
@@ -100,15 +111,24 @@ namespace Infovision.Data
 
         public bool CanDiscretize()
         {
-            //TODO IsUnique IsIdentifier  --> return false
+            if (this.IsUnique)
+                return false;
 
             if (this.HasMissingValues)
                 return false;
 
-            if ((this.IsNumeric || Type.GetTypeCode(this.FieldValueType) == TypeCode.Double))
+            if (this.IsNumeric)
                 return true;
 
-            if (Type.GetTypeCode(this.FieldValueType) == TypeCode.Int32)
+            return false;
+        }
+
+        public static bool IsNumericType(Type t)
+        {
+            if (t == typeof(int)
+                || t == typeof(double)
+                || t == typeof(float)
+                || t == typeof(decimal))
                 return true;
 
             return false;
@@ -131,8 +151,7 @@ namespace Infovision.Data
                     {
                         if (dataFieldInfo.HasMissingValues && dataFieldInfo.MissingValueInternal == kvp.Key)
                         {
-                            continue; //do nothing
-                            //this.AddInternal(kvp.Key, kvp.Value, true);
+                            continue;
                         }
                         else
                         {
@@ -144,12 +163,16 @@ namespace Infovision.Data
                 this.maxValueInternalId = dataFieldInfo.maxValueInternalId;
             }
 
-            this.fieldValueType = dataFieldInfo.FieldValueType;
+            this.FieldValueType = dataFieldInfo.FieldValueType;
             this.Name = dataFieldInfo.Name;
             this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
             this.IsNumeric = dataFieldInfo.IsNumeric;
+            this.IsUnique = dataFieldInfo.IsUnique;
+            this.IsSymbolic = dataFieldInfo.IsSymbolic;
+            this.IsOrdered = dataFieldInfo.IsOrdered;
             this.initialNumberOfValues = dataFieldInfo.initialNumberOfValues;
+            this.NumberOfDecimals = dataFieldInfo.NumberOfDecimals;
 
             if (initMissingValues)
             {
@@ -159,6 +182,22 @@ namespace Infovision.Data
 
         public long External2Internal(object externalValue)
         {
+            if (this.IsNumeric)
+            {
+                if (DataFieldInfo.IsNumericType(externalValue.GetType()))
+                {
+                    switch (Type.GetTypeCode(externalValue.GetType()))
+                    {
+                        case TypeCode.Int32:
+                            return (long) (int) externalValue;
+
+                        case TypeCode.Double:
+                            double tmp = (double)externalValue;
+                            return (long)(tmp * Math.Pow(10, this.NumberOfDecimals));
+                    }    
+                }
+            }
+
             long internalValue;
             if (valueDictionary.TryGetValue(externalValue, out internalValue))
             {
@@ -168,7 +207,16 @@ namespace Infovision.Data
         }
 
         public object Internal2External(long internalValue)
-        {
+        {            
+            if (this.IsNumeric && (this.MissingValueInternal != internalValue || !this.HasMissingValues))
+            {
+                switch (Type.GetTypeCode(this.FieldValueType))
+                {
+                    case TypeCode.Double: return internalValue.ConvertToDouble(this.NumberOfDecimals);
+                    case TypeCode.Int32: return internalValue.ConvertToInt(this.NumberOfDecimals);
+                }
+            }
+
             object externalValue;
             if (indexDictionary.TryGetValue(internalValue, out externalValue))
             {
@@ -179,6 +227,27 @@ namespace Infovision.Data
 
         public long Add(object value, bool isMissing)
         {
+            if (this.IsNumeric && !isMissing)
+            {
+                long internalValue =  this.External2Internal(value);
+
+                //TODO Do we need this ? -->
+
+                //if (!valueDictionary.ContainsKey(value))
+                if(!indexDictionary.ContainsKey(internalValue))
+                {
+                    valueDictionary.Add(value, internalValue);
+                    indexDictionary.Add(internalValue, value);
+
+                    if (internalValue > maxValueInternalId)
+                        maxValueInternalId = internalValue;
+                }
+                //<--
+
+                return internalValue;
+            }
+
+            //TODO BUG IT WILL ADD SAME VALUES BECAUSE THESE ARE DIFFERENT OBJECTS?
             if (!valueDictionary.ContainsKey(value))
             {
                 maxValueInternalId++;
@@ -190,7 +259,7 @@ namespace Infovision.Data
                     if (this.MissingValue == null)
                     {
                         this.MissingValue = value;
-                        this.MissingValueInternal = maxValueInternalId;
+                        this.MissingValueInternal = DataFieldInfo.DefaultMissingValue;
                     }
                     else if (!this.MissingValue.Equals(value))
                     {
@@ -211,11 +280,12 @@ namespace Infovision.Data
 
             return this.External2Internal(value);
         }
-
+        
         public void AddInternal(long internalValue, object externalValue, bool isMissing)
-        {
+        {                        
             //TODO in case we just copy values from existing FieldInfo we need to increase maxValueInternalId
-            if (!valueDictionary.ContainsKey(externalValue))
+            //if (!valueDictionary.ContainsKey(externalValue))
+            if(!indexDictionary.ContainsKey(internalValue))
             {
                 valueDictionary.Add(externalValue, internalValue);
                 indexDictionary.Add(internalValue, externalValue);

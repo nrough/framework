@@ -106,7 +106,7 @@ namespace Infovision.Datamining.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
 
             if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                return new PermutationGeneratorFieldObject(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
+                return new PermutationGeneratorFieldObject(dataStore, args.GetParameter<double>(ReductGeneratorParamHelper.Epsilon));
 
             return new PermutationGeneratorFieldObject(dataStore);
         }

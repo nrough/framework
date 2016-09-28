@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 
-        public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
+        public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles();
         }

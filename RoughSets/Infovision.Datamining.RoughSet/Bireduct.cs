@@ -83,6 +83,16 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
+        public override bool TryRemoveAttribute(int attributeId)
+        {
+            if (this.CheckRemoveAttribute(attributeId))
+            {
+                return base.TryRemoveAttribute(attributeId);
+            }
+
+            return false;
+        }
+        
         protected override bool CheckRemoveAttribute(int attributeId)
         {
             if (base.CheckRemoveAttribute(attributeId) == false)

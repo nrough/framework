@@ -10,22 +10,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class BireductTest
     {
-        private DataStore dataStoreTrain = null;
-        private DataStore dataStoreTest = null;
-
-        private DataStoreInfo dataStoreTrainInfo = null;
-
-        public BireductTest()
-        {
-            string trainFileName = @"Data\dna.train";
-            string testFileName = @"Data\dna.train";
-
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
-
-            dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
-        }
-
         [Test]
         public void CalcBiReductPositive()
         {
@@ -46,6 +30,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void CheckBireductUnique(string reductGeneratorKey)
         {
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.train";
+
+            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            var dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.NumberOfPermutations },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
 
@@ -65,6 +57,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void RelativeMeasureTest()
         {
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.train";
+
+            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            var dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Dictionary<int, double> elementWeights = new Dictionary<int, double>(dataStoreTrain.NumberOfRecords);
             double sumWeights = 0;
 
@@ -99,6 +99,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void MajorityMeasureTest()
         {
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.train";
+
+            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            var dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Dictionary<int, double> elementWeights = new Dictionary<int, double>(dataStoreTrain.NumberOfRecords);
             double sumWeights = 0;
 
@@ -500,11 +508,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         private void Classify(string reductGeneratorKey)
         {
-            Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.5m);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+            string trainFileName = @"Data\dna.train";
+            string testFileName = @"Data\dna.train";
+
+            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            var dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
+            Args args = new Args(4);
+            args.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
+            args.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, 0.5);
+            args.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
+            args.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();

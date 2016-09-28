@@ -15,17 +15,13 @@ namespace Infovision.Utils.UnitTests
             Console.WriteLine();
 
             Console.WriteLine(array.RemoveAt(1, 0).ToStr());
-
             Console.WriteLine(array.RemoveAt(1, 1).ToStr());
             Console.WriteLine(array.RemoveAt(1, -1).ToStr());
-
             Console.WriteLine(array.RemoveAt(5, 2).ToStr());
             Console.WriteLine(array.RemoveAt(5, -2).ToStr());
-
             Console.WriteLine(array.RemoveAt(5, 3).ToStr());
             Console.WriteLine(array.RemoveAt(5, -3).ToStr());
-
-            Console.WriteLine(array.RemoveAt(12, 7).ToStr());
+            Console.WriteLine(array.RemoveAt(12, 1).ToStr());
         }
     }
 }

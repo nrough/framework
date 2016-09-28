@@ -9,25 +9,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class ApproximateReductTest
     {
-        private DataStore dataStoreTrain = null;
-        private DataStore dataStoreTest = null;
-
-        private DataStoreInfo dataStoreTrainInfo = null;
-
-        public ApproximateReductTest()
+        [Test]
+        public void ReductStatisticsTest()
         {
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
-            dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
-        }
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-        [Test]
-        public void ReductStatisticsTest()
-        {
             ReductStore reductStore = new ReductStore(1);
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0);
             reductStore.AddReduct(reduct);
@@ -140,6 +132,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EmptyReductStatisticsTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Reduct reduct = new Reduct(dataStoreTrain);
             EquivalenceClassCollection result = reduct.EquivalenceClasses;
             var dataVector = new long[] { };
@@ -154,6 +154,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void FullAttributeSetReductStatisticsTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             ReductStore reductStore = new ReductStore(1);
             Reduct reduct = new Reduct(dataStoreTrain, new int[] { 1, 2, 3, 4, 5, 6 }, 0);
             reductStore.AddReduct(reduct);
@@ -163,7 +170,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 EquivalenceClassCollection result = localReduct.EquivalenceClasses;
                 Assert.AreEqual(124, result.NumberOfPartitions);
 
-                var dataVector = new long[] { 1, 1, 1, 1, 1, 1 };
+                //var dataVector = new long[] { 1, 1, 1, 1, 1, 1 };
+                var dataVector = new long[] { 1, 1, 1, 1, 3, 1 };
                 EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
 
                 Assert.AreEqual(1, reductStat.NumberOfObjects);
@@ -173,6 +181,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductFiltering()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             ReductStore reductStore = new ReductStore(3);
 
             reductStore.AddReduct(new Reduct(dataStoreTrain, new int[] { 1, 2 }, 0));
@@ -225,6 +241,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void EquivalenceClassMapTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey,
@@ -292,6 +316,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductPositiveTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
                                                  ReductGeneratorParamHelper.TrainData },
                                   new Object[] { ReductFactoryKeyHelper.ApproximateReductPositive, dataStoreTrain });
@@ -317,6 +349,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductMajorityTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
@@ -345,6 +385,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void ReductRelativeTest()
         {
+            string trainFileName = @"Data\monks-1.train";
+            string testFileName = @"Data\monks-1.test";
+
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+
+            DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
+
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
             double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 

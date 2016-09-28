@@ -100,7 +100,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     Args parms = new Args();
                     parms.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0m);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0);
                     parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
 

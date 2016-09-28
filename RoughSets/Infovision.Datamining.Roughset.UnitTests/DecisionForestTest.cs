@@ -252,6 +252,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     int[] nodeAttributes = ((DecisionTreeNode)treeC45.Root).GroupBy(x => x.Key).Select(g => g.First().Key).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
                     int[] reductAttributes = reduct.Attributes.ToArray();
 
+                    Array.Sort(nodeAttributes);
+                    Array.Sort(reductAttributes);
+
                     for (int i = 0; i < nodeAttributes.Length; i++)
                         Assert.AreEqual(nodeAttributes[i], reductAttributes[i]);
                 }

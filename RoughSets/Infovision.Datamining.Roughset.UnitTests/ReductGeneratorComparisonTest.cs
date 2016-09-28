@@ -22,7 +22,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             RandomSingleton.Seed = seed;
         }
 
-        public IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
+        public static IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             int numberOfPermutations = 20;
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);

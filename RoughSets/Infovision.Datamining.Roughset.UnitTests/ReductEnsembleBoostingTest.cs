@@ -381,7 +381,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Args innerArgs = new Args();
                     innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2m);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
 
@@ -495,7 +495,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Args innerArgs = new Args();
                     innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
 
@@ -683,7 +683,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Args innerArgs = new Args();
                     innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
 

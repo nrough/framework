@@ -128,7 +128,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual double GetPartitionQuality(IReduct reduct)
         {
-            return new InformationMeasureWeights().Calc(reduct);
+            return InformationMeasureWeights.Instance.Calc(reduct);
         }
 
         protected override void Generate()

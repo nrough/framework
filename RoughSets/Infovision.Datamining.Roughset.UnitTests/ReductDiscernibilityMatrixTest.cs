@@ -35,7 +35,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0m);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();

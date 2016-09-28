@@ -165,6 +165,13 @@ namespace Infovision.Datamining.Roughset
             {
                 this.PermutationGenerator = (IPermutationGenerator)args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
             }
+            else
+            {
+                if (this.DataStore != null)
+                {
+                    this.PermutationGenerator = new PermutationGenerator(this.DataStore);
+                }
+            }
 
             if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))
             {
@@ -179,6 +186,10 @@ namespace Infovision.Datamining.Roughset
             {
                 int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
                 this.Permutations = this.PermutationGenerator.Generate(numberOfPermutations);
+            }
+            else
+            {
+                this.Permutations = this.PermutationGenerator.Generate(1);
             }
 
             if (args.Exist("USECACHE"))

@@ -84,9 +84,9 @@ namespace Infovision.Utils
             }
 
             if (startIndex < 0)
-                throw new ArgumentOutOfRangeException("startIndex");
+                throw new ArgumentOutOfRangeException("startIndex", "startIndex < 0");
             if (startIndex + length > array.Length)
-                throw new ArgumentOutOfRangeException("length");
+                throw new ArgumentOutOfRangeException("length", "startIndex + length > array.Length");
 
             T[] newArray = new T[array.Length - length];
 

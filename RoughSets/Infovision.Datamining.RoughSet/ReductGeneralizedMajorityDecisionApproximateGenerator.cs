@@ -86,6 +86,9 @@ namespace Infovision.Datamining.Roughset
             IReductStore reductStore,
             IReductStoreCollection reductStoreCollection = null)
         {
+            if (reductStore == null)
+                throw new ArgumentNullException("reductStore", "reductStore cannot be null when calculating exceptions");
+
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;

@@ -188,7 +188,7 @@ namespace Infovision.Datamining.Roughset
 
         public static IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
+             if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
 
             if (args.Exist(ReductGeneratorParamHelper.PermuatationGenerator))

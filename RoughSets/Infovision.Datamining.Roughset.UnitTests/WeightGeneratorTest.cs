@@ -3,21 +3,12 @@ using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace  Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class WeightGeneratorTest
     {
-        private DataStore dataStore = null;
-
-        public WeightGeneratorTest()
-        {
-            string fileName = @"Data\playgolf.train";
-            dataStore = DataStore.Load(fileName, FileFormat.Rses1);
-        }
-
         [Test]
         public void BalancedAccuracy()
         {
@@ -26,10 +17,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2);
+            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.5);
             args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
-                ReductFactory.GetPermutationGenerator(args).Generate(10));
+            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();
@@ -59,7 +49,7 @@ namespace  Infovision.Datamining.Roughset.UnitTests
                 total += classificationResult.DecisionTotal(decision);
             }
 
-            Assert.AreEqual(1.0M, aprioriSum);
+            Assert.AreEqual(1.0, aprioriSum);
             Assert.AreEqual(dataStoreTest.NumberOfRecords, total);
             Assert.LessOrEqual(classificationResult.BalancedAccuracy, 1);
             Assert.GreaterOrEqual(classificationResult.BalancedAccuracy, 0);
@@ -83,7 +73,7 @@ namespace  Infovision.Datamining.Roughset.UnitTests
                     ReductGeneratorParamHelper.TrainData
                 },
                 new object[] {
-                    ReductFactoryKeyHelper.ApproximateReductRelative,
+                    ReductFactoryKeyHelper.ApproximateReductMajority,
                     localDataStore
                 }
             );
@@ -141,19 +131,25 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             IReductStore redStore = redGenStd.GetReductStoreCollection().FirstOrDefault();
             IReductStore redStoreW = redGenWgh.GetReductStoreCollection().FirstOrDefault();
 
-            int i = 0;
-            foreach (IReduct reduct in redStore)
+            Assert.AreEqual(redStore.Count, redStoreW.Count);
+
+            for(int i=0; i<redStore.Count; i++)
             {
+                IReduct reduct = redStore.GetReduct(i);
                 IReduct redW = redStoreW.GetReduct(i);
-                i++;
 
-                if (!reduct.Attributes.Equals(redW.Attributes))
+                int[] attr1 = reduct.Attributes.ToArray();
+                int[] attr2 = redW.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
                 {
-                    HashSet<int> f1 = reduct.Attributes;
-                    HashSet<int> f2 = redW.Attributes;
+                    Assert.AreEqual(attr1[j], attr2[j]);
                 }
-
-                Assert.AreEqual(reduct.Attributes, redW.Attributes);
             }
         }
 
@@ -240,6 +236,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductRelative()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
@@ -281,6 +280,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductMajority()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
             permutationList.Add(new Permutation(new int[] { 3, 4, 2, 1 }));
@@ -322,6 +324,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightEqualConstructorTest()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
             Assert.IsNotNull(weightGenerator);
         }
@@ -329,12 +334,17 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightRelativeConstructorTest()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             WeightGenerator weightGenerator = new WeightGeneratorRelative(dataStore);
             Assert.IsNotNull(weightGenerator);
         }
 
         private void TestWeightsNormalized(WeightGenerator weightGenerator)
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
             double weightSum = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
@@ -347,6 +357,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
 
         private void CheckWeightsEqual(WeightGenerator weightGenerator)
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             double weight = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
@@ -364,6 +377,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightEqualGenerateTest()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
             this.CheckWeightsEqual(weightGenerator);
             this.TestWeightsNormalized(weightGenerator);
@@ -372,6 +388,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightRelativeGenerateTest()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             WeightGenerator weightGenerator = new WeightGeneratorRelative(dataStore);
             this.TestWeightsNormalized(weightGenerator);
         }
@@ -379,6 +398,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void InformationMeasureMajorityTest()
         {
+            string fileName = @"Data\playgolf.train";
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
 
             ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0, weightGenerator.Weights);

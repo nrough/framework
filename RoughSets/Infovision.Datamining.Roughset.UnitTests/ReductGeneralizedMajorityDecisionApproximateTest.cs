@@ -11,7 +11,6 @@ using Infovision.Datamining.Benchmark;
 using Infovision.Statistics;
 using Infovision.Utils;
 using NUnit.Framework;
-using Infovision.Datamining.Roughset;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
@@ -35,7 +34,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 });
         }
 
-        [Test, TestCaseSource("GetDataFiles"), Ignore("Temporary disable")]
+        [Test, TestCaseSource("GetDataFiles")]
         public void EmptyReductsTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
@@ -86,7 +85,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             Assert.AreEqual(dataQuality, dataQuality_2, 0.0000001);
 
-            for (double eps = 0.0; eps <= 1.0; eps += 0.01)
+            for (double eps = 0.0; eps <= 0.5; eps += 0.1)
             {
                 long elapsed_sum_1 = 0;
                 long elapsed_sum_2 = 0;
@@ -114,9 +113,6 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     reductStoreCollection.AddStore(store);
 
                     Assert.NotNull(reduct_1);
-
-                    //TODO Bug: reduct_1 has Equivalence classes calculated but inside each equivalence class the DecisionWeightSum map is not caculated.
-                    //As a result reductQuality_1 value is equal to zero which is wrong, it should be caculated based on decisionweightSum map 
 
                     double reductQuality_1 = InformationMeasureWeights.Instance.Calc(reduct_1);
                     Assert.GreaterOrEqual(reductQuality_1, dataQuality * (1.0 - eps));
@@ -199,7 +195,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             }
         }
 
-        [Test, TestCaseSource("GetDataFiles"), Ignore("Temporary disable")]
+        [Test, TestCaseSource("GetDataFiles")]
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
@@ -360,15 +356,20 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
         public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, double epsilon, int[] attributeSubset)
         {
-            Args parms = new Args();
+            Args parms = new Args(5);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-            return reductGenerator.CalculateReduct(attributeSubset);
+
+            IReduct result = reductGenerator.CalculateReduct(attributeSubset);
+            result.EquivalenceClasses.RecalcEquivalenceClassStatistic(data);
+
+            return result;
         }
 
         public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
@@ -378,6 +379,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneratorWeightsMajority reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;

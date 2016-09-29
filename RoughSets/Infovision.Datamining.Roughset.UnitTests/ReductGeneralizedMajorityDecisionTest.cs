@@ -4,6 +4,7 @@ using System.Linq;
 using Infovision.Data;
 using Infovision.Datamining.Benchmark;
 using Infovision.Utils;
+using Infovision.Math;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests
@@ -99,7 +100,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
             //Console.WriteLine(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -163,10 +164,15 @@ namespace Infovision.Datamining.Roughset.UnitTests
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
             ReductGeneralizedMajorityDecisionGenerator reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
-            return reductGenerator.CalculateReduct(attributeSubset);
+
+            IReduct result = reductGenerator.CalculateReduct(attributeSubset);
+            result.EquivalenceClasses.RecalcEquivalenceClassStatistic(data);
+
+            return result;
         }
 
         public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
@@ -222,20 +228,26 @@ namespace Infovision.Datamining.Roughset.UnitTests
             IReduct allAttributes =
                 new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
 
-            IInformationMeasure measure = new InformationMeasureWeights();
-            double dataQuality = measure.Calc(allAttributes);
+            double dataQuality = InformationMeasureWeights.Instance.Calc(allAttributes);
 
-            for (double eps = 0.0; eps < 1.0; eps += 0.01)
+            for (double eps = 0.0; eps < 0.5; eps += 0.02)
             {
                 foreach (Permutation permutation in permutations)
                 {
                     IReduct gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
-                    double gdQuality = measure.Calc(gdReduct);
+                    double gdQuality = InformationMeasureWeights.Instance.Calc(gdReduct);
 
+                    Assert.That(gdQuality, 
+                        Is.GreaterThanOrEqualTo((1.0 - eps) * dataQuality)
+                        .Using(DoubleEpsilonComparer.Instance),
+                        String.Format("{0} M(B)={1}", gdReduct, gdQuality));
+
+                    /*
                     Assert.GreaterOrEqual(
                         gdQuality,
                         (1.0 - eps) * dataQuality,
                         String.Format("{0} M(B)={1}", gdReduct, gdQuality));
+                    */
                 }
             }
         }
@@ -261,7 +273,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     IReduct gdReduct = CalculateGeneralizedDecisionReductFromSubset(data, eps, permutation.ToArray());
                     double gdQuality = measure.Calc(gdReduct);
 
-                    Assert.LessOrEqual(dataQuality - gdQuality, eps);
+                    Assert.That(dataQuality - gdQuality, Is.LessThanOrEqualTo(eps).Using(DoubleEpsilonComparer.Instance));
+                    //Assert.LessOrEqual(dataQuality - gdQuality, eps);
                 }
             }
         }

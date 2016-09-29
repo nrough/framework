@@ -149,7 +149,12 @@ namespace Infovision.Datamining.Roughset
             this.ReductStoreCollection.AddStore(localReductPool);
         }
 
-        public override IReduct CreateReduct(int[] permutation, double epsilon, double[] weights, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
+        public override IReduct CreateReduct(
+            int[] permutation, 
+            double epsilon, 
+            double[] weights, 
+            IReductStore reductStore = null, 
+            IReductStoreCollection reductStoreCollection = null)
         {
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, weights);
             int len = permutation.Length;

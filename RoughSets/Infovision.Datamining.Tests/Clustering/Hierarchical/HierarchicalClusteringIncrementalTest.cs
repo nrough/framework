@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             string f1 = String.Format(@"sahn.bmp");
             b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            var sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
+            var sihc = new HierarchicalClusteringSIHC(Similarity.Euclidean, ClusteringLinkage.Complete);
 
             foreach (KeyValuePair<int, double[]> kvp in data)
                 sihc.AddToCluster(kvp.Key, kvp.Value);
@@ -65,7 +65,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             {
                 int[] tmp = keys.ShuffleDuplicate();
 
-                HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
+                HierarchicalClusteringSIHC sihc = new HierarchicalClusteringSIHC(Similarity.Euclidean, ClusteringLinkage.Complete);
                 sihc.MinimumNumberOfInstances = 5;
 
                 for (int i = 0; i < tmp.Length; i++)

@@ -115,6 +115,23 @@ namespace Infovision.Utils
             return sb.ToString();
         }
 
+        public static string ToStr2D<T>(this T[][] array, char separator = '|')
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = 0; j < array[i].Length; j++)
+                {
+                    sb.Append(array[i][j].ToString());
+                    if (j < array[i].Length - 1)
+                        sb.Append(separator);
+                }
+
+                sb.Append(Environment.NewLine);
+            }
+            return sb.ToString();
+        }
+
         public static T[] SubArray<T>(this T[] array, int index, int length)
         {
             if (array == null)

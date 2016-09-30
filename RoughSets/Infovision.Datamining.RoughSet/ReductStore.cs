@@ -238,7 +238,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     if (reduct.GetType() == localReduct.GetType()
                         && localReduct.IsException == reduct.IsException
-                        && DoubleEpsilonComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
+                        && ToleranceDoubleComparer.Instance.Equals(localReduct.Epsilon, reduct.Epsilon)
                         && reduct.Attributes.IsSupersetOf(localReduct.Attributes))
                     {
                         return false;

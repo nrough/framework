@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Args.cs" />
+    <Compile Include="ArrayComparer.cs" />
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="DecimalExtensions.cs" />
     <Compile Include="DoubleExtensions.cs" />

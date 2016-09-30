@@ -4,6 +4,7 @@ using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace  Infovision.Datamining.Roughset.UnitTests
 {
@@ -425,6 +426,9 @@ namespace  Infovision.Datamining.Roughset.UnitTests
 
         public bool CompareReductStores(IReductStore reductStore1, IReductStore reductStore2)
         {
+            if (reductStore1.Count != reductStore2.Count)
+                Debugger.Break();
+
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 
             //Note that the order of reducts inside reduct store might differ when calculated in parallel
@@ -452,9 +456,17 @@ namespace  Infovision.Datamining.Roughset.UnitTests
 
             for (int i = 0; i < redAttr1.Length; i++)
             {
+                if (redAttr1[i].Length != redAttr2[i].Length)
+                    Debugger.Break();
+
                 Assert.AreEqual(redAttr1[i].Length, redAttr2[i].Length);
                 for (int j = 0; j < redAttr1[i].Length; j++)
+                {
+                    if(redAttr1[i][j] != redAttr2[i][j])
+                        Debugger.Break();
+
                     Assert.AreEqual(redAttr1[i][j], redAttr2[i][j]);
+                }
             }
 
             return true;

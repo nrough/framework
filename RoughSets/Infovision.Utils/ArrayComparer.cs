@@ -32,7 +32,7 @@ namespace Infovision.Utils
 
             for (int i = 0; i < x.Length; i++)
             {
-                int checkElement = x[i].CompareTo(x[i]);
+                int checkElement = x[i].CompareTo(y[i]);
                 if (checkElement != 0)
                     return checkElement;
             }
@@ -55,7 +55,7 @@ namespace Infovision.Utils
                 return false;
 
             for (int i = 0; i < x.Length; i++)
-                if (!x[i].Equals(x[i]))
+                if (!x[i].Equals(y[i]))
                     return false;
           
             return true;

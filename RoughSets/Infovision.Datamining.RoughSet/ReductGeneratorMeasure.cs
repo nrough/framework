@@ -204,12 +204,22 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void ReduceForward(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
         {
+            //Console.WriteLine(permutation.ToStr(' '));
+
             for (int i = 0; i < permutation.Length; i++)
-            {                
+            {
+                //Console.WriteLine("Try to remove {0}", permutation[i]);
                 if (reduct.TryRemoveAttribute(permutation[i]))
                 {
                     if (!this.IsReduct(reduct, reductStore, useCache))
+                    {
                         reduct.AddAttribute(permutation[i]);
+                        //Console.WriteLine("Failed to remove {0}", permutation[i]);
+                    }
+                    //else
+                    //{
+                    //    Console.WriteLine("Success to remove {0}", permutation[i]);
+                    //}
                 }
             }
         }

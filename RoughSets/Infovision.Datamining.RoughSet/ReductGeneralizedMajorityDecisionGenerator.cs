@@ -166,19 +166,31 @@ namespace Infovision.Datamining.Roughset
 
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
 
+            //Console.WriteLine(permutation.ToStr(' '));
+
             EquivalenceClassCollection newEqClasses = null;
             while (step >= 1)
             {
                 for (int i = 0; i < len && step <= len; i += step)
                 {
+                    //Console.WriteLine("+Trying to remove {0}", eqClasses.Attributes[i]);
+
                     newEqClasses = this.Reduce(eqClasses, i, step, reductStore);
+
                     //reduction was successful
                     if (!Object.ReferenceEquals(newEqClasses, eqClasses))
                     {
+                        //Console.WriteLine("+Success to remove {0}", eqClasses.Attributes[i]);
+
                         eqClasses = newEqClasses;
                         len -= step;
                         i -= step;
                     }
+                    //else
+                    //{
+                    //    Console.WriteLine("+Failed to remove {0}", eqClasses.Attributes[i]);
+                    //}
+
                 }
 
                 if (step == 1)

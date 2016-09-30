@@ -1,5 +1,5 @@
 ﻿using System;
-using Infovision.Math;
+using Infovision.Utils;
 
 namespace Infovision.Statistics
 {

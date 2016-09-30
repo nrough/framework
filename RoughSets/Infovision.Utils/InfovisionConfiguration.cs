@@ -9,7 +9,9 @@ namespace Infovision.Utils
 {
     public class InfovisionConfiguration
     {
+        private static int DEBUG_MAX_DOP = Environment.ProcessorCount;
         private static int maxDegreeOfParallelism = -1;
+
         public static int MaxDegreeOfParallelism
         {
             get
@@ -24,7 +26,7 @@ namespace Infovision.Utils
                     if (String.IsNullOrEmpty(result))
                     {
 #if DEBUG
-                        maxDegreeOfParallelism = 1;
+                        maxDegreeOfParallelism = DEBUG_MAX_DOP;
 #else
                         maxDegreeOfParallelism = Environment.ProcessorCount;
 #endif

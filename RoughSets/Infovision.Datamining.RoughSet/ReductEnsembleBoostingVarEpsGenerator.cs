@@ -82,14 +82,18 @@ namespace Infovision.Datamining.Roughset
         /// <param name="reduct"></param>
         /// <returns></returns>
         public virtual bool CheckIsReduct(IReduct reduct)
-        {
+        {            
+            return ToleranceDoubleComparer.Instance.Compare(
+                this.GetPartitionQuality(reduct),
+                ((1.0 - this.Epsilon) * this.GetDataSetQuality(reduct)) + (this.Epsilon * this.m0)) != -1;
+
+            /*
             double mB = this.GetPartitionQuality(reduct);
             double mA = this.GetDataSetQuality(reduct);
-
             if ((mB - this.m0) >= (1.0 - this.Epsilon) * (mA - m0))
                 return true;
-
             return false;
+            */
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore)

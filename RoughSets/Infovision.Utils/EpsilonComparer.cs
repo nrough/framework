@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.Math
+namespace Infovision.Utils
 {
     public class EpsilonComparer<T> : EqualityComparer<T>, IComparer<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
@@ -26,7 +26,7 @@ namespace Infovision.Math
         {
             return a.CompareTo(b);
         }
-
+        
         public override int GetHashCode(T a)
         {
             return a.GetHashCode();
@@ -42,7 +42,7 @@ namespace Infovision.Math
     {
         private static volatile DoubleEpsilonComparer instance;
         private static object syncRoot = new Object();
-        private static double DefaultEpsilon = 1E-9;
+        private static double DEFAULT_EPSILON = 1E-9;
 
         public static DoubleEpsilonComparer Instance
         {
@@ -53,7 +53,7 @@ namespace Infovision.Math
                     lock (syncRoot)
                     {
                         if (instance == null)
-                            instance = new DoubleEpsilonComparer(DoubleEpsilonComparer.DefaultEpsilon);
+                            instance = new DoubleEpsilonComparer(DoubleEpsilonComparer.DEFAULT_EPSILON);
                     }
                 }
                 return instance;
@@ -67,10 +67,14 @@ namespace Infovision.Math
 
         public override int Compare(double a, double b)
         {
-            double dif = a - b;
-            if (dif > this.Epsilon)
+            double diff = a - b;
+
+            if (System.Math.Abs(diff) < this.Epsilon)
+                return 0;
+
+            if (diff > this.Epsilon)
                 return 1;
-            else if (dif < this.Epsilon)
+            else if (diff < this.Epsilon)
                 return -1;
             return 0;
         }
@@ -102,6 +106,11 @@ namespace Infovision.Math
                 // use relative error
                 return diff / (absA + absB) < epsilon;
             }
+        }
+
+        public override int GetHashCode(double a)
+        {
+            throw new NotSupportedException("GetHashCode(double a) is not supported method in DoubleEpsilonComparer class");            
         }
     }
 
@@ -169,6 +178,11 @@ namespace Infovision.Math
                 // use relative error
                 return diff / (absA + absB) < epsilon;
             }
+        }
+
+        public override int GetHashCode(decimal a)
+        {
+            throw new NotSupportedException("GetHashCode(decimal a) is not supported method in DecimalEpsilonComparer class");
         }
     }
 }

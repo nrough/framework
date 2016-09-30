@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Infovision.Math.Tests
+namespace Infovision.Utils.Tests
 {
     [TestFixture]
     internal class DoubleExtensionsTest

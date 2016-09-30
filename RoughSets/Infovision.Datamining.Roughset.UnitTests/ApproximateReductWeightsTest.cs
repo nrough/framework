@@ -352,9 +352,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                double localAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
-                Assert.GreaterOrEqual(1.0 / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasure - localAttrMeasure);
-                Assert.LessOrEqual((-1.0) / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasure - localAttrMeasure);
+                double localAttrMeasure = InformationMeasureMajority.Instance.Calc(reduct);
+
+                Assert.That(1.0 / dataStoreTrainInfo.NumberOfRecords, Is.GreaterThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));
+                Assert.That((-1.0) / dataStoreTrainInfo.NumberOfRecords, Is.LessThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));                
             }
         }
 
@@ -386,8 +387,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (IReduct reduct in reductStore)
             {
                 double localAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
-                Assert.GreaterOrEqual(1.0 / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasure - localAttrMeasure);
-                Assert.LessOrEqual((-1.0) / (double)dataStoreTrainInfo.NumberOfRecords, allAttrMeasure - localAttrMeasure);
+
+                Assert.That(1.0 / dataStoreTrainInfo.NumberOfRecords, Is.GreaterThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));
+                Assert.That(-1.0 / dataStoreTrainInfo.NumberOfRecords, Is.LessThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));                
             }
         }
     }

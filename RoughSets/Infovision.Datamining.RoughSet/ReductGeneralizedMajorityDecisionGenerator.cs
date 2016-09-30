@@ -198,9 +198,15 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual bool CheckIsReduct(IReduct reduct, double epsilon)
         {
+            return ToleranceDoubleComparer.Instance.Compare(
+                this.GetPartitionQuality(reduct), 
+                (1.0 - this.Epsilon) * this.DataSetQuality) != -1;
+                            
+            /*
             if (this.GetPartitionQuality(reduct) >= ((1.0 - epsilon) * this.DataSetQuality))
                 return true;
             return false;
+            */
         }
 
         public virtual IReduct CalculateReduct(int[] attributes, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)

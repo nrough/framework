@@ -37,15 +37,15 @@ namespace Infovision.Datamining.Roughset
             switch (measureType)
             {
                 case InformationMeasureType.Positive:
-                    roughMeasure = InformationMeasurePositive.Instance;;
+                    roughMeasure = InformationMeasurePositive.Instance;
                     break;
 
                 case InformationMeasureType.Relative:
-                    roughMeasure = InformationMeasureRelative.Instance;;
+                    roughMeasure = InformationMeasureRelative.Instance;
                     break;
 
                 case InformationMeasureType.Majority:
-                    roughMeasure = InformationMeasureMajority.Instance;;
+                    roughMeasure = InformationMeasureMajority.Instance;
                     break;
 
                 case InformationMeasureType.ObjectWeights:

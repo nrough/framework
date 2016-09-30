@@ -358,7 +358,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
-            double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
+            double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
                                                  ReductGeneratorParamHelper.TrainData },
@@ -376,9 +376,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
-                Assert.GreaterOrEqual(1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
-                Assert.LessOrEqual(-1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                double localAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(reduct);
+
+                Assert.That(1.0 / dataStoreTrainInfo.NumberOfRecords, Is.GreaterThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));
+                Assert.That(-1.0 / dataStoreTrainInfo.NumberOfRecords, Is.LessThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));                
             }
         }
 
@@ -394,7 +395,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
             Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
-            double allAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
+            double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
                                                  ReductGeneratorParamHelper.TrainData },
@@ -411,9 +412,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             foreach (IReduct reduct in reductStore)
             {
-                double localAttrMeasue = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
-                Assert.GreaterOrEqual(1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
-                Assert.LessOrEqual(-1.0M / dataStoreTrainInfo.NumberOfRecords, allAttrMeasue - localAttrMeasue);
+                double localAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(reduct);
+
+                Assert.That(1.0 / dataStoreTrainInfo.NumberOfRecords, Is.GreaterThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));
+                Assert.That(-1.0 / dataStoreTrainInfo.NumberOfRecords, Is.LessThanOrEqualTo(allAttrMeasure - localAttrMeasure).Using(ToleranceDoubleComparer.Instance));                
             }
         }
     }

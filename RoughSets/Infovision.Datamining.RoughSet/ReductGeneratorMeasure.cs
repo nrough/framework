@@ -205,22 +205,24 @@ namespace Infovision.Datamining.Roughset
         protected virtual void ReduceForward(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
         {
             for (int i = 0; i < permutation.Length; i++)
-            {
-                int attributeId = permutation[i];
-                if (reduct.TryRemoveAttribute(attributeId))
+            {                
+                if (reduct.TryRemoveAttribute(permutation[i]))
                 {
                     if (!this.IsReduct(reduct, reductStore, useCache))
-                        reduct.AddAttribute(attributeId);
+                        reduct.AddAttribute(permutation[i]);
                 }
             }
         }
 
         public virtual bool CheckIsReduct(IReduct reduct)
         {
-            double partitionQuality = this.GetPartitionQuality(reduct);
-            if (partitionQuality >= (1.0 - this.Epsilon) * this.DataSetQuality)
-                return true;
-            return false;
+            return ToleranceDoubleComparer.Instance.Compare(
+                this.GetPartitionQuality(reduct),
+                (1.0 - this.Epsilon) * this.DataSetQuality) != -1;
+                
+            //if (partitionQuality >= (1.0 - this.Epsilon) * this.DataSetQuality)
+            //    return true;
+            //return false;
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)

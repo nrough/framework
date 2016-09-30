@@ -12,6 +12,8 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
     [TestFixture]
     public class HierarchicalClusteringIncrementalTest
     {
+        //TODO Finish incremental cluster implementation
+
         [Test]
         public void AddToClusterTest()
         {
@@ -25,7 +27,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
             string f1 = String.Format(@"sahn.bmp");
             b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            HierarchicalClusteringIncremental sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
+            var sihc = new HierarchicalClusteringIncremental(Similarity.Euclidean, ClusteringLinkage.Complete);
 
             foreach (KeyValuePair<int, double[]> kvp in data)
                 sihc.AddToCluster(kvp.Key, kvp.Value);
@@ -47,7 +49,7 @@ namespace Infovision.Datamining.Tests.Clustering.Hierarchical
         [Test]
         public void AddToClusterInLinkOrderTest()
         {
-            Dictionary<int, double[]> data = HierarchicalClusteringTest.GetDataAsDict();
+            var data = HierarchicalClusteringTest.GetDataAsDict();
 
             HierarchicalClustering sahn = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
             sahn.Instances = data;

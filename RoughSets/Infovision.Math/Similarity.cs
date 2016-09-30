@@ -1,4 +1,5 @@
 ﻿using System;
+using Infovision.Utils;
 
 namespace Infovision.Math
 {

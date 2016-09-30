@@ -69,10 +69,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
 
-            log.InfoFormat(data.Name);
+            //log.InfoFormat(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
-            int numberOfPermutations = 100;
+            int numberOfPermutations = 10;
             PermutationCollection permList = permGenerator.Generate(numberOfPermutations);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
@@ -82,8 +82,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             double dataQuality_2 = new InformationMeasureWeights().Calc(
                 new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, weightGenerator.Weights));
-
-            Assert.AreEqual(dataQuality, dataQuality_2, 0.0000001);
+            
+            Assert.That(dataQuality, Is.EqualTo(dataQuality_2).Using((IComparer<double>)ToleranceDoubleComparer.Instance));
 
             for (double eps = 0.0; eps <= 0.5; eps += 0.1)
             {
@@ -115,7 +115,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     Assert.NotNull(reduct_1);
 
                     double reductQuality_1 = InformationMeasureWeights.Instance.Calc(reduct_1);
-                    Assert.GreaterOrEqual(reductQuality_1, dataQuality * (1.0 - eps));
+
+                    Assert.That(reductQuality_1, 
+                        Is.GreaterThanOrEqualTo((1.0 - eps) * dataQuality)
+                        .Using(ToleranceDoubleComparer.Instance));                    
 
                     elapsed_sum_1 += watch_1.ElapsedMilliseconds;
                     len_sum_1 += reduct_1.Attributes.Count;
@@ -131,12 +134,14 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     accuracyResults_1[i] = result_1.Accuracy;
 
+                    /*
                     log.InfoFormat("|A|{0}|{3}|{1}|{2}|{4}|",
                         reduct_1.ToString(),
                         reductQuality_1,
                         watch_1.ElapsedMilliseconds,
                         reduct_1.Attributes.Count,
                         result_1.Accuracy);
+                    */
 
                     var watch_2 = Stopwatch.StartNew();
                     IReduct reduct_2 = CalculateApproximateReductFromSubset(data, eps, attributes);
@@ -149,7 +154,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     Assert.NotNull(reduct_2);
                     double reductQuality_2 = new InformationMeasureWeights().Calc(reduct_2);
-                    Assert.GreaterOrEqual(reductQuality_2, dataQuality * (1.0 - eps));
+
+                    Assert.That(reductQuality_2, 
+                        Is.GreaterThanOrEqualTo((1.0 - eps) * dataQuality)
+                        .Using(ToleranceDoubleComparer.Instance));                    
 
                     elapsed_sum_2 += watch_2.ElapsedMilliseconds;
                     len_sum_2 += reduct_2.Attributes.Count;
@@ -164,16 +172,19 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
                     accuracyResults_2[i] = result_2.Accuracy;
 
+                    /*
                     log.InfoFormat("|B|{0}|{3}|{1}|{2}|{4}|",
                         reduct_2.ToString(),
                         reductQuality_2,
                         watch_2.ElapsedMilliseconds,
                         reduct_2.Attributes.Count,
                         result_2.Accuracy);
+                    */
 
                     i++;
                 }
 
+                /*
                 log.InfoFormat(Environment.NewLine);
 
                 log.InfoFormat("==========================================");
@@ -192,6 +203,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 log.InfoFormat("==========================================");
 
                 log.InfoFormat(Environment.NewLine);
+                */
             }
         }
 
@@ -199,7 +211,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            int numberOfTests = 10;
+            int numberOfTests = 1;
 
             DataStore trainData = null, testData = null, data = null;
 
@@ -231,8 +243,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                             results[t, i, f] = accuracy.Item1;
                             results2[t, i, f] = accuracy.Item2;
 
-                            log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                            log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
+                            //log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
+                            //log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
                         });
                     }
                 }
@@ -259,8 +271,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                         results[t, i, f] = accuracy.Item1;
                         results2[t, i, f] = accuracy.Item2;
 
-                        log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
-                        log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
+                        //log.InfoFormat("A|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item1);
+                        //log.InfoFormat("B|{0}|{1}|{2}|{3}", f, t, i, accuracy.Item2);
                     });
                 }
             }
@@ -383,6 +395,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             ReductGeneratorWeightsMajority reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
+
+            reductGenerator.UsePerformanceImprovements = false;
+
             return reductGenerator.CalculateReduct(attributeSubset) as ReductWeights;
         }
     }

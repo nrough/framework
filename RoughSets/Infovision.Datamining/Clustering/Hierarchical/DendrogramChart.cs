@@ -115,8 +115,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
                 yAxisPen.Dispose();
                 dahedGridPen.Dispose();
-
-                Dictionary<int, DendrogramChartNode> dendrogramChartData = new Dictionary<int, DendrogramChartNode>(this.HCluster.NumberOfInstances - 1);
+                
                 int xAxisOffset = 10;
                 int nodePointX = yAxisEnd.X + xAxisOffset;
 
@@ -127,6 +126,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                 Dictionary<int, int> node2cluster = null;
                 Dictionary<int, int> cluster2color = null;
                 //HashSet<int> uncoloredNodes = null;
+
                 if (this.Colors.Count > 1)
                 {
                     List<DendrogramNode> subTrees = this.HCluster.GetCutOffNodes(this.Colors.Count);
@@ -147,6 +147,7 @@ namespace Infovision.Datamining.Clustering.Hierarchical
                     }
                 }
 
+                var dendrogramChartData = new Dictionary<int, DendrogramChartNode>(this.HCluster.NumberOfInstances - 1);
                 Action<DendrogramNode> buildChartPoints = delegate(DendrogramNode d)
                 {
                     if (d.IsLeaf)

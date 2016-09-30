@@ -110,10 +110,8 @@
   <ItemGroup>
     <Compile Include="Enum.cs" />
     <Compile Include="Correlation.cs" />
-    <Compile Include="DoubleExtensions.cs" />
     <Compile Include="Similarity.cs" />
     <Compile Include="DistanceMatrix.cs" />
-    <Compile Include="EpsilonComparer.cs" />
     <Compile Include="MatrixIndex.cs" />
     <Compile Include="MatrixTuple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Infovision.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+      <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
+      <Name>Infovision.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

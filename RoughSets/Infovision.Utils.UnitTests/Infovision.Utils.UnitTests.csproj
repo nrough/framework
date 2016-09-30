@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayExtensionsTest.cs" />
+    <Compile Include="DoubleExtensionsTest.cs" />
     <Compile Include="InfovisionHelperTest.cs" />
     <Compile Include="PascalSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

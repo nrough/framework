@@ -194,7 +194,7 @@ namespace Infovision.Datamining.Roughset
                 ClassificationResult result = classifier.Classify(this.DataStore, weights);
                 error = result.WeightMisclassified + result.WeightUnclassified;
 
-                Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
+                //Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
 
                 double alpha = this.CalcModelConfidence(K, error);
 
@@ -216,7 +216,7 @@ namespace Infovision.Datamining.Roughset
                     this.WeightGenerator.Reset();
                     weights = this.WeightGenerator.Weights;
 
-                    Console.WriteLine("Weights resets: {0}", this.NumberOfWeightResets);
+                    //Console.WriteLine("Weights resets: {0}", this.NumberOfWeightResets);
 
                     continue;
                 }

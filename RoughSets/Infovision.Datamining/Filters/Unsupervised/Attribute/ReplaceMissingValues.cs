@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
         private Dictionary<int, Dictionary<long, long>> CalcMissingValues(DataStore dataStore)
         {
             //fieldId --> decision --> field key --> value
-            Dictionary<int, Dictionary<long, Dictionary<long, int>>> fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
+            var fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
@@ -89,7 +89,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                     }
                     else
                     {
-                        Dictionary<long, int> internalCountMap = new Dictionary<long, int>();
+                        var internalCountMap = new Dictionary<long, int>();
                         internalCountMap.Add(internalValue, 1);
 
                         decisionMap = new Dictionary<long, Dictionary<long, int>>();
@@ -100,7 +100,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
                 }
             }
 
-            Dictionary<int, Dictionary<long, long>> mostFrequentValues = new Dictionary<int, Dictionary<long, long>>(dataStore.DataStoreInfo.NumberOfFields);
+            var mostFrequentValues = new Dictionary<int, Dictionary<long, long>>(dataStore.DataStoreInfo.NumberOfFields);
             foreach (var field in fieldMap)
             {
                 DataFieldInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(field.Key);
@@ -164,9 +164,9 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute
 
         private DataStore ReplaceValues(DataStore dataStore, Dictionary<int, Dictionary<long, long>> frequentFieldValues)
         {
-            DataStoreInfo newDataStoreInfo = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
-            newDataStoreInfo.NumberOfRecords = dataStore.NumberOfRecords;
+            DataStoreInfo newDataStoreInfo = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);            
             newDataStoreInfo.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, false);
+            newDataStoreInfo.NumberOfRecords = dataStore.NumberOfRecords;
 
             DataStore newDataStore = new DataStore(newDataStoreInfo);
 

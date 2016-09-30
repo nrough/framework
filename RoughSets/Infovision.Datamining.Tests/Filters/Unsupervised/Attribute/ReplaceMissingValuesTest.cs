@@ -13,8 +13,6 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
         [Test]
         public void ComputeTest()
         {
-            //Console.WriteLine("ReplaceMissingValuesTest.ComputeTest()");
-
             DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.Csv);
             DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.Csv, trnData.DataStoreInfo);
             trnData.SetDecisionFieldId(1);
@@ -27,7 +25,6 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
             tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
 
             DataStore trnCompleteData = new ReplaceMissingValues().Compute(trnData);
-            //TrainData tstCompleteDate = new ReplaceMissingValues().Compute(tstData, trnData);
             DataStore tstCompleteDate = tstData;
 
             trnCompleteData.WriteToCSVFileExt(@"temp\missingvals.trn", ",");
@@ -66,24 +63,6 @@ namespace Infovision.Datamining.Tests.Filters.Unsupervised.Attribute
                 reductGenerator.VoteType,
                 trnData.DataStoreInfo.GetDecisionValues());
             ClassificationResult resultTst = classifierTst.Classify(tstData, null);
-
-            /*
-            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}",
-                                      parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
-                                      reductGenerator.IdentyficationType,
-                                      reductGenerator.VoteType,
-                                      reductGenerator.MinReductLength,
-                                      reductGenerator.SetWeights,
-                                      "Majority",
-                                      reductGenerator.CheckEnsembleErrorDuringTraining,
-                                      1,
-                                      reductGenerator.MaxIterations,
-                                      reductGenerator.IterationsPassed,
-                                      reductGenerator.NumberOfWeightResets,
-                                      resultTrn.WeightMisclassified + resultTrn.WeightUnclassified,
-                                      resultTst.WeightMisclassified + resultTst.WeightUnclassified,
-                                      reductGenerator.ReductPool.GetAvgMeasure(new ReductMeasureLength()));
-            */
         }
     }
 }

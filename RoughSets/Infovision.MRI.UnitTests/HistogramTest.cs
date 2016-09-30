@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.DataVisualization.Charting;
 using itk.simple;
 using NUnit.Framework;
+using Infovision.Utils;
 
 namespace Infovision.MRI.UnitTests
 {
@@ -42,8 +43,8 @@ namespace Infovision.MRI.UnitTests
             double distance3 = histCluster.BucketDistance(41, 42);
             Console.WriteLine("{0} {1} {2}", 41, 42, distance3);
 
-            Assert.Greater(distance2, distance1);
-            Assert.Greater(distance2, distance3);
+            Assert.That(distance2, Is.GreaterThan(distance1).Using(ToleranceDoubleComparer.Instance));
+            Assert.That(distance2, Is.GreaterThan(distance3).Using(ToleranceDoubleComparer.Instance));            
         }
 
         [Test]

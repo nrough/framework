@@ -71,6 +71,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MiscUtil">
@@ -95,6 +96,8 @@
     <Compile Include="Args.cs" />
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="DecimalExtensions.cs" />
+    <Compile Include="DoubleExtensions.cs" />
+    <Compile Include="EpsilonComparer.cs" />
     <Compile Include="InfovisionConfiguration.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="DateTimeUtils.cs" />
@@ -118,6 +121,7 @@
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="StopwatchExtensions.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="ToleranceComparer.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

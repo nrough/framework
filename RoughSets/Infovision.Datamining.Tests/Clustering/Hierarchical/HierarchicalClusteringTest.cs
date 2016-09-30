@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Infovision.Datamining.Clustering.Hierarchical;
 using Infovision.Math;
+using Infovision.Utils;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Tests.Clustering.Hierarchical

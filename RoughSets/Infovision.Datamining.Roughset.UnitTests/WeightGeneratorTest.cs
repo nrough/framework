@@ -3,6 +3,7 @@ using System.Linq;
 using Infovision.Data;
 using Infovision.Utils;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace  Infovision.Datamining.Roughset.UnitTests
 {
@@ -49,10 +50,11 @@ namespace  Infovision.Datamining.Roughset.UnitTests
                 total += classificationResult.DecisionTotal(decision);
             }
 
-            Assert.AreEqual(1.0, aprioriSum);
+            Assert.That(1.0, Is.EqualTo(aprioriSum).Using((IComparer<double>)ToleranceDoubleComparer.Instance));
             Assert.AreEqual(dataStoreTest.NumberOfRecords, total);
-            Assert.LessOrEqual(classificationResult.BalancedAccuracy, 1);
-            Assert.GreaterOrEqual(classificationResult.BalancedAccuracy, 0);
+
+            Assert.That(classificationResult.BalancedAccuracy, Is.LessThanOrEqualTo(1.0).Using(ToleranceDoubleComparer.Instance));
+            Assert.That(classificationResult.BalancedAccuracy, Is.GreaterThanOrEqualTo(0.0).Using(ToleranceDoubleComparer.Instance));            
         }
 
         [Test]
@@ -88,16 +90,27 @@ namespace  Infovision.Datamining.Roughset.UnitTests
 
             redGenWgh.InitFromArgs(args);
             redGenWgh.Run();
-            IReductStore redStoreW = redGenWgh.ReductPool;
+            IReductStore redStoreW = redGenWgh.ReductPool;            
 
-            int i = 0;
-            foreach (IReduct reduct in redStore)
+            Assert.AreEqual(redStore.Count, redStoreW.Count);
+
+            for (int i = 0; i < redStore.Count; i++)
             {
-                //Console.WriteLine(reduct);
+                IReduct reduct = redStore.GetReduct(i);
                 IReduct redW = redStoreW.GetReduct(i);
-                i++;
 
-                Assert.AreEqual(reduct, redW);
+                int[] attr1 = reduct.Attributes.ToArray();
+                int[] attr2 = redW.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
             }
         }
 
@@ -156,7 +169,7 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         [Test]
         public void WeightReductRelative2()
         {
-            string localFileName = @"Data\optdigits.trn";
+            string localFileName = @"Data\dna.train";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
@@ -181,22 +194,34 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             IReductGenerator reductGenerator2 = ReductFactory.GetReductGenerator(args2);
             reductGenerator2.Run();
             IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection().FirstOrDefault();
+            
+
+            Assert.AreEqual(reductStore.Count, reductStore2.Count);
 
             for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = reductStore.GetReduct(i) as Reduct;
-                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
+                IReduct reduct1 = reductStore.GetReduct(i);
+                IReduct reduct2 = reductStore2.GetReduct(i);
 
-                Assert.NotNull(r1);
-                Assert.NotNull(r2);
-                Assert.AreEqual(r1, r2);
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
             }
         }
 
         [Test]
         public void WeightReductMajority2()
         {
-            string localFileName = @"Data\optdigits.trn";
+            string localFileName = @"Data\dna_train";
             DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
@@ -222,15 +247,26 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             reductGenerator2.Run();
             IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection().FirstOrDefault();
 
+            Assert.AreEqual(reductStore.Count, reductStore2.Count);
+
             for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = reductStore.GetReduct(i) as Reduct;
-                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
+                IReduct reduct1 = reductStore.GetReduct(i);
+                IReduct reduct2 = reductStore2.GetReduct(i);
 
-                Assert.NotNull(r1);
-                Assert.NotNull(r2);
-                Assert.AreEqual(r1, r2);
-            }
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
+            }            
         }
 
         [Test]
@@ -266,15 +302,26 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             reductGenerator2.Run();
             IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection().FirstOrDefault();
 
+            Assert.AreEqual(reductStore.Count, reductStore2.Count);
+
             for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = reductStore.GetReduct(i) as Reduct;
-                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
+                IReduct reduct1 = reductStore.GetReduct(i);
+                IReduct reduct2 = reductStore2.GetReduct(i);
 
-                Assert.NotNull(r1);
-                Assert.NotNull(r2);
-                Assert.AreEqual(r1, r2);
-            }
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
+            }            
         }
 
         [Test]
@@ -310,15 +357,26 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             reductGenerator2.Run();
             IReductStore reductStore2 = reductGenerator2.GetReductStoreCollection().FirstOrDefault();
 
+            Assert.AreEqual(reductStore.Count, reductStore2.Count);
+
             for (int i = 0; i < reductStore.Count; i++)
             {
-                Reduct r1 = reductStore.GetReduct(i) as Reduct;
-                Reduct r2 = reductStore2.GetReduct(i) as Reduct;
+                IReduct reduct1 = reductStore.GetReduct(i);
+                IReduct reduct2 = reductStore2.GetReduct(i);
 
-                Assert.NotNull(r1);
-                Assert.NotNull(r2);
-                Assert.AreEqual(r1, r2);
-            }
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
+            }            
         }
 
         [Test]
@@ -351,8 +409,7 @@ namespace  Infovision.Datamining.Roughset.UnitTests
                 weightSum += weightGenerator.Weights[i];
             }
 
-            Assert.LessOrEqual(weightSum, 1.000001);
-            Assert.GreaterOrEqual(weightSum, 0.999999);
+            Assert.That(weightSum, Is.EqualTo(1.0).Using((IComparer<double>)ToleranceDoubleComparer.Instance));            
         }
 
         private void CheckWeightsEqual(WeightGenerator weightGenerator)
@@ -444,18 +501,25 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             reductGenerator2.Run();
             IReductStore reductStore2 = reductGenerator2.ReductPool;
 
-            Assert.AreEqual(reductStore1.Count, reductStore2.Count);
-
-            //Console.WriteLine(permutationList);
-            //Console.WriteLine(reductStore1);
-            //Console.WriteLine(reductStore2);
-
+            Assert.AreEqual(reductStore1.Count, reductStore2.Count);            
             for (int i = 0; i < reductStore1.Count; i++)
             {
                 IReduct reduct1 = reductStore1.GetReduct(i);
                 IReduct reduct2 = reductStore2.GetReduct(i);
-                Assert.AreEqual(reduct1, reduct2);
-            }
+
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
+            }            
         }
 
         [Test]
@@ -490,17 +554,23 @@ namespace  Infovision.Datamining.Roughset.UnitTests
             IReductStore reductStore2 = reductGenerator2.ReductPool;
 
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
-
-            //Console.WriteLine(permutationList);
-            //Console.WriteLine(reductStore1);
-            //Console.WriteLine(reductStore2);
-
             for (int i = 0; i < reductStore1.Count; i++)
             {
                 IReduct reduct1 = reductStore1.GetReduct(i);
                 IReduct reduct2 = reductStore2.GetReduct(i);
 
-                Assert.AreEqual(reduct1, reduct2);
+                int[] attr1 = reduct1.Attributes.ToArray();
+                int[] attr2 = reduct2.Attributes.ToArray();
+
+                Assert.AreEqual(attr1.Length, attr2.Length);
+
+                Array.Sort(attr1);
+                Array.Sort(attr2);
+
+                for (int j = 0; j < attr1.Length; j++)
+                {
+                    Assert.AreEqual(attr1[j], attr2[j]);
+                }
             }
         }
     }

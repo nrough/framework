@@ -127,6 +127,9 @@
     <Compile Include="DecisionTrees\DecisionForestRandom.cs" />
     <Compile Include="DecisionTrees\DecisionForestReduct.cs" />
     <Compile Include="DecisionTrees\DecisionForestDummyRough.cs" />
+    <Compile Include="DecisionTrees\Pruning\DecisionTreePruningBase.cs" />
+    <Compile Include="DecisionTrees\Pruning\ErrorBasedPruning.cs" />
+    <Compile Include="DecisionTrees\Pruning\IDecisionTreePruning.cs" />
     <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
     <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />

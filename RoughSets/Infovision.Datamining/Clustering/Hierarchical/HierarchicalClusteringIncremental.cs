@@ -6,7 +6,7 @@ using Infovision.Math;
 namespace Infovision.Datamining.Clustering.Hierarchical
 {
     [Serializable]
-    public class HierarchicalClusteringIncremental : HierarchicalClusteringBase
+    public abstract class HierarchicalClusteringIncremental : HierarchicalClusteringBase
     {
         private Dictionary<int, DendrogramNode> nodes;
         public int MinimumNumberOfInstances { get; set; }
@@ -63,7 +63,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
         //Childs methods like in SIHC also works fine.
         //Check the difference between this and SIHC implementation
         //It is possible that this implementation is the old one that was not updated at all and instead only SIHC should be used
-        public override bool AddToCluster(int id, double[] instance)
+
+        //public override bool AddToCluster(int id, double[] instance)
+        public bool AddToCluster_OLD(int id, double[] instance)
         {
             bool ret = base.AddToCluster(id, instance);
 
@@ -203,6 +205,9 @@ namespace Infovision.Datamining.Clustering.Hierarchical
 
             return true;
         }
+
+        public abstract override bool AddToCluster(int id, double[] instance);
+        
 
         public override double GetClusterDistance(int[] cluster1, int[] cluster2)
         {

@@ -8,6 +8,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 {
     public interface IDecisionTreePruning
     {
-        double Treshold { get; set; }
+        double Threshold { get; set; }
+        double Run();
     }
 }

@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public interface ITreeNode
+    public interface IDecisionTreeNode
     {
-        IReadOnlyList<ITreeNode> Children { get; }
         int Key { get; }
+        IList<IDecisionTreeNode> Children { get; set; }
+        
         long Value { get; }
+        bool Compute(long value);        
+
         bool IsLeaf { get; }
         bool IsRoot { get; }
-        ITreeNode Parent { get; }
         int Level { get; }
+
+        IDecisionTreeNode Parent { get; set; }
+        
         double Measure { get; }
+        
+        long Output { get; set; }
     }
 }

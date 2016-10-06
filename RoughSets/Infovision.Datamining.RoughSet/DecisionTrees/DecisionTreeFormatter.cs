@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class DecisionTreeFormatter
     {
-        public static DecisionTreeFormatter Construct(ITreeNode node, DataStore data, int indent)
+        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStore data, int indent)
         {
             DecisionTreeFormatter treeFormatter = new DecisionTreeFormatter();
             treeFormatter.Root = node;
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Indent = 2;
         }
 
-        public ITreeNode Root { get; set; }
+        public IDecisionTreeNode Root { get; set; }
         public DataStore Data { get; set; }
         public int Indent { get; set; }
 
@@ -34,14 +34,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return sb.ToString();
         }
 
-        private string NodeToString(ITreeNode node, int currentLevel)
+        private string NodeToString(IDecisionTreeNode node, int currentLevel)
         {
             if (node is DecisionTreeNode)
                 return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), ((DecisionTreeNode)node).ToString(this.Data.DataStoreInfo));
             return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), node.ToString());
         }
 
-        private void Build(ITreeNode node, int currentLevel, StringBuilder sb)
+        private void Build(IDecisionTreeNode node, int currentLevel, StringBuilder sb)
         {
             sb.AppendLine(NodeToString(node, currentLevel));
             if (node.Children != null)

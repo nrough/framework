@@ -1,11 +1,13 @@
-﻿namespace Infovision.Datamining.Roughset.DecisionTrees
+﻿using System.Collections.Generic;
+
+namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     /// <summary>
     /// Interface of a decision tree
     /// </summary>
-    public interface IDecisionTree : ILearner, IPredictionModel
+    public interface IDecisionTree : ILearner, IPredictionModel, IEnumerable<IDecisionTreeNode>
     {
-        ITreeNode Root { get; }        
+        IDecisionTreeNode Root { get; }        
         int NumberOfAttributesToCheckForSplit { get; set; }
     }
 }

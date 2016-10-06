@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="DecisionTrees\ComparisonType.cs" />
     <Compile Include="DecisionTrees\DecisionForestBase.cs" />
     <Compile Include="DecisionTrees\DecisionTreeC45.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCART.cs" />
@@ -123,13 +124,14 @@
     <Compile Include="DecisionTrees\DecisionTreeNode.cs" />
     <Compile Include="DecisionTrees\DecisionForestDummy.cs" />
     <Compile Include="DecisionTrees\IDecisionTree.cs" />
-    <Compile Include="DecisionTrees\ITreeNode.cs" />
+    <Compile Include="DecisionTrees\IDecisionTreeNode.cs" />
     <Compile Include="DecisionTrees\DecisionForestRandom.cs" />
     <Compile Include="DecisionTrees\DecisionForestReduct.cs" />
     <Compile Include="DecisionTrees\DecisionForestDummyRough.cs" />
     <Compile Include="DecisionTrees\Pruning\DecisionTreePruningBase.cs" />
     <Compile Include="DecisionTrees\Pruning\ErrorBasedPruning.cs" />
     <Compile Include="DecisionTrees\Pruning\IDecisionTreePruning.cs" />
+    <Compile Include="DecisionTrees\Pruning\ReducedErrorPruning.cs" />
     <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
     <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />

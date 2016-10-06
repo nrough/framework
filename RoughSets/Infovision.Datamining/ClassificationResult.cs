@@ -68,6 +68,11 @@ namespace Infovision.Datamining
             }
         }
 
+        public double Error
+        {
+            get { return 1.0 - this.Accuracy; }
+        }
+
         public double BalancedAccuracy
         {
             get
@@ -265,7 +270,7 @@ namespace Infovision.Datamining
             lock (mutex)
             {
                 for (int i = 0; i < predictionResults.Length; i++)
-                    predictionResults[i] = 0;
+                    predictionResults[i] = -1;
 
                 for (int i = 0; i < decCountPlusOne; i++)
                 {
@@ -393,12 +398,7 @@ namespace Infovision.Datamining
                     + this.GetConfusionTable(decision, ConfusionMatrixElement.TrueNegative));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
-        }
-
-        public double GetAUC()
-        {
-            return this.GetAUC(1);
-        }
+        }        
 
         public double GetAUCWeights(long decision)
         {
@@ -413,12 +413,7 @@ namespace Infovision.Datamining
                     + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TrueNegative));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
-        }
-
-        public double GetAUCWeights()
-        {
-            return this.GetAUCWeights(decisions[1]);
-        }
+        }        
 
         public double DecisionApriori(long decisionValue)
         {

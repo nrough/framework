@@ -16,33 +16,33 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         /// </summary>
         /// <param name="node"></param>
         /// <param name="action"></param>
-        public static void TraverseLevelOrder(ITreeNode node, Action<ITreeNode> action)
+        public static void TraverseLevelOrder(IDecisionTreeNode node, Action<IDecisionTreeNode> action)
         {
-            Queue<ITreeNode> queue = new Queue<ITreeNode>();
+            Queue<IDecisionTreeNode> queue = new Queue<IDecisionTreeNode>();
             queue.Enqueue(node);
             while (queue.Count != 0)
             {
-                ITreeNode currentNode = queue.Dequeue();
+                IDecisionTreeNode currentNode = queue.Dequeue();
                 action.Invoke(currentNode);
 
                 if (currentNode.Children != null)
-                    foreach (ITreeNode child in currentNode.Children)
+                    foreach (IDecisionTreeNode child in currentNode.Children)
                         if (child != null)
                             queue.Enqueue(child);
             }
         }
 
-        public static void TraversePreOrder(ITreeNode node, Action<ITreeNode> action)
+        public static void TraversePreOrder(IDecisionTreeNode node, Action<IDecisionTreeNode> action)
         {
             if (node == null)
                 return;
             action.Invoke(node);
             if (node.Children != null)
-                foreach (ITreeNode child in node.Children)
+                foreach (IDecisionTreeNode child in node.Children)
                     TreeNodeTraversal.TraversePreOrder(child, action);
         }
 
-        public static void TraverseInOrder(ITreeNode node, Action<ITreeNode> action)
+        public static void TraverseInOrder(IDecisionTreeNode node, Action<IDecisionTreeNode> action)
         {
             if (node == null)
                 return;
@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             bool nodeActionFinished = false;
 
             if (node.Children != null)
-                foreach (ITreeNode child in node.Children)
+                foreach (IDecisionTreeNode child in node.Children)
                 {
                     TreeNodeTraversal.TraverseInOrder(child, action);
                     if (nodeActionFinished == false)
@@ -61,22 +61,22 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 }
         }
 
-        public static void TraversePostOrder(ITreeNode node, Action<ITreeNode> action)
+        public static void TraversePostOrder(IDecisionTreeNode node, Action<IDecisionTreeNode> action)
         {
             if (node == null)
                 return;
             if (node.Children != null)
-                foreach (ITreeNode child in node.Children)
+                foreach (IDecisionTreeNode child in node.Children)
                     TreeNodeTraversal.TraversePostOrder(child, action);
             action.Invoke(node);
         }
 
-        public static void TraverseEulerPath(ITreeNode node, Action<ITreeNode> action)
+        public static void TraverseEulerPath(IDecisionTreeNode node, Action<IDecisionTreeNode> action)
         {
             if (node == null)
                 return;
             action.Invoke(node);
-            foreach (ITreeNode child in node.Children)
+            foreach (IDecisionTreeNode child in node.Children)
             {
                 TreeNodeTraversal.TraverseEulerPath(child, action);
                 action.Invoke(node);

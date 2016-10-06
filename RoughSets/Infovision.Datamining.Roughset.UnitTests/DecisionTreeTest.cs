@@ -97,7 +97,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
                 treeID3.Epsilon = eps;
                 double errorTrain = 1.0 - treeID3.Learn(data, attributes).Accuracy;
-                double errorTest = 1.0 - Classifier.Instance.Classify(treeID3, test).Accuracy;
+                double errorTest = 1.0 - Classifier.DefaultClassifer.Classify(treeID3, test).Accuracy;
 
                 /*
                 Console.WriteLine("eps={0} numrul={1} errtrn={2} errtst={3}",
@@ -122,15 +122,13 @@ namespace Infovision.Datamining.Roughset.UnitTests
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
-            Console.WriteLine(Classifier.Instance.Classify(treeID3, data, null));
-            Console.WriteLine(Classifier.Instance.Classify(treeID3, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, test, null));
         }
 
         [Test, Repeat(10)]
         public void C45LearnTest()
-        {
-            InfovisionConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
-
+        {            
             Console.WriteLine("C45LearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
@@ -139,8 +137,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
             
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
-            Console.WriteLine(Classifier.Instance.Classify(treeC45, data, null));
-            Console.WriteLine(Classifier.Instance.Classify(treeC45, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
         }
 
         [Test]
@@ -155,8 +153,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             treeCART.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
-            Console.WriteLine(Classifier.Instance.Classify(treeCART, data, null));
-            Console.WriteLine(Classifier.Instance.Classify(treeCART, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeCART, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeCART, test, null));
         }
 
         [Test]
@@ -172,8 +170,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
             treeRough.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
-            Console.WriteLine(Classifier.Instance.Classify(treeRough, data, null));
-            Console.WriteLine(Classifier.Instance.Classify(treeRough, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
         }
 
         

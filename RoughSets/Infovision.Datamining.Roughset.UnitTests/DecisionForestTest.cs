@@ -28,12 +28,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Epsilon = epsilon;
             double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
-            Console.WriteLine(Classifier.Instance.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeC45 c45tree = new DecisionTreeC45();
             c45tree.Epsilon = epsilon;
             c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());            
-            Console.WriteLine(Classifier.Instance.Classify(c45tree, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45tree, test, null));
         }
 
         [Test]
@@ -51,11 +51,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Epsilon = epsilon;
             double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
-            Console.WriteLine(Classifier.Instance.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeCART cartTree = new DecisionTreeCART();
             cartTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(Classifier.Instance.Classify(cartTree, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(cartTree, test, null));
         }
 
         [Test]
@@ -73,11 +73,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Epsilon = epsilon;
             double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
-            Console.WriteLine(Classifier.Instance.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
             roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(Classifier.Instance.Classify(roughTree, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(roughTree, test, null));
         }
 
         [Test]
@@ -96,12 +96,12 @@ namespace Infovision.Datamining.Roughset.UnitTests
             randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
 
             double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
-            Console.WriteLine(Classifier.Instance.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
             roughTree.Epsilon = epsilon;
             roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-            Console.WriteLine(Classifier.Instance.Classify(roughTree, test, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(roughTree, test, null));
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dummyForest.Epsilon = epsilon;
                 dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
                 dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-                var dummyForestResult = Classifier.Instance.Classify(dummyForest, test, null);
+                var dummyForestResult = Classifier.DefaultClassifer.Classify(dummyForest, test, null);
                 dummyForestResult.ModelName = "Dummy";
                 dummyForestResult.TestNum = i;
                 dummyForestResult.Fold = 0;
@@ -146,7 +146,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
                 semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                 semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-                var semiRoughForestResult = Classifier.Instance.Classify(semiRoughForest, test, null);
+                var semiRoughForestResult = Classifier.DefaultClassifer.Classify(semiRoughForest, test, null);
                 semiRoughForestResult.ModelName = "SemiRough";
                 semiRoughForestResult.TestNum = i;
                 semiRoughForestResult.Fold = 0;
@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 //roughForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                 roughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
                 roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-                var roughForestResult = Classifier.Instance.Classify(roughForest, test, null);
+                var roughForestResult = Classifier.DefaultClassifer.Classify(roughForest, test, null);
                 roughForestResult.ModelName = "Rough";
                 roughForestResult.TestNum = i;
                 roughForestResult.Fold = 0;
@@ -177,7 +177,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 roughForest.Epsilon = epsilon;
                 randomForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                 randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-                var randomForestResult = Classifier.Instance.Classify(randomForest, test, null);
+                var randomForestResult = Classifier.DefaultClassifer.Classify(randomForest, test, null);
                 randomForestResult.ModelName = "RandomC45";
                 randomForestResult.TestNum = i;
                 randomForestResult.Fold = 0;
@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     treeC45.Epsilon = 0.0; //eps
                     treeC45.Learn(data, reduct.Attributes.ToArray());
 
-                    ClassificationResult resultC45 = Classifier.Instance.Classify(treeC45, test);
+                    ClassificationResult resultC45 = Classifier.DefaultClassifer.Classify(treeC45, test);
                     resultC45.Epsilon = eps;
                     resultC45.ModelName = "C4.5";
                     Console.WriteLine(resultC45);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infovision.Data;
 using Infovision.Datamining.Filters.Supervised.Attribute;
 using NUnit.Framework;
@@ -26,12 +27,19 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
         //[TestCase(true, true)]
         public void CreateDiscretizedDataTableTest(bool useBetterEncoding, bool useKononenko)
         {
-            int[] numericFields = new int[] { 2, 5, 13, 8, 11, 16, 18 }; //8, 11, 16, 18
+            
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
-            foreach (int fieldId in numericFields)
-            {
-                data.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric = true;
-            }
+
+            //int[] numericFields = new int[] { 2, 5, 13, 8, 11, 16, 18 }; //8, 11, 16, 18
+            //foreach (int fieldId in numericFields)
+            //{
+            //    data.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric = true;
+            //}
+
+            int[] numericFields = data.DataStoreInfo.GetFields(FieldTypes.Standard)
+                    .Where(i => i.IsNumeric)
+                    .Select(f => f.Id)                    
+                    .ToArray();
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, 5);
 
@@ -39,10 +47,10 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
             splitter.ActiveFold = 0;
             splitter.Split(ref trainData, ref testData);
 
-            Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer descretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+            var descretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
             {
                 UseBetterEncoding = useBetterEncoding,
-                UseKononenko = useKononenko,
+                UseKononenko = useKononenko,                
                 Fields2Discretize = numericFields
             };
 

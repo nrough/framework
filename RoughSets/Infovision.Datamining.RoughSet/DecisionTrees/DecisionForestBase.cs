@@ -120,7 +120,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             s.Stop();
           
-            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);            
+            ClassificationResult trainResult = Classifier.DefaultClassifer.Classify(this, data, data.Weights);            
             trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             this.learningResult = trainResult;
 

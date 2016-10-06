@@ -15,7 +15,7 @@ namespace Infovision.Datamining
         private static volatile Classifier instance = null;
         private static object syncRoot = new object();
 
-        public static Classifier Instance
+        public static Classifier DefaultClassifer
         {
             get
             {

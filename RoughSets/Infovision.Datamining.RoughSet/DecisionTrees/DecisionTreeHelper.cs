@@ -7,14 +7,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public static class DecisionTreeHelper
     {
-        public static int CountLeaves(ITreeNode node)
+        public static int CountLeaves(IDecisionTreeNode node)
         {
             int count = 0;
             TreeNodeTraversal.TraversePostOrder(node, n => count += (n.IsLeaf) ? 1 : 0);
             return count;
         }
 
-        public static AttributeValueVector[] GetRulesFromTree(ITreeNode node, DataStore data)
+        public static AttributeValueVector[] GetRulesFromTree(IDecisionTreeNode node, DataStore data)
         {
             int count = CountLeaves(node);
 
@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 : new AttributeValueVector[1];
 
             int i = 0;
-            Action<ITreeNode> addConditions = n =>
+            Action<IDecisionTreeNode> addConditions = n =>
             {
                 if (n.IsRoot && n.Children == null)
                 {
@@ -43,10 +43,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return conditions;
         }
 
-        public static AttributeValueVector CreateRuleConditionFromNode(ITreeNode node)
+        public static AttributeValueVector CreateRuleConditionFromNode(IDecisionTreeNode node)
         {            
             AttributeValueVector result = new AttributeValueVector(node.Level);
-            ITreeNode n = node;
+            IDecisionTreeNode n = node;
             int size = result.Length - 1;
             while (n.Parent != null)
             {

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
-using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
@@ -19,8 +18,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private double mA;
         private long[] decisions;
         
-
-        public ITreeNode Root { get { return this.root; } }
+        public IDecisionTreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public double Epsilon { get; set; }
         protected IEnumerable<long> Decisions { get { return this.decisions; } }
@@ -38,7 +36,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected void Init(DataStore data, int[] attributes)
         {
-            this.root = new DecisionTreeNode(-1, -1, null);
+            this.root = new DecisionTreeNode(-1, ComparisonType.EqualTo, -1, null);
             this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
             this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
 
@@ -64,19 +62,21 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             //s.Stop();
 
-            ClassificationResult trainResult = Classifier.Instance.Classify(this, data, data.Weights);
+            ClassificationResult trainResult = Classifier.DefaultClassifer.Classify(this, data, data.Weights);
             //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             return trainResult;
         }
 
-        protected void CreateLeaf(DecisionTreeNode parent, long decisionValue)
+        protected void CreateDecisionLeaf(DecisionTreeNode parent, long decisionValue)
         {
-            parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, parent));
+            parent.Output = decisionValue;
+            //parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, ComparisonType.EqualTo, decisionValue, parent));
         }
 
-        protected void CreateLeaf(DecisionTreeNode parent, long decisionValue, double decisionWeight)
+        protected void CreateDecisionLeaf(DecisionTreeNode parent, long decisionValue, double decisionWeight)
         {
-            parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, decisionValue, decisionWeight, parent));
+            parent.Output = decisionValue;
+            //parent.AddChild(new DecisionTreeNode(this.decisionAttributeId, ComparisonType.EqualTo, decisionValue, parent, decisionWeight));
         }
 
         protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
@@ -97,15 +97,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     || currentAttributes.Length == 0 
                     || currentEqClassCollection.NumberOfObjects == 0)
                 {
+                    
                     var decision = currentEqClassCollection.DecisionWeights.FindMaxValuePair();
-                    this.CreateLeaf(currentParent, decision.Key, decision.Value);
+                    this.CreateDecisionLeaf(currentParent, decision.Key, decision.Value);
                     continue;
                 }
 
                 var singleDecision = currentEqClassCollection.GetSingleDecision();
                 if (singleDecision.Key != -1)
                 {
-                    this.CreateLeaf(currentParent, singleDecision.Key, singleDecision.Value);
+                    this.CreateDecisionLeaf(currentParent, singleDecision.Key, singleDecision.Value);
                     continue;
                 }
 
@@ -114,7 +115,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     double m = this.MeasureSum(this.root);
                     if ((1.0 - this.Epsilon) * this.mA <= m)
                     {
-                        this.CreateLeaf(currentParent, currentEqClassCollection.DecisionWeights.FindMaxValueKey());
+                        this.CreateDecisionLeaf(currentParent, currentEqClassCollection.DecisionWeights.FindMaxValueKey());
                         isConverged = true;
                         continue;
                     }
@@ -128,10 +129,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                 foreach (var kvp in subEqClasses)
                 {
-                    DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, kvp.Key, currentParent);
+                    DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, ComparisonType.EqualTo, kvp.Key, currentParent);
                     currentParent.AddChild(newNode);
 
-                    if (this.Epsilon >= 1.0)
+                    if (this.Epsilon >= 0.0)
                         newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
 
                     var newSplitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(
@@ -142,9 +143,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     queue.Enqueue(newSplitInfo);
                 }
             }
-        }
+        }        
 
-        private bool IsNextNodeALeafNode(ITreeNode node)
+        private bool IsNextNodeALeafNode(IDecisionTreeNode node)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
@@ -158,7 +159,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return false;
         }
 
-        private long GetDecision(ITreeNode node)
+        private long GetDecision(IDecisionTreeNode node)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
@@ -174,19 +175,20 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.Root == null)
                 throw new InvalidOperationException("this.Root == null");
 
-            ITreeNode current = this.Root;
+            IDecisionTreeNode current = this.Root;
             while (current != null)
             {
                 if (current.IsLeaf)
-                    return current.Value;
+                    return current.Output;
+                    //return current.Value;
 
-                if (this.IsNextNodeALeafNode(current))
-                    return this.GetDecision(current);
+                //if (this.IsNextNodeALeafNode(current))
+                //    return this.GetDecision(current);
 
-                current = current.Children.Where(x => x.Value == record[x.Key]).FirstOrDefault();
+                current = current.Children.Where(x => x.Compute(record[x.Key])).FirstOrDefault();
             }
 
-            return -1;
+            return -1; //unclassified
         }
 
         protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(
@@ -253,7 +255,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             throw new NotImplementedException();
         }
 
-        private double MeasureSum(ITreeNode node)
+        private double MeasureSum(IDecisionTreeNode node)
         {
             double sum = 0;
             TreeNodeTraversal.TraversePostOrder(node, n => 
@@ -262,6 +264,28 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     sum += n.Measure;
             });
             return sum;
+        }
+              
+        public IEnumerator<IDecisionTreeNode> GetEnumerator()
+        {
+            if (this.Root == null)
+                yield break;
+
+            var stack = new Stack<IDecisionTreeNode>(new[] { this.Root });
+            while (stack.Count != 0)
+            {
+                IDecisionTreeNode current = stack.Pop();
+                yield return current;
+
+                if (current.Children != null)
+                    foreach(IDecisionTreeNode node in current.Children)                    
+                        stack.Push(node);
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
  

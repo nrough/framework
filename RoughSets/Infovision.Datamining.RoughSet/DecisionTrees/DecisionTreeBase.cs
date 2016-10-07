@@ -13,40 +13,57 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
     {
+        private object syncRoot = new object();
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private double mA;
         private long[] decisions;
+        private int nextId; 
         
         public IDecisionTreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public double Epsilon { get; set; }
-        protected IEnumerable<long> Decisions { get { return this.decisions; } }
+        public int MinimumNumOfInstancesPerLeaf { get; set; }        
 
         public int EnsembleSize { get { return 1; } }
         public double QualityRatio { get { return this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0; } }
-        
+
+        protected IEnumerable<long> Decisions { get { return this.decisions; } }
+
         public DecisionTreeBase()
         {
-            this.root = null;
+            this.root = null; 
             this.decisionAttributeId = -1;
             this.NumberOfAttributesToCheckForSplit = -1;
             this.Epsilon = -1.0;
+            this.MinimumNumOfInstancesPerLeaf = 2;
+            this.nextId = 1;
+        }
+
+        public int GetId()
+        {
+            lock (syncRoot)
+            {
+                return this.nextId++;
+            }
         }
 
         protected void Init(DataStore data, int[] attributes)
         {
-            this.root = new DecisionTreeNode(-1, ComparisonType.EqualTo, -1, null);
-            this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
-            this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
+            lock (syncRoot)
+            {
+                this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
+                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
+                this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
 
-            int i = 0;
-            foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
-                this.decisions[i++] = decisionValue;
+                int i = 0;
+                foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
+                    this.decisions[i++] = decisionValue;
 
-            if (this.Epsilon >= 0.0)
-                this.mA = InformationMeasureWeights.Instance.Calc(
-                    EquivalenceClassCollection.Create(attributes, data, data.Weights));
+                if (this.Epsilon >= 0.0)
+                    this.mA = InformationMeasureWeights.Instance.Calc(
+                        EquivalenceClassCollection.Create(attributes, data, data.Weights));
+            }
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
@@ -129,7 +146,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                 foreach (var kvp in subEqClasses)
                 {
-                    DecisionTreeNode newNode = new DecisionTreeNode(maxAttribute, ComparisonType.EqualTo, kvp.Key, currentParent);
+                    DecisionTreeNode newNode = new DecisionTreeNode(this.GetId(), maxAttribute, ComparisonType.EqualTo, kvp.Key, currentParent);
                     currentParent.AddChild(newNode);
 
                     if (this.Epsilon >= 0.0)
@@ -153,7 +170,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (node.Children == null)
                 throw new InvalidOperationException("node.Children == null");
 
-            if (node.Children[0].Key == this.decisionAttributeId)
+            if (node.Children[0].Attribute == this.decisionAttributeId)
                 return true;
 
             return false;
@@ -185,7 +202,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 //if (this.IsNextNodeALeafNode(current))
                 //    return this.GetDecision(current);
 
-                current = current.Children.Where(x => x.Compute(record[x.Key])).FirstOrDefault();
+                current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
             }
 
             return -1; //unclassified

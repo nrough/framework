@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
+using System.Diagnostics;
 
 namespace Infovision.Datamining
 {
@@ -288,6 +289,10 @@ namespace Infovision.Datamining
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
             int actualDecIdx = value2index[actual];
+
+            if (!value2index.ContainsKey(prediction))
+                Debugger.Break();
+
             int predictionDecIdx = value2index[prediction];
             predictionResults[objectIdx] = prediction;
 

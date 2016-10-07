@@ -117,7 +117,7 @@ namespace Infovision.Data
 
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2)
         {
-            if (ActiveFold < 0)
+            if (this.ActiveFold < 0)
                 throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
 
             if (!this.SplitCalculated)
@@ -158,7 +158,7 @@ namespace Infovision.Data
 
         public virtual void GetTrainingData(ref DataStore dataStore1)
         {
-            if (ActiveFold < 0)
+            if (this.ActiveFold < 0)
                 throw new InvalidOperationException("Active folde was not set. Set ActiveFold before calling Split method.");
 
             if (!this.SplitCalculated)

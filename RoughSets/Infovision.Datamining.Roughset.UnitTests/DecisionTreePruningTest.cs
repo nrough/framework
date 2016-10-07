@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class DecisionTreePruningTest
     {
-        [Test, Repeat(10)]
+        [Test]
         public void ErrorBasedPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -21,16 +21,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
 
             DataStore train = null, prune = null;
             DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
-            splitter.Split(ref train, ref prune);
-
-            DecisionTreeC45 c45WithoutPruning = new DecisionTreeC45();
-            c45WithoutPruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-            ClassificationResult resultWithoutPruning = Classifier.DefaultClassifer.Classify(c45WithoutPruning, test);
-            Console.WriteLine("resultWithoutPruning =  {0}", resultWithoutPruning);
-            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithoutPruning));
-
-            //===============================================
+            splitter.Split(ref train, ref prune);            
 
             DecisionTreeC45 c45WithPruning = new DecisionTreeC45();
             c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -39,29 +30,94 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
             Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
 
-            ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);
-            pruning.Threshold = 0.1;
-            pruning.Run();
-            
+            ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);            
+            pruning.Prune();
+
             ClassificationResult resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
             Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
-            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
-
-            //===============================================
-
-            DecisionTreeC45 c45WithPrePruning = new DecisionTreeC45();
-            c45WithPrePruning.Epsilon = 0.1;
-            c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-            ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(c45WithPrePruning, test);
-            Console.WriteLine("resultForTreeWithPrePruning = {0}", resultForTreeWithPrePruning);
-            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPrePruning));
-
-            Console.WriteLine();
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));                                              
         }
 
-        public int GetNumberOfRules(IDecisionTree tree)
+        [Test]
+        public void ReducedErrorPruningTest()
         {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            DataStore train = null, prune = null;
+            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            splitter.Split(ref train, ref prune);
+
+            var c45WithPruning = new DecisionTreeC45();
+            c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            var resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
+            Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
+
+            ReducedErrorPruning reducedErrorPruning = new ReducedErrorPruning(c45WithPruning, prune);
+            reducedErrorPruning.Prune();
+
+            var resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
+            Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
+        }
+
+        [Test]
+        public void PrePruningTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            for (double eps = 0.0; eps < 0.5; eps += 0.01)
+            {
+                DecisionTreeC45 c45WithPrePruning = new DecisionTreeC45();
+                c45WithPrePruning.Epsilon = eps;
+                c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(c45WithPrePruning, test);
+                Console.WriteLine("resultForTreeWithPrePruning = {0}", resultForTreeWithPrePruning);
+                Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPrePruning));
+            }
+        }
+
+        [Test, Repeat(20)]
+        public void PrePrunningTest2()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            var tree = new DecisionTreeReduct();
+            tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
+            Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(tree));
+
+        }
+
+        [Test]
+        public void PrePrunningTest3()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            for (double eps = 0.0; eps < 0.5; eps += 0.01)
+            {
+                var tree = new DecisionTreeRough();
+                tree.Epsilon = eps;
+                tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
+                Console.WriteLine("DecisionTreeRough {0}", resultForTreeWithPrePruning);
+                Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(tree));
+            }
+        }
+
+
+
+        public int GetNumberOfRules(IDecisionTree tree)
+        {            
             int count = 0;
             TreeNodeTraversal.TraversePostOrder(tree.Root, x => count = x.IsLeaf ? count + 1 : count);
             return count;

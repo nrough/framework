@@ -249,7 +249,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     reductResult.QualityRatio = reductsfiltered.GetAvgMeasure(new ReductMeasureLength(), false);
                     Console.WriteLine(reductResult);
 
-                    int[] nodeAttributes = ((DecisionTreeNode)treeC45.Root).GroupBy(x => x.Key).Select(g => g.First().Key).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
+                    int[] nodeAttributes = ((DecisionTreeNode)treeC45.Root).GroupBy(x => x.Attribute).Select(g => g.First().Attribute).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();
                     int[] reductAttributes = reduct.Attributes.ToArray();
 
                     Array.Sort(nodeAttributes);

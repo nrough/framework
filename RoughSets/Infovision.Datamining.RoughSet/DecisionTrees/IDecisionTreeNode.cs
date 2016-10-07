@@ -8,7 +8,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public interface IDecisionTreeNode
     {
-        int Key { get; }
+        int Id { get; }
+
+        int Attribute { get; }
         IList<IDecisionTreeNode> Children { get; set; }
         
         long Value { get; }

@@ -20,6 +20,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         #region Properties
 
+        public int Id { get; private set; }
+
         public IList<IDecisionTreeNode> Children
         {
             get
@@ -59,7 +61,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public long Value { get; private set; }
 
-        public int Key { get; private set; }
+        public int Attribute { get; private set; }
 
         public double Measure
         {
@@ -75,9 +77,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         #region Constructors
 
-        public DecisionTreeNode(int key, ComparisonType comparisonType, long value, IDecisionTreeNode parent)
+        public DecisionTreeNode(int id, int attribute, ComparisonType comparisonType, long value, IDecisionTreeNode parent)
         {
-            this.Key = key;
+            this.Id = id;
+            this.Attribute = attribute;
             this.Value = value;
             this.Parent = parent;
             this.Level = (parent == null) ? 0 : parent.Level + 1;
@@ -86,8 +89,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Output = -1;
         }
 
-        public DecisionTreeNode(int key, ComparisonType comparisonType, long value, IDecisionTreeNode parent, double measure)
-            : this(key, comparisonType, value, parent)
+        public DecisionTreeNode(int id, int attribute, ComparisonType comparisonType, long value, IDecisionTreeNode parent, double measure)
+            : this(id, attribute, comparisonType, value, parent)
         {
             this.Measure = measure;
         }
@@ -143,9 +146,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public ICollection<int> GetChildUniqueKeys()
         {            
-            return this.Where(x => x.Key != -1)
-                    .GroupBy(x => x.Key)
-                    .Select(g => g.First().Key)
+            return this.Where(x => x.Attribute != -1)
+                    .GroupBy(x => x.Attribute)
+                    .Select(g => g.First().Attribute)
                     .OrderBy(x => x).ToArray().ToArray();
 
             //return this.Where(x => x.IsLeaf == false && x.Key != -1)
@@ -191,10 +194,19 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.IsRoot)
                 return DecisionTreeNode.ROOT;
 
-            return string.Format("({0} {1} {2})",
-                (info != null) ? info.GetFieldInfo(this.Key).Name : this.Key.ToString(),
-                this.Comparison.ToSymbol(),
-                (info != null) ? info.GetFieldInfo(this.Key).Internal2External(this.Value).ToString() : this.Value.ToString());
+            if(!this.IsLeaf)
+                return string.Format("[{0}] ({1} {2} {3})",
+                    this.Id,
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
+                    this.Comparison.ToSymbol(),
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString());
+
+            return string.Format("[{0}] ({1} {2} {3}) ==> {4}",
+                    this.Id,
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
+                    this.Comparison.ToSymbol(),
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(),
+                    this.Output);
         }
 
         public override bool Equals(object obj)
@@ -206,14 +218,19 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (node == null)
                 return false;
 
-            return node.Key == this.Key 
+            /*
+            return node.Attribute == this.Attribute 
                 && node.Value == this.Value                 
                 && node.Comparison == this.Comparison;            
+            */
+
+            return node.Id == this.Id;
         }
 
         public override int GetHashCode()
         {
-            return HashHelper.GetHashCode<int, long>(this.Key, this.Value);
+            //return HashHelper.GetHashCode<int, long>(this.Attribute, this.Value);
+            return this.Id;
         }
 
         #endregion

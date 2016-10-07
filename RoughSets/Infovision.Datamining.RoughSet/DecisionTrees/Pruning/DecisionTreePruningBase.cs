@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         private object syncRoot = new object();
         public DataStore PruningData { get; private set; }
         public IDecisionTree DecisionTree { get; private set; }
-        public double Threshold { get; set; }
+        public double GainThreshold { get; set; }
 
         public DecisionTreePruningBase(IDecisionTree decisionTree, DataStore data)
         {           
@@ -29,9 +29,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
             this.PruningData = data;
 
-            this.Threshold = 0.01;
+            this.GainThreshold = 0;
         }
 
-        public abstract double Run();
+        public abstract double Prune();
     }
 }

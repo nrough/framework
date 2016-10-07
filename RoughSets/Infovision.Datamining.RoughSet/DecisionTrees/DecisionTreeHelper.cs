@@ -29,11 +29,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 {
                     conditions[i++] = new AttributeValueVector(0);
                 }
-                else if (n.Children == null && n.Key != data.DataStoreInfo.DecisionFieldId)
+                else if (n.Children == null && n.Attribute != data.DataStoreInfo.DecisionFieldId)
                 {
                     conditions[i++] = DecisionTreeHelper.CreateRuleConditionFromNode(n);
                 }
-                else if (n.Children != null && n.Children.First().Key == data.DataStoreInfo.DecisionFieldId)
+                else if (n.Children != null && n.Children.First().Attribute == data.DataStoreInfo.DecisionFieldId)
                 {
                     conditions[i++] = DecisionTreeHelper.CreateRuleConditionFromNode(n);
                 }
@@ -50,7 +50,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             int size = result.Length - 1;
             while (n.Parent != null)
             {
-                result.Set(size--, n.Key, n.Value);
+                result.Set(size--, n.Attribute, n.Value);
                 n = n.Parent;
             }
             return result;

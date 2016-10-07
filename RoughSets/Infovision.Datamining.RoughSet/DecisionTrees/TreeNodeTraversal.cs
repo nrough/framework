@@ -65,9 +65,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             if (node == null)
                 return;
+
             if (node.Children != null)
                 foreach (IDecisionTreeNode child in node.Children)
                     TreeNodeTraversal.TraversePostOrder(child, action);
+
             action.Invoke(node);
         }
 

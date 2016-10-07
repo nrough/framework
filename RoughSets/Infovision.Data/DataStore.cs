@@ -499,6 +499,14 @@ namespace Infovision.Data
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.DecisionFieldIndex);
         }
 
+        public long[] GetDecisionValue(int[] objectIndices)
+        {
+            long[] result = new long[objectIndices.Length];
+            for (int i = 0; i < objectIndices.Length; i++)
+                result[i] = this.GetFieldIndexValue(objectIndices[i], this.DataStoreInfo.DecisionFieldIndex);
+            return result;
+        }
+
         public long ObjectIndex2ObjectId(int objectIndex)
         {
             return index2ObjectId[objectIndex];

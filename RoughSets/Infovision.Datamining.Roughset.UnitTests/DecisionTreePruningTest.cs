@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
     [TestFixture]
     public class DecisionTreePruningTest
     {
-        [Test]
+        [Test, Repeat(10)]
         public void ErrorBasedPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
             Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
 
-            ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);            
+            ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);
             pruning.Prune();
 
             ClassificationResult resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
@@ -38,7 +38,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));                                              
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void ReducedErrorPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);

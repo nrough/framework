@@ -471,6 +471,11 @@ namespace Infovision.Data
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.GetFieldIndex(fieldId));
         }
 
+        public long[] GetFieldValue(int[] objectIndices, int fieldId)
+        {
+            return this.GetFieldIndexValue(objectIndices, this.DataStoreInfo.GetFieldIndex(fieldId));
+        }
+
         private void SetFieldIndexValue(int objectIdx, int fieldIdx, long internalValue)
         {
             data[objectIdx * this.DataStoreInfo.NumberOfFields + fieldIdx] = internalValue;
@@ -479,6 +484,14 @@ namespace Infovision.Data
         public long GetFieldIndexValue(int objectIdx, int fieldIdx)
         {
             return data[objectIdx * this.DataStoreInfo.NumberOfFields + fieldIdx];
+        }
+
+        public long[] GetFieldIndexValue(int[] objectIndices, int fieldIdx)
+        {
+            long[] values = new long[objectIndices.Length];
+            for (int i = 0; i < objectIndices.Length; i++)
+                values[i] = data[objectIndices[i] * this.DataStoreInfo.NumberOfFields + fieldIdx];
+            return values;
         }
 
         public IEnumerable<long> GetObjectIds()

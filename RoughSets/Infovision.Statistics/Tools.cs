@@ -252,6 +252,27 @@ namespace Infovision.Statistics
             return DoubleEpsilonComparer.Instance.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);
         }
 
+        public static double Entropy(long[] values, long[] labels)
+        {
+            double entropy = 0;
+            double total = values.Length;
+            
+            foreach (long label in labels)
+            {
+                int count = ;
+                for (int i = 0; i < values.Length; i++)
+                    if (values[i] == label)
+                        count++;
+
+                if (count > 0)
+                {
+                    double p = count / total;
+                    entropy -= p * System.Math.Log(p, 2);
+                }
+            }
+            return entropy;
+        }
+
         /**
        * Returns the value, <tt>x</tt>, for which the area under the Normal
        * (Gaussian) probability density function (integrated from minus infinity to

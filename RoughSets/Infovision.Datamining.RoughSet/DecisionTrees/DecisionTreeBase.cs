@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
+using Infovision.Datamining;
+using Infovision.Datamining.Filters.Supervised.Attribute;
+using Infovision.Statistics;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
@@ -13,22 +16,26 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
     {
+        protected Dictionary<int, List<long>> thresholds;
+
         private object syncRoot = new object();
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private double mA;
         private long[] decisions;
-        private int nextId; 
+        private int nextId;
         
         public IDecisionTreeNode Root { get { return this.root; } }
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public double Epsilon { get; set; }
         public int MinimumNumOfInstancesPerLeaf { get; set; }        
+        public DataStore TrainingData { get; private set; }
 
         public int EnsembleSize { get { return 1; } }
         public double QualityRatio { get { return this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0; } }
 
         protected IEnumerable<long> Decisions { get { return this.decisions; } }
+        
 
         public DecisionTreeBase()
         {
@@ -63,6 +70,24 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 if (this.Epsilon >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(
                         EquivalenceClassCollection.Create(attributes, data, data.Weights));
+
+                this.TrainingData = data;
+                this.thresholds = new Dictionary<int, List<long>>();
+
+               
+                foreach (DataFieldInfo field in data.DataStoreInfo.GetFields(FieldTypes.Standard).Where(f => f.IsNumeric))
+                {                                        
+                    var thresholdList = new List<long>();
+
+                    long[] values = this.TrainingData.GetColumnInternal(field.Id);
+                    Array.Sort(values);
+
+                    for (int k = 0; k < values.Length - 1; k++)
+                        if (values[k] != values[k + 1])
+                            thresholdList.Add((values[k] + values[k + 1]) / 2);
+
+                    this.thresholds[field.Id] = thresholdList;
+                }
             }
         }
 
@@ -208,6 +233,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return -1; //unclassified
         }
 
+        //TODO Change return value to a internal private class that can store additional values like cut threshold for continuous attributes
         protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(
             EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
         {
@@ -239,13 +265,84 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 {
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        var attributeEqClasses = EquivalenceClassCollection.Create(
-                            localAttributes[i], eqClassCollection);
+                        DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(i);
+                        
+                        if (attributeInfo.IsSymbolic)
+                        {
+                            var attributeEqClasses = EquivalenceClassCollection.Create(
+                                localAttributes[i], eqClassCollection);
 
-                        scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
-                                localAttributes[i],
-                                this.GetSplitScore(attributeEqClasses, currentScore),
-                                attributeEqClasses);
+                            scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
+                                    localAttributes[i],
+                                    this.GetSplitScore(attributeEqClasses, currentScore),
+                                    attributeEqClasses);
+                        }
+                        else //Is continuous
+                        {
+                            int[] indices = eqClassCollection.Indices;
+                            long[] outputs = this.TrainingData.GetDecisionValue(indices);
+                            long[] values = this.TrainingData.GetFieldValue(indices, i);
+                            
+                            //TODO improve
+                            Array.Sort(values.ToArray(), indices);
+                            Array.Sort(values, outputs);
+
+                            List<long> thresholds = new List<long>(values.Length);
+
+                            for (int k = 0; k < values.Length - 1; k++)
+                                if (values[k] != values[k + 1])
+                                    thresholds.Add((values[k] + values[k + 1]) / 2);
+
+                            //this is not good as it use as many cuts as different number of decision classes
+                            //var discretization = new Discretization<long, long>();
+                            //discretization.UseKononenko = false;
+                            //discretization.UseBetterEncoding = false;
+                            //discretization.Compute(values, outputs, true, null);
+
+                            long[] threshold = thresholds.ToArray();
+                            thresholds.Clear();
+
+                            double bestGain = Double.NegativeInfinity;
+                            long bestThreshold = threshold[0];
+
+                            for (int k = 0; k < threshold.Length; k++)
+                            {
+                                int[] idx1 = indices.Where(idx => (values[idx] <= threshold[k])).ToArray();
+                                int[] idx2 = indices.Where(idx => (values[idx] > threshold[k])).ToArray();
+
+                                long[] output1 = new long[idx1.Length];
+                                long[] output2 = new long[idx2.Length];
+
+                                for (int j = 0; j < idx1.Length; j++)
+                                    output1[j] = outputs[idx1[j]];
+
+                                for (int j = 0; j < idx2.Length; j++)
+                                    output2[j] = outputs[idx2[j]];
+
+                                double p1 = output1.Length / (double)outputs.Length;
+                                double p2 = output2.Length / (double)outputs.Length;
+
+                                double gain = -p1 * Tools.Entropy(output1, this.decisions) + 
+                                              -p2 * Tools.Entropy(output2, this.decisions);
+
+                                if (gain > bestGain)
+                                {
+                                    bestGain = gain;
+                                    bestThreshold = threshold[k];
+                                }
+
+                            }
+
+                            //TODO Create EquivalenceClassCollection with numeric attributes
+
+                            var attributeEqClasses = EquivalenceClassCollection.Create(
+                                localAttributes[i], eqClassCollection);
+
+                            scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
+                                    localAttributes[i],
+                                    bestGain,
+                                    attributeEqClasses);
+                        }
                     }
                 });
 
@@ -268,6 +365,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         protected virtual double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double currentScore)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual double GetSplitScoreContinuous()
         {
             throw new NotImplementedException();
         }

@@ -16,6 +16,10 @@ namespace Infovision.Datamining.Roughset
         private DataStore data;
         private Dictionary<long[], EquivalenceClass> partitions;
         private int[] attributes;
+
+        //private bool[] isNumeric;
+        //private long[] threshold;
+
         private object mutex = new object();
 
         private Dictionary<long, double> decisionWeight;
@@ -49,6 +53,20 @@ namespace Infovision.Datamining.Roughset
         public int[] Attributes
         {
             get { return this.attributes; }
+        }
+
+        /// <summary>
+        /// Indexes of all trainig dataset objects that belong to collection of equivalence classes
+        /// </summary>
+        public int[] Indices
+        {
+            get
+            {
+                List<int> indices = new List<int>();
+                foreach (var eqClass in this)
+                    indices.AddRange(eqClass.ObjectIndexes);
+                return indices.ToArray();
+            }
         }
 
         internal double WeightSum { get; set; }
@@ -478,6 +496,11 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
+        public static EquivalenceClassCollection CreateForContinuous(int attributeId, EquivalenceClassCollection eqClassCollection, long threshold)
+        {
+            throw new NotImplementedException("Method EquivalenceClassCollection.CreateForContinuous is not implemented");
+        }
+
         /// <summary>
         /// Returns decision id and its weight when only a single decision exist with non-zero weight, otherwise -1 is returned
         /// </summary>
@@ -505,9 +528,7 @@ namespace Infovision.Datamining.Roughset
 
             return new KeyValuePair<long, double>(-1, 0.0);
         }
-
         
-
         #region IEnumerable Members
 
         /// <summary>

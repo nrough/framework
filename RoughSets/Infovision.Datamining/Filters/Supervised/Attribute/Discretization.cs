@@ -7,6 +7,11 @@ using MiscUtil;
 
 namespace Infovision.Datamining.Filters.Supervised.Attribute
 {
+    /// <summary>
+    /// Numeric attribute supervised discretizer
+    /// </summary>
+    /// <typeparam name="A">Attribute values data type</typeparam>
+    /// <typeparam name="L">Labels / Classes / Outputs data type</typeparam>
     public class Discretization<A, L>
         where A : struct, IComparable, IFormattable, IComparable<A>, IEquatable<A>
         where L : struct, IComparable, IFormattable, IComparable<L>, IEquatable<L>
@@ -121,12 +126,12 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             }
 
             // Check if split is to be accepted
-            if ((UseKononenko && KononenkosMDL(priorCounts, bestCounts, numInstances, numCutPoints))
-                || (!UseKononenko && FayyadAndIranisMDL(priorCounts, bestCounts, numInstances, numCutPoints)))
+            if ((this.UseKononenko && this.KononenkosMDL(priorCounts, bestCounts, numInstances, numCutPoints))
+                || (!this.UseKononenko && this.FayyadAndIranisMDL(priorCounts, bestCounts, numInstances, numCutPoints)))
             {
                 // Select split points for the left and right subsets
-                left = cutPointsForSubset(values, labels, first, bestIndex + 1, weights);
-                right = cutPointsForSubset(values, labels, bestIndex + 1, lastPlusOne, weights);
+                left = this.cutPointsForSubset(values, labels, first, bestIndex + 1, weights);
+                right = this.cutPointsForSubset(values, labels, bestIndex + 1, lastPlusOne, weights);
 
                 // Merge cutpoints and return them
                 if ((left == null) && (right) == null)
@@ -258,16 +263,18 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             return (gain > ((Tools.Log2(numCutPoints) + delta) / numInstances));
         }
 
-        public void Compute(A[] values, L[] labels, double[] weights = null)
+        public void Compute(A[] values, L[] labels, bool isSorted = false, double[] weights = null)
         {
             for (int i = 0, labelKey = 0; i < values.Length; i++)
             {
                 if (!labelDict.ContainsKey(labels[i]))
                     labelDict.Add(labels[i], labelKey++);
             }
-
+            
             sortedIndices = Enumerable.Range(0, values.Length).ToArray();
-            Array.Sort(sortedIndices, (a, b) => values[a].CompareTo(values[b]));
+            if (isSorted == false)
+                Array.Sort(sortedIndices, (a, b) => values[a].CompareTo(values[b]));
+
             this.cuts = cutPointsForSubset(values, labels, 0, sortedIndices.Length, weights);
 
             if (this.cuts == null)

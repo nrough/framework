@@ -33,9 +33,9 @@ namespace Infovision.Datamining.Roughset
     {
         public override int Compare(IReduct left, IReduct right)
         {
-            if (left.EquivalenceClasses.NumberOfPartitions > right.EquivalenceClasses.NumberOfPartitions)
+            if (left.EquivalenceClasses.Count > right.EquivalenceClasses.Count)
                 return 1;
-            else if (left.EquivalenceClasses.NumberOfPartitions < right.EquivalenceClasses.NumberOfPartitions)
+            else if (left.EquivalenceClasses.Count < right.EquivalenceClasses.Count)
                 return -1;
             return 0;
         }

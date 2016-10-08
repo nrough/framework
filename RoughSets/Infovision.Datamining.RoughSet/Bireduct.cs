@@ -112,7 +112,7 @@ namespace Infovision.Datamining.Roughset
                 return false;
 
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
-            EquivalenceClass eqClass = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
+            EquivalenceClass eqClass = this.EquivalenceClasses.Find(dataVector);
 
             if (eqClass == null)
                 return true;
@@ -135,12 +135,13 @@ namespace Infovision.Datamining.Roughset
             if (this.CheckAddObject(objectIdx))
             {
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
-                EquivalenceClass eq = this.EquivalenceClasses.GetEquivalenceClass(dataVector);
+                EquivalenceClass eq = this.EquivalenceClasses.Find(dataVector);
 
                 if (eq == null)
                 {
                     eq = new EquivalenceClass(dataVector, this.DataStore);
-                    this.EquivalenceClasses.Partitions.Add(dataVector, eq);
+                    
+                    //this.EquivalenceClasses.Partitions.Add(dataVector, eq);
                 }
 
                 eq.AddObject(
@@ -172,7 +173,7 @@ namespace Infovision.Datamining.Roughset
             {
                 objectSet.RemoveElement(objectIdx);
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
-                this.EquivalenceClasses.GetEquivalenceClass(dataVector).RemoveObject(objectIdx, this.DataStore);
+                this.EquivalenceClasses.Find(dataVector).RemoveObject(objectIdx, this.DataStore);
                 return true;
             }
 

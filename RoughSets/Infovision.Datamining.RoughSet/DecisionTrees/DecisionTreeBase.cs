@@ -92,21 +92,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
-        {
-            //Stopwatch s = new Stopwatch();
-            //s.Start();
-
+        {            
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             if (this.Epsilon >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.GenerateSplits(eqClassCollection, this.root, attributes);
 
-            //s.Stop();
-
-            ClassificationResult trainResult = Classifier.DefaultClassifer.Classify(this, data, data.Weights);
-            //trainResult.ModelCreationTime = s.ElapsedMilliseconds;
-            return trainResult;
+            return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
         }
 
         protected void CreateDecisionLeaf(DecisionTreeNode parent, long decisionValue)
@@ -265,7 +258,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 {
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(i);
+                        DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(localAttributes[i]);
                         
                         if (attributeInfo.IsSymbolic)
                         {
@@ -281,7 +274,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         {
                             int[] indices = eqClassCollection.Indices;
                             long[] outputs = this.TrainingData.GetDecisionValue(indices);
-                            long[] values = this.TrainingData.GetFieldValue(indices, i);
+                            long[] values = this.TrainingData.GetFieldValue(indices, localAttributes[i]);
                             
                             //TODO improve
                             Array.Sort(values.ToArray(), indices);

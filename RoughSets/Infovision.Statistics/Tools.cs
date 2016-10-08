@@ -259,7 +259,7 @@ namespace Infovision.Statistics
             
             foreach (long label in labels)
             {
-                int count = ;
+                int count = 0;
                 for (int i = 0; i < values.Length; i++)
                     if (values[i] == label)
                         count++;

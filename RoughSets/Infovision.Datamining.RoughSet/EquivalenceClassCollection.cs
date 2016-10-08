@@ -15,10 +15,7 @@ namespace Infovision.Datamining.Roughset
 
         private DataStore data;
         private Dictionary<long[], EquivalenceClass> partitions;
-        private int[] attributes;
-
-        //private bool[] isNumeric;
-        //private long[] threshold;
+        private int[] attributes;        
 
         private object mutex = new object();
 
@@ -29,6 +26,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
+        /*
         public Dictionary<long[], EquivalenceClass> Partitions
         {
             get
@@ -39,17 +37,24 @@ namespace Infovision.Datamining.Roughset
             }
             protected set { this.partitions = value; }
         }
+        */
 
         public Dictionary<long, double> DecisionWeights
         {
             get { return this.decisionWeight; }
         }
 
-        public int NumberOfPartitions
+        /// <summary>
+        /// Returns number of partitions, which is equivalent to number of rules
+        /// </summary>
+        public int Count
         {
             get { return partitions.Count; }
         }
 
+        /// <summary>
+        /// returns attributes on which eqivalence classes are base
+        /// </summary>
         public int[] Attributes
         {
             get { return this.attributes; }
@@ -117,14 +122,14 @@ namespace Infovision.Datamining.Roughset
             this.attributes = new int[eqClassCollection.Attributes.Length];
             Array.Copy(eqClassCollection.Attributes, this.attributes, eqClassCollection.Attributes.Length);
 
-            this.partitions = (Dictionary<long[], EquivalenceClass>)eqClassCollection.Partitions.CloneDictionaryCloningValues<long[], EquivalenceClass>();
+            this.partitions = (Dictionary<long[], EquivalenceClass>)eqClassCollection.partitions.CloneDictionaryCloningValues<long[], EquivalenceClass>();
         }
 
         #endregion Constructors
 
         #region Methods
 
-        #region MethodsInProgress
+        #region MethodsUnderDevelopment
 
         //|U| (Returns number of suppoerted objects (may differ from all number of records in dataset because of exception rules)
         public int CountSupportedObjects()
@@ -139,7 +144,7 @@ namespace Infovision.Datamining.Roughset
         public int CountEquivalenceClass(long[] internalValueVector)
         {
             EquivalenceClass eqClass = null;
-            if (this.Partitions.TryGetValue(internalValueVector, out eqClass))
+            if (this.partitions.TryGetValue(internalValueVector, out eqClass))
                 return eqClass.Instances.Keys.Count;
             return 0;
         }
@@ -148,7 +153,7 @@ namespace Infovision.Datamining.Roughset
         public double CountWeightEquivalenceClass(long[] internalValueVector)
         {
             EquivalenceClass eqClass = null;
-            if (this.Partitions.TryGetValue(internalValueVector, out eqClass))
+            if (this.partitions.TryGetValue(internalValueVector, out eqClass))
                 return eqClass.WeightSum;
             return 0;
         }
@@ -175,7 +180,7 @@ namespace Infovision.Datamining.Roughset
         public int CountDecisionInEquivalenceClass(long[] internalValueVector, long decisionInternalValue)
         {
             EquivalenceClass eqClass = null;
-            if (this.Partitions.TryGetValue(internalValueVector, out eqClass))
+            if (this.partitions.TryGetValue(internalValueVector, out eqClass))
                 return eqClass.GetNumberOfObjectsWithDecision(decisionInternalValue);
             return 0;
         }
@@ -184,12 +189,12 @@ namespace Infovision.Datamining.Roughset
         public double CountWeightDecisionInEquivalenceClass(long[] internalValueVector, long decisionInternalValue)
         {
             EquivalenceClass eqClass = null;
-            if (this.Partitions.TryGetValue(internalValueVector, out eqClass))
+            if (this.partitions.TryGetValue(internalValueVector, out eqClass))
                 return eqClass.GetDecisionWeight(decisionInternalValue);
             return 0;
         }
 
-        #endregion MethodsInProgress        
+        #endregion        
 
         public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, double[] weights, ObjectSet objectSet)
         {
@@ -389,21 +394,26 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        public EquivalenceClass GetEquivalenceClass(long[] values)
+        public EquivalenceClass Find(long[] values)
         {
-            EquivalenceClass reductStatstic = null;
-            if (this.partitions.TryGetValue(values, out reductStatstic))
-                return reductStatstic;
+            EquivalenceClass eqClass = null;
+            if (this.partitions.TryGetValue(values, out eqClass))
+                return eqClass;
             return null;
         }
 
-        public EquivalenceClass GetEquivalenceClass(DataRecordInternal record)
+        public EquivalenceClass Find(DataRecordInternal record)
         {
             long[] values = new long[this.attributes.Length];
             for (int i = 0; i < this.attributes.Length; i++)
                 values[i] = record[this.attributes[i]];
-            return GetEquivalenceClass(values);
+            return Find(values);
         }
+
+        public void Add(EquivalenceClass equivalenceClass)
+        {
+            this.partitions.Add(equivalenceClass.Instance, equivalenceClass);
+        }        
 
         public void RecalcEquivalenceClassStatistic(DataStore data)
         {
@@ -498,6 +508,12 @@ namespace Infovision.Datamining.Roughset
 
         public static EquivalenceClassCollection CreateForContinuous(int attributeId, EquivalenceClassCollection eqClassCollection, long threshold)
         {
+            int[] attributes = new int[] { attributeId };
+            int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
+
+
+            long[] cursor = new long[1];
+
             throw new NotImplementedException("Method EquivalenceClassCollection.CreateForContinuous is not implemented");
         }
 
@@ -527,6 +543,11 @@ namespace Infovision.Datamining.Roughset
                 return result;
 
             return new KeyValuePair<long, double>(-1, 0.0);
+        }
+
+        public EquivalenceClass[] ToArray()
+        {
+            return this.partitions.Values.ToArray();
         }
         
         #region IEnumerable Members

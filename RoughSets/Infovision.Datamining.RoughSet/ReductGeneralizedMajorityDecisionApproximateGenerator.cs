@@ -90,11 +90,11 @@ namespace Infovision.Datamining.Roughset
                 throw new ArgumentNullException("reductStore", "reductStore cannot be null when calculating exceptions");
 
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
-            EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
+            EquivalenceClass[] eqArray = eqClasses.ToArray();
             this.SortEquivalenceClassArray(eqArray);
 
             EquivalenceClassCollection exceptionEqClasses = null;
@@ -104,8 +104,8 @@ namespace Infovision.Datamining.Roughset
             {
                 var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
 
-                EquivalenceClass newEqClass = null;
-                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
+                EquivalenceClass newEqClass = newEqClasses.Find(newInstance);
+                if (newEqClass != null)
                 {
                     //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
 
@@ -147,7 +147,7 @@ namespace Infovision.Datamining.Roughset
                         exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
                         exeptionEq.WeightSum = eq.WeightSum;
 
-                        exceptionEqClasses.Partitions.Add(eq.Instance, exeptionEq);
+                        exceptionEqClasses.Add(exeptionEq);
                     }
                 }
                 else
@@ -157,7 +157,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.AvgConfidenceSum = eq.AvgConfidenceSum;
                     newEqClass.WeightSum = eq.WeightSum;
 
-                    newEqClasses.Partitions.Add(newInstance, newEqClass);
+                    newEqClasses.Add(newEqClass);
                 }
             }
 
@@ -212,19 +212,19 @@ namespace Infovision.Datamining.Roughset
             IReductStoreCollection reductStoreCollection = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Partitions.Count);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
-            EquivalenceClass[] eqArray = eqClasses.Partitions.Values.ToArray();
+            EquivalenceClass[] eqArray = eqClasses.ToArray();
             this.SortEquivalenceClassArray(eqArray);
 
             foreach (EquivalenceClass eq in eqArray)
             {
                 var newInstance = eq.Instance.RemoveAt(attributeIdx, length);
 
-                EquivalenceClass newEqClass = null;
-                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
+                EquivalenceClass newEqClass = newEqClasses.Find(newInstance);
+                if (newEqClass != null)
                 {
                     //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
 
@@ -269,7 +269,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.AvgConfidenceSum = eq.AvgConfidenceSum;
                     newEqClass.WeightSum = eq.WeightSum;
 
-                    newEqClasses.Partitions[newInstance] = newEqClass;
+                    newEqClasses.Add(newEqClass);
                 }
             }
 

@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                         discretizeInt.UseKononenko = this.UseKononenko;
                         discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
                         int[] oldValuesInt = data.GetColumn<int>(fieldId);
-                        discretizeInt.Compute(oldValuesInt, labels, weights);
+                        discretizeInt.Compute(oldValuesInt, labels, false, weights);
                         cuts = discretizeInt.Cuts;
 
                         if (cuts == null || cuts.Length == 0)
@@ -58,7 +58,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                         discretizeDouble.UseKononenko = this.UseKononenko;
                         discretizeDouble.UseBetterEncoding = this.UseBetterEncoding;
                         double[] oldValuesDouble = data.GetColumn<double>(fieldId);
-                        discretizeDouble.Compute(oldValuesDouble, labels, weights);
+                        discretizeDouble.Compute(oldValuesDouble, labels, false, weights);
                         cuts = discretizeDouble.Cuts;
 
                         if (cuts == null || cuts.Length == 0)
@@ -115,7 +115,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                             discretizeInt.UseKononenko = this.UseKononenko;
                             discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
                             int[] oldValuesInt = trainingData.GetColumn<int>(fieldId);
-                            discretizeInt.Compute(oldValuesInt, labels, weights);
+                            discretizeInt.Compute(oldValuesInt, labels, false, weights);
 
                             if (discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
                             {
@@ -143,7 +143,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                             discretizeDouble.UseKononenko = this.UseKononenko;
                             discretizeDouble.UseBetterEncoding = this.UseBetterEncoding;
                             double[] oldValuesDouble = trainingData.GetColumn<double>(fieldId);
-                            discretizeDouble.Compute(oldValuesDouble, labels, weights);
+                            discretizeDouble.Compute(oldValuesDouble, labels, false, weights);
 
                             if (discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
                             {

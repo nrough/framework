@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 var dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1),
                                               dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) };
 
-                EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
+                EquivalenceClass reductStat = result.Find(dataVector);
                 Assert.AreEqual(9, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
@@ -72,7 +72,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(2) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
@@ -83,7 +83,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(1),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(3) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(19, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
@@ -94,7 +94,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(2),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(16, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
@@ -105,7 +105,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(2),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(2) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(15, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
@@ -116,7 +116,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(2),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(3) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(11, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
@@ -127,7 +127,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(3),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(1) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
@@ -138,7 +138,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(3),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(2) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
                 Assert.AreEqual(1, reductStat.DecisionWeights.FindMaxValueKey());
@@ -149,7 +149,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 dataVector = new long[] { dataStoreTrainInfo.GetFieldInfo(1).External2Internal(3),
                                           dataStoreTrainInfo.GetFieldInfo(2).External2Internal(3) };
 
-                reductStat = result.GetEquivalenceClass(dataVector);
+                reductStat = result.Find(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
                 Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
@@ -180,7 +180,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 EquivalenceClassCollection result = localReduct.EquivalenceClasses;
 
                 var dataVector = new long[] { };
-                EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
+                EquivalenceClass reductStat = result.Find(dataVector);
 
                 Assert.AreEqual(124, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
@@ -207,11 +207,11 @@ namespace Infovision.Datamining.Roughset.UnitTests
             foreach (ReductWeights localReduct in reductStore)
             {
                 EquivalenceClassCollection result = localReduct.EquivalenceClasses;
-                Assert.AreEqual(124, result.NumberOfPartitions);
+                Assert.AreEqual(124, result.Count);
 
                 //var dataVector = new long[] { 1, 1, 1, 1, 1, 1 };
                 var dataVector = new long[] { 1, 1, 1, 1, 3, 1 };
-                EquivalenceClass reductStat = result.GetEquivalenceClass(dataVector);
+                EquivalenceClass reductStat = result.Find(dataVector);
 
                 Assert.AreEqual(1, reductStat.NumberOfObjects);
             }
@@ -297,25 +297,24 @@ namespace Infovision.Datamining.Roughset.UnitTests
                     EquivalenceClassCollection partitionMap = new EquivalenceClassCollection(dataStoreTrain);
                     partitionMap.Calc(reduct.Attributes, dataStoreTrain);
 
-                    Assert.AreEqual(partitionMap.NumberOfPartitions, reduct.EquivalenceClasses.NumberOfPartitions);
+                    Assert.AreEqual(partitionMap.Count, reduct.EquivalenceClasses.Count);
 
                     int objectCount = 0;
-                    foreach (var dataVector in partitionMap.Partitions.Keys)
+                    foreach (var eqClass in partitionMap)
                     {
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).DecisionValues, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).DecisionValues, "Decision Values");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfDecisions, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfDecisions, "Number of Decisions");
-                        Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).NumberOfObjects, reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects, "Number of objects");
-
-                        EquivalenceClass partitionEqClass = partitionMap.GetEquivalenceClass(dataVector);
-                        EquivalenceClass reductEqClass = reduct.EquivalenceClasses.GetEquivalenceClass(dataVector);
+                        Assert.AreEqual(eqClass.DecisionValues, reduct.EquivalenceClasses.Find(eqClass.Instance).DecisionValues, "Decision Values");
+                        Assert.AreEqual(eqClass.NumberOfDecisions, reduct.EquivalenceClasses.Find(eqClass.Instance).NumberOfDecisions, "Number of Decisions");
+                        Assert.AreEqual(eqClass.NumberOfObjects, reduct.EquivalenceClasses.Find(eqClass.Instance).NumberOfObjects, "Number of objects");
+                        
+                        EquivalenceClass reductEqClass = reduct.EquivalenceClasses.Find(eqClass.Instance);
 
                         foreach (long decisionValue in dataStoreTrain.DataStoreInfo.DecisionInfo.InternalValues())
                         {
-                            Assert.AreEqual(partitionMap.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue),
-                                            reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decisionInternalValue");
+                            Assert.AreEqual(eqClass.GetNumberOfObjectsWithDecision(decisionValue),
+                                            reduct.EquivalenceClasses.Find(eqClass.Instance).GetNumberOfObjectsWithDecision(decisionValue), "Numer of objects with decisionInternalValue");
                         }
 
-                        objectCount += reduct.EquivalenceClasses.GetEquivalenceClass(dataVector).NumberOfObjects;
+                        objectCount += reduct.EquivalenceClasses.Find(eqClass.Instance).NumberOfObjects;
                     }
 
                     Assert.AreEqual(dataStoreTrain.NumberOfRecords, objectCount);

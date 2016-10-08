@@ -109,7 +109,7 @@ namespace Infovision.Datamining.Roughset
         public Dictionary<long, double> Classify(DataRecordInternal record, IReduct reduct)
         {
             var decisionIdentification = new Dictionary<long, double>(reduct.ObjectSetInfo.GetDecisionValues().Count);
-            EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+            EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
             if (eqClass != null)
             {
                 foreach (long decisionValue in reduct.ObjectSetInfo.GetDecisionValues())
@@ -213,7 +213,7 @@ namespace Infovision.Datamining.Roughset
                     identifiedDecision = 0; // -1 (unclassified)
                     identifiedDecisionWeight = 0.0;
 
-                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
 
                     if (eqClass != null)
                     {
@@ -396,7 +396,7 @@ namespace Infovision.Datamining.Roughset
 
         public Dictionary<long, double> IdentifyDecision(DataRecordInternal record, IReduct reduct)
         {
-            EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+            EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
 
             //if reduct is an Exception and we found an existing rule and we treat exceptions as gaps,
             //then we cannot identify the decision, return empty dictionary
@@ -454,7 +454,7 @@ namespace Infovision.Datamining.Roughset
             identifiedDecision = -1;
             identifiedDecisionWeight = 0.0;
 
-            EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+            EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
             if (eqClass != null)
             {
                 foreach (long decision in decisions)

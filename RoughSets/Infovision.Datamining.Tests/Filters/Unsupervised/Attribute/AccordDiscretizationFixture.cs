@@ -325,7 +325,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                     var dataVector = localDataStoreTrain.GetFieldValues(j, reduct.Attributes);
 
                     EquivalenceClassCollection eqMap = reduct.EquivalenceClasses;
-                    EquivalenceClass eqClass = eqMap.GetEquivalenceClass(dataVector);
+                    EquivalenceClass eqClass = eqMap.Find(dataVector);
 
                     var internalRecord = localDataStoreTrain.GetRecordByIndex(j);
                     long mostFrequentDecisionValue = RoughClassifier.IdentifyDecision(internalRecord, reduct, identificationType).Item1;

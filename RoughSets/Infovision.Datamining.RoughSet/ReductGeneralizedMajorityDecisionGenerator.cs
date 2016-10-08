@@ -238,7 +238,7 @@ namespace Infovision.Datamining.Roughset
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(
                 this.DataStore,
                 eqClasses.Attributes.RemoveAt(attributeIdx, length),
-                eqClasses.Partitions.Count);
+                eqClasses.Count);
 
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
@@ -246,8 +246,8 @@ namespace Infovision.Datamining.Roughset
             foreach (EquivalenceClass eq in eqClasses)
             {
                 long[] newInstance = eq.Instance.RemoveAt(attributeIdx, length);
-                EquivalenceClass newEqClass = null;
-                if (newEqClasses.Partitions.TryGetValue(newInstance, out newEqClass))
+                EquivalenceClass newEqClass = newEqClasses.Find(newInstance);
+                if (newEqClass != null)
                 {
                     //Update m_d
                     newEqClass.DecisionSet.IntersectWith(eq.DecisionSet);
@@ -274,7 +274,7 @@ namespace Infovision.Datamining.Roughset
                     newEqClass.AvgConfidenceSum = eq.AvgConfidenceSum;
                     newEqClass.WeightSum = eq.WeightSum;
 
-                    newEqClasses.Partitions[newInstance] = newEqClass;
+                    newEqClasses.Add(newEqClass);
                 }
             }
 

@@ -75,7 +75,7 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
                 UseKononenko = useKononenko
             };
 
-            disc.Compute(data, labels, null);
+            disc.Compute(data, labels, false, null);
 
             ShowInfo<int, int>(disc, data, dataNotExisting);
         }

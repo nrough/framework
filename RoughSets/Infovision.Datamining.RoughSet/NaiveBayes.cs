@@ -224,7 +224,7 @@ namespace Infovision.Datamining.Roughset
                     identifiedDecision = 0; // -1 (unclassified)
                     identifiedDecisionWeight = 0.0;
 
-                    EquivalenceClass eqClass = reduct.EquivalenceClasses.GetEquivalenceClass(record);
+                    EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
 
                     if (eqClass != null)
                     {

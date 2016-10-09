@@ -17,7 +17,17 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ErrorBasedPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+
+            /*
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            {
+                fieldInfo.IsNumeric = false;
+                fieldInfo.IsSymbolic = true;
+            }
+            */
+
+
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
 
             DataStore train = null, prune = null;
             DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
@@ -36,6 +46,35 @@ namespace Infovision.Datamining.Roughset.UnitTests
             ClassificationResult resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
             Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
             Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));                                              
+        }
+
+        [Test]
+        public void DecisionTreeC45ForNumericAttributeTest()
+        {
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+                        
+            DataStore train = null, tmp = null, prune = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.33);
+            splitter.Split(ref train, ref tmp);
+
+            DataStoreSplitter splitter2 = new DataStoreSplitterRatio(tmp, 0.5);
+            splitter2.Split(ref prune, ref test);
+
+
+            DecisionTreeC45 c45WithPruning = new DecisionTreeC45();
+            c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            ClassificationResult resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
+            Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
+
+            ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);
+            pruning.Prune();
+
+            ClassificationResult resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
+            Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
+            Console.WriteLine("number of rules: {0}", this.GetNumberOfRules(c45WithPruning));
         }
 
         [Test, Repeat(10)]

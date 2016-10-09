@@ -507,6 +507,7 @@ namespace Infovision.Data
             this.DataStoreInfo.DecisionInfo.CreateWeightHistogram(this, this.weights);
         }
 
+        //TODO cache this.DataStoreInfo.DecisionFieldIndex (this lookups decIdx in a dictionary) PERFORMANCE LOSS!
         public long GetDecisionValue(int objectIndex)
         {
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.DecisionFieldIndex);
@@ -514,9 +515,10 @@ namespace Infovision.Data
 
         public long[] GetDecisionValue(int[] objectIndices)
         {
+            int decIdx = this.DataStoreInfo.DecisionFieldIndex;
             long[] result = new long[objectIndices.Length];
             for (int i = 0; i < objectIndices.Length; i++)
-                result[i] = this.GetFieldIndexValue(objectIndices[i], this.DataStoreInfo.DecisionFieldIndex);
+                result[i] = this.GetFieldIndexValue(objectIndices[i], decIdx);
             return result;
         }
 

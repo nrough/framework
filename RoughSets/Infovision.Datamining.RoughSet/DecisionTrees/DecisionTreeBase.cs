@@ -8,6 +8,7 @@ using Infovision.Utils;
 using Infovision.Datamining;
 using Infovision.Datamining.Filters.Supervised.Attribute;
 using Infovision.Statistics;
+using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
@@ -35,6 +36,28 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public double QualityRatio { get { return this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0; } }
 
         protected IEnumerable<long> Decisions { get { return this.decisions; } }
+
+        protected class SplitInfo
+        {
+            public int AttributeId { get; set; }
+            public double Gain { get; set; }
+            public EquivalenceClassCollection EquivalenceClassCollection { get; set; }
+            public ComparisonType ComparisonType { get; set; }
+            public long Cut { get; set; }
+
+            public SplitInfo(int attributeId, 
+                double gain, 
+                EquivalenceClassCollection equivalenceClassCollection, 
+                ComparisonType comparisonType,
+                long cut)
+            {
+                this.AttributeId = attributeId;
+                this.Gain = gain;
+                this.EquivalenceClassCollection = equivalenceClassCollection;
+                this.ComparisonType = comparisonType;
+                this.Cut = cut;
+            }
+        }
         
 
         public DecisionTreeBase()
@@ -157,16 +180,40 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 }
 
                 var nextSplit = this.GetNextSplit(currentEqClassCollection, currentAttributes);
-                int maxAttribute = nextSplit.Item1;
-                var subEqClasses = EquivalenceClassCollection.Split(maxAttribute, nextSplit.Item3);
 
+                //No attribute was found
+                if (nextSplit.AttributeId == -1)
+                {
+                    var decision = currentEqClassCollection.DecisionWeights.FindMaxValuePair();
+                    this.CreateDecisionLeaf(currentParent, decision.Key, decision.Value);
+                    continue;
+                }
+
+                int maxAttribute = nextSplit.AttributeId;
+                var subEqClasses = EquivalenceClassCollection.Split(maxAttribute, nextSplit.EquivalenceClassCollection);
+
+                //TODO Change to splitType
+                if (nextSplit.ComparisonType != ComparisonType.EqualTo
+                    && subEqClasses.Count != 2)
+                {
+                    throw new InvalidOperationException("Binary split must have two branches.");
+                }
+                               
                 currentAttributes = currentAttributes.RemoveValue(maxAttribute);
-
+                int k = 0;
                 foreach (var kvp in subEqClasses)
                 {
-                    DecisionTreeNode newNode = new DecisionTreeNode(this.GetId(), maxAttribute, ComparisonType.EqualTo, kvp.Key, currentParent);
-                    currentParent.AddChild(newNode);
+                    k++;
+                    //ComparisonType.EqualTo means that we can discreet attribute and split on value enumeration
+                    //other ComparisonType (in this case it is LessOrEqualTo) identifies binary split based on numeric attribute
 
+                    DecisionTreeNode newNode = (nextSplit.ComparisonType == ComparisonType.EqualTo)
+                        ? new DecisionTreeNode(this.GetId(), maxAttribute, nextSplit.ComparisonType, kvp.Key, currentParent)
+                        : (k == 1) ? new DecisionTreeNode(this.GetId(), maxAttribute, nextSplit.ComparisonType, nextSplit.Cut, currentParent)
+                                   : new DecisionTreeNode(this.GetId(), maxAttribute, nextSplit.ComparisonType.Complement(), nextSplit.Cut, currentParent);
+
+                    currentParent.AddChild(newNode);
+                    
                     if (this.Epsilon >= 0.0)
                         newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
 
@@ -225,10 +272,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             return -1; //unclassified
         }
-
-        //TODO Change return value to a internal private class that can store additional values like cut threshold for continuous attributes
-        protected virtual Tuple<int, double, EquivalenceClassCollection> GetNextSplit(
-            EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
+        
+        protected virtual SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
         {
             double currentScore = this.GetCurrentScore(eqClassCollection);
             int[] localAttributes = attributesToTest;
@@ -250,105 +295,115 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
             };
 
-            Tuple<int, double, EquivalenceClassCollection>[] scores 
-                = new Tuple<int, double, EquivalenceClassCollection>[localAttributes.Length];
+            SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             Parallel.ForEach(rangePartitioner, options,
                 (range) =>
                 {
                     for (int i = range.Item1; i < range.Item2; i++)
                     {
+                        int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(localAttributes[i]);
                         DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(localAttributes[i]);
-                        
+                                                
                         if (attributeInfo.IsSymbolic)
                         {
                             var attributeEqClasses = EquivalenceClassCollection.Create(
                                 localAttributes[i], eqClassCollection);
 
-                            scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
+                            scores[i] = new SplitInfo(
                                     localAttributes[i],
                                     this.GetSplitScore(attributeEqClasses, currentScore),
-                                    attributeEqClasses);
+                                    attributeEqClasses,
+                                    ComparisonType.EqualTo,
+                                    0);
                         }
                         else //Is continuous
                         {
-                            int[] indices = eqClassCollection.Indices;
-                            long[] outputs = this.TrainingData.GetDecisionValue(indices);
-                            long[] values = this.TrainingData.GetFieldValue(indices, localAttributes[i]);
+                            int[] indices = eqClassCollection.Indices;                            
+                            long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
                             
-                            //TODO improve
-                            Array.Sort(values.ToArray(), indices);
-                            Array.Sort(values, outputs);
+                            //TODO can improve?
+                            Array.Sort(values, indices);
 
                             List<long> thresholds = new List<long>(values.Length);
 
                             for (int k = 0; k < values.Length - 1; k++)
                                 if (values[k] != values[k + 1])
                                     thresholds.Add((values[k] + values[k + 1]) / 2);
-
-                            //this is not good as it use as many cuts as different number of decision classes
-                            //var discretization = new Discretization<long, long>();
-                            //discretization.UseKononenko = false;
-                            //discretization.UseBetterEncoding = false;
-                            //discretization.Compute(values, outputs, true, null);
-
+                            
                             long[] threshold = thresholds.ToArray();
                             thresholds.Clear();
-
                             double bestGain = Double.NegativeInfinity;
-                            long bestThreshold = threshold[0];
+                            int[] bestIdx1 = null, bestIdx2 = null;
+                            long bestThreshold;
 
-                            for (int k = 0; k < threshold.Length; k++)
+                            if (threshold.Length > 0)
                             {
-                                int[] idx1 = indices.Where(idx => (values[idx] <= threshold[k])).ToArray();
-                                int[] idx2 = indices.Where(idx => (values[idx] > threshold[k])).ToArray();
-
-                                long[] output1 = new long[idx1.Length];
-                                long[] output2 = new long[idx2.Length];
-
-                                for (int j = 0; j < idx1.Length; j++)
-                                    output1[j] = outputs[idx1[j]];
-
-                                for (int j = 0; j < idx2.Length; j++)
-                                    output2[j] = outputs[idx2[j]];
-
-                                double p1 = output1.Length / (double)outputs.Length;
-                                double p2 = output2.Length / (double)outputs.Length;
-
-                                double gain = -p1 * Tools.Entropy(output1, this.decisions) + 
-                                              -p2 * Tools.Entropy(output2, this.decisions);
-
-                                if (gain > bestGain)
+                                bestThreshold = threshold[0];                                
+                                int decIdx = this.TrainingData.DataStoreInfo.DecisionFieldIndex;
+                                for (int k = 0; k < threshold.Length; k++)
                                 {
-                                    bestGain = gain;
-                                    bestThreshold = threshold[k];
-                                }
+                                    int[] idx1 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) <= threshold[k])).ToArray();
+                                    int[] idx2 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) > threshold[k])).ToArray();
 
+                                    long[] output1 = new long[idx1.Length];
+                                    long[] output2 = new long[idx2.Length];
+
+                                    for (int j = 0; j < idx1.Length; j++)
+                                        output1[j] = this.TrainingData.GetFieldIndexValue(idx1[j], decIdx);
+
+                                    for (int j = 0; j < idx2.Length; j++)
+                                        output2[j] = this.TrainingData.GetFieldIndexValue(idx2[j], decIdx);
+
+                                    double p1 = output1.Length / (double)indices.Length;
+                                    double p2 = output2.Length / (double)indices.Length;
+
+                                    double gain = -p1 * Tools.Entropy(output1, this.decisions) +
+                                                  -p2 * Tools.Entropy(output2, this.decisions);
+
+                                    if (gain > bestGain)
+                                    {
+                                        bestGain = gain;
+                                        bestThreshold = threshold[k];
+                                        bestIdx1 = idx1;
+                                        bestIdx2 = idx2;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                bestIdx1 = indices;                                
+                                bestGain = Double.NegativeInfinity;
+                                bestThreshold = long.MaxValue;
                             }
 
-                            //TODO Create EquivalenceClassCollection with numeric attributes
+                            var attributeEqClasses = EquivalenceClassCollection.CreateFromBinaryPartition(
+                                localAttributes[i], bestIdx1, bestIdx2, eqClassCollection.Data);
 
-                            var attributeEqClasses = EquivalenceClassCollection.Create(
-                                localAttributes[i], eqClassCollection);
-
-                            scores[i] = Tuple.Create<int, double, EquivalenceClassCollection>(
+                            scores[i] = new SplitInfo(
                                     localAttributes[i],
                                     bestGain,
-                                    attributeEqClasses);
+                                    attributeEqClasses,
+                                    ComparisonType.LessThanOrEqualTo,
+                                    bestThreshold);
                         }
                     }
                 });
 
-            double max = Double.MinValue;
+            double maxGain = Double.NegativeInfinity;
             int maxIndex = -1;
             for (int i = 0; i < scores.Length; i++)
             {
-                if(max < scores[i].Item2)
+                if(maxGain < scores[i].Gain)
                 {
-                    max = scores[i].Item2;
+                    maxGain = scores[i].Gain;
                     maxIndex = i;
                 }
             }
+
+            if (maxIndex == -1)
+                return new SplitInfo(-1, Double.NegativeInfinity, null, ComparisonType.None, 0);
+                
             return scores[maxIndex];
         }
 

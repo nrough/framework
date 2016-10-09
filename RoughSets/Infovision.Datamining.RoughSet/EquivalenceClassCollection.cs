@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
 
         private DataStore data;
         private Dictionary<long[], EquivalenceClass> partitions;
-        private int[] attributes;        
+        private int[] attributes;
 
         private object mutex = new object();
 
@@ -215,11 +215,12 @@ namespace Infovision.Datamining.Roughset
 
             long[] cursor = new long[attributes.Length];
             double sum = 0;
+            int decIdx = data.DataStoreInfo.DecisionFieldIndex;
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
                 data.GetFieldIndexValues(i, attributesIdx, ref cursor);
                 eqClassCollection.AddRecordInitial(cursor,
-                                                   data.GetFieldIndexValue(i, data.DataStoreInfo.DecisionFieldIndex),
+                                                   data.GetFieldIndexValue(i, decIdx),
                                                    weights[i], data, i);
                 sum += weights[i];
             }
@@ -229,6 +230,70 @@ namespace Infovision.Datamining.Roughset
 
             return eqClassCollection;
         }
+
+        public static EquivalenceClassCollection Create(int attributeId, EquivalenceClassCollection eqClassCollection)
+        {
+            int[] attributes = new int[] { attributeId };
+            int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
+            long[] cursor = new long[1];
+
+            EquivalenceClassCollection result = new EquivalenceClassCollection(
+                eqClassCollection.data,
+                attributes,
+                eqClassCollection.data.DataStoreInfo.GetFieldInfo(attributeId).NumberOfValues);
+
+            foreach (var eq in eqClassCollection)
+            {
+                foreach (var kvp in eq.Instances)
+                {
+                    //eqClassCollection.Data.GetFieldIndexValues(kvp.Key, attributesIdx, ref cursor);
+                    cursor[0] = eqClassCollection.Data.GetFieldIndexValue(kvp.Key, attributesIdx[0]);
+                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetDecisionValue(kvp.Key), kvp.Value, eqClassCollection.Data, kvp.Key);
+                }
+            }
+
+            result.NumberOfObjects = eqClassCollection.NumberOfObjects;
+            result.WeightSum = eqClassCollection.WeightSum;
+            result.CalcAvgConfidence();
+
+            return result;
+        }
+
+        public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
+        {                        
+            EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
+            int decisionIdx = data.DataStoreInfo.DecisionFieldIndex;
+
+            if (idx1 != null && idx1.Length > 0)
+            {
+                long[] cursor1 = new long[] { 1 };
+                EquivalenceClass eq1 = new EquivalenceClass(cursor1, data);
+                result.Add(eq1);
+                for (int i = 0; i < idx1.Length; i++)
+                {
+                    double w = data.GetWeight(idx1[i]);
+                    long dec = data.GetFieldIndexValue(idx1[i], decisionIdx);
+                    eq1.AddObject(idx1[i], dec, w);
+                    result.AddDecision(dec, w);
+                }
+            }
+
+            if (idx2 != null && idx2.Length > 0)
+            {
+                long[] cursor2 = new long[] { 2 };
+                EquivalenceClass eq2 = new EquivalenceClass(cursor2, data);
+                result.Add(eq2);
+                for (int i = 0; i < idx2.Length; i++)
+                {
+                    double w = data.GetWeight(idx2[i]);
+                    long dec = data.GetFieldIndexValue(idx2[i], decisionIdx);
+                    eq2.AddObject(idx2[i], dec, w);
+                    result.AddDecision(dec, w);
+                }
+            }
+           
+            return result;
+        }        
 
         private void CalcAvgConfidence()
         {
@@ -262,14 +327,19 @@ namespace Infovision.Datamining.Roughset
                 else
                     eq.AddDecision(decisionInternalValue, objectWeight);
 
-                int count = 0;
-                this.decisionCount[decisionInternalValue]
-                    = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
-
-                double w = 0;
-                this.decisionWeight[decisionInternalValue]
-                    = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
+                this.AddDecision(decisionInternalValue, objectWeight);
             }
+        }
+
+        protected void AddDecision(long decisionInternalValue, double objectWeight)
+        {
+            int count = 0;
+            this.decisionCount[decisionInternalValue]
+                = this.decisionCount.TryGetValue(decisionInternalValue, out count) ? ++count : 1;
+
+            double w = 0;
+            this.decisionWeight[decisionInternalValue]
+                = this.decisionWeight.TryGetValue(decisionInternalValue, out w) ? (w + objectWeight) : objectWeight;
         }
 
         protected void InitPartitions(int initialSize = 0)
@@ -362,7 +432,7 @@ namespace Infovision.Datamining.Roughset
 
         public static bool CheckRegionPositive(
             HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
-        {            
+        {
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();
             int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
@@ -413,7 +483,7 @@ namespace Infovision.Datamining.Roughset
         public void Add(EquivalenceClass equivalenceClass)
         {
             this.partitions.Add(equivalenceClass.Instance, equivalenceClass);
-        }        
+        }
 
         public void RecalcEquivalenceClassStatistic(DataStore data)
         {
@@ -478,44 +548,6 @@ namespace Infovision.Datamining.Roughset
 
             return result;
         }        
-
-        public static EquivalenceClassCollection Create(int attributeId, EquivalenceClassCollection eqClassCollection)
-        {
-            int[] attributes = new int[] { attributeId };
-            int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
-            long[] cursor = new long[1];
-
-            EquivalenceClassCollection result = new EquivalenceClassCollection(
-                eqClassCollection.data, 
-                attributes, 
-                eqClassCollection.data.DataStoreInfo.GetFieldInfo(attributeId).NumberOfValues);
-
-            foreach (var eq in eqClassCollection)
-            {
-                foreach (var kvp in eq.Instances)
-                {
-                    eqClassCollection.Data.GetFieldIndexValues(kvp.Key, attributesIdx, ref cursor);
-                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetDecisionValue(kvp.Key), kvp.Value, eqClassCollection.Data, kvp.Key);
-                }
-            }
-
-            result.NumberOfObjects = eqClassCollection.NumberOfObjects;
-            result.WeightSum = eqClassCollection.WeightSum;
-            result.CalcAvgConfidence();
-
-            return result;
-        }
-
-        public static EquivalenceClassCollection CreateForContinuous(int attributeId, EquivalenceClassCollection eqClassCollection, long threshold)
-        {
-            int[] attributes = new int[] { attributeId };
-            int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
-
-
-            long[] cursor = new long[1];
-
-            throw new NotImplementedException("Method EquivalenceClassCollection.CreateForContinuous is not implemented");
-        }
 
         /// <summary>
         /// Returns decision id and its weight when only a single decision exist with non-zero weight, otherwise -1 is returned

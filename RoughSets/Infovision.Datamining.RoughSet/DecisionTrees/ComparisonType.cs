@@ -45,5 +45,32 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     throw new NotImplementedException("Comparison type not implemented");
             }
         }
+
+        public static ComparisonType Complement(this ComparisonType comparison)
+        {
+            switch (comparison)
+            {
+                case ComparisonType.EqualTo:
+                    return ComparisonType.NotEqualTo;
+
+                case ComparisonType.NotEqualTo:
+                    return ComparisonType.EqualTo;
+
+                case ComparisonType.LessThan:
+                    return ComparisonType.GreaterThanOrEqualTo;
+
+                case ComparisonType.LessThanOrEqualTo:
+                    return ComparisonType.GreaterThan;
+
+                case ComparisonType.GreaterThan:
+                    return ComparisonType.LessThanOrEqualTo;
+
+                case ComparisonType.GreaterThanOrEqualTo:
+                    return ComparisonType.LessThan;
+
+                default:
+                    throw new NotImplementedException("Comparison type not implemented");
+            }
+        }
     }
 }

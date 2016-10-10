@@ -236,6 +236,7 @@ namespace Infovision.Datamining.Roughset
             int[] attributes = new int[] { attributeId };
             int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
             long[] cursor = new long[1];
+            int decIdx = eqClassCollection.data.DataStoreInfo.DecisionFieldIndex;
 
             EquivalenceClassCollection result = new EquivalenceClassCollection(
                 eqClassCollection.data,
@@ -248,7 +249,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     //eqClassCollection.Data.GetFieldIndexValues(kvp.Key, attributesIdx, ref cursor);
                     cursor[0] = eqClassCollection.Data.GetFieldIndexValue(kvp.Key, attributesIdx[0]);
-                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetDecisionValue(kvp.Key), kvp.Value, eqClassCollection.Data, kvp.Key);
+                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetFieldIndexValue(kvp.Key, decIdx), kvp.Value, eqClassCollection.Data, kvp.Key);
                 }
             }
 

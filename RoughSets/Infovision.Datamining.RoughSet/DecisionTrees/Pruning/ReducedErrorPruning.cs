@@ -69,8 +69,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 return 0;
 
             int error = 0;
-            for(int i = 0; i < indices.Length; i++)
-                if (this.PruningData.GetDecisionValue(i) != predictionResult[i])
+            int decIdx = this.PruningData.DataStoreInfo.DecisionFieldIndex;
+            for (int i = 0; i < indices.Length; i++)
+                if (this.PruningData.GetFieldIndexValue(i, decIdx) != predictionResult[i])
                     error++;
 
             return error / (double)indices.Length;

@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         #region Members
 
         private IList<IDecisionTreeNode> children;
-        private static readonly string ROOT = "ROOT";
+        private static readonly string ROOT = "[ROOT]";
 
         #endregion
 
@@ -192,7 +192,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public string ToString(DataStoreInfo info)
         {
             if (this.IsRoot)
+            {
+                if (this.IsLeaf)
+                    return string.Format("{0} ( empty ) ==> {1}", DecisionTreeNode.ROOT, this.Output);
+                    
                 return DecisionTreeNode.ROOT;
+            }
 
             if(!this.IsLeaf)
                 return string.Format("[{0}] ({1} {2} {3})",

@@ -60,7 +60,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Size = 100;
             this.NumberOfTreeProbes = 20;
             this.BagSizePercent = 100;
-            this.Epsilon = Double.MinValue;
+            this.Epsilon = -1.0;
 
             this.trees = new List<Tuple<T, double>>(this.Size);
         }

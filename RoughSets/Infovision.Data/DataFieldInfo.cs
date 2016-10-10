@@ -19,6 +19,12 @@ namespace Infovision.Data
         private int initialNumberOfValues;
         private long maxValueInternalId;
 
+        private bool isNumeric;
+        private bool isSymbolic;        
+        private bool isUnique;
+        private bool isOrdered;
+
+
         public static long DefaultMissingValue = Int64.MinValue;
 
         #endregion
@@ -40,10 +46,34 @@ namespace Infovision.Data
         public object MissingValue { get; set; }
         public long MissingValueInternal { get; set; }
 
-        public bool IsNumeric { get; set; }
-        public bool IsUnique { get; set; }
-        public bool IsSymbolic { get; set; }
-        public bool IsOrdered { get; set; }
+        public bool IsNumeric
+        {
+            get
+            {
+                return this.isNumeric;
+            }
+            set
+            {
+                this.isNumeric = value;
+                this.isSymbolic = !this.isNumeric;
+            }
+        }
+
+        public bool IsSymbolic
+        {
+            get
+            {
+                return this.isSymbolic;
+            }
+            set
+            {
+                this.isSymbolic = value;
+                this.isNumeric = !this.isSymbolic;
+            }
+        }
+
+        public bool IsUnique { get { return this.isUnique; } set { this.isUnique = value; } }        
+        public bool IsOrdered { get { return this.isOrdered; } set { this.isOrdered = value; } }
 
         public double[] Cuts { get; set; }
 

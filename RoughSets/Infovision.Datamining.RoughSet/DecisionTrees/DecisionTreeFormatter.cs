@@ -9,6 +9,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class DecisionTreeFormatter
     {
+        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStore data)
+        {
+            return DecisionTreeFormatter.Construct(node, data, 4);
+        }
+
         public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStore data, int indent)
         {
             DecisionTreeFormatter treeFormatter = new DecisionTreeFormatter();
@@ -20,7 +25,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         private DecisionTreeFormatter()
         {
-            this.Indent = 2;
+            this.Indent = 4;
         }
 
         public IDecisionTreeNode Root { get; set; }

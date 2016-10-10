@@ -11,8 +11,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public class DecisionTreeID3 : DecisionTreeBase
     {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double entropy)
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
         {
+            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
+
             double result = 0;
             foreach (var eq in attributeEqClasses)
             {
@@ -20,15 +22,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 foreach (var dec in eq.DecisionSet)
                 {
                     double decWeight = eq.GetDecisionWeight(dec);
-                    double p = (double)(decWeight / eq.WeightSum);
+                    double p = decWeight / eq.WeightSum;
                     if (p != 0)
                         localEntropy -= p * System.Math.Log(p, 2);
                 }
 
-                result += (double)(eq.WeightSum / attributeEqClasses.WeightSum) * localEntropy;
+                result += (eq.WeightSum / data.WeightSum) * localEntropy;
             }
 
-            return entropy - result;
+            double gain = entropy - result;
+
+            return new SplitInfo(attributeId, gain, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

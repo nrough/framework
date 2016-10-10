@@ -13,12 +13,63 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Infovision.Datamining.Roughset.DecisionTrees;
+using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {
     [TestFixture]
     public class DecisionTreeTest
     {
+        [Test, Repeat(10)]
+        public void DecisionTreeC45ForNumericAttributeTest()
+        {
+            double error = 0;
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, tmp = null, prune = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref tmp, ref test);
+
+                DataStoreSplitter splitter2 = new DataStoreSplitterRatio(tmp, 0.5);
+                splitter2.Split(ref train, ref prune);
+
+                DecisionTreeC45 tree = new DecisionTreeC45();
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                ErrorBasedPruning pruning = new ErrorBasedPruning(tree, prune);
+                pruning.Confidence = 0.35;
+                pruning.Prune();
+
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
+                Console.WriteLine("resultAfterPruning = {0}", result);
+
+                error += result.Error;
+            }
+
+            Console.WriteLine("Error: {0}", error / (double)numOfFolds);            
+        }
+
+        [Test, Repeat(1)]
+        public void DecisionForestForNumericAttributeTest()
+        {            
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            splitter.Split(ref train, ref test);
+
+            DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
+            forest.NumberOfAttributesToCheckForSplit = 3;
+            forest.Size = 50;
+            forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+            Console.WriteLine(result);            
+        }
+
         [Test, Repeat(10)]
         public void TreeLearnPerformanceTest()
         {
@@ -28,6 +79,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             path = Path.Combine(path, "Data", "dna_modified.trn");
 
             DataStore data = DataStore.Load(path, FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
 
             int total = 20;
             long sum = 0;
@@ -55,6 +107,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("CountLeavesTest");
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
@@ -66,6 +119,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void GetRulesFromTreeTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             int prevCount = Int32.MaxValue;
 
@@ -89,6 +143,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void CheckTreeConvergedTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
@@ -115,6 +170,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("ID3LearnTest");
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
@@ -126,15 +182,18 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, test, null));
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void C45LearnTest()
         {            
             Console.WriteLine("C45LearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data));
             
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
@@ -146,6 +205,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("CARTLearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
@@ -163,6 +223,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("RoughTreeLearnTest");
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeRough treeRough = new DecisionTreeRough();
@@ -172,9 +233,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
-        }
+        }        
 
-        
+
         #region Accord Trees
 
         [Test]
@@ -183,6 +244,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             Console.WriteLine("AccordC45Test");
 
             DataStore ds = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in ds.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore tst = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, ds.DataStoreInfo);
 
             DataTable data = ds.ToDataTable();

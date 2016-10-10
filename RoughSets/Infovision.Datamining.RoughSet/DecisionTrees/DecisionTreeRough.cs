@@ -8,9 +8,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public class DecisionTreeRough : DecisionTreeBase
     {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double dummy)
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double dummy)
         {
-            return (double) InformationMeasureWeights.Instance.Calc(attributeEqClasses);
+            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
+            return new SplitInfo(attributeId, 
+                InformationMeasureWeights.Instance.Calc(attributeEqClasses), 
+                attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

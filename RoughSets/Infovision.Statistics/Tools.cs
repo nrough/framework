@@ -1,5 +1,6 @@
 ﻿using System;
 using Infovision.Utils;
+using System.Collections.Generic;
 
 namespace Infovision.Statistics
 {
@@ -252,7 +253,7 @@ namespace Infovision.Statistics
             return DoubleEpsilonComparer.Instance.Equals(total, 0) ? 0.0 : -returnValue / (total * LOG2);
         }
 
-        public static double Entropy(long[] values, long[] labels)
+        public static double Entropy(long[] values, IEnumerable<long> labels)
         {
             double entropy = 0;
             double total = values.Length;
@@ -270,8 +271,9 @@ namespace Infovision.Statistics
                     entropy -= p * System.Math.Log(p, 2);
                 }
             }
+
             return entropy;
-        }
+        }        
 
         /**
        * Returns the value, <tt>x</tt>, for which the area under the Normal

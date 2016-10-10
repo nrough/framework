@@ -14,12 +14,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </remarks>
     public class DecisionTreeCART : DecisionTreeBase
     {
-        protected override double GetSplitScore(EquivalenceClassCollection attributeEqClasses, double gini)
-        {
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double gini)
+        {            
+            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
+
             double attributeGini = 0;
             foreach (var eq in attributeEqClasses)
             {
-                double pA = (double)(eq.WeightSum / attributeEqClasses.WeightSum);
+                double pA = (double)(eq.WeightSum / data.WeightSum);
 
                 double s2 = 0;
                 foreach (long dec in eq.DecisionSet)
@@ -29,7 +31,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 }
                 attributeGini += (pA * (1.0 - s2));
             }
-            return gini - attributeGini;
+            double gain = gini - attributeGini;
+
+            return new SplitInfo(attributeId, gain, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);            
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

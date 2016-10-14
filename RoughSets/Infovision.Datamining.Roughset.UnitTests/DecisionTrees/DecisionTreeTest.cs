@@ -277,7 +277,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             treeC45.MaxHeight = 2;
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data));
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
             
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data, 2));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
@@ -322,7 +322,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             ReducedErrorPruning pruning = new ReducedErrorPruning(treeRough, prune);
             pruning.Prune();
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data));
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data.DataStoreInfo));
             Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeRough));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
@@ -335,7 +335,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             ErrorBasedPruning pruning2 = new ErrorBasedPruning(treeC45, prune);
             pruning2.Prune();
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data));
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
             Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeC45));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));

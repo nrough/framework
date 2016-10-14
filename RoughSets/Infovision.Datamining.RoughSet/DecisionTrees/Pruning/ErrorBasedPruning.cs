@@ -69,8 +69,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             double baselineError = this.ComputeError();
             baselineError = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, baselineError, this.Confidence);
 
-            long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
-            double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
+            //long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
+            //double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
+            long majorDecision = node.Output;
+            double errorLeaf = ComputeErrorWithoutSubtree(node, node.Output);
             errorLeaf = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, errorLeaf, this.Confidence);
 
             IDecisionTreeNode maxChild = GetMaxChild(node);
@@ -130,8 +132,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             double baselineError = this.ComputeErrorLocal(instances);
             baselineError = ErrorBasedPruning.UpperBound(instances.Length, baselineError, this.Confidence);
 
-            long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
-            double errorLeaf = ComputeErrorWithoutSubtreeLocal(node, majorDecision);
+            //long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
+            //double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
+            long majorDecision = node.Output;
+            double errorLeaf = ComputeErrorWithoutSubtree(node, node.Output);l
             errorLeaf = ErrorBasedPruning.UpperBound(instances.Length, errorLeaf, this.Confidence);
 
             IDecisionTreeNode maxChild = GetMaxChild(node);

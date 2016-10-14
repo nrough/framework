@@ -19,8 +19,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             
-           //foreach (var fieldInfo in data.DataStoreInfo.Fields)
-           //   fieldInfo.IsNumeric = false;
+           foreach (var fieldInfo in data.DataStoreInfo.Fields)
+              fieldInfo.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
@@ -47,6 +47,10 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         public void ReducedErrorPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
+
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DataStore train = null, prune = null;
@@ -59,6 +63,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             var resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
             Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
             Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+            Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
 
             ReducedErrorPruning reducedErrorPruning = new ReducedErrorPruning(c45WithPruning, prune);
             reducedErrorPruning.Prune();
@@ -66,37 +71,29 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             var resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
             Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
             Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+            Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
 
-            if (DecisionTreeBase.GetNumberOfRules(c45WithPruning) == 1)
-            {
-                Debugger.Break();
-
-                c45WithPruning = new DecisionTreeC45();
-                c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-
-                resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
-                Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
-                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
-
-                reducedErrorPruning = new ReducedErrorPruning(c45WithPruning, prune);
-                reducedErrorPruning.Prune();
-            }
+            Console.WriteLine();
         }
 
         [Test]
         public void PrePruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
+
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            for (double eps = 0.0; eps < 0.5; eps += 0.01)
+            for (double eps = 0.0; eps < 0.4; eps += 0.01)
             {
                 DecisionTreeC45 c45WithPrePruning = new DecisionTreeC45();
                 c45WithPrePruning.Epsilon = eps;
                 c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(c45WithPrePruning, test);
-                Console.WriteLine("resultForTreeWithPrePruning = {0}", resultForTreeWithPrePruning);
+                Console.WriteLine("C45/Epsilon {0}", resultForTreeWithPrePruning);
                 Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPrePruning));
             }
         }
@@ -105,24 +102,35 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         public void PrePrunningTest2()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
+
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            var tree = new DecisionTreeReduct();
-            tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            for (double eps = 0.0; eps < 0.4; eps += 0.01)
+            {
+                var tree = new DecisionTreeReduct();
+                tree.Epsilon = eps;
+                tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
-            Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
-            Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(tree));
-
+                ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
+                Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
+                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(tree));
+            }           
         }
 
         [Test]
         public void PrePrunningTest3()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
+
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            for (double eps = 0.0; eps < 0.5; eps += 0.01)
+            for (double eps = 0.0; eps < 0.4; eps += 0.01)
             {
                 var tree = new DecisionTreeRough();
                 tree.Epsilon = eps;

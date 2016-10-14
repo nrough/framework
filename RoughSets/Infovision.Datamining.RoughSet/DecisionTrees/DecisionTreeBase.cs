@@ -183,8 +183,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 EquivalenceClassCollection currentEqClassCollection = currentInfo.Item1;
                 DecisionTreeNode currentParent = currentInfo.Item2;
                 int[] currentAttributes = currentInfo.Item3;
-
-                //Safe current majority class
+                
                 var decision = currentEqClassCollection.DecisionWeights.FindMaxValuePair();
                 this.SetNodeOutput(currentParent, decision.Key, decision.Value);
 
@@ -192,8 +191,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     continue;
 
                 var nextSplit = this.GetNextSplit(currentEqClassCollection, currentAttributes);
-
-                //No attribute was found
+                
                 if (nextSplit.SplitType == SplitType.None)
                     continue;
 

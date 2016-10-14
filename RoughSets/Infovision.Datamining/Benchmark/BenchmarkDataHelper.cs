@@ -15,6 +15,8 @@ namespace Infovision.Datamining.Benchmark
             return Path.Combine(path, filename);
         }
 
+
+        //TODO Add encoding of numeric and symbolic attributes
         public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles(
             string dataPath = "Data",
             params string[] names)

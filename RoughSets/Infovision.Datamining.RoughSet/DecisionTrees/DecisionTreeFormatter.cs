@@ -9,16 +9,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class DecisionTreeFormatter
     {
-        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStore data)
+        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStoreInfo data)
         {
             return DecisionTreeFormatter.Construct(node, data, 4);
         }
 
-        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStore data, int indent)
+        public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStoreInfo data, int indent)
         {
             DecisionTreeFormatter treeFormatter = new DecisionTreeFormatter();
             treeFormatter.Root = node;
-            treeFormatter.Data = data;
+            treeFormatter.DataStoreInfo = data;
             treeFormatter.Indent = indent;
             return treeFormatter;
         }
@@ -29,7 +29,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public IDecisionTreeNode Root { get; set; }
-        public DataStore Data { get; set; }
+        public DataStoreInfo DataStoreInfo { get; set; }
         public int Indent { get; set; }
 
         public override string ToString()
@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private string NodeToString(IDecisionTreeNode node, int currentLevel)
         {
             if (node is DecisionTreeNode)
-                return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), ((DecisionTreeNode)node).ToString(this.Data.DataStoreInfo));
+                return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), ((DecisionTreeNode)node).ToString(this.DataStoreInfo));
             return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), node.ToString());
         }
 

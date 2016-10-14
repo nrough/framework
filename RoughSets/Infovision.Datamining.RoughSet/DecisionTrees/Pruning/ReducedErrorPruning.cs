@@ -19,8 +19,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         private class NodeInfo
         {
             public List<int> subset;
-            public double error;
-            public double gain;
+            public double baselineError; //error of using majority class (current node's output)
+            public double error; //error of using subtree
+            public double gain;  //gain calculated as subtraction of baseLineError and error
 
             public NodeInfo()
             {
@@ -45,7 +46,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
         private void ComputePrediction(IDecisionTreeNode node, int objectIdx)
         {
-            DataRecordInternal record = this.PruningData.GetRecordByIndex(objectIdx, false);
+            DataRecordInternal record = this.PruningData.GetRecordByIndex(objectIdx, false);            
 
             IDecisionTreeNode current = node;
             while (current != null)
@@ -62,17 +63,24 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                     .FirstOrDefault();
             }
         }
-
-        //TODO Add support for objects weight
-        private double ComputeSubtreeError(int[] indices)
-        {
-            if (indices.Length == 0)
-                return 0;
-
+        
+        private double ComputeSubtreeError(IEnumerable<int> indices)
+        {                        
             double error = 0;
-            for (int i = 0; i < indices.Length; i++)
-                if (this.PruningData.GetDecisionValue(i) != predictionResult[i])
-                    error += this.PruningData.GetWeight(i);
+            foreach(int idx in indices)
+                if (this.PruningData.GetDecisionValue(idx) != predictionResult[idx])                
+                    error += this.PruningData.GetWeight(idx);
+
+            return error;
+            //return error / (double)indices.Length;
+        }
+
+        private double ComputeSubtreeBaselineError(IDecisionTreeNode node, IEnumerable<int> indices)
+        {                        
+            double error = 0;
+            foreach(int idx in indices)            
+                if (this.PruningData.GetDecisionValue(idx) != node.Output)
+                    error += this.PruningData.GetWeight(idx);
 
             return error;
             //return error / (double)indices.Length;
@@ -89,7 +97,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 sum += info[child].error;
 
             // Get the misclassifications at the current node
-            double current = info[node].error;
+            //double current = info[node].error;
+            double current = info[node].baselineError;
 
             // Compute the expected gain at the current node:
             return sum - current;
@@ -120,8 +129,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         {
             foreach (var node in this.DecisionTree)
             {
-                var nodeInfo = this.info[node];
-                nodeInfo.error = this.ComputeSubtreeError(nodeInfo.subset.ToArray());
+                var nodeInfo = this.info[node];                
+
+                nodeInfo.error = this.ComputeSubtreeError(nodeInfo.subset);
+                nodeInfo.baselineError = this.ComputeSubtreeBaselineError(node, nodeInfo.subset);
             }
 
             foreach (var node in this.DecisionTree)
@@ -150,7 +161,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 long majorDecision = outputs.Mode();
 
                 maxNode.Children = null;
-                maxNode.Output = majorDecision;
+                //maxNode.Output = majorDecision;
 
                 for (int i = 0; i < indices.Length; i++)
                     this.ComputePrediction(maxNode, indices[i]);

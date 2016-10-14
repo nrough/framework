@@ -60,6 +60,18 @@ namespace Infovision.Utils
                     result = kvp;
             return result;
         }
+
+        public static KeyValuePair<long, double> FindMaxValuePair(this Dictionary<long, double> dictionary, IComparer<double> comparer = null)
+        {
+            if (comparer == null)
+                comparer = Comparer<double>.Default;
+
+            KeyValuePair<long, double> result = new KeyValuePair<long, double>(-1, 0.0);
+            foreach (var kvp in dictionary)
+                if (comparer.Compare(kvp.Value, result.Value) > 0)
+                    result = kvp;
+            return result;
+        }
     }
 
     /// <summary>

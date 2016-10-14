@@ -161,9 +161,10 @@
   <ItemGroup>
     <Compile Include="BireductTest.cs" />
     <Compile Include="ApproximateReductWeightsTest.cs" />
-    <Compile Include="DecisionForestTest.cs" />
-    <Compile Include="DecisionTreePruningTest.cs" />
-    <Compile Include="DecisionTreeTest.cs" />
+    <Compile Include="DecisionTrees\DecisionForestTest.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeComparisonTest.cs" />
+    <Compile Include="DecisionTrees\DecisionTreePruningTest.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeTest.cs" />
     <Compile Include="EquivalenceClassTest.cs" />
     <Compile Include="MatrixTest.cs" />
     <Compile Include="PermutationTest.cs" />

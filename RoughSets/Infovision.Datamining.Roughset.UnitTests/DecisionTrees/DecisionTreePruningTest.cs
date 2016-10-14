@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using System.Diagnostics;
 
-namespace Infovision.Datamining.Roughset.UnitTests
+namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreePruningTest
@@ -65,6 +66,21 @@ namespace Infovision.Datamining.Roughset.UnitTests
             var resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
             Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
             Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+
+            if (DecisionTreeBase.GetNumberOfRules(c45WithPruning) == 1)
+            {
+                Debugger.Break();
+
+                c45WithPruning = new DecisionTreeC45();
+                c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
+                Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
+                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+
+                reducedErrorPruning = new ReducedErrorPruning(c45WithPruning, prune);
+                reducedErrorPruning.Prune();
+            }
         }
 
         [Test]

@@ -31,6 +31,7 @@ namespace Infovision.Data
         #region Properties
 
         public string Name { get; set; }
+        public int Fold { get; set; }
         public DataStoreInfo DataStoreInfo { get; set; }
         
         public int NumberOfRecords
@@ -515,10 +516,9 @@ namespace Infovision.Data
 
         public long[] GetDecisionValue(int[] objectIndices)
         {
-            int decIdx = this.DataStoreInfo.DecisionFieldIndex;
             long[] result = new long[objectIndices.Length];
             for (int i = 0; i < objectIndices.Length; i++)
-                result[i] = this.GetFieldIndexValue(objectIndices[i], decIdx);
+                result[i] = this.GetFieldIndexValue(objectIndices[i], this.DataStoreInfo.DecisionFieldIndex);
             return result;
         }
 

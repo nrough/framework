@@ -17,6 +17,7 @@ namespace Infovision.Data
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;
         private int decisionFieldId;
+        private int decisionFieldIdx;
         private DataFieldInfo decisionFieldInfo;
         private Dictionary<int, DataFieldInfo> fields;
         private Dictionary<int, FieldTypes> fieldTypes;
@@ -65,16 +66,17 @@ namespace Infovision.Data
 
                     if (this.decisionFieldId > 0)
                     {
-                        fieldTypes[this.decisionFieldId] = FieldTypes.Decision;
-                        decisionFieldInfo = fields[this.decisionFieldId];
+                        this.fieldTypes[this.decisionFieldId] = FieldTypes.Decision;
+                        this.decisionFieldInfo = fields[this.decisionFieldId];
+                        this.decisionFieldIdx = this.GetDecisionFieldIndex();
                     }
                 }
             }
         }
-         
+
         public int DecisionFieldIndex
         {
-            get { return this.GetFieldIndex(this.DecisionFieldId); }
+            get { return this.decisionFieldIdx; }
         }
 
         public DataFieldInfo DecisionInfo
@@ -117,6 +119,9 @@ namespace Infovision.Data
             this.fieldTypeCount = new Dictionary<FieldTypes, int>(FieldTypesHelper.BasicFieldTypes.Count);
             foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
                 fieldTypeCount.Add(ft, 0);
+
+            this.decisionFieldIdx = -1;
+            this.decisionFieldId = -1;
         }
 
         #endregion Constructor
@@ -368,6 +373,11 @@ namespace Infovision.Data
         public FieldTypes GetFieldType(int fieldId)
         {
             return this.fieldTypes[fieldId];
+        }
+
+        private int GetDecisionFieldIndex()
+        {
+            return this.GetFieldIndex(this.DecisionFieldId);
         }
 
         #endregion Methods

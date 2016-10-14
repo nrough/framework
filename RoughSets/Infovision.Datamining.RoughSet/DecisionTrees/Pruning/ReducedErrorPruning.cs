@@ -63,18 +63,19 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             }
         }
 
+        //TODO Add support for objects weight
         private double ComputeSubtreeError(int[] indices)
         {
             if (indices.Length == 0)
                 return 0;
 
-            int error = 0;
-            int decIdx = this.PruningData.DataStoreInfo.DecisionFieldIndex;
+            double error = 0;
             for (int i = 0; i < indices.Length; i++)
-                if (this.PruningData.GetFieldIndexValue(i, decIdx) != predictionResult[i])
-                    error++;
+                if (this.PruningData.GetDecisionValue(i) != predictionResult[i])
+                    error += this.PruningData.GetWeight(i);
 
-            return error / (double)indices.Length;
+            return error;
+            //return error / (double)indices.Length;
         }
 
         private double ComputeGain(IDecisionTreeNode node)
@@ -140,10 +141,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
             if (maxGain >= 0 && maxNode != null)
             {
+                //TODO Test
+                //TODO We should not change the output based on pruning data set but just to cut children
+                //output are now calculated on every tree level
+
                 int[] indices = this.info[maxNode].subset.ToArray();
                 long[] outputs = this.PruningData.GetDecisionValue(indices);
-                
-                long majorDecision = outputs.Mode();                
+                long majorDecision = outputs.Mode();
 
                 maxNode.Children = null;
                 maxNode.Output = majorDecision;

@@ -105,11 +105,9 @@ namespace Infovision.Data
         protected IEnumerable<int> GetObjectIndexes(DataStore dataStore, long decisionValue)
         {
             List<int> result = new List<int>(dataStore.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue));
-            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
             for (int objectIdx = 0; objectIdx < dataStore.NumberOfRecords; objectIdx++)
             {
-                long decision = dataStore.GetFieldIndexValue(objectIdx, decisionIndex);
-                if (decisionValue == decision)
+                if (decisionValue == dataStore.GetDecisionValue(objectIdx))
                     result.Add(objectIdx);
             }
             return result;
@@ -129,13 +127,15 @@ namespace Infovision.Data
 
             dataStore1 = new DataStore(dataStoreInfo1);
             dataStore1.Name = dataStore.Name + "-" + this.ActiveFold.ToString();
+            dataStore1.Fold = this.ActiveFold;
 
             DataStoreInfo dataStoreInfo2 = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
             dataStoreInfo2.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
             dataStoreInfo2.NumberOfRecords = foldSize[this.ActiveFold];
-
+            
             dataStore2 = new DataStore(dataStoreInfo2);
             dataStore2.Name = dataStore.Name + "-" + this.ActiveFold.ToString(); ;
+            dataStore2.Fold = this.ActiveFold;
 
             for (int i = 0; i < folds.Length; i++)
             {

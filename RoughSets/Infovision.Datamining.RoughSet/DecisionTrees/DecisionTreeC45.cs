@@ -80,7 +80,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (threshold.Length > 0)
             {
                 bestThreshold = threshold[0];
-                int decIdx = this.TrainingData.DataStoreInfo.DecisionFieldIndex;
                 for (int k = 0; k < threshold.Length; k++)
                 {
                     int[] idx1 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) <= threshold[k])).ToArray();
@@ -90,10 +89,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     long[] output2 = new long[idx2.Length];
 
                     for (int j = 0; j < idx1.Length; j++)
-                        output1[j] = this.TrainingData.GetFieldIndexValue(idx1[j], decIdx);
+                        output1[j] = this.TrainingData.GetDecisionValue(idx1[j]);
 
                     for (int j = 0; j < idx2.Length; j++)
-                        output2[j] = this.TrainingData.GetFieldIndexValue(idx2[j], decIdx);
+                        output2[j] = this.TrainingData.GetDecisionValue(idx2[j]);
 
                     double p1 = output1.Length / (double)indices.Length;
                     double p2 = output2.Length / (double)indices.Length;

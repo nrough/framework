@@ -69,12 +69,10 @@ namespace Infovision.Datamining.Roughset.UnitTests
             double sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
-
-            int decisionIndex = dataStoreTrain.DataStoreInfo.DecisionFieldIndex;
             for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
-                long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
-                double p = 1.0 / (dataStoreTrain.DataStoreInfo.NumberOfObjectsWithDecision(decisionValue) * dataStoreTrain.DataStoreInfo.NumberOfDecisionValues);
+                double p = 1.0 / (dataStoreTrain.DataStoreInfo.NumberOfObjectsWithDecision(
+                    dataStoreTrain.GetDecisionValue(objectIdx)) * dataStoreTrain.DataStoreInfo.NumberOfDecisionValues);
 
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
@@ -111,12 +109,9 @@ namespace Infovision.Datamining.Roughset.UnitTests
             double sumWeights = 0;
 
             int j = dataStoreTrain.DataStoreInfo.NumberOfFields - 1;
-            int decisionIndex = dataStoreTrain.DataStoreInfo.DecisionFieldIndex;
             for (int objectIdx = 0; objectIdx < dataStoreTrain.NumberOfRecords; objectIdx++)
             {
-                long decisionValue = dataStoreTrain.GetFieldIndexValue(objectIdx, decisionIndex);
                 double p = 1.0 / dataStoreTrain.NumberOfRecords;
-
                 elementWeights[objectIdx] = p;
                 sumWeights += p;
             }

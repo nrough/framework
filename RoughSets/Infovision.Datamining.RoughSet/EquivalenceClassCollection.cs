@@ -215,12 +215,11 @@ namespace Infovision.Datamining.Roughset
 
             long[] cursor = new long[attributes.Length];
             double sum = 0;
-            int decIdx = data.DataStoreInfo.DecisionFieldIndex;
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
                 data.GetFieldIndexValues(i, attributesIdx, ref cursor);
                 eqClassCollection.AddRecordInitial(cursor,
-                                                   data.GetFieldIndexValue(i, decIdx),
+                                                   data.GetDecisionValue(i),
                                                    weights[i], data, i);
                 sum += weights[i];
             }
@@ -236,7 +235,6 @@ namespace Infovision.Datamining.Roughset
             int[] attributes = new int[] { attributeId };
             int[] attributesIdx = new int[] { eqClassCollection.data.DataStoreInfo.GetFieldIndex(attributeId) };
             long[] cursor = new long[1];
-            int decIdx = eqClassCollection.data.DataStoreInfo.DecisionFieldIndex;
 
             EquivalenceClassCollection result = new EquivalenceClassCollection(
                 eqClassCollection.data,
@@ -249,7 +247,8 @@ namespace Infovision.Datamining.Roughset
                 {
                     //eqClassCollection.Data.GetFieldIndexValues(kvp.Key, attributesIdx, ref cursor);
                     cursor[0] = eqClassCollection.Data.GetFieldIndexValue(kvp.Key, attributesIdx[0]);
-                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetFieldIndexValue(kvp.Key, decIdx), kvp.Value, eqClassCollection.Data, kvp.Key);
+                    result.AddRecordInitial(cursor, eqClassCollection.Data.GetDecisionValue(kvp.Key), 
+                        kvp.Value, eqClassCollection.Data, kvp.Key);
                 }
             }
 
@@ -263,8 +262,7 @@ namespace Infovision.Datamining.Roughset
         public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
         {                        
             EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
-            int decisionIdx = data.DataStoreInfo.DecisionFieldIndex;
-
+            
             if (idx1 != null && idx1.Length > 0)
             {
                 long[] cursor1 = new long[] { 1 };
@@ -273,7 +271,7 @@ namespace Infovision.Datamining.Roughset
                 for (int i = 0; i < idx1.Length; i++)
                 {
                     double w = data.GetWeight(idx1[i]);
-                    long dec = data.GetFieldIndexValue(idx1[i], decisionIdx);
+                    long dec = data.GetDecisionValue(idx1[i]);
                     eq1.AddObject(idx1[i], dec, w);
                     result.AddDecision(dec, w);
                 }
@@ -287,7 +285,7 @@ namespace Infovision.Datamining.Roughset
                 for (int i = 0; i < idx2.Length; i++)
                 {
                     double w = data.GetWeight(idx2[i]);
-                    long dec = data.GetFieldIndexValue(idx2[i], decisionIdx);
+                    long dec = data.GetDecisionValue(idx2[i]);
                     eq2.AddObject(idx2[i], dec, w);
                     result.AddDecision(dec, w);
                 }
@@ -436,8 +434,6 @@ namespace Infovision.Datamining.Roughset
         {
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();
-            int decisionIndex = dataStore.DataStoreInfo.DecisionFieldIndex;
-
             foreach (int objectIndex in objectSet)
             {
                 long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
@@ -445,7 +441,7 @@ namespace Infovision.Datamining.Roughset
                 if (localPartitions.TryGetValue(record, out reductStatistic))
                 {
                     reductStatistic.AddObject(objectIndex,
-                        dataStore.GetFieldIndexValue(objectIndex, decisionIndex),
+                        dataStore.GetDecisionValue(objectIndex),
                         objectWeights[objectIndex]);
 
                     if (reductStatistic.NumberOfDecisions > 1)
@@ -455,7 +451,7 @@ namespace Infovision.Datamining.Roughset
                 {
                     reductStatistic = new EquivalenceClass(record, dataStore);
                     reductStatistic.AddObject(objectIndex,
-                        dataStore.GetFieldIndexValue(objectIndex, decisionIndex),
+                        dataStore.GetDecisionValue(objectIndex),
                         objectWeights[objectIndex]);
 
                     localPartitions[record] = reductStatistic;
@@ -576,6 +572,13 @@ namespace Infovision.Datamining.Roughset
                 return result;
 
             return new KeyValuePair<long, double>(-1, 0.0);
+        }
+
+        public bool HasSingleDecision()
+        {
+            if (this.GetSingleDecision().Key != -1)
+                return true;
+            return false;
         }
 
         public EquivalenceClass[] ToArray()

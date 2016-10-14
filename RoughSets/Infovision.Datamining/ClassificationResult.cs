@@ -260,6 +260,7 @@ namespace Infovision.Datamining
             this.ModelCreationTime = -1;
             this.ClassificationTime = -1;
             this.EnsembleSize = 1;
+            this.Fold = dataStore.Fold;
         }
 
         #endregion Constructors

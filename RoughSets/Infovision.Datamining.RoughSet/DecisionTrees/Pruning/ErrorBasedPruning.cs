@@ -79,8 +79,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
             bool changed = false;
 
-            //if (System.Math.Abs(pruneError - baselineError) < this.GainThreshold
-            //    || System.Math.Abs(replaceError - baselineError) < this.GainThreshold)
             if ((errorLeaf <= (baselineError + this.GainThreshold + 0.00000001))
                 || (errorLargestBranch <= (baselineError + this.GainThreshold + 0.00000001)))
             {

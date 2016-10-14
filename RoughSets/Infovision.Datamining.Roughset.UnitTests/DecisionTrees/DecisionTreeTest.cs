@@ -15,19 +15,49 @@ using System.Reflection;
 using Infovision.Datamining.Roughset.DecisionTrees;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
 
-namespace Infovision.Datamining.Roughset.UnitTests
+namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
     {
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
+        public void DecisionTreeRoughForNumericAttributeTest()
+        {            
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+            
+            for (double eps = 0.0; eps < 0.5; eps += 0.01)
+            {
+                double error = 0;
+                DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+                for (int f = 0; f < numOfFolds; f++)
+                {
+                    splitter.ActiveFold = f;
+                    splitter.Split(ref train, ref test);
+
+                    DecisionTreeRough tree = new DecisionTreeRough();
+                    tree.Epsilon = eps;
+                    tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                    ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
+                    //Console.WriteLine(result);
+
+                    error += result.Error;
+                }
+
+                Console.WriteLine("{0} Error: {1}", eps, error / (double)numOfFolds);
+            }
+        }
+
+        [Test, Repeat(1)]
         public void DecisionTreeC45ForNumericAttributeTest()
         {
-            double error = 0;
             int numOfFolds = 5;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, tmp = null, prune = null, test = null;
 
+            double error = 0;
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {
@@ -40,34 +70,87 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
                 ErrorBasedPruning pruning = new ErrorBasedPruning(tree, prune);
-                pruning.Confidence = 0.35;
                 pruning.Prune();
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
-                Console.WriteLine("resultAfterPruning = {0}", result);
+                Console.WriteLine(result);
 
                 error += result.Error;
             }
 
-            Console.WriteLine("Error: {0}", error / (double)numOfFolds);            
+            Console.WriteLine("Error: {0}", error / (double)numOfFolds);                        
+        }
+
+        [Test, Repeat(50)]
+        public void DecisionTreeC45NoPruningForNumericAttributeTest()
+        {
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+            double error = 0;
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref train, ref test);
+
+                DecisionTreeC45 tree = new DecisionTreeC45();
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
+
+                error += result.Error;
+            }
+
+            Console.WriteLine("Error: {0}", error / (double)numOfFolds);
+
         }
 
         [Test, Repeat(1)]
         public void DecisionForestForNumericAttributeTest()
-        {            
+        {
+            int numOfFolds = 5;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
 
-            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
-            splitter.Split(ref train, ref test);
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref train, ref test);
 
-            DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
-            forest.NumberOfAttributesToCheckForSplit = 3;
-            forest.Size = 50;
-            forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
+                forest.NumberOfAttributesToCheckForSplit = 3;
+                forest.Size = 50;
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
-            ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
-            Console.WriteLine(result);            
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                Console.WriteLine(result);
+            }            
+        }
+
+        [Test, Repeat(10)]
+        public void DecisionForestRoughForNumericAttributeTest()
+        {
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref train, ref test);
+
+                DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
+                forest.NumberOfAttributesToCheckForSplit = 3;
+                forest.Size = 50;
+                forest.Epsilon = 0.22;
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                Console.WriteLine(result);
+            }
         }
 
         [Test, Repeat(10)]
@@ -191,6 +274,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
+            treeC45.MaxHeight = 2;
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data));
@@ -222,17 +306,41 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             Console.WriteLine("RoughTreeLearnTest");
 
+            int maxHeight = -1;
+
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            DecisionTreeRough treeRough = new DecisionTreeRough();
-            treeRough.Epsilon = 0;
-            treeRough.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            DataStore prune = null, train = null;
+            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            splitter.Split(ref train, ref prune);
 
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data, 2));
+            DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.MaxHeight = maxHeight;
+            treeRough.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            ReducedErrorPruning pruning = new ReducedErrorPruning(treeRough, prune);
+            pruning.Prune();
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data));
+            Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeRough));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
+
+            Console.WriteLine("C45LearnTest");
+
+            DecisionTreeC45 treeC45 = new DecisionTreeC45();
+            treeC45.MaxHeight = maxHeight;
+            treeC45.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            ErrorBasedPruning pruning2 = new ErrorBasedPruning(treeC45, prune);
+            pruning2.Prune();
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data));
+            Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeC45));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
+
+
         }        
 
 

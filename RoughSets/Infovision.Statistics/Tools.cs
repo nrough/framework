@@ -273,7 +273,7 @@ namespace Infovision.Statistics
             }
 
             return entropy;
-        }        
+        }
 
         /**
        * Returns the value, <tt>x</tt>, for which the area under the Normal

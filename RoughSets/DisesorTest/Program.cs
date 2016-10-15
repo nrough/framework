@@ -258,12 +258,12 @@ namespace DisesorTest
 
                     if (field.CanDiscretize())
                     {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? wGen.Weights : null);
                         Console.WriteLine(this.Cuts2Sting(cuts));
                     }
                 }
 
-                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? wGen.Weights : null);
             }
             else
             {
@@ -284,12 +284,12 @@ namespace DisesorTest
 
                     if (field.CanDiscretize())
                     {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? wGen.Weights : null);
                         Console.WriteLine(this.Cuts2Sting(cuts));
                     }
                 }
 
-                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? Array.ConvertAll(wGen.Weights, x => (double)x) : null);
+                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? wGen.Weights : null);
             }
             Console.WriteLine("Done");
 

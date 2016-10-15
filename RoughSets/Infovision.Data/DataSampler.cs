@@ -11,6 +11,7 @@ namespace Infovision.Data
     {
         private int bagSizePercent;
         private Dictionary<int, DataStore> bagCache;
+        private Dictionary<int, DataStore> oobCache;
 
         public DataStore Data { get; set; }
         public double[] Weights { get; set; }
@@ -38,7 +39,7 @@ namespace Infovision.Data
             : this()
         {
             this.Data = data;
-            this.Weights = (data.Weights != null) ? Array.ConvertAll(data.Weights, x => (double)x) : this.Weights;
+            this.Weights = (data.Weights != null) ? data.Weights : this.Weights;
         }
 
         public DataSampler(DataStore data, bool cacheDataChunks)
@@ -48,37 +49,71 @@ namespace Infovision.Data
             if (this.CacheResults)
             {
                 bagCache = new Dictionary<int, DataStore>();
+                oobCache = new Dictionary<int, DataStore>();
             }
-        }
+        }        
 
-        public DataStore GetData(int iteration)
+        public Tuple<DataStore, DataStore> GetData(int iteration)
         {
             DataStore baggedData = null;
-            
-            if(this.CacheResults && bagCache.TryGetValue(iteration, out baggedData))
-                return baggedData;
-            
-            int bagsize = this.Data.NumberOfRecords * (this.BagSizePercent / 100);
+            DataStore oobData = null;
+
+            if (this.CacheResults
+                && bagCache.TryGetValue(iteration, out baggedData)
+                && oobCache.TryGetValue(iteration, out oobData))
+            {
+                return new Tuple<DataStore, DataStore>(baggedData, oobData);
+            }
 
             double[] localWeigths = null;
             if (this.Weights != null)
                 localWeigths = this.Weights;
             else if (this.Data.Weights != null)
-                localWeigths = Array.ConvertAll(this.Data.Weights, x => (double)x);
+                localWeigths = this.Data.Weights;
+
             if (localWeigths == null)
             {
                 localWeigths = new double[this.Data.NumberOfRecords];
-                localWeigths.SetAll((double)1 / (double)this.Data.NumberOfRecords);
+                localWeigths.SetAll(1.0 / (double)this.Data.NumberOfRecords);
             }
 
             baggedData = this.ResampleWithWeights(localWeigths);
             baggedData.Shuffle();
+
+            int bagsize = (int)(this.Data.NumberOfRecords * ((double)this.BagSizePercent / 100.0));
+            bagsize = Math.Min(bagsize, this.Data.NumberOfRecords);
+
             baggedData = DataStore.Copy(baggedData, 0, bagsize);
 
-            if (this.CacheResults)
-                this.bagCache[iteration] = baggedData;
+            HashSet<long> oobSet = new HashSet<long>(this.Data.GetObjectIds());
+            HashSet<long> bagSet = new HashSet<long>(baggedData.GetOrigObjectIds());
+            oobSet.ExceptWith(bagSet);
 
-            return baggedData;
+            DataStoreInfo localDataStoreInfo = new DataStoreInfo(baggedData.DataStoreInfo.NumberOfFields);
+            localDataStoreInfo.InitFromDataStoreInfo(baggedData.DataStoreInfo, true, true);
+            localDataStoreInfo.NumberOfRecords = oobSet.Count;
+
+            oobData = new DataStore(localDataStoreInfo);
+            oobData.Name = baggedData.Name;
+
+            int j = 0;
+            foreach (long objectId in oobSet)
+            {
+                DataRecordInternal instance = this.Data.GetRecordByObjectId(objectId);
+                oobData.Insert(instance);
+                oobData.SetWeight(j++, this.Data.GetWeightByObjectId(objectId));
+            }
+
+            oobData.NormalizeWeights();
+            oobData.CreateWeightHistogramsOnFields();
+
+            if (this.CacheResults)
+            {
+                this.bagCache[iteration] = baggedData;
+                this.oobCache[iteration] = oobData;
+            }
+
+            return new Tuple<DataStore, DataStore>(baggedData, oobData);
         }
 
         private DataStore ResampleWithWeights(double[] weights)
@@ -105,6 +140,7 @@ namespace Infovision.Data
             Tools.Normalize(probabilities, sumProbs / sumOfWeights);
             probabilities[this.Data.NumberOfRecords - 1] = sumOfWeights;
 
+            HashSet<long> inBagSet = new HashSet<long>();
             int k = 0; int l = 0;
             sumProbs = 0;
             while ((k < this.Data.NumberOfRecords && (l < this.Data.NumberOfRecords)))
@@ -112,9 +148,8 @@ namespace Infovision.Data
                 sumProbs += (double)weights[l];
                 while ((k < this.Data.NumberOfRecords) && (probabilities[k] <= sumProbs))
                 {
-                    localDataStore.Insert(this.Data.GetRecordByIndex(l, false));
-                    localDataStore.SetWeight(k, 1);
-                    k++;
+                    localDataStore.InsertBag(this.Data.GetRecordByIndex(l, true));
+                    localDataStore.SetWeight(k++, 1);                    
                 }
                 l++;
             }
@@ -123,6 +158,6 @@ namespace Infovision.Data
             localDataStore.CreateWeightHistogramsOnFields();
 
             return localDataStore;
-        }
+        }        
     }
 }

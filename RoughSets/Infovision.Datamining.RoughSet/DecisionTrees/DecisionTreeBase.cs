@@ -354,6 +354,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return count;
         }
 
+        public static int GetHeight(IDecisionTree tree)
+        {            
+            int maxHeight = 0;
+            TreeNodeTraversal.TraversePostOrder(tree.Root, n =>
+            {
+                if (n.IsLeaf && n.Level > maxHeight)
+                    maxHeight = n.Level;
+            });
+            return maxHeight;
+        }
+
         private static double MeasureSum(IDecisionTreeNode node)
         {
             double sum = 0;

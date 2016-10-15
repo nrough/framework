@@ -13,44 +13,51 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     [TestFixture]
     public class DecisionForestTest
     {
-        [Test]
+        [Test, Repeat(10)]
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            double epsilon = 0.07;
+            //double epsilon = 0.07;
 
             DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
-            randomForest.Size = 10;
-            randomForest.NumberOfAttributesToCheckForSplit = 5;
-            randomForest.NumberOfTreeProbes = 10;
-            randomForest.Epsilon = epsilon;
-            double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            randomForest.Size = 100;
+            randomForest.NumberOfAttributesToCheckForSplit = (int) System.Math.Floor(System.Math.Sqrt(attributes.Length));
+            randomForest.NumberOfTreeProbes = 1;
+            randomForest.VoteType = DecisionForestVoteType.ErrorBased;
+            //randomForest.Epsilon = epsilon;
+            double error = randomForest.Learn(data, attributes).Error;
             Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeC45 c45tree = new DecisionTreeC45();
-            c45tree.Epsilon = epsilon;
-            c45tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());            
+            //c45tree.Epsilon = epsilon;
+            c45tree.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(c45tree, test, null));
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void RandomForestCARTTest()
         {
-            double epsilon = 0.07;
+            //double epsilon = 0.07;
 
             Console.WriteLine("RandomForestCARTTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
-            randomForest.Size = 10;
-            randomForest.NumberOfAttributesToCheckForSplit = 5;
-            randomForest.NumberOfTreeProbes = 10;
-            randomForest.Epsilon = epsilon;
-            double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            randomForest.Size = 200;
+            randomForest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
+            randomForest.NumberOfTreeProbes = 1;
+            //randomForest.Epsilon = epsilon;
+            double error = randomForest.Learn(data, attributes).Error;
             Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeCART cartTree = new DecisionTreeCART();
@@ -65,6 +72,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine("RandomForestRoughTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeRough> randomForest = new DecisionForestRandom<DecisionTreeRough>();
@@ -72,7 +81,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Epsilon = epsilon;
-            double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
+            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Error;
             Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
@@ -87,6 +96,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine("RandomForestRoughGammaTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionForestReduct<DecisionTreeRough> randomForest = new DecisionForestReduct<DecisionTreeRough>();
@@ -95,7 +106,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             randomForest.Epsilon = epsilon;
             randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
 
-            double error = 1.0 - randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Accuracy;
+            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray()).Error;
             Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
@@ -193,6 +204,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         public void ReductSubsetC45Tree()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             for (int t = 0; t < 1; t++)

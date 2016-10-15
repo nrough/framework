@@ -42,7 +42,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
         */
 
-        protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        //protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected override T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
             PermutationCollection permutations = new PermutationCollection(this.NumberOfTreeProbes, attributes);
 
@@ -61,8 +62,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             */
 
             T tree = this.InitDecisionTree();
-            double error = 1.0 - tree.Learn(data, reduct.Attributes.ToArray()).Accuracy;
-            return new Tuple<T, double>(tree, error);
+            double error = tree.Learn(data, reduct.Attributes.ToArray()).Error;
+            //return new Tuple<T, double>(tree, error);
+            return tree;
         }
 
         protected IReduct CalculateReduct(DataStore data, PermutationCollection permutations, double epsilon)

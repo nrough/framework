@@ -17,7 +17,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     {
         public string ReductGeneratorFactory { get; set; }
 
-        protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        //protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected override T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
             var permutationCollection = new PermutationCollection(
                 this.NumberOfTreeProbes, attributes, RandomSingleton.Random.Next(1, attributes.Length));
@@ -54,9 +55,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             
             Array.Sort(reducts, new ReductRuleNumberComparer());            
             T tree = this.InitDecisionTree();
-            double error = 1.0 - tree.Learn(data, reducts[0].Attributes.ToArray()).Accuracy;
+            double error = tree.Learn(data, reducts[0].Attributes.ToArray()).Error;
 
-            return new Tuple<T, double>(tree, error);
+            //return new Tuple<T, double>(tree, error);
+            return tree;
         }
     }
 }

@@ -234,8 +234,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             {
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
                 treeID3.Epsilon = eps;
-                double errorTrain = 1.0 - treeID3.Learn(data, attributes).Accuracy;
-                double errorTest = 1.0 - Classifier.DefaultClassifer.Classify(treeID3, test).Accuracy;
+                double errorTrain = treeID3.Learn(data, attributes).Error;
+                double errorTest = Classifier.DefaultClassifer.Classify(treeID3, test).Error;
 
                 /*
                 Console.WriteLine("eps={0} numrul={1} errtrn={2} errtst={3}",

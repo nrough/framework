@@ -20,31 +20,26 @@ namespace Infovision.Data
         private double capacityFactor;
 
         private Dictionary<long, int> objectId2Index;
-
+        
         private long[] index2ObjectId;
-        private double[] weights;        
+        private double[] weights;
+
+        private long[] index2OrigObjectId; //used in case of bagging   
 
         private object mutex = new object();
 
-        #endregion Members
+        #endregion
 
         #region Properties
 
         public string Name { get; set; }
         public int Fold { get; set; }
         public DataStoreInfo DataStoreInfo { get; set; }
-        
-        public int NumberOfRecords
-        {
-            get { return this.DataStoreInfo.NumberOfRecords; }
-        }
+        public bool IsBag { get { return this.index2OrigObjectId != null; } }
+        public int NumberOfRecords { get { return this.DataStoreInfo.NumberOfRecords; } }
+        public double[] Weights { get { return this.weights; } }
 
-        public double[] Weights
-        {
-            get { return this.weights; }
-        }
-
-        #endregion Properties
+        #endregion
 
         #region Constructors
 
@@ -53,6 +48,10 @@ namespace Infovision.Data
             this.DataStoreInfo = dataStoreInfo;
             this.InitStorage(dataStoreInfo.NumberOfRecords, dataStoreInfo.NumberOfFields, 0.1);
         }
+
+        #endregion
+
+        #region Methods
 
         private void InitStorage(int capacity, int attributeSize, double capacityFactor)
         {
@@ -63,12 +62,8 @@ namespace Infovision.Data
             this.objectId2Index = new Dictionary<long, int>(capacity);
             this.index2ObjectId = new long[capacity];
             this.weights = new double[capacity];
-        }
-
-        #endregion Constructors
-
-        #region Methods
-
+        }        
+       
         public int[] Sort(IComparer<int> comparer)
         {
             int[] sortedArray = Enumerable.Range(0, this.NumberOfRecords).ToArray();
@@ -128,6 +123,26 @@ namespace Infovision.Data
             return result;
         }
 
+        public long GetOrigObjectId(int idx)
+        {
+            if (this.IsBag)
+                return this.index2OrigObjectId[idx];
+            return 0;
+        }
+
+        public long InsertBag(DataRecordInternal record)
+        {
+            if (record.ObjectId == 0)
+                throw new ArgumentException("record", "record.ObjectId == 0");
+            long origObjectId = record.ObjectId;
+            record.ObjectId = 0;
+            long newObjectId = this.Insert(record);            
+            if (this.index2OrigObjectId == null)
+                this.index2OrigObjectId = new long[capacity];
+            this.index2OrigObjectId[record.ObjectIdx] = origObjectId;            
+            return newObjectId;
+        }
+
         public long Insert(DataRecordInternal record)
         {
             if (record.ObjectId == 0)
@@ -141,7 +156,7 @@ namespace Infovision.Data
 
         private void InsertRecord(DataRecordInternal record)
         {
-            lastIndex++;
+            this.lastIndex++;
 
             if (this.CheckResize())
                 this.Resize();
@@ -149,16 +164,16 @@ namespace Infovision.Data
             foreach (int fieldId in record.GetFields())
             {
                 long value = record[fieldId];
-                data[lastIndex * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
+                this.data[lastIndex * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
                 this.DataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
             }
 
             //index2ObjectId.Add(lastIndex, record.ObjectId);
-            index2ObjectId[lastIndex] = record.ObjectId;
+            this.index2ObjectId[lastIndex] = record.ObjectId;
 
-            weights[lastIndex] = 1;
+            this.weights[lastIndex] = 1;
 
-            objectId2Index.Add(record.ObjectId, lastIndex);
+            this.objectId2Index.Add(record.ObjectId, lastIndex);
             record.ObjectIdx = lastIndex;
         }
 
@@ -495,6 +510,11 @@ namespace Infovision.Data
             return values;
         }
 
+        public IEnumerable<long> GetOrigObjectIds()
+        {
+            return this.index2OrigObjectId != null ? this.index2OrigObjectId : new long[] { };
+        }
+
         public IEnumerable<long> GetObjectIds()
         {
             return objectId2Index.Keys;
@@ -507,8 +527,7 @@ namespace Infovision.Data
             //TODO this should be called inside setting this.DataStoreInfo.DecisionFieldId property but we miss reference to DataStore and its weights
             this.DataStoreInfo.DecisionInfo.CreateWeightHistogram(this, this.weights);
         }
-
-        //TODO cache this.DataStoreInfo.DecisionFieldIndex (this lookups decIdx in a dictionary) PERFORMANCE LOSS!
+        
         public long GetDecisionValue(int objectIndex)
         {
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.DecisionFieldIndex);
@@ -768,14 +787,26 @@ namespace Infovision.Data
             DataStore localDataStore = new DataStore(localDataStoreInfo);
             localDataStore.Name = dataToCopy.Name;
 
-            int j = 0;
-            for (int i = startFromIdx; i < len; i++)
+            if (dataToCopy.IsBag)
             {
-                localDataStore.Insert(dataToCopy.GetRecordByIndex(i));
-                localDataStore.SetWeight(j, dataToCopy.GetWeight(i));
-                j++;
+                for (int i = startFromIdx, j = 0; i < len; i++)
+                {
+                    DataRecordInternal instance = dataToCopy.GetRecordByIndex(i, false);
+                    instance.ObjectId = dataToCopy.GetOrigObjectId(i);
+                    localDataStore.InsertBag(instance);
+                    localDataStore.SetWeight(j++, dataToCopy.GetWeight(i));
+                }
             }
-
+            else
+            {
+                for (int i = startFromIdx, j = 0; i < len; i++)
+                { 
+                    DataRecordInternal instance = dataToCopy.GetRecordByIndex(i);
+                    localDataStore.Insert(instance);
+                    localDataStore.SetWeight(j++, dataToCopy.GetWeight(i));
+                }
+            }
+            
             localDataStore.NormalizeWeights();
             localDataStore.CreateWeightHistogramsOnFields();
 

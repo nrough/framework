@@ -33,6 +33,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public double Epsilon { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
+        public DecisionForestVoteType VoteType { get; set; } 
 
         public virtual double AverageNumberOfAttributes
         {
@@ -58,9 +59,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public DecisionForestBase()
         {
             this.Size = 100;
-            this.NumberOfTreeProbes = 20;
+            this.NumberOfTreeProbes = 1;
             this.BagSizePercent = 100;
             this.Epsilon = -1.0;
+            this.VoteType = DecisionForestVoteType.Unified;
 
             this.trees = new List<Tuple<T, double>>(this.Size);
         }
@@ -85,20 +87,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return tree;
         }
 
-        protected virtual Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        //protected virtual Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected virtual T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            Tuple<T, double> bestTree = null;
+            //Tuple<T, double> bestTree = null;
+            T bestTree = default(T);
             int minNumberOfLeaves = int.MaxValue;
             for (int probe = 0; probe < this.NumberOfTreeProbes; probe++)
             {
                 T tree = this.InitDecisionTree();
-                double error = 1.0 - tree.Learn(data, attributes).Accuracy;
+                double error = tree.Learn(data, attributes).Error;
                 int numOfLeaves = DecisionTreeHelper.CountLeaves(tree.Root);
 
                 if (numOfLeaves < minNumberOfLeaves)
                 {                    
                     minNumberOfLeaves = numOfLeaves;
-                    bestTree = new Tuple<T, double>(tree, error);
+                    //bestTree = new Tuple<T, double>(tree, error);
+                    bestTree = tree;
                 }
             }
             
@@ -114,12 +119,30 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             for (int iter = 0; iter < this.Size; iter++)
             {
-                DataStore baggedData = this.DataSampler.GetData(iter);
-                this.AddTree(this.LearnDecisionTree(baggedData, attributes, iter));
+                var baggedTuple = this.DataSampler.GetData(iter);
+                DataStore baggedData = baggedTuple.Item1;
+                DataStore oobData = baggedTuple.Item2;
+
+                var decisionTree = this.LearnDecisionTree(baggedData, attributes, iter);
+
+                switch (this.VoteType)
+                {
+                    case DecisionForestVoteType.Unified:
+                        this.AddTree(decisionTree, 1.0);
+                        break;
+
+                    case DecisionForestVoteType.ErrorBased:
+                        double error = Classifier.DefaultClassifer.Classify(decisionTree, oobData).Error;
+                        this.AddTree(decisionTree, 1.0 - error);
+                        break;
+
+                    default:
+                        throw new NotImplementedException(String.Format("VoteType = {0} is not implemented", this.VoteType));
+                }                                                
             }
 
             s.Stop();
-          
+
             ClassificationResult trainResult = Classifier.DefaultClassifer.Classify(this, data, data.Weights);            
             trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             this.learningResult = trainResult;
@@ -128,18 +151,19 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }              
 
         public long Compute(DataRecordInternal record)
-        {
-            int i = 0;
+        {            
             var votes = new Dictionary<long, double>(System.Math.Min(this.trees.Count, this.Size));
+
+            int i = 0;
             foreach (var member in this)
             {
                 i++;
                 long result = member.Item1.Compute(record);
 
                 if (votes.ContainsKey(result))
-                    votes[result] += (1 - member.Item2);
+                    votes[result] += member.Item2;
                 else
-                    votes.Add(result, (1 - member.Item2));
+                    votes.Add(result, member.Item2);                
 
                 if (i >= this.Size)
                     break;
@@ -148,9 +172,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return votes.Count > 0 ? votes.FindMaxValueKey() : -1;
         }
 
-        protected void AddTree(T tree, double error)
+        protected void AddTree(T tree, double vote)
         {
-            this.trees.Add(new Tuple<T, double>(tree, error));
+            this.trees.Add(new Tuple<T, double>(tree, vote));
         }
 
         protected void AddTree(Tuple<T, double> tree)

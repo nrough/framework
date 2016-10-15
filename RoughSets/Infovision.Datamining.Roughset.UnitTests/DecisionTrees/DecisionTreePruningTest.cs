@@ -32,15 +32,33 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             ClassificationResult resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
-            Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
-            Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+
+            Console.WriteLine("DecisionTreeC45 B4PR ERRBSD {0:0.00} {1:0.00000} {2} {3} {4}",
+                    "N/A",
+                    resultBeforePruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    resultBeforePruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(c45WithPruning));
+
+            //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
+            //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
 
             ErrorBasedPruning pruning = new ErrorBasedPruning(c45WithPruning, prune);
             pruning.Prune();
 
             ClassificationResult resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
-            Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
-            Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));                                              
+
+            Console.WriteLine("DecisionTreeC45 B4PR ERRBSD {0:0.00} {1:0.00000} {2} {3} {4}",
+                    "N/A",
+                    resultAfterPruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    resultAfterPruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(c45WithPruning));
+
+            //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
+            //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+
+            Console.WriteLine();
         }        
 
         [Test, Repeat(10)]
@@ -61,22 +79,37 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             var resultBeforePruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
-            Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
-            Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
-            Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
+
+            Console.WriteLine("DecisionTreeC45 B4PR REDERR {0:0.00} {1:0.00000} {2} {3} {4}",
+                    "N/A",
+                    resultBeforePruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    resultBeforePruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(c45WithPruning));
+
+            //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
+            //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
 
             ReducedErrorPruning reducedErrorPruning = new ReducedErrorPruning(c45WithPruning, prune);
             reducedErrorPruning.Prune();
 
             var resultAfterPruning = Classifier.DefaultClassifer.Classify(c45WithPruning, test);
-            Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
-            Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
-            Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
+            Console.WriteLine("DecisionTreeC45 PRND REDERR {0:0.00} {1:0.00000} {2} {3} {4}",
+                    "N/A",
+                    resultAfterPruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    resultAfterPruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(c45WithPruning));
+
+            //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
+            //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(c45WithPruning.Root, train.DataStoreInfo));
 
             Console.WriteLine();
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void PrePruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -93,12 +126,22 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(c45WithPrePruning, test);
-                Console.WriteLine("C45/Epsilon {0}", resultForTreeWithPrePruning);
-                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPrePruning));
+
+                Console.WriteLine("C45/Epsilon {0:0.00} {1:0.00000} {2} {3} {4}",
+                    eps,
+                    resultForTreeWithPrePruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(c45WithPrePruning),
+                    resultForTreeWithPrePruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(c45WithPrePruning));
+
+                //Console.WriteLine("C45/Epsilon {0}", resultForTreeWithPrePruning);
+                //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPrePruning));
             }
+
+            Console.WriteLine();
         }
 
-        [Test, Repeat(20)]
+        [Test, Repeat(10)]
         public void PrePrunningTest2()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -115,12 +158,22 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
-                Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
-                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(tree));
-            }           
+                Console.WriteLine("DecisionTreeReduct {0:0.00} {1:0.00000} {2} {3} {4}",
+                    eps,
+                    resultForTreeWithPrePruning.Accuracy,
+                    DecisionTreeBase.GetNumberOfRules(tree),
+                    resultForTreeWithPrePruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(tree));
+
+
+                //Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
+                //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(tree));
+            }
+
+            Console.WriteLine();
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void PrePrunningTest3()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -137,9 +190,15 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
-                Console.WriteLine("DecisionTreeRough {0}", resultForTreeWithPrePruning);
-                Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(tree));
+                Console.WriteLine("DecisionTreeRough {0:0.00} {1:0.00000} {2} {3} {4}", 
+                    eps, 
+                    resultForTreeWithPrePruning.Accuracy, 
+                    DecisionTreeBase.GetNumberOfRules(tree), 
+                    resultForTreeWithPrePruning.QualityRatio,
+                    DecisionTreeBase.GetHeight(tree));
             }
+
+            Console.WriteLine();
         }        
     }
 }

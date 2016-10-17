@@ -13,14 +13,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public string ReductFactoryKey { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
         public PermutationCollection PermutationCollection { get; set; }
-        public int Iterations { get; set; }
+        public int ReductIterations { get; set; }
+        public double ReductEpsilon { get; set; }
+        public IReduct Reduct { get; private set; }
 
         public DecisionTreeReduct()
             : base()
         {
             this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
-            this.Iterations = 1;
+            this.ReductIterations = 1;
             this.Epsilon = 0.0;
+            this.ReductEpsilon = 0.0;
         }
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)
@@ -29,31 +32,34 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 this.WeightGenerator = new WeightGeneratorMajority(data);
 
             if (this.PermutationCollection == null)
-                this.PermutationCollection = new PermutationCollection(this.Iterations, attributes);
+                this.PermutationCollection = new PermutationCollection(this.ReductIterations, attributes);
 
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductFactoryKey);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, this.WeightGenerator);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.ReductEpsilon);
             parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, this.PermutationCollection);
             parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, this.Iterations);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.Iterations);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, this.ReductIterations);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.ReductIterations);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             if (generator is ReductGeneratorMeasure)
                 ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = true;
             generator.Run();
 
+            //TODO Improve reduct selection 
+
             IReductStoreCollection reducts = generator.GetReductStoreCollection();
             IReductStoreCollection reductsfiltered = null;
             if (generator is ReductGeneratorMeasure)
-                reductsfiltered = reducts.Filter(1, new ReductLengthComparer());
+                reductsfiltered = reducts.Filter(1, new ReductRuleNumberComparer());
             else
                 reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
 
             IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
+            this.Reduct = reduct;
 
             return base.Learn(data, reduct.Attributes.ToArray());
         }

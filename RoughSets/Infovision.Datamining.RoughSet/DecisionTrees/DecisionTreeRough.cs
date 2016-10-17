@@ -26,7 +26,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             int[] indices = data.Indices;
             long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
 
-            //TODO can improve?
             Array.Sort(values, indices);
 
             List<long> thresholds = new List<long>(values.Length);

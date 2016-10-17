@@ -14,6 +14,54 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     public class DecisionForestTest
     {
         [Test, Repeat(10)]
+        public void DecisionForestForNumericAttributeTest()
+        {
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref train, ref test);
+
+                DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
+                //forest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
+                forest.Size = 50;
+                forest.Learn(train, attributes);
+
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                Console.WriteLine(result);
+            }
+        }
+
+        [Test, Repeat(10)]
+        public void DecisionForestRoughForNumericAttributeTest()
+        {
+            int numOfFolds = 5;
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore train = null, test = null;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            for (int f = 0; f < numOfFolds; f++)
+            {
+                splitter.ActiveFold = f;
+                splitter.Split(ref train, ref test);
+
+                DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
+                //forest.NumberOfAttributesToCheckForSplit = 3;
+                forest.Size = 50;
+                forest.Epsilon = 0.22;
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                Console.WriteLine(result);
+            }
+        }
+
+        [Test, Repeat(10)]
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
@@ -27,7 +75,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             randomForest.Size = 100;
-            randomForest.NumberOfAttributesToCheckForSplit = (int) System.Math.Floor(System.Math.Sqrt(attributes.Length));
+            //randomForest.NumberOfAttributesToCheckForSplit = (int) System.Math.Floor(System.Math.Sqrt(attributes.Length));
             randomForest.NumberOfTreeProbes = 1;
             randomForest.VoteType = DecisionForestVoteType.ErrorBased;
             //randomForest.Epsilon = epsilon;
@@ -54,7 +102,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             randomForest.Size = 200;
-            randomForest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
+            //randomForest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
             randomForest.NumberOfTreeProbes = 1;
             //randomForest.Epsilon = epsilon;
             double error = randomForest.Learn(data, attributes).Error;

@@ -10,28 +10,19 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
     /// <summary>
     /// Numeric attribute supervised discretizer
     /// </summary>
-    /// <typeparam name="A">Attribute values data type</typeparam>
-    /// <typeparam name="L">Labels / Classes / Outputs data type</typeparam>
-    public class Discretization<A, L>
-        where A : struct, IComparable, IFormattable, IComparable<A>, IEquatable<A>
-        where L : struct, IComparable, IFormattable, IComparable<L>, IEquatable<L>
+    /// <typeparam name="V">Attribute values data type</typeparam>
+    /// <typeparam name="D">Decision atribute / Labels / Classes / Outputs data type</typeparam>
+    public class Discretization<V, D>
+        where V : struct, IComparable, IFormattable, IComparable<V>, IEquatable<V>
+        where D : struct, IComparable, IFormattable, IComparable<D>, IEquatable<D>
     {
         #region Members
 
         private double[] cuts;
-        private Dictionary<L, int> labelDict;
+        private Dictionary<D, int> labelDict;
         private int[] sortedIndices;
 
-        #endregion Members
-
-        #region Constructors
-
-        public Discretization()
-        {
-            this.labelDict = new Dictionary<L, int>();
-        }
-
-        #endregion Constructors
+        #endregion
 
         #region Properties
 
@@ -44,11 +35,20 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             set { cuts = value; }
         }
 
-        #endregion Properties
+        #endregion        
+
+        #region Constructors
+
+        public Discretization()
+        {
+            this.labelDict = new Dictionary<D, int>();
+        }
+
+        #endregion         
 
         #region Methods
 
-        private double[] cutPointsForSubset(A[] values, L[] labels, int first, int lastPlusOne, double[] weights = null)
+        private double[] cutPointsForSubset(V[] values, D[] labels, int first, int lastPlusOne, double[] weights = null)
         {
             double[][] counts, bestCounts;
             double[] priorCounts, left, right, cutPoints;
@@ -96,7 +96,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
 
                 if (values[sortedIndices[i]].CompareTo(values[sortedIndices[i + 1]]) < 0)
                 {
-                    currentCutPoint = (Operator.Convert<A, double>(values[sortedIndices[i]]) + Operator.Convert<A, double>(values[sortedIndices[i + 1]])) / 2.0;
+                    currentCutPoint = (Operator.Convert<V, double>(values[sortedIndices[i]]) + Operator.Convert<V, double>(values[sortedIndices[i + 1]])) / 2.0;
                     currentEntropy = Tools.EntropyConditionedOnRows(counts);
 
                     if (currentEntropy < bestEntropy)
@@ -263,7 +263,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             return (gain > ((Tools.Log2(numCutPoints) + delta) / numInstances));
         }
 
-        public void Compute(A[] values, L[] labels, bool isSorted = false, double[] weights = null)
+        public void Compute(V[] values, D[] labels, bool isSorted = false, double[] weights = null)
         {
             for (int i = 0, labelKey = 0; i < values.Length; i++)
             {
@@ -283,13 +283,13 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             }
         }
 
-        public int Search(A value)
+        public int Search(V value)
         {
             if (this.cuts == null)
                 return 1;
 
             for (int i = 0; i < cuts.Length; i++)
-                if (Operator.Convert<A, double>(value).CompareTo(cuts[i]) <= 0)
+                if (Operator.Convert<V, double>(value).CompareTo(cuts[i]) <= 0)
                     return i;
 
             return cuts.Length;
@@ -316,6 +316,6 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             return sb.ToString();
         }
 
-        #endregion Methods
+        #endregion
     }
 }

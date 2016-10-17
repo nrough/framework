@@ -21,6 +21,69 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     public class DecisionTreeTest
     {
         [Test, Repeat(1)]
+        public void ReductTreeLearnTest()
+        {
+            Console.WriteLine("ReductTreeLearnTest");
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            DecisionTreeReduct treeRed = new DecisionTreeReduct();
+            treeRed.Epsilon = 0.0;
+            treeRed.ReductEpsilon = 0.1;
+            treeRed.ReductIterations = 20;
+            treeRed.Learn(data, attributes);
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeRed));
+
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
+
+            Console.WriteLine("Number of Rules: {0}", DecisionTreeBase.GetNumberOfRules(treeRed));
+            Console.WriteLine("Max Height: {0}", DecisionTreeBase.GetHeight(treeRed));
+            Console.WriteLine("M(t): {0:0.00000}", DecisionTreeBase.MeasureSum(treeRed.Root));
+
+            Console.WriteLine();
+
+            IReduct reduct = treeRed.Reduct;
+            Console.WriteLine(reduct);
+
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
+            ReductStore reductStore = new ReductStore(1);
+            reductStore.AddReduct(reduct);
+            reductStoreCollection.AddStore(reductStore);
+
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
+            Console.WriteLine(classifier.Classify(data, null));
+
+            classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
+            Console.WriteLine(classifier.Classify(test, null));
+
+            Console.WriteLine("Number of Rules: {0}", reduct.EquivalenceClasses.Count);
+            Console.WriteLine("Size: {0}", reduct.Attributes.Count);
+            Console.WriteLine("M(B): {0:0.00000}", InformationMeasureWeights.Instance.Calc(reduct));
+
+            Console.WriteLine();
+
+            DecisionTreeReduct treeRough = new DecisionTreeReduct();
+            treeRough.Epsilon = 0.1;
+            treeRough.Learn(data, attributes);
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
+
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
+
+            Console.WriteLine("Number of Rules: {0}", DecisionTreeBase.GetNumberOfRules(treeRough));
+            Console.WriteLine("Max Height: {0}", DecisionTreeBase.GetHeight(treeRough));
+            Console.WriteLine("M(t): {0:0.00000}", DecisionTreeBase.MeasureSum(treeRough.Root));
+
+            Console.WriteLine();
+
+        }
+
+        [Test, Repeat(1)]
         public void DecisionTreeRoughForNumericAttributeTest()
         {            
             int numOfFolds = 5;
@@ -274,7 +337,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);            
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
-            treeC45.MaxHeight = 2;
+            treeC45.MaxHeight = 3;
             treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
@@ -284,7 +347,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
         }
 
-        [Test]
+        [Test, Repeat(10)]
         public void CARTLearnTest()
         {
             Console.WriteLine("CARTLearnTest");
@@ -292,12 +355,18 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
+            DataStore train = null, validation = null;
+            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            splitter.Split(ref train, ref validation);
+
             DecisionTreeCART treeCART = new DecisionTreeCART();
             treeCART.Epsilon = 0;
-            treeCART.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeCART.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+
+            ReducedErrorPruning prunning = new ReducedErrorPruning(treeCART, validation);
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeCART.Root, data, 2));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeCART, data, null));
+            //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeCART, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeCART, test, null));
         }
 
@@ -339,10 +408,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeC45));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
-
-
-        }        
-
+        }                     
 
         #region Accord Trees
 

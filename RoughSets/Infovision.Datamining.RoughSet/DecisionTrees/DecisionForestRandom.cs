@@ -12,13 +12,22 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public class DecisionForestRandom<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()
     {
-        public int NumberOfAttributesToCheckForSplit { get; set; }
+        private int numberOfAttributesToCheckForSplit = -1;
+        private bool isNumberOfAttributesToCheckForSplitSet = false;
+
+        public int NumberOfAttributesToCheckForSplit
+        {
+            get { return this.numberOfAttributesToCheckForSplit; }
+
+            set
+            {
+                this.numberOfAttributesToCheckForSplit = value;
+                this.isNumberOfAttributesToCheckForSplitSet = true;
+            }
+        }
 
         public DecisionForestRandom()
-            : base()
-        {
-            this.NumberOfAttributesToCheckForSplit = -1;
-        }
+            : base() { }
 
         protected override T InitDecisionTree()
         {
@@ -28,6 +37,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 tree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
 
             return tree;
-        }        
+        }
+
+        public override ClassificationResult Learn(DataStore data, int[] attributes)
+        {
+            if (!this.isNumberOfAttributesToCheckForSplitSet)
+                this.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
+
+            return base.Learn(data, attributes);
+        }
     }
 }

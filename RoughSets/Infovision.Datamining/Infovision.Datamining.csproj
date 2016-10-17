@@ -130,6 +130,7 @@
     <Compile Include="Convergence.cs" />
     <Compile Include="Filters\Supervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Supervised\Attribute\Discretization.cs" />
+    <Compile Include="Filters\Supervised\Attribute\DiscretizationMDL.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\BinaryDiscretization.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />

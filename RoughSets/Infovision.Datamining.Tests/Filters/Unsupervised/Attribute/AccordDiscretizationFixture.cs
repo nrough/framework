@@ -232,7 +232,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                 for (int i = 0; i < localReductStore.Count; i++)
                 {
                     var reduct = localReductStore.GetReduct(i);
-                    var measure = new InformationMeasureMajority().Calc(reduct);
+                    var measure = InformationMeasureMajority.Instance.Calc(reduct);
                     Console.WriteLine("B = {0} M(B) = {1}", reduct, measure);
                 }
 

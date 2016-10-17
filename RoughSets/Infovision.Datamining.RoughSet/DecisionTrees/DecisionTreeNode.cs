@@ -198,8 +198,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     
                 return DecisionTreeNode.ROOT;
             }
-
-            if(!this.IsLeaf)
+            
+            if (!this.IsLeaf)
                 return string.Format("[{0}] ({1} {2} {3})",
                     this.Id,
                     (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),

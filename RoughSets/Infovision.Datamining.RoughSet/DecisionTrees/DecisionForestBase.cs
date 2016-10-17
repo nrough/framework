@@ -80,10 +80,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected virtual T InitDecisionTree()
         {
             T tree = new T();
-
             if (this.Epsilon >= 0.0)
                 tree.Epsilon = this.Epsilon;
-
             return tree;
         }
 
@@ -111,11 +109,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
-        {
-            this.InitDataSampler(data);
+        {            
+            this.InitDataSampler(data);            
 
             Stopwatch s = new Stopwatch();
-            s.Start();  
+            s.Start();
 
             for (int iter = 0; iter < this.Size; iter++)
             {
@@ -123,8 +121,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 DataStore baggedData = baggedTuple.Item1;
                 DataStore oobData = baggedTuple.Item2;
 
-                var decisionTree = this.LearnDecisionTree(baggedData, attributes, iter);
-
+                var decisionTree = this.LearnDecisionTree(baggedData, attributes, iter);                
                 switch (this.VoteType)
                 {
                     case DecisionForestVoteType.Unified:
@@ -138,7 +135,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                     default:
                         throw new NotImplementedException(String.Format("VoteType = {0} is not implemented", this.VoteType));
-                }                                                
+                }
+                
             }
 
             s.Stop();

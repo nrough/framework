@@ -113,6 +113,12 @@ namespace Infovision.Data
             return result;
         }
 
+        public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold)
+        {
+            this.ActiveFold = fold;
+            this.Split(ref dataStore1, ref dataStore2);
+        }
+
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2)
         {
             if (this.ActiveFold < 0)

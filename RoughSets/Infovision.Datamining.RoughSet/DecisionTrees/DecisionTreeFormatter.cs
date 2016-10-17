@@ -9,6 +9,15 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class DecisionTreeFormatter
     {
+        public static DecisionTreeFormatter Construct(IDecisionTree decisionTree)
+        {
+            DecisionTreeBase treeBase = decisionTree as DecisionTreeBase;
+            if(treeBase != null)
+                return DecisionTreeFormatter.Construct(treeBase.Root, treeBase.TrainingData.DataStoreInfo, 4);
+
+            return DecisionTreeFormatter.Construct(decisionTree.Root, null, 4);
+        }
+
         public static DecisionTreeFormatter Construct(IDecisionTreeNode node, DataStoreInfo data)
         {
             return DecisionTreeFormatter.Construct(node, data, 4);
@@ -40,8 +49,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         private string NodeToString(IDecisionTreeNode node, int currentLevel)
-        {
-            if (node is DecisionTreeNode)
+        {            
+            if (node is DecisionTreeNode)                
                 return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), ((DecisionTreeNode)node).ToString(this.DataStoreInfo));
             return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), node.ToString());
         }

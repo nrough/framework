@@ -124,7 +124,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             if (this.Epsilon >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
-            this.GenerateSplits(eqClassCollection, this.root, attributes);
+            this.BuildTree(eqClassCollection, this.root, attributes);
 
             return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
         }
@@ -170,7 +170,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
 
-        protected void GenerateSplits(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
+        protected void BuildTree(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
         {
             var splitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
             var queue = new Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>>();
@@ -199,7 +199,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 
                 if (nextSplit.SplitType == SplitType.Binary && subEqClasses.Count != 2)
                     throw new InvalidOperationException("Binary split must have two branches.");
-                               
+
+                //RemoveValue makes a copy of the array
                 currentAttributes = currentAttributes.RemoveValue(nextSplit.AttributeId);
                 bool binarySplitFlag = true;
                 foreach (var kvp in subEqClasses)
@@ -365,7 +366,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return maxHeight;
         }
 
-        private static double MeasureSum(IDecisionTreeNode node)
+        public static double MeasureSum(IDecisionTreeNode node)
         {
             double sum = 0;
             TreeNodeTraversal.TraversePostOrder(node, n => 

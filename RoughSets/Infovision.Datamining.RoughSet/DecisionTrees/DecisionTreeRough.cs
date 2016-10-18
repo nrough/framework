@@ -14,69 +14,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
         {
             var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
-            return new SplitInfo(attributeId,
-                InformationMeasureWeights.Instance.Calc(attributeEqClasses) + parentMeasure,
-                //InformationMeasureWeights.Instance.Calc(attributeEqClasses),
-                attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
+            double m = InformationMeasureWeights.Instance.Calc(attributeEqClasses);// + parentMeasure;
+            //double splitInfo = this.SplitInformation(attributeEqClasses);
+            //double normalizedM = splitInfo == 0 ? 0 : m / splitInfo;            
+
+            return new SplitInfo(attributeId, m, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
-        protected override SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double parentMeasure)
+        private double SplitInformation(EquivalenceClassCollection eqClassCollection)
         {
-            int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(attributeId);
-            int[] indices = data.Indices;
-            long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
-
-            Array.Sort(values, indices);
-
-            List<long> thresholds = new List<long>(values.Length);
-
-            for (int k = 0; k < values.Length - 1; k++)
-                if (values[k] != values[k + 1])
-                    thresholds.Add((values[k] + values[k + 1]) / 2);
-
-            long[] threshold = thresholds.ToArray();
-            thresholds.Clear();
-            double bestM = Double.NegativeInfinity;
-            long bestThreshold;
-            EquivalenceClassCollection bestEqCollection = null;
-
-            if (threshold.Length > 0)
+            double result = 0;
+            foreach (var eq in eqClassCollection)
             {
-                bestThreshold = threshold[0];
-                for (int k = 0; k < threshold.Length; k++)
-                {
-                    int[] idx1 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) <= threshold[k])).ToArray();
-                    int[] idx2 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) > threshold[k])).ToArray();
-
-                    var tmpEqCollection = EquivalenceClassCollection.CreateFromBinaryPartition(
-                        attributeId, idx1, idx2, data.Data);
-
-                    double gain = InformationMeasureWeights.Instance.Calc(tmpEqCollection);
-
-                    if (gain > bestM)
-                    {
-                        bestM = gain;
-                        bestThreshold = threshold[k];
-                        bestEqCollection = tmpEqCollection;
-                    }
-                }
+                double p = eq.WeightSum / eqClassCollection.WeightSum;
+                if (p != 0)
+                    result -= p * System.Math.Log(p, 2);
             }
-            else
-            {
-                bestM = Double.NegativeInfinity;
-                bestThreshold = long.MaxValue;
-                bestEqCollection = EquivalenceClassCollection
-                    .CreateFromBinaryPartition(attributeId, indices, null, data.Data);
-            }
-
-            return new SplitInfo(
-                attributeId,
-                parentMeasure + bestM, 
-                bestEqCollection, 
-                SplitType.Binary, 
-                ComparisonType.LessThanOrEqualTo, 
-                bestThreshold);
-
+            return result;
         }
 
 

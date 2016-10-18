@@ -262,7 +262,8 @@ namespace Infovision.Datamining.Roughset
         public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
         {                        
             EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
-            
+
+            double weightSum = 0;
             if (idx1 != null && idx1.Length > 0)
             {
                 long[] cursor1 = new long[] { 1 };
@@ -274,23 +275,32 @@ namespace Infovision.Datamining.Roughset
                     long dec = data.GetDecisionValue(idx1[i]);
                     eq1.AddObject(idx1[i], dec, w);
                     result.AddDecision(dec, w);
+                    weightSum += w;
                 }
+
+                result.NumberOfObjects += idx1.Length;
             }
 
             if (idx2 != null && idx2.Length > 0)
             {
                 long[] cursor2 = new long[] { 2 };
                 EquivalenceClass eq2 = new EquivalenceClass(cursor2, data);
-                result.Add(eq2);
+                result.Add(eq2);                
                 for (int i = 0; i < idx2.Length; i++)
                 {
                     double w = data.GetWeight(idx2[i]);
                     long dec = data.GetDecisionValue(idx2[i]);
                     eq2.AddObject(idx2[i], dec, w);
                     result.AddDecision(dec, w);
+                    weightSum += w;
                 }
+
+                result.NumberOfObjects += idx2.Length;                
             }
-           
+
+            result.WeightSum = weightSum;
+            result.CalcAvgConfidence();
+
             return result;
         }        
 

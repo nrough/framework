@@ -67,6 +67,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             List<long> thresholds = new List<long>(values.Length);
 
+            if(values.Length > 0)
+                thresholds.Add(values[0]);
+
             for (int k = 0; k < values.Length - 1; k++)
                 if (values[k] != values[k + 1])
                     thresholds.Add((values[k] + values[k + 1]) / 2);
@@ -119,9 +122,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             var attributeEqClasses = EquivalenceClassCollection
                 .CreateFromBinaryPartition(attributeId, bestIdx1, bestIdx2, data.Data);
 
-            return new SplitInfo(attributeId, entropy + bestGain, attributeEqClasses, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
+            double gain2 = entropy + bestGain;
+            double splitInfo = this.SplitInformation(attributeEqClasses);
+            double normalizedGain = (splitInfo == 0) ? 0 : gain2 / splitInfo;
 
-        }
+            return new SplitInfo(attributeId, normalizedGain, attributeEqClasses, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
+
+        }        
 
         private double SplitInformation(EquivalenceClassCollection eqClassCollection)
         {
@@ -131,7 +138,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 double p = eq.WeightSum / eqClassCollection.WeightSum;
                 if (p != 0)
                     result -= p * System.Math.Log(p, 2);
-            }
+            }            
+
             return result;
         }
     }

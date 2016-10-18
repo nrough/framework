@@ -149,12 +149,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return this.Where(x => x.Attribute != -1)
                     .GroupBy(x => x.Attribute)
                     .Select(g => g.First().Attribute)
-                    .OrderBy(x => x).ToArray().ToArray();
-
-            //return this.Where(x => x.IsLeaf == false && x.Key != -1)
-            //        .GroupBy(x => x.Key)
-            //        .Select(g => g.First().Key)
-            //        .OrderBy(x => x).ToArray().ToArray();
+                    .OrderBy(x => x).ToArray().ToArray();            
         }
 
         public bool Compute(long value)
@@ -221,20 +216,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             DecisionTreeNode node = obj as DecisionTreeNode;
             if (node == null)
-                return false;
-
-            /*
-            return node.Attribute == this.Attribute 
-                && node.Value == this.Value                 
-                && node.Comparison == this.Comparison;            
-            */
+                return false;            
 
             return node.Id == this.Id;
         }
 
         public override int GetHashCode()
-        {
-            //return HashHelper.GetHashCode<int, long>(this.Attribute, this.Value);
+        {            
             return this.Id;
         }
 

@@ -24,18 +24,24 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         public void ReductTreeLearnTest()
         {
             Console.WriteLine("ReductTreeLearnTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+
+            DataStore data = DataStore.Load(@"Data\monks-3.train", FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\monks-3.test", FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            DataStore train = null, valid = null;
+            DataStoreSplitterRatio splitter = new DataStoreSplitterRatio(data, 0.5);
+            splitter.Split(ref train, ref valid);
+
+            Console.WriteLine("### DecisionTreeReduct ###");
 
             DecisionTreeReduct treeRed = new DecisionTreeReduct();
-            treeRed.Epsilon = 0.0;
+            treeRed.Epsilon = 0.00;
             treeRed.ReductEpsilon = 0.1;
-            treeRed.ReductIterations = 20;
+            treeRed.ReductIterations = 100;            
             treeRed.Learn(data, attributes);
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeRed));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRed));
 
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
@@ -47,17 +53,21 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine();
 
             IReduct reduct = treeRed.Reduct;
+
+
+            Console.WriteLine("### Decision Rules from Reduct ###");
+
             Console.WriteLine(reduct);
 
-            ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
+            ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);            
             ReductStore reductStore = new ReductStore(1);
             reductStore.AddReduct(reduct);
             reductStoreCollection.AddStore(reductStore);
 
-            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvg.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
             Console.WriteLine(classifier.Classify(data, null));
 
-            classifier = new RoughClassifier(reductStoreCollection, RuleQuality.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
+            classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvg.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
             Console.WriteLine(classifier.Classify(test, null));
 
             Console.WriteLine("Number of Rules: {0}", reduct.EquivalenceClasses.Count);
@@ -66,11 +76,13 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine();
 
-            DecisionTreeReduct treeRough = new DecisionTreeReduct();
-            treeRough.Epsilon = 0.1;
+            Console.WriteLine("### DecisionTreeRough ###");
+
+            DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.Epsilon = 0.15;
             treeRough.Learn(data, attributes);
 
-            Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
 
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
@@ -81,6 +93,56 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine();
 
+            Console.WriteLine("### DecisionTreeID3 ###");
+
+            DecisionTreeID3 treeID3 = new DecisionTreeID3();            
+            treeID3.Learn(data, attributes);
+
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3));
+
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, test, null));
+
+            Console.WriteLine("Number of Rules: {0}", DecisionTreeBase.GetNumberOfRules(treeID3));
+            Console.WriteLine("Max Height: {0}", DecisionTreeBase.GetHeight(treeID3));
+            Console.WriteLine("M(t): {0:0.00000}", DecisionTreeBase.MeasureSum(treeID3.Root));
+
+            Console.WriteLine();
+
+            Console.WriteLine("### DecisionTreeC45 ###");
+
+            DecisionTreeC45 treeC45 = new DecisionTreeC45();            
+            treeC45.Learn(data, attributes);
+
+
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3));
+
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
+
+            Console.WriteLine("Number of Rules: {0}", DecisionTreeBase.GetNumberOfRules(treeC45));
+            Console.WriteLine("Max Height: {0}", DecisionTreeBase.GetHeight(treeC45));
+            Console.WriteLine("M(t): {0:0.00000}", DecisionTreeBase.MeasureSum(treeC45.Root));
+
+            Console.WriteLine();
+
+            Console.WriteLine("### DecisionTreeC45 with Pruning ###");
+
+            DecisionTreeC45 treeC45P = new DecisionTreeC45();
+            treeC45P.Learn(train, attributes);
+            ErrorBasedPruning pruning = new ErrorBasedPruning(treeC45P, valid);
+            pruning.Prune();
+
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeC45P));
+
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45P, train, null));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45P, test, null));
+
+            Console.WriteLine("Number of Rules: {0}", DecisionTreeBase.GetNumberOfRules(treeC45P));
+            Console.WriteLine("Max Height: {0}", DecisionTreeBase.GetHeight(treeC45P));
+            Console.WriteLine("M(t): {0:0.00000}", DecisionTreeBase.MeasureSum(treeC45P.Root));
+
+            Console.WriteLine();
         }
 
         [Test, Repeat(1)]

@@ -294,13 +294,15 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 for (int i = range.Item1; i < range.Item2; i++)
                     scores[i] = this.GetSplitInfo(localAttributes[i], eqClassCollection, currentScore);
-            });
+            });            
 
             double maxGain = Double.NegativeInfinity;
             int maxIndex = -1;
             for (int i = 0; i < scores.Length; i++)
             {
-                if(maxGain < scores[i].Gain)
+                //select best gain among attributes with more than a single value
+                if (maxGain < scores[i].Gain 
+                    && scores[i].EquivalenceClassCollection.Count > 1)
                 {
                     maxGain = scores[i].Gain;
                     maxIndex = i;
@@ -308,8 +310,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             if (maxIndex == -1)
-                return new SplitInfo(-1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
-                
+                return new SplitInfo(-1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);            
+
             return scores[maxIndex];
         }
 

@@ -26,6 +26,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ReductEpsilon = 0.0;
         }
 
+        public override void SetClassificationResultParameters(ClassificationResult result)
+        {
+            base.SetClassificationResultParameters(result);
+
+            result.Gamma = this.ReductEpsilon;            
+        }
+
         public override ClassificationResult Learn(DataStore data, int[] attributes)
         {
             if (this.WeightGenerator == null)

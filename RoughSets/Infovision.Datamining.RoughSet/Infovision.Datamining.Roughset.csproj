@@ -112,6 +112,8 @@
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
     <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
+    <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
+    <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
     <Compile Include="DecisionTrees\SplitType.cs" />
     <Compile Include="DecisionTrees\ComparisonType.cs" />
     <Compile Include="DecisionTrees\DecisionForestBase.cs" />

@@ -69,9 +69,7 @@ namespace Infovision.Datamining.Roughset
         public bool IdentifyMultipleDecision { get; set; }
 
         public double MinimumVoteValue { get; set; }
-
-        public int EnsembleSize { get { return 1; } }
-        public double QualityRatio { get { return 0.0; } }
+        
         public double Epsilon
         {
             get { return 0.0; }
@@ -191,6 +189,17 @@ namespace Infovision.Datamining.Roughset
         public long Compute(DataRecordInternal record)
         {
             return this.Classify(record, true).FindMaxValueKey();
+        }
+
+        public void SetClassificationResultParameters(ClassificationResult result)
+        {
+            result.QualityRatio = 0.0;
+            result.EnsembleSize = 1;
+            result.Epsilon = this.Epsilon;
+
+            result.AvgTreeHeight = 0;
+            result.MaxTreeHeight = 0;
+            result.NumberOfRules = 0;
         }
 
         private Dictionary<long, double> Classify(DataRecordInternal record, bool calcFullEquivalenceClasses = true)

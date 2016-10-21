@@ -51,10 +51,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                 return (double)attributeLengthSum / (double)this.Size;
             }
-        }
-
-        public virtual double QualityRatio { get { return this.AverageNumberOfAttributes; } }
-        public virtual int EnsembleSize { get { return this.Size; } }
+        }               
 
         public DecisionForestBase()
         {
@@ -146,7 +143,28 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.learningResult = trainResult;
 
             return trainResult;
-        }              
+        }
+
+        public void SetClassificationResultParameters(ClassificationResult result)
+        {
+            result.QualityRatio = this.AverageNumberOfAttributes;
+            result.EnsembleSize = this.Size;
+            result.Epsilon = this.Epsilon;
+            
+            result.AvgTreeHeight = 0;
+            result.MaxTreeHeight = 0;
+            result.NumberOfRules = 0;
+            foreach (var tree in this)
+            {
+                result.NumberOfRules += DecisionTreeBase.GetNumberOfRules(tree.Item1);
+                result.MaxTreeHeight += DecisionTreeBase.GetHeight(tree.Item1);
+                result.AvgTreeHeight += DecisionTreeBase.GetAvgHeight(tree.Item1);
+            }
+
+            result.NumberOfRules /= trees.Count;
+            result.MaxTreeHeight /= trees.Count;
+            result.AvgTreeHeight /= trees.Count;
+        }
 
         public long Compute(DataRecordInternal record)
         {            

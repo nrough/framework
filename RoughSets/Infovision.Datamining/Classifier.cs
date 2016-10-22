@@ -39,11 +39,8 @@ namespace Infovision.Datamining
             Stopwatch s = new Stopwatch();
             s.Start();
 
-            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());
-
-            result.QualityRatio = model.QualityRatio;
-            result.EnsembleSize = model.EnsembleSize;
-            result.Epsilon = model.Epsilon;
+            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());            
+            model.SetClassificationResultParameters(result);                    
 
             ParallelOptions options = new ParallelOptions()
             {

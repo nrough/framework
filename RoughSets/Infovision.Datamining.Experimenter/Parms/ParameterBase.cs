@@ -27,17 +27,7 @@ namespace Infovision.Datamining.Experimenter.Parms
             {
                 throw new NotImplementedException("Property Current not implemented");
             }
-        }
-
-        /*
-        public virtual int Count
-        {
-            get
-            {
-                throw new NotImplementedException("Property Count not implemented");
-            }
-        }
-        */
+        }        
 
         /// <summary>
         /// Returns an object that can be used to synchronize access to the ICollection.

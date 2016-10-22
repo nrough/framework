@@ -51,8 +51,15 @@ namespace Infovision.Data
                 bagCache = new Dictionary<int, DataStore>();
                 oobCache = new Dictionary<int, DataStore>();
             }
-        }        
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iteration"></param>
+        /// <returns>
+        /// Returns a Tuple where first item is DataStore representing bagged data and the second item represents out of the bag instances (OOB)
+        /// </returns>
         public Tuple<DataStore, DataStore> GetData(int iteration)
         {
             DataStore baggedData = null;

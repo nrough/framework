@@ -41,10 +41,7 @@ namespace Infovision.Datamining
         private double[][] confusionTableWeights;
         private int counter;
         private DataStore testData = null;
-        private object mutex = new object();
-
-        //TODO use classificationInfo instead
-        private double qualityRatio;
+        private object mutex = new object();        
 
         #endregion Members
 
@@ -203,11 +200,10 @@ namespace Infovision.Datamining
             }
         }
 
-        public double QualityRatio
-        {
-            get { return qualityRatio; }
-            set { qualityRatio = value; }
-        }
+        public double QualityRatio { get; set; }
+        public double NumberOfRules { get; set; }
+        public double MaxTreeHeight { get; set; }
+        public double AvgTreeHeight { get; set; }
 
         public long ClassificationTime { get; set; }
         public long ModelCreationTime { get; set; }
@@ -218,6 +214,12 @@ namespace Infovision.Datamining
 
         public string ModelName { get; set; }
         public double Epsilon { get; set; }
+        
+        public double Alpha { get; set; }
+        public double Beta { get; set; }
+        public double Gamma { get; set; }
+        public double Delta { get; set; }
+
         public int TestNum { get; set; }
         public int Fold { get; set; }
         public string DatasetName { get; set; }
@@ -489,6 +491,15 @@ namespace Infovision.Datamining
             stringBuilder.Append("StandardRuleLengthSum");
             stringBuilder.Append('|');
 
+            stringBuilder.Append("NumberOfRules");
+            stringBuilder.Append('|');
+            stringBuilder.Append("MaxTreeHeight");
+            stringBuilder.Append('|');
+            stringBuilder.Append("AvgTreeHeight");
+            stringBuilder.Append('|');
+            stringBuilder.Append("Gamma");
+            stringBuilder.Append('|');
+
             return stringBuilder.ToString();
         }
 
@@ -545,6 +556,16 @@ namespace Infovision.Datamining
             stringBuilder.AppendFormat("{0,5}", this.StandardRuleHitCounter);
             stringBuilder.Append('|');
             stringBuilder.AppendFormat("{0,7}", this.StandardRuleLengthSum);
+            stringBuilder.Append('|');
+
+            stringBuilder.AppendFormat("{0:0.00}", this.NumberOfRules);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00}", this.MaxTreeHeight);
+            stringBuilder.Append('|');
+            stringBuilder.AppendFormat("{0:0.00}", this.AvgTreeHeight);
+            stringBuilder.Append('|');
+
+            stringBuilder.AppendFormat("{0:0.00}", this.Gamma);
             stringBuilder.Append('|');
 
             return stringBuilder.ToString();

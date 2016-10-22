@@ -13,7 +13,7 @@ namespace Infovision.Data.UnitTests
             DataStore subData = null;
             for (int i = 0; i < 10; i++)
             {
-                subData = sampler.GetData(i);
+                subData = sampler.GetData(i).Item1;
                 foreach (var field in subData.DataStoreInfo.Fields)
                 {
                     Assert.AreNotEqual(

@@ -5,8 +5,8 @@ namespace Infovision.Datamining
     public interface IPredictionModel
     {
         long Compute(DataRecordInternal record);
-        int EnsembleSize { get; }
-        double QualityRatio { get; }
-        double Epsilon { get; set; }
+        void SetClassificationResultParameters(ClassificationResult result);
+
+        double Epsilon { get; set; }      
     }
 }

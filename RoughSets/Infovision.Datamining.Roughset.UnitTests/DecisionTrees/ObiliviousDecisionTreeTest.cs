@@ -15,7 +15,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     public class ObiliviousDecisionTreeTest
     {
         [Test]
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
+        //[TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst")]
         public void LearnTest(string trainFile, string testFile)
         {
             double epsilon = -1;

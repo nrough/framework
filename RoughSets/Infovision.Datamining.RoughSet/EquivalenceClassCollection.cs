@@ -26,19 +26,6 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
-        /*
-        public Dictionary<long[], EquivalenceClass> Partitions
-        {
-            get
-            {
-                if (this.partitions == null)
-                    this.InitPartitions();
-                return partitions;
-            }
-            protected set { this.partitions = value; }
-        }
-        */
-
         public Dictionary<long, double> DecisionWeights
         {
             get { return this.decisionWeight; }
@@ -200,6 +187,13 @@ namespace Infovision.Datamining.Roughset
         {
             EquivalenceClassCollection result = new EquivalenceClassCollection(data);
             result.Calc(reduct.Attributes, data, objectSet, weights);
+            return result;
+        }
+
+        public static EquivalenceClassCollection Create(int[] attributes, DataStore data, double[] weights, int[] objectIndices)
+        {
+            EquivalenceClassCollection result = new EquivalenceClassCollection(data);
+            result.Calc(attributes, data, objectIndices, weights);
             return result;
         }
 
@@ -392,6 +386,16 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = sum;
 
             this.CalcAvgConfidence();
+        }
+
+        public virtual void Calc(int[] attr, DataStore dataStore, int[] objectIndices, double[] objectWeights)
+        {
+            this.InitPartitions();
+            this.attributes = new int[attr.Length];
+            Array.Copy(attr, this.attributes, attr.Length);
+
+            foreach (int objectIdx in objectIndices)
+                this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
         }
 
         public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)

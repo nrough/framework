@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.nextId = 1;
         }
 
-        public int GetId()
+        protected int GetId()
         {
             lock (syncRoot)
             {

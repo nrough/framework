@@ -165,7 +165,7 @@
     <Compile Include="DecisionTrees\DecisionTreeComparisonTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreePruningTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeTest.cs" />
-    <Compile Include="DecisionTrees\ObiliviousDecisionTreeTest.cs" />
+    <Compile Include="ObiliviousDecisionTreeTest.cs" />
     <Compile Include="EquivalenceClassTest.cs" />
     <Compile Include="MatrixTest.cs" />
     <Compile Include="PermutationTest.cs" />

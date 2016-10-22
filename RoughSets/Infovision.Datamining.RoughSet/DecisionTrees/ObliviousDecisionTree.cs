@@ -13,10 +13,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     {
         private Dictionary<int[], double> cache;
 
+        public bool DoAttributeRanking { get; set; }
+
         public ObliviousDecisionTree()
             : base()
         {
             this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+            this.DoAttributeRanking = true;
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)

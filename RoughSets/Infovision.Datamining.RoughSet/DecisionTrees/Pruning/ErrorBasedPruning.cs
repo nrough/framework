@@ -44,7 +44,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 node2indices[current].Add(objectIdx);
                 if (current.IsLeaf)
                 {                    
-                    predictionResult[objectIdx] = current.Output;
+                    predictionResult[objectIdx] = current.Output.FindMaxValueKey();
                     break;
                 }
 
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             if (instances.Length == 0)
             {
                 node.Children = null;
-                node.Output = -1;
+                node.Output = null;
 
                 return true;
             }
@@ -71,8 +71,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
             //long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
             //double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
-            long majorDecision = node.Output;
-            double errorLeaf = ComputeErrorWithoutSubtree(node, node.Output);
+            var majorDecision = node.Output;
+            double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
             errorLeaf = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, errorLeaf, this.Confidence);
 
             IDecisionTreeNode maxChild = GetMaxChild(node);
@@ -377,7 +377,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             return result.Error;
         }
 
-        private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, long majorDecision)
+        //private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, long majorDecision)
+        private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, IDictionary<long, double> majorDecision)
         {
             var children = tree.Children;
             var output = tree.Output;

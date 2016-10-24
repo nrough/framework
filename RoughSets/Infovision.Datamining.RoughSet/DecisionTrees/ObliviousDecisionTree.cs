@@ -13,18 +13,27 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     {
         private Dictionary<int[], double> cache;
 
-        public bool DoAttributeRanking { get; set; }
+        public bool RankedAttributes { get; set; }
 
         public ObliviousDecisionTree()
             : base()
         {
             this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
-            this.DoAttributeRanking = true;
+            this.RankedAttributes = false;
         }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             return 0;
+        }
+
+        protected override SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] origAttributes, int[] attributesToTest, IDecisionTreeNode parentTreeNode)
+        {
+            if(this.RankedAttributes == false)
+                return base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
+
+            int attributeId = origAttributes[parentTreeNode.Level];
+            return this.GetSplitInfo(attributeId, eqClassCollection, this.GetCurrentScore(eqClassCollection));
         }
 
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double dummy)

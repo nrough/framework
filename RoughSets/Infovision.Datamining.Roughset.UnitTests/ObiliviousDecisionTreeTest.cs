@@ -1,6 +1,7 @@
 ﻿using Infovision.Data;
 using Infovision.Datamining.Roughset.DecisionTrees;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using Infovision.Utils;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         {
             double epsilon = -1;
             int numOfReducts = 100;
-            double reductEpsilon = 0.01;
-
-            //Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+            double reductEpsilon = 0.01;            
 
             Console.WriteLine("Obilivious Decision Tree");
 
@@ -44,8 +43,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine("Obilivious Decision Tree with Pruning");
 
-            ErrorBasedPruning pruning = new ErrorBasedPruning(obiliviousTree, test);
-            //ReducedErrorPruning pruning = new ReducedErrorPruning(obiliviousTree, test);
+            ErrorBasedPruning pruning = new ErrorBasedPruning(obiliviousTree, test);            
             pruning.Prune();
 
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, data));
@@ -76,8 +74,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine("Obilivious Decision Tree based on Reduct after Pruning");
 
-            ErrorBasedPruning pruning2 = new ErrorBasedPruning(obiliviousTree2, test);
-            //ReducedErrorPruning pruning = new ReducedErrorPruning(obiliviousTree, test);
+            ErrorBasedPruning pruning2 = new ErrorBasedPruning(obiliviousTree2, test);            
             pruning2.Prune();
 
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree2, data));
@@ -99,9 +96,53 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             if (epsilon >= 0)
                 c45p.Epsilon = epsilon;
             Console.WriteLine(c45p.Learn(data, attributes));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45p, test));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45p, test));            
+        }
 
-            
+        [Test]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst")]
+        public void AttributeOrderingTest(string trainFile, string testFile)
+        {
+            double epsilon = -1;
+            double reductEpsilon = 0.05;
+            int numOfReducts = 100;
+
+            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
+            if (epsilon >= 0)
+                obiliviousTree.Epsilon = epsilon;
+            var result = obiliviousTree.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
+
+            DecisionTreeReduct treeRed = new DecisionTreeReduct();
+            if (epsilon >= 0)
+                treeRed.Epsilon = epsilon;
+            treeRed.ReductEpsilon = reductEpsilon;
+            treeRed.ReductIterations = numOfReducts;
+            var result2 = treeRed.Learn(data, attributes);            
+
+            IReduct reduct = treeRed.Reduct;
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test));
+
+            PermutationCollection permutations = new PermutationCollection(5, reduct.Attributes.ToArray());
+            foreach (var perm in permutations)
+            {
+                Console.WriteLine(perm.ToArray().ToStr());
+
+                ObliviousDecisionTree obiliviousTree_Ordered = new ObliviousDecisionTree();
+                if (epsilon >= 0)
+                    obiliviousTree_Ordered.Epsilon = epsilon;
+                obiliviousTree_Ordered.RankedAttributes = true;
+                obiliviousTree_Ordered.Learn(data, perm.ToArray());
+
+                var result_Ordered = Classifier.DefaultClassifer.Classify(obiliviousTree_Ordered, test);                
+                Console.WriteLine(result_Ordered);
+                //Console.WriteLine(DecisionTreeFormatter.Construct(obiliviousTree_Ordered));
+            }            
         }
     }
 }

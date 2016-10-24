@@ -305,7 +305,7 @@ namespace Infovision.Data
                 if (this.MissingValue == null)
                     throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is null", value));
                 else if (!this.MissingValue.Equals(value))
-                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing key, while the existing missing key is {1}", value, this.MissingValue));
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is {1}", value, this.MissingValue));
             }
 
             return this.External2Internal(value);
@@ -339,7 +339,7 @@ namespace Infovision.Data
                 if (this.MissingValue == null)
                     throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is null", externalValue));
                 else if (!this.MissingValue.Equals(externalValue))
-                    throw new InvalidOperationException(String.Format("Value {0{ was indicated as missing key, while the existing missing key is {1}", externalValue, this.MissingValue));
+                    throw new InvalidOperationException(String.Format("Value {0} was indicated as missing key, while the existing missing key is {1}", externalValue, this.MissingValue));
             }
         }
 

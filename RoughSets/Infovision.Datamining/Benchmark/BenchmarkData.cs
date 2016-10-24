@@ -6,19 +6,19 @@ namespace Infovision.Datamining.Benchmark
 {
     public class BenchmarkData
     {
-        public virtual string Name { get; set; }
-        public virtual string TestFile { get; set; }
-        public virtual string TrainFile { get; set; }
-        public virtual string DataFile { get; set; }
-        public virtual string NamesFile { get; set; }
-        public virtual bool CrossValidationActive { get; set; }
-        public virtual int CrossValidationFolds { get; set; }
-        public virtual FileFormat FileFormat { get; set; }
-        public virtual int DecisionFieldId { get; set; }
+        public string Name { get; set; }
+        public string TestFile { get; set; }
+        public string TrainFile { get; set; }
+        public string DataFile { get; set; }
+        public string NamesFile { get; set; }
+        public bool CrossValidationActive { get; set; }
+        public int CrossValidationFolds { get; set; }
+        public FileFormat FileFormat { get; set; }
+        public int DecisionFieldId { get; set; }
 
-        public virtual bool DiscretizeUsingEntropy { get; set; }
-        public virtual bool DiscretizeUsingEqualFreq { get; set; }
-        public virtual bool DiscretizeUsingEqualWidth { get; set; }
+        public bool DiscretizeUsingEntropy { get; set; }
+        public bool DiscretizeUsingEqualFreq { get; set; }
+        public bool DiscretizeUsingEqualWidth { get; set; }
 
         private Dictionary<int, DataFieldInfo> fieldMetadata;
 

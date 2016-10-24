@@ -24,6 +24,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         
         double Measure { get; }
         
-        long Output { get; set; }
+        IDictionary<long, double> Output { get; set; }
     }
 }

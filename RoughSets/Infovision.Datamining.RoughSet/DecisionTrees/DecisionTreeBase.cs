@@ -18,7 +18,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
     {
         protected Dictionary<int, List<long>> thresholds;
-
         private object syncRoot = new object();
         private DecisionTreeNode root;
         private int decisionAttributeId;
@@ -38,15 +37,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     throw new InvalidOperationException("Root object must be DecisionTreeNode class or its extension");
             }
         }
+
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public double Epsilon { get; set; }
         public int MaxHeight { get; set; }
-        public int MinimumNumOfInstancesPerLeaf { get; set; }        
+        public int MinimumNumOfInstancesPerLeaf { get; set; }
         public DataStore TrainingData { get; protected set; } 
         
         public string ModelName { get { return this.GetType().Name; } }       
 
-        protected IEnumerable<long> Decisions { get { return this.decisions; } }
+        protected IEnumerable<long> Decisions { get { return this.decisions; } }        
 
         protected class SplitInfo
         {
@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.NumberOfAttributesToCheckForSplit = -1;
             this.MaxHeight = -1;
             this.Epsilon = -1.0;
-            this.MinimumNumOfInstancesPerLeaf = 2;
+            this.MinimumNumOfInstancesPerLeaf = 1;
             this.nextId = 1;
         }
 
@@ -149,23 +149,25 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             result.ModelName = this.ModelName;
         }
 
-        protected void SetNodeOutput(DecisionTreeNode node, long decisionValue)
-        {
-            node.Output = decisionValue;
-        }
+        //protected void SetNodeOutput(DecisionTreeNode node, long decisionValue)
+        //{
+        //    node.Output = decisionValue;
+        //}
 
-        protected void SetNodeOutput(DecisionTreeNode node, long decisionValue, double decisionWeight)
+        protected void SetNodeOutput(DecisionTreeNode node, Dictionary<long, double> outputWeights)
         {
-            node.Output = decisionValue;
+            //node.Output = outputWeights.FindMaxValuePair().Key;
+            node.Output = outputWeights.Clone();
         }
 
         protected virtual bool CheckStopCondition(EquivalenceClassCollection currentEqClassCollection, int[] currentAttributes, ref bool isConverged, IDecisionTreeNode parentNode)
         {
-            if (currentEqClassCollection.NumberOfObjects == 0)
-                return true;
-
             if (isConverged)
                 return true;
+
+            if (currentEqClassCollection.NumberOfObjects <= this.MinimumNumOfInstancesPerLeaf
+                || currentEqClassCollection.NumberOfObjects == 0)
+                return true;           
 
             if (currentAttributes.Length == 0)
                 return true;
@@ -177,9 +179,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 return true;
 
             if (this.Epsilon >= 0.0)
-            {
-                double m = DecisionTreeBase.MeasureSum(this.root);
-                if ((1.0 - this.Epsilon) * this.mA <= m)
+            {                
+                if (((1.0 - this.Epsilon) * this.mA) <= MeasureSum(this.root))
                 {
                     isConverged = true;
                     return true;
@@ -203,14 +204,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 EquivalenceClassCollection currentEqClassCollection = currentInfo.Item1;
                 DecisionTreeNode currentParent = currentInfo.Item2;
                 int[] currentAttributes = currentInfo.Item3;
-                
-                var decision = currentEqClassCollection.DecisionWeights.FindMaxValuePair();
-                this.SetNodeOutput(currentParent, decision.Key, decision.Value);
+                                
+                this.SetNodeOutput(currentParent, currentEqClassCollection.DecisionWeights);
 
                 if (this.CheckStopCondition(currentEqClassCollection, currentAttributes, ref isConverged, currentParent))
                     continue;
 
-                var nextSplit = this.GetNextSplit(currentEqClassCollection, currentAttributes);
+                var nextSplit = this.GetNextSplit(currentEqClassCollection, attributes, currentAttributes, currentParent);
                 
                 if (nextSplit.SplitType == SplitType.None)
                     continue;
@@ -256,7 +256,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     queue.Enqueue(newSplitInfo);
                 }
             }
-        }        
+        }
 
         private long GetDecision(IDecisionTreeNode node)
         {
@@ -278,7 +278,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             while (current != null)
             {
                 if (current.IsLeaf)
-                    return current.Output;                    
+                {
+                    if (current.Output == null)
+                        return -1;
+
+                    return current.Output.FindMaxValueKey();
+                }
 
                 current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
             }
@@ -286,9 +291,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return -1; //unclassified
         }
         
-        protected virtual SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] attributesToTest)
-        {
-            double currentScore = this.GetCurrentScore(eqClassCollection);
+        protected virtual SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] origAttributes, int[] attributesToTest, IDecisionTreeNode parentTreeNode)
+        {            
             int[] localAttributes = attributesToTest;
 
             if (this.NumberOfAttributesToCheckForSplit != -1)
@@ -302,13 +306,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 0, 
                 localAttributes.Length, 
                 System.Math.Max(1, localAttributes.Length / InfovisionConfiguration.MaxDegreeOfParallelism));
+            
+            double currentScore = this.GetCurrentScore(eqClassCollection);
+            SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
             };
-
-            SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             Parallel.ForEach(rangePartitioner, options, (range) =>
             {
@@ -404,7 +409,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return count > 0 ? sumHeight / count : 0.0;
         }
 
-        public static double MeasureSum(IDecisionTreeNode node)
+        private static double MeasureSum(IDecisionTreeNode node)
         {
             double sum = 0;
             TreeNodeTraversal.TraversePostOrder(node, n => 

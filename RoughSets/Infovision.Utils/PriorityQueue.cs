@@ -11,6 +11,7 @@ namespace Infovision.Utils
     /// <summary>
     /// Priority Queue data structure
     /// </summary>
+    [Serializable]
     public class PriorityQueue<T, C>
         where C : IComparer<T>
     {

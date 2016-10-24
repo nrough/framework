@@ -54,7 +54,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 this.info[current].subset.Add(objectIdx);
                 if (current.IsLeaf)
                 {
-                    predictionResult[objectIdx] = current.Output;
+                    predictionResult[objectIdx] = current.Output.FindMaxValueKey();
                     return;
                 }
 
@@ -79,7 +79,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         {                        
             double error = 0;
             foreach(int idx in indices)            
-                if (this.PruningData.GetDecisionValue(idx) != node.Output)
+                if (this.PruningData.GetDecisionValue(idx) != node.Output.FindMaxValueKey())
                     error += this.PruningData.GetWeight(idx);
 
             return error;

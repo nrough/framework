@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public ComparisonType Comparison { get; private set; }
 
-        public long Output { get; set; }
+        public IDictionary<long, double> Output { get; set; }
 
         #endregion
 
@@ -86,7 +86,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Level = (parent == null) ? 0 : parent.Level + 1;
             this.Measure = 0.0;
             this.Comparison = comparisonType;
-            this.Output = -1;
+            this.Output = null;
         }
 
         public DecisionTreeNode(int id, int attribute, ComparisonType comparisonType, long value, IDecisionTreeNode parent, double measure)
@@ -189,7 +189,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.IsRoot)
             {
                 if (this.IsLeaf)
-                    return string.Format("{0} ( empty ) ==> {1}", DecisionTreeNode.ROOT, this.Output);
+                    return string.Format("{0} ( empty ) ==> {1}", DecisionTreeNode.ROOT, this.Output.FindMaxValueKey());
                     
                 return DecisionTreeNode.ROOT;
             }
@@ -206,7 +206,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
                     this.Comparison.ToSymbol(),
                     (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(),
-                    this.Output);
+                    this.Output.FindMaxValueKey());
         }
 
         public override bool Equals(object obj)

@@ -249,7 +249,7 @@ namespace Infovision.Datamining.Roughset
             return true;
         }
 
-        public virtual void DoAddReduct(IReduct reduct)
+        public void DoAddReduct(IReduct reduct)
         {
             lock (mutex)
             {

@@ -44,34 +44,16 @@ namespace Infovision.Utils
             return ret;
         }
 
-        public static TKey FindMaxValueKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
+        public static Dictionary<TKey, TValue> Clone<TKey, TValue>
+            (this Dictionary<TKey, TValue> original)
+            where TKey : struct, IComparable
+            where TValue : struct, IComparable
         {
-            return dictionary.FindMaxValuePair(comparer).Key;
-        }
-
-        public static KeyValuePair<TKey, TValue> FindMaxValuePair<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IComparer<TValue> comparer = null)
-        {
-            if (comparer == null)
-                comparer = Comparer<TValue>.Default;
-
-            KeyValuePair<TKey, TValue> result = dictionary.FirstOrDefault();
-            foreach (var kvp in dictionary)
-                if (comparer.Compare(kvp.Value, result.Value) > 0)
-                    result = kvp;
-            return result;
-        }
-
-        public static KeyValuePair<long, double> FindMaxValuePair(this Dictionary<long, double> dictionary, IComparer<double> comparer = null)
-        {
-            if (comparer == null)
-                comparer = Comparer<double>.Default;
-
-            KeyValuePair<long, double> result = new KeyValuePair<long, double>(-1, 0.0);
-            foreach (var kvp in dictionary)
-                if (comparer.Compare(kvp.Value, result.Value) > 0)
-                    result = kvp;
-            return result;
-        }
+            Dictionary<TKey, TValue> ret = new Dictionary<TKey, TValue>(original.Count, original.Comparer);
+            foreach (KeyValuePair<TKey, TValue> entry in original)
+                ret.Add(entry.Key, entry.Value);
+            return ret;
+        }        
     }
 
     /// <summary>

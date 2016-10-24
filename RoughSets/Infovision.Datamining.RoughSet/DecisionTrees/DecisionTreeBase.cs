@@ -5,16 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
-using Infovision.Datamining;
-using Infovision.Datamining.Filters.Supervised.Attribute;
-using Infovision.Statistics;
-using System.Diagnostics;
+using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
+    [Serializable]
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
     {
         protected Dictionary<int, List<long>> thresholds;
@@ -42,8 +40,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public double Epsilon { get; set; }
         public int MaxHeight { get; set; }
         public int MinimumNumOfInstancesPerLeaf { get; set; }
-        public DataStore TrainingData { get; protected set; } 
-        
+        public DataStore TrainingData { get; protected set; }
+
+        public bool Pruning { get; set; }
+        public int PruningCVFolds { get; set; }
+        public PruningObjectiveType PruningObjective { get; set; }
+
         public string ModelName { get { return this.GetType().Name; } }       
 
         protected IEnumerable<long> Decisions { get { return this.decisions; } }        
@@ -82,6 +84,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Epsilon = -1.0;
             this.MinimumNumOfInstancesPerLeaf = 1;
             this.nextId = 1;
+
+            this.Pruning = false;
+            this.PruningObjective = PruningObjectiveType.MinimizeNumberOfLeafs;
+            this.PruningCVFolds = 3;
         }
 
         protected int GetId()
@@ -109,7 +115,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 if (this.Epsilon >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(
                         EquivalenceClassCollection.Create(attributes, data, data.Weights));
-                
+
                 this.thresholds = new Dictionary<int, List<long>>();               
                 foreach (DataFieldInfo field in data.DataStoreInfo.GetFields(FieldTypes.Standard).Where(f => f.IsNumeric))
                 {                                        
@@ -136,6 +142,95 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.BuildTree(eqClassCollection, this.root, attributes);
 
             return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
+        }
+
+        private void CheckPruningConditions()
+        {
+            if (this.PruningCVFolds <= 1)
+                throw new InvalidOperationException("this.PruningCVFolds <= 1");
+            if (this.PruningObjective == PruningObjectiveType.None)
+                throw new InvalidOperationException("this.PruningObjective == PruningObjectiveType.None");
+            if (this.PruningCVFolds > this.TrainingData.NumberOfRecords)
+                throw new InvalidOperationException("this.PruningCVFolds > data.NumberOfRecords");
+        }
+
+        private ClassificationResult LearnAndPrune(DataStore data, int[] attributes)
+        {
+            this.Init(data, attributes);
+
+            this.CheckPruningConditions();
+
+            DataStoreSplitter cvSplitter = new DataStoreSplitter(data, this.PruningCVFolds);
+            DataStore trainSet = null, pruningSet = null;
+            DecisionTreeC45 bestModel = null;
+
+            int bestNumOfRules = Int32.MaxValue;
+            double bestError = Double.PositiveInfinity;
+            int bestMaxHeight = Int32.MaxValue;
+            double bestAvgHeight = Double.PositiveInfinity;
+
+            for (int f = 0; f < this.PruningCVFolds; f++)
+            {
+                cvSplitter.Split(ref trainSet, ref pruningSet, f);
+
+                DecisionTreeC45 tmpTree = new DecisionTreeC45();
+                tmpTree.MinimumNumOfInstancesPerLeaf = this.MinimumNumOfInstancesPerLeaf;
+                tmpTree.Epsilon = this.Epsilon;
+                tmpTree.MaxHeight = this.MaxHeight;
+                tmpTree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
+                tmpTree.Pruning = false;
+                tmpTree.Learn(trainSet, attributes);
+
+                ErrorBasedPruning pruningMethod = new ErrorBasedPruning(tmpTree, pruningSet);
+                pruningMethod.Prune();
+
+                ClassificationResult tmpResult = Classifier.DefaultClassifer.Classify(tmpTree, pruningSet);
+                int numOfRules = DecisionTreeBase.GetNumberOfRules(tmpTree);
+                int maxHeight = DecisionTreeBase.GetHeight(tmpTree);
+                double avgHeight = DecisionTreeBase.GetAvgHeight(tmpTree);
+
+                switch (this.PruningObjective)
+                {
+                    case PruningObjectiveType.MinimizeNumberOfLeafs:
+                        if (numOfRules < bestNumOfRules)
+                        {
+                            bestNumOfRules = numOfRules;
+                            bestModel = tmpTree;
+                        }
+                        break;
+
+                    case PruningObjectiveType.MinimizeTreeMaxHeight:
+                        if (maxHeight < bestMaxHeight)
+                        {
+                            bestMaxHeight = maxHeight;
+                            bestModel = tmpTree;
+                        }
+                        break;
+
+                    case PruningObjectiveType.MinimizeError:
+                        if (tmpResult.Error < bestError)
+                        {
+                            bestError = tmpResult.Error;
+                            bestModel = tmpTree;
+                        }
+                        break;
+
+                    case PruningObjectiveType.MinimizeTreeAvgHeight:
+                        if (avgHeight < bestAvgHeight)
+                        {
+                            bestAvgHeight = avgHeight;
+                            bestModel = tmpTree;
+                        }
+                        break;
+
+                    default:
+                        throw new NotImplementedException(String.Format("Pruning objective type {0} is not implemented", this.PruningObjective));
+                }
+            }
+
+            this.Root = bestModel.Root;
+
+            return Classifier.DefaultClassifer.Classify(this, data);
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)

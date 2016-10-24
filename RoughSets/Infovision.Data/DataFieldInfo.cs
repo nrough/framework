@@ -87,7 +87,6 @@ namespace Infovision.Data
 
         #endregion Properties
 
-
         #region Constructors
 
         public DataFieldInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)

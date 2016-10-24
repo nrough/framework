@@ -173,6 +173,19 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine();
         }
 
+        public void PrunningInternalTest()
+        {
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            DecisionTreeC45 c45 = new DecisionTreeC45();
+            c45.Pruning = true;
+            c45.Learn(data, attributes);
+        }
+
         [Test, Repeat(10)]
         public void PrePrunningTest3()
         {

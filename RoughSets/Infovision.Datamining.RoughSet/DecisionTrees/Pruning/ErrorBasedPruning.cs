@@ -54,7 +54,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             }
         }
 
-        private bool TryToPrune(IDecisionTreeNode node)
+        private bool  TryToPrune(IDecisionTreeNode node)
         {
             int[] instances = node2indices[node].ToArray();
 
@@ -68,9 +68,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
             double baselineError = this.ComputeError();
             baselineError = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, baselineError, this.Confidence);
-
-            //long majorDecision = this.PruningData.GetDecisionValue(instances).Mode();
-            //double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
+            
             var majorDecision = node.Output;
             double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
             errorLeaf = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, errorLeaf, this.Confidence);

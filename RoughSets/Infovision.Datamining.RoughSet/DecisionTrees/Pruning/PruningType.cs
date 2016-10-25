@@ -1,5 +1,4 @@
-﻿using Infovision.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 {
-    public interface IDecisionTreePruning
+    public enum PruningType
     {
-        double GainThreshold { get; set; }
-        double Prune();
+        None = 0,
+        ErrorBasedPruning = 1,
+        ReducedErrorPruning = 2,
     }
 }

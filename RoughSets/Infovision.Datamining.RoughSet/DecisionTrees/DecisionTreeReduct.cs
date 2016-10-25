@@ -26,6 +26,25 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ReductEpsilon = 0.0;
         }
 
+        protected override DecisionTreeBase CreateInstanceForClone()
+        {
+            return new DecisionTreeReduct();
+        }
+
+        protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
+        {
+            base.InitParametersFromOtherTree(_decisionTree);
+
+            var tree = _decisionTree as DecisionTreeReduct;
+            if (tree != null)
+            {
+                this.ReductFactoryKey = tree.ReductFactoryKey;
+                this.ReductIterations = tree.ReductIterations;
+                this.Epsilon = tree.Epsilon;
+                this.ReductEpsilon = tree.ReductEpsilon;
+            }
+        }
+
         public override void SetClassificationResultParameters(ClassificationResult result)
         {
             base.SetClassificationResultParameters(result);

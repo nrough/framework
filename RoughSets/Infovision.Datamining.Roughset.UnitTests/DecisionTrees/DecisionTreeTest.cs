@@ -154,8 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 if (epsilon >= 0)
                     treeC45P.Epsilon = epsilon;
 
-                treeC45P.Pruning = true;
-                treeC45P.PruningCVFolds = 3;
+                treeC45P.PruningType = PruningType.ErrorBasedPruning;
                 treeC45P.PruningObjective = PruningObjectiveType.MinimizeNumberOfLeafs;
                 treeC45P.Learn(data, attributes);
 

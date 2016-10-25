@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
             DecisionTreeC45 c45 = new DecisionTreeC45();
-            c45.Pruning = true;
+            c45.PruningType = PruningType.ErrorBasedPruning;
             c45.Learn(data, attributes);
         }
 

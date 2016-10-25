@@ -91,7 +91,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine("C45 Decision Tree with Prunning");
 
             DecisionTreeC45 c45p = new DecisionTreeC45();
-            c45p.Pruning = true;
+            c45p.PruningType = PruningType.ErrorBasedPruning;
             c45p.PruningObjective = PruningObjectiveType.MinimizeError;
             if (epsilon >= 0)
                 c45p.Epsilon = epsilon;

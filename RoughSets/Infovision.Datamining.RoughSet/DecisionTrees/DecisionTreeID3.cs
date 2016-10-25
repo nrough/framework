@@ -11,6 +11,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public class DecisionTreeID3 : DecisionTreeBase
     {
+        protected override DecisionTreeBase CreateInstanceForClone()
+        {
+            return new DecisionTreeID3();
+        }
+
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
         {
             var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);

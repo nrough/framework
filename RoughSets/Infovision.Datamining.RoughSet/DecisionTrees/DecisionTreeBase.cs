@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// Base class for decision tree implementations
     /// </summary>
     [Serializable]
-    public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel
+    public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel, ICloneable
     {
         protected Dictionary<int, List<long>> thresholds;
         private object syncRoot = new object();
@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public int MinimumNumOfInstancesPerLeaf { get; set; }
         public DataStore TrainingData { get; protected set; }
 
-        public bool Pruning { get; set; }
+        public PruningType PruningType { get; set; }
         public int PruningCVFolds { get; set; }
         public PruningObjectiveType PruningObjective { get; set; }
 
@@ -77,18 +77,29 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         
         public DecisionTreeBase()
         {
-            this.root = null; 
+            this.root = null;
+            this.nextId = 1;
             this.decisionAttributeId = -1;
+
             this.NumberOfAttributesToCheckForSplit = -1;
             this.MaxHeight = -1;
             this.Epsilon = -1.0;
             this.MinimumNumOfInstancesPerLeaf = 1;
-            this.nextId = 1;
+            
 
-            this.Pruning = false;
+            this.PruningType = PruningType.None;
             this.PruningObjective = PruningObjectiveType.MinimizeNumberOfLeafs;
             this.PruningCVFolds = 3;
         }
+
+        public virtual object Clone()
+        {
+            var tree = CreateInstanceForClone();
+            tree.InitParametersFromOtherTree(this);
+            return tree;
+        }
+
+        protected abstract DecisionTreeBase CreateInstanceForClone();        
 
         protected int GetId()
         {
@@ -133,8 +144,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
+        protected virtual void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
+        {
+            this.MinimumNumOfInstancesPerLeaf = _decisionTree.MinimumNumOfInstancesPerLeaf;
+            this.Epsilon = _decisionTree.Epsilon;
+            this.MaxHeight = _decisionTree.MaxHeight;
+            this.NumberOfAttributesToCheckForSplit = _decisionTree.NumberOfAttributesToCheckForSplit;
+
+            this.PruningType = _decisionTree.PruningType;
+            this.PruningObjective = _decisionTree.PruningObjective;
+            this.PruningCVFolds = _decisionTree.PruningCVFolds;
+        }
+
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
-        {            
+        {
+            if (this.PruningType != PruningType.None)
+                return this.LearnAndPrune(data, attributes);
+
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             if (this.Epsilon >= 0.0)
@@ -162,7 +188,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             DataStoreSplitter cvSplitter = new DataStoreSplitter(data, this.PruningCVFolds);
             DataStore trainSet = null, pruningSet = null;
-            DecisionTreeC45 bestModel = null;
+            IDecisionTree bestModel = null;
 
             int bestNumOfRules = Int32.MaxValue;
             double bestError = Double.PositiveInfinity;
@@ -172,19 +198,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             for (int f = 0; f < this.PruningCVFolds; f++)
             {
                 cvSplitter.Split(ref trainSet, ref pruningSet, f);
-
-                DecisionTreeC45 tmpTree = new DecisionTreeC45();
-                tmpTree.MinimumNumOfInstancesPerLeaf = this.MinimumNumOfInstancesPerLeaf;
-                tmpTree.Epsilon = this.Epsilon;
-                tmpTree.MaxHeight = this.MaxHeight;
-                tmpTree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;
-                tmpTree.Pruning = false;
+                
+                var tmpTree = (DecisionTreeBase) this.Clone();                                
+                tmpTree.PruningType = PruningType.None;
                 tmpTree.Learn(trainSet, attributes);
-
-                ErrorBasedPruning pruningMethod = new ErrorBasedPruning(tmpTree, pruningSet);
+                
+                IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 
                 pruningMethod.Prune();
 
                 ClassificationResult tmpResult = Classifier.DefaultClassifer.Classify(tmpTree, pruningSet);
+
                 int numOfRules = DecisionTreeBase.GetNumberOfRules(tmpTree);
                 int maxHeight = DecisionTreeBase.GetHeight(tmpTree);
                 double avgHeight = DecisionTreeBase.GetAvgHeight(tmpTree);

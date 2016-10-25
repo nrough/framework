@@ -22,6 +22,22 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.RankedAttributes = false;
         }
 
+        protected override DecisionTreeBase CreateInstanceForClone()
+        {
+            return new ObliviousDecisionTree();
+        }
+
+        protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
+        {
+            base.InitParametersFromOtherTree(_decisionTree);
+
+            var tree = _decisionTree as ObliviousDecisionTree;
+            if (tree != null)
+            {
+                this.RankedAttributes = tree.RankedAttributes;
+            }
+        }
+
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             return 0;

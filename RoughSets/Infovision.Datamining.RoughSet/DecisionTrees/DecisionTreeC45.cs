@@ -13,7 +13,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public DecisionTreeC45()
             : base()
         {
-        }        
+        }
+
+        protected override DecisionTreeBase CreateInstanceForClone()
+        {
+            return new DecisionTreeC45();
+        }
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {

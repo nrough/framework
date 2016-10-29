@@ -14,17 +14,30 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeRough();
-        }        
-
-        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
-        {
-            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
-            double m = InformationMeasureWeights.Instance.Calc(attributeEqClasses);// + parentMeasure;
-            //double splitInfo = this.SplitInformation(attributeEqClasses);
-            //double normalizedM = splitInfo == 0 ? 0 : m / splitInfo;
-
-            return new SplitInfo(attributeId, m, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
+
+        protected override double CalculateImpurity(EquivalenceClassCollection eq)
+        {
+            return InformationMeasureWeights.Instance.Calc(eq);
+        }
+
+        
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
+        {
+            SplitInfo result = base.GetSplitInfoSymbolic(attributeId, data, entropy);
+            double splitInfo = this.SplitInformation(result.EquivalenceClassCollection);
+            result.Gain = (splitInfo == 0) ? 0 : result.Gain / splitInfo;
+            return result;
+        }
+
+        protected override SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double entropy)
+        {
+            SplitInfo result = base.GetSplitInfoNumeric(attributeId, data, entropy);
+            double splitInfo = this.SplitInformation(result.EquivalenceClassCollection);
+            result.Gain = (splitInfo == 0) ? 0 : result.Gain / splitInfo;
+            return result;
+        }
+        
 
         private double SplitInformation(EquivalenceClassCollection eqClassCollection)
         {
@@ -40,8 +53,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
-        {
-            //return 0;
+        {            
             return InformationMeasureWeights.Instance.Calc(eqClassCollection);
         }
     }

@@ -71,7 +71,7 @@ namespace Infovision.Datamining.Roughset
     public class InformationMeasurePositive : InformationMeasureBase
     {
         private static volatile InformationMeasurePositive instance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static InformationMeasurePositive Instance
         {
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset
     public class InformationMeasureRelative : InformationMeasureBase
     {
         private static volatile InformationMeasureRelative instance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static InformationMeasureRelative Instance
         {
@@ -222,7 +222,7 @@ namespace Infovision.Datamining.Roughset
     public class InformationMeasureMajority : InformationMeasureBase
     {
         private static volatile InformationMeasureMajority instance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static InformationMeasureMajority Instance
         {
@@ -300,7 +300,7 @@ namespace Infovision.Datamining.Roughset
     public class InformationMeasureWeights : InformationMeasureBase
     {
         private static volatile InformationMeasureWeights instance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static InformationMeasureWeights Instance
         {

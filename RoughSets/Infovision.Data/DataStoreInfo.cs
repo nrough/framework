@@ -24,7 +24,7 @@ namespace Infovision.Data
         private Dictionary<FieldTypes, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
         private int[] fieldIndexLookup;
-        private object syncRoot = new object();
+        private readonly object syncRoot = new object();
 
         #endregion Members
 

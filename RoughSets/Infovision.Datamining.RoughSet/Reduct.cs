@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset
         #region Members
 
         private HashSet<int> attributeSet;
-        protected object mutex = new object();
+        protected readonly object mutex = new object();
 
         //TODO To Remove
         private double[] objectWeights;

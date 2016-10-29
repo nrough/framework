@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductFactory
     {
         private static volatile ReductFactory reductFactoryInstance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         private ListDictionary registeredReductFactories = new ListDictionary();
         private ListDictionary registeredReductMeasures = new ListDictionary();

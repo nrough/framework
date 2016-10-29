@@ -12,7 +12,7 @@ namespace Infovision.Utils
         public double MaxDifference { get; set; }
         private static long DEFAULT_TOLERANCE = 10;
         private static double DEFAULT_MAX_DIFF = 1E-9;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
         private static volatile ToleranceDoubleComparer instance;
 
         public ToleranceDoubleComparer()

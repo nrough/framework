@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeC45();
-        }
+        }        
 
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
@@ -32,16 +32,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
             return entropy;
         }
-       
-        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
+
+        protected override double CalculateImpurity(EquivalenceClassCollection equivalenceClasses)
         {
-            //double gain = base.GetSplitScore(attributeEqClasses, entropy);
-
-            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
-
-            double gain;
             double result = 0;
-            foreach (var eq in attributeEqClasses)
+            foreach (var eq in equivalenceClasses)
             {
                 double localEntropy = 0;
                 foreach (var dec in eq.DecisionSet)
@@ -51,95 +46,34 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     if (p != 0)
                         localEntropy -= p * System.Math.Log(p, 2);
                 }
-
-                //in other place where entropy for continuous attr is calculated we have result -= ...
-                result += (eq.WeightSum / data.WeightSum) * localEntropy; 
+                
+                result += (eq.WeightSum / equivalenceClasses.WeightSum) * localEntropy;
             }
 
-            gain = entropy - result;
-
-            double splitInfo = this.SplitInformation(attributeEqClasses);
-            double normalizedGain = (splitInfo == 0) ? 0 : gain / splitInfo;
-
-            return new SplitInfo(attributeId, normalizedGain, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);            
+            return result;            
+        }
+       
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
+        {
+            SplitInfo result = base.GetSplitInfoSymbolic(attributeId, data, entropy);
+            double splitInfo = this.SplitInformation(result.EquivalenceClassCollection);
+            result.Gain = (splitInfo == 0) ? 0 : result.Gain / splitInfo;
+            return result;
         }
 
         protected override SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double entropy)
         {
-            int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(attributeId);
-            int[] indices = data.Indices;
-            long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
-
-            //TODO can improve?
-            Array.Sort(values, indices);
-
-            List<long> thresholds = new List<long>(values.Length);
-
-            if(values.Length > 0)
-                thresholds.Add(values[0]);
-
-            for (int k = 0; k < values.Length - 1; k++)
-                if (values[k] != values[k + 1])
-                    thresholds.Add((values[k] + values[k + 1]) / 2);
-
-            long[] threshold = thresholds.ToArray();
-            thresholds.Clear();
-            double bestGain = Double.NegativeInfinity;
-            int[] bestIdx1 = null, bestIdx2 = null;
-            long bestThreshold;
-
-            if (threshold.Length > 0)
-            {
-                bestThreshold = threshold[0];
-                for (int k = 0; k < threshold.Length; k++)
-                {
-                    int[] idx1 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) <= threshold[k])).ToArray();
-                    int[] idx2 = indices.Where(idx => (this.TrainingData.GetFieldIndexValue(idx, attributeIdx) > threshold[k])).ToArray();
-
-                    long[] output1 = new long[idx1.Length];
-                    long[] output2 = new long[idx2.Length];
-
-                    for (int j = 0; j < idx1.Length; j++)
-                        output1[j] = this.TrainingData.GetDecisionValue(idx1[j]);
-
-                    for (int j = 0; j < idx2.Length; j++)
-                        output2[j] = this.TrainingData.GetDecisionValue(idx2[j]);
-
-                    double p1 = output1.Length / (double)indices.Length;
-                    double p2 = output2.Length / (double)indices.Length;
-
-                    double gain = -p1 * Tools.Entropy(output1, this.Decisions) +
-                                  -p2 * Tools.Entropy(output2, this.Decisions);
-
-                    if (gain > bestGain)
-                    {
-                        bestGain = gain;
-                        bestThreshold = threshold[k];
-                        bestIdx1 = idx1;
-                        bestIdx2 = idx2;
-                    }
-                }
-            }
-            else
-            {
-                bestIdx1 = indices;
-                bestGain = Double.NegativeInfinity;
-                bestThreshold = long.MaxValue;
-            }
-
-            var attributeEqClasses = EquivalenceClassCollection
-                .CreateFromBinaryPartition(attributeId, bestIdx1, bestIdx2, data.Data);
-
-            double gain2 = entropy + bestGain;
-            double splitInfo = this.SplitInformation(attributeEqClasses);
-            double normalizedGain = (splitInfo == 0) ? 0 : gain2 / splitInfo;
-
-            return new SplitInfo(attributeId, normalizedGain, attributeEqClasses, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
-
+            SplitInfo result = base.GetSplitInfoNumeric(attributeId, data, entropy);
+            double splitInfo = this.SplitInformation(result.EquivalenceClassCollection);
+            result.Gain = (splitInfo == 0) ? 0 : result.Gain / splitInfo;
+            return result;            
         }        
 
         private double SplitInformation(EquivalenceClassCollection eqClassCollection)
         {
+            if (eqClassCollection == null)
+                return 0;
+
             double result = 0;
             foreach (var eq in eqClassCollection)
             {

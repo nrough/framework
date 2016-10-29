@@ -28,7 +28,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductStoreCollection : IReductStoreCollection
     {
         private List<IReductStore> stores;
-        protected object mutex = new object();
+        protected readonly object mutex = new object();
 
         public int Count { get { return this.stores.Count; } }
 

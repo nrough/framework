@@ -41,7 +41,7 @@ namespace Infovision.Datamining
         private double[][] confusionTableWeights;
         private int counter;
         private DataStore testData = null;
-        private object mutex = new object();        
+        private readonly object mutex = new object();        
 
         #endregion Members
 
@@ -291,11 +291,7 @@ namespace Infovision.Datamining
 
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
-            int actualDecIdx = value2index[actual];
-
-            if (!value2index.ContainsKey(prediction))
-                Debugger.Break();
-
+            int actualDecIdx = value2index[actual];            
             int predictionDecIdx = value2index[prediction];
             predictionResults[objectIdx] = prediction;
 

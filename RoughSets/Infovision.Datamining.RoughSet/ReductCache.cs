@@ -5,7 +5,7 @@ namespace Infovision.Datamining.Roughset
     public class ReductCache : MemoryCache
     {
         private static ReductCache reductCacheInstance = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
         private static CacheItemPolicy defaultCacheItemPolicy = null;
 
         private ReductCache(string name)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Utils;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
@@ -16,7 +17,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel, ICloneable
     {
         protected Dictionary<int, List<long>> thresholds;
-        private object syncRoot = new object();
+        private readonly object syncRoot = new object();
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private double mA;
@@ -265,17 +266,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this);
             result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this);
             result.ModelName = this.ModelName;
-        }
-
-        //protected void SetNodeOutput(DecisionTreeNode node, long decisionValue)
-        //{
-        //    node.Output = decisionValue;
-        //}
+        }        
 
         protected void SetNodeOutput(DecisionTreeNode node, Dictionary<long, double> outputWeights)
-        {
-            //node.Output = outputWeights.FindMaxValuePair().Key;
-            node.Output = outputWeights.Clone();
+        {         
+            node.OutputDistribution = new DecisionDistribution(outputWeights);
         }
 
         protected virtual bool CheckStopCondition(EquivalenceClassCollection currentEqClassCollection, int[] currentAttributes, ref bool isConverged, IDecisionTreeNode parentNode)
@@ -397,10 +392,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 if (current.IsLeaf)
                 {
-                    if (current.Output == null)
-                        return -1;
-
-                    return current.Output.FindMaxValueKey();
+                    return current.Output;
                 }
 
                 current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
@@ -479,14 +471,57 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             throw new NotImplementedException("Only symbolic and numeric attribute types are currently supported.");                            
         }
 
-        protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double currentScore)
+        protected abstract double CalculateImpurity(EquivalenceClassCollection eq);        
+
+        protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
         {
-            throw new NotImplementedException();
+            if (parentMeasure < 0)
+                throw new ArgumentException("currentScore < 0", "parentMeasure");
+
+            var eq = EquivalenceClassCollection.Create(attributeId, data);
+            double gain = this.CalculateImpurity(eq);            
+            return new SplitInfo(attributeId, parentMeasure - gain, eq, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
         protected virtual SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double currentScore)
         {
-            throw new NotImplementedException();
+            int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(attributeId);
+            int[] indices = data.Indices;
+            long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
+            Array.Sort(values, indices);
+
+            List<long> thresholds = new List<long>(values.Length);
+
+            if (values.Length > 0)
+                thresholds.Add(values[0]);
+
+            for (int k = 0; k < values.Length - 1; k++)
+                if (values[k] != values[k + 1])
+                    thresholds.Add((values[k] + values[k + 1]) / 2);
+
+            if (thresholds.Count == 0)
+                return new SplitInfo(attributeId, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, long.MaxValue);
+
+            double maxGain = Double.NegativeInfinity;
+            EquivalenceClassCollection bestEq = null;
+            long bestThreshold = thresholds.ElementAt(0);
+            foreach (var threshold in thresholds)
+            {
+                var splitEq = EquivalenceClassCollection.CreateBinaryPartition(this.TrainingData, attributeId, indices, threshold);
+
+                double gain = this.CalculateImpurity(splitEq);
+                if (gain > maxGain)
+                {
+                    maxGain = gain;
+                    bestThreshold = threshold;
+                    bestEq = splitEq;
+                }
+            }            
+
+            return new SplitInfo(
+                attributeId,
+                (currentScore - maxGain),
+                bestEq, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
         }
 
         public static int GetNumberOfRules(IDecisionTree tree)

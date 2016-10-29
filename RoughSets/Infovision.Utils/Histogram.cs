@@ -9,7 +9,7 @@ namespace Infovision.Utils
     {
         #region Globals
 
-        protected object syncRoot = new object();
+        protected readonly object syncRoot = new object();
         private Dictionary<T, double> histogramData;
         private T minValue;
         private T maxValue;

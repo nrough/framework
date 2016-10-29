@@ -425,10 +425,7 @@ namespace  Infovision.Datamining.Roughset.UnitTests
         }
 
         public bool CompareReductStores(IReductStore reductStore1, IReductStore reductStore2)
-        {
-            if (reductStore1.Count != reductStore2.Count)
-                Debugger.Break();
-
+        {           
             Assert.AreEqual(reductStore1.Count, reductStore2.Count);
 
             //Note that the order of reducts inside reduct store might differ when calculated in parallel

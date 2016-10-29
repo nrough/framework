@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset
     [Serializable]
     public abstract class ReductStoreBase : IReductStore
     {
-        protected object mutex = new object();
+        protected readonly object mutex = new object();
 
         #region Properties
 

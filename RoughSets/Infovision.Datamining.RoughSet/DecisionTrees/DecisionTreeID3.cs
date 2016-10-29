@@ -16,30 +16,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new DecisionTreeID3();
         }
 
-        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double entropy)
-        {
-            var attributeEqClasses = EquivalenceClassCollection.Create(attributeId, data);
-
-            double result = 0;
-            foreach (var eq in attributeEqClasses)
-            {
-                double localEntropy = 0;
-                foreach (var dec in eq.DecisionSet)
-                {
-                    double decWeight = eq.GetDecisionWeight(dec);
-                    double p = decWeight / eq.WeightSum;
-                    if (p != 0)
-                        localEntropy -= p * System.Math.Log(p, 2);
-                }
-
-                result += (eq.WeightSum / data.WeightSum) * localEntropy;
-            }
-
-            double gain = entropy - result;
-
-            return new SplitInfo(attributeId, gain, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
-        }
-
         protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
         {
             double entropy = 0;
@@ -52,5 +28,27 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
             return entropy;
         }
+
+        protected override double CalculateImpurity(EquivalenceClassCollection equivalenceClasses)
+        {
+            double result = 0;
+            foreach (var eq in equivalenceClasses)
+            {
+                double localEntropy = 0;
+                foreach (var dec in eq.DecisionSet)
+                {
+                    double decWeight = eq.GetDecisionWeight(dec);
+                    double p = decWeight / eq.WeightSum;
+                    if (p != 0)
+                        localEntropy -= p * System.Math.Log(p, 2);
+                }
+
+                result += (eq.WeightSum / equivalenceClasses.WeightSum) * localEntropy;
+            }
+
+            return result;
+        }        
+
+        
     }
 }

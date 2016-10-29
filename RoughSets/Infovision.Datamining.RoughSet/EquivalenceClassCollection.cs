@@ -17,7 +17,7 @@ namespace Infovision.Datamining.Roughset
         private Dictionary<long[], EquivalenceClass> partitions;
         private int[] attributes;
 
-        private object mutex = new object();
+        private readonly object mutex = new object();
 
         private Dictionary<long, double> decisionWeight;
         private Dictionary<long, int> decisionCount;
@@ -253,6 +253,47 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
+        public static EquivalenceClassCollection CreateBinaryPartition(DataStore data, int attributeId, int[] indices, long threshold)
+        {
+            if (!data.DataStoreInfo.GetFieldInfo(attributeId).IsNumeric)
+                throw new ArgumentException("Attribute is not numeric", "attributeId");
+
+            EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
+            int attributeIdx = data.DataStoreInfo.GetFieldIndex(attributeId);
+
+            EquivalenceClass eq1 = new EquivalenceClass(new long[] { 1 }, data);
+            EquivalenceClass eq2 = new EquivalenceClass(new long[] { 2 }, data);
+
+            double weightSum = 0;
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                double w = data.GetWeight(indices[i]);
+                weightSum += w;
+
+                long dec = data.GetDecisionValue(indices[i]);
+                result.AddDecision(dec, w);
+
+                if (data.GetFieldIndexValue(indices[i], attributeIdx) <= threshold)
+                {
+                    eq1.AddObject(indices[i], dec, w);
+                }
+                else
+                {
+                    eq2.AddObject(indices[i], dec, w);
+                }
+            }
+
+            result.Add(eq1);
+            result.Add(eq2);
+
+            result.NumberOfObjects = indices.Length;
+            result.WeightSum = weightSum;
+            result.CalcAvgConfidence();
+
+            return result;
+        }
+
         public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
         {                        
             EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
@@ -272,7 +313,7 @@ namespace Infovision.Datamining.Roughset
                     weightSum += w;
                 }
 
-                result.NumberOfObjects += idx1.Length;
+                result.NumberOfObjects = idx1.Length;
             }
 
             if (idx2 != null && idx2.Length > 0)
@@ -289,7 +330,7 @@ namespace Infovision.Datamining.Roughset
                     weightSum += w;
                 }
 
-                result.NumberOfObjects += idx2.Length;                
+                result.NumberOfObjects += idx2.Length;
             }
 
             result.WeightSum = weightSum;

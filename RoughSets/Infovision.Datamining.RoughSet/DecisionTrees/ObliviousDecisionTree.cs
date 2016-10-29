@@ -43,6 +43,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return 0;
         }
 
+        protected override double CalculateImpurity(EquivalenceClassCollection eq)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] origAttributes, int[] attributesToTest, IDecisionTreeNode parentTreeNode)
         {
             if(this.RankedAttributes == false)

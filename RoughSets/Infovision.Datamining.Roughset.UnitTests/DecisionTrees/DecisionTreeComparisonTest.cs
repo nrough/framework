@@ -13,13 +13,14 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     [TestFixture]
     class DecisionTreeComparisonTest
     {
-        [Test, Repeat(10)]
-        public void DecisionTreeRoughFor_GermanCredit()
+        [Test, Repeat(1)]
+        public void DecisionTreeRough_GermanCredit()
         {
             Console.WriteLine("DecisionTreeRoughFor_GermanCredit");
 
             int numOfFolds = 5;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             DataStore train = null, test = null;
 
             for (double eps = 0.0; eps < 0.3; eps += 0.01)
@@ -27,13 +28,12 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 double error = 0;
                 DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
                 for (int f = 0; f < numOfFolds; f++)
-                {
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref train, ref test);
+                {                    
+                    splitter.Split(ref train, ref test, f);
 
                     DecisionTreeRough tree = new DecisionTreeRough();
                     tree.Epsilon = eps;
-                    tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                    tree.Learn(train, attributes);
 
                     ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
                     Console.WriteLine(result);
@@ -45,29 +45,24 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             }
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionTreeC45_GermanCredit()
         {
             Console.WriteLine("DecisionTreeC45_GermanCredit");
 
-            int numOfFolds = 5;
+            int numOfFolds = 10;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
-            DataStore train = null, tmp = null, prune = null, test = null;
+            DataStore train = null, test = null;
 
             double error = 0;
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref tmp, ref test);
-
-                DataStoreSplitter splitter2 = new DataStoreSplitterRatio(tmp, 0.5);
-                splitter2.Split(ref train, ref prune);
+            {                
+                splitter.Split(ref train, ref test, f);                
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
+                tree.PruningType = PruningType.ErrorBasedPruning;
                 tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
-                ErrorBasedPruning pruning = new ErrorBasedPruning(tree, prune);
-                pruning.Prune();
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
                 Console.WriteLine(result);
@@ -78,12 +73,12 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine("Error: {0}", error / (double)numOfFolds);
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionTreeC45NoPruning_GermanCredit()
         {
             Console.WriteLine("DecisionTreeC45NoPruning_GermanCredit");
 
-            int numOfFolds = 5;
+            int numOfFolds = 10;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
             double error = 0;
@@ -106,7 +101,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestC45_GermanCredit()
         {
             Console.WriteLine("DecisionForestC45_GermanCredit");
@@ -136,7 +131,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine("Error: {0}", error / (double)numOfFolds);
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestRough_GermanCredit()
         {
             Console.WriteLine("DecisionForestRough_GermanCredit");

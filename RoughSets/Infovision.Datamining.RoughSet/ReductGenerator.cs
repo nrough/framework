@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset
         private int reductIdSequence;
 
         protected readonly Stopwatch timer = new Stopwatch();
-        protected object mutex = new object();
+        protected readonly object mutex = new object();
 
         #endregion Members
 

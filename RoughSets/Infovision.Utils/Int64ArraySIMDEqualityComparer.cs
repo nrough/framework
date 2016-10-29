@@ -8,7 +8,7 @@ namespace Infovision.Utils
     public class Int64ArraySIMDEqualityComparer : IEqualityComparer<long[]>
     {
         private static volatile Int64ArraySIMDEqualityComparer instance;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static Int64ArraySIMDEqualityComparer Instance
         {

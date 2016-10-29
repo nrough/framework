@@ -7,7 +7,7 @@ namespace Infovision.Utils
     public class Int64ArrayEqualityComparer : IEqualityComparer<long[]>
     {
         private static volatile Int64ArrayEqualityComparer instance;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
 
         public static Int64ArrayEqualityComparer Instance
         {

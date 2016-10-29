@@ -43,8 +43,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             {
                 node2indices[current].Add(objectIdx);
                 if (current.IsLeaf)
-                {                    
-                    predictionResult[objectIdx] = current.Output.FindMaxValueKey();
+                {
+                    predictionResult[objectIdx] = current.Output;
                     break;
                 }
 
@@ -61,7 +61,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             if (instances.Length == 0)
             {
                 node.Children = null;
-                node.Output = null;
+                node.OutputDistribution = null;
 
                 return true;
             }
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             double baselineError = this.ComputeError();
             baselineError = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, baselineError, this.Confidence);
             
-            var majorDecision = node.Output;
+            var majorDecision = node.OutputDistribution;
             double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
             errorLeaf = ErrorBasedPruning.UpperBound(this.PruningData.NumberOfRecords, errorLeaf, this.Confidence);
 
@@ -86,7 +86,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 {
                     // Replace the subtree with its maximum child
                     node.Children = maxChild.Children;
-                    node.Output = maxChild.Output;
+                    node.OutputDistribution = maxChild.OutputDistribution;
 
                     if (maxChild.IsLeaf == false)
                         foreach (var child in node.Children)
@@ -96,7 +96,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 {
                     // Prune the subtree
                     node.Children = null;
-                    node.Output = majorDecision;
+                    node.OutputDistribution = majorDecision;
                 }
 
                 changed = true;
@@ -376,18 +376,18 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         }
 
         //private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, long majorDecision)
-        private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, IDictionary<long, double> majorDecision)
+        private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, DecisionDistribution majorDecision)
         {
             var children = tree.Children;
-            var output = tree.Output;
+            var outputDistribution = tree.OutputDistribution;
 
             tree.Children = null;
-            tree.Output = majorDecision;
+            tree.OutputDistribution = majorDecision;
 
             double error = this.ComputeError();
 
             tree.Children = children;
-            tree.Output = output;
+            tree.OutputDistribution = outputDistribution;
 
             return error;
         }
@@ -395,15 +395,15 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         private double ComputeErrorReplacingSubtrees(IDecisionTreeNode tree, IDecisionTreeNode child)
         {
             var branches = tree.Children;
-            var output = tree.Output;
+            var outputDistribution = tree.OutputDistribution;
 
             tree.Children = child.Children;
-            tree.Output = child.Output;
+            tree.OutputDistribution = child.OutputDistribution;
 
             double error = this.ComputeError();
 
             tree.Children = branches;
-            tree.Output = output;
+            tree.OutputDistribution = outputDistribution;
 
             return error;
         }

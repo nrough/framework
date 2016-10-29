@@ -8,7 +8,7 @@ namespace Infovision.Data
     {
         private DataStore dataStore = null;
         private Dictionary<long, int> decisionCount;
-        private object mutex = new object();
+        private readonly object mutex = new object();
 
         #region Properties
 

@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset
         private string singleVoteName;
         private string singleVoteModule;
         private IReductStoreCollection reductStoreCollection;
-        private object mutex = new object();
+        private readonly object mutex = new object();
 
         #endregion Members
 

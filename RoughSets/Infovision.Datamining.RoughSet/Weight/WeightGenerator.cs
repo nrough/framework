@@ -9,7 +9,7 @@ namespace Infovision.Datamining.Roughset
     {
         private DataStore dataStore = null;
         protected double[] w;
-        protected object syncRoot = new object();
+        protected readonly object syncRoot = new object();
 
         public WeightGenerator(DataStore dataStore)
         {

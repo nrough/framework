@@ -5,7 +5,7 @@ namespace Infovision.Utils
     public class RandomSingleton
     {
         private static volatile RandomSingleton randomSingleton = null;
-        private static object syncRoot = new object();
+        private static readonly object syncRoot = new object();
         private static int? seed;
         private ThreadSafeRandom systemRandom;
 

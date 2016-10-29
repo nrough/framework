@@ -9,8 +9,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     public interface IDecisionTreeNode
     {
         int Id { get; }
-
         int Attribute { get; }
+
+        IDecisionTreeNode Parent { get; set; }
         IList<IDecisionTreeNode> Children { get; set; }
         
         long Value { get; }
@@ -19,11 +20,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         bool IsLeaf { get; }
         bool IsRoot { get; }
         int Level { get; }
+                               
+        long Output { get; }
+        DecisionDistribution OutputDistribution { get; set; }
 
-        IDecisionTreeNode Parent { get; set; }
-        
         double Measure { get; }
-        
-        IDictionary<long, double> Output { get; set; }
     }
 }

@@ -15,13 +15,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         //private object syncRoot = new object();
         private long[] predictionResult;
         private Dictionary<IDecisionTreeNode, NodeInfo> info;
+        private double baselineError;
 
         private class NodeInfo
         {
             public List<int> subset;
-            public double baselineError; //error of using majority class (current node's output)
-            public double error; //error of using subtree
-            public double gain;  //gain calculated as subtraction of baseLineError and error
+            public double baselineError;    //error of using majority class (current node's output)
+            public double error;            //error of using subtree
+            public double gain;             //gain calculated as subtraction of baseLineError and error
 
             public NodeInfo()
             {
@@ -46,21 +47,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
         private void ComputePrediction(IDecisionTreeNode node, int objectIdx)
         {
-            DataRecordInternal record = this.PruningData.GetRecordByIndex(objectIdx, false);            
-
+            DataRecordInternal record = node.IsLeaf ? null : this.PruningData.GetRecordByIndex(objectIdx, false);
             IDecisionTreeNode current = node;
             while (current != null)
             {
                 this.info[current].subset.Add(objectIdx);
                 if (current.IsLeaf)
                 {
-                    predictionResult[objectIdx] = current.Output.FindMaxValueKey();
+                    predictionResult[objectIdx] = current.Output;
                     return;
                 }
-
-                current = current.Children
-                    .Where(x => x.Compute(record[x.Attribute]))
-                    .FirstOrDefault();
+                current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
             }
         }
         
@@ -70,20 +67,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             foreach(int idx in indices)
                 if (this.PruningData.GetDecisionValue(idx) != predictionResult[idx])                
                     error += this.PruningData.GetWeight(idx);
-
             return error;
-            //return error / (double)indices.Length;
         }
 
         private double ComputeSubtreeBaselineError(IDecisionTreeNode node, IEnumerable<int> indices)
         {                        
             double error = 0;
             foreach(int idx in indices)            
-                if (this.PruningData.GetDecisionValue(idx) != node.Output.FindMaxValueKey())
+                if (this.PruningData.GetDecisionValue(idx) != node.Output)
                     error += this.PruningData.GetWeight(idx);
-
             return error;
-            //return error / (double)indices.Length;
         }
 
         private double ComputeGain(IDecisionTreeNode node)
@@ -111,10 +104,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         }
 
         public override double Prune()
-        {
-            double lastError;
-            double error = Classifier.DefaultClassifer.Classify(this.DecisionTree, this.PruningData).Error;
+        {            
+            this.baselineError = Classifier.DefaultClassifer.Classify(this.DecisionTree, this.PruningData).Error;
 
+            double error = this.baselineError;
+            double lastError;
+
+            //TODO Change so we prune only if error rate is improved. Currently at least single prune is done.
             do
             {
                 lastError = error;
@@ -129,8 +125,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         {
             foreach (var node in this.DecisionTree)
             {
-                var nodeInfo = this.info[node];                
-
+                var nodeInfo = this.info[node];
                 nodeInfo.error = this.ComputeSubtreeError(nodeInfo.subset);
                 nodeInfo.baselineError = this.ComputeSubtreeBaselineError(node, nodeInfo.subset);
             }
@@ -151,21 +146,15 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
             }
 
             if (maxGain >= 0 && maxNode != null)
-            {
-                //TODO Test
-                //TODO We should not change the output based on pruning data set but just to cut children
-                //output are now calculated on every tree level
-
-                int[] indices = this.info[maxNode].subset.ToArray();
-                long[] outputs = this.PruningData.GetDecisionValue(indices);
-                long majorDecision = outputs.Mode();
-
+            {                                
                 maxNode.Children = null;
-                //maxNode.Output = majorDecision;
 
-                for (int i = 0; i < indices.Length; i++)
-                    this.ComputePrediction(maxNode, indices[i]);
-                
+                //check
+                if (maxNode.Output == -1)
+                    throw new InvalidOperationException("maxNode.Output == -1");
+
+                foreach(int idx in this.info[maxNode].subset.ToArray())
+                    this.ComputePrediction(maxNode, idx);                                
             }
 
             return this.ComputeError();

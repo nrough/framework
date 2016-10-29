@@ -41,7 +41,7 @@ namespace Infovision.Utils
     public class DoubleEpsilonComparer : EpsilonComparer<double>
     {
         private static volatile DoubleEpsilonComparer instance;
-        private static object syncRoot = new Object();
+        private static readonly object syncRoot = new Object();
         private static double DEFAULT_EPSILON = 1E-9;
 
         public static DoubleEpsilonComparer Instance
@@ -117,7 +117,7 @@ namespace Infovision.Utils
     public class DecimalEpsilonComparer : EpsilonComparer<decimal>
     {
         private static volatile DecimalEpsilonComparer instance;
-        private static object syncRoot = new Object();
+        private static readonly object syncRoot = new Object();
         private static decimal DefaultEpsilon = 0.00000000000000001m;
 
         public static DecimalEpsilonComparer Instance

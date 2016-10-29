@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset
         private IReductStoreCollection reductStoreCollection;
         private Dictionary<int, EquivalenceClassCollection> attributeEqClasses;
 
-        private object mutex = new object();
+        private readonly object mutex = new object();
 
         #endregion Members
 

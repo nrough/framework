@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         private IList<IDecisionTreeNode> children;
         private static readonly string ROOT = "[ROOT]";
-
+        
         #endregion
 
         #region Properties
@@ -71,7 +71,15 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public ComparisonType Comparison { get; private set; }
 
-        public IDictionary<long, double> Output { get; set; }
+        public DecisionDistribution OutputDistribution { get; set; }
+
+        public long Output
+        {
+            get
+            {
+                return this.OutputDistribution == null ? -1 : this.OutputDistribution.Output;
+            }
+        }
 
         #endregion
 
@@ -86,7 +94,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Level = (parent == null) ? 0 : parent.Level + 1;
             this.Measure = 0.0;
             this.Comparison = comparisonType;
-            this.Output = null;
+            this.OutputDistribution = null;
         }
 
         public DecisionTreeNode(int id, int attribute, ComparisonType comparisonType, long value, IDecisionTreeNode parent, double measure)
@@ -189,7 +197,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.IsRoot)
             {
                 if (this.IsLeaf)
-                    return string.Format("{0} ( empty ) ==> {1}", DecisionTreeNode.ROOT, this.Output.FindMaxValueKey());
+                    return string.Format("{0} ( empty ) ==> {1}", DecisionTreeNode.ROOT, this.Output);
                     
                 return DecisionTreeNode.ROOT;
             }
@@ -205,8 +213,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     this.Id,
                     (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
                     this.Comparison.ToSymbol(),
-                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(),
-                    this.Output.FindMaxValueKey());
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(), this.Output);
         }
 
         public override bool Equals(object obj)

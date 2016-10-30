@@ -32,6 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             //double eps = 0.1;
             //double redeps = 0.1;
             int size = 100;
+            PruningType pruningType = PruningType.ErrorBasedPruning;
 
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             //Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\treeComparisonTest.log"));
@@ -47,10 +48,10 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             
             for (double eps = -1.0; eps < 0.4; eps += 0.01)
             {
-                this.TreeComparisonTest(data, test, attributes, eps, 0.0, size, false);
+                this.TreeComparisonTest(data, test, attributes, eps, 0.0, size, false, pruningType);
 
                 for (double redeps = 0.0; redeps < 0.4; redeps += 0.01)                    
-                    this.TreeComparisonTest(data, test, attributes, eps, redeps, size, true);
+                    this.TreeComparisonTest(data, test, attributes, eps, redeps, size, true, pruningType);
 
                 if (eps < 0)
                     eps = 0.0;
@@ -64,7 +65,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             double epsilon, 
             double reductEpsilon, 
             int numOfReducts, 
-            bool runReduct)
+            bool runReduct,
+            PruningType pruningType)
         {
             if (runReduct)
             {
@@ -73,7 +75,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     treeRed.Epsilon = epsilon;
                 treeRed.ReductEpsilon = reductEpsilon;
                 treeRed.ReductIterations = numOfReducts;
-                treeRed.PruningType = PruningType.ReducedErrorPruning;
+                treeRed.PruningType = pruningType;
                 treeRed.Learn(data, attributes);
                 
                 Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
@@ -84,13 +86,14 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
                 ReductStore reductStore = new ReductStore(1);
                 reductStore.AddReduct(reduct);
-                reductStoreCollection.AddStore(reductStore);                
+                reductStoreCollection.AddStore(reductStore);
 
-                RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvg.CoverageW, RuleQuality.SingleVote, data.DataStoreInfo.GetDecisionValues());
+                RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvg.SupportW, RuleQuality.SupportW, data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult result2 = classifier.Classify(test, null);
                 result2.Epsilon = epsilon;
                 result2.Gamma = reductEpsilon;
                 result2.ModelName = "Reduct";
+                result2.NumberOfRules = reduct.EquivalenceClasses.Count;
                 Trace.WriteLine(result2);
 
                 //-------------------------------------------------            
@@ -98,7 +101,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 DecisionTreeC45 treeC45R = new DecisionTreeC45();
                 if (epsilon >= 0)
                     treeC45R.Epsilon = epsilon;
-                treeC45R.PruningType = PruningType.ReducedErrorPruning;
+                treeC45R.PruningType = pruningType;
                 treeC45R.Learn(data, reduct.Attributes.ToArray());
 
                 var result6 = Classifier.DefaultClassifer.Classify(treeC45R, test, null);
@@ -113,22 +116,20 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 DecisionTreeRough treeRough = new DecisionTreeRough();
                 if (epsilon >= 0)
                     treeRough.Epsilon = epsilon;
-                treeRough.PruningType = PruningType.ReducedErrorPruning;
+                treeRough.PruningType = pruningType;
                 treeRough.Learn(data, attributes);
 
-                Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));                
-
+                Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
                 //-------------------------------------------------
 
                 DecisionTreeC45 treeC45 = new DecisionTreeC45();
                 if (epsilon >= 0)
                     treeC45.Epsilon = epsilon;
-                treeC45.PruningType = PruningType.ReducedErrorPruning;
+                treeC45.PruningType = pruningType;
                 treeC45.Learn(data, attributes);
 
-                Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));                
+                Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
             }
-            
         }
 
         [Test, Repeat(1)]

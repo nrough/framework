@@ -112,12 +112,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
+    <Compile Include="DecisionRules\DecisionList.cs" />
+    <Compile Include="DecisionRules\DecisionListCollection.cs" />
+    <Compile Include="DecisionRules\DecisionRule.cs" />
     <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
     <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
     <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
     <Compile Include="DecisionTrees\Pruning\PruningType.cs" />
     <Compile Include="DecisionTrees\SplitType.cs" />
-    <Compile Include="DecisionTrees\ComparisonType.cs" />
+    <Compile Include="ComparisonType.cs" />
     <Compile Include="DecisionTrees\DecisionForestBase.cs" />
     <Compile Include="DecisionTrees\DecisionTreeC45.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCART.cs" />
@@ -139,6 +142,8 @@
     <Compile Include="DecisionTrees\Pruning\IDecisionTreePruning.cs" />
     <Compile Include="DecisionTrees\Pruning\ReducedErrorPruning.cs" />
     <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
+    <Compile Include="DecisionRules\DecisionRuleCondition.cs" />
+    <Compile Include="DecisionRules\Holte1R.cs" />
     <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="Permutation\PermutationGeneratorFieldQuality.cs" />

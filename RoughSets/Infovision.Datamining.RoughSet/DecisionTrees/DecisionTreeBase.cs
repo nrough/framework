@@ -87,9 +87,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Epsilon = -1.0;
             this.MinimumNumOfInstancesPerLeaf = 1;
             
-
             this.PruningType = PruningType.None;
-            this.PruningObjective = PruningObjectiveType.MinimizeNumberOfLeafs;
+            this.PruningObjective = PruningObjectiveType.MinimizeError;
             this.PruningCVFolds = 3;
         }
 

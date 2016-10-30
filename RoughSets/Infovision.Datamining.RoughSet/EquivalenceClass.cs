@@ -98,6 +98,14 @@ namespace Infovision.Datamining.Roughset
             internal set { this.decisionCount = value; }
         }
 
+        public DecisionDistribution DecisionDistribution
+        {
+            get
+            {
+                return new DecisionDistribution(this.DecisionWeights);
+            }
+        }
+
         #endregion Properties
 
         #region Constructors
@@ -311,7 +319,7 @@ namespace Infovision.Datamining.Roughset
                     }
                 }
             }
-        }
+        }        
 
         #region ICloneable Members
 

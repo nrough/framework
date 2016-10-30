@@ -7,6 +7,7 @@ using Infovision.Utils;
 
 namespace Infovision.Datamining
 {
+    [Serializable]
     public class DecisionDistribution
     {
         private readonly object syncRoot = new object();
@@ -19,12 +20,25 @@ namespace Infovision.Datamining
         {
             get
             {
-                if (this.isCached)
-                    return this.output;
-                this.output =  selectStrategy.Select(this.weightDistribution);
-                this.isCached = true;
+                if (this.isCached == false)
+                {
+                    lock (syncRoot)
+                    {
+                        if (this.isCached == false)
+                        {
+                            this.output = selectStrategy.Select(this.weightDistribution);
+                            this.isCached = true;
+                        }
+                    }
+                }
+
                 return this.output;
             }            
+        }
+
+        public double this[long decision]
+        {
+            get { return this.weightDistribution[decision]; }
         }
 
         private DecisionDistribution()
@@ -50,13 +64,14 @@ namespace Infovision.Datamining
         {
             this.isCached = false;
             this.output = -1;
-        }
+        }        
     }
 
+    [Serializable]
     public class DistributionSelectMax : IDistibutionSelectStrategy
     {
         private static object syncRoot = new object();
-        private static DistributionSelectMax instance;
+        private static volatile DistributionSelectMax instance;
 
         private Comparer<double> comparer = Comparer<double>.Default;
         

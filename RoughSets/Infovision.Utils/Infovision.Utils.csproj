@@ -133,6 +133,15 @@
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BaseTypeExtensions\" />
+    <Folder Include="CollectionExtensions\" />
+    <Folder Include="Comparers\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="DataStructures\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Random\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

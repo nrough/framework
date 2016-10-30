@@ -12,21 +12,25 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 {
     public class ReducedErrorPruning : DecisionTreePruningBase
     {
-        //private object syncRoot = new object();
+        private readonly object syncRoot = new object();
         private long[] predictionResult;
         private Dictionary<IDecisionTreeNode, NodeInfo> info;
-        private double baselineError;
 
         private class NodeInfo
         {
             public List<int> subset;
-            public double baselineError;    //error of using majority class (current node's output)
-            public double error;            //error of using subtree
-            public double gain;             //gain calculated as subtraction of baseLineError and error
+            public double errorMajorityClass;    
+            public double errorSubTree;          
+            public double gain;
 
             public NodeInfo()
             {
                 subset = new List<int>();
+            }
+
+            public override string ToString()
+            {
+                return String.Format("{0} {1} {2}", gain, errorMajorityClass, errorSubTree);
             }
         }
 
@@ -77,25 +81,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 if (this.PruningData.GetDecisionValue(idx) != node.Output)
                     error += this.PruningData.GetWeight(idx);
             return error;
-        }
-
-        private double ComputeGain(IDecisionTreeNode node)
-        {
-            if (node.IsLeaf)
-                return Double.NegativeInfinity;
-
-            // Compute the sum of misclassifications at the children
-            double sum = 0;
-            foreach (var child in node.Children)
-                sum += info[child].error;
-
-            // Get the misclassifications at the current node
-            //double current = info[node].error;
-            double current = info[node].baselineError;
-
-            // Compute the expected gain at the current node:
-            return sum - current;
-        }
+        }        
         
         private double ComputeError()
         {
@@ -104,60 +90,58 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         }
 
         public override double Prune()
-        {            
-            this.baselineError = Classifier.DefaultClassifer.Classify(this.DecisionTree, this.PruningData).Error;
-
-            double error = this.baselineError;
-            double lastError;
-
-            //TODO Change so we prune only if error rate is improved. Currently at least single prune is done.
-            do
-            {
-                lastError = error;
-                error = this.SingleRun();
-            }
-            while (error < lastError);
-
-            return error;
-        }
-
-        private double SingleRun()
         {
-            foreach (var node in this.DecisionTree)
-            {
-                var nodeInfo = this.info[node];
-                nodeInfo.error = this.ComputeSubtreeError(nodeInfo.subset);
-                nodeInfo.baselineError = this.ComputeSubtreeBaselineError(node, nodeInfo.subset);
-            }
+            double currentError = this.ComputeError();
+            double lastError = currentError;
 
-            foreach (var node in this.DecisionTree)
-                this.info[node].gain = this.ComputeGain(node);
-
-            double maxGain = Double.NegativeInfinity;
-            IDecisionTreeNode maxNode = null;
-            foreach (var node in this.DecisionTree)
+            while (true)
             {
-                var nodeInfo = this.info[node];
-                if (nodeInfo.gain > maxGain)
+                foreach (var node in this.DecisionTree)
                 {
-                    maxGain = nodeInfo.gain;
-                    maxNode = node;
+                    var nodeInfo = this.info[node];
+
+                    if (node.IsLeaf)
+                    {
+                        nodeInfo.gain = Double.NegativeInfinity;
+                        continue;
+                    }
+                    
+                    nodeInfo.errorSubTree = this.ComputeSubtreeError(nodeInfo.subset);
+                    nodeInfo.errorMajorityClass = this.ComputeSubtreeBaselineError(node, nodeInfo.subset);
+                    nodeInfo.gain = nodeInfo.errorSubTree - nodeInfo.errorMajorityClass;
                 }
-            }
 
-            if (maxGain >= 0 && maxNode != null)
-            {                                
-                maxNode.Children = null;
+                double maxGain = Double.NegativeInfinity;
+                IDecisionTreeNode maxNode = null;
+                foreach (var node in this.DecisionTree)
+                {
+                    var nodeInfo = this.info[node];
+                    if (nodeInfo.gain >= 0 && nodeInfo.gain >= maxGain)
+                    {
+                        maxGain = nodeInfo.gain;
+                        maxNode = node;
+                    }
+                }
 
-                //check
-                if (maxNode.Output == -1)
-                    throw new InvalidOperationException("maxNode.Output == -1");
+                if (maxGain >= 0 && maxNode != null)
+                {
+                    maxNode.Children = null;
+                    foreach (int idx in this.info[maxNode].subset)
+                        predictionResult[idx] = maxNode.Output;
+                }
+                else
+                {
+                    break;
+                }
 
-                foreach(int idx in this.info[maxNode].subset.ToArray())
-                    this.ComputePrediction(maxNode, idx);                                
-            }
+                currentError = this.ComputeError();
+                if (currentError > lastError)
+                    break;
 
-            return this.ComputeError();
+                lastError = currentError;
+            }            
+
+            return currentError;
         }
     }
 }

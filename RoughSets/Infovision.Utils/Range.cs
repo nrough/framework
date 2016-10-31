@@ -4,9 +4,10 @@ using System.Text;
 namespace Infovision.Utils
 {
     [Serializable]
-    public class Range
+    public class Range<T>
+        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
     {
-        public Range(double lowerBound, double upperBound)
+        public Range(T lowerBound, T upperBound)
         {
             this.LowerBound = lowerBound;
             this.UpperBound = upperBound;
@@ -14,26 +15,19 @@ namespace Infovision.Utils
 
         #region Properties
 
-        public double LowerBound
+        public T LowerBound
         {
             get;
             private set;
         }
 
-        public double UpperBound
+        public T UpperBound
         {
             get;
             private set;
         }
 
-        public double Length
-        {
-            get { return this.UpperBound - this.LowerBound; }
-        }
-
-        #endregion Properties
-
-        #region System.Object
+        #endregion Properties        
 
         public override string ToString()
         {
@@ -57,17 +51,15 @@ namespace Infovision.Utils
             if (obj == null)
                 return false;
 
-            Range range = obj as Range;
+            Range<T> range = obj as Range<T>;
             if (range == null)
                 return false;
 
-            if (this.LowerBound != range.LowerBound
-                || this.UpperBound != range.UpperBound)
-                return false;
+            if (this.LowerBound.Equals(range.LowerBound) 
+                && this.UpperBound.Equals(range.UpperBound))
+                return true;
 
-            return true;
+            return false;
         }
-
-        #endregion System.Object
     }
 }

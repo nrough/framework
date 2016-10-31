@@ -251,8 +251,8 @@ namespace Infovision.Data
 
         public long[] GetColumnInternal(int fieldId)
         {
-            long[] result = new long[this.NumberOfRecords];
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+            long[] result = new long[this.NumberOfRecords];            
             for (int i = 0; i < this.NumberOfRecords; i++)
                 result[i] = this.GetFieldIndexValue(i, fieldIdx);
             return result;

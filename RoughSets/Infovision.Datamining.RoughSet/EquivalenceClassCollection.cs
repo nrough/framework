@@ -31,6 +31,11 @@ namespace Infovision.Datamining.Roughset
             get { return this.decisionWeight; }
         }
 
+        public DecisionDistribution DecisionDistribution
+        {
+            get { return new DecisionDistribution(this.DecisionWeights); }
+        }
+
         /// <summary>
         /// Returns number of partitions, which is equivalent to number of rules
         /// </summary>
@@ -253,6 +258,39 @@ namespace Infovision.Datamining.Roughset
             return result;
         }
 
+        public static EquivalenceClassCollection CreateFromCuts(DataStore data, int attributeId, long[] cuts)
+        {
+            if (!data.DataStoreInfo.GetFieldInfo(attributeId).IsNumeric)
+                throw new ArgumentException("Attribute is not numeric", "attributeId");
+
+            EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, cuts.Length);
+            int attributeIdx = data.DataStoreInfo.GetFieldIndex(attributeId);
+            double weightSum = 0;
+            long[] cursor = new long[1];
+            for (int i = 0; i < data.NumberOfRecords; i++)
+            {
+                long value = data.GetFieldIndexValue(i, attributeIdx);
+                cursor[0] = 0;
+                while (value > cuts[cursor[0]]) cursor[0]++;
+                
+                double w = data.GetWeight(i);                
+                value = data.GetDecisionValue(i);
+                result.AddDecision(value, w);
+                weightSum += w;
+
+                EquivalenceClass eq = result.Find(cursor);
+                if (eq == null)
+                    eq = new EquivalenceClass(cursor.ToArray(), data);
+                eq.AddObject(i, value, w);
+            }
+
+            result.NumberOfObjects = data.NumberOfRecords;
+            result.WeightSum = weightSum;
+            result.CalcAvgConfidence();
+
+            return result;
+        }
+
         public static EquivalenceClassCollection CreateBinaryPartition(DataStore data, int attributeId, int[] indices, long threshold)
         {
             if (!data.DataStoreInfo.GetFieldInfo(attributeId).IsNumeric)
@@ -275,13 +313,9 @@ namespace Infovision.Datamining.Roughset
                 result.AddDecision(dec, w);
 
                 if (data.GetFieldIndexValue(indices[i], attributeIdx) <= threshold)
-                {
                     eq1.AddObject(indices[i], dec, w);
-                }
                 else
-                {
                     eq2.AddObject(indices[i], dec, w);
-                }
             }
 
             result.Add(eq1);

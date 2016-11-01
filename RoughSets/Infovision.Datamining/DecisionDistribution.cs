@@ -11,6 +11,7 @@ namespace Infovision.Datamining
     public class DecisionDistribution
     {
         private readonly object syncRoot = new object();
+
         private Dictionary<long, double> weightDistribution;
         private IDistibutionSelectStrategy selectStrategy;
         private long output;
@@ -20,11 +21,11 @@ namespace Infovision.Datamining
         {
             get
             {
-                if (this.isCached == false)
+                if (!this.isCached)
                 {
                     lock (syncRoot)
                     {
-                        if (this.isCached == false)
+                        if (!this.isCached)
                         {
                             this.output = selectStrategy.Select(this.weightDistribution);
                             this.isCached = true;
@@ -43,28 +44,21 @@ namespace Infovision.Datamining
 
         private DecisionDistribution()
         {
-            this.Clear();
+            this.isCached = false;
+            this.output = -1;
         }
 
-        public DecisionDistribution(IDictionary<long, double> _distribution)
+        public DecisionDistribution(IDictionary<long, double> distribution, IDistibutionSelectStrategy strategy)
             : this()
         {
-            this.weightDistribution = new Dictionary<long, double>(_distribution);
-            this.selectStrategy = DistributionSelectMax.DefaultInstance;
-        }
-
-        public DecisionDistribution(IDictionary<long, double> _distribution, IDistibutionSelectStrategy strategy)
-            : this()
-        {
-            this.weightDistribution = new Dictionary<long, double>(_distribution);
+            this.weightDistribution = new Dictionary<long, double>(distribution);
             this.selectStrategy = strategy;
         }
 
-        private void Clear()
-        {
-            this.isCached = false;
-            this.output = -1;
-        }        
+        public DecisionDistribution(IDictionary<long, double> distribution)
+            : this(distribution, DistributionSelectMax.DefaultInstance)
+        {            
+        }                
     }
 
     [Serializable]
@@ -94,15 +88,37 @@ namespace Infovision.Datamining
             }
         }
 
+        /// <summary>
+        /// Select element with maximal weigth. In case two or more elements exists, returns a random element
+        /// </summary>
+        /// <param name="distribution"></param>
+        /// <returns></returns>
         public long Select(IDictionary<long, double> distribution)
         {
             if (distribution == null || distribution.Count == 0)
                 return -1;
+
+            List<long> maxValues = new List<long>(distribution.Count);
                         
             KeyValuePair<long, double> result = new KeyValuePair<long, double>(-1, 0.0);
             foreach (var kvp in distribution)
-                if (this.comparer.Compare(kvp.Value, result.Value) > 0)
-                    result = kvp;
+                if (this.comparer.Compare(kvp.Value, result.Value) >= 0)
+                {
+                    if (this.comparer.Compare(kvp.Value, result.Value) > 0)
+                    {
+                        maxValues.Clear();
+                        result = kvp;
+                    }
+                     
+                    maxValues.Add(kvp.Key);
+                }
+
+            if (maxValues.Count > 1)
+            {
+                int idx = RandomSingleton.Random.Next(maxValues.Count);
+                return maxValues.ElementAt(idx);
+            }
+
             return result.Key;
         }
     }

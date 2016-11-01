@@ -55,7 +55,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
 
         public string ToString(DataStoreInfo info)
         {            
-            return string.Format("({0} {1} {2})",                    
+            return string.Format("([{0}] {1} {2})",                    
                 (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
                 this.Comparison.ToSymbol(),
                 (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString());            

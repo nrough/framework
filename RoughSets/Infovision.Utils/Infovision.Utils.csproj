@@ -102,6 +102,7 @@
     <Compile Include="DoubleExtensions.cs" />
     <Compile Include="EpsilonComparer.cs" />
     <Compile Include="IDictionaryExtensions.cs" />
+    <Compile Include="IListExtensions.cs" />
     <Compile Include="InfovisionConfiguration.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="DateTimeUtils.cs" />

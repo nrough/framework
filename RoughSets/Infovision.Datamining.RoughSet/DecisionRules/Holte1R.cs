@@ -21,7 +21,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
     public class Holte1R : ILearner, IPredictionModel
     {
         private DecisionListCollection decisionLists;
-        //private DecisionDistribution aprioriDecisionDistribution;
+        private DecisionDistribution aprioriDecisionDistribution;
 
         public double Epsilon { get; set; }
         public double? Small { get; set; }
@@ -61,9 +61,11 @@ namespace Infovision.Datamining.Roughset.DecisionRules
             //TODO Refactor Learn Method
             //TODO Optimize DiscretizationInfo (Output, OutputWeight, Check)
 
-            //this.aprioriDecisionDistribution = EquivalenceClassCollection.Create(new int[] { }, data).DecisionDistribution;
+            this.aprioriDecisionDistribution = EquivalenceClassCollection.Create(new int[] { }, data).DecisionDistribution;
 
-            decisionLists = new DecisionListCollection(attributes.Length);
+            this.decisionLists = new DecisionListCollection(attributes.Length);
+            this.decisionLists.DefaultDecision = this.aprioriDecisionDistribution.Output;
+
             for (int i = 0; i < attributes.Length; i++)
             {
                 DataFieldInfo attributeInfo = data.DataStoreInfo.GetFieldInfo(attributes[i]);
@@ -149,7 +151,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
                         else
                             j++;
                     }
-                    
+
                     double accuracy = 0;
                     DecisionList holteRule = new DecisionList(cuts.Count);
                     foreach (var range in cuts)
@@ -161,10 +163,11 @@ namespace Infovision.Datamining.Roughset.DecisionRules
                         accuracy += range.OutputWeight;
                     }
                     holteRule.Accuracy = accuracy;
-
                     decisionLists.Add(holteRule);
                 }
             }
+
+            decisionLists.Shuffle();
             decisionLists.Sort();
 
             return Classifier.DefaultClassifer.Classify(this, data);              
@@ -189,6 +192,21 @@ namespace Infovision.Datamining.Roughset.DecisionRules
             }
 
             return -1;
+        }
+
+        public double ComputeUpperBound(DataStore testData)
+        {
+            return 0.0;
+        }
+
+        public DecisionList GetRule()
+        {
+            return this.decisionLists.FirstOrDefault();
+        }
+
+        public IEnumerable<DecisionList> GetRules()
+        {
+            return this.decisionLists;
         }
     }
 }

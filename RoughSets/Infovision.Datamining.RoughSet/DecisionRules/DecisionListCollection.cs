@@ -4,25 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.Utils;
 
 namespace Infovision.Datamining.Roughset.DecisionRules
 {
     public class DecisionListCollection : IEnumerable<DecisionList>
     {
         private List<DecisionList> decisionLists;
+
+        public long DefaultDecision { get; set; }
+
         public DecisionListCollection()
         {
             this.decisionLists = new List<DecisionList>();
+            this.DefaultDecision = -1;
         }
 
         public DecisionListCollection(int capacity)
         {
             this.decisionLists = new List<DecisionList>(capacity);
+            this.DefaultDecision = -1;
         }
 
         public DecisionListCollection(IEnumerable<DecisionList> decisionLists)
         {
             this.decisionLists = new List<DecisionList>(decisionLists);
+            this.DefaultDecision = -1;
         }
 
         public DecisionListCollection(DecisionList decisionList)
@@ -40,6 +47,12 @@ namespace Infovision.Datamining.Roughset.DecisionRules
         {
             //sort descending according to accuracy
             this.decisionLists.Sort((list1, list2) => list2.Accuracy.CompareTo(list1.Accuracy));
+        }
+
+        public void Shuffle()
+        {
+            //sort descending according to accuracy
+            this.decisionLists.Shuffle();
         }
 
         public IEnumerator<DecisionList> GetEnumerator()

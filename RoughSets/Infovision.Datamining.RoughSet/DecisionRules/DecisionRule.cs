@@ -35,5 +35,45 @@ namespace Infovision.Datamining.Roughset.DecisionRules
                     return false;
             return true;
         }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            bool first = true;
+            foreach (var condition in conditions)
+            {
+                if (first)
+                {
+                    sb.AppendFormat("{0}", condition);
+                    first = false;
+                }
+                else
+                {
+                    sb.AppendFormat(" && {0}", condition);
+                }
+            }
+            sb.AppendFormat(" then [d] == {0}", this.Output);
+            return sb.ToString();
+        }
+
+        public string ToString(DataStoreInfo info)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool first = true;
+            foreach (var condition in conditions)
+            {
+                if (first)
+                {
+                    sb.AppendFormat("{0}", condition.ToString(info));
+                    first = false;
+                }
+                else
+                {
+                    sb.AppendFormat(" && {0}", condition.ToString(info));
+                }
+            }
+            sb.AppendFormat(" => [{0}] == {1}", info.DecisionInfo.Name, info.DecisionInfo.Internal2External(this.Output));
+            return sb.ToString();
+        }
     }
 }

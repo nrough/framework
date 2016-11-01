@@ -21,15 +21,22 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionRules
         //[TestCase(@"Data\dna.train", @"Data\dna.test")]
         public void ClassiferTest(string trainFile, string testFile)
         {
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            for (int i = 0; i < 30; i++)
+            {
+                DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+                foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+                DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+                //int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                int[] attributes = new int[] { 3 };
 
-            Holte1R holte1R = new Holte1R();
-            holte1R.Learn(data, attributes);
+                Holte1R oneR = new Holte1R();
+                oneR.Learn(data, attributes);
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(holte1R, test));
+                Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+
+                foreach (var decisionList in oneR.GetRules())
+                    Console.WriteLine(decisionList.ToString(data.DataStoreInfo));
+            }
         }
 
         [Test, Repeat(1)]
@@ -40,16 +47,19 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionRules
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            Holte1R holte1R = new Holte1R();
-            holte1R.Learn(data, attributes);
+            Holte1R oneR = new Holte1R();
+            oneR.Learn(data, attributes);
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(holte1R, test));
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+
+            foreach (var decisionList in oneR.GetRules())
+                Console.WriteLine(decisionList.ToString(data.DataStoreInfo));
         }
 
         [Test, Repeat(1)]
         public void DecisionTreeRough_GermanCredit()
         {            
-            int numOfFolds = 5;
+            int numOfFolds = 10;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             DataStore train = null, test = null;
@@ -61,7 +71,10 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionRules
 
                 Holte1R oneR = new Holte1R();                
                 oneR.Learn(train, attributes);                
-                Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));             
+                Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+                
+                foreach (var decisionList in oneR.GetRules())
+                    Console.WriteLine(decisionList.ToString(data.DataStoreInfo));
             }
         }
     }

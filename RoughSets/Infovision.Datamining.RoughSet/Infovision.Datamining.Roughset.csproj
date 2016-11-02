@@ -199,6 +199,8 @@
     <Compile Include="InformationMeasure.cs" />
     <Compile Include="EquivalenceClassCollection.cs" />
     <Compile Include="RuleMeasure.cs" />
+    <Compile Include="DecisionTables\DecisionTable.cs" />
+    <Compile Include="DecisionTables\DecisionTableMajority.cs" />
     <Compile Include="Weight\WeightBoostingGenerator.cs" />
     <Compile Include="Weight\WeightGenerator.cs" />
     <Compile Include="Weight\WeightGeneratorType.cs" />

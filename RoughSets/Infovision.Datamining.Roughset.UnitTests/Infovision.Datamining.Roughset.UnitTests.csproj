@@ -162,6 +162,7 @@
     <Compile Include="BireductTest.cs" />
     <Compile Include="ApproximateReductWeightsTest.cs" />
     <Compile Include="DecisionRules\Holte1RTest.cs" />
+    <Compile Include="DecisionRules\TestTest.cs" />
     <Compile Include="DecisionTrees\DecisionForestTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeComparisonTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreePruningTest.cs" />

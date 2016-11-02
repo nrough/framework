@@ -29,15 +29,11 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         //[TestCase(@"Data\dna.train", @"Data\dna.test")]        
         public void ReductTreeLearnTest(string trainFile, string testFile)
         {           
-            //double eps = 0.1;
-            //double redeps = 0.1;
-            int size = 100;
+            int size = 200;
             PruningType pruningType = PruningType.ErrorBasedPruning;
 
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             //Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\treeComparisonTest.log"));
-
-            //Trace.WriteLine("Hello World");
 
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
@@ -46,11 +42,11 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Trace.WriteLine(ClassificationResult.ResultHeader());            
             
-            for (double eps = -1.0; eps < 0.4; eps += 0.01)
+            for (double eps = -1.0; eps < 0.1; eps += 0.01)
             {
                 this.TreeComparisonTest(data, test, attributes, eps, 0.0, size, false, pruningType);
 
-                for (double redeps = 0.0; redeps < 0.4; redeps += 0.01)                    
+                for (double redeps = 0.0; redeps < 0.1; redeps += 0.01)                    
                     this.TreeComparisonTest(data, test, attributes, eps, redeps, size, true, pruningType);
 
                 if (eps < 0)

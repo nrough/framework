@@ -71,8 +71,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.ReductIterations);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-            if (generator is ReductGeneratorMeasure)
-                ((ReductGeneratorMeasure)generator).UsePerformanceImprovements = true;
             generator.Run();
 
             //TODO Improve reduct selection 

@@ -389,7 +389,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return node.Children.First().Value;
         }
 
-        public long Compute(DataRecordInternal record)
+        public virtual long Compute(DataRecordInternal record)
         {
             if (this.Root == null)
                 throw new InvalidOperationException("this.Root == null");
@@ -424,7 +424,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 localAttributes.Length, 
                 System.Math.Max(1, localAttributes.Length / InfovisionConfiguration.MaxDegreeOfParallelism));
             
-            double currentScore = this.GetCurrentScore(eqClassCollection);
+            double currentScore = this.CalculateImpurityBeforeSplit(eqClassCollection);
             SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             ParallelOptions options = new ParallelOptions()
@@ -457,7 +457,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return scores[maxIndex];
         }
 
-        protected virtual double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
+        protected virtual double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {
             throw new NotImplementedException();
         }
@@ -478,7 +478,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             throw new NotImplementedException("Only symbolic and numeric attribute types are currently supported.");                            
         }
 
-        protected abstract double CalculateImpurity(EquivalenceClassCollection eq);        
+        protected abstract double CalculateImpurityAfterSplit(EquivalenceClassCollection eq);        
 
         protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
         {
@@ -486,7 +486,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 throw new ArgumentException("currentScore < 0", "parentMeasure");
 
             var eq = EquivalenceClassCollection.Create(attributeId, data);
-            double gain = this.CalculateImpurity(eq);            
+            double gain = this.CalculateImpurityAfterSplit(eq);            
             return new SplitInfo(attributeId, parentMeasure - gain, eq, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
@@ -516,7 +516,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 var splitEq = EquivalenceClassCollection.CreateBinaryPartition(this.TrainingData, attributeId, indices, threshold);
 
-                double gain = this.CalculateImpurity(splitEq);
+                double gain = this.CalculateImpurityAfterSplit(splitEq);
                 if (gain > maxGain)
                 {
                     maxGain = gain;
@@ -567,6 +567,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             });
 
             return count > 0 ? sumHeight / count : 0.0;
+        }
+
+        public static int GetNumberOfAttributes(IDecisionTree tree)
+        {
+            return (tree.Root != null) && (tree.Root is DecisionTreeNode) 
+                ? ((DecisionTreeNode)tree.Root).GetChildUniqueKeys().Count 
+                : 0;
         }
 
         private static double MeasureSum(IDecisionTreeNode node)

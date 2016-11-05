@@ -19,7 +19,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new DecisionTreeCART();
         }
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
+        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {
             double s2 = 0;
             foreach (long dec in this.Decisions)
@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return 1.0 - s2;
         }
 
-        protected override double CalculateImpurity(EquivalenceClassCollection eq)
+        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
         {
             double attributeGini = 0;
             foreach (var e in eq)

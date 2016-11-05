@@ -14,12 +14,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private Dictionary<int[], double> cache;
 
         public bool RankedAttributes { get; set; }
+        public bool UseLocalOutput { get; set; }
 
         public ObliviousDecisionTree()
             : base()
         {
             this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
             this.RankedAttributes = false;
+            this.UseLocalOutput = false;
         }
 
         protected override DecisionTreeBase CreateInstanceForClone()
@@ -38,12 +40,34 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
+        public override long Compute(DataRecordInternal record)
+        {
+            if (this.Root == null)
+                throw new InvalidOperationException("this.Root == null");
+
+            IDecisionTreeNode current = this.Root;
+            while (current != null)
+            {
+                if (current.IsLeaf)
+                    return current.Output;
+
+                IDecisionTreeNode next = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
+
+                if (next == null && this.UseLocalOutput)
+                    return current.Output;
+
+                current = next;
+            }
+
+            return -1; //unclassified
+        }
+
+        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {
             return 0;
         }
 
-        protected override double CalculateImpurity(EquivalenceClassCollection eq)
+        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
         {
             throw new NotImplementedException();
         }
@@ -54,7 +78,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 return base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
 
             int attributeId = origAttributes[parentTreeNode.Level];
-            return this.GetSplitInfo(attributeId, eqClassCollection, this.GetCurrentScore(eqClassCollection));
+            return this.GetSplitInfo(attributeId, eqClassCollection, this.CalculateImpurityBeforeSplit(eqClassCollection));
         }
 
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double dummy)

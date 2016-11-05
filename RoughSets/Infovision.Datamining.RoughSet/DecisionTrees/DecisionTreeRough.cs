@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new DecisionTreeRough();
         }
 
-        protected override double CalculateImpurity(EquivalenceClassCollection eq)
+        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
         {
             return InformationMeasureWeights.Instance.Calc(eq);
         }
@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
 
-        protected override double GetCurrentScore(EquivalenceClassCollection eqClassCollection)
+        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {            
             return InformationMeasureWeights.Instance.Calc(eqClassCollection);
         }

@@ -146,7 +146,6 @@
     <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
     <Compile Include="DecisionRules\DecisionRuleCondition.cs" />
     <Compile Include="DecisionRules\Holte1R.cs" />
-    <Compile Include="NaiveBayes.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="Permutation\PermutationGeneratorFieldQuality.cs" />
     <Compile Include="ReductEnsembleBoostingGenerator.cs" />

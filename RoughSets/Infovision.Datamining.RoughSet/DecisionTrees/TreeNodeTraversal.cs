@@ -84,5 +84,32 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 action.Invoke(node);
             }
         }
+
+        public static IEnumerator<IDecisionTreeNode> GetEnumeratorTopDown(IDecisionTreeNode node)
+        {
+            if (node == null)
+                yield break;
+
+            var stack = new Stack<IDecisionTreeNode>(new[] { node });
+            while (stack.Count != 0)
+            {
+                IDecisionTreeNode current = stack.Pop();
+                yield return current;
+
+                if (current.Children != null)
+                    foreach (IDecisionTreeNode child in current.Children)
+                        stack.Push(child);
+            }
+        }
+
+        public static IEnumerator<IDecisionTreeNode> GetEnumeratorBottomUp(IDecisionTreeNode node)
+        {
+            IEnumerator<IDecisionTreeNode> topDownEnumerator = TreeNodeTraversal.GetEnumeratorTopDown(node);
+            List<IDecisionTreeNode> list = new List<IDecisionTreeNode>();
+            while (topDownEnumerator.MoveNext())
+                list.Add(topDownEnumerator.Current);
+            list.Reverse();
+            return list.GetEnumerator();
+        }
     }
 }

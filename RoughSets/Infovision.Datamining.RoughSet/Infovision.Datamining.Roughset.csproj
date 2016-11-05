@@ -115,10 +115,12 @@
     <Compile Include="DecisionRules\DecisionList.cs" />
     <Compile Include="DecisionRules\DecisionListCollection.cs" />
     <Compile Include="DecisionRules\DecisionRule.cs" />
+    <Compile Include="DecisionTables\DecisionTableLocal.cs" />
     <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
     <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
     <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
     <Compile Include="DecisionTrees\Pruning\PruningType.cs" />
+    <Compile Include="DecisionTrees\Pruning\ReducedErrorPruningBottomUp.cs" />
     <Compile Include="DecisionTrees\SplitType.cs" />
     <Compile Include="ComparisonType.cs" />
     <Compile Include="DecisionTrees\DecisionForestBase.cs" />

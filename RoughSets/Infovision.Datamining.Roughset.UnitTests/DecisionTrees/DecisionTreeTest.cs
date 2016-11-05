@@ -14,6 +14,7 @@ using System.IO;
 using System.Reflection;
 using Infovision.Datamining.Roughset.DecisionTrees;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using Infovision.Datamining.Roughset.DecisionTables;
 
 namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
@@ -30,7 +31,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         public void ReductTreeLearnTest(string trainFile, string testFile)
         {           
             int size = 200;
-            PruningType pruningType = PruningType.ErrorBasedPruning;
+            PruningType pruningType = PruningType.None;
 
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             //Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\treeComparisonTest.log"));
@@ -40,13 +41,17 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            Trace.WriteLine(ClassificationResult.ResultHeader());            
-            
-            for (double eps = -1.0; eps < 0.1; eps += 0.01)
+            Trace.WriteLine(ClassificationResult.ResultHeader());
+
+            //for (double eps = 0.15; eps < 0.25; eps += 0.01)
+            //double eps = -1;
+
+
+            for (double eps = -1.0; eps < 0.4; eps += 0.01)
             {
                 this.TreeComparisonTest(data, test, attributes, eps, 0.0, size, false, pruningType);
 
-                for (double redeps = 0.0; redeps < 0.1; redeps += 0.01)                    
+                for (double redeps = 0.1; redeps < 0.25; redeps += 0.01)                    
                     this.TreeComparisonTest(data, test, attributes, eps, redeps, size, true, pruningType);
 
                 if (eps < 0)
@@ -79,6 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 //-------------------------------------------------
 
                 IReduct reduct = treeRed.Reduct;
+                
                 ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
                 ReductStore reductStore = new ReductStore(1);
                 reductStore.AddReduct(reduct);
@@ -91,6 +97,13 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 result2.ModelName = "Reduct";
                 result2.NumberOfRules = reduct.EquivalenceClasses.Count;
                 Trace.WriteLine(result2);
+
+                //-------------------------------------------------
+
+                DecisionTableMajority decTabMaj = new DecisionTableMajority();
+                decTabMaj.Learn(data, reduct.Attributes.ToArray());
+                Trace.WriteLine(Classifier.DefaultClassifer.Classify(decTabMaj, test));
+
 
                 //-------------------------------------------------            
 

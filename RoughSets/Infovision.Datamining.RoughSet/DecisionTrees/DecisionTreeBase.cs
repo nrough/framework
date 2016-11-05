@@ -38,6 +38,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public int NumberOfAttributesToCheckForSplit { get; set; }
+        public long? DefaultOutput { get; set; }
         public double Epsilon { get; set; }
         public int MaxHeight { get; set; }
         public int MinimumNumOfInstancesPerLeaf { get; set; }
@@ -571,9 +572,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             });
             return sum;
         }
-              
-        public IEnumerator<IDecisionTreeNode> GetEnumerator()
+
+        public IEnumerator<IDecisionTreeNode> GetEnumeratorTopDown()
         {
+            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);
+            /*
             if (this.Root == null)
                 yield break;
 
@@ -584,9 +587,29 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 yield return current;
 
                 if (current.Children != null)
-                    foreach(IDecisionTreeNode node in current.Children)                    
+                    foreach (IDecisionTreeNode node in current.Children)
                         stack.Push(node);
             }
+            */
+        }
+
+        public IEnumerator<IDecisionTreeNode> GetEnumeratorBottomUp()
+        {
+            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);
+            /*
+            IEnumerator<IDecisionTreeNode> topDownEnumerator = this.GetEnumeratorTopDown();
+            List<IDecisionTreeNode> list = new List<IDecisionTreeNode>();
+            while (topDownEnumerator.MoveNext())
+                list.Add(topDownEnumerator.Current);
+            list.Reverse();
+            return list.GetEnumerator();
+            */
+        }
+
+        public IEnumerator<IDecisionTreeNode> GetEnumerator()
+        {
+            return this.GetEnumeratorTopDown();
+            //return this.GetEnumeratorBottomUp();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

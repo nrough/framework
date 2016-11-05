@@ -1,16 +1,14 @@
 ﻿using Infovision.Data;
-using Infovision.Statistics;
 using Infovision.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 {
-    public class ReducedErrorPruning : DecisionTreePruningBase
+    class ReducedErrorPruningBottomUp : DecisionTreePruningBase
     {
         private readonly object syncRoot = new object();
         private long[] predictionResult;
@@ -18,20 +16,13 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
         private class NodeInfo
         {
-            public List<int> subset;
-            public double errorMajorityClass;    
             public double errorSubTree;
-            public double gain;
-
-            public NodeInfo() { subset = new List<int>(); }
-
-            public override string ToString()
-            {
-                return String.Format("{0} {1} {2}", gain, errorMajorityClass, errorSubTree);
-            }
+            public double errorMajorityClass;
+            public List<int> subset = new List<int>();
+            public double gain { get { return this.errorSubTree - this.errorMajorityClass; } }
         }
 
-        public ReducedErrorPruning(IDecisionTree decisionTree, DataStore data)
+        public ReducedErrorPruningBottomUp(IDecisionTree decisionTree, DataStore data)
             : base(decisionTree, data)
         {
             this.info = new Dictionary<IDecisionTreeNode, NodeInfo>();
@@ -61,25 +52,25 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
             }
         }
-        
+
         private double ComputeSubtreeError(IEnumerable<int> indices)
-        {                        
+        {
             double error = 0;
-            foreach(int idx in indices)
-                if (this.PruningData.GetDecisionValue(idx) != predictionResult[idx])                
+            foreach (int idx in indices)
+                if (this.PruningData.GetDecisionValue(idx) != predictionResult[idx])
                     error += this.PruningData.GetWeight(idx);
             return error;
         }
 
         private double ComputeSubtreeBaselineError(IDecisionTreeNode node, IEnumerable<int> indices)
-        {                        
+        {
             double error = 0;
-            foreach(int idx in indices)            
+            foreach (int idx in indices)
                 if (this.PruningData.GetDecisionValue(idx) != node.Output)
                     error += this.PruningData.GetWeight(idx);
             return error;
         }
-        
+
         private double ComputeError()
         {
             ClassificationResult result = Classifier.DefaultClassifer.Classify(this.DecisionTree, this.PruningData);
@@ -88,57 +79,47 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
 
         public override double Prune()
         {
-            double currentError = this.ComputeError();
-            double lastError = currentError;
-
+            bool reduction = false;
+            double lastError = this.ComputeError();
             while (true)
             {
-                foreach (var node in this.DecisionTree)
+                reduction = false;
+                var i_nodes = TreeNodeTraversal.GetEnumeratorBottomUp(this.DecisionTree.Root);
+                while(i_nodes.MoveNext())
                 {
-                    var nodeInfo = this.info[node];
+                    IDecisionTreeNode node = i_nodes.Current;
                     if (node.IsLeaf)
-                    {
-                        nodeInfo.gain = Double.NegativeInfinity;
                         continue;
-                    }
 
+                    var nodeInfo = this.info[node];
                     nodeInfo.errorMajorityClass = this.ComputeSubtreeBaselineError(node, nodeInfo.subset);
                     nodeInfo.errorSubTree = this.ComputeSubtreeError(nodeInfo.subset);
-                    nodeInfo.gain = nodeInfo.errorSubTree - nodeInfo.errorMajorityClass;
-                    
-                }
-
-                double maxGain = Double.NegativeInfinity;
-                IDecisionTreeNode maxNode = null;
-                foreach (var node in this.DecisionTree)
-                {
-                    var nodeInfo = this.info[node];
-                    if (nodeInfo.gain >= 0 && nodeInfo.gain >= maxGain)
+                    if (nodeInfo.gain >= 0)
                     {
-                        maxGain = nodeInfo.gain;
-                        maxNode = node;
+                        var tmpChildren = node.Children;
+                        node.Children = null;
+                        double currentError = this.ComputeError();
+                        if (currentError > lastError)
+                        {
+                            node.Children = tmpChildren;
+                        }
+                        else
+                        {
+                            reduction = true;
+                            foreach (int idx in nodeInfo.subset)
+                                predictionResult[idx] = node.Output;
+
+                            lastError = currentError;
+                            break;
+                        }
                     }
                 }
 
-                if (maxGain >= 0 && maxNode != null)
-                {
-                    maxNode.Children = null;
-                    foreach (int idx in this.info[maxNode].subset)
-                        predictionResult[idx] = maxNode.Output;
-                }
-                else
-                {
+                if(!reduction)
                     break;
-                }
+            }
 
-                currentError = this.ComputeError();
-                if (currentError > lastError)
-                    break;
-
-                lastError = currentError;
-            }            
-
-            return currentError;
+            return lastError;
         }
     }
 }

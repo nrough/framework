@@ -31,6 +31,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
         public double Epsilon { get; set; }
+        public long? DefaultOutput { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
         public DecisionForestVoteType VoteType { get; set; } 

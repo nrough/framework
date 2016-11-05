@@ -47,7 +47,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                     break;
 
                 case PruningType.ReducedErrorPruning:
-                    ret = new ReducedErrorPruning(decisionTree, data);
+                    ret = new ReducedErrorPruningBottomUp(decisionTree, data);
                     break;
 
                 default:

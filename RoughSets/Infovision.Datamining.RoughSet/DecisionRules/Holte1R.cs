@@ -23,6 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
         private DecisionListCollection decisionLists;
         private DecisionDistribution aprioriDecisionDistribution;
 
+        public long? DefaultOutput { get; set; }
         public double Epsilon { get; set; }
         public double? Small { get; set; }
 

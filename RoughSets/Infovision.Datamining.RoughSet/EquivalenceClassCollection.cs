@@ -186,14 +186,16 @@ namespace Infovision.Datamining.Roughset
             return 0;
         }
 
-        #endregion        
+        #endregion
 
+        /*
         public static EquivalenceClassCollection Create(IReduct reduct, DataStore data, double[] weights, ObjectSet objectSet)
         {
             EquivalenceClassCollection result = new EquivalenceClassCollection(data);
             result.Calc(reduct.Attributes, data, objectSet, weights);
             return result;
         }
+        */
 
         public static EquivalenceClassCollection Create(int[] attributes, DataStore data, double[] weights, int[] objectIndices)
         {
@@ -446,6 +448,7 @@ namespace Infovision.Datamining.Roughset
             this.WeightSum = 1.0;
         }
 
+        /*
         public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore, double[] objectWeights)
         {
             this.InitPartitions();
@@ -462,7 +465,7 @@ namespace Infovision.Datamining.Roughset
 
             this.CalcAvgConfidence();
         }
-
+        */
         public virtual void Calc(int[] attr, DataStore dataStore, int[] objectIndices, double[] objectWeights)
         {
             this.InitPartitions();
@@ -473,6 +476,7 @@ namespace Infovision.Datamining.Roughset
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
         }
 
+        /*
         public virtual void Calc(HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
         {
             this.InitPartitions();
@@ -481,6 +485,7 @@ namespace Infovision.Datamining.Roughset
             foreach (int objectIdx in objectSet)
                 this.UpdateStatistic(this.attributes, dataStore, objectIdx, objectWeights[objectIdx]);
         }
+        */
 
         private void UpdateStatistic(int[] attributeArray, DataStore dataStore, int objectIndex, double objectWeight)
         {

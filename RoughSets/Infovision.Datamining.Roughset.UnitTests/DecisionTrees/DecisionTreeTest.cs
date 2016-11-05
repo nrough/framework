@@ -104,6 +104,12 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 decTabMaj.Learn(data, reduct.Attributes.ToArray());
                 Trace.WriteLine(Classifier.DefaultClassifer.Classify(decTabMaj, test));
 
+                //-------------------------------------------------
+
+                DecisionTableLocal decTabLoc = new DecisionTableLocal();
+                decTabLoc.Learn(data, reduct.Attributes.ToArray());
+                Trace.WriteLine(Classifier.DefaultClassifer.Classify(decTabLoc, test));
+
 
                 //-------------------------------------------------            
 

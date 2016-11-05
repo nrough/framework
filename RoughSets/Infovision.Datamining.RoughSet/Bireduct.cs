@@ -60,7 +60,8 @@ namespace Infovision.Datamining.Roughset
                     {
                         if (this.eqClassMap == null)
                         {
-                            this.eqClassMap = EquivalenceClassCollection.Create(this, this.DataStore, this.Weights, this.ObjectSet);
+                            this.eqClassMap = EquivalenceClassCollection.Create(
+                                this.Attributes.ToArray(), this.DataStore, this.Weights, this.ObjectSet.ToArray());
                         }
                     }
                 }

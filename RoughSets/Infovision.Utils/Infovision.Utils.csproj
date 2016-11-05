@@ -103,7 +103,7 @@
     <Compile Include="Comparers\EpsilonComparer.cs" />
     <Compile Include="CollectionExtensions\IDictionaryExtensions.cs" />
     <Compile Include="CollectionExtensions\IListExtensions.cs" />
-    <Compile Include="InfovisionConfiguration.cs" />
+    <Compile Include="Configuration\InfovisionConfiguration.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="DateTimeUtils.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="Comparers\Int64ArraySIMDEqualityComparer.cs" />
     <Compile Include="CollectionExtensions\ListExtensions.cs" />
     <Compile Include="BaseTypeExtensions\LongExtensions.cs" />
-    <Compile Include="Matrix.cs" />
+    <Compile Include="DataStructures\Matrix.cs" />
     <Compile Include="DataStructures\PascalSet.cs" />
     <Compile Include="PrimeTool.cs" />
     <Compile Include="PrimeToolHash.cs" />
@@ -135,7 +135,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

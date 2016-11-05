@@ -33,6 +33,8 @@ namespace Infovision.Datamining.Roughset
 
         #region Properties
 
+        public long? DefaultOutput { get; set; }
+
         public ICollection<long> DecisionValues { get; set; }
         public bool UseExceptionRules { get; set; }
         public bool ExceptionRulesAsGaps { get; set; }

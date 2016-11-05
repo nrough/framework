@@ -72,10 +72,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 m = InformationMeasureWeights.Instance.Calc(attributeEqClasses);
                 cache.Add(newAttributes, m);
             }
-
-            if(data.Indices.Length != data.Data.NumberOfRecords)
-                attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights, data.Indices);
-
+            
+            attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights, data.Indices);
             return new SplitInfo(attributeId, m, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
     }

@@ -10,14 +10,17 @@ namespace Infovision.Datamining.Roughset.DecisionTables
 {
     public class DecisionTableLocal : ILearner, IPredictionModel
     {
-        private ObliviousDecisionTree obliviousDecisionTree;
+        private ObliviousDecisionTree obliviousDecisionTree = null;
 
         public long? DefaultOutput { get; set; }
         public double Epsilon { get; set; }
+        public bool RankedAttributes { get; set; }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
-
+            this.obliviousDecisionTree = new ObliviousDecisionTree();
+            this.obliviousDecisionTree.RankedAttributes = this.RankedAttributes;
+            this.obliviousDecisionTree.Learn(data, attributes);
 
             return Classifier.DefaultClassifer.Classify(this, data);
         }

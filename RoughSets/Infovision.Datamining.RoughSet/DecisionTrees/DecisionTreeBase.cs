@@ -15,15 +15,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     [Serializable]
     public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel, ICloneable
-    {
+    {        
         protected Dictionary<int, List<long>> thresholds;
-        private readonly object syncRoot = new object();
+        protected DecisionDistribution aprioriDistribution;
+
         private DecisionTreeNode root;
         private int decisionAttributeId;
         private double mA;
         private long[] decisions;
-        private int nextId;
-        
+        private int nextId;        
+        private readonly object syncRoot = new object();
+
         public IDecisionTreeNode Root
         {
             get { return this.root; }
@@ -142,6 +144,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                     this.thresholds[field.Id] = thresholdList;
                 }
+
+                this.aprioriDistribution = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights).DecisionDistribution;
+                this.DefaultOutput = this.aprioriDistribution.Output;
             }
         }
 
@@ -155,6 +160,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.PruningType = _decisionTree.PruningType;
             this.PruningObjective = _decisionTree.PruningObjective;
             this.PruningCVFolds = _decisionTree.PruningCVFolds;
+
+            this.DefaultOutput = _decisionTree.DefaultOutput;
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)

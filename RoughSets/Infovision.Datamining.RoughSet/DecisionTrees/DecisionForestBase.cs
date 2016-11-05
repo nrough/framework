@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         where T : IDecisionTree, new()
     {
         private List<Tuple<T, double>> trees;
-        private ClassificationResult learningResult;
+        private ClassificationResult learningResult;        
 
         public ClassificationResult LearningResult
         {

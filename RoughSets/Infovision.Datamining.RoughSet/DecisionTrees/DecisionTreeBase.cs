@@ -46,6 +46,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public int MinimumNumOfInstancesPerLeaf { get; set; }
         public DataStore TrainingData { get; protected set; }
 
+        public ImpurityFunc ImpurityFunction { get; set; }
+        public ImpurityNormalizeFunc ImpurityNormalize { get; set; }
+
         public PruningType PruningType { get; set; }
         public int PruningCVFolds { get; set; }
         public PruningObjectiveType PruningObjective { get; set; }
@@ -93,6 +96,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.PruningType = PruningType.None;
             this.PruningObjective = PruningObjectiveType.MinimizeError;
             this.PruningCVFolds = 3;
+
+            this.ImpurityFunction = ImpurityFunctions.InformationGain;
+            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 
         public virtual object Clone()
@@ -310,7 +316,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return false;
         }
 
-
         protected virtual void BuildTree(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
         {
             var splitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
@@ -457,9 +462,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return scores[maxIndex];
         }
 
-        protected virtual double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
+        protected virtual double CalculateImpurityAfterSplit(EquivalenceClassCollection equivalenceClasses)
         {
-            throw new NotImplementedException();
+            return this.ImpurityFunction(equivalenceClasses);
+        }
+
+        protected virtual double CalculateImpurityBeforeSplit(EquivalenceClassCollection equivalenceClasses)
+        {
+            if (equivalenceClasses.Count != 1)
+                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
+
+            return this.ImpurityFunction(equivalenceClasses);
         }
 
         protected virtual SplitInfo GetSplitInfo(int attributeId, EquivalenceClassCollection data, double currentScore)
@@ -477,9 +490,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             
             throw new NotImplementedException("Only symbolic and numeric attribute types are currently supported.");                            
         }
-
-        protected abstract double CalculateImpurityAfterSplit(EquivalenceClassCollection eq);        
-
+            
         protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
         {
             if (parentMeasure < 0)
@@ -487,7 +498,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             var eq = EquivalenceClassCollection.Create(attributeId, data);
             double gain = this.CalculateImpurityAfterSplit(eq);            
-            return new SplitInfo(attributeId, parentMeasure - gain, eq, SplitType.Discreet, ComparisonType.EqualTo, 0);
+            return new SplitInfo(attributeId,
+                this.ImpurityNormalize(parentMeasure - gain, eq), eq, 
+                SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
         protected virtual SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double currentScore)
@@ -507,7 +520,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     thresholds.Add((values[k] + values[k + 1]) / 2);
 
             if (thresholds.Count == 0)
-                return new SplitInfo(attributeId, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, long.MaxValue);
+                return new SplitInfo(attributeId, Double.NegativeInfinity, 
+                    null, SplitType.None, ComparisonType.None, long.MaxValue);
 
             double maxGain = Double.NegativeInfinity;
             EquivalenceClassCollection bestEq = null;
@@ -525,9 +539,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 }
             }            
 
-            return new SplitInfo(
-                attributeId,
-                (currentScore - maxGain),
+            return new SplitInfo(attributeId,
+                this.ImpurityNormalize(currentScore - maxGain, bestEq),
                 bestEq, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
         }
 

@@ -16,6 +16,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         public long? DefaultOutput { get; set; }
         public double Epsilon { get; set; }
         public bool RankedAttributes { get; set; }
+        public IDecisionTree ObiliviousTree { get { return this.obliviousDecisionTree; } }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
@@ -23,6 +24,8 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             this.DefaultOutput = this.aprioriDistribution.Output;
 
             this.obliviousDecisionTree = new ObliviousDecisionTree();
+            this.obliviousDecisionTree.ImpurityFunction = ImpurityFunctions.InformationGain;
+            this.obliviousDecisionTree.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
             this.obliviousDecisionTree.UseLocalOutput = true;
             this.obliviousDecisionTree.RankedAttributes = this.RankedAttributes;
             this.obliviousDecisionTree.Learn(data, attributes);

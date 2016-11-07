@@ -117,6 +117,7 @@
     <Compile Include="DecisionRules\DecisionRule.cs" />
     <Compile Include="DecisionTables\DecisionTableLocal.cs" />
     <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
+    <Compile Include="DecisionTrees\ImpurityMeasure.cs" />
     <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
     <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
     <Compile Include="DecisionTrees\Pruning\PruningType.cs" />

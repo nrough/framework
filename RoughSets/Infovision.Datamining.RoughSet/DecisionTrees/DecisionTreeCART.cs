@@ -14,13 +14,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </remarks>
     public class DecisionTreeCART : DecisionTreeBase
     {
+        public DecisionTreeCART()
+            : base()
+        {
+            this.ImpurityFunction = ImpurityFunctions.Gini;
+        }
+
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeCART();
         }
 
+        /*
         protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {
+            if (eqClassCollection.Count != 1)
+                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
+
             double s2 = 0;
             foreach (long dec in this.Decisions)
             {
@@ -30,7 +40,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
             return 1.0 - s2;
         }
+        */
 
+        /*
         protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
         {
             double attributeGini = 0;
@@ -49,5 +61,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             return attributeGini;
         }
+        */
     }
 }

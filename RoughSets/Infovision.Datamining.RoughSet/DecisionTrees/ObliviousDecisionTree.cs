@@ -22,6 +22,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
             this.RankedAttributes = false;
             this.UseLocalOutput = false;
+
+            this.ImpurityFunction = ImpurityFunctions.Majority;
+            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 
         protected override DecisionTreeBase CreateInstanceForClone()
@@ -64,6 +67,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
         {
+            if (eqClassCollection.Count != 1)
+                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
+
             return 0;
         }
 
@@ -93,7 +99,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (!cache.TryGetValue(newAttributes, out m))
             {
                 attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights);
-                m = InformationMeasureWeights.Instance.Calc(attributeEqClasses);
+                m = this.ImpurityFunction(attributeEqClasses);
                 cache.Add(newAttributes, m);
             }
             

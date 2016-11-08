@@ -20,8 +20,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionRules
         //[TestCase(@"Data\spect.train", @"Data\spect.test")]
         //[TestCase(@"Data\dna.train", @"Data\dna.test")]
         public void ClassiferTest(string trainFile, string testFile)
-        {
-            
+        {            
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);

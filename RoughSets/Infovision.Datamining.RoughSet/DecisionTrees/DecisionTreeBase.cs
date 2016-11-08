@@ -23,7 +23,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private int decisionAttributeId;
         private double mA;
         private long[] decisions;
-        private int nextId;        
+        private int nextId;
+
         private readonly object syncRoot = new object();
 
         public IDecisionTreeNode Root
@@ -383,17 +384,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
-        private long GetDecision(IDecisionTreeNode node)
-        {
-            if (node == null)
-                throw new ArgumentNullException("node");
-
-            if (node.Children == null)
-                throw new ArgumentException("node.Children == null", "node");
-
-            return node.Children.First().Value;
-        }
-
         public virtual long Compute(DataRecordInternal record)
         {
             if (this.Root == null)
@@ -457,7 +447,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             if (maxIndex == -1)
-                return new SplitInfo(-1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);            
+                return new SplitInfo(-1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
 
             return scores[maxIndex];
         }
@@ -602,41 +592,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public IEnumerator<IDecisionTreeNode> GetEnumeratorTopDown()
         {
-            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);
-            /*
-            if (this.Root == null)
-                yield break;
-
-            var stack = new Stack<IDecisionTreeNode>(new[] { this.Root });
-            while (stack.Count != 0)
-            {
-                IDecisionTreeNode current = stack.Pop();
-                yield return current;
-
-                if (current.Children != null)
-                    foreach (IDecisionTreeNode node in current.Children)
-                        stack.Push(node);
-            }
-            */
+            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);            
         }
 
         public IEnumerator<IDecisionTreeNode> GetEnumeratorBottomUp()
         {
-            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);
-            /*
-            IEnumerator<IDecisionTreeNode> topDownEnumerator = this.GetEnumeratorTopDown();
-            List<IDecisionTreeNode> list = new List<IDecisionTreeNode>();
-            while (topDownEnumerator.MoveNext())
-                list.Add(topDownEnumerator.Current);
-            list.Reverse();
-            return list.GetEnumerator();
-            */
+            return TreeNodeTraversal.GetEnumeratorTopDown(this.Root);            
         }
 
         public IEnumerator<IDecisionTreeNode> GetEnumerator()
         {
-            return this.GetEnumeratorTopDown();
-            //return this.GetEnumeratorBottomUp();
+            return this.GetEnumeratorTopDown();            
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

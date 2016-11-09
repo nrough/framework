@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Infovision.Data;
+using Infovision.Datamining.Roughset.DecisionTables;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -26,6 +29,28 @@ namespace Infovision.Datamining.Roughset
             else if (left.Attributes.Count < right.Attributes.Count)
                 return -1;
             return 0;
+        }
+    }
+
+    public class ReductAccuracyComparer : ReductBaseComparer
+    {
+        private DataStore Data { get; set; }
+        public ReductAccuracyComparer(DataStore data)
+            : base()
+        {
+            this.Data = data;
+        }
+        public override int Compare(IReduct left, IReduct right)
+        {
+            DecisionTable decTabLeft = new DecisionTable();
+            decTabLeft.Learn(this.Data, left.Attributes.ToArray());
+            ClassificationResult leftResult = Classifier.DefaultClassifer.Classify(decTabLeft, this.Data, this.Data.Weights);
+
+            DecisionTable decTabRight = new DecisionTable();
+            decTabRight.Learn(this.Data, right.Attributes.ToArray());
+            ClassificationResult rightResult = Classifier.DefaultClassifer.Classify(decTabRight, this.Data, this.Data.Weights);
+
+            return leftResult.Accuracy.CompareTo(rightResult.Accuracy);
         }
     }
 

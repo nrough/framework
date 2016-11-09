@@ -13,6 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public string ReductFactoryKey { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
         public PermutationCollection PermutationCollection { get; set; }
+        public IComparer<IReduct> ReductComparer { get; set; }
         public int ReductIterations { get; set; }
         public double ReductEpsilon { get; set; }
         public IReduct Reduct { get; private set; }
@@ -24,6 +25,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ReductIterations = 1;
             this.Epsilon = 0.0;
             this.ReductEpsilon = 0.0;
+            this.ReductComparer = null;
         }
 
         protected override DecisionTreeBase CreateInstanceForClone()
@@ -42,6 +44,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 this.ReductIterations = tree.ReductIterations;
                 this.Epsilon = tree.Epsilon;
                 this.ReductEpsilon = tree.ReductEpsilon;
+                this.ReductComparer = tree.ReductComparer;
             }
         }
 
@@ -49,7 +52,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             base.SetClassificationResultParameters(result);
 
-            result.Gamma = this.ReductEpsilon;            
+            result.Gamma = this.ReductEpsilon;
         }
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)
@@ -60,7 +63,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.PermutationCollection == null)
                 this.PermutationCollection = new PermutationCollection(this.ReductIterations, attributes);
 
-            Args parms = new Args();
+            if (this.ReductComparer == null)
+                this.ReductComparer = new ReductAccuracyComparer(data);
+
+            Args parms = new Args(8);
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductFactoryKey);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, this.WeightGenerator);
@@ -73,16 +79,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();
 
-            //TODO Improve reduct selection 
+            IReductStoreCollection reductStores = generator.GetReductStoreCollection();
+            if (reductStores.ReductPerStore == true)
+                throw new InvalidOperationException("reductStores.ReductPerStore == true is not supported");
 
-            IReductStoreCollection reducts = generator.GetReductStoreCollection();
-            IReductStoreCollection reductsfiltered = null;
-            if (generator is ReductGeneratorMeasure)
-                reductsfiltered = reducts.Filter(1, new ReductRuleNumberComparer());
-            else
-                reductsfiltered = reducts.FilterInEnsemble(1, new ReductStoreLengthComparer(true));
-
-            IReduct reduct = reductsfiltered.First().Where(r => r.IsException == false).FirstOrDefault();
+            IReductStore reducts = reductStores.FirstOrDefault();
+            IReduct reduct = reducts.FilterReducts(1, this.ReductComparer).FirstOrDefault();
             this.Reduct = reduct;
 
             return base.Learn(data, reduct.Attributes.ToArray());

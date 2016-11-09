@@ -12,7 +12,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
     public static class ImpurityFunctions
     {
-        public static double InformationGain(EquivalenceClassCollection equivalenceClasses)
+        public static double Entropy(EquivalenceClassCollection equivalenceClasses)
         {
             double result = 0;
             if (equivalenceClasses.WeightSum > 0)
@@ -37,6 +37,27 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return result;
         }
 
+        public static double Error(EquivalenceClassCollection equivalenceClasses)
+        {
+            double error = 0;
+            if (equivalenceClasses.WeightSum > 0)
+            {
+                foreach (var eq in equivalenceClasses)
+                {
+                    double maxPd = Double.NegativeInfinity;
+                    foreach (long dec in eq.DecisionSet)
+                    {
+                        double pd = eq.GetDecisionWeight(dec) / eq.WeightSum;
+                        if (pd > maxPd)
+                            maxPd = pd;
+                    }
+                    error += (eq.WeightSum / equivalenceClasses.WeightSum) * (1.0 - maxPd);
+                }
+            }
+
+            return error;
+        }
+
         public static double Gini(EquivalenceClassCollection equivalenceClasses)
         {
             double attributeGini = 0;
@@ -44,8 +65,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 foreach (var eq in equivalenceClasses)
                 {
-                    double pA = eq.WeightSum / equivalenceClasses.WeightSum;
-
                     double s2 = 0;
                     foreach (long dec in eq.DecisionSet)
                     {

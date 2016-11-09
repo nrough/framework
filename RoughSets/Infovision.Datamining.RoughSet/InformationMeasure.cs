@@ -259,7 +259,7 @@ namespace Infovision.Datamining.Roughset
                     if (majorCount > maxDecisionProbability)
                         maxDecisionProbability = majorCount;
                 }
-                result += (double)maxDecisionProbability;
+                result += maxDecisionProbability;
             }
             return result / (double)reduct.DataStore.NumberOfRecords;
         }
@@ -362,7 +362,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public override string Description()
-        {
+        {   
             return "ObjectWeights";
         }
 

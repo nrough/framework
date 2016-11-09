@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.PruningObjective = PruningObjectiveType.MinimizeError;
             this.PruningCVFolds = 3;
 
-            this.ImpurityFunction = ImpurityFunctions.InformationGain;
+            this.ImpurityFunction = ImpurityFunctions.Entropy;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 

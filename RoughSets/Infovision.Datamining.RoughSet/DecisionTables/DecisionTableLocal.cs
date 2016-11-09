@@ -24,7 +24,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             this.DefaultOutput = this.aprioriDistribution.Output;
 
             this.obliviousDecisionTree = new ObliviousDecisionTree();
-            this.obliviousDecisionTree.ImpurityFunction = ImpurityFunctions.InformationGain;
+            this.obliviousDecisionTree.ImpurityFunction = ImpurityFunctions.Entropy;
             this.obliviousDecisionTree.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
             this.obliviousDecisionTree.UseLocalOutput = true;
             this.obliviousDecisionTree.RankedAttributes = this.RankedAttributes;

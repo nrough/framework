@@ -13,7 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public DecisionTreeC45()
             : base()
         {
-            this.ImpurityFunction = ImpurityFunctions.InformationGain;
+            this.ImpurityFunction = ImpurityFunctions.Entropy;
             this.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
         }
 

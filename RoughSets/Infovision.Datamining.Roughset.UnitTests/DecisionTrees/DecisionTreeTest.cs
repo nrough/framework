@@ -22,6 +22,38 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     public class DecisionTreeTest
     {
         [Test, Repeat(1)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
+        public void ErrorImpurityTest(string trainFile, string testFile)
+        {
+            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+
+            DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
+
+            DecisionTreeID3 treeError = new DecisionTreeID3();
+            treeError.ImpurityFunction = ImpurityFunctions.Error;
+            treeError.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeError, test));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeError));
+
+            DecisionTreeID3 treeId3 = new DecisionTreeID3();
+            treeId3.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeId3, test));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeId3));
+
+            DecisionTreeC45 treec45 = new DecisionTreeC45();
+            treec45.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treec45, test));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treec45));
+        }
+
+
+        [Test, Repeat(1)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]        
         public void DecisionTableTest(string trainFile, string testFile)
         {
@@ -40,8 +72,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = -1.0; eps < 0.4; eps += 0.01)
             {
                 for (double redeps = 0.1; redeps < 0.25; redeps += 0.01)
-                    if (this.QuickCompare(data, test, attributes, eps, redeps, size, pruningType))
-                        return; ;
+                    this.QuickCompare(data, test, attributes, eps, redeps, size, pruningType);
 
                 if (eps < 0)
                     eps = 0.0;
@@ -65,7 +96,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             treeRed.PruningType = pruningType;
             treeRed.Learn(data, attributes);
 
-            //Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
+            Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
 
             //-------------------------------------------------
 
@@ -82,11 +113,12 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             result2.Gamma = reductEpsilon;
             result2.ModelName = "Reduct";
             result2.NumberOfRules = reduct.EquivalenceClasses.Count;
-            //Trace.WriteLine(result2);
+            Trace.WriteLine(result2);
 
             //-------------------------------------------------
 
             DecisionTableMajority decTabMaj = new DecisionTableMajority();
+            decTabMaj.Epsilon = reduct.Epsilon;
             decTabMaj.Learn(data, reduct.Attributes.ToArray());
             ClassificationResult resultMaj = Classifier.DefaultClassifer.Classify(decTabMaj, test);
 
@@ -94,16 +126,17 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             //-------------------------------------------------
 
             DecisionTableLocal decTabLoc = new DecisionTableLocal();
+            decTabLoc.Epsilon = reduct.Epsilon;
             decTabLoc.Learn(data, reduct.Attributes.ToArray());
             ClassificationResult resultLoc = Classifier.DefaultClassifer.Classify(decTabLoc, test);
             
             Trace.WriteLine(resultLoc);
 
-            if (resultLoc.Error != resultMaj.Error)
-            {
-                Trace.WriteLine(DecisionTreeFormatter.Construct(decTabLoc.ObiliviousTree));
-                return true;
-            }
+            //if (resultLoc.Error != resultMaj.Error)
+            //{
+            //    Trace.WriteLine(DecisionTreeFormatter.Construct(decTabLoc.ObiliviousTree));
+            //    return true;
+            //}
 
             return false;
         }

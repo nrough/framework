@@ -17,6 +17,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ImpurityFunction = ImpurityFunctions.Entropy;
         }
 
+        public DecisionTreeID3(string modelName)
+            : base(modelName)
+        {
+            this.ImpurityFunction = ImpurityFunctions.Entropy;
+        }
+
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeID3();

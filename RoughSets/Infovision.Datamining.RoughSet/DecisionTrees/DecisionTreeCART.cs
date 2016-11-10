@@ -20,6 +20,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ImpurityFunction = ImpurityFunctions.Gini;
         }
 
+        public DecisionTreeCART(string modelName)
+            : base(modelName)
+        {
+            this.ImpurityFunction = ImpurityFunctions.Gini;
+        }
+
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeCART();

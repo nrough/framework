@@ -27,6 +27,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 
+        public ObliviousDecisionTree(string modelName)
+            : base(modelName)
+        {
+            this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+            this.RankedAttributes = false;
+            this.UseLocalOutput = false;
+
+            this.ImpurityFunction = ImpurityFunctions.Majority;
+            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+        }
+
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new ObliviousDecisionTree();

@@ -28,6 +28,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ReductComparer = null;
         }
 
+        public DecisionTreeReduct(string modelName)
+            : base(modelName)
+        {
+            this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.ReductIterations = 1;
+            this.Epsilon = 0.0;
+            this.ReductEpsilon = 0.0;
+            this.ReductComparer = null;
+        }
+
         protected override DecisionTreeBase CreateInstanceForClone()
         {
             return new DecisionTreeReduct();

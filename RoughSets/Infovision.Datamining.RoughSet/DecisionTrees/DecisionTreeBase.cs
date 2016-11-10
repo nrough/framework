@@ -24,6 +24,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private double mA;
         private long[] decisions;
         private int nextId;
+        private string modelName;
 
         private readonly object syncRoot = new object();
 
@@ -54,8 +55,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public int PruningCVFolds { get; set; }
         public PruningObjectiveType PruningObjective { get; set; }
 
-        public string ModelName { get { return this.GetType().Name; } }       
-
+        public string ModelName { get; protected set; }
+        
         protected IEnumerable<long> Decisions { get { return this.decisions; } }        
 
         protected class SplitInfo
@@ -100,6 +101,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.ImpurityFunction = ImpurityFunctions.Entropy;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+
+            this.ModelName = this.GetType().Name;
+        }
+
+        public DecisionTreeBase(string modelName)
+            : this()
+        {
+            if (String.IsNullOrEmpty(modelName))
+                throw new ArgumentNullException("modelName", "String.IsNullOrEmpty(modelName) == true");
+            this.ModelName = modelName;
         }
 
         public virtual object Clone()

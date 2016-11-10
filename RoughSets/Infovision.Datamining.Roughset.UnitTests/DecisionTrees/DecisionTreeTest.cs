@@ -22,7 +22,12 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     public class DecisionTreeTest
     {
         [Test, Repeat(1)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test")]      
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst")]
+        [TestCase(@"Data\spect.train", @"Data\spect.test")]
+        [TestCase(@"Data\dna.train", @"Data\dna.test")]   
         public void ErrorImpurityTest(string trainFile, string testFile)
         {
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
@@ -30,26 +35,46 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            DecisionTreeRough treeRough = new DecisionTreeRough();
+            DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority");
             treeRough.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test));
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
 
-            DecisionTreeID3 treeError = new DecisionTreeID3();
+            DecisionTreeRough treeRoughError = new DecisionTreeRough("Rough-Error");
+            treeRoughError.ImpurityFunction = ImpurityFunctions.Error;
+            treeRoughError.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRoughError, test));
+            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRoughError));
+
+            
+            DecisionTreeID3 treeError = new DecisionTreeID3("ID3-Error");
             treeError.ImpurityFunction = ImpurityFunctions.Error;
             treeError.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeError, test));
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treeError));
 
-            DecisionTreeID3 treeId3 = new DecisionTreeID3();
+            DecisionTreeID3 treeId3 = new DecisionTreeID3("ID3-Entropy");
             treeId3.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeId3, test));
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treeId3));
-
-            DecisionTreeC45 treec45 = new DecisionTreeC45();
+            
+            DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy");
             treec45.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treec45, test));
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treec45));
+
+            ObliviousDecisionTree treeObliv = new ObliviousDecisionTree("Olv-Error");
+            treeObliv.ImpurityFunction = ImpurityFunctions.Error;
+            treeObliv.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeObliv, test));
+
+            ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority");
+            treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
+            treeOblivMaj.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivMaj, test));
+
+            ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy");
+            treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Majority;
+            treeOblivEntropy.Learn(data, attributes);
+            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivEntropy, test));
+            
         }
 
 
@@ -172,7 +197,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             {
                 this.TreeComparisonTest(data, test, attributes, eps, 0.0, size, false, pruningType);
 
-                for (double redeps = 0.1; redeps < 0.25; redeps += 0.01)                    
+                for (double redeps = 0.0; redeps < 0.25; redeps += 0.01)                    
                     this.TreeComparisonTest(data, test, attributes, eps, redeps, size, true, pruningType);
 
                 if (eps < 0)

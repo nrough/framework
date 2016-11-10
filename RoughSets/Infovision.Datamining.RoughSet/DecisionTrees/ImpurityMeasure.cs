@@ -47,11 +47,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     double maxPd = Double.NegativeInfinity;
                     foreach (long dec in eq.DecisionSet)
                     {
-                        double pd = eq.GetDecisionWeight(dec) / eq.WeightSum;
+                        double pd = eq.GetDecisionWeight(dec);
                         if (pd > maxPd)
                             maxPd = pd;
                     }
-                    error += (eq.WeightSum / equivalenceClasses.WeightSum) * (1.0 - maxPd);
+                    error += (eq.WeightSum / equivalenceClasses.WeightSum) * (1.0 - (maxPd / eq.WeightSum));
                 }
             }
 
@@ -79,8 +79,33 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public static double Majority(EquivalenceClassCollection equivalenceClasses)
-        {
-            return InformationMeasureWeights.Instance.Calc(equivalenceClasses);
+        {            
+            //previous version worked the oposite way should be 1 - measure
+            //Second issue is that we need to normalize weights 
+            //(when calculating measure for a single eq class and compare it 
+            //agains the same eqclass splittet with an attribute)
+
+            //return InformationMeasureWeights.Instance.Calc(equivalenceClasses);
+
+            //Fix - to be verified
+
+            double result = 0.0;
+            double maxValue, sum;
+            if (equivalenceClasses.WeightSum > 0)
+            {
+                foreach (EquivalenceClass eq in equivalenceClasses)
+                {
+                    maxValue = Double.NegativeInfinity;
+                    foreach (long decisionValue in eq.DecisionValues)
+                    {
+                        sum = eq.GetDecisionWeight(decisionValue);
+                        if (sum > maxValue)
+                            maxValue = sum;
+                    }
+                    result += (eq.WeightSum / equivalenceClasses.WeightSum) * (maxValue / eq.WeightSum);
+                }
+            }
+            return 1.0 - result;
         }
 
         public static double SplitInformationNormalize(double value, EquivalenceClassCollection equivalenceClasses)

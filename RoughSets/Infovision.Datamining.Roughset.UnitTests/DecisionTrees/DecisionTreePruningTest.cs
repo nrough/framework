@@ -37,7 +37,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     "N/A",
                     resultBeforePruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(c45WithPruning),
-                    resultBeforePruning.QualityRatio,
+                    resultBeforePruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     "N/A",
                     resultAfterPruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(c45WithPruning),
-                    resultAfterPruning.QualityRatio,
+                    resultAfterPruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     "N/A",
                     resultBeforePruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(c45WithPruning),
-                    resultBeforePruning.QualityRatio,
+                    resultBeforePruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
@@ -99,7 +99,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     "N/A",
                     resultAfterPruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(c45WithPruning),
-                    resultAfterPruning.QualityRatio,
+                    resultAfterPruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     eps,
                     resultForTreeWithPrePruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(c45WithPrePruning),
-                    resultForTreeWithPrePruning.QualityRatio,
+                    resultForTreeWithPrePruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(c45WithPrePruning));
 
                 //Console.WriteLine("C45/Epsilon {0}", resultForTreeWithPrePruning);
@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     eps,
                     resultForTreeWithPrePruning.Accuracy,
                     DecisionTreeBase.GetNumberOfRules(tree),
-                    resultForTreeWithPrePruning.QualityRatio,
+                    resultForTreeWithPrePruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(tree));
 
 
@@ -207,7 +207,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     eps, 
                     resultForTreeWithPrePruning.Accuracy, 
                     DecisionTreeBase.GetNumberOfRules(tree), 
-                    resultForTreeWithPrePruning.QualityRatio,
+                    resultForTreeWithPrePruning.AvgNumberOfAttributes,
                     DecisionTreeBase.GetHeight(tree));
             }
 

@@ -474,7 +474,7 @@ namespace MRIExceptions
             ClassificationResult result = model.Classify(test);
 
             //TODO Remember to change ###############################################
-            result.QualityRatio = model.ReductStoreCollection.GetWeightedAvgMeasure(new ReductMeasureLength(), true);
+            result.AvgNumberOfAttributes = model.ReductStoreCollection.GetWeightedAvgMeasure(new ReductMeasureLength(), true);
             //result.QualityRatio = model.ReductStoreCollection.GetAvgMeasure(new ReductMeasureLength());
 
             this.WriteLine("{0}|{1}|{2}|{3}|{4}", testId, epsilon, trainSlice, testSlice, result);

@@ -114,7 +114,7 @@ namespace Infovision.Datamining
                 }
 
             if (maxValues.Count > 1)
-            {
+            {                
                 int idx = RandomSingleton.Random.Next(maxValues.Count);
                 return maxValues.ElementAt(idx);
             }

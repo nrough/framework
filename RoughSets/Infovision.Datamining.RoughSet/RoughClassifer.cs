@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset
 
             timer.Stop();
 
-            result.QualityRatio = reductStoreCollection.GetAvgMeasure(new ReductMeasureLength(), false);
+            result.AvgNumberOfAttributes = reductStoreCollection.GetAvgMeasure(new ReductMeasureLength(), false);
 
             result.ClassificationTime = this.ClassificationTime;
 

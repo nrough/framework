@@ -195,7 +195,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 dummyForestResult.TestNum = i;
                 dummyForestResult.Fold = 0;
                 dummyForestResult.Epsilon = dummyForest.Epsilon;
-                dummyForestResult.QualityRatio = dummyForest.AverageNumberOfAttributes;
+                dummyForestResult.AvgNumberOfAttributes = dummyForest.AverageNumberOfAttributes;
                 Console.WriteLine(dummyForestResult);
 
                 DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
@@ -210,7 +210,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 semiRoughForestResult.TestNum = i;
                 semiRoughForestResult.Fold = 0;
                 semiRoughForestResult.Epsilon = semiRoughForest.Epsilon;
-                semiRoughForestResult.QualityRatio = semiRoughForest.AverageNumberOfAttributes;
+                semiRoughForestResult.AvgNumberOfAttributes = semiRoughForest.AverageNumberOfAttributes;
                 Console.WriteLine(semiRoughForestResult);
 
                 DecisionForestReduct<DecisionTreeC45> roughForest = new DecisionForestReduct<DecisionTreeC45>();
@@ -226,7 +226,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 roughForestResult.TestNum = i;
                 roughForestResult.Fold = 0;
                 roughForestResult.Epsilon = roughForest.Epsilon;
-                roughForestResult.QualityRatio = roughForest.AverageNumberOfAttributes;
+                roughForestResult.AvgNumberOfAttributes = roughForest.AverageNumberOfAttributes;
                 Console.WriteLine(roughForestResult);
 
                 DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
@@ -241,7 +241,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 randomForestResult.TestNum = i;
                 randomForestResult.Fold = 0;
                 randomForestResult.Epsilon = roughForest.Epsilon;
-                randomForestResult.QualityRatio = randomForest.AverageNumberOfAttributes;
+                randomForestResult.AvgNumberOfAttributes = randomForest.AverageNumberOfAttributes;
                 Console.WriteLine(randomForestResult);
 
                 Console.WriteLine();
@@ -307,7 +307,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     ClassificationResult reductResult = roughClassifier.Classify(test);
                     reductResult.Epsilon = resultC45.Epsilon;
                     reductResult.ModelName = "RS";
-                    reductResult.QualityRatio = reductsfiltered.GetAvgMeasure(new ReductMeasureLength(), false);
+                    reductResult.AvgNumberOfAttributes = reductsfiltered.GetAvgMeasure(new ReductMeasureLength(), false);
                     Console.WriteLine(reductResult);
 
                     int[] nodeAttributes = ((DecisionTreeNode)treeC45.Root).GroupBy(x => x.Attribute).Select(g => g.First().Attribute).Where(x => x != -1 && x != data.DataStoreInfo.DecisionFieldId).OrderBy(x => x).ToArray();

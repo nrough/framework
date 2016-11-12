@@ -28,7 +28,7 @@ namespace Infovision.Datamining
 
     //TODO add additional classification Info
     [Serializable]
-    public class ClassificationResult
+    public class ClassificationResult : IFormattable
     {
         #region Members
 
@@ -40,8 +40,9 @@ namespace Infovision.Datamining
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
         private int counter;
-        private DataStore testData = null;
-        private readonly object mutex = new object();        
+        private DataStore testData;
+        private readonly static string DefaultOutputCols = @"ds;m;t;f;eps;ens;cls;mis;ucls;wcls;wmis;wucls;acc;bal;conf;cov;numrul;dthm;dtha;gamma";
+        private readonly object syncRoot = new object();
 
         #endregion Members
 
@@ -200,7 +201,7 @@ namespace Infovision.Datamining
             }
         }
 
-        public double QualityRatio { get; set; }
+        public double AvgNumberOfAttributes { get; set; }
         public double NumberOfRules { get; set; }
         public double MaxTreeHeight { get; set; }
         public double AvgTreeHeight { get; set; }
@@ -229,7 +230,15 @@ namespace Infovision.Datamining
 
         #region Constructors
 
+        private ClassificationResult()
+        {
+            this.ModelCreationTime = -1;
+            this.ClassificationTime = -1;
+            this.EnsembleSize = 1;
+        }
+
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
+            : this()
         {
             this.DatasetName = dataStore.Name;
             this.TestData = dataStore;
@@ -258,10 +267,6 @@ namespace Infovision.Datamining
                 confusionTable[i] = new int[decCountPlusOne];
                 confusionTableWeights[i] = new double[decCountPlusOne];
             }
-            this.counter = 0;
-            this.ModelCreationTime = -1;
-            this.ClassificationTime = -1;
-            this.EnsembleSize = 1;
             this.Fold = dataStore.Fold;
         }
 
@@ -271,7 +276,7 @@ namespace Infovision.Datamining
 
         public void Reset()
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 for (int i = 0; i < predictionResults.Length; i++)
                     predictionResults[i] = -1;
@@ -291,11 +296,12 @@ namespace Infovision.Datamining
 
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
-            int actualDecIdx = value2index[actual];            
+            int actualDecIdx = value2index[actual];
             int predictionDecIdx = value2index[prediction];
-            predictionResults[objectIdx] = prediction;
 
-            lock (mutex)
+            this.predictionResults[objectIdx] = prediction;
+
+            lock (syncRoot)
             {
                 confusionTable[actualDecIdx][predictionDecIdx]++;
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
@@ -435,136 +441,40 @@ namespace Infovision.Datamining
 
         public static string ResultHeader()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("Data");
-            stringBuilder.Append('|');
-            stringBuilder.Append("ModelName");
-            stringBuilder.Append('|');
-            stringBuilder.Append("TestNum");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Fold");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Epsilon");
-            stringBuilder.Append('|');
-            stringBuilder.Append("EnsembleSize");
-            stringBuilder.Append('|');
-
-            stringBuilder.Append("Classified");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Misclassified");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Unclassified");
-            stringBuilder.Append('|');
-
-            stringBuilder.Append("WeightClassified");
-            stringBuilder.Append('|');
-            stringBuilder.Append("WeightMisclassified");
-            stringBuilder.Append('|');
-            stringBuilder.Append("WeightUnclassified");
-            stringBuilder.Append('|');
-
-            stringBuilder.Append("Accuracy");
-            stringBuilder.Append('|');
-            stringBuilder.Append("BalancedAccuracy");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Confidence");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Coverage");
-            stringBuilder.Append('|');
-            stringBuilder.Append("AverageReductLength");
-            stringBuilder.Append('|');
-            stringBuilder.Append("ModelCreationTime");
-            stringBuilder.Append('|');
-            stringBuilder.Append("ClassificationTime");
-            stringBuilder.Append('|');
-
-            stringBuilder.Append("ExceptionRuleHitCounter");
-            stringBuilder.Append('|');
-            stringBuilder.Append("ExceptionRuleLengthSum");
-            stringBuilder.Append('|');
-            stringBuilder.Append("StandardRuleHitCounter");
-            stringBuilder.Append('|');
-            stringBuilder.Append("StandardRuleLengthSum");
-            stringBuilder.Append('|');
-
-            stringBuilder.Append("NumberOfRules");
-            stringBuilder.Append('|');
-            stringBuilder.Append("MaxTreeHeight");
-            stringBuilder.Append('|');
-            stringBuilder.Append("AvgTreeHeight");
-            stringBuilder.Append('|');
-            stringBuilder.Append("Gamma");
-            stringBuilder.Append('|');
-
-            return stringBuilder.ToString();
+            return new ClassificationResult().ToString(
+                "H;" + ClassificationResult.DefaultOutputCols,
+                new ClassificationResultFormatter('|'));            
         }
 
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("{0,15}", this.DatasetName);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,15}", this.ModelName);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,2}", this.TestNum);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,1}", this.Fold);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00}", this.Epsilon);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,3}", this.EnsembleSize);
-            stringBuilder.Append('|');
+            return this.ToString(
+                ClassificationResult.DefaultOutputCols, 
+                new ClassificationResultFormatter('|'));                       
+        }
+        
+        public virtual string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (formatProvider != null)
+            {
+                ICustomFormatter formatter = formatProvider.GetFormat(this.GetType()) as ICustomFormatter;
+                if (formatter != null)
+                    return formatter.Format(format, this, formatProvider);
+            }
 
+            if (String.IsNullOrEmpty(format))
+                format = "G";
 
-            stringBuilder.AppendFormat("{0,5}", this.Classified);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,5}", this.Misclassified);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,5}", this.Unclassified);
-            stringBuilder.Append('|');
+            switch (format)
+            {
+                case "C":
+                    return this.ToString();
 
-            stringBuilder.AppendFormat("{0:0.000000}", this.WeightClassified);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.000000}", this.WeightMisclassified);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.000000}", this.WeightUnclassified);
-            stringBuilder.Append('|');
-
-            stringBuilder.AppendFormat("{0:0.00000}", this.Accuracy);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00000}", this.BalancedAccuracy);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00000}", this.Confidence);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00000}", this.Coverage);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,9:0.00000}", this.QualityRatio);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,6}", this.ModelCreationTime);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,6}", this.ClassificationTime);
-            stringBuilder.Append('|');
-
-            stringBuilder.AppendFormat("{0,5}", this.ExceptionRuleHitCounter);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,7}", this.ExceptionRuleLengthSum);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,5}", this.StandardRuleHitCounter);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0,7}", this.StandardRuleLengthSum);
-            stringBuilder.Append('|');
-
-            stringBuilder.AppendFormat("{0:0.00}", this.NumberOfRules);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00}", this.MaxTreeHeight);
-            stringBuilder.Append('|');
-            stringBuilder.AppendFormat("{0:0.00}", this.AvgTreeHeight);
-            stringBuilder.Append('|');
-
-            stringBuilder.AppendFormat("{0:0.00}", this.Gamma);
-            stringBuilder.Append('|');
-
-            return stringBuilder.ToString();
+                case "T":
+                case "G":
+                default:
+                    return this.ToString();
+            }
         }
 
         #endregion Methods

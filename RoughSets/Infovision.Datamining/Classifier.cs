@@ -50,6 +50,7 @@ namespace Infovision.Datamining
             if (weights == null)
             {
                 double w = 1.0 / testData.NumberOfRecords;
+                //for(int objectIndex = 0; objectIndex<testData.NumberOfRecords; objectIndex++)
                 Parallel.For(0, testData.NumberOfRecords, options, objectIndex =>
                 {
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);

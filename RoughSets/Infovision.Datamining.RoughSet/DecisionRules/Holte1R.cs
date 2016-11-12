@@ -180,7 +180,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = 1.0;
-            result.QualityRatio = 1.0;
+            result.AvgNumberOfAttributes = 1.0;
         }
 
         public long Compute(DataRecordInternal record)

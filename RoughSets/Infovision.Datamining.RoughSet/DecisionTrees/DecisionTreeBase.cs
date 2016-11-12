@@ -164,7 +164,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 }
 
                 this.aprioriDistribution = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights).DecisionDistribution;
-                this.DefaultOutput = this.aprioriDistribution.Output;
+                if(this.DefaultOutput == null)
+                    this.DefaultOutput = this.aprioriDistribution.Output;
             }
         }
 
@@ -284,7 +285,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
         {
-            result.QualityRatio = this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0;
+            result.AvgNumberOfAttributes = this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0;
             result.EnsembleSize = 1;
             result.Epsilon = this.Epsilon;
             result.MaxTreeHeight = DecisionTreeBase.GetHeight(this);

@@ -26,7 +26,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = this.eqClassCollection.Count;
-            result.QualityRatio = this.eqClassCollection.Attributes.Length;
+            result.AvgNumberOfAttributes = this.eqClassCollection.Attributes.Length;
         }
 
         public virtual long Compute(DataRecordInternal record)

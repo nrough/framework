@@ -21,60 +21,98 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     [TestFixture]
     public class DecisionTreeTest
     {
+
         [Test, Repeat(1)]
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
-        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test")]      
-        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst")]
-        [TestCase(@"Data\spect.train", @"Data\spect.test")]
-        [TestCase(@"Data\dna.train", @"Data\dna.test")]   
-        public void ErrorImpurityTest(string trainFile, string testFile)
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.None)]
+        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.None)]
+        //[TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.None)]      
+        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.None)]
+        //[TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.None)]
+        //[TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.None)]
+        //[TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.ReducedErrorPruning)]
+        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.ReducedErrorPruning)]
+        //[TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.ReducedErrorPruning)]
+        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.ReducedErrorPruning)]
+        //[TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.ReducedErrorPruning)]
+        //[TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.ReducedErrorPruning)]
+        public void ErrorImpurityTest(string trainFile, string testFile, PruningType pruningType)
         {
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
+            DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
 
-            DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority");
-            treeRough.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test));
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
+            Console.WriteLine(ClassificationResult.ResultHeader());
 
-            DecisionTreeRough treeRoughError = new DecisionTreeRough("Rough-Error");
-            treeRoughError.ImpurityFunction = ImpurityFunctions.Error;
-            treeRoughError.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRoughError, test));
-            //Console.WriteLine(DecisionTreeFormatter.Construct(treeRoughError));
+            for (double eps = 0.0; eps <= 0.0; eps += 0.01)
+            {
+                Args parms = new Args(4);
+                parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
+                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
 
-            
-            DecisionTreeID3 treeError = new DecisionTreeID3("ID3-Error");
-            treeError.ImpurityFunction = ImpurityFunctions.Error;
-            treeError.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeError, test));
+                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                generator.Run();
+                IReductStore reducts = generator.GetReductStoreCollection().FirstOrDefault();
 
-            DecisionTreeID3 treeId3 = new DecisionTreeID3("ID3-Entropy");
-            treeId3.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeId3, test));
-            
-            DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy");
-            treec45.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treec45, test));
+                foreach (IReduct reduct in reducts)
+                {
+                    int[] attributes = reduct.Attributes.ToArray();
 
-            ObliviousDecisionTree treeObliv = new ObliviousDecisionTree("Olv-Error");
-            treeObliv.ImpurityFunction = ImpurityFunctions.Error;
-            treeObliv.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeObliv, test));
+                    DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority");
+                    treeRough.DefaultOutput = emptyDistribution.Output;
+                    treeRough.PruningType = pruningType;
+                    treeRough.Learn(data, attributes);
+                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test));
 
-            ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority");
-            treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
-            treeOblivMaj.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivMaj, test));
+                    //DecisionTreeRough treeRoughError = new DecisionTreeRough("Rough-Error");
+                    //treeRoughError.DefaultOutput = emptyDistribution.Output;
+                    //treeRoughError.ImpurityFunction = ImpurityFunctions.Error;
+                    //treeRoughError.PruningType = pruningType;
+                    //treeRoughError.Learn(data, attributes);
+                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRoughError, test));
 
-            ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy");
-            treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Majority;
-            treeOblivEntropy.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivEntropy, test));
-            
+                    //DecisionTreeID3 treeId3 = new DecisionTreeID3("ID3-Entropy");
+                    //treeId3.DefaultOutput = emptyDistribution.Output;
+                    //treeId3.PruningType = pruningType;
+                    //treeId3.Learn(data, attributes);
+                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeId3, test));
+
+                    DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy");
+                    treec45.DefaultOutput = emptyDistribution.Output;
+                    treec45.PruningType = pruningType;
+                    treec45.Learn(data, attributes);
+                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treec45, test));
+
+                    //DecisionTableMajority decTabMaj = new DecisionTableMajority();
+                    //decTabMaj.Learn(data, attributes);
+                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(decTabMaj, test));
+
+                    //ObliviousDecisionTree treeObliv = new ObliviousDecisionTree("Olv-Error");
+                    //treeObliv.ImpurityFunction = ImpurityFunctions.Error;
+                    //treeObliv.DefaultOutput = emptyDistribution.Output;
+                    //treeObliv.PruningType = pruningType;
+                    //treeObliv.Learn(data, attributes);
+                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeObliv, test));
+
+                    ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority");
+                    treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
+                    treeOblivMaj.DefaultOutput = emptyDistribution.Output;
+                    treeOblivMaj.PruningType = pruningType;                    
+                    treeOblivMaj.Learn(data, attributes);
+                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivMaj, test));
+
+                    ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy");
+                    treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Majority;
+                    treeOblivEntropy.DefaultOutput = emptyDistribution.Output;
+                    treeOblivEntropy.PruningType = pruningType;                    
+                    treeOblivEntropy.Learn(data, attributes);
+                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivEntropy, test));
+                }             
+            }
         }
 
 

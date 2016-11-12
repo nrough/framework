@@ -163,7 +163,7 @@ namespace ExceptionRulesTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierApprox.UseExceptionRules = false;
             ClassificationResult resultApprox = classifierApprox.Classify(testData);
-            resultApprox.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
+            resultApprox.AvgNumberOfAttributes = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
 
@@ -189,7 +189,7 @@ namespace ExceptionRulesTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
             ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
-            result_GMDR.QualityRatio = filteredReductStoreCollection_GMDR.GetAvgMeasure(reductMeasureLength, false);
+            result_GMDR.AvgNumberOfAttributes = filteredReductStoreCollection_GMDR.GetAvgMeasure(reductMeasureLength, false);
             result_GMDR.ModelCreationTime = generator_GMDR.ReductGenerationTime;
             result_GMDR.ClassificationTime = classifier_GMDR.ClassificationTime;
 
@@ -215,7 +215,7 @@ namespace ExceptionRulesTest
             classifierEx.UseExceptionRules = true;
             classifierEx.ExceptionRulesAsGaps = false;
             ClassificationResult resultEx = classifierEx.Classify(testData);
-            resultEx.QualityRatio = filteredReductStoreCollectionEx.GetWeightedAvgMeasure(reductMeasureLength, true);
+            resultEx.AvgNumberOfAttributes = filteredReductStoreCollectionEx.GetWeightedAvgMeasure(reductMeasureLength, true);
             resultEx.ModelCreationTime = generatorEx.ReductGenerationTime;
             resultEx.ClassificationTime = classifierEx.ClassificationTime;
 
@@ -249,7 +249,7 @@ namespace ExceptionRulesTest
             classifierGaps.UseExceptionRules = true;
             classifierGaps.ExceptionRulesAsGaps = true;
             ClassificationResult resultGaps = classifierGaps.Classify(testData);
-            resultGaps.QualityRatio = filteredReductStoreCollectionGap.GetWeightedAvgMeasure(reductMeasureLength, false);
+            resultGaps.AvgNumberOfAttributes = filteredReductStoreCollectionGap.GetWeightedAvgMeasure(reductMeasureLength, false);
             resultGaps.ModelCreationTime = generatorEx.ReductGenerationTime;
             resultGaps.ClassificationTime = classifierGaps.ClassificationTime;
 
@@ -261,8 +261,8 @@ namespace ExceptionRulesTest
             parmsRandom.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermList);
             parmsRandom.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
 
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultApprox.QualityRatio);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.QualityRatio);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)resultApprox.AvgNumberOfAttributes);
+            parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.AvgNumberOfAttributes);
 
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
@@ -275,7 +275,7 @@ namespace ExceptionRulesTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierRandom.UseExceptionRules = false;
             ClassificationResult resultRandom = classifierRandom.Classify(testData);
-            resultRandom.QualityRatio = generatorRandom.GetReductStoreCollection().GetAvgMeasure(reductMeasureLength, false);
+            resultRandom.AvgNumberOfAttributes = generatorRandom.GetReductStoreCollection().GetAvgMeasure(reductMeasureLength, false);
             resultRandom.ModelCreationTime = generatorRandom.ReductGenerationTime;
             resultRandom.ClassificationTime = classifierRandom.ClassificationTime;
 

@@ -39,7 +39,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this.obliviousDecisionTree);
-            result.QualityRatio = DecisionTreeBase.GetNumberOfAttributes(this.obliviousDecisionTree);
+            result.AvgNumberOfAttributes = DecisionTreeBase.GetNumberOfAttributes(this.obliviousDecisionTree);
             result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this.obliviousDecisionTree);
             result.MaxTreeHeight = DecisionTreeBase.GetHeight(this.obliviousDecisionTree);
         }

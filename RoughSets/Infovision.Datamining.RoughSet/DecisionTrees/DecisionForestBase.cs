@@ -148,7 +148,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public void SetClassificationResultParameters(ClassificationResult result)
         {
-            result.QualityRatio = this.AverageNumberOfAttributes;
+            result.AvgNumberOfAttributes = this.AverageNumberOfAttributes;
             result.EnsembleSize = this.Size;
             result.Epsilon = this.Epsilon;
             

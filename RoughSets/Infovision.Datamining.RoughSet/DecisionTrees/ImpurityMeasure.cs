@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -35,28 +36,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             return result;
-        }
-
-        public static double Error(EquivalenceClassCollection equivalenceClasses)
-        {
-            double error = 0;
-            if (equivalenceClasses.WeightSum > 0)
-            {
-                foreach (var eq in equivalenceClasses)
-                {
-                    double maxPd = Double.NegativeInfinity;
-                    foreach (long dec in eq.DecisionSet)
-                    {
-                        double pd = eq.GetDecisionWeight(dec);
-                        if (pd > maxPd)
-                            maxPd = pd;
-                    }
-                    error += (eq.WeightSum / equivalenceClasses.WeightSum) * (1.0 - (maxPd / eq.WeightSum));
-                }
-            }
-
-            return error;
-        }
+        }        
 
         public static double Gini(EquivalenceClassCollection equivalenceClasses)
         {
@@ -78,17 +58,31 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return attributeGini;
         }
 
+        public static double Error(EquivalenceClassCollection equivalenceClasses)
+        {
+            double error = 0;
+            if (equivalenceClasses.WeightSum > 0)
+            {
+                foreach (var eq in equivalenceClasses)
+                {
+                    double maxPd = Double.NegativeInfinity;
+                    foreach (long dec in eq.DecisionSet)
+                    {
+                        double pd = eq.GetDecisionWeight(dec);
+                        if (pd > maxPd)
+                            maxPd = pd;
+                    }
+                    error += eq.WeightSum  * (1.0 - (maxPd / eq.WeightSum));
+                }
+
+                return error / equivalenceClasses.WeightSum;
+            }
+
+            return 0;
+        }
+
         public static double Majority(EquivalenceClassCollection equivalenceClasses)
-        {            
-            //previous version worked the oposite way should be 1 - measure
-            //Second issue is that we need to normalize weights 
-            //(when calculating measure for a single eq class and compare it 
-            //agains the same eqclass splittet with an attribute)
-
-            //return InformationMeasureWeights.Instance.Calc(equivalenceClasses);
-
-            //Fix - to be verified
-
+        {                        
             double result = 0.0;
             double maxValue, sum;
             if (equivalenceClasses.WeightSum > 0)
@@ -102,9 +96,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         if (sum > maxValue)
                             maxValue = sum;
                     }
+
                     result += (eq.WeightSum / equivalenceClasses.WeightSum) * (maxValue / eq.WeightSum);
-                }
+                }                
             }
+
+            if (result == 0)
+                Debugger.Break();
+
             return 1.0 - result;
         }
 

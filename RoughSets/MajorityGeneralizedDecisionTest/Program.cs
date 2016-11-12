@@ -67,7 +67,7 @@ namespace MajorityGeneralizedDecisionTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier.UseExceptionRules = false;
             ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.AvgNumberOfAttributes = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GMDR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
@@ -112,7 +112,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = false;
 
             ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
+            result.AvgNumberOfAttributes = filteredReductStoreCollection.GetAvgMeasure(reductMeasureLength, false);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "NOEX", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
@@ -160,7 +160,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = false;
 
             ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
+            result.AvgNumberOfAttributes = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "EXEP", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
@@ -178,7 +178,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = true;
 
             result = classifier.Classify(testData);
-            result.QualityRatio = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);
+            result.AvgNumberOfAttributes = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GAPS", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
@@ -221,7 +221,7 @@ namespace MajorityGeneralizedDecisionTest
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier.UseExceptionRules = false;
             ClassificationResult result = classifier.Classify(testData);
-            result.QualityRatio = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
+            result.AvgNumberOfAttributes = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine(String.Format("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "ADR", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result));

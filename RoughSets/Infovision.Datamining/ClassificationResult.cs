@@ -32,6 +32,8 @@ namespace Infovision.Datamining
     {
         #region Members
 
+        public static string OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
+
         private Dictionary<long, int> value2index;
         private long[] decisions;
         private int decCount;
@@ -40,8 +42,7 @@ namespace Infovision.Datamining
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
         private int counter;
-        private DataStore testData;
-        private readonly static string DefaultOutputCols = @"ds;m;t;f;eps;ens;cls;mis;ucls;wcls;wmis;wucls;acc;bal;conf;cov;numrul;dthm;dtha;gamma";
+        private DataStore testData;        
         private readonly object syncRoot = new object();
 
         #endregion Members
@@ -208,30 +209,32 @@ namespace Infovision.Datamining
 
         public long ClassificationTime { get; set; }
         public long ModelCreationTime { get; set; }
+
         public int ExceptionRuleHitCounter { get; set; }
         public int StandardRuleHitCounter { get; set; }
         public int ExceptionRuleLengthSum { get; set; }
         public int StandardRuleLengthSum { get; set; }
-
-        public string ModelName { get; set; }
-        public double Epsilon { get; set; }
-        
+                
         public double Alpha { get; set; }
         public double Beta { get; set; }
         public double Gamma { get; set; }
         public double Delta { get; set; }
+        public double Epsilon { get; set; }
 
-        public int TestNum { get; set; }
-        public int Fold { get; set; }
         public string DatasetName { get; set; }
+        public string ModelName { get; set; }
+        public int TestNum { get; set; }
+        public int Fold { get; set; }        
         public int EnsembleSize { get; set; }
+
+        public string Description { get; set; }
 
         #endregion Properties
 
         #region Constructors
 
         private ClassificationResult()
-        {
+        {            
             this.ModelCreationTime = -1;
             this.ClassificationTime = -1;
             this.EnsembleSize = 1;
@@ -442,14 +445,14 @@ namespace Infovision.Datamining
         public static string ResultHeader()
         {
             return new ClassificationResult().ToString(
-                "H;" + ClassificationResult.DefaultOutputCols,
+                "H;" + ClassificationResult.OutputColumns,
                 new ClassificationResultFormatter('|'));            
         }
 
         public override string ToString()
         {
             return this.ToString(
-                ClassificationResult.DefaultOutputCols, 
+                ClassificationResult.OutputColumns, 
                 new ClassificationResultFormatter('|'));                       
         }
         
@@ -467,6 +470,7 @@ namespace Infovision.Datamining
 
             switch (format)
             {
+                //TODO print confision table
                 case "C":
                     return this.ToString();
 

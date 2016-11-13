@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)
-                obiliviousTree.Epsilon = epsilon;
+                obiliviousTree.Gamma = epsilon;
             Console.WriteLine(obiliviousTree.Learn(data, attributes));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
             //Console.WriteLine(DecisionTreeFormatter.Construct(obiliviousTree));
@@ -54,7 +54,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DecisionTreeReduct treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
-                treeRed.Epsilon = epsilon;
+                treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
             treeRed.ReductIterations = numOfReducts;
             treeRed.Learn(data, attributes);
@@ -68,7 +68,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             ObliviousDecisionTree obiliviousTree2 = new ObliviousDecisionTree();
             if (epsilon >= 0)
-                obiliviousTree2.Epsilon = epsilon;
+                obiliviousTree2.Gamma = epsilon;
             Console.WriteLine(obiliviousTree2.Learn(data, reduct.Attributes.ToArray()));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree2, test));
 
@@ -84,7 +84,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DecisionTreeC45 c45 = new DecisionTreeC45();
             if (epsilon >= 0)
-                c45.Epsilon = epsilon;
+                c45.Gamma = epsilon;
             Console.WriteLine(c45.Learn(data, attributes));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(c45, test));
 
@@ -94,7 +94,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             c45p.PruningType = PruningType.ErrorBasedPruning;
             c45p.PruningObjective = PruningObjectiveType.MinimizeError;
             if (epsilon >= 0)
-                c45p.Epsilon = epsilon;
+                c45p.Gamma = epsilon;
             Console.WriteLine(c45p.Learn(data, attributes));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(c45p, test));            
         }
@@ -114,13 +114,13 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)
-                obiliviousTree.Epsilon = epsilon;
+                obiliviousTree.Gamma = epsilon;
             var result = obiliviousTree.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
 
             DecisionTreeReduct treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
-                treeRed.Epsilon = epsilon;
+                treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
             treeRed.ReductIterations = numOfReducts;
             var result2 = treeRed.Learn(data, attributes);            
@@ -135,7 +135,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
                 ObliviousDecisionTree obiliviousTree_Ordered = new ObliviousDecisionTree();
                 if (epsilon >= 0)
-                    obiliviousTree_Ordered.Epsilon = epsilon;
+                    obiliviousTree_Ordered.Gamma = epsilon;
                 obiliviousTree_Ordered.RankedAttributes = true;
                 obiliviousTree_Ordered.Learn(data, perm.ToArray());
 

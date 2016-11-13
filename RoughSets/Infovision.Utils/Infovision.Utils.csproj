@@ -104,6 +104,7 @@
     <Compile Include="CollectionExtensions\IDictionaryExtensions.cs" />
     <Compile Include="CollectionExtensions\IListExtensions.cs" />
     <Compile Include="Configuration\InfovisionConfiguration.cs" />
+    <Compile Include="ConsoleCopy.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="DateTimeUtils.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />

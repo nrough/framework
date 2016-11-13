@@ -36,7 +36,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 Args parms = new Args(6);
                 parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
                 parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
-                parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, this.Epsilon);
+                parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, this.Gamma);
                 parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, localPermutationCollection);
                 parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
 

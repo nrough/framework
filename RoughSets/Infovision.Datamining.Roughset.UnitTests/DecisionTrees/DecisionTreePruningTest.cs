@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = 0.0; eps < 0.4; eps += 0.01)
             {
                 DecisionTreeC45 c45WithPrePruning = new DecisionTreeC45();
-                c45WithPrePruning.Epsilon = eps;
+                c45WithPrePruning.Gamma = eps;
                 c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(c45WithPrePruning, test);
@@ -154,7 +154,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = 0.0; eps < 0.4; eps += 0.01)
             {
                 var tree = new DecisionTreeReduct();
-                tree.Epsilon = eps;
+                tree.Gamma = eps;
                 tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
@@ -199,7 +199,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = 0.0; eps < 0.4; eps += 0.01)
             {
                 var tree = new DecisionTreeRough();
-                tree.Epsilon = eps;
+                tree.Gamma = eps;
                 tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);

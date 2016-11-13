@@ -11,29 +11,26 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class ObliviousDecisionTree : DecisionTreeBase
     {
-        private Dictionary<int[], double> cache;
+        private Dictionary<int[], double> cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+        private object syncRoot = new object();
 
         public bool RankedAttributes { get; set; }
         public bool UseLocalOutput { get; set; }
 
         public ObliviousDecisionTree()
             : base()
-        {
-            this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+        {         
             this.RankedAttributes = false;
             this.UseLocalOutput = false;
-
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 
         public ObliviousDecisionTree(string modelName)
             : base(modelName)
-        {
-            this.cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+        {            
             this.RankedAttributes = false;
             this.UseLocalOutput = false;
-
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
@@ -51,6 +48,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (tree != null)
             {
                 this.RankedAttributes = tree.RankedAttributes;
+                this.UseLocalOutput = tree.UseLocalOutput;
             }
         }
 
@@ -98,22 +96,34 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return this.GetSplitInfo(attributeId, eqClassCollection, this.CalculateImpurityBeforeSplit(eqClassCollection));
         }
 
-        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double dummy)
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
         {
+            if (parentMeasure < 0)
+                throw new ArgumentException("currentScore < 0", "parentMeasure");
+
+            if (data == null)
+                throw new ArgumentNullException("data", "(data == null");
+
             int[] newAttributes = new int[data.Attributes.Length + 1];
             if(data.Attributes.Length != 0)
                 Array.Copy(data.Attributes, newAttributes, data.Attributes.Length);
             newAttributes[data.Attributes.Length] = attributeId;
-
+            
             double m;
             EquivalenceClassCollection attributeEqClasses = null;
             if (!cache.TryGetValue(newAttributes, out m))
             {
-                attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights);
-                m = this.ImpurityFunction(attributeEqClasses);
-                cache.Add(newAttributes, m);
+                lock (syncRoot)
+                {
+                    if (!cache.TryGetValue(newAttributes, out m))
+                    {
+                        attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights);
+                        m = this.ImpurityFunction(attributeEqClasses);
+                        cache.Add(newAttributes, m);
+                    }
+                }
             }
-            
+
             attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights, data.Indices);
             return new SplitInfo(attributeId, m, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
         }

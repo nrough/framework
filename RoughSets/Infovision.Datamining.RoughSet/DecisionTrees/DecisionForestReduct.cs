@@ -47,8 +47,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             PermutationCollection permutations = new PermutationCollection(this.NumberOfTreeProbes, attributes);
 
-            double localEpsilon = this.Epsilon >= 0.0 
-                                 ? this.Epsilon 
+            double localEpsilon = this.Gamma >= 0.0 
+                                 ? this.Gamma 
                                  : (double)((double)RandomSingleton.Random.Next(0, (int)this.MaxRandomEpsilon * 100) / 100.0);
 
             IReduct reduct = this.CalculateReduct(data, permutations, localEpsilon);

@@ -101,7 +101,7 @@ namespace DecisionForestTest
                         DecisionForestDummy<DecisionTreeC45> dummyForest = new DecisionForestDummy<DecisionTreeC45>();
                         dummyForest.DataSampler = sampler;
                         dummyForest.Size = size;
-                        dummyForest.Epsilon = eps;
+                        dummyForest.Gamma = eps;
                         dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
                         dummyForest.Learn(trainData, attributes);
                         this.Classify<DecisionTreeC45>(dummyForest, testData, "DummyC45", t, fold);
@@ -109,7 +109,7 @@ namespace DecisionForestTest
                         DecisionForestReduct<DecisionTreeC45> reductForestC45 = new DecisionForestReduct<DecisionTreeC45>();
                         reductForestC45.DataSampler = sampler;
                         reductForestC45.Size = size;
-                        reductForestC45.Epsilon = eps;
+                        reductForestC45.Gamma = eps;
                         reductForestC45.NumberOfTreeProbes = numberOfTreeProbes;
                         reductForestC45.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         reductForestC45.Learn(trainData, attributes);
@@ -119,7 +119,7 @@ namespace DecisionForestTest
                         roughForestGamma.DataSampler = sampler;
                         roughForestGamma.Size = size;
                         roughForestGamma.NumberOfTreeProbes = numberOfTreeProbes;
-                        roughForestGamma.Epsilon = eps;
+                        roughForestGamma.Gamma = eps;
                         roughForestGamma.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
                         roughForestGamma.Learn(trainData, attributes);
                         this.Classify<DecisionTreeC45>(roughForestGamma, testData, "RoughGammaC45", t, fold);
@@ -127,7 +127,7 @@ namespace DecisionForestTest
                         DecisionForestReduct<DecisionTreeRough> roughForestM = new DecisionForestReduct<DecisionTreeRough>();
                         roughForestM.DataSampler = sampler;
                         roughForestM.Size = size;
-                        roughForestM.Epsilon = eps;
+                        roughForestM.Gamma = eps;
                         roughForestM.NumberOfTreeProbes = numberOfTreeProbes;
                         roughForestM.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         roughForestM.Learn(trainData, attributes);
@@ -136,7 +136,7 @@ namespace DecisionForestTest
                         DecisionForestDummyRough<DecisionTreeC45> semiRoughForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughForest.DataSampler = sampler;
                         semiRoughForest.Size = size;
-                        semiRoughForest.Epsilon = eps;
+                        semiRoughForest.Gamma = eps;
                         semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
                         semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
                         semiRoughForest.Learn(trainData, attributes);
@@ -145,7 +145,7 @@ namespace DecisionForestTest
                         DecisionForestDummyRough<DecisionTreeC45> semiRoughGammaForest = new DecisionForestDummyRough<DecisionTreeC45>();
                         semiRoughGammaForest.DataSampler = sampler;
                         semiRoughGammaForest.Size = size;
-                        semiRoughGammaForest.Epsilon = eps;
+                        semiRoughGammaForest.Gamma = eps;
                         semiRoughGammaForest.NumberOfTreeProbes = numberOfTreeProbes;
                         semiRoughGammaForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
                         semiRoughGammaForest.Learn(trainData, attributes);
@@ -154,7 +154,7 @@ namespace DecisionForestTest
                         DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
                         randomForest.DataSampler = sampler;
                         randomForest.Size = size;
-                        randomForest.Epsilon = eps;
+                        randomForest.Gamma = eps;
                         randomForest.NumberOfTreeProbes = numberOfTreeProbes;
                         randomForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                         randomForest.Learn(trainData, attributes);

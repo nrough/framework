@@ -80,11 +80,11 @@ namespace Infovision.Datamining
                         case "wmis": sb.AppendFormat("{0,6}", "wmis"); break;
                         case "wucls": sb.AppendFormat("{0,6}", "wucls"); break;
 
-                        case "acc": sb.AppendFormat("acc"); break;
-                        case "bal": sb.AppendFormat("bal"); break;
-                        case "conf": sb.AppendFormat("conf"); break;
-                        case "cov": sb.AppendFormat("cov"); break;
-                        case "qr": sb.AppendFormat("attr"); break;
+                        case "acc": sb.AppendFormat("{0,6}", "acc"); break;
+                        case "bal": sb.AppendFormat("{0,6}", "bal"); break;
+                        case "conf": sb.AppendFormat("{0,6}", "conf"); break;
+                        case "cov": sb.AppendFormat("{0,6}", "cov"); break;
+                        case "attr": sb.AppendFormat("{0,6}", "attr"); break;
 
                         case "mtime": sb.AppendFormat("mtime"); break;
                         case "ctime": sb.AppendFormat("ctime"); break;
@@ -94,10 +94,15 @@ namespace Infovision.Datamining
                         case "srulhit": sb.AppendFormat("srulhit"); break;
                         case "srullen": sb.AppendFormat("srullen"); break;
 
-                        case "numrul": sb.AppendFormat("numrul"); break;
-                        case "dthm": sb.AppendFormat("dthm"); break;
-                        case "dtha": sb.AppendFormat("dtha"); break;
-                        case "gamma": sb.AppendFormat("gamma"); break;
+                        case "numrul": sb.AppendFormat("{0,7}", "numrul"); break;
+                        case "dthm": sb.AppendFormat("{0,5}", "dthm"); break;
+                        case "dtha": sb.AppendFormat("{0,5}", "dtha"); break;
+
+                        case "gamma": sb.AppendFormat("{0,7}", "gamma"); break;
+                        case "alpha": sb.AppendFormat("{0,7}", "alpha"); break;
+                        case "beta": sb.AppendFormat("{0,7}", "beta"); break;
+
+                        case "desc": sb.AppendFormat("description"); break;
                     }
                 }
                 else
@@ -108,7 +113,7 @@ namespace Infovision.Datamining
                         case "m": sb.AppendFormat("{0,20}", result.ModelName); break;
                         case "t": sb.AppendFormat("{0,2}", result.TestNum); break;
                         case "f": sb.AppendFormat("{0,2}", result.Fold); break;
-                        case "eps": sb.AppendFormat("{0:0.00}", result.Epsilon); break;
+                        case "eps": sb.AppendFormat("{0,5:0.00}", result.Epsilon); break;
                         case "ens": sb.AppendFormat("{0,3}", result.EnsembleSize); break;
 
                         case "cls": sb.AppendFormat("{0,4}", result.Classified); break;
@@ -123,7 +128,7 @@ namespace Infovision.Datamining
                         case "bal": sb.AppendFormat("{0:0.0000}", result.BalancedAccuracy); break;
                         case "conf": sb.AppendFormat("{0:0.0000}", result.Confidence); break;
                         case "cov": sb.AppendFormat("{0:0.0000}", result.Coverage); break;
-                        case "qr": sb.AppendFormat("{0:0.0000}", result.AvgNumberOfAttributes); break;
+                        case "attr": sb.AppendFormat("{0,6:0.00}", result.AvgNumberOfAttributes); break;
 
                         case "mtime": sb.AppendFormat("{0,6}", result.ModelCreationTime); break;
                         case "clstime": sb.AppendFormat("{0,6}", result.ClassificationTime); break;
@@ -132,10 +137,13 @@ namespace Infovision.Datamining
                         case "erullen": sb.AppendFormat("{0,7}", result.ExceptionRuleLengthSum); break;
                         case "srulhit": sb.AppendFormat("{0,5}", result.StandardRuleHitCounter); break;
                         case "srullen": sb.AppendFormat("{0,7}", result.StandardRuleLengthSum); break;
-                        case "numrul": sb.AppendFormat("{0:0.00}", result.NumberOfRules); break;
-                        case "dthm": sb.AppendFormat("{0:0.00}", result.MaxTreeHeight); break;
-                        case "dtha": sb.AppendFormat("{0:0.00}", result.AvgTreeHeight); break;
-                        case "gamma": sb.AppendFormat("{0:0.00}", result.Gamma); break;
+                        case "numrul": sb.AppendFormat("{0,7:0.00}", result.NumberOfRules); break;
+                        case "dthm": sb.AppendFormat("{0,5:0.00}", result.MaxTreeHeight); break;
+                        case "dtha": sb.AppendFormat("{0,5:0.00}", result.AvgTreeHeight); break;
+                        case "gamma": sb.AppendFormat("{0,7:0.00}", result.Gamma); break;
+                        case "alpha": sb.AppendFormat("{0,7:0.00}", result.Alpha); break;
+                        case "beta": sb.AppendFormat("{0,7:0.00}", result.Beta); break;
+                        case "desc": sb.AppendFormat(result.Description); break;
                     }
                 }
                 sb.Append(outputSeparator);

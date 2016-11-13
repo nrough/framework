@@ -43,7 +43,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public int NumberOfAttributesToCheckForSplit { get; set; }
         public long? DefaultOutput { get; set; }
-        public double Epsilon { get; set; }
+        public double Gamma { get; set; }
         public int MaxHeight { get; set; }
         public int MinimumNumOfInstancesPerLeaf { get; set; }
         public DataStore TrainingData { get; protected set; }
@@ -92,7 +92,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.NumberOfAttributesToCheckForSplit = -1;
             this.MaxHeight = -1;
-            this.Epsilon = -1.0;
+            this.Gamma = -1.0;
             this.MinimumNumOfInstancesPerLeaf = 1;
             
             this.PruningType = PruningType.None;
@@ -144,7 +144,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
                     this.decisions[i++] = decisionValue;
 
-                if (this.Epsilon >= 0.0)
+                if (this.Gamma >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(
                         EquivalenceClassCollection.Create(attributes, data, data.Weights));
 
@@ -172,7 +172,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected virtual void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
         {
             this.MinimumNumOfInstancesPerLeaf = _decisionTree.MinimumNumOfInstancesPerLeaf;
-            this.Epsilon = _decisionTree.Epsilon;
+            this.Gamma = _decisionTree.Gamma;
             this.MaxHeight = _decisionTree.MaxHeight;
             this.NumberOfAttributesToCheckForSplit = _decisionTree.NumberOfAttributesToCheckForSplit;
 
@@ -181,6 +181,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.PruningCVFolds = _decisionTree.PruningCVFolds;
 
             this.DefaultOutput = _decisionTree.DefaultOutput;
+
+            this.ImpurityFunction = _decisionTree.ImpurityFunction;
+            this.ImpurityNormalize = _decisionTree.ImpurityNormalize;
+
+            this.ModelName = _decisionTree.ModelName;
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
@@ -190,7 +195,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
-            if (this.Epsilon >= 0.0)
+            if (this.Gamma >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.BuildTree(eqClassCollection, this.root, attributes);
 
@@ -287,7 +292,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             result.AvgNumberOfAttributes = this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0;
             result.EnsembleSize = 1;
-            result.Epsilon = this.Epsilon;
+            result.Gamma = this.Gamma;
             result.MaxTreeHeight = DecisionTreeBase.GetHeight(this);
             result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this);
             result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this);
@@ -317,9 +322,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (currentEqClassCollection.HasSingleDecision())
                 return true;
 
-            if (this.Epsilon >= 0.0)
+            if (this.Gamma >= 0.0)
             {                
-                if (((1.0 - this.Epsilon) * this.mA) <= MeasureSum(this.root))
+                if (((1.0 - this.Gamma) * this.mA) <= MeasureSum(this.root))
                 {
                     isConverged = true;
                     return true;
@@ -383,7 +388,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     
                     currentParent.AddChild(newNode);
                     
-                    if (this.Epsilon >= 0.0)
+                    if (this.Gamma >= 0.0)
                         newNode.Measure = InformationMeasureWeights.Instance.Calc(kvp.Value);
 
                     var newSplitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(

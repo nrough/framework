@@ -245,7 +245,7 @@ namespace Infovision.Datamining.Roughset
             if (this.IsException == false)
             {
                 return String.Format(                    
-                    "[Id:{0}] {1} (eps:{2})",
+                    "[Id:{0}] {1} (eps:{2:0.00})",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
                     this.Epsilon                    
@@ -255,7 +255,7 @@ namespace Infovision.Datamining.Roughset
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(                    
-                    "[Id:{0}] {1} (eps:{2}) ",
+                    "[Id:{0}] {1} (eps:{2:0.00}) ",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
                     this.Epsilon                    
@@ -299,7 +299,7 @@ namespace Infovision.Datamining.Roughset
                 }
 
                 return String.Format(
-                    "[Id:{0}] {1} (eps:{2})",
+                    "[Id:{0}] {1} (eps:{2:0.00})",
                     this.Id,
                     this.attributeSet.Count > 0 ? sb.ToString() : "empty",
                     this.Epsilon);

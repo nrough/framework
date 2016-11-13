@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     splitter.Split(ref train, ref test, f);
 
                     DecisionTreeRough tree = new DecisionTreeRough();
-                    tree.Epsilon = eps;
+                    tree.Gamma = eps;
                     tree.Learn(train, attributes);
 
                     ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Epsilon = 0.22;
+                forest.Gamma = 0.22;
                 forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);

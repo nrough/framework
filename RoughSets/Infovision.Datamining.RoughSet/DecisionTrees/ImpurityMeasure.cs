@@ -100,10 +100,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     result += (eq.WeightSum / equivalenceClasses.WeightSum) * (maxValue / eq.WeightSum);
                 }                
             }
-
-            if (result == 0)
-                Debugger.Break();
-
+                       
             return 1.0 - result;
         }
 

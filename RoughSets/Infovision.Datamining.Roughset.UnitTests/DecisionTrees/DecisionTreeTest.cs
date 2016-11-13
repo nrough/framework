@@ -20,22 +20,21 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
-    {
-
-        [Test, Repeat(1)]
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.None)]
-        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.None)]
-        //[TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.None)]      
-        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.None)]
-        //[TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.None)]
-        //[TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.None)]
-        //[TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.ReducedErrorPruning)]
-        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.ReducedErrorPruning)]
-        //[TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.ReducedErrorPruning)]
-        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.ReducedErrorPruning)]
-        //[TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.ReducedErrorPruning)]
-        //[TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.ReducedErrorPruning)]
-        public void ErrorImpurityTest(string trainFile, string testFile, PruningType pruningType)
+    {        
+        [Test, Repeat(25)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]      
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        public void ErrorImpurityTest(string trainFile, string testFile, PruningType pruningType, string reductFactoryKey)
         {
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
@@ -44,13 +43,14 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
 
-            Console.WriteLine(ClassificationResult.ResultHeader());
+            //ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
+            //Console.WriteLine(ClassificationResult.ResultHeader());
 
-            for (double eps = 0.0; eps <= 0.0; eps += 0.01)
+            for (double eps = 0.0; eps <= 0.99; eps += 0.01)
             {
                 Args parms = new Args(4);
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
                 parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
                 parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
 
@@ -61,56 +61,72 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 foreach (IReduct reduct in reducts)
                 {
                     int[] attributes = reduct.Attributes.ToArray();
+                    double m = InformationMeasureMajority.Instance.Calc(reduct.EquivalenceClasses);
+
+                    DecisionTableMajority decTabMaj = new DecisionTableMajority();
+                    decTabMaj.Learn(data, attributes);
+
+                    var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, test);
+                    decTabMajResult.Epsilon = eps;
+                    decTabMajResult.Gamma = reduct.EquivalenceClasses.Count;
+                    decTabMajResult.Alpha = reduct.Attributes.Count;
+                    decTabMajResult.Beta = m;
+                    decTabMajResult.Description = reduct.ToString();
+                    Console.WriteLine(decTabMajResult);
 
                     DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority");
                     treeRough.DefaultOutput = emptyDistribution.Output;
                     treeRough.PruningType = pruningType;
                     treeRough.Learn(data, attributes);
-                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test));
 
-                    //DecisionTreeRough treeRoughError = new DecisionTreeRough("Rough-Error");
-                    //treeRoughError.DefaultOutput = emptyDistribution.Output;
-                    //treeRoughError.ImpurityFunction = ImpurityFunctions.Error;
-                    //treeRoughError.PruningType = pruningType;
-                    //treeRoughError.Learn(data, attributes);
-                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRoughError, test));
-
-                    //DecisionTreeID3 treeId3 = new DecisionTreeID3("ID3-Entropy");
-                    //treeId3.DefaultOutput = emptyDistribution.Output;
-                    //treeId3.PruningType = pruningType;
-                    //treeId3.Learn(data, attributes);
-                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeId3, test));
+                    var treeRoughResult = Classifier.DefaultClassifer.Classify(treeRough, test);
+                    treeRoughResult.Epsilon = eps;
+                    treeRoughResult.Gamma = reduct.EquivalenceClasses.Count;
+                    treeRoughResult.Alpha = reduct.Attributes.Count;
+                    treeRoughResult.Beta = m;
+                    treeRoughResult.Description = reduct.ToString();
+                    Console.WriteLine(treeRoughResult);
 
                     DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy");
                     treec45.DefaultOutput = emptyDistribution.Output;
                     treec45.PruningType = pruningType;
                     treec45.Learn(data, attributes);
-                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treec45, test));
 
-                    //DecisionTableMajority decTabMaj = new DecisionTableMajority();
-                    //decTabMaj.Learn(data, attributes);
-                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(decTabMaj, test));
-
-                    //ObliviousDecisionTree treeObliv = new ObliviousDecisionTree("Olv-Error");
-                    //treeObliv.ImpurityFunction = ImpurityFunctions.Error;
-                    //treeObliv.DefaultOutput = emptyDistribution.Output;
-                    //treeObliv.PruningType = pruningType;
-                    //treeObliv.Learn(data, attributes);
-                    //Console.WriteLine(Classifier.DefaultClassifer.Classify(treeObliv, test));
+                    var treec45Result = Classifier.DefaultClassifer.Classify(treec45, test);
+                    treec45Result.Epsilon = eps;
+                    treec45Result.Gamma = reduct.EquivalenceClasses.Count;
+                    treec45Result.Alpha = reduct.Attributes.Count;
+                    treec45Result.Beta = m;
+                    treec45Result.Description = reduct.ToString();
+                    Console.WriteLine(treec45Result);
 
                     ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority");
                     treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
                     treeOblivMaj.DefaultOutput = emptyDistribution.Output;
-                    treeOblivMaj.PruningType = pruningType;                    
+                    treeOblivMaj.PruningType = pruningType;
                     treeOblivMaj.Learn(data, attributes);
-                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivMaj, test));
+
+                    var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);
+                    treeOblivMajResult.Epsilon = eps;
+                    treeOblivMajResult.Gamma = reduct.EquivalenceClasses.Count;
+                    treeOblivMajResult.Alpha = reduct.Attributes.Count;
+                    treeOblivMajResult.Beta = m;
+                    treeOblivMajResult.Description = reduct.ToString();
+                    Console.WriteLine(treeOblivMajResult);
 
                     ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy");
-                    treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Majority;
+                    treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
                     treeOblivEntropy.DefaultOutput = emptyDistribution.Output;
                     treeOblivEntropy.PruningType = pruningType;                    
                     treeOblivEntropy.Learn(data, attributes);
-                    Console.WriteLine(Classifier.DefaultClassifer.Classify(treeOblivEntropy, test));
+
+                    var treeOblivEntropyResult = Classifier.DefaultClassifer.Classify(treeOblivEntropy, test);
+                    treeOblivEntropyResult.Epsilon = eps;
+                    treeOblivEntropyResult.Gamma = reduct.EquivalenceClasses.Count;
+                    treeOblivEntropyResult.Alpha = reduct.Attributes.Count;
+                    treeOblivEntropyResult.Beta = m;
+                    treeOblivEntropyResult.Description = reduct.ToString();
+                    Console.WriteLine(treeOblivEntropyResult);
                 }             
             }
         }
@@ -153,7 +169,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         {
             DecisionTreeReduct treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
-                treeRed.Epsilon = epsilon;
+                treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
             treeRed.ReductIterations = numOfReducts;
             treeRed.PruningType = pruningType;
@@ -180,16 +196,14 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             //-------------------------------------------------
 
-            DecisionTableMajority decTabMaj = new DecisionTableMajority();
-            decTabMaj.Epsilon = reduct.Epsilon;
+            DecisionTableMajority decTabMaj = new DecisionTableMajority();            
             decTabMaj.Learn(data, reduct.Attributes.ToArray());
             ClassificationResult resultMaj = Classifier.DefaultClassifer.Classify(decTabMaj, test);
 
             Trace.WriteLine(resultMaj);
             //-------------------------------------------------
 
-            DecisionTableLocal decTabLoc = new DecisionTableLocal();
-            decTabLoc.Epsilon = reduct.Epsilon;
+            DecisionTableLocal decTabLoc = new DecisionTableLocal();            
             decTabLoc.Learn(data, reduct.Attributes.ToArray());
             ClassificationResult resultLoc = Classifier.DefaultClassifer.Classify(decTabLoc, test);
             
@@ -257,7 +271,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             {
                 DecisionTreeReduct treeRed = new DecisionTreeReduct();
                 if (epsilon >= 0)
-                    treeRed.Epsilon = epsilon;
+                    treeRed.Gamma = epsilon;
                 treeRed.ReductEpsilon = reductEpsilon;
                 treeRed.ReductIterations = numOfReducts;
                 treeRed.PruningType = pruningType;
@@ -303,7 +317,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
                 DecisionTreeC45 treeC45R = new DecisionTreeC45();
                 if (epsilon >= 0)
-                    treeC45R.Epsilon = epsilon;
+                    treeC45R.Gamma = epsilon;
                 treeC45R.PruningType = pruningType;
                 treeC45R.Learn(data, reduct.Attributes.ToArray());
 
@@ -318,7 +332,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
                 DecisionTreeRough treeRough = new DecisionTreeRough();
                 if (epsilon >= 0)
-                    treeRough.Epsilon = epsilon;
+                    treeRough.Gamma = epsilon;
                 treeRough.PruningType = pruningType;
                 treeRough.Learn(data, attributes);
 
@@ -327,7 +341,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
                 DecisionTreeC45 treeC45 = new DecisionTreeC45();
                 if (epsilon >= 0)
-                    treeC45.Epsilon = epsilon;
+                    treeC45.Gamma = epsilon;
                 treeC45.PruningType = pruningType;
                 treeC45.Learn(data, attributes);
 
@@ -352,7 +366,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     splitter.Split(ref train, ref test);
 
                     DecisionTreeRough tree = new DecisionTreeRough();
-                    tree.Epsilon = eps;
+                    tree.Gamma = eps;
                     tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                     ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
@@ -460,7 +474,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Epsilon = 0.22;
+                forest.Gamma = 0.22;
                 forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
@@ -489,7 +503,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 s.Start();
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Epsilon = 0;
+                tree.Gamma = 0;
                 tree.Learn(data, attributes);
 
                 s.Stop();
@@ -524,7 +538,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {                
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
-                treeID3.Epsilon = eps;
+                treeID3.Gamma = eps;
                 treeID3.Learn(data, attributes);
                 AttributeValueVector[] ruleConditions = DecisionTreeHelper.GetRulesFromTree(treeID3.Root, data);
                 //Console.WriteLine(ruleConditions.Length);
@@ -548,7 +562,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
                 DecisionTreeID3 treeID3 = new DecisionTreeID3();
-                treeID3.Epsilon = eps;
+                treeID3.Gamma = eps;
                 double errorTrain = treeID3.Learn(data, attributes).Error;
                 double errorTest = Classifier.DefaultClassifer.Classify(treeID3, test).Error;
 
@@ -572,7 +586,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
-            treeID3.Epsilon = 0;
+            treeID3.Gamma = 0;
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
@@ -612,7 +626,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             splitter.Split(ref train, ref validation);
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
-            treeCART.Epsilon = 0;
+            treeCART.Gamma = 0;
             treeCART.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             ReducedErrorPruning prunning = new ReducedErrorPruning(treeCART, validation);

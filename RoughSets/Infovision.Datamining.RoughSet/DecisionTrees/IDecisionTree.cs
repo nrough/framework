@@ -7,7 +7,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// </summary>
     public interface IDecisionTree : ILearner, IPredictionModel, IEnumerable<IDecisionTreeNode>
     {
-        IDecisionTreeNode Root { get; }        
+        IDecisionTreeNode Root { get; }
         int NumberOfAttributesToCheckForSplit { get; set; }
+        double Gamma { get; set; }
     }
 }

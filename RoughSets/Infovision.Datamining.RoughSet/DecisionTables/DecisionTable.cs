@@ -11,8 +11,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
     {
         private EquivalenceClassCollection eqClassCollection;
 
-        public long? DefaultOutput { get; set; }
-        public double Epsilon { get; set; }
+        public long? DefaultOutput { get; set; }        
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
@@ -21,8 +20,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
-        {
-            result.Epsilon = this.Epsilon;
+        {            
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = this.eqClassCollection.Count;

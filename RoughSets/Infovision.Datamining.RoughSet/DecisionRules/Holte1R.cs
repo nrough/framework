@@ -23,8 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
         private DecisionListCollection decisionLists;
         private DecisionDistribution aprioriDecisionDistribution;
 
-        public long? DefaultOutput { get; set; }
-        public double Epsilon { get; set; }
+        public long? DefaultOutput { get; set; }        
         public double? Small { get; set; }
 
         private class DiscretizeInfo
@@ -175,8 +174,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
         }
 
         public void SetClassificationResultParameters(ClassificationResult result)
-        {
-            result.Epsilon = this.Epsilon;
+        {            
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = 1.0;

@@ -13,8 +13,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         private ObliviousDecisionTree obliviousDecisionTree = null;
         private DecisionDistribution aprioriDistribution;
 
-        public long? DefaultOutput { get; set; }
-        public double Epsilon { get; set; }
+        public long? DefaultOutput { get; set; }        
         public bool RankedAttributes { get; set; }
         public IDecisionTree ObiliviousTree { get { return this.obliviousDecisionTree; } }
 
@@ -34,8 +33,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
-        {
-            result.Epsilon = this.Epsilon;
+        {            
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
             result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this.obliviousDecisionTree);

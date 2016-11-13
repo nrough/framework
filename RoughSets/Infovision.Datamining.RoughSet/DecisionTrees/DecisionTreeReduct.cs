@@ -23,7 +23,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
             this.ReductIterations = 1;
-            this.Epsilon = 0.0;
+            this.Gamma = 0.0;
             this.ReductEpsilon = 0.0;
             this.ReductComparer = null;
         }
@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
             this.ReductIterations = 1;
-            this.Epsilon = 0.0;
+            this.Gamma = 0.0;
             this.ReductEpsilon = 0.0;
             this.ReductComparer = null;
         }
@@ -52,7 +52,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 this.ReductFactoryKey = tree.ReductFactoryKey;
                 this.ReductIterations = tree.ReductIterations;
-                this.Epsilon = tree.Epsilon;
+                this.Gamma = tree.Gamma;
                 this.ReductEpsilon = tree.ReductEpsilon;
                 this.ReductComparer = tree.ReductComparer;
             }
@@ -62,7 +62,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             base.SetClassificationResultParameters(result);
 
-            result.Gamma = this.ReductEpsilon;
+            result.Epsilon = this.ReductEpsilon;
         }
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)

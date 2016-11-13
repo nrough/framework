@@ -30,7 +30,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
-        public double Epsilon { get; set; }
+        public double Gamma { get; set; }
         public long? DefaultOutput { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
@@ -59,7 +59,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Size = 100;
             this.NumberOfTreeProbes = 1;
             this.BagSizePercent = 100;
-            this.Epsilon = -1.0;
+            this.Gamma = -1.0;
             this.VoteType = DecisionForestVoteType.Unified;
 
             this.trees = new List<Tuple<T, double>>(this.Size);
@@ -78,8 +78,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected virtual T InitDecisionTree()
         {
             T tree = new T();
-            if (this.Epsilon >= 0.0)
-                tree.Epsilon = this.Epsilon;
+            if (this.Gamma >= 0.0)
+                tree.Gamma = this.Gamma;
             return tree;
         }
 
@@ -150,7 +150,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             result.AvgNumberOfAttributes = this.AverageNumberOfAttributes;
             result.EnsembleSize = this.Size;
-            result.Epsilon = this.Epsilon;
+            result.Epsilon = this.Gamma;
             
             result.AvgTreeHeight = 0;
             result.MaxTreeHeight = 0;

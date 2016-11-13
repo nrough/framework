@@ -11,6 +11,16 @@ namespace Infovision.Datamining.Roughset.DecisionTables
     {
         private DecisionDistribution aprioriDistribution;
 
+        public DecisionTableMajority()
+            : base()
+        {
+        }
+
+        public DecisionTableMajority(string modelName)
+            : base(modelName)
+        {
+        }
+
         public override ClassificationResult Learn(DataStore data, int[] attributes)
         {
             this.aprioriDistribution = EquivalenceClassCollection.Create(new int[] { }, data).DecisionDistribution;

@@ -63,7 +63,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     int[] attributes = reduct.Attributes.ToArray();
                     double m = InformationMeasureMajority.Instance.Calc(reduct.EquivalenceClasses);
 
-                    DecisionTableMajority decTabMaj = new DecisionTableMajority();
+                    DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj");
                     decTabMaj.Learn(data, attributes);
 
                     var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, test);

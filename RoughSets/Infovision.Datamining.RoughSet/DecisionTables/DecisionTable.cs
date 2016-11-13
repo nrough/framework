@@ -11,7 +11,19 @@ namespace Infovision.Datamining.Roughset.DecisionTables
     {
         private EquivalenceClassCollection eqClassCollection;
 
-        public long? DefaultOutput { get; set; }        
+        public long? DefaultOutput { get; set; }
+        public string ModelName { get; set; }
+
+        public DecisionTable()
+        {
+            this.ModelName = this.GetType().Name;
+        }
+
+        public DecisionTable(string modelName)
+            : this()
+        {
+            this.ModelName = modelName;
+        }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
@@ -22,7 +34,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         public virtual void SetClassificationResultParameters(ClassificationResult result)
         {            
             result.EnsembleSize = 1;
-            result.ModelName = this.GetType().Name;
+            result.ModelName = this.ModelName;
             result.NumberOfRules = this.eqClassCollection.Count;
             result.AvgNumberOfAttributes = this.eqClassCollection.Attributes.Length;
         }

@@ -58,7 +58,26 @@ namespace Infovision.Datamining
         public DecisionDistribution(IDictionary<long, double> distribution)
             : this(distribution, DistributionSelectMax.DefaultInstance)
         {            
-        }                
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            bool first = true;
+            foreach (var kvp in this.weightDistribution)
+            {
+                if (first)
+                {
+                    sb.AppendFormat("{0}:{1}", kvp.Key, kvp.Value);
+                    first = false;
+                }
+                else
+                {
+                    sb.AppendFormat(" {0}:{1}", kvp.Key, kvp.Value);                    
+                }
+            }
+            return sb.ToString();
+        }
     }
 
     [Serializable]

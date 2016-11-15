@@ -20,7 +20,30 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
-    {        
+    {
+        [Test]
+        public void TestObliviousTreeDepth()
+        {
+            DataStore data = DataStore.Load(@"Data\spect.train", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(@"Data\spect.test", FileFormat.Rses1, data.DataStoreInfo);
+            
+            int[] attributes = new int[] { 19, 20, 16, 21, 17, 14, 8, 18, 9, 2, 13 };
+
+            ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Oblivious");            
+            treeOblivMaj.RankedAttributes = false;
+            treeOblivMaj.Learn(data, attributes);
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeOblivMaj));
+
+            ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
+            Console.WriteLine(ClassificationResult.ResultHeader());
+
+            var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);            
+            Console.WriteLine(treeOblivMajResult);
+
+        }
+
         [Test, Repeat(25)]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
@@ -28,12 +51,24 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\sat.trn", @"Data\sat.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\letter.trn", @"Data\letter.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\sat.trn", @"Data\sat.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        //TODO TestCase(@"Data\letter.trn", @"Data\letter.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         public void ErrorImpurityTest(string trainFile, string testFile, PruningType pruningType, string reductFactoryKey)
         {
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
@@ -42,95 +77,156 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
-
+            int rednum = 100;
             //ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
             //Console.WriteLine(ClassificationResult.ResultHeader());
 
+            IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);
+            ErrorImpurityTestIntPerReduct(data, test, pruningType, reductFactoryKey, -1.0, rednum, emptyDistribution.Output, reductAllAttributes);
+
             for (double eps = 0.0; eps <= 0.99; eps += 0.01)
             {
-                Args parms = new Args(4);
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
-
-                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-                generator.Run();
-                IReductStore reducts = generator.GetReductStoreCollection().FirstOrDefault();
-
-                foreach (IReduct reduct in reducts)
-                {
-                    int[] attributes = reduct.Attributes.ToArray();
-                    double m = InformationMeasureMajority.Instance.Calc(reduct.EquivalenceClasses);
-
-                    DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj");
-                    decTabMaj.Learn(data, attributes);
-
-                    var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, test);
-                    decTabMajResult.Epsilon = eps;
-                    decTabMajResult.Gamma = reduct.EquivalenceClasses.Count;
-                    decTabMajResult.Alpha = reduct.Attributes.Count;
-                    decTabMajResult.Beta = m;
-                    decTabMajResult.Description = reduct.ToString();
-                    Console.WriteLine(decTabMajResult);
-
-                    DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority");
-                    treeRough.DefaultOutput = emptyDistribution.Output;
-                    treeRough.PruningType = pruningType;
-                    treeRough.Learn(data, attributes);
-
-                    var treeRoughResult = Classifier.DefaultClassifer.Classify(treeRough, test);
-                    treeRoughResult.Epsilon = eps;
-                    treeRoughResult.Gamma = reduct.EquivalenceClasses.Count;
-                    treeRoughResult.Alpha = reduct.Attributes.Count;
-                    treeRoughResult.Beta = m;
-                    treeRoughResult.Description = reduct.ToString();
-                    Console.WriteLine(treeRoughResult);
-
-                    DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy");
-                    treec45.DefaultOutput = emptyDistribution.Output;
-                    treec45.PruningType = pruningType;
-                    treec45.Learn(data, attributes);
-
-                    var treec45Result = Classifier.DefaultClassifer.Classify(treec45, test);
-                    treec45Result.Epsilon = eps;
-                    treec45Result.Gamma = reduct.EquivalenceClasses.Count;
-                    treec45Result.Alpha = reduct.Attributes.Count;
-                    treec45Result.Beta = m;
-                    treec45Result.Description = reduct.ToString();
-                    Console.WriteLine(treec45Result);
-
-                    ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority");
-                    treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
-                    treeOblivMaj.DefaultOutput = emptyDistribution.Output;
-                    treeOblivMaj.PruningType = pruningType;
-                    treeOblivMaj.Learn(data, attributes);
-
-                    var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);
-                    treeOblivMajResult.Epsilon = eps;
-                    treeOblivMajResult.Gamma = reduct.EquivalenceClasses.Count;
-                    treeOblivMajResult.Alpha = reduct.Attributes.Count;
-                    treeOblivMajResult.Beta = m;
-                    treeOblivMajResult.Description = reduct.ToString();
-                    Console.WriteLine(treeOblivMajResult);
-
-                    ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy");
-                    treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
-                    treeOblivEntropy.DefaultOutput = emptyDistribution.Output;
-                    treeOblivEntropy.PruningType = pruningType;                    
-                    treeOblivEntropy.Learn(data, attributes);
-
-                    var treeOblivEntropyResult = Classifier.DefaultClassifer.Classify(treeOblivEntropy, test);
-                    treeOblivEntropyResult.Epsilon = eps;
-                    treeOblivEntropyResult.Gamma = reduct.EquivalenceClasses.Count;
-                    treeOblivEntropyResult.Alpha = reduct.Attributes.Count;
-                    treeOblivEntropyResult.Beta = m;
-                    treeOblivEntropyResult.Description = reduct.ToString();
-                    Console.WriteLine(treeOblivEntropyResult);
-                }             
+                ErrorImpurityTestInt(data, test, pruningType, reductFactoryKey, eps, rednum, emptyDistribution.Output);               
             }
         }
 
+        [Test, Repeat(1)]                
+        [TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\semeion.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\soybean-small.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\zoo.dta", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //TODO [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+
+        [TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\semeion.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\soybean-small.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\zoo.dta", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //TODO [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+
+        public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
+        {
+            DataStore data = DataStore.Load(dataFile, fileFormat);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;            
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
+            DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, folds);
+            DataStore trainDS = null, testDS = null;
+            int rednum = 100;
+
+            for(int f = 0; f < folds; f++)
+            {
+                splitter.Split(ref trainDS, ref testDS, f);
+
+                IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);
+                ErrorImpurityTestIntPerReduct(trainDS, testDS, pruningType, reductFactoryKey, -1.0, rednum, emptyDistribution.Output, reductAllAttributes);
+
+                for (double eps = 0.0; eps <= 0.99; eps += 0.01)
+                {
+                    ErrorImpurityTestInt(trainDS, testDS, pruningType, reductFactoryKey, eps, rednum, emptyDistribution.Output);
+                }
+            }
+        }
+
+        private void ErrorImpurityTestInt(DataStore trainDS, DataStore testDS, PruningType pruningType, string redkey, double eps, int rednum, long output)
+        {
+            Args parms = new Args(4);
+            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainDS);
+            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
+            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, rednum);
+
+            IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+            generator.Run();
+            IReductStore reducts = generator.GetReductStoreCollection().FirstOrDefault();
+
+            foreach (IReduct reduct in reducts)
+            {
+                ErrorImpurityTestIntPerReduct(trainDS, testDS, pruningType, redkey, eps, rednum, output, reduct);
+            }
+        }
+
+        private void ErrorImpurityTestIntPerReduct(DataStore trainDS, DataStore testDS, PruningType pruningType, string redkey, double eps, int rednum, long output, IReduct reduct)
+        {
+            int[] attributes = reduct.Attributes.ToArray();
+            double m = InformationMeasureMajority.Instance.Calc(reduct.EquivalenceClasses);
+
+            DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
+            decTabMaj.Learn(trainDS, attributes);
+
+            var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, testDS);
+            decTabMajResult.Epsilon = eps;
+            decTabMajResult.Gamma = reduct.EquivalenceClasses.Count;
+            decTabMajResult.Alpha = reduct.Attributes.Count;
+            decTabMajResult.Beta = m;
+            decTabMajResult.Description = reduct.ToString();
+            Console.WriteLine(decTabMajResult);
+
+            DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
+            treeRough.DefaultOutput = output;
+            treeRough.PruningType = pruningType;
+            treeRough.Learn(trainDS, attributes);
+
+            var treeRoughResult = Classifier.DefaultClassifer.Classify(treeRough, testDS);
+            treeRoughResult.Epsilon = eps;
+            treeRoughResult.Gamma = reduct.EquivalenceClasses.Count;
+            treeRoughResult.Alpha = reduct.Attributes.Count;
+            treeRoughResult.Beta = m;
+            treeRoughResult.Description = reduct.ToString();
+            Console.WriteLine(treeRoughResult);
+
+            DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
+            treec45.DefaultOutput = output;
+            treec45.PruningType = pruningType;
+            treec45.Learn(trainDS, attributes);
+
+            var treec45Result = Classifier.DefaultClassifer.Classify(treec45, testDS);
+            treec45Result.Epsilon = eps;
+            treec45Result.Gamma = reduct.EquivalenceClasses.Count;
+            treec45Result.Alpha = reduct.Attributes.Count;
+            treec45Result.Beta = m;
+            treec45Result.Description = reduct.ToString();
+            Console.WriteLine(treec45Result);
+
+            ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Olv-Majority-" + pruningType.ToSymbol());
+            treeOblivMaj.ImpurityFunction = ImpurityFunctions.Majority;
+            treeOblivMaj.DefaultOutput = output;
+            treeOblivMaj.PruningType = pruningType;
+            treeOblivMaj.Learn(trainDS, attributes);
+
+            var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, testDS);
+            treeOblivMajResult.Epsilon = eps;
+            treeOblivMajResult.Gamma = reduct.EquivalenceClasses.Count;
+            treeOblivMajResult.Alpha = reduct.Attributes.Count;
+            treeOblivMajResult.Beta = m;
+            treeOblivMajResult.Description = reduct.ToString();
+            Console.WriteLine(treeOblivMajResult);
+
+            ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy-" + pruningType.ToSymbol());
+            treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
+            treeOblivEntropy.DefaultOutput = output;
+            treeOblivEntropy.PruningType = pruningType;
+            treeOblivEntropy.Learn(trainDS, attributes);
+
+            var treeOblivEntropyResult = Classifier.DefaultClassifer.Classify(treeOblivEntropy, testDS);
+            treeOblivEntropyResult.Epsilon = eps;
+            treeOblivEntropyResult.Gamma = reduct.EquivalenceClasses.Count;
+            treeOblivEntropyResult.Alpha = reduct.Attributes.Count;
+            treeOblivEntropyResult.Beta = m;
+            treeOblivEntropyResult.Description = reduct.ToString();
+            Console.WriteLine(treeOblivEntropyResult);
+        }
 
         [Test, Repeat(1)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]        
@@ -705,8 +801,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
 
 
-            // Learn the training instances!
-            c45learning.Run(inputs, outputs);
+            // Learn the training instances!            
+            c45learning.Learn(inputs, outputs);
 
             string[] conditionalAttributes = this.AttributeNames(ds);
             string decisionName = this.DecisionName(ds);
@@ -775,7 +871,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
 
             // Learn the training instances!
-            id3learning.Run(inputs, outputs);
+            id3learning.Learn(inputs, outputs);
 
             string[] conditionalAttributes = this.AttributeNames(ds);
             string decisionName = this.DecisionName(ds);

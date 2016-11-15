@@ -209,11 +209,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     this.Comparison.ToSymbol(),
                     (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString());
 
-            return string.Format("[{0}] ({1} {2} {3}) ==> {4}",
+            return string.Format("[{0}] ({1} {2} {3}) ==> {4} ({5})",
                     this.Id,
                     (info != null) ? info.GetFieldInfo(this.Attribute).Name : this.Attribute.ToString(),
                     this.Comparison.ToSymbol(),
-                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(), this.Output);
+                    (info != null) ? info.GetFieldInfo(this.Attribute).Internal2External(this.Value).ToString() : this.Value.ToString(), this.Output,
+                    this.OutputDistribution);
         }
 
         public override bool Equals(object obj)

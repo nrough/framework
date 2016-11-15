@@ -7,6 +7,30 @@ namespace Infovision.Utils
     public class ArrayComparer<T> : EqualityComparer<T[]>, IComparer<T[]>, IComparer
         where T : IComparable, IEquatable<T>
     {
+        private static volatile ArrayComparer<T> arrayComparer = null;
+        private static readonly object syncRoot = new object();
+
+        public static ArrayComparer<T> Instance
+        {
+            get
+            {
+                if (arrayComparer == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (arrayComparer == null)
+                        {                            
+                            arrayComparer = new ArrayComparer<T>();
+                        }
+                    }
+                }
+
+                return arrayComparer;
+            }            
+        }
+
+
+
         public int Compare(object x, object y)
         {
             T[] a1 = x as T[];            

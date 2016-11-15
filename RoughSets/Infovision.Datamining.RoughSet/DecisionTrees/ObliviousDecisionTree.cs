@@ -3,6 +3,7 @@ using Infovision.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,8 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class ObliviousDecisionTree : DecisionTreeBase
-    {
-        private Dictionary<int[], double> cache = new Dictionary<int[], double>(new ArrayComparer<int>());
+    {        
+        private Dictionary<int[], SplitInfo> cache = new Dictionary<int[], SplitInfo>(ArrayComparer<int>.Instance);
         private object syncRoot = new object();
 
         public bool RankedAttributes { get; set; }
@@ -79,7 +80,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (eqClassCollection.Count != 1)
                 throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
 
-            return 0;
+            return 1.0;
         }
 
         protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
@@ -87,45 +88,56 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             throw new NotImplementedException();
         }
 
-        protected override SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] origAttributes, int[] attributesToTest, IDecisionTreeNode parentTreeNode)
+        protected override SplitInfo GetNextSplit(
+            EquivalenceClassCollection eqClassCollection, 
+            int[] origAttributes, 
+            int[] attributesToTest, 
+            IDecisionTreeNode parentTreeNode)
         {
-            if(this.RankedAttributes == false)
-                return base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
+            if (this.RankedAttributes == false)
+            {
+                SplitInfo baseResult = null;
+                if (!cache.TryGetValue(attributesToTest, out baseResult))
+                {
+                    baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
+
+                    //cache only splits that are valid (invalid split can be valid in other branch)
+                    if (baseResult.AttributeId != -1 && baseResult.SplitType != SplitType.None)
+                        cache.Add(attributesToTest, baseResult);
+                    return baseResult;
+                }                               
+                
+                return this.GetSplitInfo(baseResult.AttributeId, eqClassCollection, 
+                    this.CalculateImpurityBeforeSplit(eqClassCollection), parentTreeNode);                
+            }
 
             int attributeId = origAttributes[parentTreeNode.Level];
-            return this.GetSplitInfo(attributeId, eqClassCollection, this.CalculateImpurityBeforeSplit(eqClassCollection));
+            return this.GetSplitInfo(attributeId, eqClassCollection, 
+                this.CalculateImpurityBeforeSplit(eqClassCollection), parentTreeNode);
         }
 
-        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
+        protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure, IDecisionTreeNode parentNode)
         {
             if (parentMeasure < 0)
                 throw new ArgumentException("currentScore < 0", "parentMeasure");
 
             if (data == null)
-                throw new ArgumentNullException("data", "(data == null");
+                throw new ArgumentNullException("data", "(data == null");            
 
-            int[] newAttributes = new int[data.Attributes.Length + 1];
-            if(data.Attributes.Length != 0)
-                Array.Copy(data.Attributes, newAttributes, data.Attributes.Length);
-            newAttributes[data.Attributes.Length] = attributeId;
-            
-            double m;
-            EquivalenceClassCollection attributeEqClasses = null;
-            if (!cache.TryGetValue(newAttributes, out m))
+            int[] newAttributes = new int[parentNode.Level + 1];
+            IDecisionTreeNode current = parentNode;
+            int j = 0;
+            while (current != null && current.Attribute != -1) //not root
             {
-                lock (syncRoot)
-                {
-                    if (!cache.TryGetValue(newAttributes, out m))
-                    {
-                        attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights);
-                        m = this.ImpurityFunction(attributeEqClasses);
-                        cache.Add(newAttributes, m);
-                    }
-                }
+                newAttributes[j++] = current.Attribute;
+                current = current.Parent;         
             }
-
-            attributeEqClasses = EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights, data.Indices);
-            return new SplitInfo(attributeId, m, attributeEqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);
+            newAttributes[j] = attributeId;            
+                        
+            return new SplitInfo(
+                attributeId,
+                this.ImpurityFunction(EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights)),
+                EquivalenceClassCollection.Create(attributeId, data), SplitType.Discreet, ComparisonType.EqualTo, 0);                        
         }
     }
 }

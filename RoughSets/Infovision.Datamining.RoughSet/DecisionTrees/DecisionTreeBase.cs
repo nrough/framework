@@ -197,7 +197,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             if (this.Gamma >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
-            this.BuildTree(eqClassCollection, this.root, attributes);
+            this.GrowTree(eqClassCollection, this.root, attributes);
 
             return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
         }
@@ -334,7 +334,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return false;
         }
 
-        protected virtual void BuildTree(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
+        protected virtual void GrowTree(EquivalenceClassCollection eqClassCollection, DecisionTreeNode parent, int[] attributes)
         {
             var splitInfo = Tuple.Create<EquivalenceClassCollection, DecisionTreeNode, int[]>(eqClassCollection, parent, attributes);
             var queue = new Queue<Tuple<EquivalenceClassCollection, DecisionTreeNode, int[]>>();
@@ -447,7 +447,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             Parallel.ForEach(rangePartitioner, options, (range) =>
             {
                 for (int i = range.Item1; i < range.Item2; i++)
-                    scores[i] = this.GetSplitInfo(localAttributes[i], eqClassCollection, currentScore);
+                    scores[i] = this.GetSplitInfo(localAttributes[i], eqClassCollection, currentScore, parentTreeNode);
             });            
 
             double maxGain = Double.NegativeInfinity;
@@ -482,23 +482,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return this.ImpurityFunction(equivalenceClasses);
         }
 
-        protected virtual SplitInfo GetSplitInfo(int attributeId, EquivalenceClassCollection data, double currentScore)
+        protected virtual SplitInfo GetSplitInfo(int attributeId, EquivalenceClassCollection data, double currentScore, IDecisionTreeNode parentTreeNode)
         {
             DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(attributeId);
 
             if (attributeInfo.IsSymbolic)
             {
-                return this.GetSplitInfoSymbolic(attributeId, data, currentScore);
+                return this.GetSplitInfoSymbolic(attributeId, data, currentScore, parentTreeNode);
             }
             else if (attributeInfo.IsNumeric)
             {
-                return this.GetSplitInfoNumeric(attributeId, data, currentScore);
+                return this.GetSplitInfoNumeric(attributeId, data, currentScore, parentTreeNode);
             }
             
             throw new NotImplementedException("Only symbolic and numeric attribute types are currently supported.");                            
         }
             
-        protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure)
+        protected virtual SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure, IDecisionTreeNode parentTreeNode)
         {
             if (parentMeasure < 0)
                 throw new ArgumentException("currentScore < 0", "parentMeasure");
@@ -510,7 +510,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 SplitType.Discreet, ComparisonType.EqualTo, 0);
         }
 
-        protected virtual SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double currentScore)
+        protected virtual SplitInfo GetSplitInfoNumeric(int attributeId, EquivalenceClassCollection data, double currentScore, IDecisionTreeNode parentTreeNode)
         {
             int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(attributeId);
             int[] indices = data.Indices;

@@ -52,7 +52,7 @@ namespace Infovision.Utils
 
             try
             {
-                fileStream = File.Create(path);
+                fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read);
                 fileWriter = new StreamWriter(fileStream);
                 fileWriter.AutoFlush = true;
 

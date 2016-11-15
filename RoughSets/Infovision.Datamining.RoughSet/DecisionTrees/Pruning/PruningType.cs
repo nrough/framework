@@ -12,4 +12,25 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
         ErrorBasedPruning = 1,
         ReducedErrorPruning = 2,
     }
+
+    public static class PruningTypeExternsions
+    {
+        public static string ToSymbol(this PruningType comparison)
+        {
+            switch (comparison)
+            {
+                case PruningType.None:
+                    return "NONE";
+
+                case PruningType.ErrorBasedPruning:
+                    return "EBP";
+
+                case PruningType.ReducedErrorPruning:
+                    return "REP";
+
+                default:
+                    throw new NotImplementedException("Pruning type not implemented");
+            }
+        }
+    }
 }

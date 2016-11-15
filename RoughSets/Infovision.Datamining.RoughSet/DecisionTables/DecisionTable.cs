@@ -37,6 +37,8 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             result.ModelName = this.ModelName;
             result.NumberOfRules = this.eqClassCollection.Count;
             result.AvgNumberOfAttributes = this.eqClassCollection.Attributes.Length;
+            result.MaxTreeHeight = this.eqClassCollection.Attributes.Length;
+            result.AvgTreeHeight = this.eqClassCollection.Attributes.Length;
         }
 
         public virtual long Compute(DataRecordInternal record)

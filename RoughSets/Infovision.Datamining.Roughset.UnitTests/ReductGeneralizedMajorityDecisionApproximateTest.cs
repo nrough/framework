@@ -227,9 +227,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
                 DataStoreSplitter splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);
 
                 for (int f = 0; f <= kvp.Value.CrossValidationFolds; f++)
-                {
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref trainData, ref testData);
+                {                    
+                    splitter.Split(ref trainData, ref testData, f);
 
                     for (int t = 0; t < numberOfTests; t++)
                     {

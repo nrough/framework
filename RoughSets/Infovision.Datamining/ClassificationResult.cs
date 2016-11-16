@@ -34,7 +34,7 @@ namespace Infovision.Datamining
 
         public static string OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
 
-        private Dictionary<long, int> value2index;
+        private Dictionary<long, int> decisionValue2Index;
         private long[] decisions;
         private int decCount;
         private int decCountPlusOne;
@@ -42,7 +42,7 @@ namespace Infovision.Datamining
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
         private int counter;
-        private DataStore testData;        
+        private DataStore testData;
         private readonly object syncRoot = new object();
 
         #endregion Members
@@ -52,13 +52,7 @@ namespace Infovision.Datamining
         public int Count
         {
             get { return this.counter; }
-        }
-
-        public DataStore TestData
-        {
-            get { return this.testData; }
-            set { this.testData = value; }
-        }
+        }        
 
         public double Accuracy
         {
@@ -243,9 +237,8 @@ namespace Infovision.Datamining
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
             : this()
         {
+            this.testData = dataStore;
             this.DatasetName = dataStore.Name;
-            this.TestData = dataStore;
-
             this.decCount = decisionValues.Count;
             this.decCountPlusOne = decisionValues.Count + 1;
             this.decisions = new long[decCountPlusOne];
@@ -257,10 +250,10 @@ namespace Infovision.Datamining
             Array.Sort(decDistribution, decArray);
             decDistribution = null;
             Array.Copy(decArray, 0, decisions, 1, decCount);
-            value2index = new Dictionary<long, int>(decCountPlusOne);
-            value2index.Add(-1, 0);
+            decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
+            decisionValue2Index.Add(-1, 0);
             for (int i = 0; i < decArray.Length; i++)
-                value2index.Add(decArray[i], i + 1);
+                decisionValue2Index.Add(decArray[i], i + 1);
 
             predictionResults = new long[dataStore.NumberOfRecords];
             confusionTable = new int[decCountPlusOne][];
@@ -299,8 +292,8 @@ namespace Infovision.Datamining
 
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
-            int actualDecIdx = value2index[actual];
-            int predictionDecIdx = value2index[prediction];
+            int actualDecIdx = decisionValue2Index[actual];
+            int predictionDecIdx = decisionValue2Index[prediction];
 
             this.predictionResults[objectIdx] = prediction;
 
@@ -317,20 +310,30 @@ namespace Infovision.Datamining
             return predictionResults[objectIdx];
         }
 
+        public long GetPrediction(long objectId)
+        {
+            return predictionResults[testData.ObjectId2ObjectIndex(objectId)];
+        }
+
         public long GetActual(int objectIdx)
         {
             return testData.GetFieldValue(objectIdx, testData.DataStoreInfo.DecisionFieldId);
         }
 
+        public long GetActual(long objectId)
+        {
+            return testData.GetFieldValue(testData.ObjectId2ObjectIndex(objectId), testData.DataStoreInfo.DecisionFieldId);
+        }
+
         public int GetConfusionTable(long prediction, long actual)
         {
-            return confusionTable[value2index[actual]][value2index[prediction]];
+            return confusionTable[decisionValue2Index[actual]][decisionValue2Index[prediction]];
         }
 
         public int GetConfusionTable(long decisionValue, ConfusionMatrixElement confusionTableElement)
         {
             int result = 0;
-            int decIdx = value2index[decisionValue];
+            int decIdx = decisionValue2Index[decisionValue];
 
             switch (confusionTableElement)
             {
@@ -366,7 +369,7 @@ namespace Infovision.Datamining
         public double GetConfusionTableWeights(long decisionValue, ConfusionMatrixElement confusionTableElement)
         {
             double result = 0;
-            int decIdx = value2index[decisionValue];
+            int decIdx = decisionValue2Index[decisionValue];
             switch (confusionTableElement)
             {
                 //actual cats that were correctly classified as cats
@@ -426,17 +429,12 @@ namespace Infovision.Datamining
                     + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TrueNegative));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
-        }        
-
-        public double DecisionApriori(long decisionValue)
-        {
-            return (double)this.DecisionTotal(decisionValue) / (double)this.TestData.NumberOfRecords;
-        }
+        }                
 
         public int DecisionTotal(long decisionValue)
         {
             int total = 0;
-            int decIdx = value2index[decisionValue];
+            int decIdx = decisionValue2Index[decisionValue];
             for (int i = 1; i < decCountPlusOne; i++)
                 total += confusionTable[decIdx][i];
             return total;
@@ -479,6 +477,49 @@ namespace Infovision.Datamining
                 default:
                     return this.ToString();
             }
+        }
+
+        /// <summary>
+        /// Method is used during reuslt meting in cross validation.
+        /// this object must be initialized with datastore that contains all records, 
+        /// while localResult is the result besed on a single fold in CV process
+        /// </summary>
+        /// <param name="localResult">Classification result from classification of a single fold in cross validation</param>
+        public virtual void AddLocalResult(ClassificationResult localResult)
+        {
+            if (this.decisionValue2Index.Count != localResult.decisionValue2Index.Count
+                    || this.decisionValue2Index.Except(localResult.decisionValue2Index).Any())
+                throw new ArgumentException("Decision sets must be equal in both classification results", "localResult");
+
+            lock (syncRoot)
+            {
+                this.AvgNumberOfAttributes += localResult.AvgNumberOfAttributes;
+                this.NumberOfRules += localResult.NumberOfRules;
+                this.MaxTreeHeight += localResult.MaxTreeHeight;
+                this.AvgTreeHeight += localResult.AvgTreeHeight;
+
+                this.ClassificationTime += localResult.ClassificationTime;
+                this.ModelCreationTime += localResult.ModelCreationTime;
+
+                this.ExceptionRuleHitCounter += localResult.ExceptionRuleHitCounter;
+                this.StandardRuleHitCounter += localResult.StandardRuleHitCounter;
+                this.ExceptionRuleLengthSum += localResult.ExceptionRuleLengthSum;
+                this.StandardRuleLengthSum += localResult.StandardRuleLengthSum;
+
+                this.counter += localResult.counter;
+
+                for (int i = 0; i < decCountPlusOne; i++)
+                {
+                    for (int j = 0; j < decCountPlusOne; j++)
+                    {
+                        confusionTable[i][j] += localResult.confusionTable[i][j];
+                        confusionTableWeights[i][j] += localResult.confusionTableWeights[i][j];
+                    }
+                }
+            }
+
+            foreach (var objectId in localResult.testData.GetObjectIds())                
+                this.predictionResults[this.testData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
         }
 
         #endregion Methods

@@ -4,6 +4,6 @@ namespace Infovision.Datamining
 {
     public interface ILearner
     {
-        ClassificationResult Learn(DataStore data, int[] attributes);
+        ClassificationResult Learn(DataStore data, int[] attributes);        
     }
 }

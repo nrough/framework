@@ -123,10 +123,11 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, folds);
+
             DataStore trainDS = null, testDS = null;
             int rednum = 100;
 
-            for(int f = 0; f < folds; f++)
+            for (int f = 0; f < folds; f++)
             {
                 splitter.Split(ref trainDS, ref testDS, f);
 
@@ -458,9 +459,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 double error = 0;
                 DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
                 for (int f = 0; f < numOfFolds; f++)
-                {
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref train, ref test);
+                {                    
+                    splitter.Split(ref train, ref test, f);
 
                     DecisionTreeRough tree = new DecisionTreeRough();
                     tree.Gamma = eps;
@@ -486,9 +486,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             double error = 0;
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref tmp, ref test);
+            {                
+                splitter.Split(ref tmp, ref test, f);
 
                 DataStoreSplitter splitter2 = new DataStoreSplitterRatio(tmp, 0.5);
                 splitter2.Split(ref train, ref prune);
@@ -516,9 +515,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             double error = 0;
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
+            {                
+                splitter.Split(ref train, ref test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
@@ -541,9 +539,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
+            {                
+                splitter.Split(ref train, ref test, f);
 
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
@@ -564,9 +561,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
+            {                
+                splitter.Split(ref train, ref test, f);
 
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
                 forest.NumberOfAttributesToCheckForSplit = 3;

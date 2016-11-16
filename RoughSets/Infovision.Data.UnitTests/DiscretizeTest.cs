@@ -46,11 +46,8 @@ namespace Infovision.Data.UnitTests
 
             for (int i = 0; i < benchmark.CrossValidationFolds; i++)
             {
-                if (splitter != null)
-                {
-                    splitter.ActiveFold = i;
-                    splitter.Split(ref train, ref test);
-                }
+                if (splitter != null)                    
+                    splitter.Split(ref train, ref test, i);
 
                 //train.WriteToCSVFileExt(String.Format("disc_german_orig_{0}.trn", i), " ");
                 //test.WriteToCSVFileExt(String.Format("disc_german_orig_{0}.tst", i), " ");

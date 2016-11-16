@@ -86,11 +86,8 @@ namespace DecisionForestTest
 
                 for (int fold = 0; fold < benchmarkData.CrossValidationFolds; fold++)
                 {
-                    if (splitter != null)
-                    {
-                        splitter.ActiveFold = fold;
-                        splitter.Split(ref trainData, ref testData);
-                    }
+                    if (splitter != null)                        
+                        splitter.Split(ref trainData, ref testData, fold);
 
                     DataSampler sampler = new DataSampler(trainData, true);
                     sampler.BagSizePercent = 100;

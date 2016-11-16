@@ -15,7 +15,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
 
         public long? DefaultOutput { get; set; }        
         public bool RankedAttributes { get; set; }
-        public IDecisionTree ObiliviousTree { get { return this.obliviousDecisionTree; } }
+        public IDecisionTree ObiliviousTree { get { return this.obliviousDecisionTree; } }        
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {

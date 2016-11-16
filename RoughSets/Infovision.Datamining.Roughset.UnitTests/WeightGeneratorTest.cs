@@ -43,11 +43,14 @@ namespace  Infovision.Datamining.Roughset.UnitTests
                                                  + classificationResult.Misclassified
                                                  + classificationResult.Unclassified);
 
+
+            DecisionDistribution aprioriDist = EquivalenceClassCollection.Create(new int[] { }, dataStoreTest).DecisionDistribution;
+
             double total = 0;
             double aprioriSum = 0;
             foreach (long decision in dataStoreTest.DataStoreInfo.GetDecisionValues())
             {
-                aprioriSum += classificationResult.DecisionApriori(decision);
+                aprioriSum += aprioriDist[decision];
                 total += classificationResult.DecisionTotal(decision);
             }
 

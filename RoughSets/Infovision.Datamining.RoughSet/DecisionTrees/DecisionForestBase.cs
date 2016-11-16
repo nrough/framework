@@ -65,6 +65,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.trees = new List<Tuple<T, double>>(this.Size);
         }
 
+        public virtual void Reset()
+        {
+            this.trees = new List<Tuple<T, double>>(this.Size);
+            this.learningResult = null;
+            this.DefaultOutput = null;
+
+        }
+
         protected virtual void InitDataSampler(DataStore data)
         {
             if (this.DataSampler == null)

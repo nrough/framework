@@ -120,6 +120,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return tree;
         }
 
+        public virtual void Reset()
+        {
+            this.root = null;
+            this.nextId = 1;
+            this.thresholds = null;
+            this.aprioriDistribution = null;
+            this.mA = 0;
+            this.decisions = null;
+        }
+
         protected abstract DecisionTreeBase CreateInstanceForClone();        
 
         protected int GetId()
@@ -134,8 +144,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             lock (syncRoot)
             {
-                this.TrainingData = data;
+                this.Reset();
 
+                this.TrainingData = data;
                 this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
                 this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
                 this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];

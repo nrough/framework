@@ -103,6 +103,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimpleTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringTest.cs" />
     <Compile Include="Clustering\Hierarchical\DistanceMatrixTest.cs" />
+    <Compile Include="CrossValidationTest.cs" />
     <Compile Include="Filters\Supervised\Attribute\DiscretizationTest.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\AccordDiscretizationFixture.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DiscretizationTest.cs" />

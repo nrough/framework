@@ -120,7 +120,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
             tmpSymbols = null;
 
             int[] folds = CrossValidation.Splittings(symbols.Rows.Count, cvFolds);
-            CrossValidation<RoughClassifier> val = new CrossValidation<RoughClassifier>(folds, cvFolds);
+            Accord.MachineLearning.CrossValidation<RoughClassifier> val = new Accord.MachineLearning.CrossValidation<RoughClassifier>(folds, cvFolds);
             val.RunInParallel = false;
 
             val.Fitting = delegate(int k, int[] indicesTrain, int[] indicesValidation)

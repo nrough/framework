@@ -39,7 +39,13 @@ namespace Infovision.Datamining
 
         public double this[long decision]
         {
-            get { return this.weightDistribution[decision]; }
+            get
+            {
+                double w = 0;
+                if (this.weightDistribution.TryGetValue(decision, out w))
+                    return w;
+                return 0; 
+            }
         }
 
         private DecisionDistribution()

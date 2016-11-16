@@ -23,9 +23,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
+            {                
+                splitter.Split(ref train, ref test, f);
 
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 //forest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
@@ -46,9 +45,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
-            {
-                splitter.ActiveFold = f;
-                splitter.Split(ref train, ref test);
+            {                
+                splitter.Split(ref train, ref test, f);
 
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
                 //forest.NumberOfAttributesToCheckForSplit = 3;

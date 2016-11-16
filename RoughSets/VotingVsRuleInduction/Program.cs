@@ -214,10 +214,8 @@ namespace VotingVsRuleInduction
                 DataStoreSplitter splitter = new DataStoreSplitter(data, benchmark.CrossValidationFolds);
 
                 for (int i = 0; i < benchmark.CrossValidationFolds; i++)
-                {
-                    splitter.ActiveFold = i;
-                    splitter.Split(ref t1, ref t2);
-
+                {                    
+                    splitter.Split(ref t1, ref t2, i);
                     dataTuple[i] = new Tuple<DataStore, DataStore, int>(t1, t2, i);
                 }
             }

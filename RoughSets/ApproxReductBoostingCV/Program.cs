@@ -104,9 +104,8 @@ namespace ApproxReductBoostingCV
                 {
                     DataStore trnFoldOrig = null;
                     DataStore tstFoldOrig = null;
-
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref trnFoldOrig, ref tstFoldOrig);
+                    
+                    splitter.Split(ref trnFoldOrig, ref tstFoldOrig, f);
 
                     DataStore trnFoldReplaced = null;
 
@@ -231,7 +230,7 @@ namespace ApproxReductBoostingCV
                                         redLenAveDev,
                                         measureMean,
                                         measureStdDev,
-                                        splitter.ActiveFold,
+                                        f,
                                         reductGenerator.Epsilon));
                 }
             }

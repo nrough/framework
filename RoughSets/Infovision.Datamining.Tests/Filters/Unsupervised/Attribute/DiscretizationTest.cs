@@ -29,8 +29,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
             DataStoreSplitter splitter = new DataStoreSplitter(data, 5);
 
             DataStore trainData = null, testData = null;
-            splitter.ActiveFold = 0;
-            splitter.Split(ref trainData, ref testData);
+            splitter.Split(ref trainData, ref testData, 0);
 
             Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer descretizer = new Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer()
             {

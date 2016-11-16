@@ -41,9 +41,8 @@ namespace ExceptionRulesTest
                 if (kvp.Value.CrossValidationActive)
                 {
                     trainData = null;
-                    testData = null;
-                    splitter.ActiveFold = f;
-                    splitter.Split(ref trainData, ref testData);
+                    testData = null;                    
+                    splitter.Split(ref trainData, ref testData, f);
                 }
                 else if (f == 0)
                 {

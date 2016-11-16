@@ -32,6 +32,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Oblivious");            
             treeOblivMaj.RankedAttributes = false;
+            treeOblivMaj.UseLocalOutput = false;
             treeOblivMaj.Learn(data, attributes);
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeOblivMaj));

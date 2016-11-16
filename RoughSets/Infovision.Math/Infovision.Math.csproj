@@ -111,6 +111,8 @@
   <ItemGroup>
     <Compile Include="Enum.cs" />
     <Compile Include="Correlation.cs" />
+    <Compile Include="PrimeTool.cs" />
+    <Compile Include="PrimeToolHash.cs" />
     <Compile Include="Similarity.cs" />
     <Compile Include="DistanceMatrix.cs" />
     <Compile Include="MatrixIndex.cs" />

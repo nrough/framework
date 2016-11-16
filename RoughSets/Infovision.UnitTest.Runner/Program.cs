@@ -33,7 +33,6 @@ namespace Infovision.UnitTest.Runner
 
             using (var cc = new ConsoleCopy("mylogfile.txt"))
             {
-
                 ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma;alpha;beta;desc";
                 Console.WriteLine(ClassificationResult.ResultHeader());
 

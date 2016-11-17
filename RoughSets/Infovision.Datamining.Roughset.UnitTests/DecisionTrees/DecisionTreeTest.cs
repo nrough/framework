@@ -131,7 +131,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int rednum = 100;
             
             IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);
-            ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, -1.0, rednum, -1, null);
+            ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, -1.0, rednum, emptyDistribution.Output, null);
 
             for (double eps = 0.0; eps <= 0.99; eps += 0.01)
             {
@@ -155,7 +155,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     attributes.Add(f, bestReduct != null ? bestReduct.Attributes.ToArray() : new int[] { });
                 }
 
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, eps, rednum, -1, attributes);
+                ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, eps, rednum, emptyDistribution.Output, attributes);
             }                       
         }
 

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
+    public abstract class DecisionForestBase<T> : ModelBase, ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
         where T : IDecisionTree, new()
     {
         private List<Tuple<T, double>> trees;
-        private ClassificationResult learningResult;        
+        private ClassificationResult learningResult;
 
         public ClassificationResult LearningResult
         {

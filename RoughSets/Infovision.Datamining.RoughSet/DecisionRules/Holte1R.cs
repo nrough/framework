@@ -18,7 +18,7 @@ namespace Infovision.Datamining.Roughset.DecisionRules
     ///         Use the rule with the highest classification accuracy<br />
     /// </summary>
     [Serializable]
-    public class Holte1R : ILearner, IPredictionModel
+    public class Holte1R : ModelBase, ILearner, IPredictionModel
     {
         private DecisionListCollection decisionLists;
         private DecisionDistribution aprioriDecisionDistribution;

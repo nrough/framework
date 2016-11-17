@@ -184,11 +184,17 @@ namespace Infovision.Utils
 
         public static void SetAll<T>(this T[] array, T value)
         {
-            if (array == null)
-                throw new ArgumentNullException("array");
-
+            if (array == null) throw new ArgumentNullException("array");
             for (int i = 0; i < array.Length; i++)
                 array[i] = value;
+        }
+
+        public static void SetAll<T>(this T[][] array, T value)
+        {
+            if (array == null) throw new ArgumentNullException("array");
+            for (int i = 0; i < array.Length; i++)
+                for(int j=0; j<array[i].Length; j++)                
+                    array[i][j] = value;
         }
 
         public static T[] RandomSubArray<T>(this T[] array, int size)

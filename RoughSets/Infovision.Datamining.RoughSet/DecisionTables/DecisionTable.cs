@@ -7,22 +7,19 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTables
 {
-    public class DecisionTable : ILearner, IPredictionModel
+    public class DecisionTable : ModelBase, ILearner, IPredictionModel
     {
         private EquivalenceClassCollection eqClassCollection;
-
-        public long? DefaultOutput { get; set; }
-        public string ModelName { get; set; }
+        public long? DefaultOutput { get; set; }        
 
         public DecisionTable()
-        {
-            this.ModelName = this.GetType().Name;
+            : base()
+        {            
         }
 
         public DecisionTable(string modelName)
-            : this()
-        {
-            this.ModelName = modelName;
+            : base(modelName)
+        {            
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
@@ -35,10 +32,14 @@ namespace Infovision.Datamining.Roughset.DecisionTables
         {            
             result.EnsembleSize = 1;
             result.ModelName = this.ModelName;
-            result.NumberOfRules = this.eqClassCollection.Count;
-            result.AvgNumberOfAttributes = this.eqClassCollection.Attributes.Length;
-            result.MaxTreeHeight = this.eqClassCollection.Attributes.Length;
-            result.AvgTreeHeight = this.eqClassCollection.Attributes.Length;
+
+            if (this.eqClassCollection != null)
+            {
+                result.NumberOfRules = this.eqClassCollection.Count;
+                result.AvgNumberOfAttributes = this.eqClassCollection.Attributes.Length;
+                result.MaxTreeHeight = this.eqClassCollection.Attributes.Length;
+                result.AvgTreeHeight = this.eqClassCollection.Attributes.Length;
+            }
         }
 
         public virtual long Compute(DataRecordInternal record)

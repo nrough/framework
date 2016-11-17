@@ -26,10 +26,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ImpurityFunction = ImpurityFunctions.Gini;
         }
 
-        protected override DecisionTreeBase CreateInstanceForClone()
-        {
-            return new DecisionTreeCART();
-        }
+        //protected override DecisionTreeBase CreateInstanceForClone()
+        //{
+        //    return new DecisionTreeCART();
+        //}
 
         /*
         protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)

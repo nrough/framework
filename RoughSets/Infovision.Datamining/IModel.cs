@@ -8,6 +8,6 @@ namespace Infovision.Datamining
 {
     public interface IModel
     {
-        string Name { get; }
+        string ModelName { get; }
     }
 }

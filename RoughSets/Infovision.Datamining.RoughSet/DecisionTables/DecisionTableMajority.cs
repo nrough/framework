@@ -32,7 +32,7 @@ namespace Infovision.Datamining.Roughset.DecisionTables
             long result = base.Compute(record);
             if (result != -1)
                 return result;
-            return this.aprioriDistribution.Output;
+            return (this.DefaultOutput == null) ? this.aprioriDistribution.Output : (long)this.DefaultOutput;
         }
     }
 }

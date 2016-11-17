@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.UnitTest.Runner
-{
+{   
     public class Program
     {
         public static void Main(string[] args)
@@ -33,7 +33,7 @@ namespace Infovision.UnitTest.Runner
 
             using (var cc = new ConsoleCopy("mylogfile.txt"))
             {
-                ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma;alpha;beta;desc";
+                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha";
                 Console.WriteLine(ClassificationResult.ResultHeader());
 
                 for (int i = 0; i < tests; i++)
@@ -64,7 +64,7 @@ namespace Infovision.UnitTest.Runner
 
             using (var cc = new ConsoleCopy("mylogfile_CV.txt"))
             {
-                ClassificationResult.OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha;gamma;alpha;beta;desc";
+                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha;cls;mcls;ucls";
                 Console.WriteLine(ClassificationResult.ResultHeader());                
 
                 for (int i = 0; i < tests; i++)

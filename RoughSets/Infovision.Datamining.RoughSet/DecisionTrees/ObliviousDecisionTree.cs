@@ -36,10 +36,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
 
-        protected override DecisionTreeBase CreateInstanceForClone()
-        {
-            return new ObliviousDecisionTree();
-        }
+        //protected override DecisionTreeBase CreateInstanceForClone()
+        //{
+        //    return new ObliviousDecisionTree();
+        //}
 
         protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
         {
@@ -99,12 +99,17 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 SplitInfo baseResult = null;
                 if (!cache.TryGetValue(attributesToTest, out baseResult))
                 {
-                    baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
-
-                    //cache only splits that are valid (invalid split can be valid in other branch)
-                    if (baseResult.AttributeId != -1 && baseResult.SplitType != SplitType.None)
-                        cache.Add(attributesToTest, baseResult);
-                    return baseResult;
+                    lock (syncRoot)
+                    {
+                        if (!cache.TryGetValue(attributesToTest, out baseResult))
+                        {
+                            baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
+                            //cache only splits that are valid (invalid split can be valid in other branch)
+                            if (baseResult.AttributeId != -1 && baseResult.SplitType != SplitType.None)
+                                cache.Add(attributesToTest, baseResult);
+                            return baseResult;
+                        }
+                    }
                 }                               
                 
                 return this.GetSplitInfo(baseResult.AttributeId, eqClassCollection, 

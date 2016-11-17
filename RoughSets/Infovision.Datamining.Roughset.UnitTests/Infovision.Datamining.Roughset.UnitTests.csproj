@@ -154,6 +154,7 @@
     <Compile Include="ReductGeneralizedMajorityDecisionApproximateTest.cs" />
     <Compile Include="ReductGeneralizedMajorityDecisionTest.cs" />
     <Compile Include="ReductGeneratorComparisonTest.cs" />
+    <Compile Include="ReductGeneratorExtensions.cs" />
     <Compile Include="ReductGeneratorTest.cs" />
     <Compile Include="RNetTest.cs" />
     <Compile Include="RoughClassifierTest.cs" />

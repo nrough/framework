@@ -14,17 +14,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
     /// Base class for decision tree implementations
     /// </summary>
     [Serializable]
-    public abstract class DecisionTreeBase : IDecisionTree, IPredictionModel, ICloneable
+    public abstract class DecisionTreeBase : ModelBase, IDecisionTree, IPredictionModel, ICloneable
     {        
-        protected Dictionary<int, List<long>> thresholds;
-        protected DecisionDistribution aprioriDistribution;
+        protected Dictionary<int, List<long>> thresholds = null;
+        protected DecisionDistribution aprioriDistribution = null;
 
-        private DecisionTreeNode root;
-        private int decisionAttributeId;
-        private double mA;
+        private DecisionTreeNode root = null;
+        private int decisionAttributeId = -1;
+        private double mA = 1.0;
         private long[] decisions;
-        private int nextId;
-        private string modelName;
+        private int nextId = 1;        
 
         private readonly object syncRoot = new object();
 
@@ -41,22 +40,20 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
-        public int NumberOfAttributesToCheckForSplit { get; set; }
-        public long? DefaultOutput { get; set; }
-        public double Gamma { get; set; }
-        public int MaxHeight { get; set; }
-        public int MinimumNumOfInstancesPerLeaf { get; set; }
+        public int NumberOfAttributesToCheckForSplit { get; set; } = -1;
+        public long? DefaultOutput { get; set; } = null;
+        public double Gamma { get; set; } = -1.0;
+        public int MaxHeight { get; set; } = -1;
+        public int MinimumNumOfInstancesPerLeaf { get; set; } = 1;
         public DataStore TrainingData { get; protected set; }
 
-        public ImpurityFunc ImpurityFunction { get; set; }
-        public ImpurityNormalizeFunc ImpurityNormalize { get; set; }
+        public ImpurityFunc ImpurityFunction { get; set; } = ImpurityFunctions.Entropy;
+        public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityFunctions.DummyNormalize;
 
-        public PruningType PruningType { get; set; }
-        public int PruningCVFolds { get; set; }
-        public PruningObjectiveType PruningObjective { get; set; }
+        public PruningType PruningType { get; set; } = PruningType.None;
+        public int PruningCVFolds { get; set; } = 3;
+        public PruningObjectiveType PruningObjective { get; set; } = PruningObjectiveType.MinimizeError;
 
-        public string ModelName { get; protected set; }
-        
         protected IEnumerable<long> Decisions { get { return this.decisions; } }        
 
         protected class SplitInfo
@@ -85,40 +82,23 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
         
         public DecisionTreeBase()
-        {
-            this.root = null;
-            this.nextId = 1;
-            this.decisionAttributeId = -1;
-
-            this.NumberOfAttributesToCheckForSplit = -1;
-            this.MaxHeight = -1;
-            this.Gamma = -1.0;
-            this.MinimumNumOfInstancesPerLeaf = 1;
-            
-            this.PruningType = PruningType.None;
-            this.PruningObjective = PruningObjectiveType.MinimizeError;
-            this.PruningCVFolds = 3;
-
-            this.ImpurityFunction = ImpurityFunctions.Entropy;
-            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
-
-            this.ModelName = this.GetType().Name;
+            : base()
+        {            
         }
 
         public DecisionTreeBase(string modelName)
-            : this()
-        {
-            if (String.IsNullOrEmpty(modelName))
-                throw new ArgumentNullException("modelName", "String.IsNullOrEmpty(modelName) == true");
-            this.ModelName = modelName;
+            : base(modelName)
+        {                        
         }
 
+        /*
         public virtual object Clone()
         {
             var tree = CreateInstanceForClone();
             tree.InitParametersFromOtherTree(this);
             return tree;
         }
+        */
 
         public virtual void Reset()
         {
@@ -130,7 +110,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.decisions = null;
         }
 
-        protected abstract DecisionTreeBase CreateInstanceForClone();        
+        //protected abstract DecisionTreeBase CreateInstanceForClone();        
 
         protected int GetId()
         {
@@ -138,6 +118,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             {
                 return this.nextId++;
             }
+        }
+
+        private void Init()
+        {
+
         }
 
         protected void Init(DataStore data, int[] attributes)

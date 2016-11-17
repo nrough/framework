@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining.Roughset.DecisionTables
 {
-    public class DecisionTableLocal : ILearner, IPredictionModel
+    public class DecisionTableLocal : ModelBase, ILearner, IPredictionModel
     {
         private ObliviousDecisionTree obliviousDecisionTree = null;
         private DecisionDistribution aprioriDistribution;

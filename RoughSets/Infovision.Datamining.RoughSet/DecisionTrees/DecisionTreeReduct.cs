@@ -38,10 +38,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.ReductComparer = null;
         }
 
-        protected override DecisionTreeBase CreateInstanceForClone()
-        {
-            return new DecisionTreeReduct();
-        }
+        //protected override DecisionTreeBase CreateInstanceForClone()
+        //{
+        //    return new DecisionTreeReduct();
+        //}
 
         protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
         {

@@ -1,4 +1,5 @@
 ﻿using Infovision.Data;
+using Infovision.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,13 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining
 {
     public class CrossValidation<T>
-        where T : IPredictionModel, ILearner, ICloneable, new()
+        where T : IModel, IPredictionModel, ILearner, ICloneable, new()
     {
         private T modelPrototype;        
         private static int DefaultFolds = 10;
 
         public bool RunInParallel { get; set; }
+        public Dictionary<int, int[]> Attributes { get; set; }
 
         public CrossValidation(T model)
         {
@@ -67,13 +69,26 @@ namespace Infovision.Datamining
             
             if (this.RunInParallel)
             {
-                Parallel.For(0, dataSplitter.NFold, f =>
+                var options = new ParallelOptions()
+                {
+                    MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                };
+
+                Parallel.For(0, dataSplitter.NFold, options, f =>
                 {
                     DataStore trainDS = null, testDS = null;
                     dataSplitter.Split(ref trainDS, ref testDS, f);
+
+                    int[] localAttributes = attributes;
+                    if (this.Attributes != null)
+                        if (!this.Attributes.TryGetValue(f, out localAttributes))
+                            localAttributes = attributes;
+
                     T model = (T)modelPrototype.Clone();
-                    model.Learn(trainDS, attributes);
-                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
+                    model.Learn(trainDS, localAttributes);
+                    var localResults = Classifier.DefaultClassifer.Classify(model, testDS);
+                    //localResults.Description = localAttributes.ToStr(';');
+                    result.AddLocalResult(localResults);
                 });
             }
             else
@@ -82,9 +97,17 @@ namespace Infovision.Datamining
                 for (int f = 0; f < dataSplitter.NFold; f++)
                 {
                     dataSplitter.Split(ref trainDS, ref testDS, f);
+                    
+                    int[] localAttributes = attributes;
+                    if (this.Attributes != null)
+                        if (!this.Attributes.TryGetValue(f, out localAttributes))
+                            localAttributes = attributes;
+
                     T model = (T)modelPrototype.Clone();
-                    model.Learn(trainDS, attributes);                    
-                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
+                    model.Learn(trainDS, localAttributes);
+                    var localResults = Classifier.DefaultClassifer.Classify(model, testDS);
+                    //localResults.Description = localAttributes.ToStr(';');
+                    result.AddLocalResult(localResults);
                 }
             }
 

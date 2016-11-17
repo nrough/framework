@@ -25,8 +25,7 @@ namespace Infovision.Datamining
         //all the remaining animals, correctly classified as non-cats
         TrueNegative = 3
     }
-
-    //TODO add additional classification Info
+    
     [Serializable]
     public class ClassificationResult : IFormattable
     {
@@ -234,36 +233,70 @@ namespace Infovision.Datamining
             this.EnsembleSize = 1;
         }
 
+        //public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
+        //    : this()
+        //{
+        //    List<long> localDecisionValues = decisionValues.ToList();
+        //    localDecisionValues.Sort();
+
+        //    this.testData = dataStore;
+        //    this.DatasetName = dataStore.Name;
+        //    this.decCount = localDecisionValues.Count;
+        //    this.decCountPlusOne = localDecisionValues.Count + 1;
+        //    this.decisions = new long[decCountPlusOne];
+        //    this.decisions[0] = -1;
+        //    long[] decArray = localDecisionValues.ToArray();
+        //    double[] decDistribution = new double[decArray.Length];
+        //    for (int i = 0; i < decArray.Length; i++)
+        //        decDistribution[i] = (int)dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
+        //    Array.Sort(decDistribution, decArray);
+        //    decDistribution = null;
+        //    Array.Copy(decArray, 0, decisions, 1, decCount);
+        //    decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
+        //    decisionValue2Index.Add(-1, 0);
+        //    for (int i = 0; i < decArray.Length; i++)
+        //        decisionValue2Index.Add(decArray[i], i + 1);
+
+        //    predictionResults = new long[dataStore.NumberOfRecords];
+        //    confusionTable = new int[decCountPlusOne][];
+        //    confusionTableWeights = new double[decCountPlusOne][];
+        //    for (int i = 0; i < decCountPlusOne; i++)
+        //    {
+        //        confusionTable[i] = new int[decCountPlusOne];
+        //        confusionTableWeights[i] = new double[decCountPlusOne];
+        //    }
+        //    this.Fold = dataStore.Fold;
+        //}
+
+
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
             : this()
         {
+            List<long> localDecisionValues = decisionValues.ToList();
+            localDecisionValues.Sort();
+
+            this.Fold = dataStore.Fold;
             this.testData = dataStore;
             this.DatasetName = dataStore.Name;
-            this.decCount = decisionValues.Count;
-            this.decCountPlusOne = decisionValues.Count + 1;
+            this.decCount = localDecisionValues.Count;
+            this.decCountPlusOne = this.decCount + 1;
             this.decisions = new long[decCountPlusOne];
             this.decisions[0] = -1;
-            long[] decArray = decisionValues.ToArray();
-            double[] decDistribution = new double[decArray.Length];
-            for (int i = 0; i < decArray.Length; i++)
-                decDistribution[i] = (int)dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
-            Array.Sort(decDistribution, decArray);
-            decDistribution = null;
-            Array.Copy(decArray, 0, decisions, 1, decCount);
-            decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
-            decisionValue2Index.Add(-1, 0);
-            for (int i = 0; i < decArray.Length; i++)
-                decisionValue2Index.Add(decArray[i], i + 1);
-
-            predictionResults = new long[dataStore.NumberOfRecords];
-            confusionTable = new int[decCountPlusOne][];
-            confusionTableWeights = new double[decCountPlusOne][];
+            this.decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
+            for (int i = 1; i <= this.decCount; i++)
+            {
+                this.decisions[i] = localDecisionValues.ElementAt(i-1);
+                this.decisionValue2Index.Add(localDecisionValues.ElementAt(i-1), i);
+            }
+            this.decisionValue2Index.Add(-1, 0);          
+            this.predictionResults = new long[dataStore.NumberOfRecords];
+            this.confusionTable = new int[decCountPlusOne][];
+            this.confusionTableWeights = new double[decCountPlusOne][];
             for (int i = 0; i < decCountPlusOne; i++)
             {
-                confusionTable[i] = new int[decCountPlusOne];
-                confusionTableWeights[i] = new double[decCountPlusOne];
+                this.confusionTable[i] = new int[decCountPlusOne];
+                this.confusionTableWeights[i] = new double[decCountPlusOne];
             }
-            this.Fold = dataStore.Fold;
         }
 
         #endregion Constructors

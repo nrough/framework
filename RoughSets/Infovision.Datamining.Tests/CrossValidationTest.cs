@@ -47,11 +47,24 @@ namespace Infovision.Datamining.Tests
             Console.WriteLine(ClassificationResult.ResultHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);            
             DecisionTreeC45 c45 = new DecisionTreeC45();
-            c45.PruningType = Roughset.DecisionTrees.Pruning.PruningType.ErrorBasedPruning;
+            c45.PruningType = Roughset.DecisionTrees.Pruning.PruningType.ErrorBasedPruning;            
+            c45.ImpurityFunction = ImpurityFunctions.Majority;
+            c45.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+
             CrossValidation<DecisionTreeC45> cv = new CrossValidation<DecisionTreeC45>(c45);
 
-            Console.WriteLine(cv.Run(data, 10));            
-            Console.WriteLine(cv.Run(data, 5));            
+            Console.WriteLine(cv.Run(data, 10));
+            Console.WriteLine(cv.Run(data, 5));
+
+            DecisionTreeC45 c45b = new DecisionTreeC45();
+            c45b.PruningType = Roughset.DecisionTrees.Pruning.PruningType.ErrorBasedPruning;
+            c45b.ImpurityFunction = ImpurityFunctions.One;
+            c45b.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+
+            CrossValidation<DecisionTreeC45> cvb = new CrossValidation<DecisionTreeC45>(c45b);
+
+            Console.WriteLine(cvb.Run(data, 10));
+            Console.WriteLine(cvb.Run(data, 5));
         }
     }
 }

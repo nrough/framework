@@ -2,7 +2,7 @@
 
 namespace Infovision.Datamining
 {
-    public interface IPredictionModel
+    public interface IPredictionModel : IModel
     {
         long Compute(DataRecordInternal record);
         long? DefaultOutput { get; set; }

@@ -13,6 +13,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
     public static class ImpurityFunctions
     {
+        public static double One(EquivalenceClassCollection equivalenceClasses)
+        {
+            return 1.0;
+        }
+
         public static double Entropy(EquivalenceClassCollection equivalenceClasses)
         {
             double result = 0;

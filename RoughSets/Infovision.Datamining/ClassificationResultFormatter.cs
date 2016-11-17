@@ -73,11 +73,11 @@ namespace Infovision.Datamining
                         case "ens": sb.AppendFormat("ens"); break;
 
                         case "cls": sb.AppendFormat("{0,4}", "cls"); break;
-                        case "mis": sb.AppendFormat("{0,4}", "mis"); break;
+                        case "mcls": sb.AppendFormat("{0,4}", "mis"); break;
                         case "ucls": sb.AppendFormat("{0,4}", "ucls"); break;
 
                         case "wcls": sb.AppendFormat("{0,6}", "wcls"); break;
-                        case "wmis": sb.AppendFormat("{0,6}", "wmis"); break;
+                        case "wmcls": sb.AppendFormat("{0,6}", "wmis"); break;
                         case "wucls": sb.AppendFormat("{0,6}", "wucls"); break;
 
                         case "acc": sb.AppendFormat("{0,6}", "acc"); break;
@@ -109,19 +109,19 @@ namespace Infovision.Datamining
                 {
                     switch (kvp.Key)
                     {
-                        case "ds": sb.AppendFormat("{0,20}", result.DatasetName); break;
-                        case "m": sb.AppendFormat("{0,20}", result.ModelName); break;
+                        case "ds": sb.AppendFormat("{0,20}", String.IsNullOrEmpty(result.DatasetName) ? "" : result.DatasetName); break;
+                        case "m": sb.AppendFormat("{0,20}", String.IsNullOrEmpty(result.ModelName) ? "" : result.ModelName); break;
                         case "t": sb.AppendFormat("{0,2}", result.TestNum); break;
                         case "f": sb.AppendFormat("{0,2}", result.Fold); break;
                         case "eps": sb.AppendFormat("{0,5:0.00}", result.Epsilon); break;
                         case "ens": sb.AppendFormat("{0,3}", result.EnsembleSize); break;
 
                         case "cls": sb.AppendFormat("{0,4}", result.Classified); break;
-                        case "mis": sb.AppendFormat("{0,4}", result.Misclassified); break;
+                        case "mcls": sb.AppendFormat("{0,4}", result.Misclassified); break;
                         case "ucls": sb.AppendFormat("{0,4}", result.Unclassified); break;
 
                         case "wcls": sb.AppendFormat("{0:0.0000}", result.WeightClassified); break;
-                        case "wmis": sb.AppendFormat("{0:0.0000}", result.WeightMisclassified); break;
+                        case "wmcls": sb.AppendFormat("{0:0.0000}", result.WeightMisclassified); break;
                         case "wucls": sb.AppendFormat("{0:0.0000}", result.WeightUnclassified); break;
 
                         case "acc": sb.AppendFormat("{0:0.0000}", result.Accuracy); break;
@@ -143,7 +143,7 @@ namespace Infovision.Datamining
                         case "gamma": sb.AppendFormat("{0,7:0.00}", result.Gamma); break;
                         case "alpha": sb.AppendFormat("{0,7:0.00}", result.Alpha); break;
                         case "beta": sb.AppendFormat("{0,7:0.00}", result.Beta); break;
-                        case "desc": sb.AppendFormat(result.Description); break;
+                        case "desc": sb.AppendFormat(String.IsNullOrEmpty(result.Description) ? "" : result.Description); break;
                     }
                 }
                 sb.Append(outputSeparator);

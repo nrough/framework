@@ -34,24 +34,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.UseLocalOutput = false;
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
-        }
-
-        //protected override DecisionTreeBase CreateInstanceForClone()
-        //{
-        //    return new ObliviousDecisionTree();
-        //}
-
-        protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
-        {
-            base.InitParametersFromOtherTree(_decisionTree);
-
-            var tree = _decisionTree as ObliviousDecisionTree;
-            if (tree != null)
-            {
-                this.RankedAttributes = tree.RankedAttributes;
-                this.UseLocalOutput = tree.UseLocalOutput;
-            }
-        }
+        }        
 
         public override long Compute(DataRecordInternal record)
         {
@@ -123,11 +106,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure, IDecisionTreeNode parentNode)
         {
-            if (parentMeasure < 0)
-                throw new ArgumentException("currentScore < 0", "parentMeasure");
-
-            if (data == null)
-                throw new ArgumentNullException("data", "(data == null");            
+            if (parentMeasure < 0) throw new ArgumentException("currentScore < 0", "parentMeasure");
+            if (data == null) throw new ArgumentNullException("data", "(data == null");            
 
             int[] newAttributes = new int[parentNode.Level + 1];
             IDecisionTreeNode current = parentNode;

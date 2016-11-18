@@ -175,8 +175,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
                     localFieldInfoTrain.FieldValueType = typeof(int);
                     trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
 
-                    localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);
-                    //TypeCode testFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
+                    localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);                    
                     localFieldInfoTest.IsNumeric = false;
 
                     newValues = new int[testData.NumberOfRecords];

@@ -36,27 +36,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.Gamma = 0.0;
             this.ReductEpsilon = 0.0;
             this.ReductComparer = null;
-        }
-
-        //protected override DecisionTreeBase CreateInstanceForClone()
-        //{
-        //    return new DecisionTreeReduct();
-        //}
-
-        protected override void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
-        {
-            base.InitParametersFromOtherTree(_decisionTree);
-
-            var tree = _decisionTree as DecisionTreeReduct;
-            if (tree != null)
-            {
-                this.ReductFactoryKey = tree.ReductFactoryKey;
-                this.ReductIterations = tree.ReductIterations;
-                this.Gamma = tree.Gamma;
-                this.ReductEpsilon = tree.ReductEpsilon;
-                this.ReductComparer = tree.ReductComparer;
-            }
-        }
+        }        
 
         public override void SetClassificationResultParameters(ClassificationResult result)
         {

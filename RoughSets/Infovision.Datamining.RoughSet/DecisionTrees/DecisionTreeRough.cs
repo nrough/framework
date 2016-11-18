@@ -25,11 +25,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
-        }
-
-        //protected override DecisionTreeBase CreateInstanceForClone()
-        //{
-        //    return new DecisionTreeRough();
-        //}        
+        }               
     }
 }

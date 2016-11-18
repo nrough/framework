@@ -89,16 +89,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public DecisionTreeBase(string modelName)
             : base(modelName)
         {                        
-        }
-
-        /*
-        public virtual object Clone()
-        {
-            var tree = CreateInstanceForClone();
-            tree.InitParametersFromOtherTree(this);
-            return tree;
-        }
-        */
+        }        
 
         public virtual void Reset()
         {
@@ -109,8 +100,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.mA = 0;
             this.decisions = null;
         }
-
-        //protected abstract DecisionTreeBase CreateInstanceForClone();        
 
         protected int GetId()
         {
@@ -134,10 +123,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 this.TrainingData = data;
                 this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
                 this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
-                this.decisions = new long[data.DataStoreInfo.NumberOfDecisionValues];
+                this.decisions = new long[data.DataStoreInfo.GetDecisionValues().Count];
 
                 int i = 0;
-                foreach (long decisionValue in data.DataStoreInfo.DecisionInfo.InternalValues())
+                foreach (long decisionValue in data.DataStoreInfo.GetDecisionValues())
                     this.decisions[i++] = decisionValue;
 
                 if (this.Gamma >= 0.0)
@@ -163,26 +152,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 if(this.DefaultOutput == null)
                     this.DefaultOutput = this.aprioriDistribution.Output;
             }
-        }
-
-        protected virtual void InitParametersFromOtherTree(DecisionTreeBase _decisionTree)
-        {
-            this.MinimumNumOfInstancesPerLeaf = _decisionTree.MinimumNumOfInstancesPerLeaf;
-            this.Gamma = _decisionTree.Gamma;
-            this.MaxHeight = _decisionTree.MaxHeight;
-            this.NumberOfAttributesToCheckForSplit = _decisionTree.NumberOfAttributesToCheckForSplit;
-
-            this.PruningType = _decisionTree.PruningType;
-            this.PruningObjective = _decisionTree.PruningObjective;
-            this.PruningCVFolds = _decisionTree.PruningCVFolds;
-
-            this.DefaultOutput = _decisionTree.DefaultOutput;
-
-            this.ImpurityFunction = _decisionTree.ImpurityFunction;
-            this.ImpurityNormalize = _decisionTree.ImpurityNormalize;
-
-            this.ModelName = _decisionTree.ModelName;
-        }
+        }        
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {

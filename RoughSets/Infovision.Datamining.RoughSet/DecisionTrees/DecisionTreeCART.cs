@@ -24,49 +24,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             : base(modelName)
         {
             this.ImpurityFunction = ImpurityFunctions.Gini;
-        }
-
-        //protected override DecisionTreeBase CreateInstanceForClone()
-        //{
-        //    return new DecisionTreeCART();
-        //}
-
-        /*
-        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
-        {
-            if (eqClassCollection.Count != 1)
-                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
-
-            double s2 = 0;
-            foreach (long dec in this.Decisions)
-            {
-                double decWeightedProbability = eqClassCollection.CountWeightDecision(dec);
-                double p = (double)(decWeightedProbability / eqClassCollection.WeightSum);
-                s2 += (p * p);
-            }
-            return 1.0 - s2;
-        }
-        */
-
-        /*
-        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
-        {
-            double attributeGini = 0;
-            foreach (var e in eq)
-            {
-                double pA = (double)(e.WeightSum / eq.WeightSum);
-
-                double s2 = 0;
-                foreach (long dec in e.DecisionSet)
-                {
-                    double pD = (double)(e.GetDecisionWeight(dec) / e.WeightSum);
-                    s2 += (pD * pD);
-                }
-                attributeGini += (pA * (1.0 - s2));
-            }
-
-            return attributeGini;
-        }
-        */
+        }        
     }
 }

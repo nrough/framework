@@ -113,7 +113,7 @@ namespace Infovision.Datamining.Filters.Supervised.Attribute
             }
 
             // Use worse encoding?
-            if (!UseBetterEncoding)
+            if ( ! UseBetterEncoding)
             {
                 numCutPoints = (lastPlusOne - first) - 1;
             }

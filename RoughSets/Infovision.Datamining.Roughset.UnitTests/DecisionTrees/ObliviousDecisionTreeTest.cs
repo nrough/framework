@@ -24,7 +24,8 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         [Test]
         public void Learn2Test()
         {
-            DataStore data = DataStore.Load(@"Data\house-votes-84.2.data", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\nursery.2.data", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             ObliviousDecisionTree tree = new ObliviousDecisionTree();
             tree.PruningType = PruningType.ReducedErrorPruning;
             CrossValidation<ObliviousDecisionTree> cv = new CrossValidation<ObliviousDecisionTree>(tree);

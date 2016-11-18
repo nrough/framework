@@ -42,6 +42,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public int NumberOfAttributesToCheckForSplit { get; set; } = -1;
         public long? DefaultOutput { get; set; } = null;
+        public bool UseLocalOutput { get; set; } = false;
         public double Gamma { get; set; } = -1.0;
         public int MaxHeight { get; set; } = -1;
         public int MinimumNumOfInstancesPerLeaf { get; set; } = 1;
@@ -380,7 +381,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     return current.Output;
                 }
 
-                current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
+                IDecisionTreeNode next = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
+
+                if (next == null && this.UseLocalOutput)
+                    return current.Output;
+
+                current = next;                
             }
 
             return -1; //unclassified

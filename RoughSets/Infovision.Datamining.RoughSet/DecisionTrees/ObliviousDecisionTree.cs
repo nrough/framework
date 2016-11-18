@@ -15,14 +15,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         private Dictionary<int[], SplitInfo> cache = new Dictionary<int[], SplitInfo>(ArrayComparer<int>.Instance);
         private object syncRoot = new object();
 
-        public bool RankedAttributes { get; set; }
-        public bool UseLocalOutput { get; set; }
+        public bool RankedAttributes { get; set; } = false;
 
         public ObliviousDecisionTree()
             : base()
-        {         
-            this.RankedAttributes = false;
-            this.UseLocalOutput = false;
+        {                     
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }
@@ -30,47 +27,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public ObliviousDecisionTree(string modelName)
             : base(modelName)
         {            
-            this.RankedAttributes = false;
-            this.UseLocalOutput = false;
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }        
-
-        public override long Compute(DataRecordInternal record)
-        {
-            if (this.Root == null)
-                throw new InvalidOperationException("this.Root == null");
-
-            IDecisionTreeNode current = this.Root;
-            while (current != null)
-            {
-                if (current.IsLeaf)
-                    return current.Output;
-
-                IDecisionTreeNode next = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
-
-                if (next == null && this.UseLocalOutput)
-                    return current.Output;
-
-                current = next;
-            }
-
-            return -1; //unclassified
-        }
-
-        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
-        {
-            if (eqClassCollection.Count != 1)
-                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
-
-            return 1.0;
-        }
-
-        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         protected override SplitInfo GetNextSplit(
             EquivalenceClassCollection eqClassCollection, 
             int[] origAttributes, 
@@ -79,7 +39,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             if (this.RankedAttributes == false)
             {
-                Console.WriteLine("Checking {0}", attributesToTest.ToStr(' '));
+                //Console.WriteLine("Checking {0}", attributesToTest.ToStr(' '));
 
                 SplitInfo baseResult = null;
                 if (!cache.TryGetValue(attributesToTest, out baseResult))
@@ -88,7 +48,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     {
                         if (!cache.TryGetValue(attributesToTest, out baseResult))
                         {
-                            Console.WriteLine("Not found in cache");
+                            //Console.WriteLine("Not found in cache");
 
                             baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
                             //cache only splits that are valid (invalid split can be valid in other branch)
@@ -100,7 +60,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     }
                 }
 
-                Console.WriteLine("Found in cache");
+                //Console.WriteLine("Found in cache");
 
                 /*
                 return this.GetSplitInfo(baseResult.AttributeId, 
@@ -125,19 +85,32 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             int[] newAttributes = new int[parentNode.Level + 1];
             IDecisionTreeNode current = parentNode;
             int j = 0;
-            while (current != null && current.Attribute != -1) //not root
+            while (current != null && current.Attribute != -1)
             {
                 newAttributes[j++] = current.Attribute;
                 current = current.Parent;         
             }
             newAttributes[j] = attributeId;
 
-            Console.WriteLine("Calculating split based on {0}", newAttributes.ToStr());
+            //Console.WriteLine("Calculating split based on {0}", newAttributes.ToStr());
                                     
             return new SplitInfo(
                 attributeId,
                 this.ImpurityFunction(EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights)),
                 EquivalenceClassCollection.Create(attributeId, data), SplitType.Discreet, ComparisonType.EqualTo, 0);                        
+        }
+
+        protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)
+        {
+            if (eqClassCollection.Count != 1)
+                throw new ArgumentException("eqClassCollection.Count != 1", "eqClassCollection");
+
+            return 1.0;
+        }
+
+        protected override double CalculateImpurityAfterSplit(EquivalenceClassCollection eq)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -21,8 +21,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public DecisionTreeRough(string modelName)
             : base(modelName)
         {
-            this.ModelName = modelName;
-
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
         }               

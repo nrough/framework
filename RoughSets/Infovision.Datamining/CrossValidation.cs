@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Infovision.Datamining
 {
+    public delegate void PostLearingMethod(IModel model);
+
     public class CrossValidation<T>
         where T : IModel, IPredictionModel, ILearner, ICloneable, new()
     {
@@ -17,11 +19,13 @@ namespace Infovision.Datamining
         public bool RunInParallel { get; set; }
         public Dictionary<int, int[]> Attributes { get; set; }
 
+        public PostLearingMethod PostLearningMethod { get; set; }
+
         public CrossValidation(T model)
         {
             this.RunInParallel = true;
             this.modelPrototype = model;            
-        }
+        }        
 
         public ClassificationResult Run(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)
         {            
@@ -86,6 +90,10 @@ namespace Infovision.Datamining
 
                     T model = (T)modelPrototype.Clone();
                     model.Learn(trainDS, localAttributes);
+
+                    if (this.PostLearningMethod != null)
+                        this.PostLearningMethod(model);
+
                     var localResults = Classifier.DefaultClassifer.Classify(model, testDS);
                     //localResults.Description = localAttributes.ToStr(';');
                     result.AddLocalResult(localResults);

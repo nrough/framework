@@ -79,6 +79,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             if (this.RankedAttributes == false)
             {
+                Console.WriteLine("Checking {0}", attributesToTest.ToStr(' '));
+
                 SplitInfo baseResult = null;
                 if (!cache.TryGetValue(attributesToTest, out baseResult))
                 {
@@ -86,17 +88,28 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     {
                         if (!cache.TryGetValue(attributesToTest, out baseResult))
                         {
+                            Console.WriteLine("Not found in cache");
+
                             baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
                             //cache only splits that are valid (invalid split can be valid in other branch)
                             if (baseResult.AttributeId != -1 && baseResult.SplitType != SplitType.None)
                                 cache.Add(attributesToTest, baseResult);
+
                             return baseResult;
                         }
                     }
-                }                               
-                
-                return this.GetSplitInfo(baseResult.AttributeId, eqClassCollection, 
-                    this.CalculateImpurityBeforeSplit(eqClassCollection), parentTreeNode);                
+                }
+
+                Console.WriteLine("Found in cache");
+
+                /*
+                return this.GetSplitInfo(baseResult.AttributeId, 
+                    eqClassCollection, 
+                    this.CalculateImpurityBeforeSplit(eqClassCollection), 
+                    parentTreeNode);
+                */
+
+                return baseResult;
             }
 
             int attributeId = origAttributes[parentTreeNode.Level];
@@ -117,8 +130,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 newAttributes[j++] = current.Attribute;
                 current = current.Parent;         
             }
-            newAttributes[j] = attributeId;            
-                        
+            newAttributes[j] = attributeId;
+
+            Console.WriteLine("Calculating split based on {0}", newAttributes.ToStr());
+                                    
             return new SplitInfo(
                 attributeId,
                 this.ImpurityFunction(EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights)),

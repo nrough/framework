@@ -13,8 +13,25 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
-    public class ObiliviousDecisionTreeTest
+    public class ObliviousDecisionTreeTest
     {
+        public static void PrintTree(IModel model)
+        {
+            IDecisionTree tree = (IDecisionTree)model;
+            Console.WriteLine(DecisionTreeFormatter.Construct(tree));
+        }
+
+        [Test]
+        public void Learn2Test()
+        {
+            DataStore data = DataStore.Load(@"Data\house-votes-84.2.data", FileFormat.Rses1);
+            ObliviousDecisionTree tree = new ObliviousDecisionTree();
+            tree.PruningType = PruningType.ReducedErrorPruning;
+            CrossValidation<ObliviousDecisionTree> cv = new CrossValidation<ObliviousDecisionTree>(tree);
+            cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;
+            cv.Run(data);
+        }
+
         [Test]
         [TestCase(@"Data\spect.train", @"Data\spect.test")]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]

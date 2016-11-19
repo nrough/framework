@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Datamining.Roughset.UnitTests
+namespace Infovision.Datamining.Roughset
 {
     public static class ReductGeneratorExtensions
     {

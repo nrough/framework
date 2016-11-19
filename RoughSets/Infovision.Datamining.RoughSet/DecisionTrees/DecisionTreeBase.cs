@@ -10,6 +10,8 @@ using System.Diagnostics;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
+    public delegate int[] AttributeSelectionMethod(DataStore data, int[] attributes);
+    
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
@@ -50,6 +52,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public ImpurityFunc ImpurityFunction { get; set; } = ImpurityFunctions.Entropy;
         public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityFunctions.DummyNormalize;
+        public AttributeSelectionMethod AttributeSelection { get; set; } = DecisionTreeBase.DefaultAttributeSelection;
 
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
@@ -526,6 +529,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new SplitInfo(attributeId,
                 this.ImpurityNormalize(currentScore - maxGain, bestEq),
                 bestEq, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
+        }
+
+        private static int[] DefaultAttributeSelection(DataStore data, int[] attributes)
+        {
+            return attributes;
         }
 
         public static int GetNumberOfRules(IDecisionTree tree)

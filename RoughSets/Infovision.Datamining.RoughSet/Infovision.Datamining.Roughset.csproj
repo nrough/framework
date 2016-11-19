@@ -117,6 +117,7 @@
     <Compile Include="DecisionRules\DecisionRule.cs" />
     <Compile Include="DecisionTables\DecisionTableLocal.cs" />
     <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeAttributeSelection.cs" />
     <Compile Include="DecisionTrees\ImpurityMeasure.cs" />
     <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
     <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="ReductEnsembleReconWeightsHelper.cs" />
     <Compile Include="ReductGeneralizedMajorityDecisionApproximateGenerator.cs" />
     <Compile Include="ReductGeneralizedMajorityDecisionGenerator.cs" />
+    <Compile Include="ReductGeneratorExtensions.cs" />
     <Compile Include="ReductGeneratorMeasure.cs" />
     <Compile Include="ReductGeneratorParamHelper.cs" />
     <Compile Include="ReductGeneratorWeights.cs" />

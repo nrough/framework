@@ -25,7 +25,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         [Test]
         public void Learn2Test()
         {
-            var data = DataStore.Load(@"Data\chess.data", FileFormat.Rses1);
+            var data = DataStore.Load(@"Data\nursery.2.data", FileFormat.Rses1);
             var tree = new ObliviousDecisionTree();
             var cv = new CrossValidation<ObliviousDecisionTree>(tree);
             cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;

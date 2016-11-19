@@ -59,14 +59,9 @@ namespace Infovision.Datamining
 
         private ClassificationResult CV(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)
         {
-            if (data == null)
-                throw new ArgumentNullException("data");
-
-            if (attributes == null)
-                throw new ArgumentNullException("attributes");
-
-            if (dataSplitter == null)
-                throw new ArgumentNullException("dataSplitter");
+            if (data == null) throw new ArgumentNullException("data");
+            if (attributes == null) throw new ArgumentNullException("attributes");
+            if (dataSplitter == null) throw new ArgumentNullException("dataSplitter");
 
             ClassificationResult result = new ClassificationResult(data, data.DataStoreInfo.GetDecisionValues());
             modelPrototype.SetClassificationResultParameters(result);
@@ -88,15 +83,13 @@ namespace Infovision.Datamining
                         if (!this.Attributes.TryGetValue(f, out localAttributes))
                             localAttributes = attributes;
 
-                    T model = (T)modelPrototype.Clone();
+                    T model = (T)this.modelPrototype.Clone();
                     model.Learn(trainDS, localAttributes);
 
                     if (this.PostLearningMethod != null)
                         this.PostLearningMethod(model);
 
-                    var localResults = Classifier.DefaultClassifer.Classify(model, testDS);
-                    //localResults.Description = localAttributes.ToStr(';');
-                    result.AddLocalResult(localResults);
+                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
                 });
             }
             else
@@ -111,11 +104,13 @@ namespace Infovision.Datamining
                         if (!this.Attributes.TryGetValue(f, out localAttributes))
                             localAttributes = attributes;
 
-                    T model = (T)modelPrototype.Clone();
+                    T model = (T)this.modelPrototype.Clone();
                     model.Learn(trainDS, localAttributes);
-                    var localResults = Classifier.DefaultClassifer.Classify(model, testDS);
-                    //localResults.Description = localAttributes.ToStr(';');
-                    result.AddLocalResult(localResults);
+
+                    if (this.PostLearningMethod != null)
+                        this.PostLearningMethod(model);
+
+                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
                 }
             }
 

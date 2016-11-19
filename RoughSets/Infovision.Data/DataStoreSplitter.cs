@@ -63,7 +63,7 @@ namespace Infovision.Data
 
         #region Constructors
 
-        public DataStoreSplitter(DataStore dataStore, int nfold, bool useCache = true)
+        public DataStoreSplitter(DataStore dataStore, int nfold, bool useCache = false)
         {
             this.dataStore = dataStore;
             this.NFold = nfold;

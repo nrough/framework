@@ -162,7 +162,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds);
+            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
 
             DataStore trainDS = null, testDS = null;
             int rednum = 100;

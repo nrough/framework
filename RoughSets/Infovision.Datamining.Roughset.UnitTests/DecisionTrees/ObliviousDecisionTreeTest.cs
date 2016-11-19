@@ -19,18 +19,18 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         {
             IDecisionTree tree = (IDecisionTree)model;
             Console.WriteLine(DecisionTreeFormatter.Construct(tree));
+            Console.WriteLine("Number of rules: {0}",  DecisionTreeBase.GetNumberOfRules(tree));
         }
 
         [Test]
         public void Learn2Test()
         {
-            DataStore data = DataStore.Load(@"Data\nursery.2.data", FileFormat.Rses1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            ObliviousDecisionTree tree = new ObliviousDecisionTree();
-            tree.PruningType = PruningType.ReducedErrorPruning;
-            CrossValidation<ObliviousDecisionTree> cv = new CrossValidation<ObliviousDecisionTree>(tree);
+            var data = DataStore.Load(@"Data\chess.data", FileFormat.Rses1);
+            var tree = new ObliviousDecisionTree();
+            var cv = new CrossValidation<ObliviousDecisionTree>(tree);
             cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;
-            cv.Run(data);
+            var result = cv.Run(data);
+            Console.WriteLine(result);
         }
 
         [Test]

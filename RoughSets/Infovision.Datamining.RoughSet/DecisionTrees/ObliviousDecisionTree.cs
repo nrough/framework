@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
     public class ObliviousDecisionTree : DecisionTreeBase
-    {        
-        private Dictionary<int[], SplitInfo> cache = new Dictionary<int[], SplitInfo>(ArrayComparer<int>.Instance);
+    {
+        private Dictionary<int[], SplitInfo> cache = null;
         private object syncRoot = new object();
 
         public bool RankedAttributes { get; set; } = false;
@@ -29,8 +29,20 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {            
             this.ImpurityFunction = ImpurityFunctions.Majority;
             this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
-        }        
-        
+        }
+
+        protected override void CleanUp()
+        {
+            base.CleanUp();
+            this.cache = null;
+        }
+
+        public override ClassificationResult Learn(DataStore data, int[] attributes)
+        {
+            this.cache = new Dictionary<int[], SplitInfo>(attributes.Length + 1, ArrayComparer<int>.Instance);
+            return base.Learn(data, attributes);
+        }
+
         protected override SplitInfo GetNextSplit(
             EquivalenceClassCollection eqClassCollection, 
             int[] origAttributes, 
@@ -39,8 +51,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         {
             if (this.RankedAttributes == false)
             {
-                //Console.WriteLine("Checking {0}", attributesToTest.ToStr(' '));
-
                 SplitInfo baseResult = null;
                 if (!cache.TryGetValue(attributesToTest, out baseResult))
                 {
@@ -48,11 +58,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     {
                         if (!cache.TryGetValue(attributesToTest, out baseResult))
                         {
-                            //Console.WriteLine("Not found in cache");
-
                             baseResult = base.GetNextSplit(eqClassCollection, origAttributes, attributesToTest, parentTreeNode);
-                            //cache only splits that are valid (invalid split can be valid in other branch)
-                            if (baseResult.AttributeId != -1 && baseResult.SplitType != SplitType.None)
+                            
+                            //cache only splits that are valid
+                            if (baseResult.SplitType != SplitType.None)
                                 cache.Add(attributesToTest, baseResult);
 
                             return baseResult;
@@ -60,16 +69,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                     }
                 }
 
-                //Console.WriteLine("Found in cache");
-
-                /*
-                return this.GetSplitInfo(baseResult.AttributeId, 
-                    eqClassCollection, 
-                    this.CalculateImpurityBeforeSplit(eqClassCollection), 
-                    parentTreeNode);
-                */
-
-                return baseResult;
+                return this.GetSplitInfo(baseResult.AttributeId, eqClassCollection, 
+                    this.CalculateImpurityBeforeSplit(eqClassCollection), parentTreeNode);
             }
 
             int attributeId = origAttributes[parentTreeNode.Level];
@@ -80,7 +81,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         protected override SplitInfo GetSplitInfoSymbolic(int attributeId, EquivalenceClassCollection data, double parentMeasure, IDecisionTreeNode parentNode)
         {
             if (parentMeasure < 0) throw new ArgumentException("currentScore < 0", "parentMeasure");
-            if (data == null) throw new ArgumentNullException("data", "(data == null");            
+            if (data == null) throw new ArgumentNullException("data", "(data == null");
+
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributeId, data);
+            if (eqClasses.Count <= 1)
+                return SplitInfo.NoSplit;
 
             int[] newAttributes = new int[parentNode.Level + 1];
             IDecisionTreeNode current = parentNode;
@@ -92,12 +97,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
             newAttributes[j] = attributeId;
 
-            //Console.WriteLine("Calculating split based on {0}", newAttributes.ToStr());
-                                    
             return new SplitInfo(
                 attributeId,
                 this.ImpurityFunction(EquivalenceClassCollection.Create(newAttributes, data.Data, data.Data.Weights)),
-                EquivalenceClassCollection.Create(attributeId, data), SplitType.Discreet, ComparisonType.EqualTo, 0);                        
+                eqClasses, SplitType.Discreet, ComparisonType.EqualTo, 0);                        
         }
 
         protected override double CalculateImpurityBeforeSplit(EquivalenceClassCollection eqClassCollection)

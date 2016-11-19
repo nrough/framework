@@ -52,6 +52,7 @@ namespace Infovision.Utils
             unchecked
             {
                 int hash = 17;
+                hash = 31 * hash + array.Length.GetHashCode();
                 hash = 31 * hash + array[0].GetHashCode();
                 hash = 31 * hash + array[array.Length / 2].GetHashCode();
                 hash = 31 * hash + array[array.Length - 1].GetHashCode();
@@ -65,7 +66,8 @@ namespace Infovision.Utils
             unchecked
             {
                 int hash = 17;
-                for(int i = 0; i < array.Length; i += 2)
+                hash = 31 * hash + array.Length.GetHashCode();
+                for (int i = 0; i < array.Length; i += 2)
                     hash = 31 * hash + array[i].GetHashCode();
                 return hash;
             }

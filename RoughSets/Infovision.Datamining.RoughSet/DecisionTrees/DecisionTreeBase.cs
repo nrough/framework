@@ -59,13 +59,16 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         protected class SplitInfo
         {
+            public static readonly SplitInfo NoSplit = new SplitInfo(
+                -1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
+
             public int AttributeId { get; set; }
             public double Gain { get; set; }
             public EquivalenceClassCollection EquivalenceClassCollection { get; set; }
             public ComparisonType ComparisonType { get; set; }
             public long Cut { get; set; }
             public SplitType SplitType { get; set; }
-
+            
             public SplitInfo(int attributeId, 
                 double gain, 
                 EquivalenceClassCollection equivalenceClassCollection, 
@@ -110,11 +113,6 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
         }
 
-        private void Init()
-        {
-
-        }
-
         protected void Init(DataStore data, int[] attributes)
         {
             lock (syncRoot)
@@ -135,7 +133,9 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         EquivalenceClassCollection.Create(attributes, data, data.Weights));
 
                 this.thresholds = new Dictionary<int, List<long>>();               
-                foreach (DataFieldInfo field in data.DataStoreInfo.GetFields(FieldTypes.Standard).Where(f => f.IsNumeric))
+                foreach (DataFieldInfo field in attributes
+                    .Select(k => data.DataStoreInfo.GetFieldInfo(k))
+                    .Where(f => f.IsNumeric))
                 {                                        
                     var thresholdList = new List<long>();
 
@@ -153,7 +153,12 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 if(this.DefaultOutput == null)
                     this.DefaultOutput = this.aprioriDistribution.Output;
             }
-        }        
+        }
+
+        protected virtual void CleanUp()
+        {
+            this.thresholds = null;
+        }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
@@ -165,6 +170,8 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.Gamma >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
             this.GrowTree(eqClassCollection, this.root, attributes);
+
+            this.CleanUp();
 
             return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
         }
@@ -185,7 +192,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.CheckPruningConditions();
 
-            DataStoreSplitter cvSplitter = new DataStoreSplitter(data, this.PruningCVFolds);
+            DataStoreSplitter cvSplitter = new DataStoreSplitter(data, this.PruningCVFolds, false);
             DataStore trainSet = null, pruningSet = null;
             IDecisionTree bestModel = null;
 
@@ -205,15 +212,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 
                 pruningMethod.Prune();
 
-                ClassificationResult tmpResult = Classifier.DefaultClassifer.Classify(tmpTree, pruningSet);
-
-                int numOfRules = DecisionTreeBase.GetNumberOfRules(tmpTree);
-                int maxHeight = DecisionTreeBase.GetHeight(tmpTree);
-                double avgHeight = DecisionTreeBase.GetAvgHeight(tmpTree);
-
                 switch (this.PruningObjective)
                 {
                     case PruningObjectiveType.MinimizeNumberOfLeafs:
+                        int numOfRules = DecisionTreeBase.GetNumberOfRules(tmpTree);
                         if (numOfRules < bestNumOfRules)
                         {
                             bestNumOfRules = numOfRules;
@@ -222,6 +224,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeTreeMaxHeight:
+                        int maxHeight = DecisionTreeBase.GetHeight(tmpTree);
                         if (maxHeight < bestMaxHeight)
                         {
                             bestMaxHeight = maxHeight;
@@ -230,6 +233,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeError:
+                        ClassificationResult tmpResult = Classifier.DefaultClassifer.Classify(tmpTree, pruningSet);
                         if (tmpResult.Error < bestError)
                         {
                             bestError = tmpResult.Error;
@@ -238,6 +242,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeTreeAvgHeight:
+                        double avgHeight = DecisionTreeBase.GetAvgHeight(tmpTree);
                         if (avgHeight < bestAvgHeight)
                         {
                             bestAvgHeight = avgHeight;
@@ -251,7 +256,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             this.Root = bestModel.Root;
-
+            this.CleanUp();
             return Classifier.DefaultClassifer.Classify(this, data);
         }
 
@@ -436,7 +441,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             }
 
             if (maxIndex == -1)
-                return new SplitInfo(-1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
+                return SplitInfo.NoSplit;
 
             return scores[maxIndex];
         }

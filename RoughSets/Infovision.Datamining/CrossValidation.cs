@@ -23,8 +23,11 @@ namespace Infovision.Datamining
 
         public CrossValidation(T model)
         {
+            if (modelPrototype == null)
+                throw new InvalidOperationException("modelPrototype == null");
+            this.modelPrototype = model;
+
             this.RunInParallel = true;
-            this.modelPrototype = model;            
         }        
 
         public ClassificationResult Run(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)

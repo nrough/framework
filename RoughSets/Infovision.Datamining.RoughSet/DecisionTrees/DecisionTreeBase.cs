@@ -211,7 +211,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             int bestMaxHeight = Int32.MaxValue;
             double bestAvgHeight = Double.PositiveInfinity;
 
-            for (int f = 0; f < this.PruningCVFolds; f++)
+            for (int f = 0; f < cvSplitter.NFold; f++)
             {
                 cvSplitter.Split(ref trainSet, ref pruningSet, f);
                 
@@ -272,13 +272,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
         {
-            result.AvgNumberOfAttributes = this.Root != null ? ((DecisionTreeNode)this.Root).GetChildUniqueKeys().Count : 0;
+            //result.DatasetName = this.TrainingData.Name; /?
+            result.ModelName = this.ModelName;
             result.EnsembleSize = 1;
             result.Gamma = this.Gamma;
+            result.AvgNumberOfAttributes = DecisionTreeBase.GetNumberOfAttributes(this);
             result.MaxTreeHeight = DecisionTreeBase.GetHeight(this);
             result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this);
-            result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this);
-            result.ModelName = this.ModelName;
+            result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this);            
         }        
 
         protected void SetNodeOutput(DecisionTreeNode node, Dictionary<long, double> outputWeights)

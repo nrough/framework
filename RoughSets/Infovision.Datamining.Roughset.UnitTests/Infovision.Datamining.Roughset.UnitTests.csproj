@@ -138,6 +138,7 @@
     <Compile Include="DecisionTrees\DecisionForestTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeComparisonTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreePruningTest.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeReductCompare.cs" />
     <Compile Include="DecisionTrees\DecisionTreeTest.cs" />
     <Compile Include="DecisionTrees\ObliviousDecisionTreeTest.cs" />
     <Compile Include="EquivalenceClassTest.cs" />

@@ -14,7 +14,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGeneratorReverse(DataStore dataStore)
-            : base(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray())
+            : base(dataStore.GetStandardFields())
         {
         }
 

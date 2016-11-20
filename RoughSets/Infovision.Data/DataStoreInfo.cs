@@ -156,7 +156,7 @@ namespace Infovision.Data
         public int GetFieldIndex(int fieldId)
         {
             return this.fieldId2Index[fieldId];
-        }
+        }        
 
         public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags = FieldTypes.All)
         {

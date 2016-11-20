@@ -12,6 +12,7 @@ namespace Infovision.Datamining
 
     public class Classifier : IClassifier
     {
+        public static long UnclassifiedOutput = -1;
         private static volatile Classifier instance = null;
         private static object syncRoot = new object();
 
@@ -56,7 +57,7 @@ namespace Infovision.Datamining
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = model.Compute(record);
 
-                    if (prediction == -1 && model.DefaultOutput != null)
+                    if (prediction == Classifier.UnclassifiedOutput && model.DefaultOutput != null)
                         prediction = (long) model.DefaultOutput;
 
                     result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
@@ -70,7 +71,7 @@ namespace Infovision.Datamining
                     DataRecordInternal record = testData.GetRecordByIndex(objectIndex, false);
                     var prediction = model.Compute(record);
 
-                    if (prediction == -1 && model.DefaultOutput != null)
+                    if (prediction == Classifier.UnclassifiedOutput && model.DefaultOutput != null)
                         prediction = (long)model.DefaultOutput;
 
                     result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);

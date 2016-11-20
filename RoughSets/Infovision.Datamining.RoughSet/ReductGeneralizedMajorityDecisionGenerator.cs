@@ -122,7 +122,7 @@ namespace Infovision.Datamining.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "");
+            IReduct reduct = this.CreateReductObject(this.DataStore.GetStandardFields(), 0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 

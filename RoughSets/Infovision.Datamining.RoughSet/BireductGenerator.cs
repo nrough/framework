@@ -67,7 +67,7 @@ namespace Infovision.Datamining.Roughset
         //protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
+            Bireduct bireduct = this.CreateReductObject(this.DataStore.GetStandardFields(),
                                                         this.Epsilon,
                                                         this.GetNextReductId().ToString()) as Bireduct;
 
@@ -182,7 +182,7 @@ namespace Infovision.Datamining.Roughset
 
         protected override IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            BireductGamma bireduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(),
+            BireductGamma bireduct = this.CreateReductObject(this.DataStore.GetStandardFields(),
                                                              this.Epsilon,
                                                              this.GetNextReductId().ToString()) as BireductGamma;
             Reach(bireduct, permutation, reductStore);

@@ -34,6 +34,30 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         }
 
         [Test]
+        public void TestObliviousTreeDepth()
+        {
+            DataStore data = DataStore.Load(@"Data\spect.train", FileFormat.Rses1);
+            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            DataStore test = DataStore.Load(@"Data\spect.test", FileFormat.Rses1, data.DataStoreInfo);
+
+            int[] attributes = new int[] { 19, 20, 16, 21, 17, 14, 8, 18, 9, 2, 13 };
+
+            ObliviousDecisionTree treeOblivMaj = new ObliviousDecisionTree("Oblivious");
+            treeOblivMaj.RankedAttributes = false;
+            treeOblivMaj.UseLocalOutput = false;
+            treeOblivMaj.Learn(data, attributes);
+
+            Console.WriteLine(DecisionTreeFormatter.Construct(treeOblivMaj));
+
+            ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
+            Console.WriteLine(ClassificationResult.ResultHeader());
+
+            var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);
+            Console.WriteLine(treeOblivMajResult);
+
+        }
+
+        [Test]
         [TestCase(@"Data\spect.train", @"Data\spect.test")]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]

@@ -18,20 +18,20 @@ namespace Infovision.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
+            Test_CV(5);
             Test_Benchmark(5);
-            Test_CV(5);            
         }
 
         public static void Test_Benchmark(int tests)
         {
-            DecisionTreeTest test = new DecisionTreeTest();
+            DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string trainFile, testFile, reductFactoryKey;
             PruningType pruningType;
 
-            MethodBase method = typeof(DecisionTreeTest).GetMethod("ErrorImpurityTest");
+            MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest");
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
 
-            using (var cc = new ConsoleCopy("mylogfile.txt"))
+            using (var cc = new ConsoleCopy("mylogfile_"+DateTime.Now.ToString("yyyyMMddHHmmss") +".txt"))
             {
                 ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha";
                 Console.WriteLine(ClassificationResult.ResultHeader());
@@ -53,19 +53,19 @@ namespace Infovision.UnitTest.Runner
 
         public static void Test_CV(int tests)
         {
-            DecisionTreeTest test = new DecisionTreeTest();
+            DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string dataFile, reductFactoryKey;
             PruningType pruningType;
             FileFormat fileFormat;
             int folds;
 
-            MethodBase method = typeof(DecisionTreeTest).GetMethod("ErrorImpurityTest_CV");
+            MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest_CV");
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
 
-            using (var cc = new ConsoleCopy("mylogfile_CV.txt"))
+            using (var cc = new ConsoleCopy("mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
             {
-                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha;cls;mcls;ucls";
-                Console.WriteLine(ClassificationResult.ResultHeader());                
+                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha";
+                Console.WriteLine(ClassificationResult.ResultHeader());
 
                 for (int i = 0; i < tests; i++)
                 {
@@ -81,6 +81,14 @@ namespace Infovision.UnitTest.Runner
                     }
                 }
             }
+        }
+
+        public void ProcessResultFile(string filename, string separator, string columns)
+        {
+            //TODO Average over numer of tests
+            //TODO Calculate Mean, StdDev, Variance
+            //TODO Compare results of different models
+            //TODO Calculate Kappa, Test significance, etc.
         }
 
     }

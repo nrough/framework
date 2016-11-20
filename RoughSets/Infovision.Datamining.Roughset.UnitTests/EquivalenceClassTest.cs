@@ -16,7 +16,7 @@ namespace Infovision.Datamining.Roughset.UnitTests
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.GetStandardFields();
 
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
             Assert.NotNull(eqClasses);

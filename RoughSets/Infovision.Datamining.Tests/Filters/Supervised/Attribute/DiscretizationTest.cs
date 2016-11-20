@@ -21,6 +21,29 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
                                     11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34,
                                     50, 60, 70, 80 };
 
+        [Test]
+        [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
+        {
+            DataStore train = DataStore.Load(fileTrain, fileFormat);
+            DataStore test = DataStore.Load(fileTest, fileFormat, train.DataStoreInfo);
+
+            var descretizer = new DataStoreDiscretizer()
+            {
+                UseBetterEncoding = false,
+                UseKononenko = false, //use FayadAndIraniMDL
+                Fields2Discretize = train.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                    .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
+            };
+
+            descretizer.Discretize(ref train, ref test);
+            //train.WriteToCSVFileExt(@"C:\"+fileTrain + ".disc", " ", false, true);
+            //test.WriteToCSVFileExt(@"C:\" + fileTest + ".disc", " ", false, true);
+        }
+
         //[TestCase(false, false)]
         //[TestCase(false, true)]
         [TestCase(true, false)]

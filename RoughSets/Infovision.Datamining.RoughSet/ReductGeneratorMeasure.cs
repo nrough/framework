@@ -80,7 +80,7 @@ namespace Infovision.Datamining.Roughset
         {
             if (!this.IsDataSetQualityCalculated())
             {
-                IReduct tmpReduct = this.CreateReductObject(this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), 0, "tmpReduct");
+                IReduct tmpReduct = this.CreateReductObject(this.DataStore.GetStandardFields(), 0, "tmpReduct");
                 this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
             }
         }

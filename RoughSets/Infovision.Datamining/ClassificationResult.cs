@@ -281,14 +281,14 @@ namespace Infovision.Datamining
             this.decCount = localDecisionValues.Count;
             this.decCountPlusOne = this.decCount + 1;
             this.decisions = new long[decCountPlusOne];
-            this.decisions[0] = -1;
+            this.decisions[0] = Classifier.UnclassifiedOutput;
             this.decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
             for (int i = 1; i <= this.decCount; i++)
             {
                 this.decisions[i] = localDecisionValues.ElementAt(i-1);
                 this.decisionValue2Index.Add(localDecisionValues.ElementAt(i-1), i);
             }
-            this.decisionValue2Index.Add(-1, 0);          
+            this.decisionValue2Index.Add(Classifier.UnclassifiedOutput, 0);          
             this.predictionResults = new long[dataStore.NumberOfRecords];
             this.confusionTable = new int[decCountPlusOne][];
             this.confusionTableWeights = new double[decCountPlusOne][];
@@ -307,9 +307,8 @@ namespace Infovision.Datamining
         {
             lock (syncRoot)
             {
-                for (int i = 0; i < predictionResults.Length; i++)
-                    predictionResults[i] = -1;
-
+                predictionResults.SetAll(Classifier.UnclassifiedOutput);
+                
                 for (int i = 0; i < decCountPlusOne; i++)
                 {
                     for (int j = 0; j < decCountPlusOne; j++)

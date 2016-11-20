@@ -27,7 +27,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGeneratorEnsemble(DataStore dataStore, int[][] attributes)
-            : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), attributes)
+            : this(dataStore.GetStandardFields(), attributes)
         {
         }
 
@@ -51,7 +51,7 @@ namespace Infovision.Datamining.Roughset
                         foreach (IReduct r in rs)
                             selectedAttributes[k++] = r.Attributes.ToArray();
 
-                this.Setup(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), selectedAttributes);
+                this.Setup(dataStore.GetStandardFields(), selectedAttributes);
             }
         }
 

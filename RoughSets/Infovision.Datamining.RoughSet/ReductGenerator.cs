@@ -142,7 +142,7 @@ namespace Infovision.Datamining.Roughset
 
         public virtual void initFromDataStore(DataStore data)
         {
-            int[] fieldIds = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] fieldIds = data.GetStandardFields();
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {

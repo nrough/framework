@@ -42,19 +42,38 @@ namespace Infovision.Datamining
             return this.Run(data, attributes, CrossValidation<T>.DefaultFolds);
         }
 
-        public ClassificationResult Run(DataStore data, DataStoreSplitter splitter)
+        public ClassificationResult Run(DataStore data, IDataStoreSplitter splitter)
         {
-            return this.Run(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), splitter);
+            return this.Run(data, data.GetStandardFields(), splitter);
         }
 
         public ClassificationResult Run(DataStore data, int folds)
         {
-            return this.Run(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), folds);
+            return this.Run(data, data.GetStandardFields(), folds);
         }
 
         public ClassificationResult Run(DataStore data)
         {
-            return this.Run(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray(), CrossValidation<T>.DefaultFolds);
+            return this.Run(data, data.GetStandardFields(), CrossValidation<T>.DefaultFolds);
+        }
+
+        private ClassificationResult RunFold(IDataStoreSplitter dataSplitter, int fold, int[] attributes)
+        {
+            DataStore trainDS = null, testDS = null;
+            dataSplitter.Split(ref trainDS, ref testDS, fold);
+
+            int[] localAttributes = attributes;
+            if (this.Attributes != null)
+                if (!this.Attributes.TryGetValue(fold, out localAttributes))
+                    localAttributes = attributes;
+
+            T model = (T)this.modelPrototype.Clone();
+            model.Learn(trainDS, localAttributes);
+
+            if (this.PostLearningMethod != null)
+                this.PostLearningMethod(model);
+
+            return Classifier.DefaultClassifer.Classify(model, testDS);
         }
 
         private ClassificationResult CV(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)
@@ -75,42 +94,14 @@ namespace Infovision.Datamining
 
                 Parallel.For(0, dataSplitter.NFold, options, f =>
                 {
-                    DataStore trainDS = null, testDS = null;
-                    dataSplitter.Split(ref trainDS, ref testDS, f);
-
-                    int[] localAttributes = attributes;
-                    if (this.Attributes != null)
-                        if (!this.Attributes.TryGetValue(f, out localAttributes))
-                            localAttributes = attributes;
-
-                    T model = (T)this.modelPrototype.Clone();
-                    model.Learn(trainDS, localAttributes);
-
-                    if (this.PostLearningMethod != null)
-                        this.PostLearningMethod(model);
-
-                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
+                    result.AddLocalResult(this.RunFold(dataSplitter, f, attributes));
                 });
             }
             else
-            {
-                DataStore trainDS = null, testDS = null;
+            {                
                 for (int f = 0; f < dataSplitter.NFold; f++)
                 {
-                    dataSplitter.Split(ref trainDS, ref testDS, f);
-                    
-                    int[] localAttributes = attributes;
-                    if (this.Attributes != null)
-                        if (!this.Attributes.TryGetValue(f, out localAttributes))
-                            localAttributes = attributes;
-
-                    T model = (T)this.modelPrototype.Clone();
-                    model.Learn(trainDS, localAttributes);
-
-                    if (this.PostLearningMethod != null)
-                        this.PostLearningMethod(model);
-
-                    result.AddLocalResult(Classifier.DefaultClassifer.Classify(model, testDS));
+                    result.AddLocalResult(this.RunFold(dataSplitter, f, attributes));
                 }
             }
 

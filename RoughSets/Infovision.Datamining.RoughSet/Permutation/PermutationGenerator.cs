@@ -33,7 +33,7 @@ namespace Infovision.Datamining.Roughset
         }
 
         public PermutationGenerator(DataStore dataStore)
-            : this(dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray())
+            : this(dataStore.GetStandardFields())
         {
         }
 

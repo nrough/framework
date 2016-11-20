@@ -845,6 +845,11 @@ namespace Infovision.Data
             }
         }
 
+        public int[] GetStandardFields()
+        {
+            return this.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+        }
+
         #region System.Object Methods
 
         public override string ToString()

@@ -7,6 +7,7 @@ using Infovision.Data;
 using Infovision.Utils;
 using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
@@ -57,13 +58,14 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
         public PruningObjectiveType PruningObjective { get; set; } = PruningObjectiveType.MinimizeError;
+        public DataStoreSplitter PruningDataSplitter { get; set; }
 
-        protected IEnumerable<long> Decisions { get { return this.decisions; } }        
+        protected IEnumerable<long> Decisions { get { return this.decisions; } }
 
         protected class SplitInfo
         {
-            public static readonly SplitInfo NoSplit = new SplitInfo(
-                -1, Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
+            public static readonly SplitInfo NoSplit = new SplitInfo(-1, 
+                Double.NegativeInfinity, null, SplitType.None, ComparisonType.None, 0);
 
             public int AttributeId { get; set; }
             public double Gain { get; set; }
@@ -109,7 +111,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         protected int GetId()
-        {
+        {            
             lock (syncRoot)
             {
                 return this.nextId++;
@@ -164,9 +166,11 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         }
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
-        {
+        {            
             if (this.PruningType != PruningType.None)
                 return this.LearnAndPrune(data, attributes);
+
+            int[] selectedAttributes = this.AttributeSelection(data, attributes);
 
             this.Init(data, attributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
@@ -195,7 +199,10 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
             this.CheckPruningConditions();
 
-            DataStoreSplitter cvSplitter = new DataStoreSplitter(data, this.PruningCVFolds, false);
+            DataStoreSplitter cvSplitter = this.PruningDataSplitter == null 
+                ? new DataStoreSplitter(data, this.PruningCVFolds, false) 
+                : this.PruningDataSplitter;
+
             DataStore trainSet = null, pruningSet = null;
             IDecisionTree bestModel = null;
 
@@ -397,7 +404,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
                 current = next;                
             }
 
-            return -1; //unclassified
+            return Classifier.UnclassifiedOutput;
         }
         
         protected virtual SplitInfo GetNextSplit(EquivalenceClassCollection eqClassCollection, int[] origAttributes, int[] attributesToTest, IDecisionTreeNode parentTreeNode)

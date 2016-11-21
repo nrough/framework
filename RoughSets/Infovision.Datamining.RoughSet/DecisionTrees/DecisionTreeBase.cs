@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Infovision.Datamining.Roughset.DecisionTrees
 {
-    public delegate int[] AttributeSelectionMethod(DataStore data, int[] attributes);
+    public delegate Tuple<int[], DataStore> AttributeAndDataSelectionMethod(int[] attributes, DataStore data);
     
     /// <summary>
     /// Base class for decision tree implementations
@@ -53,7 +53,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         public ImpurityFunc ImpurityFunction { get; set; } = ImpurityFunctions.Entropy;
         public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityFunctions.DummyNormalize;
-        public AttributeSelectionMethod AttributeSelection { get; set; } = DecisionTreeBase.DefaultAttributeSelection;
+        public AttributeAndDataSelectionMethod AttributeSelection { get; set; } = null;
 
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
@@ -170,17 +170,29 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             if (this.PruningType != PruningType.None)
                 return this.LearnAndPrune(data, attributes);
 
-            int[] selectedAttributes = this.AttributeSelection(data, attributes);
+            int[] selectedAttributes = null;
+            DataStore selectedData = null;
+            if (this.AttributeSelection != null)
+            {
+                var selectedAttributeData = this.AttributeSelection(attributes, data);
+                selectedAttributes = selectedAttributeData.Item1;
+                selectedData = selectedAttributeData.Item2;
+            }
+            else
+            {
+                selectedAttributes = attributes;
+                selectedData = data;
+            }            
 
-            this.Init(data, attributes);
-            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
+            this.Init(selectedData, selectedAttributes);
+            EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, selectedData, selectedData.Weights);
             if (this.Gamma >= 0.0)
                 this.root.Measure = InformationMeasureWeights.Instance.Calc(eqClassCollection);
-            this.GrowTree(eqClassCollection, this.root, attributes);
+            this.GrowTree(eqClassCollection, this.root, selectedAttributes);
 
             this.CleanUp();
 
-            return Classifier.DefaultClassifer.Classify(this, data, data.Weights);
+            return Classifier.DefaultClassifer.Classify(this, selectedData, selectedData.Weights);
         }
 
         private void CheckPruningConditions()
@@ -537,12 +549,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             return new SplitInfo(attributeId,
                 this.ImpurityNormalize(currentScore - maxGain, bestEq),
                 bestEq, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
-        }
-
-        private static int[] DefaultAttributeSelection(DataStore data, int[] attributes)
-        {
-            return attributes;
-        }
+        }        
 
         public static int GetNumberOfRules(IDecisionTree tree)
         {

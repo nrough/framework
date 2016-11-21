@@ -23,7 +23,7 @@ namespace Infovision.Datamining
 
         public CrossValidation(T model)
         {
-            if (modelPrototype == null)
+            if (model == null)
                 throw new InvalidOperationException("modelPrototype == null");
             this.modelPrototype = model;
 

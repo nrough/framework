@@ -111,13 +111,10 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);            
             int rednum = 100;            
-            IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);            
-
+            IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);
+            
             if (pruningType == PruningType.None)
-            {
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, 
-                    -1.0, rednum, emptyDistribution.Output, null, null);
-
+            {                
                 for (double eps = 0.0; eps <= 0.99; eps += 0.01)
                 {
                     Dictionary<int, int[]> attributes = new Dictionary<int, int[]>(folds);
@@ -140,25 +137,61 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                         attributes.Add(f, bestReduct != null ? bestReduct.Attributes.ToArray() : new int[] { });
                     }
 
-                    ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, eps, rednum, emptyDistribution.Output, attributes, pruningSplitter);
-                }
+                    ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey, 
+                        eps, rednum, emptyDistribution.Output, attributes);
+                }                
             }
             else
-            {
-                DataStoreSplitter pruningSplitter = new DataStoreSplitter(trainDS, 3, true);
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey,
-                    -1.0, rednum, emptyDistribution.Output, null, pruningSplitter);
-
+            {                                
                 for (double eps = 0.0; eps <= 0.99; eps += 0.01)
                 {
                     ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey,
-                        eps, rednum, emptyDistribution.Output, null, pruningSplitter);
-                }
+                        eps, rednum, emptyDistribution.Output, null);
+                }                
             }
+
+            ErrorImpurityTestIntPerReduct_CV(data, splitter, pruningType, reductFactoryKey,
+                    -1.0, rednum, emptyDistribution.Output, null);
         }
 
-        private void ErrorImpurityTestIntPerReduct_CV(DataStore data, DataStoreSplitter splitter, PruningType pruningType, string redkey, double eps, int rednum, long output, Dictionary<int, int[]> attributes, DataStoreSplitter pruningSplitter)
+        private void ErrorImpurityTestIntPerReduct_CV(DataStore data, DataStoreSplitter splitter, PruningType pruningType, string redkey, double eps, int rednum, long output, Dictionary<int, int[]> attributes)
         {
+            Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
+
+            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
+            {
+                //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
+                Tuple<int[], DataStore> best = null;
+                if (localReductCache.TryGetValue(dta.Name, out best))
+                    return best;
+
+                Args parms = new Args(4);
+                parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
+                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
+                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                generator.Run();
+
+                var reducts = generator.GetReducts();
+                reducts.Sort(ReductAccuracyComparer.Default);
+                IReduct bestReduct = reducts.FirstOrDefault();
+                best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+
+                localReductCache.Add(dta.Name, best);
+                return best;
+            };
+
+            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_NoPrunning = delegate (int[] attr, DataStore dta)
+            {
+                return new Tuple<int[], DataStore>(attr, dta);
+            };
+
+            Func<int[], DataStore, Tuple<int[], DataStore>> attributeSelection =
+                (pruningType == PruningType.None) ? calculateReduct_NoPrunning : calculateReduct_Prunning;
+
+            AttributeAndDataSelectionMethod attributeSelectionMethod = (a, d) => attributeSelection(a, d);
+
             if (pruningType == PruningType.None)
             {
                 DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
@@ -171,7 +204,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             }
 
             DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
-            treeRough.PruningDataSplitter = pruningSplitter;
+            treeRough.AttributeSelection = attributeSelectionMethod;            
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
             CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
@@ -181,7 +214,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine(treeRoughResult);
 
             DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
-            treec45.PruningDataSplitter = pruningSplitter;
+            treec45.AttributeSelection = attributeSelectionMethod;            
             treec45.DefaultOutput = output;
             treec45.PruningType = pruningType;
             CrossValidation<DecisionTreeC45> treec45CV = new CrossValidation<DecisionTreeC45>(treec45);
@@ -191,7 +224,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine(treec45Result);
 
             ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy-" + pruningType.ToSymbol());
-            treeOblivEntropy.PruningDataSplitter = pruningSplitter;
+            treeOblivEntropy.AttributeSelection = attributeSelectionMethod;            
             treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
             treeOblivEntropy.DefaultOutput = output;
             treeOblivEntropy.PruningType = pruningType;
@@ -204,13 +237,14 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
         private void ErrorImpurityTestIntPerReduct(DataStore trainDS, DataStore testDS, PruningType pruningType, string redkey, double eps, int rednum, long output, IReduct reduct)
         {
-            Dictionary<string, IReduct> localReductCache = new Dictionary<string, IReduct>(5);
+            Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
 
-            Func<DataStore, int[], int[]> calculateReduct_Prunning = delegate (DataStore dta, int[] attr)
-            {                
-                IReduct bestReduct = null;
-                if (localReductCache.TryGetValue(dta.Name, out bestReduct))
-                    return bestReduct.Attributes.ToArray();
+            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
+            {
+                //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
+                Tuple<int[], DataStore> best = null;
+                if (localReductCache.TryGetValue(dta.Name, out best))
+                    return best;
                 
                 Args parms = new Args(4);
                 parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
@@ -222,19 +256,22 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
                 var reducts = generator.GetReducts();
                 reducts.Sort(ReductAccuracyComparer.Default);
-                bestReduct = reducts.FirstOrDefault();
-                localReductCache.Add(dta.Name, bestReduct);
-                return bestReduct.Attributes.ToArray();
+                IReduct bestReduct = reducts.FirstOrDefault();
+                best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+                
+                localReductCache.Add(dta.Name, best);
+                return best;
             };
 
-            Func<DataStore, int[], int[]> calculateReduct_NoPrunning = delegate (DataStore dta, int[] attr)
+            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_NoPrunning = delegate (int[] attr, DataStore dta)
             {
-                return reduct.Attributes.ToArray();
+                return new Tuple<int[], DataStore>(reduct.Attributes.ToArray(), dta);
             };
 
-            Func<DataStore, int[], int[]> attributeSelection =
+            Func<int[], DataStore, Tuple<int[], DataStore>> attributeSelection =
                 (pruningType == PruningType.None) ? calculateReduct_NoPrunning : calculateReduct_Prunning;
-            AttributeSelectionMethod attributeSelectionMethod = (d, a) => attributeSelection(d, a);
+
+            AttributeAndDataSelectionMethod attributeSelectionMethod = (a, d) => attributeSelection(a, d);
             
             int[] attributes = trainDS.GetStandardFields();
 

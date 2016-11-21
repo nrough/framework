@@ -25,7 +25,7 @@ namespace Infovision.Datamining
         public object Clone()
         {
             var clone = (ModelBase)this.MemberwiseClone();
-            HandleCloned(clone);
+            this.HandleCloned(clone);
             return clone;
         }
 

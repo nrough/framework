@@ -115,6 +115,7 @@
     <Compile Include="Benchmark\BenchmarkDataHelper.cs" />
     <Compile Include="ClassificationResult.cs" />
     <Compile Include="ClassificationResultFormatter.cs" />
+    <Compile Include="ClassificationResultValueAttribute.cs" />
     <Compile Include="Classifier.cs" />
     <Compile Include="Clustering\DBSCAN.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />

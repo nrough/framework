@@ -65,8 +65,8 @@ namespace Infovision.Datamining
                 {
                     switch (kvp.Key)
                     {
-                        case "ds": sb.AppendFormat("{0,20}", "DatasetName"); break;
-                        case "m": sb.AppendFormat("{0,20}", "ModelName"); break;
+                        case "ds": sb.AppendFormat("{0,20}", "ds"); break;
+                        case "model": sb.AppendFormat("{0,20}", "model"); break;
                         case "t": sb.AppendFormat("{0,2}", "t"); break;
                         case "f": sb.AppendFormat("{0,2}", "f"); break;
                         case "eps": sb.AppendFormat("{0,5}", "eps"); break;
@@ -84,7 +84,6 @@ namespace Infovision.Datamining
                         case "bal": sb.AppendFormat("{0,6}", "bal"); break;
                         case "conf": sb.AppendFormat("{0,6}", "conf"); break;
                         case "cov": sb.AppendFormat("{0,6}", "cov"); break;
-                        case "attr": sb.AppendFormat("{0,6}", "attr"); break;
 
                         case "mtime": sb.AppendFormat("mtime"); break;
                         case "ctime": sb.AppendFormat("ctime"); break;
@@ -94,6 +93,7 @@ namespace Infovision.Datamining
                         case "srulhit": sb.AppendFormat("srulhit"); break;
                         case "srullen": sb.AppendFormat("srullen"); break;
 
+                        case "attr": sb.AppendFormat("{0,6}", "attr"); break;
                         case "numrul": sb.AppendFormat("{0,7}", "numrul"); break;
                         case "dthm": sb.AppendFormat("{0,5}", "dthm"); break;
                         case "dtha": sb.AppendFormat("{0,5}", "dtha"); break;
@@ -110,7 +110,7 @@ namespace Infovision.Datamining
                     switch (kvp.Key)
                     {
                         case "ds": sb.AppendFormat("{0,20}", String.IsNullOrEmpty(result.DatasetName) ? "" : result.DatasetName); break;
-                        case "m": sb.AppendFormat("{0,20}", String.IsNullOrEmpty(result.ModelName) ? "" : result.ModelName); break;
+                        case "model": sb.AppendFormat("{0,20}", String.IsNullOrEmpty(result.ModelName) ? "" : result.ModelName); break;
                         case "t": sb.AppendFormat("{0,2}", result.TestNum); break;
                         case "f": sb.AppendFormat("{0,2}", result.Fold); break;
                         case "eps": sb.AppendFormat("{0,5:0.00}", result.Epsilon); break;
@@ -128,8 +128,7 @@ namespace Infovision.Datamining
                         case "bal": sb.AppendFormat("{0:0.0000}", result.BalancedAccuracy); break;
                         case "conf": sb.AppendFormat("{0:0.0000}", result.Confidence); break;
                         case "cov": sb.AppendFormat("{0:0.0000}", result.Coverage); break;
-                        case "attr": sb.AppendFormat("{0,6:0.00}", result.AvgNumberOfAttributes); break;
-
+                        
                         case "mtime": sb.AppendFormat("{0,6}", result.ModelCreationTime); break;
                         case "clstime": sb.AppendFormat("{0,6}", result.ClassificationTime); break;
 
@@ -137,9 +136,12 @@ namespace Infovision.Datamining
                         case "erullen": sb.AppendFormat("{0,7}", result.ExceptionRuleLengthSum); break;
                         case "srulhit": sb.AppendFormat("{0,5}", result.StandardRuleHitCounter); break;
                         case "srullen": sb.AppendFormat("{0,7}", result.StandardRuleLengthSum); break;
+
+                        case "attr": sb.AppendFormat("{0,6:0.00}", result.AvgNumberOfAttributes); break;
                         case "numrul": sb.AppendFormat("{0,7:0.00}", result.NumberOfRules); break;
                         case "dthm": sb.AppendFormat("{0,5:0.00}", result.MaxTreeHeight); break;
                         case "dtha": sb.AppendFormat("{0,5:0.00}", result.AvgTreeHeight); break;
+
                         case "gamma": sb.AppendFormat("{0,7:0.00}", result.Gamma); break;
                         case "alpha": sb.AppendFormat("{0,7:0.00}", result.Alpha); break;
                         case "beta": sb.AppendFormat("{0,7:0.00}", result.Beta); break;

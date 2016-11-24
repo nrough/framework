@@ -5,6 +5,9 @@ using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
 using System.Diagnostics;
+using System.Data;
+using GenericParsing;
+using System.Reflection;
 
 namespace Infovision.Datamining
 {
@@ -31,7 +34,7 @@ namespace Infovision.Datamining
     {
         #region Members
 
-        public static string OutputColumns = @"ds;m;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
+        public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
 
         private Dictionary<long, int> decisionValue2Index;
         private long[] decisions;
@@ -51,8 +54,9 @@ namespace Infovision.Datamining
         public int Count
         {
             get { return this.counter; }
-        }        
+        }
 
+        [ClassificationResultValue("acc", "{0:0.0000}", true)]
         public double Accuracy
         {
             get
@@ -61,11 +65,13 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("err", "{0:0.0000}")]
         public double Error
         {
             get { return 1.0 - this.Accuracy; }
         }
 
+        [ClassificationResultValue("bal", "{0:0.0000}")]
         public double BalancedAccuracy
         {
             get
@@ -107,6 +113,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("cov", "{0:0.0000}")]
         public double Coverage
         {
             get
@@ -115,6 +122,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("conf", "{0:0.0000}")]
         public double Confidence
         {
             get
@@ -124,7 +132,8 @@ namespace Infovision.Datamining
                 return ((classified + misclassified) != 0) ? (double)classified / (double)(classified + misclassified) : 0;
             }
         }
-
+        
+        [ClassificationResultValue("cls", "{0,4}")]
         public int Classified
         {
             get
@@ -136,6 +145,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("mcls", "{0,4}")]
         public int Misclassified
         {
             get
@@ -149,6 +159,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("ucls", "{0,4}")]
         public int Unclassified
         {
             get
@@ -160,6 +171,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("wcls", "{0:0.0000}")]
         public double WeightClassified
         {
             get
@@ -171,6 +183,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("wmcls", "{0:0.0000}")]
         public double WeightMisclassified
         {
             get
@@ -184,6 +197,7 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("wucls", "{0:0.0000}")]
         public double WeightUnclassified
         {
             get
@@ -195,31 +209,67 @@ namespace Infovision.Datamining
             }
         }
 
+        [ClassificationResultValue("attr", "{0,6:0.00}", true)]
         public double AvgNumberOfAttributes { get; set; }
+
+        [ClassificationResultValue("numrul", "{0,7:0.00}", true)]
         public double NumberOfRules { get; set; }
+
+        [ClassificationResultValue("dthm", "{0,5:0.00}", true)]
         public double MaxTreeHeight { get; set; }
+
+        [ClassificationResultValue("dtha", "{0,5:0.00}", true)]
         public double AvgTreeHeight { get; set; }
 
+        [ClassificationResultValue("mtime", "{0,6}")]
         public long ClassificationTime { get; set; }
+
+        [ClassificationResultValue("clstime", "{0,6}")]
         public long ModelCreationTime { get; set; }
 
+        [ClassificationResultValue("erulhit", "{0,5}")]
         public int ExceptionRuleHitCounter { get; set; }
+
+        [ClassificationResultValue("erullen", "{0,7}")]
         public int StandardRuleHitCounter { get; set; }
+
+        [ClassificationResultValue("srulhit", "{0,5}")]
         public int ExceptionRuleLengthSum { get; set; }
+
+        [ClassificationResultValue("srullen", "{0,7}")]
         public int StandardRuleLengthSum { get; set; }
-                
+
+        [ClassificationResultValue("alpha", "{0,7:0.00}")]
         public double Alpha { get; set; }
+
+        [ClassificationResultValue("beta", "{0,7:0.00}")]
         public double Beta { get; set; }
+
+        [ClassificationResultValue("gamma", "{0,7:0.00}")]
         public double Gamma { get; set; }
+
+        [ClassificationResultValue("delta", "{0,7:0.00}")]
         public double Delta { get; set; }
+
+        [ClassificationResultValue("eps", "{0,5:0.00}", true)]
         public double Epsilon { get; set; }
 
+        [ClassificationResultValue("ds", "{0,20}", true)]
         public string DatasetName { get; set; }
+
+        [ClassificationResultValue("model", "{0,20}", true)]
         public string ModelName { get; set; }
+
+        [ClassificationResultValue("t", "{0,2}", true)]
         public int TestNum { get; set; }
-        public int Fold { get; set; }        
+
+        [ClassificationResultValue("f", "{0,2}", true)]
+        public int Fold { get; set; }
+
+        [ClassificationResultValue("ens", "{0,3}", true)]
         public int EnsembleSize { get; set; }
 
+        [ClassificationResultValue("desc", "{0}", false)]
         public string Description { get; set; }
 
         #endregion Properties
@@ -552,6 +602,128 @@ namespace Infovision.Datamining
 
             foreach (var objectId in localResult.testData.GetObjectIds())                
                 this.predictionResults[this.testData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
+        }
+
+        private static DataTable SetDataTableColumnTypes(DataTable dt)
+        {
+            DataTable dtc = dt.Clone();
+
+            PropertyInfo[] properties = typeof(ClassificationResult).GetProperties();
+            foreach (var property in properties)
+            {
+                var resultValue = property.GetCustomAttributes(
+                    typeof(ClassificationResultValueAttribute), true).FirstOrDefault() 
+                    as ClassificationResultValueAttribute;
+
+                if (resultValue != null)
+                {
+                    SetColumnType(dtc, 
+                        String.IsNullOrEmpty(resultValue.Alias) 
+                            ? property.Name : resultValue.Alias,
+                        property.PropertyType);
+                }
+            }
+
+            /*
+            SetColumnType(dtc, "ds", typeof(string));
+            SetColumnType(dtc, "model", typeof(string));
+            SetColumnType(dtc, "t", typeof(int));
+            SetColumnType(dtc, "f", typeof(int));
+            SetColumnType(dtc, "eps", typeof(double));
+            SetColumnType(dtc, "ens", typeof(int));
+
+            SetColumnType(dtc, "cls", typeof(int));
+            SetColumnType(dtc, "mcls", typeof(int));
+            SetColumnType(dtc, "ucls", typeof(int));
+
+            SetColumnType(dtc, "wcls", typeof(double));
+            SetColumnType(dtc, "mcls", typeof(double));
+            SetColumnType(dtc, "wucls", typeof(double));
+
+            SetColumnType(dtc, "acc", typeof(double));
+            SetColumnType(dtc, "bal", typeof(double));
+            SetColumnType(dtc, "conf", typeof(double));
+            SetColumnType(dtc, "cov", typeof(double));
+
+            SetColumnType(dtc, "mtime", typeof(double));
+            SetColumnType(dtc, "ctime", typeof(double));
+
+            SetColumnType(dtc, "erulhit", typeof(double));
+            SetColumnType(dtc, "erullen", typeof(double));
+            SetColumnType(dtc, "srulhit", typeof(double));
+            SetColumnType(dtc, "srullen", typeof(double));
+
+            SetColumnType(dtc, "attr", typeof(double));
+            SetColumnType(dtc, "numrul", typeof(double));
+            SetColumnType(dtc, "dthm", typeof(double));
+            SetColumnType(dtc, "dtha", typeof(double));
+
+            SetColumnType(dtc, "numrul", typeof(double));
+            SetColumnType(dtc,"dthm", typeof(double));
+            SetColumnType(dtc, "dtha", typeof(double));
+
+            SetColumnType(dtc, "gamma", typeof(double));
+            SetColumnType(dtc, "alpha", typeof(double));
+            SetColumnType(dtc, "beta", typeof(double));
+
+            SetColumnType(dtc, "desc", typeof(String));
+            */
+
+            foreach (DataRow row in dt.Rows)
+                dtc.ImportRow(row);
+
+            return dtc;
+        }
+
+        private static void SetColumnType(DataTable dt, string columnName, Type t)
+        {
+            if (dt.Columns.Contains(columnName))
+                dt.Columns[columnName].DataType = t;
+        }
+
+        public static DataTable ReadResults(string fileName, char columnDelimiter)
+        {
+            DataTable dt;
+            using (GenericParserAdapter gpa = new GenericParserAdapter(fileName))
+            {
+                gpa.ColumnDelimiter = columnDelimiter;
+                gpa.FirstRowHasHeader = true;
+                gpa.IncludeFileLineNumber = false;
+                gpa.FirstRowSetsExpectedColumnCount = true;
+                gpa.TrimResults = true;
+
+                dt = gpa.GetDataTable();
+            }
+
+            var dtc = SetDataTableColumnTypes(dt);
+            return dtc;
+        }
+
+        public static DataTable AggregateResults(DataTable dtc, string field)
+        { 
+            return (from row in dtc.AsEnumerable()
+                         group row by new
+                         {
+                             ds = row.Field<string>("ds"),
+                             mn = row.Field<string>("model"),
+                             ens = row.Field<int>("ens"),
+                             eps = row.Field<double>("eps")
+
+                         } into grp
+                         select new
+                         {
+                             ds = grp.Key.ds,
+                             mn = grp.Key.mn,
+                             eps = grp.Key.eps,
+                             ens = grp.Key.ens,
+
+                             acc_min = grp.Min(x => x.Field<double>(field)),
+                             acc_max = grp.Max(x => x.Field<double>(field)),
+                             acc_avg = grp.Average(x => x.Field<double>(field)),
+                             
+                             //TODO stddev
+
+                         }).ToDataTable();
         }
 
         #endregion Methods

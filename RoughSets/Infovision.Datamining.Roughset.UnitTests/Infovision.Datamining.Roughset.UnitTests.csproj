@@ -99,9 +99,6 @@
       <HintPath>..\packages\DynamicInterop.0.7.4\lib\net40\DynamicInterop.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GenericParsing">
-      <HintPath>..\external\GenericParsing\GenericParsing.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -138,7 +135,6 @@
     <Compile Include="ApproximateReductWeightsTest.cs" />
     <Compile Include="DecisionRules\Holte1RTest.cs" />
     <Compile Include="DecisionRules\TestTest.cs" />
-    <Compile Include="DataTableClassificationResultsTest.cs" />
     <Compile Include="DecisionTrees\DecisionForestTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeComparisonTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreePruningTest.cs" />
@@ -200,9 +196,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Content Include="mylogfile_CV_20161122212304.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

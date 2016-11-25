@@ -624,51 +624,6 @@ namespace Infovision.Datamining
                 }
             }
 
-            /*
-            SetColumnType(dtc, "ds", typeof(string));
-            SetColumnType(dtc, "model", typeof(string));
-            SetColumnType(dtc, "t", typeof(int));
-            SetColumnType(dtc, "f", typeof(int));
-            SetColumnType(dtc, "eps", typeof(double));
-            SetColumnType(dtc, "ens", typeof(int));
-
-            SetColumnType(dtc, "cls", typeof(int));
-            SetColumnType(dtc, "mcls", typeof(int));
-            SetColumnType(dtc, "ucls", typeof(int));
-
-            SetColumnType(dtc, "wcls", typeof(double));
-            SetColumnType(dtc, "mcls", typeof(double));
-            SetColumnType(dtc, "wucls", typeof(double));
-
-            SetColumnType(dtc, "acc", typeof(double));
-            SetColumnType(dtc, "bal", typeof(double));
-            SetColumnType(dtc, "conf", typeof(double));
-            SetColumnType(dtc, "cov", typeof(double));
-
-            SetColumnType(dtc, "mtime", typeof(double));
-            SetColumnType(dtc, "ctime", typeof(double));
-
-            SetColumnType(dtc, "erulhit", typeof(double));
-            SetColumnType(dtc, "erullen", typeof(double));
-            SetColumnType(dtc, "srulhit", typeof(double));
-            SetColumnType(dtc, "srullen", typeof(double));
-
-            SetColumnType(dtc, "attr", typeof(double));
-            SetColumnType(dtc, "numrul", typeof(double));
-            SetColumnType(dtc, "dthm", typeof(double));
-            SetColumnType(dtc, "dtha", typeof(double));
-
-            SetColumnType(dtc, "numrul", typeof(double));
-            SetColumnType(dtc,"dthm", typeof(double));
-            SetColumnType(dtc, "dtha", typeof(double));
-
-            SetColumnType(dtc, "gamma", typeof(double));
-            SetColumnType(dtc, "alpha", typeof(double));
-            SetColumnType(dtc, "beta", typeof(double));
-
-            SetColumnType(dtc, "desc", typeof(String));
-            */
-
             foreach (DataRow row in dt.Rows)
                 dtc.ImportRow(row);
 

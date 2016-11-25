@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using Infovision.Utils;
 using GenericParsing;
 
-namespace Infovision.Datamining.Roughset.UnitTests
+namespace Infovision.Datamining.Tests
 {
     [TestFixture]
-    class DataTableClassificationResultsTest
+    class ClassificationResultTest
     {
         [Test]
-        public void ReadResultsGenericParserTest()
+        public void ReadResultsFromFileTest()
         {
             string fileName = @"mylogfile_CV_20161122212304.txt";
             DataTable dt;
@@ -35,7 +35,8 @@ namespace Infovision.Datamining.Roughset.UnitTests
         public void ReadResultsTest()
         {
             string fileName = @"mylogfile_CV_20161122212304.txt";
-            var results = ClassificationResult.AggregateResults(ClassificationResult.ReadResults(fileName, '|'), "acc");
+            DataTable dt = ClassificationResult.ReadResults(fileName, '|');
+            var results = ClassificationResult.AggregateResults(dt, "acc");
             results.WriteToCSVFile(@"mylogfile_CV_20161122212304b.txt", ";", true);
         }
     }

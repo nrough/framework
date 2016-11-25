@@ -13,6 +13,7 @@ namespace Infovision.Datamining
     public class Classifier : IClassifier
     {
         public static long UnclassifiedOutput = -1;
+
         private static volatile Classifier instance = null;
         private static object syncRoot = new object();
 
@@ -61,8 +62,7 @@ namespace Infovision.Datamining
                         prediction = (long) model.DefaultOutput;
 
                     result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], w);
-                }
-                );
+                });
             }
             else
             {
@@ -75,8 +75,7 @@ namespace Infovision.Datamining
                         prediction = (long)model.DefaultOutput;
 
                     result.AddResult(objectIndex, prediction, record[testData.DataStoreInfo.DecisionFieldId], (double)weights[objectIndex]);
-                }
-                );
+                });
             }
             s.Stop();
 

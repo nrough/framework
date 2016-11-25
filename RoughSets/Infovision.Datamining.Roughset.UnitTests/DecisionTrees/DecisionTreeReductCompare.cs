@@ -82,7 +82,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             }
         }
 
-        [Test, Repeat(1)]
+        [Test, Repeat(1)]        
         [TestCase(@"Data\chess.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\zoo.dta", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
@@ -157,6 +157,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         private void ErrorImpurityTestIntPerReduct_CV(DataStore data, DataStoreSplitter splitter, PruningType pruningType, string redkey, double eps, int rednum, long output, Dictionary<int, int[]> attributes)
         {
             Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
+            object cacheLock = new object();
 
             Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
             {
@@ -165,20 +166,28 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 if (localReductCache.TryGetValue(dta.Name, out best))
                     return best;
 
-                Args parms = new Args(4);
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
-                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-                generator.Run();
+                lock (cacheLock)
+                {
+                    best = null;
+                    if (localReductCache.TryGetValue(dta.Name, out best))
+                        return best;
 
-                var reducts = generator.GetReducts();
-                reducts.Sort(ReductAccuracyComparer.Default);
-                IReduct bestReduct = reducts.FirstOrDefault();
-                best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+                    Args parms = new Args(4);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+                    IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                    generator.Run();
 
-                localReductCache.Add(dta.Name, best);
+                    var reducts = generator.GetReducts();
+                    reducts.Sort(ReductAccuracyComparer.Default);
+                    IReduct bestReduct = reducts.FirstOrDefault();
+                    best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+
+                    localReductCache.Add(dta.Name, best);
+                }
+
                 return best;
             };
 
@@ -238,6 +247,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         private void ErrorImpurityTestIntPerReduct(DataStore trainDS, DataStore testDS, PruningType pruningType, string redkey, double eps, int rednum, long output, IReduct reduct)
         {
             Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
+            object cacheLock = new object();
 
             Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
             {
@@ -245,21 +255,29 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 Tuple<int[], DataStore> best = null;
                 if (localReductCache.TryGetValue(dta.Name, out best))
                     return best;
-                
-                Args parms = new Args(4);
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
-                IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-                generator.Run();
 
-                var reducts = generator.GetReducts();
-                reducts.Sort(ReductAccuracyComparer.Default);
-                IReduct bestReduct = reducts.FirstOrDefault();
-                best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
-                
-                localReductCache.Add(dta.Name, best);
+                lock (cacheLock)
+                {
+                    best = null;
+                    if (localReductCache.TryGetValue(dta.Name, out best))
+                        return best;
+
+                    Args parms = new Args(4);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, redkey);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+                    IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                    generator.Run();
+
+                    var reducts = generator.GetReducts();
+                    reducts.Sort(ReductAccuracyComparer.Default);
+                    IReduct bestReduct = reducts.FirstOrDefault();
+                    best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+
+                    localReductCache.Add(dta.Name, best);
+                }
+
                 return best;
             };
 

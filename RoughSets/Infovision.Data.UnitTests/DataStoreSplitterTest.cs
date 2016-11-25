@@ -1,4 +1,13 @@
-﻿using NUnit.Framework;
+﻿using Infovision.Datamining;
+using Infovision.Datamining.Roughset;
+using Infovision.Datamining.Roughset.DecisionTrees;
+using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using Infovision.Utils;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Infovision.Data.UnitTests
 {
@@ -10,13 +19,64 @@ namespace Infovision.Data.UnitTests
         [SetUp]
         public void Init()
         {
-            string fileName = @"Data\chess.dta";
+            string fileName = @"Data\nursery.2.data";
             dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+        }
+
+        [Test, Repeat(10)]
+        public void TestDecisionTreeTest()
+        {
+            Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
+            object cacheLock = new object();
+
+            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
+            {
+                //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
+                Tuple<int[], DataStore> best = null;
+                if (localReductCache.TryGetValue(dta.Name, out best))
+                    return best;
+
+                lock (cacheLock)
+                {
+                    best = null;
+                    if (localReductCache.TryGetValue(dta.Name, out best))
+                        return best;
+
+                    Args parms = new Args(4);
+                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
+                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
+                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+                    IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                    generator.Run();
+
+                    var reducts = generator.GetReducts();
+                    reducts.Sort(ReductAccuracyComparer.Default);
+                    IReduct bestReduct = reducts.FirstOrDefault();
+                    best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+
+                    localReductCache.Add(dta.Name, best);
+                }
+                return best;
+            };
+
+            AttributeAndDataSelectionMethod attributeSelectionMethod = (a, d) => calculateReduct_Prunning(a, d);
+
+            DataStoreSplitter splitter = new DataStoreSplitter(dataStore, 5);
+
+            DecisionTreeRough treeRough = new DecisionTreeRough();
+            treeRough.AttributeSelection = attributeSelectionMethod;
+            treeRough.PruningType = PruningType.ReducedErrorPruning;
+            CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
+            var treeRoughResult = treeRoughCV.Run(dataStore, splitter);            
+            Console.WriteLine(treeRoughResult);            
         }
 
         [Test]
         public void SplitRatio()
         {
+            Debugger.Break();
+
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
 
@@ -31,6 +91,18 @@ namespace Infovision.Data.UnitTests
                 Assert.AreEqual(dataStore.DataStoreInfo.NumberOfFields, dataStore2.DataStoreInfo.NumberOfFields);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore1.DataStoreInfo.DecisionFieldId);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore2.DataStoreInfo.DecisionFieldId);
+
+                Assert.AreEqual(dataStore.DataStoreInfo.GetDecisionValues().Count, dataStore1.DataStoreInfo.GetDecisionValues().Count, "DataStoreInfo.GetDecisionValues().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.NumberOfValues, dataStore1.DataStoreInfo.DecisionInfo.NumberOfValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.NumberOfDecisionValues, dataStore1.DataStoreInfo.NumberOfDecisionValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore1.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore1.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
+
+                Assert.AreEqual(dataStore.DataStoreInfo.GetDecisionValues().Count, dataStore2.DataStoreInfo.GetDecisionValues().Count, "DataStoreInfo.GetDecisionValues().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.NumberOfValues, dataStore2.DataStoreInfo.DecisionInfo.NumberOfValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.NumberOfDecisionValues, dataStore2.DataStoreInfo.NumberOfDecisionValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore2.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {
@@ -184,6 +256,19 @@ namespace Infovision.Data.UnitTests
                 Assert.AreEqual(dataStore.DataStoreInfo.NumberOfFields, dataStore2.DataStoreInfo.NumberOfFields);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore1.DataStoreInfo.DecisionFieldId);
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionFieldId, dataStore2.DataStoreInfo.DecisionFieldId);
+
+                Assert.AreEqual(dataStore.DataStoreInfo.GetDecisionValues().Count, dataStore1.DataStoreInfo.GetDecisionValues().Count, "DataStoreInfo.GetDecisionValues().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.NumberOfValues, dataStore1.DataStoreInfo.DecisionInfo.NumberOfValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.NumberOfDecisionValues, dataStore1.DataStoreInfo.NumberOfDecisionValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore1.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore1.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
+
+                Assert.AreEqual(dataStore.DataStoreInfo.GetDecisionValues().Count, dataStore2.DataStoreInfo.GetDecisionValues().Count, "DataStoreInfo.GetDecisionValues().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.NumberOfValues, dataStore2.DataStoreInfo.DecisionInfo.NumberOfValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.NumberOfDecisionValues, dataStore2.DataStoreInfo.NumberOfDecisionValues, "DataStoreInfo.DecisionInfo.NumberOfValues");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore2.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
+                Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
+
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
                 {

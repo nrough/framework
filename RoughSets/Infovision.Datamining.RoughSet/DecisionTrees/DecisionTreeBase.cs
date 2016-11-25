@@ -24,8 +24,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
         private DecisionTreeNode root = null;
         private int decisionAttributeId = -1;
-        private double mA = 1.0;
-        private long[] decisions;
+        private double mA = 1.0;        
         private int nextId = 1;        
 
         private readonly object syncRoot = new object();
@@ -58,9 +57,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
         public PruningObjectiveType PruningObjective { get; set; } = PruningObjectiveType.MinimizeError;
-        public DataStoreSplitter PruningDataSplitter { get; set; }
-
-        protected IEnumerable<long> Decisions { get { return this.decisions; } }
+        public DataStoreSplitter PruningDataSplitter { get; set; }        
 
         protected class SplitInfo
         {
@@ -106,8 +103,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
             this.nextId = 1;
             this.thresholds = null;
             this.aprioriDistribution = null;
-            this.mA = 0;
-            this.decisions = null;
+            this.mA = 0;            
         }
 
         protected int GetId()
@@ -126,12 +122,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees
 
                 this.TrainingData = data;
                 this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
-                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
-                this.decisions = new long[data.DataStoreInfo.GetDecisionValues().Count];
-
-                int i = 0;
-                foreach (long decisionValue in data.DataStoreInfo.GetDecisionValues())
-                    this.decisions[i++] = decisionValue;
+                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;                
 
                 if (this.Gamma >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(

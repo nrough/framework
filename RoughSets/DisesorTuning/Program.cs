@@ -11,6 +11,7 @@ using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Datamining.Filters;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using Infovision.Datamining;
 
 namespace DisesorTuning
 {
@@ -145,11 +146,11 @@ namespace DisesorTuning
                     double sum = 0.0;
                     foreach (var kvp in prediction)
                     {
-                        if (kvp.Key != -1)
+                        if (kvp.Key != Classifier.UnclassifiedOutput)
                             sum += kvp.Value;
                     }
 
-                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(-1)))
+                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Classifier.UnclassifiedOutput)))
                         unclassified++;
 
                     double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;

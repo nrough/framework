@@ -599,17 +599,17 @@ namespace Infovision.Datamining.Roughset
             }
 
             return result;
-        }        
+        }
 
         /// <summary>
-        /// Returns decision id and its weight when only a single decision exist with non-zero weight, otherwise -1 is returned
+        /// Returns decision id and its weight when only a single decision exist with non-zero weight, otherwise <c>Classifier</c>.UnclassifiedOutput is returned
         /// </summary>
-        /// <returns>decision id or -1 and zero weight</returns>
+        /// <returns>decision id or <c>Classifier<c>.UnclassifiedOutput and zero weight</returns>
         public KeyValuePair<long, double> GetSingleDecision()
         {
             int countDec = 0;
             double minValue = 0.0;
-            KeyValuePair<long, double> result = new KeyValuePair<long, double>(-1, 0.0);
+            KeyValuePair<long, double> result = new KeyValuePair<long, double>(Classifier.UnclassifiedOutput, 0.0);
             foreach (var kvp in this.DecisionWeights)
             {
                 if (kvp.Value > 0.0)
@@ -626,12 +626,12 @@ namespace Infovision.Datamining.Roughset
             if (countDec == 1)
                 return result;
 
-            return new KeyValuePair<long, double>(-1, 0.0);
+            return new KeyValuePair<long, double>(Classifier.UnclassifiedOutput, 0.0);
         }
 
         public bool HasSingleDecision()
         {
-            if (this.GetSingleDecision().Key != -1)
+            if (this.GetSingleDecision().Key != Classifier.UnclassifiedOutput)
                 return true;
             return false;
         }

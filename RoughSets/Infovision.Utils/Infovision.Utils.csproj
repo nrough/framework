@@ -100,6 +100,7 @@
     <Compile Include="CollectionExtensions\ArrayExtensions.cs" />
     <Compile Include="BaseTypeExtensions\DecimalExtensions.cs" />
     <Compile Include="BaseTypeExtensions\DoubleExtensions.cs" />
+    <Compile Include="CollectionExtensions\BitArrayExtensions.cs" />
     <Compile Include="Comparers\EpsilonComparer.cs" />
     <Compile Include="CollectionExtensions\IDictionaryExtensions.cs" />
     <Compile Include="CollectionExtensions\IListExtensions.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="ConsoleCopy.cs" />
     <Compile Include="CSVFileHelper.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="Data\DataTableExtensions.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="DataStructures\Histogram.cs" />
     <Compile Include="CollectionExtensions\IEnumerableExternsions.cs" />

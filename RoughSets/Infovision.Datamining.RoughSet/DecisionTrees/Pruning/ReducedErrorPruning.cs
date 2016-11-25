@@ -40,7 +40,7 @@ namespace Infovision.Datamining.Roughset.DecisionTrees.Pruning
                 this.info[node] = new NodeInfo();
 
             this.predictionResult = new long[data.NumberOfRecords];
-            this.predictionResult.SetAll(-1);
+            this.predictionResult.SetAll(Classifier.UnclassifiedOutput);
 
             for (int i = 0; i < data.NumberOfRecords; i++)
                 this.ComputePrediction(decisionTree.Root, i);

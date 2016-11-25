@@ -19,7 +19,7 @@ namespace Infovision.UnitTest.Runner
         public static void Main(string[] args)
         {
             Test_CV(25);
-            //Test_Benchmark(25);
+            Test_Benchmark(25);
         }
 
         public static void Test_Benchmark(int tests)
@@ -33,7 +33,7 @@ namespace Infovision.UnitTest.Runner
 
             using (var cc = new ConsoleCopy("mylogfile_"+DateTime.Now.ToString("yyyyMMddHHmmss") +".txt"))
             {
-                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha";
+                ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
                 Console.WriteLine(ClassificationResult.ResultHeader());
 
                 for (int i = 0; i < tests; i++)
@@ -64,7 +64,7 @@ namespace Infovision.UnitTest.Runner
 
             using (var cc = new ConsoleCopy("mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
             {
-                ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha";
+                ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
                 Console.WriteLine(ClassificationResult.ResultHeader());
 
                 for (int i = 0; i < tests; i++)

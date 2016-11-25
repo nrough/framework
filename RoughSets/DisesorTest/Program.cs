@@ -11,6 +11,7 @@ using Infovision.Datamining.Filters;
 using Infovision.Datamining.Filters.Unsupervised.Attribute;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
+using Infovision.Utils.Data;
 
 namespace DisesorTest
 {

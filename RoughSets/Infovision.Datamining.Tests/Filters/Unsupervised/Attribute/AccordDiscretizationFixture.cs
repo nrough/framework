@@ -12,6 +12,7 @@ using Infovision.Data;
 using Infovision.Datamining.Roughset;
 using Infovision.Utils;
 using NUnit.Framework;
+using Infovision.Utils.Data;
 
 namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 {

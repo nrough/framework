@@ -11,6 +11,7 @@ using Infovision.Datamining.Roughset;
 using Infovision.MRI;
 using Infovision.Utils;
 using itk.simple;
+using Infovision.Utils.Data;
 
 namespace MRIExceptions
 {

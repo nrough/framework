@@ -4,6 +4,7 @@ using Infovision.Datamining.Experimenter.Parms;
 using Infovision.Utils;
 using itk.simple;
 using NUnit.Framework;
+using Infovision.Utils.Data;
 
 namespace Infovision.MRI.UnitTests
 {

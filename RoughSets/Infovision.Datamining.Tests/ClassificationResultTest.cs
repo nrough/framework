@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.Utils;
 using GenericParsing;
+using Infovision.Utils.Data;
 
 namespace Infovision.Datamining.Tests
 {

@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Data;
 using GenericParsing;
 using System.Reflection;
+using LinqStatistics;
+using RDotNet;
 
 namespace Infovision.Datamining
 {
@@ -550,6 +552,10 @@ namespace Infovision.Datamining
 
             switch (format)
             {
+                //TODO Latex output
+                case "TEX":
+                    return this.ToString();
+
                 //TODO print confision table
                 case "C":
                     return this.ToString();
@@ -604,6 +610,11 @@ namespace Infovision.Datamining
                 this.predictionResults[this.testData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
         }
 
+        /// <summary>
+        /// Converts all columns to types defined by the <c>ClassificationResult</c> properties
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         private static DataTable SetDataTableColumnTypes(DataTable dt)
         {
             DataTable dtc = dt.Clone();
@@ -636,7 +647,7 @@ namespace Infovision.Datamining
                 dt.Columns[columnName].DataType = t;
         }
 
-        public static DataTable ReadResults(string fileName, char columnDelimiter)
+        public static DataTable ReadResults(string fileName, char columnDelimiter, bool setColumnTypes = true)
         {
             DataTable dt;
             using (GenericParserAdapter gpa = new GenericParserAdapter(fileName))
@@ -650,36 +661,83 @@ namespace Infovision.Datamining
                 dt = gpa.GetDataTable();
             }
 
+            if (!setColumnTypes)
+                return dt;
+
             var dtc = SetDataTableColumnTypes(dt);
-            return dtc;
+            return dtc;                        
+        }
+
+        public static DataTable ReadResults(IEnumerable<string> fileNames, char columnDelimiter)
+        {
+            DataTable result = null;
+            bool first = true;
+            foreach (var fileName in fileNames)
+            {                
+                DataTable dt = ReadResults(fileName, columnDelimiter, first);
+
+                if (!first)
+                {
+                    foreach (DataRow row in dt.Rows)
+                        result.ImportRow(row);
+                }
+
+                first = false;
+            }                        
+
+            return result;
         }
 
         public static DataTable AggregateResults(DataTable dtc, string field)
-        { 
+        {
             return (from row in dtc.AsEnumerable()
-                         group row by new
-                         {
-                             ds = row.Field<string>("ds"),
-                             mn = row.Field<string>("model"),
-                             ens = row.Field<int>("ens"),
-                             eps = row.Field<double>("eps")
+                    group row by new
+                    {
+                        ds = row.Field<string>("ds"),
+                        mn = row.Field<string>("model"),
+                        ens = row.Field<int>("ens"),
+                        eps = row.Field<double>("eps")
 
-                         } into grp
-                         select new
-                         {
-                             ds = grp.Key.ds,
-                             mn = grp.Key.mn,
-                             eps = grp.Key.eps,
-                             ens = grp.Key.ens,
+                    } into grp
+                    select new
+                    {
+                        ds = grp.Key.ds,
+                        mn = grp.Key.mn,
+                        eps = grp.Key.eps,
+                        ens = grp.Key.ens,
 
-                             acc_min = grp.Min(x => x.Field<double>(field)),
-                             acc_max = grp.Max(x => x.Field<double>(field)),
-                             acc_avg = grp.Average(x => x.Field<double>(field)),
-                             
-                             //TODO stddev
+                        field_min = grp.Min(x => x.Field<double>(field)),
+                        field_max = grp.Max(x => x.Field<double>(field)),
+                        field_avg = grp.Average(x => x.Field<double>(field)),
+                        field_dev = grp.StandardDeviation(x => x.Field<double>(field)),
+                        field_med = grp.Median(x => x.Field<double>(field))
 
-                         }).ToDataTable();
+                    }).ToDataTable();
         }
+
+        public static void PlotR(DataTable dt)
+        {
+            //https://github.com/jmp75/rdotnet/blob/master/TestApps/SimpleTest/Program.cs
+
+            string rHome = null, rPath = null;            
+            Console.WriteLine(RDotNet.NativeLibrary.NativeUtility.FindRPaths(ref rPath, ref rHome));
+            rHome = null;
+            rPath = null;
+
+            REngine.SetEnvironmentVariables(rPath: rPath, rHome: rHome);
+            REngine e = REngine.GetInstance();
+
+            Console.WriteLine(RDotNet.NativeLibrary.NativeUtility.SetEnvironmentVariablesLog);
+
+            //df = engine.CreateDataFrame(columns, columnNames: null);
+
+            e.Evaluate("library(DAAG)");
+            e.Evaluate("p <- plot(northing ~ easting, data=frogs, pch=c(1,16)[frogs$pres.abs+1], xlab='Meters east of reference point', ylab='Meters north')");
+            e.Evaluate(string.Format("print(paste('plot iteration number', {0}))", i));
+                        
+        }
+
+        public static 
 
         #endregion Methods
     }

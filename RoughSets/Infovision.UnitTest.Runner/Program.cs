@@ -17,9 +17,9 @@ namespace Infovision.UnitTest.Runner
     public class Program
     {
         public static void Main(string[] args)
-        {
-            Test_CV(25);
-            Test_Benchmark(25);
+        {            
+            Test_Benchmark(12);
+            Test_CV(6);
         }
 
         public static void Test_Benchmark(int tests)

@@ -128,12 +128,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GenericParsing", "GenericParsing", "{150B212C-FB52-4A96-8A5C-9B00477875C6}"
 	ProjectSection(SolutionItems) = preProject
 		external\GenericParsing\GenericParser.xml = external\GenericParsing\GenericParser.xml
+		external\GenericParsing\GenericParsing.bak = external\GenericParsing\GenericParsing.bak
 		external\GenericParsing\GenericParsing.chm = external\GenericParsing\GenericParsing.chm
 		external\GenericParsing\GenericParsing.dll = external\GenericParsing\GenericParsing.dll
-		external\GenericParsing\GenericParsing.il = external\GenericParsing\GenericParsing.il
-		external\GenericParsing\GenericParsing.res = external\GenericParsing\GenericParsing.res
-		external\GenericParsing\Infovision-publickey.snk = external\GenericParsing\Infovision-publickey.snk
-		external\GenericParsing\Infovision.pfx = external\GenericParsing\Infovision.pfx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skmDataStructures", "skmDataStructures", "{40F3E529-C9BC-4C90-BC5B-EFB93E93E3D3}"

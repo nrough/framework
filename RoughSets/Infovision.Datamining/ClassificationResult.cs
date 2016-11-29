@@ -10,6 +10,8 @@ using GenericParsing;
 using System.Reflection;
 using LinqStatistics;
 using RDotNet;
+using System.IO;
+using System.Collections;
 
 namespace Infovision.Datamining
 {
@@ -715,29 +717,53 @@ namespace Infovision.Datamining
                     }).ToDataTable();
         }
 
-        public static void PlotR(DataTable dt)
+        public static void PlotR(DataTable dt, Boolean stringsAsFactors = false)
         {
             //https://github.com/jmp75/rdotnet/blob/master/TestApps/SimpleTest/Program.cs
-
-            string rHome = null, rPath = null;            
-            Console.WriteLine(RDotNet.NativeLibrary.NativeUtility.FindRPaths(ref rPath, ref rHome));
-            rHome = null;
-            rPath = null;
-
-            REngine.SetEnvironmentVariables(rPath: rPath, rHome: rHome);
+            
             REngine e = REngine.GetInstance();
+           
+            e.Evaluate(File.ReadAllText(@"RCode\import-libraries.R"));
+            e.Evaluate(File.ReadAllText(@"RCode\ggplot-minimalistic-theme.R"));
+            e.Evaluate(File.ReadAllText(@"RCode\plot-results.R"));
 
-            Console.WriteLine(RDotNet.NativeLibrary.NativeUtility.SetEnvironmentVariablesLog);
+            IEnumerable[] columns = new IEnumerable[dt.Columns.Count];
+            string[] columnNames = dt.Columns.Cast<DataColumn>()
+                                        .Select(x => x.ColumnName)
+                                        .ToArray();
 
-            //df = engine.CreateDataFrame(columns, columnNames: null);
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                switch (Type.GetTypeCode(dt.Columns[i].DataType))
+                {
+                    case TypeCode.String:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<string>(i)).ToArray();
+                        break;
 
-            e.Evaluate("library(DAAG)");
-            e.Evaluate("p <- plot(northing ~ easting, data=frogs, pch=c(1,16)[frogs$pres.abs+1], xlab='Meters east of reference point', ylab='Meters north')");
-            e.Evaluate(string.Format("print(paste('plot iteration number', {0}))", i));
-                        
+                    case TypeCode.Double:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<double>(i)).ToArray();
+                        break;
+
+                    case TypeCode.Int32:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<int>(i)).ToArray();
+                        break;
+
+                    case TypeCode.Int64:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<long>(i)).ToArray();
+                        break;
+
+                    default:
+                        //columns[i] = dt.Rows.Cast<DataRow>().Select(row => row[i]).ToArray();
+                        throw new InvalidOperationException(String.Format("Type {0} is not supported", dt.Columns[i].DataType.Name));
+                }                
+            }            
+
+            DataFrame df = e.CreateDataFrame(columns: columns, 
+                                             columnNames: columnNames, 
+                                             stringsAsFactors: stringsAsFactors);
         }
 
-        public static 
+        
 
         #endregion Methods
     }

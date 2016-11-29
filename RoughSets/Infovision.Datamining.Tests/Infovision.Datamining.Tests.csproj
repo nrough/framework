@@ -82,7 +82,7 @@
       <HintPath>..\packages\Accord.Statistics.3.3.0\lib\net45\Accord.Statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GenericParsing, Version=1.1.3.20921, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GenericParsing, Version=1.1.3.20921, Culture=neutral, PublicKeyToken=1e822b1d86518b81, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\external\GenericParsing\GenericParsing.dll</HintPath>
     </Reference>

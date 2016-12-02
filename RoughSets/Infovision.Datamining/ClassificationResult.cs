@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using Infovision.Data;
 using Infovision.Utils;
+using Infovision.Utils.Data;
 using System.Diagnostics;
-using System.Data;
 using GenericParsing;
 using System.Reflection;
 using LinqStatistics;
 using RDotNet;
 using System.IO;
 using System.Collections;
+using System.Linq.Dynamic;
+using System.Data;
 
 namespace Infovision.Datamining
 {
@@ -649,7 +651,7 @@ namespace Infovision.Datamining
                 dt.Columns[columnName].DataType = t;
         }
 
-        public static DataTable ReadResults(string fileName, char columnDelimiter, bool setColumnTypes = true)
+        public static DataTable ReadResults(string fileName, char columnDelimiter, bool setColumnTypes = true, int expectedColumnCount = 0)
         {
             DataTable dt;
             using (GenericParserAdapter gpa = new GenericParserAdapter(fileName))
@@ -657,8 +659,11 @@ namespace Infovision.Datamining
                 gpa.ColumnDelimiter = columnDelimiter;
                 gpa.FirstRowHasHeader = true;
                 gpa.IncludeFileLineNumber = false;
-                gpa.FirstRowSetsExpectedColumnCount = true;
+                gpa.FirstRowSetsExpectedColumnCount = true;                
                 gpa.TrimResults = true;
+
+                if (expectedColumnCount > 0)
+                    gpa.ExpectedColumnCount = expectedColumnCount;
 
                 dt = gpa.GetDataTable();
             }
@@ -674,46 +679,101 @@ namespace Infovision.Datamining
         {
             DataTable result = null;
             bool first = true;
+            int expectedNumberOfColumns = 0;
+
             foreach (var fileName in fileNames)
             {                
-                DataTable dt = ReadResults(fileName, columnDelimiter, first);
+                DataTable dt = ReadResults(fileName, columnDelimiter, first, expectedNumberOfColumns);
 
-                if (!first)
+                if (first)
+                {
+                    result = dt;
+                    expectedNumberOfColumns = result.Columns.Count;
+                    first = false;
+                }
+                else                
                 {
                     foreach (DataRow row in dt.Rows)
                         result.ImportRow(row);
-                }
-
-                first = false;
+                }                
             }                        
 
             return result;
         }
 
-        public static DataTable AggregateResults(DataTable dtc, string field)
+        public static DataTable AverageResults(DataTable dtc)
         {
+            //Linq.Dynamic
+            /*
+            var query = dtc.AsEnumerable()
+                        .GroupBy("new (it[\"ds\"].ToString() as ds, " +
+                                      "it[\"model\"].ToString() as model, " +
+                                      "Convert.ToInt32(it[\"ens\"]) as ens, " +
+                                      "Convert.ToInt32(it[\"eps\"]) as eps)", "it")
+                        .Select("new (it.Key.ds, " +
+                                "it.Key.model, " +                                
+                                "it.Key.ens, " +
+                                "it.Key.eps, " +
+                                "Min(Convert.ToDouble(it[\"acc\"])) as acc, " +
+                                "Max(Convert.ToDouble(it[\"attr\"])) as attr, " +
+                                "Min(Convert.ToDouble(it[\"numrul\"])) as numrul, " +
+                                "Sum(Convert.ToDouble(it[\"dthm\"])) as dthm, " +
+                                "Average(Convert.ToDouble(it[\"dtha\"])) as dtha)"
+                                );
+
+            return query.ToDataTable();
+            */
+
             return (from row in dtc.AsEnumerable()
                     group row by new
                     {
                         ds = row.Field<string>("ds"),
-                        mn = row.Field<string>("model"),
-                        ens = row.Field<int>("ens"),
-                        eps = row.Field<double>("eps")
-
+                        model = row.Field<string>("model"),
+                        eps = row.Field<double>("eps"),
+                        pruning = row.Field<string>("pruning")
+                        //ens = row.Field<int>("ens")                        
                     } into grp
                     select new
                     {
                         ds = grp.Key.ds,
-                        mn = grp.Key.mn,
+                        model = grp.Key.model,                        
                         eps = grp.Key.eps,
-                        ens = grp.Key.ens,
+                        pruning = grp.Key.pruning,
+                        //ens = grp.Key.ens,
 
-                        field_min = grp.Min(x => x.Field<double>(field)),
-                        field_max = grp.Max(x => x.Field<double>(field)),
-                        field_avg = grp.Average(x => x.Field<double>(field)),
-                        field_dev = grp.StandardDeviation(x => x.Field<double>(field)),
-                        field_med = grp.Median(x => x.Field<double>(field))
+                        acc = grp.Average(x => x.Field<double>("acc")),
+                        attr = grp.Average(x => x.Field<double>("attr")),
+                        numrul = grp.Average(x => x.Field<double>("numrul")),
+                        dthm = grp.Average(x => x.Field<double>("dthm")),
+                        dtha = grp.Average(x => x.Field<double>("dtha"))
+                        
+                    }).ToDataTable();
+        }
 
+        public static DataTable AggregateResults(DataTable dtc, string columnName)
+        {
+            return (from row in dtc.AsEnumerable()
+                    group row by new
+                    {                        
+                        ds = row.Field<string>("ds"),
+                        model = row.Field<string>("model"),                        
+                        eps = row.Field<double>("eps"),
+                        pruning = row.Field<string>("pruning")
+                        //ens = row.Field<int>("ens")                        
+                    } into grp
+                    select new
+                    {
+                        ds = grp.Key.ds,
+                        model = grp.Key.model,                        
+                        eps = grp.Key.eps,
+                        pruning = grp.Key.pruning,
+                        //ens = grp.Key.ens,
+                        
+                        field_min = grp.Min(x => x.Field<double>(columnName)),
+                        field_max = grp.Max(x => x.Field<double>(columnName)),
+                        field_avg = grp.Average(x => x.Field<double>(columnName))
+                        //field_dev = grp.StandardDeviation(x => x.Field<double>(columnName)),
+                        //field_med = grp.Median(x => x.Field<double>(columnName))                        
                     }).ToDataTable();
         }
 
@@ -761,10 +821,46 @@ namespace Infovision.Datamining
             DataFrame df = e.CreateDataFrame(columns: columns, 
                                              columnNames: columnNames, 
                                              stringsAsFactors: stringsAsFactors);
+
+            e.SetSymbol("dataset", df);
+            string outputPath = "XXX";
+
+            e.Evaluate(@"result <- getdatasql(dataname=dataset, voting=""ConfidenceW"", ensemblesize = size)");
+            e.Evaluate(@"p <- plotressql(resultdata = result, fieldname = field)");
+            e.Evaluate(String.Format(@"pdf(file = paste(""{0}"","".pdf"", sep=""""), width=8, height=11)", outputPath));
+            e.Evaluate(@"print(p)");
+            e.Evaluate(@"dev.off()");
+
+
+
+            
         }
 
         
 
         #endregion Methods
+    }
+
+    public static class TestMethods
+    {
+        public static double TestSum(this IEnumerable<double> items)
+        {
+            double sum = 0.0;
+            foreach (var item in items)
+            {
+                sum += item;
+            }
+            return sum;
+        }
+
+        public static double TestSum<TSource>(this IEnumerable<TSource> source, Func<TSource, double> selector)
+        {
+            double sum = 0.0;
+            foreach (var item in source.Select(selector))
+            {
+                sum += item;
+            }
+            return sum;
+        }
     }
 }

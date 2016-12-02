@@ -59,7 +59,7 @@ namespace Infovision.MRI.UnitTests
             DataTable dataTable = featureExtractor.GetDataTable(60, 61, 60, 61, 60, 61);
             Assert.IsNotNull(dataTable);
 
-            dataTable.WriteToCSVFile(@"mri.csv", ";");
+            dataTable.Dumb(@"mri.csv", ";");
             Assert.IsTrue(System.IO.File.Exists(@"mri.csv"));
         }
 
@@ -159,7 +159,7 @@ namespace Infovision.MRI.UnitTests
             DataTable dataTable = featureExtractor.GetDataTable();
             Assert.IsNotNull(dataTable);
 
-            dataTable.WriteToCSVFile(@"mri.csv", ";");
+            dataTable.Dumb(@"mri.csv", ";");
             Assert.IsTrue(System.IO.File.Exists(@"mri.csv"));
         }
     }

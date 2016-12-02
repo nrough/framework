@@ -178,7 +178,7 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Saving merged raw train data...");
-            rawTrainData.WriteToCSVFile(trainfile_merge, ",");
+            rawTrainData.Dumb(trainfile_merge, ",");
             rawTrainData = null;
             Console.WriteLine("Done");
 
@@ -204,7 +204,7 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Saving merged raw test data...");
-            rawTestData.WriteToCSVFile(testfile_merge, ",");
+            rawTestData.Dumb(testfile_merge, ",");
             rawTestData = null;
             Console.WriteLine("Done");
 

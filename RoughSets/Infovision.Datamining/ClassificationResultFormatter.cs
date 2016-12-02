@@ -59,8 +59,10 @@ namespace Infovision.Datamining
             if (formatParams.ContainsKey("H")) formatParams.Remove("H");            
 
             StringBuilder sb = new StringBuilder();
+            int i = 0, len = formatParams.Count;
             foreach (var kvp in formatParams)
             {
+                i++;
                 if (showHeader)
                 {
                     switch (kvp.Key)
@@ -148,7 +150,9 @@ namespace Infovision.Datamining
                         case "desc": sb.AppendFormat(String.IsNullOrEmpty(result.Description) ? "" : result.Description); break;
                     }
                 }
-                sb.Append(outputSeparator);
+
+                if (i != len)
+                    sb.Append(outputSeparator);
             }
 
             return sb.ToString();

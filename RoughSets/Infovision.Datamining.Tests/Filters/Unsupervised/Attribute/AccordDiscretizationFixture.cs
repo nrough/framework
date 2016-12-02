@@ -98,7 +98,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                 rawData.Columns[i].ColumnName = "a" + i.ToString();
             rawData.Columns[decisionIdx].ColumnName = "d";
 
-            rawData.WriteToCSVFile(String.Format("{0}.csv", "RawData"), " ");
+            rawData.Dumb(String.Format("{0}.csv", "RawData"), " ");
 
             // Create a new codification codebook to
             // convert strings into integer symbols
@@ -128,11 +128,11 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
             {
                 DataTable trainingSet = symbols.Subtable(indicesTrain);
                 trainingSet.TableName = "Train-" + k.ToString();
-                trainingSet.WriteToCSVFile(String.Format("{0}.csv", trainingSet.TableName), " ");
+                trainingSet.Dumb(String.Format("{0}.csv", trainingSet.TableName), " ");
 
                 DataTable validationSet = symbols.Subtable(indicesValidation);
                 validationSet.TableName = "Test-" + k.ToString();
-                validationSet.WriteToCSVFile(String.Format("{0}.csv", validationSet.TableName), " ");
+                validationSet.Dumb(String.Format("{0}.csv", validationSet.TableName), " ");
 
                 Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[] discretizations
                     = new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[continuesAttributes.Length];
@@ -195,8 +195,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
 
                 validationSet = tmp;
 
-                trainingSet.WriteToCSVFile(String.Format("{0}-Disc.csv", trainingSet.TableName), " ");
-                validationSet.WriteToCSVFile(String.Format("{0}-Disc.csv", validationSet.TableName), " ");
+                trainingSet.Dumb(String.Format("{0}-Disc.csv", trainingSet.TableName), " ");
+                validationSet.Dumb(String.Format("{0}-Disc.csv", validationSet.TableName), " ");
 
                 DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
                 DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);

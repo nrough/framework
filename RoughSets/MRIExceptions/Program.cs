@@ -320,7 +320,7 @@ namespace MRIExceptions
             featureExtractor.AddFeature(new ImageFeatureVoxelMagnitude { Image = trainImagePH }, "Label");
 
             DataTable dataTable = featureExtractor.GetDataTable();
-            dataTable.WriteToCSVFile(trainFileName, ";");
+            dataTable.Dumb(trainFileName, ";");
             DataStore trainingData = DataStore.Load(trainFileName, FileFormat.Csv);
 
             trainingData.SetDecisionFieldId(22);
@@ -375,7 +375,7 @@ namespace MRIExceptions
             featureExtractorTest.AddFeature(new ImageFeatureVoxelMagnitude { Image = testImagePH }, "Label");
 
             DataTable testDataTable = featureExtractorTest.GetDataTable();
-            testDataTable.WriteToCSVFile(testFileName, ";");
+            testDataTable.Dumb(testFileName, ";");
             DataStore testData = DataStore.Load(testFileName, FileFormat.Csv, trainingData.DataStoreInfo);
 
             testData.SetDecisionFieldId(22);

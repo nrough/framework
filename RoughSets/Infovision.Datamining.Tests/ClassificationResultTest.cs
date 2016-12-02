@@ -18,8 +18,8 @@ namespace Infovision.Datamining.Tests
             string fileName = @"d:\temp\1\mylogfile_CV_20161128064439.txt";
             DataTable dt = ClassificationResult.ReadResults(fileName, '|');
             var results = ClassificationResult.AggregateResults(dt, "acc");
-            results.WriteToCSVFile(@"d:\temp\1\result.txt", ";", true);
-            ClassificationResult.PlotR(results);
+            results.Dumb(@"d:\temp\1\result.txt", ";", true);
+            //ClassificationResult.PlotR(results);
         }
     }
 }

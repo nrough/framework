@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.MachineLearning.Clustering.Hierarchical;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 
-namespace Infovision.Datamining.Tests.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringTest

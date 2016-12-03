@@ -91,13 +91,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj">
-      <Project>{2d23e210-ffb7-46ef-ad27-18b5de007ee3}</Project>
-      <Name>Infovision.Datamining.Roughset</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining\Infovision.Datamining.csproj">
+    <ProjectReference Include="..\Infovision.Datamining\Infovision.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
-      <Name>Infovision.Datamining</Name>
+      <Name>Infovision.MachineLearning</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
@@ -115,9 +111,9 @@
       <Project>{d26b9d87-e914-44be-9381-73460214b7e4}</Project>
       <Name>Infovision.Statistics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
-      <Name>Infovision.Utils</Name>
+      <Name>Infovision.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests

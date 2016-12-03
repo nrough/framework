@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class DoubleExtensions
     {

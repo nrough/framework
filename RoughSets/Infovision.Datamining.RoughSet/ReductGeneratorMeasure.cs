@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Datamining.Roughset
 {

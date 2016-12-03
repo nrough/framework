@@ -1,5 +1,5 @@
 ﻿using System;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Datamining.Roughset
 {
@@ -42,7 +42,7 @@ namespace Infovision.Datamining.Roughset
 
         #region Methods
 
-        public override void InitFromArgs(Utils.Args args)
+        public override void InitFromArgs(Args args)
         {
             base.InitFromArgs(args);
 

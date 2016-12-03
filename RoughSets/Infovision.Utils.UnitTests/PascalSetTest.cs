@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Infovision.Utils.UnitTests
+namespace Infovision.Core.UnitTests
 {
     [TestFixture]
     internal class PascalSetTest

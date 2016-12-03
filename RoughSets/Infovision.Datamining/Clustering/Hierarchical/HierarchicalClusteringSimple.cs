@@ -1,7 +1,7 @@
 ﻿using System;
 using Infovision.Math;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringSimple : HierarchicalClustering

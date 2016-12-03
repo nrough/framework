@@ -1,4 +1,4 @@
-﻿namespace Infovision.Datamining.Filters
+﻿namespace Infovision.MachineLearning.Filters
 {
     public enum DiscretizationType : int
     {

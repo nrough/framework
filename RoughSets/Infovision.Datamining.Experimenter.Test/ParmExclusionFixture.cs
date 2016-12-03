@@ -1,7 +1,7 @@
-﻿using Infovision.Datamining.Experimenter.Parms;
+﻿using Infovision.MachineLearning.Experimenter.Parms;
 using NUnit.Framework;
 
-namespace Infovision.Datamining.Experimenter.Test
+namespace Infovision.MachineLearning.Experimenter.Test
 {
     [TestFixture]
     internal class ParmExclusionFixture

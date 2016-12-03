@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Common.Logging;
 using Common.Logging.Configuration;
 using Infovision.Data;
-using Infovision.Datamining.Benchmark;
+using Infovision.MachineLearning.Benchmark;
 using Infovision.Statistics;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {

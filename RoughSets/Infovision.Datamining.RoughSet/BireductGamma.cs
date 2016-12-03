@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using System.Linq;
 
 namespace Infovision.Datamining.Roughset

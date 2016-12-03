@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     public class DendrogramChart
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class IListExtensions
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using MiscUtil;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     [Serializable]
     public class PascalSet<T> : ICloneable, ICollection, IEnumerable<T>

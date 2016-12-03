@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Datamining.Filters.Supervised.Attribute
+namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 {
     public class DiscretizationMDL
     {

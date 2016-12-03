@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.MRI.DAL
 {

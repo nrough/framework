@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
+using Infovision.MachineLearning.Classification;
 
 //TODO Implement Cost of misclassification. (Imbalanced classes)
 namespace Infovision.Datamining.Roughset

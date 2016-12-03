@@ -1,10 +1,12 @@
 ﻿using System;
 using Infovision.Data;
-using Infovision.Datamining;
-using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Datamining.Filters.Unsupervised.Attribute;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Experimenter.Parms;
+using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
+using Infovision.MachineLearning.Weighting;
+using Infovision.MachineLearning.Classification;
 
 namespace ApproxReductBoostingCV
 {

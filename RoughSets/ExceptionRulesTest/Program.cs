@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using Common.Logging;
 using Common.Logging.Configuration;
 using Infovision.Data;
-using Infovision.Datamining;
-using Infovision.Datamining.Benchmark;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Benchmark;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
+using Infovision.MachineLearning.Weighting;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Classification;
 
 namespace ExceptionRulesTest
 {

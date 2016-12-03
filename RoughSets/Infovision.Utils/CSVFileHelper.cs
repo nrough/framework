@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class CSVFileHelper
     {

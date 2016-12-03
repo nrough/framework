@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Utils;
+using Infovision.MachineLearning.Experimenter.Parms;
+using Infovision.Core;
 
 namespace Infovision.MRI
 {

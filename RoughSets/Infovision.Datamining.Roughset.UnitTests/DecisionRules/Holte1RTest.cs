@@ -1,5 +1,6 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining.Roughset.DecisionRules;
+using Infovision.MachineLearning.Classification.DecisionRules;
+using Infovision.MachineLearning.Classification;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

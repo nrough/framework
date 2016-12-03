@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     [Serializable]
     public class Int64ArraySIMDEqualityComparer : IEqualityComparer<long[]>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Infovision.Data;
-using Infovision.Datamining.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
 using NUnit.Framework;
 
-namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
+namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
 {
     [TestFixture]
     public class DiscretizationTest
@@ -69,7 +69,7 @@ namespace Infovision.Datamining.Tests.Filters.Supervised.Attribute
             DataStore trainData = null, testData = null;
             splitter.Split(ref trainData, ref testData, 0);
 
-            var descretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+            var descretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
             {
                 UseBetterEncoding = useBetterEncoding,
                 UseKononenko = useKononenko,                

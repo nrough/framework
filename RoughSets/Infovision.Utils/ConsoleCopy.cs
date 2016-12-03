@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     /// <summary>
     /// http://stackoverflow.com/questions/420429/mirroring-console-output-to-a-file

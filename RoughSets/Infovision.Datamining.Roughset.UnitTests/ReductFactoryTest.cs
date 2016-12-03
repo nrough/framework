@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests

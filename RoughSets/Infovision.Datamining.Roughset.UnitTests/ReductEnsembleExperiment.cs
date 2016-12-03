@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Infovision.Data;
-using Infovision.Datamining.Benchmark;
-using Infovision.Datamining.Clustering.Hierarchical;
-using Infovision.Datamining.Experimenter.Parms;
+using Infovision.MachineLearning.Benchmark;
+using Infovision.MachineLearning.Clustering.Hierarchical;
+using Infovision.MachineLearning.Experimenter.Parms;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {

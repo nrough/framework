@@ -1,4 +1,4 @@
-﻿namespace Infovision.Datamining.Clustering
+﻿namespace Infovision.MachineLearning.Clustering
 {
     internal class KMeans
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalCluster

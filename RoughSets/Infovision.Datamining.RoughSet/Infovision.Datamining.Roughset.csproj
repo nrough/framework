@@ -112,42 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BireductGenerator.cs" />
-    <Compile Include="DecisionRules\DecisionList.cs" />
-    <Compile Include="DecisionRules\DecisionListCollection.cs" />
-    <Compile Include="DecisionRules\DecisionRule.cs" />
-    <Compile Include="DecisionTables\DecisionTableLocal.cs" />
-    <Compile Include="DecisionTrees\DecisionForestVoteType.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeAttributeSelection.cs" />
-    <Compile Include="DecisionTrees\ImpurityMeasure.cs" />
-    <Compile Include="DecisionTrees\ObliviousDecisionTree.cs" />
-    <Compile Include="DecisionTrees\PruningObjectiveType.cs" />
-    <Compile Include="DecisionTrees\Pruning\PruningType.cs" />
-    <Compile Include="DecisionTrees\Pruning\ReducedErrorPruningBottomUp.cs" />
-    <Compile Include="DecisionTrees\SplitType.cs" />
     <Compile Include="ComparisonType.cs" />
-    <Compile Include="DecisionTrees\DecisionForestBase.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeC45.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeCART.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeID3.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeReduct.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeRough.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeBase.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeFormatter.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeHelper.cs" />
-    <Compile Include="DecisionTrees\DecisionTreeNode.cs" />
-    <Compile Include="DecisionTrees\DecisionForestDummy.cs" />
-    <Compile Include="DecisionTrees\IDecisionTree.cs" />
-    <Compile Include="DecisionTrees\IDecisionTreeNode.cs" />
-    <Compile Include="DecisionTrees\DecisionForestRandom.cs" />
-    <Compile Include="DecisionTrees\DecisionForestReduct.cs" />
-    <Compile Include="DecisionTrees\DecisionForestDummyRough.cs" />
-    <Compile Include="DecisionTrees\Pruning\DecisionTreePruningBase.cs" />
-    <Compile Include="DecisionTrees\Pruning\ErrorBasedPruning.cs" />
-    <Compile Include="DecisionTrees\Pruning\IDecisionTreePruning.cs" />
-    <Compile Include="DecisionTrees\Pruning\ReducedErrorPruning.cs" />
-    <Compile Include="DecisionTrees\TreeNodeTraversal.cs" />
-    <Compile Include="DecisionRules\DecisionRuleCondition.cs" />
-    <Compile Include="DecisionRules\Holte1R.cs" />
     <Compile Include="Permutation\PermutationGeneratorEnsemble.cs" />
     <Compile Include="Permutation\PermutationGeneratorFieldQuality.cs" />
     <Compile Include="ReductEnsembleBoostingGenerator.cs" />
@@ -203,20 +168,18 @@
     <Compile Include="InformationMeasure.cs" />
     <Compile Include="EquivalenceClassCollection.cs" />
     <Compile Include="RuleMeasure.cs" />
-    <Compile Include="DecisionTables\DecisionTable.cs" />
-    <Compile Include="DecisionTables\DecisionTableMajority.cs" />
     <Compile Include="Weight\WeightBoostingGenerator.cs" />
     <Compile Include="Weight\WeightGenerator.cs" />
     <Compile Include="Weight\WeightGeneratorType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.Datamining.Experimenter.csproj">
+    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.MachineLearning.Experimenter.csproj">
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
-      <Name>Infovision.Datamining.Experimenter</Name>
+      <Name>Infovision.MachineLearning.Experimenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining\Infovision.Datamining.csproj">
+    <ProjectReference Include="..\Infovision.Datamining\Infovision.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
-      <Name>Infovision.Datamining</Name>
+      <Name>Infovision.MachineLearning</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
@@ -230,9 +193,9 @@
       <Project>{d26b9d87-e914-44be-9381-73460214b7e4}</Project>
       <Name>Infovision.Statistics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
-      <Name>Infovision.Utils</Name>
+      <Name>Infovision.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +203,7 @@
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DecisionTrees\Learning\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

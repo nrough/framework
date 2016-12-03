@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Datamining.Filters;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
-using Infovision.Datamining;
-using Infovision.Utils.Data;
+using Infovision.MachineLearning.Experimenter.Parms;
+using Infovision.MachineLearning.Filters;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
+using Infovision.MachineLearning;
+using Infovision.Core.Data;
+using Infovision.MachineLearning.Weighting;
+using Infovision.MachineLearning.Permutations;
 
 namespace DisesorTuning
 {
@@ -147,11 +149,11 @@ namespace DisesorTuning
                     double sum = 0.0;
                     foreach (var kvp in prediction)
                     {
-                        if (kvp.Key != Classifier.UnclassifiedOutput)
+                        if (kvp.Key != Infovision.MachineLearning.Classification.Classifier.UnclassifiedOutput)
                             sum += kvp.Value;
                     }
 
-                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Classifier.UnclassifiedOutput)))
+                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Infovision.MachineLearning.Classification.Classifier.UnclassifiedOutput)))
                         unclassified++;
 
                     double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;
@@ -264,7 +266,7 @@ namespace DisesorTuning
 
             if (!useSupervisedDiscetization)
             {
-                var discretizer = Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer.Construct(discretizationType);
+                var discretizer = Infovision.MachineLearning.Filters.Unsupervised.Attribute.DataStoreDiscretizer.Construct(discretizationType);
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
@@ -285,7 +287,7 @@ namespace DisesorTuning
             }
             else
             {
-                var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+                var discretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
                 {
                     UseBetterEncoding = useBetterEncoding,
                     UseKononenko = useKokonenkoMDL

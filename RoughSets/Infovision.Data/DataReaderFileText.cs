@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Data
 {

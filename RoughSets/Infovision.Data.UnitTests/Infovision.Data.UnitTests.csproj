@@ -87,21 +87,17 @@
     <Compile Include="DataStoreTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj">
-      <Project>{2D23E210-FFB7-46EF-AD27-18B5DE007EE3}</Project>
-      <Name>Infovision.Datamining.Roughset</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining\Infovision.Datamining.csproj">
+    <ProjectReference Include="..\Infovision.Datamining\Infovision.MachineLearning.csproj">
       <Project>{82E1F95C-4559-44AB-9114-42E78DA331A1}</Project>
-      <Name>Infovision.Datamining</Name>
+      <Name>Infovision.MachineLearning</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Data\Infovision.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>Infovision.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
-      <Name>Infovision.Utils</Name>
+      <Name>Infovision.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

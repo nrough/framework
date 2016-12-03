@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
+using Infovision.MachineLearning;
 
 namespace Infovision.Datamining.Roughset
 {

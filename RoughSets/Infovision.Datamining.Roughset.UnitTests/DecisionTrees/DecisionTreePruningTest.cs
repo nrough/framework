@@ -1,13 +1,14 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining.Roughset.DecisionTrees;
+using Infovision.MachineLearning.Classification.DecisionTrees;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using System.Diagnostics;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {

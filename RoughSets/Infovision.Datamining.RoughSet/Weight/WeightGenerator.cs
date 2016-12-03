@@ -1,6 +1,6 @@
 ﻿using System;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Datamining.Roughset
 {

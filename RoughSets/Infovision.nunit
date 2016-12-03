@@ -4,7 +4,7 @@
     <assembly path="Infovision.Data.UnitTests\bin\x64\Debug\Infovision.Data.UnitTests.dll" />
     <assembly path="Infovision.Datamining.Roughset.UnitTests\bin\x64\Debug\Infovision.Datamining.Roughset.UnitTests.dll" />
     <assembly path="Infovision.Datamining.Tests\bin\x64\Debug\Infovision.Datamining.Tests.dll" />
-    <assembly path="Infovision.Utils.UnitTests\bin\x64\Debug\Infovision.Utils.UnitTests.dll" />
+    <assembly path="Infovision.Core.UnitTests\bin\x64\Debug\Infovision.Core.UnitTests.dll" />
     <assembly path="Infovision.Math.Tests\bin\x64\Debug\Infovision.Math.Tests.dll" />
     <assembly path="Infovision.Datamining.Experimenter.Test\bin\x64\Debug\Infovision.Datamining.Experimenter.Test.dll" />
   </Config>

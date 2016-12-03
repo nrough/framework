@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infovision.Data;
-using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.MachineLearning.Clustering.Hierarchical;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {

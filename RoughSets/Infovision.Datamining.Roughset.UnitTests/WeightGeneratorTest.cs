@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning;
 
 namespace  Infovision.Datamining.Roughset.UnitTests
 {

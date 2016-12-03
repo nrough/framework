@@ -5,7 +5,7 @@ using System.Text;
 using Infovision.Statistics;
 using MiscUtil;
 
-namespace Infovision.Datamining.Filters.Supervised.Attribute
+namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 {
     /// <summary>
     /// Numeric attribute supervised discretizer

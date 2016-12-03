@@ -1,4 +1,4 @@
-﻿namespace Infovision.Datamining
+﻿namespace Infovision.MachineLearning
 {
     public interface IConvergence
     {

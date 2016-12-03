@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.Datamining.Experimenter.Parms
+namespace Infovision.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParameterCollection : IEnumerable<IParameter>, ICloneable

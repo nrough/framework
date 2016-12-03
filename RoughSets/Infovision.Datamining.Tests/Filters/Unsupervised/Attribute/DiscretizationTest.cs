@@ -2,7 +2,7 @@
 using Infovision.Data;
 using NUnit.Framework;
 
-namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
+namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute.Tests
 {
     [TestFixture]
     public class DiscretizationTest
@@ -31,7 +31,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
             DataStore trainData = null, testData = null;
             splitter.Split(ref trainData, ref testData, 0);
 
-            Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer descretizer = new Infovision.Datamining.Filters.Unsupervised.Attribute.DataStoreDiscretizer()
+            Infovision.MachineLearning.Filters.Unsupervised.Attribute.DataStoreDiscretizer descretizer = new Infovision.MachineLearning.Filters.Unsupervised.Attribute.DataStoreDiscretizer()
             {
                 NumberOfBins = numberOfBuckets,
                 DiscretizeUsingEntropy = usingEntropy,

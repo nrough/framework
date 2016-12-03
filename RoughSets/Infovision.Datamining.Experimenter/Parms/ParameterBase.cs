@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Infovision.Datamining.Experimenter.Parms
+namespace Infovision.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public abstract class ParameterBase<T> : IParameter<T>

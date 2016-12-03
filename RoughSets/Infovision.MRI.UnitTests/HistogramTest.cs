@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.DataVisualization.Charting;
 using itk.simple;
 using NUnit.Framework;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.MRI.UnitTests
 {
@@ -58,7 +58,7 @@ namespace Infovision.MRI.UnitTests
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUInt32 vector = new VectorUInt32(new uint[] { 0, 0 });
-            Infovision.Utils.Histogram<long> histogram = new Infovision.Utils.Histogram<long>();
+            Infovision.Core.Histogram<long> histogram = new Infovision.Core.Histogram<long>();
             for (uint x = 0; x < slice.GetWidth(); x++)
             {
                 for (uint y = 0; y < slice.GetHeight(); y++)

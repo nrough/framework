@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
-using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.MachineLearning.Clustering.Hierarchical;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Datamining.Roughset
 {

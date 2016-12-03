@@ -1,9 +1,8 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining;
-using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
-using Infovision.Datamining.Roughset.UnitTests.DecisionTrees;
-using Infovision.Utils;
-using Infovision.Utils.Data;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+using Infovision.MachineLearning.Tests.Classification.DecisionTrees;
+using Infovision.Core;
+using Infovision.Core.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.UnitTest.Runner
 {   

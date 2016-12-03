@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
-using Infovision.Datamining.Filters.Unsupervised.Attribute;
-using Infovision.Datamining.Roughset;
+using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
+using Infovision.MachineLearning.Roughset;
 
 namespace DermoReducts
 {

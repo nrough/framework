@@ -6,23 +6,25 @@ using Accord.MachineLearning.DecisionTrees.Learning;
 using Accord.Math;
 using Accord.Statistics.Filters;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 using DecTrees = Accord.MachineLearning.DecisionTrees;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Infovision.Datamining.Roughset.DecisionTrees;
-using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
-using Infovision.Datamining.Roughset.DecisionTables;
+using Infovision.MachineLearning.Classification.DecisionTrees;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+using Infovision.MachineLearning.Classification.DecisionTables;
 using System.Collections.Generic;
-using Infovision.Datamining.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
-    {                      
+    {
+        /*
         [Test, Repeat(1)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]        
         public void DecisionTableTest(string trainFile, string testFile)
@@ -48,7 +50,9 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     eps = 0.0;
             }
         }
+        */
 
+        /*
         public bool QuickCompare(
             DataStore data,
             DataStore test,
@@ -58,7 +62,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             int numOfReducts,
             PruningType pruningType)
         {
-            DecisionTreeReduct treeRed = new DecisionTreeReduct();
+            var treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
                 treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
@@ -108,8 +112,9 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             return false;
         }
+        */
 
-
+        /*
         [Test, Repeat(1)]
         //[TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
@@ -147,7 +152,9 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                     eps = 0.0;
             }
         }
+        */
 
+        /*
         public void TreeComparisonTest(
             DataStore data, 
             DataStore test, 
@@ -160,7 +167,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
         {
             if (runReduct)
             {
-                DecisionTreeReduct treeRed = new DecisionTreeReduct();
+                var treeRed = new DecisionTreeReduct();
                 if (epsilon >= 0)
                     treeRed.Gamma = epsilon;
                 treeRed.ReductEpsilon = reductEpsilon;
@@ -239,6 +246,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 Trace.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
             }
         }
+        */
 
         [Test, Repeat(1)]
         public void DecisionTreeRoughForNumericAttributeTest()

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {

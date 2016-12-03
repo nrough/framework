@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class StopwatchExtensions
     {

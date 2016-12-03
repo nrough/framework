@@ -1,12 +1,13 @@
 ﻿using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.MachineLearning.Classification;
 
-namespace Infovision.Datamining
+namespace Infovision.MachineLearning
 {
     public delegate void PostLearingMethod(IModel model);
 

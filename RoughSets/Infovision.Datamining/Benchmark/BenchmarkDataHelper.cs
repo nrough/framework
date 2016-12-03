@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Infovision.Data;
 
-namespace Infovision.Datamining.Benchmark
+namespace Infovision.MachineLearning.Benchmark
 {
     public class BenchmarkDataHelper
     {

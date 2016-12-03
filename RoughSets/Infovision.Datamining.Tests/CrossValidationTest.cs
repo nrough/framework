@@ -1,14 +1,16 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining.Roughset;
-using Infovision.Datamining.Roughset.DecisionTrees;
+using Infovision.MachineLearning.Roughset;
+using Infovision.MachineLearning.Classification.DecisionTrees;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.MachineLearning.Classification;
 
-namespace Infovision.Datamining.Tests
+namespace Infovision.MachineLearning.Tests
 {
     [TestFixture]
     public class CrossValidationTest
@@ -47,7 +49,7 @@ namespace Infovision.Datamining.Tests
             Console.WriteLine(ClassificationResult.ResultHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);            
             DecisionTreeC45 c45 = new DecisionTreeC45();
-            c45.PruningType = Roughset.DecisionTrees.Pruning.PruningType.ErrorBasedPruning;            
+            c45.PruningType = PruningType.ErrorBasedPruning;            
             c45.ImpurityFunction = ImpurityFunctions.Majority;
             c45.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
 
@@ -57,7 +59,7 @@ namespace Infovision.Datamining.Tests
             Console.WriteLine(cv.Run(data, 5));
 
             DecisionTreeC45 c45b = new DecisionTreeC45();
-            c45b.PruningType = Roughset.DecisionTrees.Pruning.PruningType.ErrorBasedPruning;
+            c45b.PruningType = PruningType.ErrorBasedPruning;
             c45b.ImpurityFunction = ImpurityFunctions.One;
             c45b.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
 

@@ -9,12 +9,14 @@ using Accord.Statistics.Filters;
 using Accord.Statistics.Visualizations;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
 using NUnit.Framework;
-using Infovision.Utils.Data;
+using Infovision.Core.Data;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Classification;
 
-namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
+namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute.Tests
 {
     [TestFixture]
     public class AccordDiscretizationFixture
@@ -134,8 +136,8 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                 validationSet.TableName = "Test-" + k.ToString();
                 validationSet.Dumb(String.Format("{0}.csv", validationSet.TableName), " ");
 
-                Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[] discretizations
-                    = new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>[continuesAttributes.Length];
+                Infovision.MachineLearning.Filters.Unsupervised.Attribute.Discretization<double>[] discretizations
+                    = new Infovision.MachineLearning.Filters.Unsupervised.Attribute.Discretization<double>[continuesAttributes.Length];
 
                 DataTable tmp = trainingSet.Clone();
 
@@ -143,7 +145,7 @@ namespace Infovision.Datamining.Filters.Unsupervised.Attribute.Tests
                 {
                     double[] values = trainingSet.AsEnumerable().Select(r => r.Field<double>(continuesAttributes[i])).ToArray();
 
-                    discretizations[i] = new Infovision.Datamining.Filters.Unsupervised.Attribute.Discretization<double>();
+                    discretizations[i] = new Infovision.MachineLearning.Filters.Unsupervised.Attribute.Discretization<double>();
                     discretizations[i].NumberOfBuckets = numberOfHistBins;
                     discretizations[i].Compute(values);
                     discretizations[i].WriteToCSVFile(String.Format("{0}-{1}.cut", trainingSet.TableName, continuesAttributes[i]));

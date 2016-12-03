@@ -1,9 +1,9 @@
-﻿using Infovision.Utils.CollectionExtensions;
+﻿using Infovision.Core.CollectionExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class HashHelper
     {

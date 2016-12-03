@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 using Infovision.Statistics;
 
 namespace Infovision.Datamining.Roughset

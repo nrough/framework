@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Datamining
+namespace Infovision.MachineLearning
 {
     public interface IModel
     {

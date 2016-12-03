@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public class ArrayComparer<T> : EqualityComparer<T[]>, IComparer<T[]>, IComparer
         where T : IComparable, IEquatable<T>

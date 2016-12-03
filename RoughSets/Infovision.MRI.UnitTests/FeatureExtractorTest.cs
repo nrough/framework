@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Utils;
+using Infovision.MachineLearning.Experimenter.Parms;
+using Infovision.Core;
 using itk.simple;
 using NUnit.Framework;
-using Infovision.Utils.Data;
+using Infovision.Core.Data;
 
 namespace Infovision.MRI.UnitTests
 {

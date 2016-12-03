@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class ListExtensions
     {

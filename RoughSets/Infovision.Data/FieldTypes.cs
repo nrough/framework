@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Data
 {

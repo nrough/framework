@@ -1,5 +1,5 @@
 ﻿using System;
-using Infovision.Utils;
+using Infovision.Core;
 using System.Collections.Generic;
 
 namespace Infovision.Statistics

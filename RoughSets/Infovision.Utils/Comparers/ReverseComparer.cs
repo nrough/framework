@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public sealed class ReverseComparer<T> : IComparer<T>
     {

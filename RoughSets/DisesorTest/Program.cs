@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.Datamining.Filters;
-using Infovision.Datamining.Filters.Unsupervised.Attribute;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
-using Infovision.Utils.Data;
+using Infovision.MachineLearning.Filters;
+using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
+using Infovision.Core.Data;
+using Infovision.MachineLearning.Weighting;
+using Infovision.MachineLearning.Permutations;
 
 namespace DisesorTest
 {
@@ -268,7 +270,7 @@ namespace DisesorTest
             }
             else
             {
-                var discretizer = new Infovision.Datamining.Filters.Supervised.Attribute.DataStoreDiscretizer()
+                var discretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
                 {
                     UseBetterEncoding = useBetterEncoding,
                     UseKononenko = useKokonenkoMDL

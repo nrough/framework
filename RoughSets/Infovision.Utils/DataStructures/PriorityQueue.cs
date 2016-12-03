@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     /// <summary>
     /// Priority Queue data structure

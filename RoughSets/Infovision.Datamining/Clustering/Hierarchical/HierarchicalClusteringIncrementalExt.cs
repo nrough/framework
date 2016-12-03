@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Infovision.Math;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringIncrementalExt : HierarchicalClusteringSIHC

@@ -1,7 +1,7 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining.Roughset.DecisionTrees;
-using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
-using Infovision.Utils;
+using Infovision.MachineLearning.Classification.DecisionTrees;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+using Infovision.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning;
 
 namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 {
@@ -17,7 +19,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
     {
         public static void PrintTree(IModel model)
         {
-            IDecisionTree tree = (IDecisionTree)model;
+            var tree = (IDecisionTree)model;
             Console.WriteLine(DecisionTreeFormatter.Construct(tree));
             Console.WriteLine("Number of rules: {0}",  DecisionTreeBase.GetNumberOfRules(tree));
         }
@@ -57,6 +59,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
         }
 
+        /*
         [Test]
         [TestCase(@"Data\spect.train", @"Data\spect.test")]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test")]
@@ -94,7 +97,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
 
             Console.WriteLine("M Decision Tree based on Reduct");
 
-            DecisionTreeReduct treeRed = new DecisionTreeReduct();
+            var treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
                 treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
@@ -140,7 +143,9 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             Console.WriteLine(c45p.Learn(data, attributes));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(c45p, test));            
         }
-
+        */
+        
+        /*
         [Test]
         [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst")]
         public void AttributeOrderingTest(string trainFile, string testFile)
@@ -160,7 +165,7 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
             var result = obiliviousTree.Learn(data, attributes);
             Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
 
-            DecisionTreeReduct treeRed = new DecisionTreeReduct();
+            var treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
                 treeRed.Gamma = epsilon;
             treeRed.ReductEpsilon = reductEpsilon;
@@ -186,5 +191,6 @@ namespace Infovision.Datamining.Roughset.UnitTests.DecisionTrees
                 //Console.WriteLine(DecisionTreeFormatter.Construct(obiliviousTree_Ordered));
             }            
         }
+        */
     }
 }

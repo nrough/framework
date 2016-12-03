@@ -6,12 +6,15 @@ using System.IO;
 using System.Linq;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.Datamining;
-using Infovision.Datamining.Roughset;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Roughset;
 using Infovision.MRI;
-using Infovision.Utils;
+using Infovision.Core;
 using itk.simple;
-using Infovision.Utils.Data;
+using Infovision.Core.Data;
+using Infovision.MachineLearning.Weighting;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Classification;
 
 namespace MRIExceptions
 {

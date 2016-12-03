@@ -2,7 +2,7 @@
 using System.Text;
 using MiscUtil;
 
-namespace Infovision.Datamining.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
 {
     public class Discretization<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>

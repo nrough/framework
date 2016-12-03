@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Infovision.Data;
-using Infovision.Datamining.Clustering.Hierarchical;
+using Infovision.MachineLearning.Clustering.Hierarchical;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests

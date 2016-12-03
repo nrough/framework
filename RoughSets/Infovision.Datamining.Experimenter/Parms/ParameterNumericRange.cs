@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Globalization;
 
-namespace Infovision.Datamining.Experimenter.Parms
+namespace Infovision.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParameterNumericRange<T> : ParameterBase<T>

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Infovision.Utils.UnitTests
+namespace Infovision.Core.UnitTests
 {
     [TestFixture]
     internal class UtilsTest
@@ -24,13 +24,13 @@ namespace Infovision.Utils.UnitTests
         [Test]
         public void IsPowerOfTwo()
         {
-            Assert.AreEqual(true, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(4));
-            Assert.AreEqual(true, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(64));
-            Assert.AreEqual(true, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(1024));
-            Assert.AreEqual(true, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(4096));
-            Assert.AreEqual(false, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(3));
-            Assert.AreEqual(false, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(0));
-            //Assert.AreEqual(false, Infovision.Utils.InfovisionHelper.IsPowerOfTwo(9223372036854775809));
+            Assert.AreEqual(true, Infovision.Core.InfovisionHelper.IsPowerOfTwo(4));
+            Assert.AreEqual(true, Infovision.Core.InfovisionHelper.IsPowerOfTwo(64));
+            Assert.AreEqual(true, Infovision.Core.InfovisionHelper.IsPowerOfTwo(1024));
+            Assert.AreEqual(true, Infovision.Core.InfovisionHelper.IsPowerOfTwo(4096));
+            Assert.AreEqual(false, Infovision.Core.InfovisionHelper.IsPowerOfTwo(3));
+            Assert.AreEqual(false, Infovision.Core.InfovisionHelper.IsPowerOfTwo(0));
+            //Assert.AreEqual(false, Infovision.Core.InfovisionHelper.IsPowerOfTwo(9223372036854775809));
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class StringExtensions
     {

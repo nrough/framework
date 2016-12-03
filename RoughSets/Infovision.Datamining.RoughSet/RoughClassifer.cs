@@ -7,7 +7,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Infovision.Data;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset
 {

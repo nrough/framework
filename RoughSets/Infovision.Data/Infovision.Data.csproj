@@ -123,9 +123,9 @@
       <Project>{d26b9d87-e914-44be-9381-73460214b7e4}</Project>
       <Name>Infovision.Statistics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
-      <Name>Infovision.Utils</Name>
+      <Name>Infovision.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 using Infovision.Data;
 using MiscUtil;
 
-namespace Infovision.Datamining.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
 {
     public class BinaryDiscretization<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>

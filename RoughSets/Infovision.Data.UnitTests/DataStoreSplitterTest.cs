@@ -1,8 +1,8 @@
-﻿using Infovision.Datamining;
-using Infovision.Datamining.Roughset;
-using Infovision.Datamining.Roughset.DecisionTrees;
-using Infovision.Datamining.Roughset.DecisionTrees.Pruning;
-using Infovision.Utils;
+﻿using Infovision.MachineLearning;
+using Infovision.MachineLearning.Roughset;
+using Infovision.MachineLearning.Classification.DecisionTrees;
+using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+using Infovision.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

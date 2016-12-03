@@ -1,4 +1,4 @@
-﻿using Infovision.Utils;
+﻿using Infovision.Core;
 
 namespace Infovision.Statistics
 {

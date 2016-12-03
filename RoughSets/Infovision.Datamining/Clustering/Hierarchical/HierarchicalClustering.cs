@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
 
-namespace Infovision.Datamining.Clustering.Hierarchical
+namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClustering : HierarchicalClusteringBase

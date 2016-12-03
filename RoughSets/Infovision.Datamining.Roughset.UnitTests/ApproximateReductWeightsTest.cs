@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infovision.Data;
-using Infovision.Datamining.Benchmark;
-using Infovision.Utils;
+using Infovision.MachineLearning.Benchmark;
+using Infovision.Core;
 using NUnit.Framework;
 
 namespace Infovision.Datamining.Roughset.UnitTests

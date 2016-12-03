@@ -1,11 +1,13 @@
 ﻿using System;
 using Infovision.Data;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning;
 
 namespace Infovision.TestAssembly
 {
-    public class TestReductFactory : Infovision.Datamining.Roughset.IReductFactory
+    public class TestReductFactory : Infovision.MachineLearning.Roughset.IReductFactory
     {
         public string FactoryKey
         {

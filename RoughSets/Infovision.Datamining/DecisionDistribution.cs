@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Utils;
+using Infovision.Core;
 
-namespace Infovision.Datamining
+namespace Infovision.MachineLearning
 {
     [Serializable]
     public class DecisionDistribution

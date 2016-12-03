@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Datamining;
-using Infovision.Datamining.Benchmark;
-using Infovision.Datamining.Filters.Unsupervised.Attribute;
-using Infovision.Datamining.Roughset;
-using Infovision.Utils;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Benchmark;
+using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
+using Infovision.MachineLearning.Roughset;
+using Infovision.Core;
 using NUnit.Framework;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Data.UnitTests
 {

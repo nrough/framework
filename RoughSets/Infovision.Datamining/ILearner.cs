@@ -1,6 +1,7 @@
 ﻿using Infovision.Data;
+using Infovision.MachineLearning.Classification;
 
-namespace Infovision.Datamining
+namespace Infovision.MachineLearning
 {
     public interface ILearner
     {

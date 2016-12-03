@@ -2,9 +2,10 @@
 using System.IO;
 
 using Infovision.Data;
-using Infovision.Utils;
+using Infovision.Core;
 
 using NUnit.Framework;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Datamining.Roughset.UnitTests
 {

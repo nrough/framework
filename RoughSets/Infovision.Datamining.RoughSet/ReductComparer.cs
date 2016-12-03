@@ -1,5 +1,6 @@
 ﻿using Infovision.Data;
-using Infovision.Datamining.Roughset.DecisionTables;
+using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning.Classification.DecisionTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;

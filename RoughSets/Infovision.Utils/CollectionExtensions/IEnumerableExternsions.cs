@@ -6,7 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     public static class IEnumerableExternsions
     {

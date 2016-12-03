@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Data
 {

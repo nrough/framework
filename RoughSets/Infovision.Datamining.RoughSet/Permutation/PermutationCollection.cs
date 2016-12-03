@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Infovision.Utils;
+using Infovision.Core;
 using Newtonsoft.Json.Linq;
 
 namespace Infovision.Datamining.Roughset

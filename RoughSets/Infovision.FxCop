@@ -26,13 +26,13 @@
    <Directory>$(ProjectDir)/Data/obj/Debug/</Directory>
    <Directory>$(ProjectDir)/Infovision.Datamining.RoughSet/obj/Debug/</Directory>
    <Directory>$(ProjectDir)/Infovision.Test/obj/Debug/</Directory>
-   <Directory>$(ProjectDir)/Infovision.Utils/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Infovision.Core/obj/Debug/</Directory>
   </AssemblyReferenceDirectories>
   <Target Name="$(ProjectDir)/Data/bin/Debug/Infovision.Data.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Infovision.Datamining.RoughSet/bin/Debug/Infovision.Datamining.RoughSet.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Infovision.Datamining/bin/Debug/Infovision.Datamining.dll" Analyze="True" AnalyzeAllChildren="True" />
   <Target Name="$(ProjectDir)/Infovision.Test/bin/Debug/Infovision.Test.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Infovision.Utils/bin/Debug/Infovision.Utils.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Infovision.Core/bin/Debug/Infovision.Core.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
@@ -507,11 +507,11 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Infovision.Utils/bin/Debug/Infovision.Utils.dll">
+   <Target Name="$(ProjectDir)/Infovision.Core/bin/Debug/Infovision.Core.dll">
     <Modules>
-     <Module Name="infovision.utils.dll">
+     <Module Name="Infovision.Core.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Utils">
+       <Namespace Name="Infovision.Core">
         <Types>
          <Type Name="HashHelper">
           <Members>
@@ -551,7 +551,7 @@
          </Type>
          <Type Name="PascalSet">
           <Members>
-           <Member Name="#op_Addition(Infovision.Utils.PascalSet,Infovision.Utils.PascalSet)">
+           <Member Name="#op_Addition(Infovision.Core.PascalSet,Infovision.Core.PascalSet)">
             <Messages>
              <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
               <Issue>
@@ -561,7 +561,7 @@
              </Message>
             </Messages>
            </Member>
-           <Member Name="#op_Subtraction(Infovision.Utils.PascalSet,Infovision.Utils.PascalSet)">
+           <Member Name="#op_Subtraction(Infovision.Core.PascalSet,Infovision.Core.PascalSet)">
             <Messages>
              <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
               <Issue>

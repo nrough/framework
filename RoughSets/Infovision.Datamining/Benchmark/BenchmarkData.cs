@@ -2,7 +2,7 @@
 using System.Linq;
 using Infovision.Data;
 
-namespace Infovision.Datamining.Benchmark
+namespace Infovision.MachineLearning.Benchmark
 {
     public class BenchmarkData
     {

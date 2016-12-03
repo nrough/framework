@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Infovision.Utils
+namespace Infovision.Core
 {
     [Serializable]
     public class Range<T>

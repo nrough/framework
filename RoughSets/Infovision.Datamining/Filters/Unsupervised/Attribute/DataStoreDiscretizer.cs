@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Infovision.Data;
 
-namespace Infovision.Datamining.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
 {
     public class DataStoreDiscretizer
     {

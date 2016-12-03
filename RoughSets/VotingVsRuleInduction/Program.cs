@@ -4,12 +4,14 @@ using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
 using Infovision.Data;
-using Infovision.Datamining;
-using Infovision.Datamining.Benchmark;
-using Infovision.Datamining.Experimenter.Parms;
-using Infovision.Datamining.Roughset;
+using Infovision.MachineLearning;
+using Infovision.MachineLearning.Benchmark;
+using Infovision.MachineLearning.Experimenter.Parms;
+using Infovision.MachineLearning.Roughset;
 using Infovision.Math;
-using Infovision.Utils;
+using Infovision.Core;
+using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Classification;
 
 namespace VotingVsRuleInduction
 {

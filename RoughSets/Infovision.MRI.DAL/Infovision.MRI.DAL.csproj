@@ -113,9 +113,9 @@
       <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
       <Name>Infovision.MRI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Utils.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
-      <Name>Infovision.Utils</Name>
+      <Name>Infovision.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

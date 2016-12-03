@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.Statistics;
-using Infovision.Utils;
+using Infovision.Core;
 
 namespace Infovision.Data
 {

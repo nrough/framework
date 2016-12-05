@@ -113,7 +113,6 @@
     <Compile Include="DataStructures\Histogram.cs" />
     <Compile Include="CollectionExtensions\IEnumerableExternsions.cs" />
     <Compile Include="Comparers\Int64ArrayEqualityComparer.cs" />
-    <Compile Include="Comparers\Int64ArraySIMDEqualityComparer.cs" />
     <Compile Include="CollectionExtensions\ListExtensions.cs" />
     <Compile Include="BaseTypeExtensions\LongExtensions.cs" />
     <Compile Include="DataStructures\Matrix.cs" />

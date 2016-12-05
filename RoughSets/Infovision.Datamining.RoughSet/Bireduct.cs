@@ -158,11 +158,6 @@ namespace Infovision.Datamining.Roughset
             return false;
         }
 
-        public override bool ContainsObject(int objectIndex)
-        {
-            return this.objectSet.ContainsElement(objectIndex);
-        }
-
         protected virtual bool CheckRemoveObject(int objectIdx)
         {
             return true;

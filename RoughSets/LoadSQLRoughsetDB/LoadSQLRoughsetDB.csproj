@@ -80,10 +80,6 @@
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
       <Name>Infovision.MachineLearning.Experimenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining.RoughSet\Infovision.Datamining.Roughset.csproj">
-      <Project>{2d23e210-ffb7-46ef-ad27-18b5de007ee3}</Project>
-      <Name>Infovision.Datamining.Roughset</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infovision.Datamining\Infovision.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
       <Name>Infovision.MachineLearning</Name>

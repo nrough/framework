@@ -397,7 +397,7 @@ namespace MRIExceptions
             int epsilonInt = (int)(epsilon * 100);
             string testFolder = this.GetTestFolder(testId);
 
-            //TODO Remember to change ###############################################
+            //Remember to change ###############################################
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(train);
             //WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(train);
             weightGenerator.Generate();
@@ -406,7 +406,7 @@ namespace MRIExceptions
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, train);
 
-            //TODO Remember to change ###############################################
+            //Remember to change ###############################################
             parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
             parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
             parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
@@ -477,7 +477,7 @@ namespace MRIExceptions
 
             ClassificationResult result = model.Classify(test);
 
-            //TODO Remember to change ###############################################
+            //Remember to change ###############################################
             result.AvgNumberOfAttributes = model.ReductStoreCollection.GetWeightedAvgMeasure(new ReductMeasureLength(), true);
             //result.QualityRatio = model.ReductStoreCollection.GetAvgMeasure(new ReductMeasureLength());
 

@@ -185,5 +185,44 @@ namespace Infovision.Core.Data
 
             return table;
         }
+
+        public static IEnumerable[] Columns(this DataTable dt)
+        {
+            IEnumerable[] columns = new IEnumerable[dt.Columns.Count];
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                switch (Type.GetTypeCode(dt.Columns[i].DataType))
+                {
+                    case TypeCode.String:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<string>(i)).ToArray();
+                        break;
+
+                    case TypeCode.Double:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<double>(i)).ToArray();
+                        break;
+
+                    case TypeCode.Int32:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<int>(i)).ToArray();
+                        break;
+
+                    case TypeCode.Int64:
+                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<long>(i)).ToArray();
+                        break;
+
+                    default:
+                        //columns[i] = dt.Rows.Cast<DataRow>().Select(row => row[i]).ToArray();
+                        throw new InvalidOperationException(String.Format("Type {0} is not supported", dt.Columns[i].DataType.Name));
+                }
+            }
+            return columns;
+        }
+
+        public static string[] ColumnNames(this DataTable dt)
+        {
+            return dt.Columns
+                .Cast<DataColumn>()
+                .Select(x => x.ColumnName)
+                .ToArray();
+        }
     }
 }

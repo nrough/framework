@@ -182,13 +182,7 @@ namespace Infovision.Datamining.Roughset
                 }
             }
             return false;           
-        }
-
-        //TODO ContainsObject remove this method
-        public virtual bool ContainsObject(int objectIndex)
-        {
-            return true;
-        }
+        }        
 
         #region ICloneable Members
 

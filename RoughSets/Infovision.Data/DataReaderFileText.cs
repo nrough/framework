@@ -431,9 +431,7 @@ namespace Infovision.Data
         }
 
         private void AddValue2TypePool(int fieldIndex, string value)
-        {
-            //TODO change == to Equals
-
+        {           
             Type previousType = null;
             typePool.TryGetValue(fieldIndex, out previousType);
 

@@ -163,14 +163,11 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = false;
 
             ClassificationResult result = classifier.Classify(testData);
-            result.AvgNumberOfAttributes = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
+            result.AvgNumberOfAttributes = avgLength;
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "EXEP", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);
-
-            //TODO consider removal of next line
-            //filteredReductStoreCollection = origReductStoreCollection.FilterInEnsemble(ensembleSize, reductStoreLengthComparerGaps);
-
+            
             classifier = new RoughClassifier(
                 filteredReductStoreCollection,
                 identification,
@@ -181,7 +178,7 @@ namespace MajorityGeneralizedDecisionTest
             classifier.ExceptionRulesAsGaps = true;
 
             result = classifier.Classify(testData);
-            result.AvgNumberOfAttributes = avgLength;// filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, false);
+            result.AvgNumberOfAttributes = avgLength;
             result.ModelCreationTime = generator.ReductGenerationTime;
 
             this.WriteLine("{0,5}|{1}|{2}|{3,2}|{4,4}|{5,14}|{6,22}|{7}|{8}", "GAPS", t, fold, ensembleSize, eps, identification.Method.Name, voting.Method.Name, weightGenerator.GetType().Name.Substring(15), result);

@@ -1,35 +1,43 @@
-﻿plotressql <- function(resultdata, fieldname, title = "", user_facet_grid = 1) 
-{
-    d <- resultdata
+﻿require(ggplot2)
+require(grid)
+require(gridExtra)
 
-    ylimitlow = 0
-    ylimithigh = 1
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
-    avgfieldname <- paste(fieldname, "_avg", sep = "")
-    minfieldname <- paste(fieldname, "_min", sep = "")
-    maxfieldname <- paste(fieldname, "_max", sep = "")
+plotresult <- function(
+    dt,
+    xField,
+    yField,
+    groupVertical = "",
+    groupHorizontal = "",
+    yMinField = "",
+    yMaxField = "",    
+    title = "",    
+    yLimitLow = 0,
+    yLimitHigh = 1) {
 
-    p <- ggplot(data = d, aes_string(x = "eps", y = avgfieldname, group = "model"))
+    p <- ggplot(data = dt, aes_string(x = xField, y = yField, group = groupVertical))
 
-    if (user_facet_grid == 1)
-        p <- p + facet_grid(MODEL ~ PRUNINGTYPE) +
-            theme(strip.background = element_blank())
-
-    p <- p +
-    expand_limits(y = ylimitlow) +
-    expand_limits(y = ylimithigh) +
-    geom_ribbon(aes_string(ymin = minfieldname, ymax = maxfieldname), colour = "grey20", alpha = 0.1)
-    #scale_x_continuous(labels=divider100())
+    if (groupVertical != "") {
+        if (groupHorizontal != "")
+            p <- p + facet_grid(as.formula(paste(groupVertical, "~", groupHorizontal, sep = ""))) + theme(strip.background = element_blank())
+        else
+            p <- p + facet_grid(as.formula(paste("~", groupVertical))) + theme(strip.background = element_blank())
+    }
+        
+    p <- p + expand_limits(y = yLimitLow)
+    p <- p + expand_limits(y = yLimitHigh)
+    
+    if (yMinField != "" && yMaxField != "")
+        p <- p + geom_ribbon(aes_string(ymin = yMinField, ymax = yMaxField), colour = "grey20", alpha = 0.1)
 
     if (title != "")
         p <- p + annotate("text", x = Inf, y = Inf, label = title, vjust = 1, hjust = 1)
-    #p <- p + ggtitle(title)
 
-    p <- p + geom_line(size = .8)
-    #p <- p + geom_point(data=subset(resultdata[resultdata$Epsilon %% 10 == 0,], Method %in% series),
-    #                    aes(shape=Method), size=2, fill="white")
-    p <- p +
-    #labs(x = "Approximation degree", y = "Average accuracy") +
+    p <- p + geom_line(size = .8)    
+    p <- p +    
     theme_bw(base_size = 24) +
     theme(panel.grid.major = element_line(size = .5, colour = "grey"),
           axis.line = element_line(size = .7, colour = "black"),
@@ -40,10 +48,7 @@
           legend.key.width = unit(1.5, "cm"),
           text = element_text(size = 24),
           plot.margin = unit(c(1, 1, 1, 1), "mm"),
-          panel.margin.x = unit(1.25, "lines"))
-
-    #p <- p + 
-    #  theme(strip.text.x = element_text(size = 10, colour = "black"))
-
+          panel.spacing.x = unit(1.25, "lines"))
+    
     return(p)
 }

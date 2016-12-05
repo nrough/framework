@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.MachineLearning;
 using Infovision.MachineLearning.Classification;
+using Infovision.Datamining.RCode;
 
 namespace Infovision.UnitTest.Runner
 {   
@@ -133,18 +134,44 @@ namespace Infovision.UnitTest.Runner
             dtc.Dumb(@"D:\temp\1\results_all.csv", ";", true);
 
             //dt = ClassificationResult.AverageResults(dt);
-            ClassificationResult.AggregateResults(dtc, "acc").Dumb(@"D:\temp\1\acc.csv", ";", true);
-            ClassificationResult.AggregateResults(dtc, "attr").Dumb(@"D:\temp\1\attr.csv", ";", true);
-            ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"D:\temp\1\numrul.csv", ";", true);
-            ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"D:\temp\1\dthm.csv", ";", true); 
-            ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"D:\temp\1\dtha.csv", ";", true);
+            var dt_acc = ClassificationResult.AggregateResults(dtc, "acc");
+            dt_acc.Dumb(@"D:\temp\1\acc.csv", ";", true);
 
-            ClassificationResult.AverageResults(dtc).Dumb(@"D:\temp\1\results_avg.csv", ";", true);
+            var dt_attr = ClassificationResult.AggregateResults(dtc, "attr");
+            dt_attr.Dumb(@"D:\temp\1\attr.csv", ";", true);
 
+            //ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"D:\temp\1\numrul.csv", ";", true);
+            //ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"D:\temp\1\dthm.csv", ";", true); 
+            //ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"D:\temp\1\dtha.csv", ";", true);
+            //ClassificationResult.AverageResults(dtc).Dumb(@"D:\temp\1\results_avg.csv", ";", true);
+                                    
+            DataView view = new DataView(dt_acc);
+            DataTable distinctValues = view.ToTable(true, "ds");
+            foreach (DataRow row in distinctValues.Rows)
+            {                
+                view.RowFilter = String.Empty;
+                view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
+                DataTable dt_acc_ds = view.ToTable();
 
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\acc_{0}", row["ds"].ToString()));
+                RProxy.PlotResult(dt_acc_ds, "eps", "acc_avg", "model", "pruning", "acc_max", "acc_min");
+                RProxy.DevOff();
+            }
 
-            //ClassificationResult.PlotR(dt);
+            view = new DataView(dt_attr);
+            distinctValues = view.ToTable(true, "ds");
+            foreach (DataRow row in distinctValues.Rows)
+            {
+                //Remove filters on view
+                view.RowFilter = String.Empty;
 
+                view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
+                DataTable dt_attr_ds = view.ToTable();
+
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\attr_{0}", row["ds"].ToString()));
+                RProxy.PlotResult(dt_attr_ds, "eps", "attr_avg", "model", "pruning", "attr_max", "attr_min");
+                RProxy.DevOff();
+            }            
 
             //TODO Compare results of different models
             //TODO Calculate Kappa, Test significance, etc.

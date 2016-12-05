@@ -192,6 +192,7 @@
     <Compile Include="ModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />
+    <Compile Include="RCode\RProxy.cs" />
     <Compile Include="Roughset\Bireduct.cs" />
     <Compile Include="Roughset\BireductGamma.cs" />
     <Compile Include="Roughset\BireductGenerator.cs" />
@@ -499,14 +500,8 @@
     </None>
     <None Include="Infovision.pfx" />
     <None Include="packages.config" />
-    <None Include="RCode\ggplot-minimalistic-theme.R">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="RCode\import-libraries.R">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="RCode\plot-results.R">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

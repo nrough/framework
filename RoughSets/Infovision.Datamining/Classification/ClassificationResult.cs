@@ -752,7 +752,7 @@ namespace Infovision.MachineLearning.Classification
 
         public static DataTable AggregateResults(DataTable dtc, string columnName)
         {
-            return (from row in dtc.AsEnumerable()
+            var result =  (from row in dtc.AsEnumerable()
                     group row by new
                     {                        
                         ds = row.Field<string>("ds"),
@@ -775,69 +775,14 @@ namespace Infovision.MachineLearning.Classification
                         //field_dev = grp.StandardDeviation(x => x.Field<double>(columnName)),
                         //field_med = grp.Median(x => x.Field<double>(columnName))                        
                     }).ToDataTable();
+
+            result.Columns["field_min"].ColumnName = columnName + "_min";
+            result.Columns["field_max"].ColumnName = columnName + "_max";
+            result.Columns["field_avg"].ColumnName = columnName + "_avg";
+
+            return result;
         }
-
-        public static void PlotR(DataTable dt, Boolean stringsAsFactors = false)
-        {
-            //https://github.com/jmp75/rdotnet/blob/master/TestApps/SimpleTest/Program.cs
-            
-            REngine e = REngine.GetInstance();
-           
-            e.Evaluate(File.ReadAllText(@"RCode\import-libraries.R"));
-            e.Evaluate(File.ReadAllText(@"RCode\ggplot-minimalistic-theme.R"));
-            e.Evaluate(File.ReadAllText(@"RCode\plot-results.R"));
-
-            IEnumerable[] columns = new IEnumerable[dt.Columns.Count];
-            string[] columnNames = dt.Columns.Cast<DataColumn>()
-                                        .Select(x => x.ColumnName)
-                                        .ToArray();
-
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                switch (Type.GetTypeCode(dt.Columns[i].DataType))
-                {
-                    case TypeCode.String:
-                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<string>(i)).ToArray();
-                        break;
-
-                    case TypeCode.Double:
-                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<double>(i)).ToArray();
-                        break;
-
-                    case TypeCode.Int32:
-                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<int>(i)).ToArray();
-                        break;
-
-                    case TypeCode.Int64:
-                        columns[i] = dt.Rows.Cast<DataRow>().Select(row => row.Field<long>(i)).ToArray();
-                        break;
-
-                    default:
-                        //columns[i] = dt.Rows.Cast<DataRow>().Select(row => row[i]).ToArray();
-                        throw new InvalidOperationException(String.Format("Type {0} is not supported", dt.Columns[i].DataType.Name));
-                }                
-            }            
-
-            DataFrame df = e.CreateDataFrame(columns: columns, 
-                                             columnNames: columnNames, 
-                                             stringsAsFactors: stringsAsFactors);
-
-            e.SetSymbol("dataset", df);
-            string outputPath = "XXX";
-
-            e.Evaluate(@"result <- getdatasql(dataname=dataset, voting=""ConfidenceW"", ensemblesize = size)");
-            e.Evaluate(@"p <- plotressql(resultdata = result, fieldname = field)");
-            e.Evaluate(String.Format(@"pdf(file = paste(""{0}"","".pdf"", sep=""""), width=8, height=11)", outputPath));
-            e.Evaluate(@"print(p)");
-            e.Evaluate(@"dev.off()");
-
-
-
-            
-        }
-
         
-
         #endregion Methods
     }
 

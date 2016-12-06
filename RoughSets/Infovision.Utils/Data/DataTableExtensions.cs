@@ -12,7 +12,7 @@ namespace Infovision.Core.Data
 {
     public static class DataTableExtensions
     {
-        public static void Dumb(this DataTable dataTable, string filePath, string separator, bool includeHeader = false)
+        public static DataTable Dumb(this DataTable dataTable, string filePath, string separator, bool includeHeader = false)
         {
             StringBuilder sb = new StringBuilder();
             if (includeHeader)
@@ -29,6 +29,7 @@ namespace Infovision.Core.Data
             }
 
             System.IO.File.WriteAllText(filePath, sb.ToString());
+            return dataTable;
         }
 
         /// <summary>

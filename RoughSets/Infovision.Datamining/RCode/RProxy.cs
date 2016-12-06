@@ -59,6 +59,26 @@ namespace Infovision.Datamining.RCode
             ev.AppendFormat(@"yLimitLow = {0}, yLimitHigh = {1})", yLimitLow, yLimitHigh);
 
             e.Evaluate(ev.ToString());
+
+            //->            
+            var res = dt.AsEnumerable().AsQueryable().Where(r => r.Field<double>("eps") == -1.0);
+            DataTable dummyDt = dt.Clone();
+            foreach (DataRow row in res)
+                dummyDt.ImportRow(row);
+
+            DataFrame df2 = e.CreateDataFrame(
+                columns: dummyDt.Columns(), 
+                columnNames: dummyDt.ColumnNames(), 
+                stringsAsFactors: stringsAsFactors);
+            e.SetSymbol("dummy", df2);            
+            
+            e.Evaluate(
+                String.Format(
+                    @"p <- p + geom_hline(data = {0}, aes_string(yintercept = ""{1}""), colour=""#990000"", linetype=""dashed"") + scale_x_continuous(limits = c(0, NA))",
+                    "dummy", yField));
+            
+            //<-
+
             e.Evaluate("print(p)");                        
         }
 
@@ -66,6 +86,7 @@ namespace Infovision.Datamining.RCode
         {
             REngine e = REngine.GetInstance();
             e.Evaluate(String.Format(@"pdf(file = paste(""{0}"","".pdf"", sep=""""), width={1}, height={2})", outputFile, width, height));
+            //e.Evaluate(String.Format(@"pdf(file = paste(""{0}"","".pdf"", sep=""""))", outputFile));
         }
 
         public static void DevOff()

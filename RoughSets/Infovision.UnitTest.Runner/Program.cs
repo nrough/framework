@@ -134,17 +134,9 @@ namespace Infovision.UnitTest.Runner
             dtc.Dumb(@"D:\temp\1\results_all.csv", ";", true);
 
             //dt = ClassificationResult.AverageResults(dt);
-            var dt_acc = ClassificationResult.AggregateResults(dtc, "acc");
-            dt_acc.Dumb(@"D:\temp\1\acc.csv", ";", true);
-
-            var dt_attr = ClassificationResult.AggregateResults(dtc, "attr");
-            dt_attr.Dumb(@"D:\temp\1\attr.csv", ";", true);
-
-            //ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"D:\temp\1\numrul.csv", ";", true);
-            //ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"D:\temp\1\dthm.csv", ";", true); 
-            //ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"D:\temp\1\dtha.csv", ";", true);
             //ClassificationResult.AverageResults(dtc).Dumb(@"D:\temp\1\results_avg.csv", ";", true);
-                                    
+
+            var dt_acc = ClassificationResult.AggregateResults(dtc, "acc").Dumb(@"D:\temp\1\acc.csv", ";", true);
             DataView view = new DataView(dt_acc);
             DataTable distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -153,25 +145,66 @@ namespace Infovision.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_acc_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\acc_{0}", row["ds"].ToString()));
-                RProxy.PlotResult(dt_acc_ds, "eps", "acc_avg", "model", "pruning", "acc_max", "acc_min");
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_acc", row["ds"].ToString()));
+                RProxy.PlotResult(dt_acc_ds, "eps", "acc_avg", "model", "pruning", "acc_max", "acc_min", "Accuracy: "+ row["ds"].ToString());
                 RProxy.DevOff();
             }
 
+            var dt_attr = ClassificationResult.AggregateResults(dtc, "attr").Dumb(@"D:\temp\1\attr.csv", ";", true);
             view = new DataView(dt_attr);
             distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
-            {
-                //Remove filters on view
+            {            
                 view.RowFilter = String.Empty;
-
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_attr_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\attr_{0}", row["ds"].ToString()));
-                RProxy.PlotResult(dt_attr_ds, "eps", "attr_avg", "model", "pruning", "attr_max", "attr_min");
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_attr", row["ds"].ToString()));
+                RProxy.PlotResult(dt_attr_ds, "eps", "attr_avg", "model", "pruning", "attr_max", "attr_min", "#Distinct attributes: " + row["ds"].ToString());
                 RProxy.DevOff();
-            }            
+            }
+
+            var dt_numrul = ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"D:\temp\1\numrul.csv", ";", true);
+            view = new DataView(dt_numrul);
+            distinctValues = view.ToTable(true, "ds");
+            foreach (DataRow row in distinctValues.Rows)
+            {
+                view.RowFilter = String.Empty;
+                view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
+                DataTable dt_attr_ds = view.ToTable();
+
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_numrul", row["ds"].ToString()));
+                RProxy.PlotResult(dt_attr_ds, "eps", "numrul_avg", "model", "pruning", "numrul_max", "numrul_min", "#Rules: " + row["ds"].ToString());
+                RProxy.DevOff();
+            }
+
+            var dt_dthm = ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"D:\temp\1\dthm.csv", ";", true);
+            view = new DataView(dt_dthm);
+            distinctValues = view.ToTable(true, "ds");
+            foreach (DataRow row in distinctValues.Rows)
+            {
+                view.RowFilter = String.Empty;
+                view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
+                DataTable dt_attr_ds = view.ToTable();
+
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_dthm", row["ds"].ToString()));
+                RProxy.PlotResult(dt_attr_ds, "eps", "dthm_avg", "model", "pruning", "dthm_max", "dthm_min", "Max rule length: " + row["ds"].ToString());
+                RProxy.DevOff();
+            }
+
+            var dt_dtha = ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"D:\temp\1\dtha.csv", ";", true);
+            view = new DataView(dt_dtha);
+            distinctValues = view.ToTable(true, "ds");
+            foreach (DataRow row in distinctValues.Rows)
+            {
+                view.RowFilter = String.Empty;
+                view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
+                DataTable dt_attr_ds = view.ToTable();
+
+                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_dtha", row["ds"].ToString()));
+                RProxy.PlotResult(dt_attr_ds, "eps", "dtha_avg", "model", "pruning", "dtha_max", "dtha_min", "Avg rule length attributes: " + row["ds"].ToString());
+                RProxy.DevOff();
+            }
 
             //TODO Compare results of different models
             //TODO Calculate Kappa, Test significance, etc.

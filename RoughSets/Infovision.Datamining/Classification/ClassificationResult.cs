@@ -662,8 +662,8 @@ namespace Infovision.MachineLearning.Classification
                 gpa.FirstRowSetsExpectedColumnCount = true;                
                 gpa.TrimResults = true;
 
-                if (expectedColumnCount > 0)
-                    gpa.ExpectedColumnCount = expectedColumnCount;
+                //if (expectedColumnCount > 0)
+                //    gpa.ExpectedColumnCount = expectedColumnCount;
 
                 dt = gpa.GetDataTable();
             }

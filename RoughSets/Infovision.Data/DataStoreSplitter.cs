@@ -5,9 +5,12 @@ using Infovision.Core;
 
 namespace Infovision.Data
 {
+    public delegate void PostSplitMethod(DataStore train, DataStore test);
+
     public interface IDataStoreSplitter
     {
         void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold);
+        PostSplitMethod PostSplitMethod { get; set;}
         int NFold { get; }
     }
 
@@ -56,9 +59,9 @@ namespace Infovision.Data
         }
 
         public bool UseDataStoreCache { get; private set; }
-
+        public PostSplitMethod PostSplitMethod { get; set; }
         protected bool SplitCalculated { get; set; }
-        
+                        
         #endregion        
 
         #region Constructors
@@ -79,10 +82,13 @@ namespace Infovision.Data
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
         {            
             this.GetTrainingData(ref dataStore1, fold);
-            this.GetTestData(ref dataStore2, fold);            
+            this.GetTestData(ref dataStore2, fold);
+
+            if (this.PostSplitMethod != null)            
+                this.PostSplitMethod(dataStore1, dataStore2);
         }
 
-        public virtual void GetTrainingData(ref DataStore dataStore1, int fold)
+        private void GetTrainingData(ref DataStore dataStore1, int fold)
         {           
             if (fold < 0)
                 throw new ArgumentOutOfRangeException("fold");
@@ -121,7 +127,7 @@ namespace Infovision.Data
             }
         }
 
-        public virtual void GetTestData(ref DataStore dataStore2, int fold)
+        private void GetTestData(ref DataStore dataStore2, int fold)
         {            
             if (fold < 0)
                 throw new ArgumentOutOfRangeException("fold");

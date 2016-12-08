@@ -9,7 +9,7 @@ using Infovision.MachineLearning.Classification;
 
 namespace Infovision.MachineLearning
 {
-    public delegate void PostLearingMethod(IModel model);
+    public delegate void PostLearingMethod(IModel model);    
 
     public class CrossValidation<T>
         where T : IModel, IPredictionModel, ILearner, ICloneable, new()
@@ -29,7 +29,7 @@ namespace Infovision.MachineLearning
             this.modelPrototype = model;
 
             this.RunInParallel = true;
-        }        
+        }
 
         public ClassificationResult Run(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)
         {            
@@ -65,11 +65,11 @@ namespace Infovision.MachineLearning
         {
             DataStore trainDS = null, testDS = null;
             dataSplitter.Split(ref trainDS, ref testDS, fold);
-
+            
             int[] localAttributes = attributes;
             if (this.Attributes != null)
                 if (!this.Attributes.TryGetValue(fold, out localAttributes))
-                    localAttributes = attributes;
+                    localAttributes = attributes;            
 
             T model = (T)this.modelPrototype.Clone();
             model.Learn(trainDS, localAttributes);

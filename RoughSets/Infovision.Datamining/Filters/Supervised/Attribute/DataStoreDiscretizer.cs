@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
+using System.Linq;
 
 namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 {

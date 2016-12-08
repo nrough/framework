@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.MachineLearning.Roughset;
 using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
 
 namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 {
@@ -84,7 +85,8 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             }
         }
 
-        [Test, Repeat(1)]        
+        [Test, Repeat(1)]
+        /*        
         [TestCase(@"Data\chess.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\zoo.dta", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
@@ -103,15 +105,40 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\semeion.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        */
+        //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+
+            if (dataFile != @"Data\vehicle.tab"
+                && dataFile != @"Data\german.data")
+            {
+                foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                    fieldInfo.IsNumeric = false;
+            }
+            
             int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);            
+            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
+            splitter.PostSplitMethod = (trainDS, testDS) =>
+            {
+                var descretizer = new DataStoreDiscretizer()
+                {
+                    UseBetterEncoding = false,
+                    UseKononenko = false, //use FayadAndIraniMDL
+                    Fields2Discretize = trainDS.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                                    .Where(fieldId => trainDS.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
+                };
+
+                descretizer.Discretize(ref trainDS, ref testDS);
+            };
+
             int rednum = 100;            
             IReduct reductAllAttributes = new ReductWeights(data, allAttributes, 0, data.Weights);
             
@@ -123,7 +150,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                     for (int f = 0; f < folds; f++)
                     {
                         DataStore trainDS = null, testDS = null;
-                        splitter.Split(ref trainDS, ref testDS, f);
+                        splitter.Split(ref trainDS, ref testDS, f);                        
 
                         Args parms = new Args(4);
                         parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainDS);
@@ -332,6 +359,41 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             var treeOblivEntropyResult = Classifier.DefaultClassifer.Classify(treeOblivEntropy, testDS);
             treeOblivEntropyResult.Epsilon = eps;
             Console.WriteLine(treeOblivEntropyResult);
+        }
+
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        public void Discretize_CV_Test(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
+        {            
+            DataStore data = DataStore.Load(dataFile, fileFormat);
+            
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
+            DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
+            long output = emptyDistribution.Output;
+
+            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
+            splitter.PostSplitMethod = (trn, tst) =>
+            {
+                var descretizer = new DataStoreDiscretizer()
+                {
+                    UseBetterEncoding = false,
+                    UseKononenko = false, //use FayadAndIraniMDL
+                    Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                        .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
+                };
+
+                descretizer.Discretize(ref trn, ref tst);
+            };
+
+            DecisionTreeC45 treec45 = new DecisionTreeC45();
+            treec45.PruningType = pruningType;
+            treec45.DefaultOutput = output;
+
+            CrossValidation<DecisionTreeC45> cv = new CrossValidation<DecisionTreeC45>(treec45);            
+            var result = cv.Run(data, splitter);
+
+            Console.WriteLine(result);                                               
         }
     }
 }

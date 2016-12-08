@@ -36,7 +36,7 @@ namespace Infovision.Datamining.RCode
             if (!String.IsNullOrEmpty(yMinField) && !dt.Columns.Contains(yMinField))
                 throw new ArgumentException("yMinField");
 
-            REngine e = REngine.GetInstance();
+             REngine e = REngine.GetInstance();
             e.Evaluate(File.ReadAllText(@"RCode\plot-results.R"));
                                             
             DataFrame df = e.CreateDataFrame(columns: dt.Columns(),
@@ -72,14 +72,17 @@ namespace Infovision.Datamining.RCode
                 stringsAsFactors: stringsAsFactors);
             e.SetSymbol("dummy", df2);            
             
-            e.Evaluate(
-                String.Format(
-                    @"p <- p + geom_hline(data = {0}, aes_string(yintercept = ""{1}""), colour=""#990000"", linetype=""dashed"") + scale_x_continuous(limits = c(0, NA))",
-                    "dummy", yField));
-            
-            //<-
+            e.Evaluate(String.Format(@"p <- p + geom_hline(data = {0}, aes_string(yintercept = ""{1}""), colour=""#990000"", linetype=""dashed"")","dummy", yField));
+            //e.Evaluate(String.Format(@"p <- p + geom_hline(data = {0}, aes_string(yintercept = ""{1}""), colour = ""#770000"", alpha = 0.1)", "dummy", yMinField));
+            //e.Evaluate(String.Format(@"p <- p + geom_hline(data = {0}, aes_string(yintercept = ""{1}""), colour = ""#770000"", alpha = 0.1)", "dummy", yMaxField));
+            //e.Evaluate(String.Format(@"p <- p + annotate(data = {0}, mapping = 
+            //    ""rect"", xmin = -Inf, xmax = Inf, aes_string(ymin = ""{1}"", ymax = ""{2}""), fill = ""#770000"", alpha = .1, color = NA)", "dummy", yMinField, yMaxField));
+            e.Evaluate(String.Format(@"p <- p + geom_rect(data = {0}, xmin = -Inf, xmax=Inf, aes_string(ymin = ""{1}"", ymax=""{2}""), fill = ""#770000"", alpha = 0.1, linetype=""dashed"")", "dummy", yMinField, yMaxField));
+            e.Evaluate(@"p <- p + scale_x_continuous(limits = c(0, NA))");
 
-            e.Evaluate("print(p)");                        
+           //<-
+
+           e.Evaluate("print(p)");                        
         }
 
         public static void Pdf(string outputFile, int width = 8, int height = 11)

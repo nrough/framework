@@ -165,12 +165,13 @@ namespace Infovision.Data
             {
                 long value = record[fieldId];
                 this.data[lastIndex * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
-                this.DataStoreInfo.GetFieldInfo(fieldId).IncreaseHistogramCount(value);
+                var field = this.DataStoreInfo.GetFieldInfo(fieldId);
+                field.IncreaseHistogramCount(value);
+                field.IncreaseHistogramWeightsCount(value, 1);
             }
 
             //index2ObjectId.Add(lastIndex, record.ObjectId);
             this.index2ObjectId[lastIndex] = record.ObjectId;
-
             this.weights[lastIndex] = 1;
 
             this.objectId2Index.Add(record.ObjectId, lastIndex);
@@ -320,6 +321,7 @@ namespace Infovision.Data
                 }
                 this.data[i * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = internalValue;
                 fieldInfo.IncreaseHistogramCount(internalValue);
+                fieldInfo.IncreaseHistogramWeightsCount(internalValue, this.Weights[i]);
             }
         }
 
@@ -399,6 +401,7 @@ namespace Infovision.Data
                     : newFieldInfo.Add(columnData[row], isMissing);
                 newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
                 newFieldInfo.IncreaseHistogramCount(internalValue);
+                newFieldInfo.IncreaseHistogramWeightsCount(internalValue, this.Weights[row]);
                 newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
             }
 

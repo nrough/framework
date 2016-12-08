@@ -22,6 +22,8 @@ namespace Infovision.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
+            //Test_CV(25);
+
             //Test_Benchmark(4);
             //Test_CV(4);
 
@@ -107,7 +109,10 @@ namespace Infovision.UnitTest.Runner
                 @"d:\temp\1\mylogfile_20161120104404.txt",
                 @"d:\temp\1\mylogfile_CV_20161120074024.txt",
                 @"d:\temp\1\mylogfile_CV_20161119200826.txt",
-                @"d:\temp\1\mylogfile_20161119231109.txt"
+                @"d:\temp\1\mylogfile_20161119231109.txt",
+                @"d:\temp\1\mylogfile_CV_20161207185711.txt", //vehicle
+                @"d:\temp\1\mylogfile_CV_20161207213043.txt",  //vehicle
+                @"d:\temp\1\mylogfile_CV_20161207231310.txt"   //german credit
                 });
 
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');

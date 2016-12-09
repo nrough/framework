@@ -10,7 +10,7 @@ namespace Infovision.Data
     {
         #region Members
 
-        private char[] fieldDelimiter = new char[] { ' ', ';', '\t', ',' };
+        private char[] fieldDelimiter = new char[] { ' ', ';', '\t', ',', '|' };
         private int header = 0;
         private int expectedColums = -1;
         private int expectedRows = -1;
@@ -243,11 +243,18 @@ namespace Infovision.Data
                                     switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
                                     {
                                         case TypeCode.Int32:
-                                            typedFieldValues[i] = Int32.MinValue;
+                                            //typedFieldValues[i] = Int32.MinValue;
+                                            typedFieldValues[i] = Int32.MaxValue;
                                             break;
 
                                         case TypeCode.Double:
-                                            typedFieldValues[i] = Double.MinValue;
+                                            //typedFieldValues[i] = Double.MinValue;
+                                            typedFieldValues[i] = Double.MaxValue;
+                                            break;
+
+                                        case TypeCode.Int64:
+                                            //typedFieldValues[i] = Int64.MinValue;
+                                            typedFieldValues[i] = Int64.MaxValue;
                                             break;
 
                                         case TypeCode.String:

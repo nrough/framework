@@ -28,5 +28,10 @@ namespace Infovision.Core
                 return (int)(value / System.Math.Pow(10, precision));
             return (int)value;
         }
+
+        public static long ConvertToInt64(this long value, int precision)
+        {
+            return value;
+        }
     }
 }

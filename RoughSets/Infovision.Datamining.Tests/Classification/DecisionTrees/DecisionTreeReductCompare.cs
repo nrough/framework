@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Infovision.MachineLearning.Roughset;
 using Infovision.MachineLearning.Classification;
 using Infovision.MachineLearning.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Permutations;
 
 namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 {
@@ -19,35 +20,39 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
     public class DecisionTreeReductCompare
     {
         [Test, Repeat(25)]
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\spect.train", @"Data\spect.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\dna.train", @"Data\dna.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        public void ErrorImpurityTest(string trainFile, string testFile, PruningType pruningType, string reductFactoryKey)
+        /*
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", FileFormat.Rses1, @"Data\audiology.standardized.2.test", PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        */
+        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        public void ErrorImpurityTest(string trainFile, string testFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey)
         {
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(trainFile, fileFormat);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
             int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
@@ -108,17 +113,39 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         */
         //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\german.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\german.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\german.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\german.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
 
             if (dataFile != @"Data\vehicle.tab"
-                && dataFile != @"Data\german.data")
+                && dataFile != @"Data\german.data"
+                && dataFile != @"Data\hypothyroid.data")
             {
-                foreach (var fieldInfo in data.DataStoreInfo.Fields)
-                    fieldInfo.IsNumeric = false;
+                if (dataFile == @"Data\dermatology.data")
+                {
+                    foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                    {
+                        if (fieldInfo.Id != 34) //Age Attribute
+                        {
+                            fieldInfo.IsNumeric = false;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                    {
+                        fieldInfo.IsNumeric = false;
+                    }
+                }
             }
             
             int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
@@ -150,13 +177,21 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                     for (int f = 0; f < folds; f++)
                     {
                         DataStore trainDS = null, testDS = null;
-                        splitter.Split(ref trainDS, ref testDS, f);                        
+                        splitter.Split(ref trainDS, ref testDS, f);
 
-                        Args parms = new Args(4);
+                        PermutationGenerator permutationGenerator = new PermutationGenerator(
+                            trainDS.DataStoreInfo.GetFields(FieldTypes.Standard)
+                            .Where(f1 => !f1.IsNumeric)
+                            .Select(f2 => f2.Id)
+                            .ToArray());
+
+                        Args parms = new Args(5);
                         parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainDS);
                         parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
                         parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
                         parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, rednum);
+                        parms.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator, permutationGenerator);
+
                         IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                         generator.Run();
 

@@ -680,7 +680,7 @@ namespace Infovision.Data
             return DataStore.Load(fileName, fileFormat, null);
         }
 
-        public void WriteToCSVFile(string filePath, string separator, bool includeHeader = false)
+        public void Dump(string filePath, string separator, bool includeHeader = false)
         {
             //System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
 
@@ -709,7 +709,7 @@ namespace Infovision.Data
             }
         }
 
-        public void WriteToCSVFileExt(string filePath, string separator, bool includeHeader = false, bool decisionAsLastField = false)
+        public void DumpExt(string filePath, string separator, bool includeHeader = false, bool decisionAsLastField = false)
         {
             StringBuilder sb;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))

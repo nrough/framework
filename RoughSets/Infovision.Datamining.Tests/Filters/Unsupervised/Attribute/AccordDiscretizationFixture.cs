@@ -203,11 +203,11 @@ namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute.Tests
                 DataStore localDataStoreTrain = trainingSet.ToDataStore(codebook, decisionIdx, idIdx);
                 DataStore localDataStoreTest = validationSet.ToDataStore(codebook, decisionIdx, idIdx);
 
-                localDataStoreTrain.WriteToCSVFile(String.Format("{0}-Store.csv", trainingSet.TableName), " ");
-                localDataStoreTest.WriteToCSVFile(String.Format("{0}-Store.csv", validationSet.TableName), " ");
+                localDataStoreTrain.Dump(String.Format("{0}-Store.csv", trainingSet.TableName), " ");
+                localDataStoreTest.Dump(String.Format("{0}-Store.csv", validationSet.TableName), " ");
 
-                localDataStoreTrain.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", trainingSet.TableName), " ");
-                localDataStoreTest.WriteToCSVFileExt(String.Format("{0}-StoreExt.csv", validationSet.TableName), " ");
+                localDataStoreTrain.DumpExt(String.Format("{0}-StoreExt.csv", trainingSet.TableName), " ");
+                localDataStoreTest.DumpExt(String.Format("{0}-StoreExt.csv", validationSet.TableName), " ");
 
                 //Console.WriteLine(localDataStoreTrain.DataStoreInfo.ToStringInfo());
                 //Console.WriteLine(localDataStoreTest.DataStoreInfo.ToStringInfo());

@@ -23,10 +23,8 @@ namespace Infovision.UnitTest.Runner
         public static void Main(string[] args)
         {
             //Test_CV(25);
-
-            //Test_Benchmark(4);
-            //Test_CV(4);
-
+            //Test_Benchmark(25);
+                                   
             ProcessResultFiles();
         }
 
@@ -35,6 +33,7 @@ namespace Infovision.UnitTest.Runner
             DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string trainFile, testFile, reductFactoryKey;
             PruningType pruningType;
+            FileFormat fileFormat;
 
             MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest");
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
@@ -50,10 +49,11 @@ namespace Infovision.UnitTest.Runner
                     {
                         trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
                         testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
-                        pruningType = (PruningType)((TestCaseAttribute)testCase).Arguments[2];
-                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
-
-                        test.ErrorImpurityTest(trainFile, testFile, pruningType, reductFactoryKey);
+                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[2];
+                        pruningType = (PruningType)((TestCaseAttribute)testCase).Arguments[3];
+                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[4];
+                        
+                        test.ErrorImpurityTest(trainFile, testFile, fileFormat, pruningType, reductFactoryKey);
                     }
                 }
             }
@@ -110,9 +110,11 @@ namespace Infovision.UnitTest.Runner
                 @"d:\temp\1\mylogfile_CV_20161120074024.txt",
                 @"d:\temp\1\mylogfile_CV_20161119200826.txt",
                 @"d:\temp\1\mylogfile_20161119231109.txt",
-                @"d:\temp\1\mylogfile_CV_20161207185711.txt", //vehicle
-                @"d:\temp\1\mylogfile_CV_20161207213043.txt",  //vehicle
-                @"d:\temp\1\mylogfile_CV_20161207231310.txt"   //german credit
+                @"d:\temp\1\mylogfile_CV_20161207185711.txt",   // vehicle
+                @"d:\temp\1\mylogfile_CV_20161207213043.txt",   // vehicle
+                @"d:\temp\1\mylogfile_CV_20161207231310.txt",   // german credit
+                @"d:\temp\1\mylogfile_CV_20161208232856.txt",   // dermatology, dermatology_no_age, hypothyroid
+                @"d:\temp\1\mylogfile_20161209105906.txt",      // vowel disc
                 });
 
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');

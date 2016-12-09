@@ -23,14 +23,14 @@ namespace Infovision.MachineLearning.Tests.Filters.Unsupervised.Attribute
             if (!Directory.Exists(@"temp"))
                 Directory.CreateDirectory(@"temp");
 
-            trnData.WriteToCSVFileExt(@"temp\missingvalsorig.trn", ",");
-            tstData.WriteToCSVFileExt(@"temp\missingvalsorig.tst", ",");
+            trnData.DumpExt(@"temp\missingvalsorig.trn", ",");
+            tstData.DumpExt(@"temp\missingvalsorig.tst", ",");
 
             DataStore trnCompleteData = new ReplaceMissingValues().Compute(trnData);
             DataStore tstCompleteDate = tstData;
 
-            trnCompleteData.WriteToCSVFileExt(@"temp\missingvals.trn", ",");
-            tstCompleteDate.WriteToCSVFileExt(@"temp\missingvals.tst", ",");
+            trnCompleteData.DumpExt(@"temp\missingvals.trn", ",");
+            tstCompleteDate.DumpExt(@"temp\missingvals.tst", ",");
 
             Args parms = new Args();
             parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);

@@ -64,7 +64,7 @@ namespace DermoReducts
                 w[rec.ObjectIdx] = 0;
             }
 
-            data.WriteToCSVFileExt(outputfile, ",", false, true);
+            data.DumpExt(outputfile, ",", false, true);
 
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(weightsfile))
             {
@@ -108,7 +108,7 @@ namespace DermoReducts
             }
 
             data.RemoveColumn(34);
-            data.WriteToCSVFileExt(outputfile, ",", true, true);
+            data.DumpExt(outputfile, ",", true, true);
         }
     }
 }

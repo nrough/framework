@@ -22,10 +22,13 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
                                     50, 60, 70, 80 };
 
         [Test]
+        /*
         [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
         [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
         [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
         [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        */
+        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.Csv)]
         public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
         {
             DataStore train = DataStore.Load(fileTrain, fileFormat);
@@ -40,8 +43,9 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
             };
 
             descretizer.Discretize(ref train, ref test);
-            //train.WriteToCSVFileExt(@"C:\"+fileTrain + ".disc", " ", false, true);
-            //test.WriteToCSVFileExt(@"C:\" + fileTest + ".disc", " ", false, true);
+
+            train.DumpExt(@"C:\"+fileTrain + ".disc", " ", false, true);
+            test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
         }
 
         //[TestCase(false, false)]

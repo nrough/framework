@@ -25,7 +25,7 @@ namespace Infovision.Data
         private bool isOrdered;
 
 
-        public static long DefaultMissingValue = Int64.MinValue;
+        public static long DefaultMissingValue = Int64.MaxValue;
 
         #endregion
 
@@ -146,8 +146,8 @@ namespace Infovision.Data
             if (this.IsUnique)
                 return false;
 
-            if (this.HasMissingValues)
-                return false;
+            //if (this.HasMissingValues)
+            //    return false;
 
             if (this.IsNumeric)
                 return true;
@@ -218,56 +218,86 @@ namespace Infovision.Data
 
         public long External2Internal(object externalValue)
         {
+            if (this.HasMissingValues && this.MissingValue != null && this.MissingValue.Equals(externalValue))
+            {
+                return this.MissingValueInternal;
+            }
+
             if (this.IsNumeric)
-            {                
+            {
                 switch (Type.GetTypeCode(externalValue.GetType()))
                 {
                     case TypeCode.Int32:
-                        return (long) (int) externalValue;
+                        return (long)(int)externalValue;
 
                     case TypeCode.Double:
                         double tmp = (double)externalValue;
                         return (long)(tmp * Math.Pow(10, this.NumberOfDecimals));
                 }
             }
-
-            long internalValue;
-            if (valueDictionary.TryGetValue(externalValue, out internalValue))
+            else
             {
-                return internalValue;
+                long internalValue;
+                if (valueDictionary.TryGetValue(externalValue, out internalValue))
+                {
+                    return internalValue;
+                }
             }
-            return -1;
+
+            throw new InvalidOperationException(String.Format("Unknown external value {0}", externalValue));
         }
 
         public object Internal2External(long internalValue)
-        {            
-            if (this.IsNumeric && (this.MissingValueInternal != internalValue || !this.HasMissingValues))
+        {
+            if (this.HasMissingValues 
+                && this.MissingValue != null 
+                && this.MissingValueInternal == internalValue)
+            {
+                return this.MissingValue;
+            }
+
+            if (this.IsNumeric)
             {
                 switch (Type.GetTypeCode(this.FieldValueType))
                 {
                     case TypeCode.Double: return internalValue.ConvertToDouble(this.NumberOfDecimals);
                     case TypeCode.Int32: return internalValue.ConvertToInt(this.NumberOfDecimals);
+                    case TypeCode.Int64: return internalValue;
+                }
+            }
+            else
+            {
+                object externalValue;
+                if (indexDictionary.TryGetValue(internalValue, out externalValue))
+                {
+                    return externalValue;
                 }
             }
 
-            object externalValue;
-            if (indexDictionary.TryGetValue(internalValue, out externalValue))
-            {
-                return externalValue;
-            }
-            return null;
+            throw new InvalidOperationException(String.Format("Unknown internal value: {0}", internalValue));
         }
 
         public long Add(object value, bool isMissing)
         {
-            if (this.IsNumeric && !isMissing)
+            if (isMissing)
             {
-                long internalValue =  this.External2Internal(value);
+                if (this.MissingValue == null)
+                {
+                    this.MissingValue = value;
+                    this.MissingValueInternal = DataFieldInfo.DefaultMissingValue;
+                }
+                else if (!this.MissingValue.Equals(value))
+                {
+                    throw new InvalidOperationException(String.Format("Missing key is already set. Trying to substitute current key {0} with {1}", this.MissingValue, value));
+                }
 
-                //TODO Do we need this ? -->
+                return this.MissingValueInternal;
+            }
 
-                //if (!valueDictionary.ContainsKey(value))
-                if(!indexDictionary.ContainsKey(internalValue))
+            if (this.IsNumeric)
+            {                 
+                long internalValue = this.External2Internal(value);
+                if (!indexDictionary.ContainsKey(internalValue))
                 {
                     valueDictionary.Add(value, internalValue);
                     indexDictionary.Add(internalValue, value);
@@ -275,29 +305,15 @@ namespace Infovision.Data
                     if (internalValue > maxValueInternalId)
                         maxValueInternalId = internalValue;
                 }
-                //<--
 
                 return internalValue;
             }
             
             if (!valueDictionary.ContainsKey(value))
-            {
+            {                                
                 maxValueInternalId++;
                 valueDictionary.Add(value, maxValueInternalId);
                 indexDictionary.Add(maxValueInternalId, value);
-
-                if (isMissing)
-                {
-                    if (this.MissingValue == null)
-                    {
-                        this.MissingValue = value;
-                        this.MissingValueInternal = DataFieldInfo.DefaultMissingValue;
-                    }
-                    else if (!this.MissingValue.Equals(value))
-                    {
-                        throw new InvalidOperationException(String.Format("Missing key is already set. Trying to substitute current key {0} with {1}", this.MissingValue, value));
-                    }
-                }
 
                 return maxValueInternalId;
             }

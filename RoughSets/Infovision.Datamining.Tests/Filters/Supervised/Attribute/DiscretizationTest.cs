@@ -34,6 +34,12 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
             DataStore train = DataStore.Load(fileTrain, fileFormat);
             DataStore test = DataStore.Load(fileTest, fileFormat, train.DataStoreInfo);
 
+            train.Dump(@"C:\" + fileTrain + ".int", " ", false);
+            test.Dump(@"C:\" + fileTest + ".int", " ", false);
+
+            train.DumpExt(@"C:\" + fileTrain + ".ext", " ", false, true);
+            test.DumpExt(@"C:\" + fileTest + ".ext", " ", false, true);
+
             var descretizer = new DataStoreDiscretizer()
             {
                 UseBetterEncoding = false,

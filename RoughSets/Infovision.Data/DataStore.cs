@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infovision.Statistics;
 using Infovision.Core;
+using System.Data;
 
 namespace Infovision.Data
 {
@@ -851,6 +852,35 @@ namespace Infovision.Data
         public int[] GetStandardFields()
         {
             return this.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+        }
+
+        public DataTable ToDataTable()
+        {
+            DataTable datatable = new DataTable(String.IsNullOrEmpty(this.Name) ? "" : this.Name);
+            int[] fieldIds = this.DataStoreInfo.GetFieldIds().ToArray();
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                datatable.Columns.Add(field.Name);
+            }
+
+            string[] recordStr = new string[fieldIds.Length];
+            for (int i = 0; i < this.NumberOfRecords; i++)
+            {
+                AttributeValueVector record = this.GetDataVector(i, fieldIds);                
+                for (int j = 0; j < fieldIds.Length; j++)
+                {
+                    DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[j]);
+                    object externalVal = field.Internal2External(record[j]);
+                    if (field.HasMissingValues && record[j] == field.MissingValueInternal)
+                        recordStr[j] = this.DataStoreInfo.MissingValue;
+                    else
+                        recordStr[j] = (externalVal != null) ? externalVal.ToString() : "?";
+                }                
+                datatable.Rows.Add(recordStr);
+            }
+
+            return datatable;
         }
 
         #region System.Object Methods

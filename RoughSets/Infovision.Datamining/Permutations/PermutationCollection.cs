@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Infovision.Core;
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json.Linq;
 
 namespace Infovision.MachineLearning.Permutations
 {
@@ -130,6 +130,7 @@ namespace Infovision.MachineLearning.Permutations
             }
         }
 
+        /*
         public static PermutationCollection LoadFromJson(string jsonText)
         {
             PermutationCollection permutationList = new PermutationCollection();
@@ -167,6 +168,7 @@ namespace Infovision.MachineLearning.Permutations
                 }
             }
         }
+        */
 
         public void Add(Permutation permutation)
         {

@@ -115,6 +115,7 @@ namespace Infovision.UnitTest.Runner
                 @"d:\temp\1\mylogfile_CV_20161207231310.txt",   // german credit
                 @"d:\temp\1\mylogfile_CV_20161208232856.txt",   // dermatology, dermatology_no_age, hypothyroid
                 @"d:\temp\1\mylogfile_20161209105906.txt",      // vowel disc
+                @"d:\temp\1\mylogfile_CV_20161209225000.txt"    // lymphography
                 });
 
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');

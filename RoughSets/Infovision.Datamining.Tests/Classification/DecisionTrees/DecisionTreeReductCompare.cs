@@ -115,12 +115,16 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\german.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\german.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        /*
         [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        */
+        [TestCase(@"Data\lymphography.all", FileFormat.Csv, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\lymphography.all", FileFormat.Csv, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -225,7 +229,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
             Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
             {
-                //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
+                //assumption: in case of pruning dta.Name returns DSName-X-Y, 
+                //where X is the first CV and Y is the second CV for prunning
+
                 Tuple<int[], DataStore> best = null;
                 if (localReductCache.TryGetValue(dta.Name, out best))
                     return best;

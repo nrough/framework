@@ -36,9 +36,9 @@ namespace Infovision.Datamining.RCode
             if (!String.IsNullOrEmpty(yMinField) && !dt.Columns.Contains(yMinField))
                 throw new ArgumentException("yMinField");
 
-             REngine e = REngine.GetInstance();
+            REngine e = REngine.GetInstance();
             e.Evaluate(File.ReadAllText(@"RCode\plot-results.R"));
-                                            
+
             DataFrame df = e.CreateDataFrame(columns: dt.Columns(),
                                              columnNames: dt.ColumnNames(),
                                              stringsAsFactors: stringsAsFactors);
@@ -82,7 +82,7 @@ namespace Infovision.Datamining.RCode
 
            //<-
 
-           e.Evaluate("print(p)");                        
+            e.Evaluate("print(p)");            
         }
 
         public static void Pdf(string outputFile, int width = 8, int height = 11)
@@ -95,7 +95,7 @@ namespace Infovision.Datamining.RCode
         public static void DevOff()
         {
             REngine e = REngine.GetInstance();
-            e.Evaluate(@"dev.off()");
+            e.Evaluate(@"invisible(dev.off())");
         }        
     }
 }

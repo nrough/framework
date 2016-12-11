@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Infovision.Statistics;
+using Infovision.Math;
 using MiscUtil;
 
 namespace Infovision.MachineLearning.Filters.Supervised.Attribute
@@ -194,13 +194,13 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             // Encode distributions and instances after split.
             foreach (double[] bestCount in bestCounts)
             {
-                sum = Tools.Sum(bestCount);
+                sum = bestCount.Sum();
                 distAfter += Tools.Log2Binomial(sum + numClassesTotal - 1, numClassesTotal - 1);
                 instAfter += Tools.Log2Multinomial(sum, bestCount);
             }
 
             // Coding cost after split
-            after = Tools.Log2(numCutPoints) + distAfter + instAfter;
+            after = System.Math.Log(numCutPoints, 2) + distAfter + instAfter;
 
             // Check if split is to be accepted
             return (before > after);
@@ -256,11 +256,11 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             entropyRight = Tools.Entropy(bestCounts[1]);
 
             // Compute terms for MDL formula
-            delta = Tools.Log2(System.Math.Pow(3, numClassesTotal) - 2)
+            delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2, 2)
                 - ((numClassesTotal * priorEntropy) - (numClassesRight * entropyRight) - (numClassesLeft * entropyLeft));
 
             // Check if split is to be accepted
-            return (gain > ((Tools.Log2(numCutPoints) + delta) / numInstances));
+            return (gain > ((System.Math.Log(numCutPoints, 2) + delta) / numInstances));
         }
 
         public void Compute(V[] values, D[] labels, bool isSorted = false, double[] weights = null)

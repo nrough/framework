@@ -232,7 +232,7 @@ namespace Infovision.Data
 
                     case TypeCode.Double:
                         double tmp = (double)externalValue;
-                        return (long)(tmp * Math.Pow(10, this.NumberOfDecimals));
+                        return (long)(tmp * System.Math.Pow(10, this.NumberOfDecimals));
                 }
             }
             else

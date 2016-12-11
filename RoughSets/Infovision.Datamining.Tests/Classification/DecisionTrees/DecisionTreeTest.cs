@@ -24,7 +24,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
-    {                      
+    {       
         [Test, Repeat(1)]
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]        
         public void DecisionTableTest(string trainFile, string testFile)

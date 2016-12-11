@@ -1,5 +1,5 @@
 ﻿using Infovision.Data;
-using Infovision.Statistics;
+using Infovision.Math;
 using Infovision.Core;
 using System;
 using System.Collections.Generic;

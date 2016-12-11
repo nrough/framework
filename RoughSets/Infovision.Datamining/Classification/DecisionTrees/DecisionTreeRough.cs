@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Infovision.Statistics;
+using Infovision.Math;
 
 namespace Infovision.MachineLearning.Classification.DecisionTrees
 {

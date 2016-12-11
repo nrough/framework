@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Statistics;
+using Infovision.Math;
 using Infovision.Core;
 
 namespace Infovision.Data
@@ -88,7 +88,7 @@ namespace Infovision.Data
             baggedData.Shuffle();
 
             int bagsize = (int)(this.Data.NumberOfRecords * ((double)this.BagSizePercent / 100.0));
-            bagsize = Math.Min(bagsize, this.Data.NumberOfRecords);
+            bagsize = System.Math.Min(bagsize, this.Data.NumberOfRecords);
 
             baggedData = DataStore.Copy(baggedData, 0, bagsize);
 

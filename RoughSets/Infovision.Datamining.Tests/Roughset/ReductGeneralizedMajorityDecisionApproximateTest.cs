@@ -4,16 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Logging;
-using Common.Logging.Configuration;
 using Infovision.Data;
 using Infovision.MachineLearning.Benchmark;
-using Infovision.Statistics;
+using Infovision.Math;
 using Infovision.Core;
 using NUnit.Framework;
 using Infovision.MachineLearning.Permutations;
 using Infovision.MachineLearning.Weighting;
 using Infovision.MachineLearning.Classification;
+using System.Collections.Specialized;
 
 namespace Infovision.MachineLearning.Roughset.UnitTests
 {
@@ -259,7 +258,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                     trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
                 testData = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, trainData.DataStoreInfo);
                 name = trainData.Name;
-                log.InfoFormat(trainData.Name);
+                Console.WriteLine(trainData.Name);
 
                 for (int t = 0; t < numberOfTests; t++)
                 {
@@ -345,27 +344,12 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             ClassificationResult result2 = classifier2.Classify(testData, null);
 
             return new Tuple<double, double>(result.Accuracy, result2.Accuracy);
-        }
-
-        private ILog log;
+        }        
 
         public ReductGeneralizedMajorityDecisionApproximateTest()
         {
             Random randSeed = new Random();
-            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
-
-            NameValueCollection properties = new NameValueCollection();
-            properties["showDateTime"] = "false";
-            properties["showLogName"] = "false";
-            properties["level"] = "All";
-
-            properties["configType"] = "FILE";
-            properties["configFile"] = "~/NLog.config";
-
-            //Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
-            Common.Logging.LogManager.Adapter = new Common.Logging.NLog.NLogLoggerFactoryAdapter(properties);
-
-            log = Common.Logging.LogManager.GetLogger(this.GetType());
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();            
         }
 
         public IReduct CalculateGeneralizedMajorityApproximateDecisionReduct(DataStore data, double epsilon, int[] attributeSubset)

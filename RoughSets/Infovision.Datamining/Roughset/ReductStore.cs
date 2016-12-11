@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using Infovision.Data;
 using Infovision.Core;
-using Infovision.Statistics;
+using Infovision.Math;
 
 namespace Infovision.MachineLearning.Roughset
 {
@@ -343,7 +343,7 @@ namespace Infovision.MachineLearning.Roughset
             int i = 0;
             foreach (IReduct reduct in reducts)
                 values[i++] = (double)reductMeasure.Calc(reduct);
-            mean = Tools.Mean(values);
+            mean = values.Average();
             stdDev = Tools.StdDev(values, mean);
         }
 
@@ -355,7 +355,7 @@ namespace Infovision.MachineLearning.Roughset
             int i = 0;
             foreach (IReduct reduct in reducts)
                 values[i++] = (double)reductMeasure.Calc(reduct);
-            mean = Tools.Mean(values);
+            mean = values.Average();
             aveDev = Tools.AveDev(values, mean);
         }
 

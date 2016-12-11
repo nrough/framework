@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Infovision.Data;
 using Infovision.Core;
 using Infovision.Core.Data;
-using System.Diagnostics;
 using GenericParsing;
 using System.Reflection;
-using LinqStatistics;
-using RDotNet;
-using System.IO;
-using System.Collections;
 using System.Linq.Dynamic;
 using System.Data;
 

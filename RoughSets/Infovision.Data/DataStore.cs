@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Statistics;
+using Infovision.Math;
 using Infovision.Core;
 using System.Data;
 

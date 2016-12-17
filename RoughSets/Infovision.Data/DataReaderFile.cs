@@ -3,19 +3,6 @@ using System.IO;
 
 namespace Infovision.Data
 {
-    public interface IDataReader
-    {
-        DataStoreInfo Analyze();
-
-        void Load(DataStore dataStore, DataStoreInfo dataStoreInfo);
-
-        string DataName { get; }
-        int DecisionId { get; set; }
-        string MissingValue { get; set; }
-        DataStoreInfo ReferenceDataStoreInfo { get; set; }
-        bool HandleMissingData { get; set; }
-    }
-
     public abstract class DataReaderFile : IDataReader
     {
         private string fileName = String.Empty;

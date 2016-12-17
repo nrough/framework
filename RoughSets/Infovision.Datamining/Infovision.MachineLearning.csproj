@@ -8,8 +8,8 @@
     <ProjectGuid>{82E1F95C-4559-44AB-9114-42E78DA331A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Infovision.Datamining</RootNamespace>
-    <AssemblyName>Infovision.Datamining</AssemblyName>
+    <RootNamespace>Infovision.MachineLearning</RootNamespace>
+    <AssemblyName>Infovision.MachineLearning</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -116,6 +116,7 @@
     <Compile Include="Classification\ClassificationResultFormatter.cs" />
     <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
     <Compile Include="Classification\Classifier.cs" />
+    <Compile Include="Classification\DecisionGraphs\OODG.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
     <Compile Include="Clustering\DBSCAN.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />

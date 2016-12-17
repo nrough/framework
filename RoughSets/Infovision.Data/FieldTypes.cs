@@ -9,21 +9,13 @@ namespace Infovision.Data
     {
         None = 0,
         Standard = 1,
-        Identifier = 2,
-        Decision = 4,
-        Technical = 8,
-        Importance = 16,
+        Id = 2,
+        Output = 4,
+        Sys = 8,
+        Weight = 16,
 
         All = 31
-    }
-
-    public enum DataCharacterType
-    {
-        None = 0,
-        Unique = 1,
-        Continues = 2,
-        Discreet = 3
-    }
+    }    
 
     public static class FieldTypesHelper
     {

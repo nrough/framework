@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Infovision.Core.UnitTests
+namespace Infovision.Core.Tests
 {
     [TestFixture]
     internal class ArrayExtensionsTest

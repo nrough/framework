@@ -328,11 +328,11 @@ namespace MRIExceptions
 
             trainingData.SetDecisionFieldId(22);
 
-            trainingData.DataStoreInfo.SetFieldType(1, FieldTypes.Technical);
-            trainingData.DataStoreInfo.SetFieldType(2, FieldTypes.Technical);
-            trainingData.DataStoreInfo.SetFieldType(3, FieldTypes.Technical);
-            trainingData.DataStoreInfo.SetFieldType(4, FieldTypes.Technical);
-            trainingData.DataStoreInfo.SetFieldType(5, FieldTypes.Technical);
+            trainingData.DataStoreInfo.SetFieldType(1, FieldTypes.Sys);
+            trainingData.DataStoreInfo.SetFieldType(2, FieldTypes.Sys);
+            trainingData.DataStoreInfo.SetFieldType(3, FieldTypes.Sys);
+            trainingData.DataStoreInfo.SetFieldType(4, FieldTypes.Sys);
+            trainingData.DataStoreInfo.SetFieldType(5, FieldTypes.Sys);
 
             ImageFeatureExtractor featureExtractorTest = new ImageFeatureExtractor();
 
@@ -383,11 +383,11 @@ namespace MRIExceptions
 
             testData.SetDecisionFieldId(22);
 
-            testData.DataStoreInfo.SetFieldType(1, FieldTypes.Technical);
-            testData.DataStoreInfo.SetFieldType(2, FieldTypes.Technical);
-            testData.DataStoreInfo.SetFieldType(3, FieldTypes.Technical);
-            testData.DataStoreInfo.SetFieldType(4, FieldTypes.Technical);
-            testData.DataStoreInfo.SetFieldType(5, FieldTypes.Technical);
+            testData.DataStoreInfo.SetFieldType(1, FieldTypes.Sys);
+            testData.DataStoreInfo.SetFieldType(2, FieldTypes.Sys);
+            testData.DataStoreInfo.SetFieldType(3, FieldTypes.Sys);
+            testData.DataStoreInfo.SetFieldType(4, FieldTypes.Sys);
+            testData.DataStoreInfo.SetFieldType(5, FieldTypes.Sys);
 
             return new Tuple<DataStore, DataStore>(trainingData, testData);
         }

@@ -107,7 +107,7 @@ namespace Infovision.Data
                 FieldTypes fieldType = FieldTypes.Standard;
                 if (i == this.DecisionId)
                 {
-                    fieldType = FieldTypes.Decision;
+                    fieldType = FieldTypes.Output;
                 }
 
                 DataFieldInfo referenceFieldInfo = null;

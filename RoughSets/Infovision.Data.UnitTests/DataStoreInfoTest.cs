@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Infovision.Data.UnitTests
+namespace Infovision.Data.Tests
 {
     [TestFixture]
     public class DataStoreInfoTest
@@ -14,7 +14,7 @@ namespace Infovision.Data.UnitTests
 
             Compare(data, FieldTypes.Standard);
             Compare(data, FieldTypes.All);
-            Compare(data, FieldTypes.Decision);
+            Compare(data, FieldTypes.Output);
             Compare(data, FieldTypes.None);
         }
 

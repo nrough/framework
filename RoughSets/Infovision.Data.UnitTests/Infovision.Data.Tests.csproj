@@ -8,8 +8,8 @@
     <ProjectGuid>{5D273260-69B2-49ED-8B82-21E0BC9D0778}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Infovision.Data.UnitTests</RootNamespace>
-    <AssemblyName>Infovision.Data.UnitTests</AssemblyName>
+    <RootNamespace>Infovision.Data.Tests</RootNamespace>
+    <AssemblyName>Infovision.Data.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

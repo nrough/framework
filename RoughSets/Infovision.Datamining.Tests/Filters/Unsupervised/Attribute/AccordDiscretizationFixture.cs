@@ -469,11 +469,11 @@ namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute.Tests
 
                 if (i == decisionIdx)
                 {
-                    dataStoreInfo.AddFieldInfo(fieldInfo, FieldTypes.Decision);
+                    dataStoreInfo.AddFieldInfo(fieldInfo, FieldTypes.Output);
                 }
                 else if (i == idIdx)
                 {
-                    dataStoreInfo.AddFieldInfo(fieldInfo, FieldTypes.Identifier);
+                    dataStoreInfo.AddFieldInfo(fieldInfo, FieldTypes.Id);
                 }
                 else
                 {

@@ -66,7 +66,7 @@ namespace Infovision.Data
 
                     if (this.decisionFieldId > 0)
                     {
-                        this.fieldTypes[this.decisionFieldId] = FieldTypes.Decision;
+                        this.fieldTypes[this.decisionFieldId] = FieldTypes.Output;
                         this.decisionFieldInfo = fields[this.decisionFieldId];
                         this.decisionFieldIdx = this.GetDecisionFieldIndex();
                     }
@@ -181,7 +181,7 @@ namespace Infovision.Data
                 || fieldTypeFlags == FieldTypes.None)
                 return this.NumberOfFields;
 
-            if (fieldTypeFlags == FieldTypes.Decision)
+            if (fieldTypeFlags == FieldTypes.Output)
                 return 1;
 
             int numberOfFields = this.NumberOfFields;
@@ -207,7 +207,7 @@ namespace Infovision.Data
             this.SetFieldMinMaxId(fieldInfo.Id);
             this.fieldTypeCount[fieldType]++;
 
-            if (fieldType == FieldTypes.Decision)
+            if (fieldType == FieldTypes.Output)
             {
                 this.DecisionFieldId = fieldInfo.Id;
             }

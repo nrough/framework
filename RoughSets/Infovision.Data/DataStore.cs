@@ -222,7 +222,7 @@ namespace Infovision.Data
                 if (fieldInfo.HistogramWeights != null)
                     fieldInfo.CreateWeightHistogram(this, this.weights);
 
-            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Decision))
+            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Output))
                 fieldInfo.CreateWeightHistogram(this, this.weights);
         }
 
@@ -658,7 +658,7 @@ namespace Infovision.Data
 
         public static DataStore Load(string fileName, FileFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
-            IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
+            System.Data.IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
             fileReader.HandleMissingData = true;
             fileReader.MissingValue = "?";
 
@@ -667,7 +667,7 @@ namespace Infovision.Data
             return dataStore;
         }
 
-        public static DataStore Load(IDataReader dataReader)
+        public static DataStore Load(System.Data.IDataReader dataReader)
         {
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);

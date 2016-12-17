@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Infovision.Data.UnitTests
+namespace Infovision.Data.Tests
 {
     [TestFixture]
     public class DataStoreSplitterTest

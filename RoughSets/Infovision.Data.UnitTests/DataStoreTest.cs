@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Infovision.Data.UnitTests
+namespace Infovision.Data.Tests
 {
     [TestFixture]
     internal class DataStoreTest

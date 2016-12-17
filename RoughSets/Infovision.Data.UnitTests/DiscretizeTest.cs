@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Infovision.MachineLearning.Permutations;
 using Infovision.MachineLearning.Classification;
 
-namespace Infovision.Data.UnitTests
+namespace Infovision.Data.Tests
 {
     [TestFixture]
     internal class DiscretizeTest

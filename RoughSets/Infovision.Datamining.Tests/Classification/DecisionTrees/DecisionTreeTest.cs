@@ -39,7 +39,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            Trace.WriteLine(ClassificationResult.ResultHeader());
+            Trace.WriteLine(ClassificationResult.TableHeader());
 
             for (double eps = -1.0; eps < 0.4; eps += 0.01)
             {
@@ -132,7 +132,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
-            Trace.WriteLine(ClassificationResult.ResultHeader());
+            Trace.WriteLine(ClassificationResult.TableHeader());
 
             //for (double eps = 0.15; eps < 0.25; eps += 0.01)
             //double eps = -1;

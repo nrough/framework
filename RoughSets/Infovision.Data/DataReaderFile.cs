@@ -56,6 +56,8 @@ namespace Infovision.Data
                     throw new System.NotImplementedException("");
             }
 
+            dataReader.HandleMissingData = true;
+            dataReader.MissingValue = "?";
             return dataReader;
         }
 

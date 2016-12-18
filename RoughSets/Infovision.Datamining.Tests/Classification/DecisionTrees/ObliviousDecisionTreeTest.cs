@@ -53,7 +53,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine(DecisionTreeFormatter.Construct(treeOblivMaj));
 
             ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
-            Console.WriteLine(ClassificationResult.ResultHeader());
+            Console.WriteLine(ClassificationResult.TableHeader());
 
             var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);
             Console.WriteLine(treeOblivMajResult);

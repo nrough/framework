@@ -88,7 +88,8 @@ namespace Infovision.MachineLearning
 
             ClassificationResult result = new ClassificationResult(data, data.DataStoreInfo.GetDecisionValues());
             modelPrototype.SetClassificationResultParameters(result);
-            
+            result.Reset();
+
             if (this.RunInParallel)
             {
                 var options = new ParallelOptions()

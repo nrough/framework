@@ -41,7 +41,7 @@ namespace Infovision.UnitTest.Runner
             using (var cc = new ConsoleCopy("mylogfile_"+DateTime.Now.ToString("yyyyMMddHHmmss") +".txt"))
             {
                 ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
-                Console.WriteLine(ClassificationResult.ResultHeader());
+                Console.WriteLine(ClassificationResult.TableHeader());
 
                 for (int i = 0; i < tests; i++)
                 {
@@ -73,7 +73,7 @@ namespace Infovision.UnitTest.Runner
             using (var cc = new ConsoleCopy("mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
             {
                 ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
-                Console.WriteLine(ClassificationResult.ResultHeader());
+                Console.WriteLine(ClassificationResult.TableHeader());
 
                 for (int i = 0; i < tests; i++)
                 {

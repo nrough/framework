@@ -11,14 +11,12 @@ using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using Infovision.MachineLearning.Roughset;
 
 namespace Infovision.MachineLearning.Classification.DecisionTrees
-{
-    public delegate Tuple<int[], DataStore> AttributeAndDataSelectionMethod(int[] attributes, DataStore data);
-    
+{       
     /// <summary>
     /// Base class for decision tree implementations
     /// </summary>
     [Serializable]
-    public abstract class DecisionTreeBase : ModelBase, IDecisionTree, IPredictionModel, ICloneable
+    public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
     {        
         protected Dictionary<int, List<long>> thresholds = null;
         protected DecisionDistribution aprioriDistribution = null;
@@ -46,19 +44,18 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public int NumberOfAttributesToCheckForSplit { get; set; } = -1;
         public long? DefaultOutput { get; set; } = null;
         public bool UseLocalOutput { get; set; } = false;
-        public double Gamma { get; set; } = -1.0;
+        public double Gamma { get; set; } = -1.0;        
         public int MaxHeight { get; set; } = -1;
         public int MinimumNumOfInstancesPerLeaf { get; set; } = 1;
         public DataStore TrainingData { get; protected set; }
 
         public ImpurityFunc ImpurityFunction { get; set; } = ImpurityFunctions.Entropy;
         public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityFunctions.DummyNormalize;
-        public AttributeAndDataSelectionMethod AttributeSelection { get; set; } = null;
-
+        
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
         public PruningObjectiveType PruningObjective { get; set; } = PruningObjectiveType.MinimizeError;
-        public DataStoreSplitter PruningDataSplitter { get; set; }        
+        public DataStoreSplitter PruningDataSplitter { get; set; }
 
         protected class SplitInfo
         {
@@ -123,7 +120,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
                 this.TrainingData = data;
                 this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
-                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;                
+                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
 
                 if (this.Gamma >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(
@@ -164,11 +161,19 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
             int[] selectedAttributes = null;
             DataStore selectedData = null;
-            if (this.AttributeSelection != null)
+
+            if (this.PreLearn != null)
             {
-                var selectedAttributeData = this.AttributeSelection(attributes, data);
+                //TODO
+                /*
+                var selectedAttributeData = this.PreLearn(attributes, data);
+
                 selectedAttributes = selectedAttributeData.Item1;
                 selectedData = selectedAttributeData.Item2;
+                */
+
+                selectedAttributes = attributes;
+                selectedData = data;
             }
             else
             {
@@ -280,6 +285,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             result.ModelName = this.ModelName;
             result.EnsembleSize = 1;
             result.Gamma = this.Gamma;
+
             result.AvgNumberOfAttributes = DecisionTreeBase.GetNumberOfAttributes(this);
             result.MaxTreeHeight = DecisionTreeBase.GetHeight(this);
             result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this);

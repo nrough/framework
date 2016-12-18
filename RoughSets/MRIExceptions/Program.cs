@@ -537,7 +537,7 @@ namespace MRIExceptions
         {
             fileStream = new StreamWriter(path, false);
 
-            this.WriteLine("{0}|{1}|{2}|{3}|{4}", "Test", "Epsilon", "TrainSlice", "TestSlice", ClassificationResult.ResultHeader());
+            this.WriteLine("{0}|{1}|{2}|{3}|{4}", "Test", "Epsilon", "TrainSlice", "TestSlice", ClassificationResult.TableHeader());
         }
 
         public void CloseStream()

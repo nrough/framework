@@ -45,10 +45,12 @@ namespace Infovision.MachineLearning.Roughset
         {
             DecisionTable decTabLeft = new DecisionTable();
             decTabLeft.Learn(this.Data, left.Attributes.ToArray());
+            decTabLeft.DefaultOutput = null;
             ClassificationResult leftResult = Classifier.DefaultClassifer.Classify(decTabLeft, this.Data, this.Data.Weights);
 
             DecisionTable decTabRight = new DecisionTable();
             decTabRight.Learn(this.Data, right.Attributes.ToArray());
+            decTabRight.DefaultOutput = null;
             ClassificationResult rightResult = Classifier.DefaultClassifer.Classify(decTabRight, this.Data, this.Data.Weights);
 
             return leftResult.Accuracy.CompareTo(rightResult.Accuracy);

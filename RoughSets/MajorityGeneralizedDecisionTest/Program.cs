@@ -384,7 +384,7 @@ namespace MajorityGeneralizedDecisionTest
         {
             fileStream = new StreamWriter(path, false);
 
-            this.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", "Factory", "Test", "Fold", "EnsembleSize", "Epsilon", "Ident", "Vote", "Weight", ClassificationResult.ResultHeader());
+            this.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", "Factory", "Test", "Fold", "EnsembleSize", "Epsilon", "Ident", "Vote", "Weight", ClassificationResult.TableHeader());
         }
 
         public void CloseStream()

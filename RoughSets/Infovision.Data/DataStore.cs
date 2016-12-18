@@ -658,16 +658,13 @@ namespace Infovision.Data
 
         public static DataStore Load(string fileName, FileFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
-            System.Data.IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
-            fileReader.HandleMissingData = true;
-            fileReader.MissingValue = "?";
-
+            IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
             fileReader.ReferenceDataStoreInfo = referenceDataStoreInfo;
             DataStore dataStore = DataStore.Load(fileReader);
             return dataStore;
         }
 
-        public static DataStore Load(System.Data.IDataReader dataReader)
+        public static DataStore Load(IDataReader dataReader)
         {
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);

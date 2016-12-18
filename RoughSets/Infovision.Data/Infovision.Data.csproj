@@ -97,7 +97,7 @@
     <Compile Include="DataStoreSplitter.cs" />
     <Compile Include="AttributeValueVector.cs" />
     <Compile Include="FileFormat.cs" />
-    <Compile Include="IDataReader1.cs" />
+    <Compile Include="IDataReader.cs" />
     <Compile Include="IDataTable.cs" />
     <Compile Include="IObjectSetInfo.cs" />
     <Compile Include="ObjectSet.cs" />

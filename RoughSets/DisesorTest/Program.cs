@@ -292,7 +292,7 @@ namespace DisesorTest
                     }
                 }
 
-                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? wGen.Weights : null);
+                discretizer.Discretize(train, test, useWeightsInDiscretization ? wGen.Weights : null);
             }
             Console.WriteLine("Done");
 

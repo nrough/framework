@@ -116,7 +116,7 @@ namespace ExceptionRulesTest
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {
-                outputFile.WriteLine("Method|Fold|Test|Epsilon|{0}", ClassificationResult.ResultHeader());
+                outputFile.WriteLine("Method|Fold|Test|Epsilon|{0}", ClassificationResult.TableHeader());
 
                 for (int t = 0; t < results1.GetLength(0); t++)
                 {

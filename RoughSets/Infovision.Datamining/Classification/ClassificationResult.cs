@@ -369,6 +369,17 @@ namespace Infovision.MachineLearning.Classification
                 }
 
                 this.counter = 0;
+
+                this.AvgNumberOfAttributes = 0.0;
+                this.NumberOfRules = 0.0;
+                this.MaxTreeHeight = 0.0;
+                this.AvgTreeHeight = 0.0;
+                this.ClassificationTime = 0;
+                this.ModelCreationTime = 0;
+                this.ExceptionRuleHitCounter = 0;
+                this.StandardRuleHitCounter = 0;
+                this.ExceptionRuleLengthSum = 0;
+                this.StandardRuleLengthSum = 0;                                                
             }
         }
 
@@ -522,11 +533,11 @@ namespace Infovision.MachineLearning.Classification
             return total;
         }
 
-        public static string ResultHeader()
+        public static string TableHeader(char separator = '|')
         {
             return new ClassificationResult().ToString(
                 "H;" + ClassificationResult.OutputColumns,
-                new ClassificationResultFormatter('|'));            
+                new ClassificationResultFormatter(separator));
         }
 
         public override string ToString()
@@ -778,28 +789,5 @@ namespace Infovision.MachineLearning.Classification
         }
         
         #endregion Methods
-    }
-
-    public static class TestMethods
-    {
-        public static double TestSum(this IEnumerable<double> items)
-        {
-            double sum = 0.0;
-            foreach (var item in items)
-            {
-                sum += item;
-            }
-            return sum;
-        }
-
-        public static double TestSum<TSource>(this IEnumerable<TSource> source, Func<TSource, double> selector)
-        {
-            double sum = 0.0;
-            foreach (var item in source.Select(selector))
-            {
-                sum += item;
-            }
-            return sum;
-        }
     }
 }

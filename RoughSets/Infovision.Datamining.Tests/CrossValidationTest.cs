@@ -19,7 +19,7 @@ namespace Infovision.MachineLearning.Tests
         [TestCase(@"Data\chess.data", FileFormat.Rses1)]
         public void RunTest(string dataFile, FileFormat fileFormat)
         {
-            Console.WriteLine(ClassificationResult.ResultHeader());
+            Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
             Console.WriteLine(new CrossValidation<DecisionTreeC45>(new DecisionTreeC45()).Run(data));
         }
@@ -28,7 +28,7 @@ namespace Infovision.MachineLearning.Tests
         [TestCase(@"Data\chess.data", FileFormat.Rses1)]
         public void RunTestWithSplitter(string dataFile, FileFormat fileFormat)
         {
-            Console.WriteLine(ClassificationResult.ResultHeader());
+            Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
             DataStoreSplitter splitter = new DataStoreSplitter(data, 10);
 
@@ -46,7 +46,7 @@ namespace Infovision.MachineLearning.Tests
         [TestCase(@"Data\chess.data", FileFormat.Rses1)]
         public void RunTestWithFolds(string dataFile, FileFormat fileFormat)
         {
-            Console.WriteLine(ClassificationResult.ResultHeader());
+            Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);            
             DecisionTreeC45 c45 = new DecisionTreeC45();
             c45.PruningType = PruningType.ErrorBasedPruning;            

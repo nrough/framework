@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="Benchmark\BenchmarkData.cs" />
     <Compile Include="Benchmark\BenchmarkDataHelper.cs" />
+    <Compile Include="Classification\ClassificationModelBase.cs" />
     <Compile Include="Classification\ClassificationResult.cs" />
     <Compile Include="Classification\ClassificationResultFormatter.cs" />
     <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
@@ -136,12 +137,12 @@
     <Compile Include="DecisionDistribution.cs" />
     <Compile Include="Filters\Supervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Supervised\Attribute\Discretization.cs" />
-    <Compile Include="Filters\Supervised\Attribute\DiscretizationMDL.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\BinaryDiscretization.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DataStoreDiscretizer.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
     <Compile Include="Filters\DiscretizationType.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\ReplaceMissingValues.cs" />
+    <Compile Include="IApproximationModel.cs" />
     <Compile Include="IDistibutionSelectStrategy.cs" />
     <Compile Include="ILearner.cs" />
     <Compile Include="IModel.cs" />

@@ -25,6 +25,7 @@ namespace Infovision.MachineLearning.Classification.DecisionRules
 
         public long? DefaultOutput { get; set; }        
         public double? Small { get; set; }
+        public int[] Attributes { get; set; }
 
         private class DiscretizeInfo
         {
@@ -177,6 +178,7 @@ namespace Infovision.MachineLearning.Classification.DecisionRules
         {            
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
+
             result.NumberOfRules = 1.0;
             result.AvgNumberOfAttributes = 1.0;
         }

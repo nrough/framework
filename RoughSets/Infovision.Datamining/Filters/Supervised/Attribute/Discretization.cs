@@ -295,6 +295,25 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             return cuts.Length;
         }
 
+        //TODO
+        public static int Search(int value, double[] cuts)
+        {
+            return Search((double)value, cuts);
+        }
+
+        //TODO
+        public static int Search(double value, double[] cuts)
+        {
+            if (cuts == null)
+                return 1;
+
+            for (int i = 0; i < cuts.Length; i++)
+                if (value <= cuts[i])
+                    return i;
+
+            return cuts.Length;
+        }
+
         public void WriteToCSVFile(string filePath)
         {
             System.IO.File.WriteAllText(filePath, this.ToString());

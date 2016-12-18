@@ -48,7 +48,7 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
                     .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
             };
 
-            descretizer.Discretize(ref train, ref test);
+            descretizer.Discretize(train, test);
 
             train.DumpExt(@"C:\"+fileTrain + ".disc", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
@@ -86,7 +86,7 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
                 Fields2Discretize = numericFields
             };
 
-            descretizer.Discretize(ref trainData, ref testData);
+            descretizer.Discretize(trainData, testData);
 
             foreach (int fieldId in numericFields)
             {

@@ -295,11 +295,10 @@ namespace DisesorTuning
 
                 foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
+                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
                         field.Id,
                         field.FieldValueType,
-                        field.NumberOfValues,
-                        discretizer.CanDiscretize(field) ? "Can" : "Cannot");
+                        field.NumberOfValues                        
 
                     if (discretizer.CanDiscretize(field))
                     {
@@ -308,7 +307,7 @@ namespace DisesorTuning
                     }
                 }
 
-                discretizer.Discretize(ref train, ref test, null);
+                discretizer.Discretize(train, test, null);
             }
             Console.WriteLine("Done");
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using System.Linq;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
 
 namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 {
@@ -90,9 +91,15 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             return cuts;
         }
 
-        public virtual void Discretize(ref DataStore trainingData, ref DataStore testData, double[] weights = null)
+        public virtual void Discretize(DataStore trainingData, DataStore testData, double[] weights = null)
         {
-            DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
+            Discretize(trainingData, weights);
+            DiscretizeTest(trainingData, testData);
+        }
+
+        public void Discretize(DataStore trainingData, double[] weights = null)
+        {
+            DataFieldInfo localFieldInfoTrain;
             IEnumerable<int> localFields = Fields2Discretize != null
                                          ? Fields2Discretize
                                          : trainingData.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
@@ -103,87 +110,57 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             {
                 localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
-                {
-                    TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTrain.FieldValueType);
+                {                    
                     localFieldInfoTrain.IsNumeric = false;
-
+                    localFieldInfoTrain.Cuts = GetCuts(trainingData, fieldId, weights);
                     int[] newValues = new int[trainingData.NumberOfRecords];
 
-                    switch (trainFieldTypeCode)
+                    switch (Type.GetTypeCode(localFieldInfoTrain.FieldValueType))
                     {
                         case TypeCode.Int32:
-                            Discretization<int, long> discretizeInt = new Discretization<int, long>();
-                            discretizeInt.UseKononenko = this.UseKononenko;
-                            discretizeInt.UseBetterEncoding = this.UseBetterEncoding;
                             int[] oldValuesInt = trainingData.GetColumn<int>(fieldId);
-                            discretizeInt.Compute(oldValuesInt, labels, false, weights);
-
-                            if (discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
-                            {
-                                Discretization<int> u_discretizeInt = new Discretization<int>();
-                                u_discretizeInt.UseEntropy = true;
-                                u_discretizeInt.Compute(oldValuesInt, weights);
-                                discretizeInt.Cuts = u_discretizeInt.Cuts;
-                            }
-
-                            if (discretizeInt.Cuts == null || discretizeInt.Cuts.Length == 0)
-                            {
-                                Discretization<int> u_discretizeInt = new Discretization<int>();
-                                u_discretizeInt.UseEqualFrequency = true;
-                                u_discretizeInt.Compute(oldValuesInt, weights);
-                                discretizeInt.Cuts = u_discretizeInt.Cuts;
-                            }
-
-                            localFieldInfoTrain.Cuts = discretizeInt.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
-                                newValues[j] = discretizeInt.Search(oldValuesInt[j]);
+                                newValues[j] = Discretization<int, long>.Search(oldValuesInt[j], localFieldInfoTrain.Cuts);
                             break;
 
                         case TypeCode.Double:
-                            Discretization<double, long> discretizeDouble = new Discretization<double, long>();
-                            discretizeDouble.UseKononenko = this.UseKononenko;
-                            discretizeDouble.UseBetterEncoding = this.UseBetterEncoding;
                             double[] oldValuesDouble = trainingData.GetColumn<double>(fieldId);
-                            discretizeDouble.Compute(oldValuesDouble, labels, false, weights);
-
-                            if (discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
-                            {
-                                Discretization<double> u_discretizeDouble = new Discretization<double>();
-                                u_discretizeDouble.UseEntropy = true;
-                                u_discretizeDouble.Compute(oldValuesDouble, weights);
-                                discretizeDouble.Cuts = u_discretizeDouble.Cuts;
-                            }
-
-                            if (discretizeDouble.Cuts == null || discretizeDouble.Cuts.Length == 0)
-                            {
-                                Discretization<double> u_discretizeDouble = new Discretization<double>();
-                                u_discretizeDouble.UseEqualFrequency = true;
-                                u_discretizeDouble.Compute(oldValuesDouble, weights);
-                                discretizeDouble.Cuts = u_discretizeDouble.Cuts;
-                            }
-
-                            localFieldInfoTrain.Cuts = discretizeDouble.Cuts;
                             for (int j = 0; j < trainingData.NumberOfRecords; j++)
-                                newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
+                                newValues[j] = Discretization<double, long>.Search(oldValuesDouble[j], localFieldInfoTrain.Cuts);
                             break;
 
-                        default:
-                            throw new NotImplementedException(
-                                String.Format("Type {0} is not implemented for discretization",
-                                Type.GetTypeCode(localFieldInfoTrain.FieldValueType)));
-                    }
+                    }                    
 
                     localFieldInfoTrain.FieldValueType = typeof(int);
                     trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                }
+            }
+        }
 
-                    localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);                    
+        public void DiscretizeTest(DataStore discretizedData, DataStore testData)
+        {
+            DataFieldInfo localFieldInfoTrain, localFieldInfoTest;            
+            IEnumerable<int> localFields = Fields2Discretize != null
+                                         ? Fields2Discretize
+                                         : testData.DataStoreInfo.GetFieldIds(FieldTypes.Standard);            
+
+            foreach (int fieldId in localFields)
+            {
+                localFieldInfoTest = testData.DataStoreInfo.GetFieldInfo(fieldId);
+                if (localFieldInfoTest.CanDiscretize())
+                {
+                    localFieldInfoTrain = discretizedData.DataStoreInfo.GetFieldInfo(fieldId);
+                    if (localFieldInfoTrain.Cuts == null)
+                        throw new InvalidOperationException("localFieldInfoTrain.Cuts == null");
+
+                    TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
                     localFieldInfoTest.IsNumeric = false;
-
-                    newValues = new int[testData.NumberOfRecords];
+                    int[] newValues = new int[testData.NumberOfRecords];
+                                        
                     switch (trainFieldTypeCode)
                     {
                         case TypeCode.Int32:
-                            Discretization<int, long> discretizeInt = new Discretization<int, long>();
+                            var discretizeInt = new Discretization<int, long>();
                             discretizeInt.Cuts = localFieldInfoTrain.Cuts;
                             int[] oldValuesInt = testData.GetColumn<int>(fieldId);
                             for (int j = 0; j < testData.NumberOfRecords; j++)
@@ -191,7 +168,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                             break;
 
                         case TypeCode.Double:
-                            Discretization<double, long> discretizeDouble = new Discretization<double, long>();
+                            var discretizeDouble = new Discretization<double, long>();
                             discretizeDouble.Cuts = localFieldInfoTrain.Cuts;
                             double[] oldValuesDouble = testData.GetColumn<double>(fieldId);
                             for (int j = 0; j < testData.NumberOfRecords; j++)
@@ -208,7 +185,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 
         public virtual bool CanDiscretize(DataFieldInfo field)
         {
-            if (field.CanDiscretize() && field.NumberOfValues > 2)
+            if (field.CanDiscretize())
             {
                 return true;
             }

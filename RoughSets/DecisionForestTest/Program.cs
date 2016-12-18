@@ -170,7 +170,7 @@ namespace DecisionForestTest
         public void OpenStream(string path)
         {
             fileStream = new StreamWriter(path, false);
-            this.WriteLine(ClassificationResult.ResultHeader());
+            this.WriteLine(ClassificationResult.TableHeader());
         }
 
         public void CloseStream()

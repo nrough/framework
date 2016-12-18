@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning
-{
+{        
     public abstract class ModelBase : IModel, ICloneable
     {
-        public string ModelName { get; set; }
+        public string ModelName { get; set; }        
 
         public ModelBase()
         {
@@ -32,5 +28,5 @@ namespace Infovision.MachineLearning
         protected virtual void HandleCloned(ModelBase clone)
         {
         }
-    }
+    }    
 }

@@ -26,9 +26,8 @@ namespace Infovision.MachineLearning.Classification
     /// 
     /// </summary>
     /// <param name="attributes"></param>
-    /// <param name="trainingData"></param>
-    /// <param name="validationData"></param>
+    /// <param name="trainingData"></param>    
     /// <returns></returns>
-    public delegate Tuple<int[], DataStore, DataStore> AttributeAndDataSelectionMethod(
-        int[] attributes, DataStore trainingData, DataStore validationData);
+    public delegate Tuple<int[], DataStore> AttributeAndDataSelectionMethod(
+        IModel model, int[] attributes, DataStore trainingData);
 }

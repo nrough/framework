@@ -40,7 +40,7 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
             train.DumpExt(@"C:\" + fileTrain + ".ext", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".ext", " ", false, true);
 
-            var descretizer = new DataStoreDiscretizer()
+            var discretizer = new DataStoreDiscretizer()
             {
                 UseBetterEncoding = false,
                 UseKononenko = false, //use FayadAndIraniMDL
@@ -48,7 +48,8 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
                     .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
             };
 
-            descretizer.Discretize(train, test);
+            discretizer.Discretize(train, train.Weights);
+            discretizer.Discretize(test, train);
 
             train.DumpExt(@"C:\"+fileTrain + ".disc", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
@@ -79,14 +80,15 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
             DataStore trainData = null, testData = null;
             splitter.Split(ref trainData, ref testData, 0);
 
-            var descretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
+            var discretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
             {
                 UseBetterEncoding = useBetterEncoding,
                 UseKononenko = useKononenko,                
                 Fields2Discretize = numericFields
             };
 
-            descretizer.Discretize(trainData, testData);
+            discretizer.Discretize(trainData, trainData.Weights);
+            discretizer.Discretize(testData, trainData);
 
             foreach (int fieldId in numericFields)
             {

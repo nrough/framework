@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Infovision.MachineLearning.Classification;
 
 namespace Infovision.Data.Tests
 {
@@ -29,43 +30,44 @@ namespace Infovision.Data.Tests
             Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
             object cacheLock = new object();
 
-            Func<int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = delegate (int[] attr, DataStore dta)
-            {
-                //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
-                Tuple<int[], DataStore> best = null;
-                if (localReductCache.TryGetValue(dta.Name, out best))
-                    return best;
-
-                lock (cacheLock)
+            Func<IModel, int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = 
+                delegate (IModel model, int[] attr, DataStore dta)
                 {
-                    best = null;
+                    //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
+                    Tuple<int[], DataStore> best = null;
                     if (localReductCache.TryGetValue(dta.Name, out best))
                         return best;
 
-                    Args parms = new Args(4);
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
-                    IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-                    generator.Run();
+                    lock (cacheLock)
+                    {
+                        best = null;
+                        if (localReductCache.TryGetValue(dta.Name, out best))
+                            return best;
 
-                    var reducts = generator.GetReducts();
-                    reducts.Sort(ReductAccuracyComparer.Default);
-                    IReduct bestReduct = reducts.FirstOrDefault();
-                    best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
+                        Args parms = new Args(4);
+                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
+                        parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                        parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
+                        parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+                        IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                        generator.Run();
 
-                    localReductCache.Add(dta.Name, best);
-                }
-                return best;
-            };
+                        var reducts = generator.GetReducts();
+                        reducts.Sort(ReductAccuracyComparer.Default);
+                        IReduct bestReduct = reducts.FirstOrDefault();
+                        best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
 
-            AttributeAndDataSelectionMethod attributeSelectionMethod = (a, d) => calculateReduct_Prunning(a, d);
+                        localReductCache.Add(dta.Name, best);
+                    }
+                    return best;
+                };
+
+            AttributeAndDataSelectionMethod attributeSelectionMethod = (m, a, d) => calculateReduct_Prunning(m, a, d);
 
             DataStoreSplitter splitter = new DataStoreSplitter(dataStore, 5);
 
             DecisionTreeRough treeRough = new DecisionTreeRough();
-            treeRough.AttributeSelection = attributeSelectionMethod;
+            treeRough.PreLearn = attributeSelectionMethod;
             treeRough.PruningType = PruningType.ReducedErrorPruning;
             CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
             var treeRoughResult = treeRoughCV.Run(dataStore, splitter);            

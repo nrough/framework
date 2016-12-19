@@ -298,16 +298,17 @@ namespace DisesorTuning
                     Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
                         field.Id,
                         field.FieldValueType,
-                        field.NumberOfValues                        
+                        field.NumberOfValues);                       
 
-                    if (discretizer.CanDiscretize(field))
+                    if (field.CanDiscretize())
                     {
                         double[] cuts = discretizer.GetCuts(train, field.Id, null);
                         Console.WriteLine(this.Cuts2Sting(cuts));
                     }
                 }
-
-                discretizer.Discretize(train, test, null);
+                
+                discretizer.Discretize(train, train.Weights);
+                discretizer.Discretize(test, train);
             }
             Console.WriteLine("Done");
         }

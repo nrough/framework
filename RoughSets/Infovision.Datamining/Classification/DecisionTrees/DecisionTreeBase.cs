@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using Infovision.MachineLearning.Roughset;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
 
 namespace Infovision.MachineLearning.Classification.DecisionTrees
 {       
@@ -163,17 +164,11 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             DataStore selectedData = null;
 
             if (this.PreLearn != null)
-            {
-                //TODO
-                /*
-                var selectedAttributeData = this.PreLearn(attributes, data);
+            {                
+                var selectedAttributeData = this.PreLearn(this, attributes, data);
 
                 selectedAttributes = selectedAttributeData.Item1;
-                selectedData = selectedAttributeData.Item2;
-                */
-
-                selectedAttributes = attributes;
-                selectedData = data;
+                selectedData = selectedAttributeData.Item2;                
             }
             else
             {
@@ -204,13 +199,13 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
         private ClassificationResult LearnAndPrune(DataStore data, int[] attributes)
         {
+            DataStoreSplitter cvSplitter = this.PruningDataSplitter == null
+                ? new DataStoreSplitter(data, this.PruningCVFolds, false)
+                : this.PruningDataSplitter;
+
             this.Init(data, attributes);
 
-            this.CheckPruningConditions();
-
-            DataStoreSplitter cvSplitter = this.PruningDataSplitter == null 
-                ? new DataStoreSplitter(data, this.PruningCVFolds, false) 
-                : this.PruningDataSplitter;
+            this.CheckPruningConditions();            
 
             DataStore trainSet = null, pruningSet = null;
             IDecisionTree bestModel = null;
@@ -227,6 +222,11 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 var tmpTree = (DecisionTreeBase) this.Clone();                                
                 tmpTree.PruningType = PruningType.None;
                 tmpTree.Learn(trainSet, attributes);
+
+                if (data.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
+                {
+                    new DataStoreDiscretizer().Discretize(pruningSet, trainSet);
+                }
                 
                 IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 
                 pruningMethod.Prune();
@@ -280,8 +280,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
-        {
-            //result.DatasetName = this.TrainingData.Name; /?
+        {            
             result.ModelName = this.ModelName;
             result.EnsembleSize = 1;
             result.Gamma = this.Gamma;

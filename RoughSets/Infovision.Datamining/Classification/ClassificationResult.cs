@@ -10,25 +10,7 @@ using System.Linq.Dynamic;
 using System.Data;
 
 namespace Infovision.MachineLearning.Classification
-{
-    /// <summary>
-    /// Encodes the region of confusion matrix
-    /// </summary>
-    public enum ConfusionMatrixElement
-    {
-        //actual cats that were correctly classified as cats
-        TruePositive = 0,
-
-        //cats that were incorrectly marked as other animals
-        FalseNegative = 1,
-
-        //all the remaining animals that were incorrectly labeled as cats
-        FalsePositive = 2,
-
-        //all the remaining animals, correctly classified as non-cats
-        TrueNegative = 3
-    }
-    
+{    
     [Serializable]
     public class ClassificationResult : IFormattable
     {
@@ -54,6 +36,78 @@ namespace Infovision.MachineLearning.Classification
         public int Count
         {
             get { return this.counter; }
+        }
+
+        [ClassificationResultValue("precisionmacro", "{0:0.0000}", false)]
+        public double PrecisionMacro
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var dec in decisions)
+                    sum += Precision(dec);
+                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("precisionmicro", "{0:0.0000}", false)]
+        public double PrecisionMicro
+        {
+            get
+            {
+                double a = 0.0, b = 0.0;
+                foreach (var dec in decisions)
+                {
+                    a += TruePositive(dec);
+                    b += (TruePositive(dec) + FalsePositive(dec));
+                }
+                return b > 0 ? a / b : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("recallmacro", "{0:0.0000}", false)]
+        public double RecallMacro
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var dec in decisions)
+                    sum += Recall(dec);
+                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("recallmicro", "{0:0.0000}", false)]
+        public double RecallMicro
+        {
+            get
+            {
+                double a = 0.0, b = 0.0;
+                foreach (var dec in decisions)
+                {
+                    a += TruePositive(dec);
+                    b += (TruePositive(dec) + FalseNegative(dec));
+                }
+                return b > 0 ? a / b : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("f1scoremacro", "{0:0.0000}", false)]
+        public double F1scoreMacro
+        {
+            get
+            {
+                return 2 * (PrecisionMacro * RecallMacro) / (PrecisionMacro + RecallMacro);
+            }
+        }
+
+        [ClassificationResultValue("f1scoremicro", "{0:0.0000}", false)]
+        public double F1scoreMicro
+        {
+            get
+            {
+                return 2 * (PrecisionMicro * RecallMicro) / (PrecisionMicro + RecallMicro);
+            }
         }
 
         [ClassificationResultValue("acc", "{0:0.0000}", true)]
@@ -91,27 +145,7 @@ namespace Infovision.MachineLearning.Classification
 
                 return decCount > 0 ? sum / decCount : 0.0;
             }
-        }
-
-        //http://en.wikipedia.org/wiki/Precision_and_recall
-        public double Recall
-        {
-            get
-            {
-                //TODO Implement Recall
-                return 0.0;
-            }
-        }
-
-        //https://en.wikipedia.org/wiki/Accuracy_and_precision
-        public double Precision
-        {
-            get
-            {
-                //TODO Implement Precision
-                return 0.0;
-            }
-        }
+        }        
 
         [ClassificationResultValue("cov", "{0:0.0000}")]
         public double Coverage
@@ -281,43 +315,7 @@ namespace Infovision.MachineLearning.Classification
             this.ModelCreationTime = -1;
             this.ClassificationTime = -1;
             this.EnsembleSize = 1;
-        }
-
-        //public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
-        //    : this()
-        //{
-        //    List<long> localDecisionValues = decisionValues.ToList();
-        //    localDecisionValues.Sort();
-
-        //    this.testData = dataStore;
-        //    this.DatasetName = dataStore.Name;
-        //    this.decCount = localDecisionValues.Count;
-        //    this.decCountPlusOne = localDecisionValues.Count + 1;
-        //    this.decisions = new long[decCountPlusOne];
-        //    this.decisions[0] = -1;
-        //    long[] decArray = localDecisionValues.ToArray();
-        //    double[] decDistribution = new double[decArray.Length];
-        //    for (int i = 0; i < decArray.Length; i++)
-        //        decDistribution[i] = (int)dataStore.DataStoreInfo.DecisionInfo.Histogram.GetBinValue(decArray[i]);
-        //    Array.Sort(decDistribution, decArray);
-        //    decDistribution = null;
-        //    Array.Copy(decArray, 0, decisions, 1, decCount);
-        //    decisionValue2Index = new Dictionary<long, int>(decCountPlusOne);
-        //    decisionValue2Index.Add(-1, 0);
-        //    for (int i = 0; i < decArray.Length; i++)
-        //        decisionValue2Index.Add(decArray[i], i + 1);
-
-        //    predictionResults = new long[dataStore.NumberOfRecords];
-        //    confusionTable = new int[decCountPlusOne][];
-        //    confusionTableWeights = new double[decCountPlusOne][];
-        //    for (int i = 0; i < decCountPlusOne; i++)
-        //    {
-        //        confusionTable[i] = new int[decCountPlusOne];
-        //        confusionTableWeights[i] = new double[decCountPlusOne];
-        //    }
-        //    this.Fold = dataStore.Fold;
-        //}
-
+        }        
 
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
             : this()
@@ -421,108 +419,173 @@ namespace Infovision.MachineLearning.Classification
         public int GetConfusionTable(long prediction, long actual)
         {
             return confusionTable[decisionValue2Index[actual]][decisionValue2Index[prediction]];
+        }        
+
+        /// <summary>
+        /// actual cats that were correctly classified as cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public int TruePositive(long decision)
+        {
+            int decIdx = decisionValue2Index[decision];
+            return confusionTable[decIdx][decIdx];
         }
 
-        public int GetConfusionTable(long decisionValue, ConfusionMatrixElement confusionTableElement)
+        /// <summary>
+        /// cats that were incorrectly marked as other animals
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public int FalseNegative(long decision)
         {
             int result = 0;
-            int decIdx = decisionValue2Index[decisionValue];
-
-            switch (confusionTableElement)
-            {
-                //actual cats that were correctly classified as cats
-                case ConfusionMatrixElement.TruePositive:
-                    result = confusionTable[decIdx][decIdx];
-                    break;
-
-                //cats that were incorrectly marked as other animals
-                case ConfusionMatrixElement.FalseNegative:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTable[decIdx][i];
-                    break;
-
-                //all the remaining animals that were incorrectly labeled as cats
-                case ConfusionMatrixElement.FalsePositive:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTable[i][decIdx];
-                    break;
-
-                //all the remaining animals, correctly classified as non-cats
-                case ConfusionMatrixElement.TrueNegative:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTable[i][i];
-                    break;
-            }
+            int decIdx = decisionValue2Index[decision];
+            for (int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTable[decIdx][i];
             return result;
         }
 
-        public double GetConfusionTableWeights(long decisionValue, ConfusionMatrixElement confusionTableElement)
+        /// <summary>
+        /// all the remaining animals that were incorrectly labeled as cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public int FalsePositive(long decision)
+        {
+            int result = 0;
+            int decIdx = decisionValue2Index[decision];
+            for (int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTable[i][decIdx];
+            return result;
+        }
+
+        /// <summary>
+        /// all the remaining animals, correctly classified as non-cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public int TrueNegative(long decision)
+        {
+            int result = 0;
+            int decIdx = decisionValue2Index[decision];
+            for(int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTable[i][i];
+            return result;
+        }
+
+        /// <summary>
+        /// actual cats that were correctly classified as cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public double TruePositiveWeight(long decision)
+        {
+            int decIdx = decisionValue2Index[decision];
+            return confusionTableWeights[decIdx][decIdx];
+        }
+
+        /// <summary>
+        /// cats that were incorrectly marked as other animals
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public double FalseNegativeWeight(long decision)
         {
             double result = 0;
-            int decIdx = decisionValue2Index[decisionValue];
-            switch (confusionTableElement)
-            {
-                //actual cats that were correctly classified as cats
-                case ConfusionMatrixElement.TruePositive:
-                    result = confusionTableWeights[decIdx][decIdx];
-                    break;
-
-                //cats that were incorrectly marked as other animals
-                case ConfusionMatrixElement.FalseNegative:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTableWeights[decIdx][i];
-                    break;
-
-                //all the remaining animals that were incorrectly labeled as cats
-                case ConfusionMatrixElement.FalsePositive:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTableWeights[i][decIdx];
-                    break;
-
-                //all the remaining animals, correctly classified as non-cats
-                case ConfusionMatrixElement.TrueNegative:
-                    for (int i = 0; i < decCountPlusOne; i++)
-                        if (decIdx != i)
-                            result += confusionTableWeights[i][i];
-                    break;
-            }
+            int decIdx = decisionValue2Index[decision];
+            for (int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTableWeights[decIdx][i];
             return result;
         }
 
-        public double GetAUC(long decision)
+        /// <summary>
+        /// all the remaining animals that were incorrectly labeled as cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public double FalsePositiveWeight(long decision)
         {
-            double truePositiveRate =
-                (double)this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
-                / (double)(this.GetConfusionTable(decision, ConfusionMatrixElement.TruePositive)
-                   + this.GetConfusionTable(decision, ConfusionMatrixElement.FalseNegative));
+            double result = 0;
+            int decIdx = decisionValue2Index[decision];
+            for (int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTableWeights[i][decIdx];
+            return result;
+        }
 
-            double falsePositiveRate =
-                (double)this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
-                / (double)(this.GetConfusionTable(decision, ConfusionMatrixElement.FalsePositive)
-                    + this.GetConfusionTable(decision, ConfusionMatrixElement.TrueNegative));
+        /// <summary>
+        /// all the remaining animals, correctly classified as non-cats
+        /// </summary>
+        /// <param name="decision"></param>
+        /// <returns></returns>
+        public double TrueNegativeWeight(long decision)
+        {
+            double result = 0;
+            int decIdx = decisionValue2Index[decision];
+            for (int i = 0; i < decCountPlusOne; i++)
+                if (decIdx != i)
+                    result += confusionTableWeights[i][i];
+            return result;
+        }               
+
+        public double AUC(long decision)
+        {
+            double truePositiveRate = (double)this.TruePositive(decision) / 
+                (double)(this.TruePositive(decision) + this.FalseNegative(decision));
+
+            double falsePositiveRate = (double)this.FalsePositive(decision) / 
+                (double)(this.FalsePositive(decision) + this.TrueNegative(decision));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
         }        
 
-        public double GetAUCWeights(long decision)
+        public double AUCWeight(long decision)
         {
-            double truePositiveRate =
-                (double)this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TruePositive)
-                / (double)(this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TruePositive)
-                   + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalseNegative));
+            double truePositiveRate = (double)this.TruePositiveWeight(decision) / 
+                (double)(this.TruePositiveWeight(decision) + this.FalseNegativeWeight(decision));
 
-            double falsePositiveRate =
-                (double)this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalsePositive)
-                / (double)(this.GetConfusionTableWeights(decision, ConfusionMatrixElement.FalsePositive)
-                    + this.GetConfusionTableWeights(decision, ConfusionMatrixElement.TrueNegative));
+            double falsePositiveRate = (double)this.FalsePositiveWeight(decision) / 
+                (double)(this.FalsePositiveWeight(decision) + this.TrueNegativeWeight(decision));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
-        }                
+        }
+
+        public double Recall(long decision)
+        {
+            return TruePositive(decision) / (TruePositive(decision) + FalseNegative(decision));            
+        }
+
+        public double RecallWeight(long decision)
+        {
+            return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalseNegativeWeight(decision));
+        }
+
+        public double Precision(long decision)
+        {
+            return TruePositive(decision) / (TruePositive(decision) + FalsePositive(decision));
+        }
+
+        public double PrecisionWeight(long decision)
+        {
+            return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalsePositiveWeight(decision));
+        }
+
+        public double FScore(long decision, double beta = 1.0)
+        {            
+            return (beta * beta + 1) * (Precision(decision) * Recall(decision)) 
+                / (Precision(decision) + Recall(decision));            
+        }
+                
+        public double FScoreWeight(long decision, double beta = 1.0)
+        {
+            return (beta * beta + 1) * (PrecisionWeight(decision) * RecallWeight(decision))
+                / (PrecisionWeight(decision) + RecallWeight(decision));
+        }
 
         public int DecisionTotal(long decisionValue)
         {

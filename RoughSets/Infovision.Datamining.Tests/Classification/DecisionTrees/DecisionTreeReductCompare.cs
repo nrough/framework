@@ -71,13 +71,13 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 delegate (IModel model, int[] attr, DataStore trainingSet)
                 {
                     Tuple<int[], DataStore> best = null;
-                    if (localReductCache.TryGetValue(trainingSet.Name, out best))
+                    if (localReductCache.TryGetValue(GetKey(trainingSet, eps, pruningType), out best))
                         return best;
 
                     lock (cacheLock)
                     {
                         best = null;
-                        if (localReductCache.TryGetValue(trainingSet.Name, out best))
+                        if (localReductCache.TryGetValue(GetKey(trainingSet, eps, pruningType), out best))
                             return best;
 
                         if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
@@ -108,7 +108,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                         IReduct bestReduct = reducts.FirstOrDefault();
                         best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), trainingSet);
 
-                        localReductCache.Add(trainingSet.Name, best);
+                        localReductCache.Add(GetKey(trainingSet, eps, pruningType), best);
                     }
 
                     return best;
@@ -200,13 +200,13 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 = delegate (IModel model, int[] attr, DataStore trainingSet)
             {
                 Tuple<int[], DataStore> best = null;
-                if (localReductCache.TryGetValue(trainingSet.Name, out best))
+                if (localReductCache.TryGetValue(GetKey(trainingSet, eps, pruningType), out best))
                     return best;
 
                 lock (cacheLock)
                 {
                     best = null;
-                    if (localReductCache.TryGetValue(trainingSet.Name, out best))
+                    if (localReductCache.TryGetValue(GetKey(trainingSet, eps, pruningType), out best))
                         return best;
 
                     if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
@@ -237,7 +237,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
                     best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), trainingSet);
 
-                    localReductCache.Add(trainingSet.Name, best);
+                    localReductCache.Add(GetKey(trainingSet, eps, pruningType), best);
                 }
 
                 return best;
@@ -343,11 +343,10 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             treeOblivEntropyResult.Epsilon = eps;
             Console.WriteLine(treeOblivEntropyResult);
         }
-
-        //TODO
+        
         private string GetKey(DataStore data, double epsilon, PruningType pruningType)
         {
-            return data.Name;
+            return String.Format("{0}#{1}#{2}", data.Name, epsilon, pruningType.ToSymbol());
         }
 
         [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]

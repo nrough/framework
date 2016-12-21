@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Classification.DecisionTables
 {
-    public class DecisionTableLocal : ModelBase, ILearner, IPredictionModel
+    public class DecisionTableLocal : ClassificationModelBase, ILearner, IPredictionModel
     {
         private ObliviousDecisionTree obliviousDecisionTree = null;
         private DecisionDistribution aprioriDistribution;
-
-        public long? DefaultOutput { get; set; }        
+     
         public bool RankedAttributes { get; set; }
         public IDecisionTree ObiliviousTree { get { return this.obliviousDecisionTree; } }        
 

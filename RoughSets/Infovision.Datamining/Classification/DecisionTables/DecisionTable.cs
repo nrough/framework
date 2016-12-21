@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Classification.DecisionTables
 {
-    public class DecisionTable : ModelBase, ILearner, IPredictionModel
+    public class DecisionTable : ClassificationModelBase, ILearner, IPredictionModel
     {
-        private EquivalenceClassCollection eqClassCollection;
-        public long? DefaultOutput { get; set; }        
+        private EquivalenceClassCollection eqClassCollection;        
 
         public DecisionTable()
             : base()
@@ -24,8 +23,17 @@ namespace Infovision.MachineLearning.Classification.DecisionTables
 
         public virtual ClassificationResult Learn(DataStore data, int[] attributes)
         {
-            this.eqClassCollection = EquivalenceClassCollection.Create(attributes, data);
-            return Classifier.DefaultClassifer.Classify(this, data);
+            DataStore selectedData = this.OnTrainingDataSubmission != null 
+                                   ? this.OnTrainingDataSubmission(this, attributes, data) 
+                                   : data;
+
+            int[] selectedAttributes = this.OnInputAttributeSubmission != null 
+                                     ? this.OnInputAttributeSubmission(this, attributes, selectedData) 
+                                     : attributes;
+
+            this.eqClassCollection = EquivalenceClassCollection.Create(selectedAttributes, selectedData);
+
+            return Classifier.DefaultClassifer.Classify(this, selectedData);
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)

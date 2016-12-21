@@ -9,10 +9,12 @@ namespace Infovision.MachineLearning.Classification
 {
     public abstract class ClassificationModelBase : ModelBase
     {
+        public long? DefaultOutput { get; set; } = null;
+
         public OnTrainingDataSubmission OnTrainingDataSubmission { get; set; }
         public OnInputAttributeSubmission OnInputAttributeSubmission { get; set; }
         public OnValidationDataSubmission OnValidationDataSubmission { get; set; }
-
+        
         public ClassificationModelBase()
             : base()
         {

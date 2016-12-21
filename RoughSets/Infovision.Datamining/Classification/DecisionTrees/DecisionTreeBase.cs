@@ -20,13 +20,9 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
     public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
     {        
         protected Dictionary<int, List<long>> thresholds = null;
-        //protected DecisionDistribution aprioriDistribution = null;
-
         private DecisionTreeNode root = null;
-        //private int decisionAttributeId = -1;
-        private double mA = 1.0;        
-        private int nextId = 1;        
-
+        private double mA = 1.0;
+        private int nextId = 1;
         private readonly object syncRoot = new object();
 
         public IDecisionTreeNode Root
@@ -42,8 +38,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             }
         }
 
-        public int NumberOfAttributesToCheckForSplit { get; set; } = -1;
-        public long? DefaultOutput { get; set; } = null;
+        public int NumberOfAttributesToCheckForSplit { get; set; } = -1;        
         public bool UseLocalOutput { get; set; } = false;
         public double Gamma { get; set; } = -1.0;        
         public int MaxHeight { get; set; } = -1;
@@ -100,8 +95,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         {
             this.root = null;
             this.nextId = 1;
-            this.thresholds = null;
-            //this.aprioriDistribution = null;
+            this.thresholds = null;            
             this.mA = 1.0;            
         }
 
@@ -120,8 +114,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 this.Reset();
 
                 this.TrainingData = data;
-                this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
-                //this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
+                this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);                
 
                 if (this.Gamma >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(

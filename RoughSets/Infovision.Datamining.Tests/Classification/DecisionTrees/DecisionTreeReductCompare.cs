@@ -365,17 +365,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             OnTrainingDataSubmission onTrainingDataSubmission,
             OnInputAttributeSubmission onInputAttributeSubmission,
             OnValidationDataSubmission onValidationDataSubmission)
-        {                        
-            if (pruningType == PruningType.None)
-            {
-                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
-                decTabMaj.DefaultOutput = output;
-                CrossValidation<DecisionTableMajority> decTabMajCV = new CrossValidation<DecisionTableMajority>(decTabMaj);               
-                var decTabMajResult = decTabMajCV.Run(data, splitter);
-                decTabMajResult.Epsilon = eps;
-                Console.WriteLine(decTabMajResult);
-            }
-
+        {                                    
             DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
             treeRough.OnTrainingDataSubmission = onTrainingDataSubmission;
             treeRough.OnInputAttributeSubmission = onInputAttributeSubmission;
@@ -409,6 +399,19 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             var treeOblivEntropyResult = treeOblivEntropyCV.Run(data, splitter);
             treeOblivEntropyResult.Epsilon = eps;
             Console.WriteLine(treeOblivEntropyResult);
+
+            if (pruningType == PruningType.None)
+            {
+                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
+                decTabMaj.OnTrainingDataSubmission = onTrainingDataSubmission;
+                decTabMaj.OnInputAttributeSubmission = onInputAttributeSubmission;
+                decTabMaj.OnValidationDataSubmission = onValidationDataSubmission;
+                decTabMaj.DefaultOutput = output;
+                CrossValidation<DecisionTableMajority> decTabMajCV = new CrossValidation<DecisionTableMajority>(decTabMaj);
+                var decTabMajResult = decTabMajCV.Run(data, splitter);
+                decTabMajResult.Epsilon = eps;
+                Console.WriteLine(decTabMajResult);
+            }
         }
 
         private void ErrorImpurityTestIntPerReduct(
@@ -418,17 +421,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             OnInputAttributeSubmission onInputAttributeSubmission,
             OnValidationDataSubmission onValidationDataSubmission)
         {                        
-            int[] attributes = trainDS.GetStandardFields();
-
-            if (pruningType == PruningType.None)
-            {
-                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
-                decTabMaj.DefaultOutput = output;
-                decTabMaj.Learn(trainDS, attributes);
-                var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, testDS);
-                decTabMajResult.Epsilon = eps;
-                Console.WriteLine(decTabMajResult);
-            }
+            int[] attributes = trainDS.GetStandardFields();            
 
             DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
             treeRough.OnTrainingDataSubmission = onTrainingDataSubmission;
@@ -463,6 +456,19 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             var treeOblivEntropyResult = Classifier.DefaultClassifer.Classify(treeOblivEntropy, testDS);
             treeOblivEntropyResult.Epsilon = eps;
             Console.WriteLine(treeOblivEntropyResult);
+
+            if (pruningType == PruningType.None)
+            {
+                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
+                decTabMaj.OnTrainingDataSubmission = onTrainingDataSubmission;
+                decTabMaj.OnInputAttributeSubmission = onInputAttributeSubmission;
+                decTabMaj.OnValidationDataSubmission = onValidationDataSubmission;
+                decTabMaj.DefaultOutput = output;
+                decTabMaj.Learn(trainDS, attributes);
+                var decTabMajResult = Classifier.DefaultClassifer.Classify(decTabMaj, testDS);
+                decTabMajResult.Epsilon = eps;
+                Console.WriteLine(decTabMajResult);
+            }
         }               
 
         private string GetCachedReductKey(DataStore data, double epsilon)

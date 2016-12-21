@@ -26,49 +26,10 @@ namespace Infovision.Data.Tests
 
         [Test, Repeat(10)]
         public void TestDecisionTreeTest()
-        {
-            Dictionary<string, Tuple<int[], DataStore>> localReductCache = new Dictionary<string, Tuple<int[], DataStore>>(5);
-            object cacheLock = new object();
-
-            Func<IModel, int[], DataStore, Tuple<int[], DataStore>> calculateReduct_Prunning = 
-                delegate (IModel model, int[] attr, DataStore dta)
-                {
-                    //assumption: in case of pruning dta.Name returns DSName-X-Y, where X is the first CV and Y is the second CV for prunning
-                    Tuple<int[], DataStore> best = null;
-                    if (localReductCache.TryGetValue(dta.Name, out best))
-                        return best;
-
-                    lock (cacheLock)
-                    {
-                        best = null;
-                        if (localReductCache.TryGetValue(dta.Name, out best))
-                            return best;
-
-                        Args parms = new Args(4);
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, dta);
-                        parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                        parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
-                        parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
-                        IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
-                        generator.Run();
-
-                        var reducts = generator.GetReducts();
-                        reducts.Sort(ReductAccuracyComparer.Default);
-                        IReduct bestReduct = reducts.FirstOrDefault();
-                        best = new Tuple<int[], DataStore>(bestReduct.Attributes.ToArray(), dta);
-
-                        localReductCache.Add(dta.Name, best);
-                    }
-                    return best;
-                };
-
-            AttributeAndDataSelectionMethod attributeSelectionMethod = (m, a, d) => calculateReduct_Prunning(m, a, d);
-
+        {           
             DataStoreSplitter splitter = new DataStoreSplitter(dataStore, 5);
-
-            DecisionTreeRough treeRough = new DecisionTreeRough();
-            treeRough.PreLearn = attributeSelectionMethod;
-            treeRough.PruningType = PruningType.ReducedErrorPruning;
+            DecisionTreeRough treeRough = new DecisionTreeRough();            
+            treeRough.PruningType = PruningType.None;
             CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
             var treeRoughResult = treeRoughCV.Run(dataStore, splitter);            
             Console.WriteLine(treeRoughResult);            

@@ -295,17 +295,15 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             return cuts.Length;
         }
 
-        //TODO
         public static int Search(int value, double[] cuts)
         {
             return Search((double)value, cuts);
         }
-
-        //TODO
+        
         public static int Search(double value, double[] cuts)
         {
             if (cuts == null)
-                return 1;
+                return 1;            
 
             for (int i = 0; i < cuts.Length; i++)
                 if (value <= cuts[i])

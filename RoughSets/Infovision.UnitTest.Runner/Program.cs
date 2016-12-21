@@ -22,17 +22,16 @@ namespace Infovision.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
-            //Test_CV(25);
-            //Test_Benchmark(25);
+            Test_CV(25);
+            Test_Benchmark(25);
                                    
-            ProcessResultFiles();
+            //ProcessResultFiles();
         }
 
         public static void Test_Benchmark(int tests)
         {
             DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string trainFile, testFile, reductFactoryKey;
-            PruningType pruningType;
             FileFormat fileFormat;
 
             MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest");
@@ -49,11 +48,10 @@ namespace Infovision.UnitTest.Runner
                     {
                         trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
                         testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
-                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[2];
-                        pruningType = (PruningType)((TestCaseAttribute)testCase).Arguments[3];
-                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[4];
+                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[2];                        
+                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
                         
-                        test.ErrorImpurityTest(trainFile, testFile, fileFormat, pruningType, reductFactoryKey);
+                        test.ErrorImpurityTest(trainFile, testFile, fileFormat, reductFactoryKey);
                     }
                 }
             }
@@ -63,7 +61,6 @@ namespace Infovision.UnitTest.Runner
         {
             DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string dataFile, reductFactoryKey;
-            PruningType pruningType;
             FileFormat fileFormat;
             int folds;
 
@@ -80,12 +77,11 @@ namespace Infovision.UnitTest.Runner
                     foreach (var testCase in testCases)
                     {
                         dataFile = (string)((TestCaseAttribute)testCase).Arguments[0];
-                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[1];
-                        pruningType = (PruningType)((TestCaseAttribute)testCase).Arguments[2];
-                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
-                        folds = (int)((TestCaseAttribute)testCase).Arguments[4];
+                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[1];                        
+                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[2];
+                        folds = (int)((TestCaseAttribute)testCase).Arguments[3];
 
-                        test.ErrorImpurityTest_CV(dataFile, fileFormat, pruningType, reductFactoryKey, folds);
+                        test.ErrorImpurityTest_CV(dataFile, fileFormat, reductFactoryKey, folds);
                     }
                 }
             }

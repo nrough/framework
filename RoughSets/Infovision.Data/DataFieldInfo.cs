@@ -150,7 +150,7 @@ namespace Infovision.Data
             //    return false;
 
             if (this.IsNumeric)
-                return true;
+                return true;            
 
             return false;
         }

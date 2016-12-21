@@ -20,10 +20,10 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
     public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
     {        
         protected Dictionary<int, List<long>> thresholds = null;
-        protected DecisionDistribution aprioriDistribution = null;
+        //protected DecisionDistribution aprioriDistribution = null;
 
         private DecisionTreeNode root = null;
-        private int decisionAttributeId = -1;
+        //private int decisionAttributeId = -1;
         private double mA = 1.0;        
         private int nextId = 1;        
 
@@ -101,8 +101,8 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             this.root = null;
             this.nextId = 1;
             this.thresholds = null;
-            this.aprioriDistribution = null;
-            this.mA = 0;            
+            //this.aprioriDistribution = null;
+            this.mA = 1.0;            
         }
 
         protected int GetId()
@@ -121,7 +121,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
                 this.TrainingData = data;
                 this.root = new DecisionTreeNode(-1, -1, ComparisonType.EqualTo, -1, null);
-                this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
+                //this.decisionAttributeId = data.DataStoreInfo.DecisionFieldId;
 
                 if (this.Gamma >= 0.0)
                     this.mA = InformationMeasureWeights.Instance.Calc(
@@ -130,7 +130,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 this.thresholds = new Dictionary<int, List<long>>();               
                 foreach (DataFieldInfo field in attributes
                     .Select(k => data.DataStoreInfo.GetFieldInfo(k))
-                    .Where(f => f.IsNumeric))
+                    .Where(f => f.CanDiscretize()))
                 {                                        
                     var thresholdList = new List<long>();
 
@@ -143,10 +143,9 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
                     this.thresholds[field.Id] = thresholdList;
                 }
-
-                this.aprioriDistribution = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights).DecisionDistribution;
+                
                 if(this.DefaultOutput == null)
-                    this.DefaultOutput = this.aprioriDistribution.Output;
+                    this.DefaultOutput = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights).DecisionDistribution.Output;
             }
         }
 
@@ -159,23 +158,15 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         {            
             if (this.PruningType != PruningType.None)
                 return this.LearnAndPrune(data, attributes);
+                                    
+            DataStore selectedData = this.OnTrainingDataSubmission != null 
+                                   ? this.OnTrainingDataSubmission(this, attributes, data) 
+                                   : data;
 
-            int[] selectedAttributes = null;
-            DataStore selectedData = null;
-
-            if (this.PreLearn != null)
-            {                
-                var selectedAttributeData = this.PreLearn(this, attributes, data);
-
-                selectedAttributes = selectedAttributeData.Item1;
-                selectedData = selectedAttributeData.Item2;                
-            }
-            else
-            {
-                selectedAttributes = attributes;
-                selectedData = data;
-            }            
-
+            int[] selectedAttributes = this.OnInputAttributeSubmission != null 
+                                     ? this.OnInputAttributeSubmission(this, attributes, selectedData) 
+                                     : attributes;
+            
             this.Init(selectedData, selectedAttributes);
             EquivalenceClassCollection eqClassCollection = EquivalenceClassCollection.Create(new int[] { }, selectedData, selectedData.Weights);
             if (this.Gamma >= 0.0)
@@ -223,7 +214,9 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 tmpTree.PruningType = PruningType.None;
                 tmpTree.Learn(trainSet, attributes);
 
-                if (data.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
+                pruningSet = this.OnValidationDataSubmission != null ? this.OnValidationDataSubmission(this, attributes, pruningSet) : pruningSet;
+
+                if (pruningSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
                 {
                     new DataStoreDiscretizer().Discretize(pruningSet, trainSet);
                 }

@@ -122,7 +122,7 @@ namespace Infovision.MachineLearning.Classification
         [ClassificationResultValue("err", "{0:0.0000}")]
         public double Error
         {
-            get { return 1.0 - this.Accuracy; }
+            get { return counter > 0 ? 1.0 - this.Accuracy : 0.0; }
         }
 
         [ClassificationResultValue("bal", "{0:0.0000}")]
@@ -311,9 +311,7 @@ namespace Infovision.MachineLearning.Classification
         #region Constructors
 
         private ClassificationResult()
-        {            
-            this.ModelCreationTime = -1;
-            this.ClassificationTime = -1;
+        {                        
             this.EnsembleSize = 1;
         }        
 

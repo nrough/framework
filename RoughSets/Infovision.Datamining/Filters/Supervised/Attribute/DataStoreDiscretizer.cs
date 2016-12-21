@@ -88,16 +88,8 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                 }
             }
 
-            return cuts;
-        }
-
-        /*
-        public virtual void Discretize(DataStore trainingData, DataStore testData, double[] weights = null)
-        {
-            Discretize(trainingData, weights);
-            Discretize(testData, trainingData);
-        }
-        */
+            return cuts.ToArray();
+        }        
 
         public void Discretize(DataStore trainingData, double[] weights = null)
         {
@@ -112,9 +104,8 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             {
                 localFieldInfoTrain = trainingData.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
-                {                    
-                    localFieldInfoTrain.IsNumeric = false;
-                    localFieldInfoTrain.Cuts = GetCuts(trainingData, fieldId, weights);
+                {                                        
+                    localFieldInfoTrain.Cuts = GetCuts(trainingData, fieldId, weights);                    
                     int[] newValues = new int[trainingData.NumberOfRecords];
 
                     switch (Type.GetTypeCode(localFieldInfoTrain.FieldValueType))
@@ -134,6 +125,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                     }                    
 
                     localFieldInfoTrain.FieldValueType = typeof(int);
+                    localFieldInfoTrain.IsNumeric = false;
                     trainingData.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
                 }
             }
@@ -156,7 +148,6 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                         throw new InvalidOperationException("localFieldInfoTrain.Cuts == null");
 
                     TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
-                    localFieldInfoTest.IsNumeric = false;
                     int[] newValues = new int[dataToDiscretize.NumberOfRecords];
                                         
                     switch (trainFieldTypeCode)
@@ -180,6 +171,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 
                     localFieldInfoTest.FieldValueType = typeof(int);
                     localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
+                    localFieldInfoTest.IsNumeric = false;
                     dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
                 }
             }

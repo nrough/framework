@@ -107,7 +107,7 @@ namespace Infovision.Data
             dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[fold];
 
             dataStore1 = new DataStore(dataStoreInfo1);
-            dataStore1.Name = dataStore.Name + "-" + fold.ToString();
+            dataStore1.Name = dataStore.Name + "-TRN-" + fold.ToString();
             dataStore1.Fold = fold;
 
             for (int i = 0; i < folds.Length; i++)
@@ -146,7 +146,7 @@ namespace Infovision.Data
             dataStoreInfo2.NumberOfRecords = foldSize[fold];
 
             dataStore2 = new DataStore(dataStoreInfo2);
-            dataStore2.Name = dataStore.Name + "-" + fold.ToString();
+            dataStore2.Name = dataStore.Name + "-TST-" + fold.ToString();
             dataStore2.Fold = fold;
 
             for (int i = 0; i < folds.Length; i++)

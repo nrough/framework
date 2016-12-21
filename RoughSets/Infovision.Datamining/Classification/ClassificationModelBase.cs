@@ -9,7 +9,9 @@ namespace Infovision.MachineLearning.Classification
 {
     public abstract class ClassificationModelBase : ModelBase
     {
-        public AttributeAndDataSelectionMethod PreLearn { get; set; }
+        public OnTrainingDataSubmission OnTrainingDataSubmission { get; set; }
+        public OnInputAttributeSubmission OnInputAttributeSubmission { get; set; }
+        public OnValidationDataSubmission OnValidationDataSubmission { get; set; }
 
         public ClassificationModelBase()
             : base()
@@ -21,13 +23,13 @@ namespace Infovision.MachineLearning.Classification
         {
         }
     }
+    
+    public delegate DataStore OnTrainingDataSubmission(
+        IModel model, int[] attributes, DataStore trainingData);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="attributes"></param>
-    /// <param name="trainingData"></param>    
-    /// <returns></returns>
-    public delegate Tuple<int[], DataStore> AttributeAndDataSelectionMethod(
+    public delegate int[] OnInputAttributeSubmission(
+        IModel model, int[] attributes, DataStore trainingData);
+
+    public delegate DataStore OnValidationDataSubmission(
         IModel model, int[] attributes, DataStore trainingData);
 }

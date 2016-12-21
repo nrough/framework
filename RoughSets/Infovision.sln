@@ -916,8 +916,8 @@ Global
 		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|Win32.ActiveCfg = Release|Any CPU
 		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|Win32.Build.0 = Release|Any CPU
-		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x64.ActiveCfg = Release|Any CPU
-		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x64.Build.0 = Release|Any CPU
+		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x64.ActiveCfg = Release|x64
+		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x64.Build.0 = Release|x64
 		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{44513510-2207-420A-AA54-3BC1E0D122F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection

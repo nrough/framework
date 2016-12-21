@@ -109,22 +109,13 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
                 UseKononenko = useKononenko
             };
 
-            disc.Compute(data, labels, false, null);
-
-            ShowInfo<int, int>(disc, data, dataNotExisting);
-        }
-
-        public void ShowInfo<A, L>(Discretization<A, L> disc, A[] dataExisting, A[] dataNotExisting)
-            where A : struct, IComparable, IFormattable, IComparable<A>, IEquatable<A>
-            where L : struct, IComparable, IFormattable, IComparable<L>, IEquatable<L>
-        {
-            Console.WriteLine(disc.ToString());
+            disc.Compute(data, labels, false, null);            
 
             for (int i = 0; i < data.Length; i++)
-                Console.WriteLine("{0} {1}", data[i], disc.Search(dataExisting[i]));
+                Console.WriteLine("{0} {1}", data[i], Discretization<int, int>.Search(data[i], disc.Cuts));
 
             for (int i = 0; i < data.Length; i++)
-                Console.WriteLine("{0} {1}", dataNotExisting[i], disc.Search(dataNotExisting[i]));
-        }
+                Console.WriteLine("{0} {1}", dataNotExisting[i], Discretization<int, int>.Search(dataNotExisting[i], disc.Cuts));
+        }        
     }
 }

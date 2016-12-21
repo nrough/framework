@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning.Filters.Supervised.Attribute;
 
 namespace Infovision.MachineLearning
 {
@@ -72,10 +73,25 @@ namespace Infovision.MachineLearning
                     localAttributes = attributes;            
 
             T model = (T)this.modelPrototype.Clone();
-            model.Learn(trainDS, localAttributes);
+            ClassificationResult result = model.Learn(trainDS, localAttributes);
 
             if (this.PostLearningMethod != null)
                 this.PostLearningMethod(model);
+
+            if (testDS.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+            {
+                var descretizer = new DataStoreDiscretizer()
+                {
+                    UseBetterEncoding = false,
+                    UseKononenko = false,
+                    Fields2Discretize = testDS.DataStoreInfo.GetFields(FieldTypes.Standard)
+                                        .Where(f => f.CanDiscretize())
+                                        .Select(fld => fld.Id)
+                };
+
+                //result.TestData = Data on which Model was build
+                descretizer.Discretize(testDS, result.TestData);
+            }
 
             return Classifier.DefaultClassifer.Classify(model, testDS);
         }

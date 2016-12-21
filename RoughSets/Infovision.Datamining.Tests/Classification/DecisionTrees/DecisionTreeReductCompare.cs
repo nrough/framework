@@ -185,7 +185,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\lymphography.all", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
@@ -217,7 +217,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;            
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);            
+            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
 
             int rednum = 100;
             PermutationGenerator permutationGenerator = new PermutationGenerator(allAttributes);

@@ -281,19 +281,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
             {
                 this.cuts = new double[0];
             }
-        }
-
-        public int Search(V value)
-        {
-            if (this.cuts == null)
-                return 1;
-
-            for (int i = 0; i < cuts.Length; i++)
-                if (Operator.Convert<V, double>(value).CompareTo(cuts[i]) <= 0)
-                    return i;
-
-            return cuts.Length;
-        }
+        }        
 
         public static int Search(int value, double[] cuts)
         {

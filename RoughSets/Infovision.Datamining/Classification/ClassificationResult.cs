@@ -25,8 +25,7 @@ namespace Infovision.MachineLearning.Classification
         private long[] predictionResults;
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
-        private int counter;
-        private DataStore testData;
+        private int counter;        
         private readonly object syncRoot = new object();
 
         #endregion Members
@@ -37,6 +36,8 @@ namespace Infovision.MachineLearning.Classification
         {
             get { return this.counter; }
         }
+
+        public DataStore TestData { get; set; }
 
         [ClassificationResultValue("precisionmacro", "{0:0.0000}", false)]
         public double PrecisionMacro
@@ -322,7 +323,7 @@ namespace Infovision.MachineLearning.Classification
             localDecisionValues.Sort();
 
             this.Fold = dataStore.Fold;
-            this.testData = dataStore;
+            this.TestData = dataStore;
             this.DatasetName = dataStore.Name;
             this.decCount = localDecisionValues.Count;
             this.decCountPlusOne = this.decCount + 1;
@@ -401,17 +402,17 @@ namespace Infovision.MachineLearning.Classification
 
         public long GetPrediction(long objectId)
         {
-            return predictionResults[testData.ObjectId2ObjectIndex(objectId)];
+            return predictionResults[TestData.ObjectId2ObjectIndex(objectId)];
         }
 
         public long GetActual(int objectIdx)
         {
-            return testData.GetFieldValue(objectIdx, testData.DataStoreInfo.DecisionFieldId);
+            return TestData.GetFieldValue(objectIdx, TestData.DataStoreInfo.DecisionFieldId);
         }
 
         public long GetActual(long objectId)
         {
-            return testData.GetFieldValue(testData.ObjectId2ObjectIndex(objectId), testData.DataStoreInfo.DecisionFieldId);
+            return TestData.GetFieldValue(TestData.ObjectId2ObjectIndex(objectId), TestData.DataStoreInfo.DecisionFieldId);
         }
 
         public int GetConfusionTable(long prediction, long actual)
@@ -676,8 +677,8 @@ namespace Infovision.MachineLearning.Classification
                 }
             }
 
-            foreach (var objectId in localResult.testData.GetObjectIds())                
-                this.predictionResults[this.testData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
+            foreach (var objectId in localResult.TestData.GetObjectIds())                
+                this.predictionResults[this.TestData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
         }
 
         /// <summary>

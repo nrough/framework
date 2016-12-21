@@ -144,28 +144,23 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                 if (localFieldInfoTest.CanDiscretize())
                 {
                     localFieldInfoTrain = discretizedData.DataStoreInfo.GetFieldInfo(fieldId);
+
                     if (localFieldInfoTrain.Cuts == null)
                         throw new InvalidOperationException("localFieldInfoTrain.Cuts == null");
-
-                    TypeCode trainFieldTypeCode = Type.GetTypeCode(localFieldInfoTest.FieldValueType);
-                    int[] newValues = new int[dataToDiscretize.NumberOfRecords];
                                         
-                    switch (trainFieldTypeCode)
+                    int[] newValues = new int[dataToDiscretize.NumberOfRecords];                                        
+                    switch (Type.GetTypeCode(localFieldInfoTest.FieldValueType))
                     {
-                        case TypeCode.Int32:
-                            var discretizeInt = new Discretization<int, long>();
-                            discretizeInt.Cuts = localFieldInfoTrain.Cuts;
+                        case TypeCode.Int32:                            
                             int[] oldValuesInt = dataToDiscretize.GetColumn<int>(fieldId);
                             for (int j = 0; j < dataToDiscretize.NumberOfRecords; j++)
-                                newValues[j] = discretizeInt.Search(oldValuesInt[j]);
+                                newValues[j] = Discretization<int, long>.Search(oldValuesInt[j], localFieldInfoTrain.Cuts);
                             break;
 
-                        case TypeCode.Double:
-                            var discretizeDouble = new Discretization<double, long>();
-                            discretizeDouble.Cuts = localFieldInfoTrain.Cuts;
+                        case TypeCode.Double:                            
                             double[] oldValuesDouble = dataToDiscretize.GetColumn<double>(fieldId);
                             for (int j = 0; j < dataToDiscretize.NumberOfRecords; j++)
-                                newValues[j] = discretizeDouble.Search(oldValuesDouble[j]);
+                                newValues[j] = Discretization<double, long>.Search(oldValuesDouble[j], localFieldInfoTrain.Cuts);
                             break;
                     }
 

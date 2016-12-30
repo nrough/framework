@@ -556,21 +556,33 @@ namespace Infovision.MachineLearning.Classification
 
         public double Recall(long decision)
         {
+            if (FalseNegative(decision) == 0)
+                return 1.0;
+
             return TruePositive(decision) / (TruePositive(decision) + FalseNegative(decision));            
         }
 
         public double RecallWeight(long decision)
         {
+            if (FalseNegativeWeight(decision) == 0.0)
+                return 1.0;
+
             return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalseNegativeWeight(decision));
         }
 
         public double Precision(long decision)
         {
+            if (this.FalsePositive(decision) == 0.0)
+                return 1.0;
+
             return TruePositive(decision) / (TruePositive(decision) + FalsePositive(decision));
         }
 
         public double PrecisionWeight(long decision)
         {
+            if (this.FalsePositiveWeight(decision) == 0.0)
+                return 1.0;
+
             return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalsePositiveWeight(decision));
         }
 

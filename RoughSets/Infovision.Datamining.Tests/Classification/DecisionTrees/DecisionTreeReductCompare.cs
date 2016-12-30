@@ -182,7 +182,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\semeion.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]

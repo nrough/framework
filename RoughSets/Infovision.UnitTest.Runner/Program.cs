@@ -22,6 +22,8 @@ namespace Infovision.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
+            ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
+
             Test_CV(25);
             Test_Benchmark(25);
                                    
@@ -38,8 +40,7 @@ namespace Infovision.UnitTest.Runner
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
 
             using (var cc = new ConsoleCopy("mylogfile_"+DateTime.Now.ToString("yyyyMMddHHmmss") +".txt"))
-            {
-                ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
+            {                
                 Console.WriteLine(ClassificationResult.TableHeader());
 
                 for (int i = 0; i < tests; i++)
@@ -68,10 +69,8 @@ namespace Infovision.UnitTest.Runner
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
 
             using (var cc = new ConsoleCopy("mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
-            {
-                ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha";
+            {                
                 Console.WriteLine(ClassificationResult.TableHeader());
-
                 for (int i = 0; i < tests; i++)
                 {
                     foreach (var testCase in testCases)

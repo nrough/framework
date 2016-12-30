@@ -105,6 +105,13 @@ namespace Infovision.MachineLearning.Classification
                         case "beta": sb.AppendFormat("{0,7}", "beta"); break;
 
                         case "desc": sb.AppendFormat("description"); break;
+
+                        case "precisionmicro": sb.AppendFormat("{0,6}", "precisionmicro"); break;
+                        case "precisionmacro": sb.AppendFormat("{0,6}", "precisionmacro"); break;
+                        case "recallmicro": sb.AppendFormat("{0,6}", "recallmicro"); break;
+                        case "recallmacro": sb.AppendFormat("{0,6}", "recallmacro"); break;
+                        case "f1scoremicro": sb.AppendFormat("{0,6}", "f1scoremicro"); break;
+                        case "f1scoremacro": sb.AppendFormat("{0,6}", "f1scoremacro"); break;
                     }
                 }
                 else
@@ -148,6 +155,14 @@ namespace Infovision.MachineLearning.Classification
                         case "alpha": sb.AppendFormat("{0,7:0.00}", result.Alpha); break;
                         case "beta": sb.AppendFormat("{0,7:0.00}", result.Beta); break;
                         case "desc": sb.AppendFormat(String.IsNullOrEmpty(result.Description) ? "" : result.Description); break;
+                        
+                        case "precisionmicro": sb.AppendFormat("{0:0.0000}", result.PrecisionMicro); break;
+                        case "precisionmacro": sb.AppendFormat("{0:0.0000}", result.PrecisionMacro); break;                        
+                        case "recallmicro": sb.AppendFormat("{0:0.0000}", result.RecallMicro); break;
+                        case "recallmacro": sb.AppendFormat("{0:0.0000}", result.RecallMacro); break;
+                        case "f1scoremicro": sb.AppendFormat("{0:0.0000}", result.F1scoreMicro); break;
+                        case "f1scoremacro": sb.AppendFormat("{0:0.0000}", result.F1scoreMacro); break;
+
                     }
                 }
 

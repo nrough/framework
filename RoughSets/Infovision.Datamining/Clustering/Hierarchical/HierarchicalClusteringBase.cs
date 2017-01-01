@@ -74,22 +74,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
         {
             get { return this.instances; }
             set { this.instances = value; }
-        }
-
-        /*
-        public double AvgNodeLevelDistance
-        {
-            get
-            {
-                if (this.avgNodeLevelDistance < -1)
-                {
-                    this.avgNodeLevelDistance = this.GetAvgNodeLevelDistance();
-                }
-
-                return this.avgNodeLevelDistance;
-            }
-        }
-        */
+        }        
 
         public HierarchicalClusteringBase()
         {
@@ -132,8 +117,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
             this.Distance = Similarity.Euclidean;
             this.Linkage = ClusteringLinkage.Complete;
             this.nextNodeId = -1;
-            this.instances = new Dictionary<int, double[]>();
-            //this.avgNodeLevelDistance = double.MinValue;
+            this.instances = new Dictionary<int, double[]>();            
             this.isLeafDistanceCalculated = false;
         }
 
@@ -442,48 +426,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
                 result.Add(node.Id, this.GetLeaves(node).ToList());
             return result;
         }
-
-        /*
-        /// <summary>
-        /// <par>Calculates average distance between nodes.</par>
-        /// <par>D(node1, node2) = D(node1, root) + D(node2, root) - 2*D(LCA(node1, node2), root)</par>
-        /// <par>where D(a, root) is number of levels between node a and tree root and LCA is lowest common ancestor</par>
-        /// </summary>
-        /// <returns>Average distance</returns>
-        public virtual double GetAvgNodeLevelDistance()
-        {
-            if (this.isLeafDistanceCalculated == false)
-                this.CalculateLeavesDistance();
-
-            double ret = 0.0;
-            foreach (KeyValuePair<Tuple<int, int>, DendrogramNode> kvp in this.lca)
-                ret += this.GetLeafDistance(kvp.Key.Item1, kvp.Key.Item2);
-            return ret / lca.Count;
-        }
-        */
-
-        /*
-        public virtual double GetAvgNodeLevelDistance(int nodeIdToSkip)
-        {
-            if (this.isLeafDistanceCalculated == false)
-                this.CalculateLeavesDistance();
-
-            double ret = 0.0;
-            int n = 0;
-
-            foreach (KeyValuePair<Tuple<int, int>, DendrogramNode> kvp in this.lca)
-            {
-                if (kvp.Key.Item1 != nodeIdToSkip
-                    && kvp.Key.Item2 != nodeIdToSkip)
-                {
-                    ret += this.GetLeafDistance(kvp.Key.Item1, kvp.Key.Item2);
-                    n++;
-                }
-            }
-            return n > 0 ? ret / (double) n : 0.0;
-        }
-        */
-
+        
         //TODO Move to extension class
         public virtual double GetDendrogramCorrelation(HierarchicalClusteringBase otherCluster)
         {
@@ -565,24 +508,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
 
             double result = Infovision.Math.Correlation.SpearmansCoeff(lcb1, lcb2);
             return result;
-        }
-
-        /*
-        public virtual double GetDistanceDelta(Dictionary<Tuple<int, int>, double> previousDistance)
-        {
-            if (this.isLeafDistanceCalculated == false)
-                this.CalculateLeavesDistance();
-
-            double sum = 0.0;
-            foreach (KeyValuePair<Tuple<int, int>, double> kvp in previousDistance)
-            {
-                double distance = this.GetLeafDistance(kvp.Key.Item1, kvp.Key.Item2);
-                sum += ((kvp.Value - distance ) * (kvp.Value - distance));
-            }
-
-            return previousDistance.Count > 0 ? sum / (double) previousDistance.Count : 0.0;
-        }
-        */
+        }        
 
         protected virtual void CalculateLeavesDistance()
         {

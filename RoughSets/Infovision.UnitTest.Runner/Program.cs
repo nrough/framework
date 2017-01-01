@@ -25,7 +25,7 @@ namespace Infovision.UnitTest.Runner
             ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
 
             Test_CV(25);
-            Test_Benchmark(25);
+            //Test_Benchmark(25);
                                    
             //ProcessResultFiles();
         }
@@ -88,6 +88,7 @@ namespace Infovision.UnitTest.Runner
 
         public static void ProcessResultFiles()
         {
+            /*
             List<string> fileNames = new List<string>(new string[] {
                 @"d:\temp\1\mylogfile_CV_20161128064439.txt",
                 @"d:\temp\1\mylogfile_CV_20161130122938.txt",
@@ -112,6 +113,12 @@ namespace Infovision.UnitTest.Runner
                 @"d:\temp\1\mylogfile_20161209105906.txt",      // vowel disc
                 @"d:\temp\1\mylogfile_CV_20161209225000.txt"    // lymphography
                 });
+            */
+
+            List<string> fileNames = new List<string>(new string[] {
+                @"d:\temp\1\mylogfile_CV_20161224012153.txt",
+                @"d:\temp\1\mylogfile_20161225080854.txt",
+            });
 
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');
 

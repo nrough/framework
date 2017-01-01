@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Infovision.Data;
 using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using System.Linq;
-using Infovision.MachineLearning.Filters.Supervised.Attribute;
 
 namespace Infovision.MachineLearning.Filters.Supervised.Attribute
 {

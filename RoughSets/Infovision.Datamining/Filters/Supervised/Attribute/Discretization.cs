@@ -111,8 +111,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
                     numCutPoints++;
                 }
             }
-
-            // Use worse encoding?
+            
             if ( ! UseBetterEncoding)
             {
                 numCutPoints = (lastPlusOne - first) - 1;

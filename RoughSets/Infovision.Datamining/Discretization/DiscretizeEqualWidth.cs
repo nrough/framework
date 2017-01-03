@@ -10,5 +10,10 @@ namespace Infovision.MachineLearning.Discretization
     {
         public DiscretizeEqualWidth()
             : base() { }
+
+        public override long[] ComputeCuts(long[] data, double[] weights)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

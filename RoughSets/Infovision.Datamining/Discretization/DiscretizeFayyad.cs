@@ -10,6 +10,11 @@ namespace Infovision.MachineLearning.Discretization
     public class DiscretizeFayyad : DiscretizeSupervisedBase
     {
         public DiscretizeFayyad()
-            : base() {}        
+            : base() {}
+
+        public override long[] ComputeCuts(long[] data, long[] labels, double[] weights)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

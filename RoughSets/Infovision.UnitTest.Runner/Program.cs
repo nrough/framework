@@ -24,10 +24,10 @@ namespace Infovision.UnitTest.Runner
         {
             ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
 
-            Test_CV(25);
+            //Test_CV(25);
             //Test_Benchmark(25);
                                    
-            //ProcessResultFiles();
+            ProcessResultFiles();
         }
 
         public static void Test_Benchmark(int tests)
@@ -116,8 +116,9 @@ namespace Infovision.UnitTest.Runner
             */
 
             List<string> fileNames = new List<string>(new string[] {
-                @"d:\temp\1\mylogfile_CV_20161224012153.txt",
-                @"d:\temp\1\mylogfile_20161225080854.txt",
+                //@"d:\temp\1\mylogfile_CV_20161224012153.txt",
+                //@"d:\temp\1\mylogfile_20161225080854.txt",
+                @"d:\temp\1\mylogfile_CV_20161231160308.txt" //nurse
             });
 
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');

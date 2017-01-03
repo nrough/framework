@@ -10,5 +10,10 @@ namespace Infovision.MachineLearning.Discretization
     {
         public DiscretizeKononenko()
             : base() {}
+
+        public override long[] ComputeCuts(long[] data, long[] labels, double[] weights)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

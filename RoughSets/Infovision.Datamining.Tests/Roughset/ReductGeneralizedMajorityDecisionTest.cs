@@ -15,8 +15,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
     internal class ReductGeneralizedMajorityDecisionTest
     {
         public ReductGeneralizedMajorityDecisionTest()
-        {
-            Random randSeed = new Random();
+        {            
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 

@@ -15,11 +15,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
 
         public PermutationTest()
         {
-            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);
-
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            RandomSingleton.Seed = seed;
+            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);            
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 
         [Test]

@@ -347,8 +347,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
         }        
 
         public ReductGeneralizedMajorityDecisionApproximateTest()
-        {
-            Random randSeed = new Random();
+        {            
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();            
         }
 

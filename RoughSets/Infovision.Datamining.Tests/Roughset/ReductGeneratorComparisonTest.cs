@@ -18,11 +18,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
     internal class ReductGeneratorComparisonTest
     {
         public ReductGeneratorComparisonTest()
-        {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            //Console.WriteLine("class ReductGeneratorComparisonTest Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
+        {                        
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 
         public static IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()

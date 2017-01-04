@@ -20,11 +20,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
     public class ReductEnsembleExperiment
     {
         public ReductEnsembleExperiment()
-        {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            //Console.WriteLine("class ReductEnsembleExperiment Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
+        {                                    
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 
         public IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()

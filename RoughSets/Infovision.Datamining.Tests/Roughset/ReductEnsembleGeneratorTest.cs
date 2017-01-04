@@ -16,11 +16,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
     internal class ReductEnsembleGeneratorTest
     {
         public ReductEnsembleGeneratorTest()
-        {
-            Random randSeed = new Random();
-            int seed = Guid.NewGuid().GetHashCode();
-            //Console.WriteLine("class ReductEnsembleGeneratorTest Seed: {0}", seed);
-            RandomSingleton.Seed = seed;
+        {                    
+            RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()

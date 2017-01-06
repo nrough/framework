@@ -128,6 +128,10 @@
     <Compile Include="Clustering\Hierarchical\DistanceMatrixTest.cs" />
     <Compile Include="CrossValidationTest.cs" />
     <Compile Include="Classification\ClassificationResultTest.cs" />
+    <Compile Include="Discretization\DiscretizeSupervisedBaseTest.cs" />
+    <Compile Include="Discretization\DiscretizeBaseTest.cs" />
+    <Compile Include="Discretization\DiscretizeFayyadTest.cs" />
+    <Compile Include="Discretization\DiscretizeKononenkoTest.cs" />
     <Compile Include="Filters\Supervised\Attribute\DiscretizationTest.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\AccordDiscretizationFixture.cs" />
     <Compile Include="Filters\Unsupervised\Attribute\DiscretizationTest.cs" />

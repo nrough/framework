@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
+    [Serializable]
     public abstract class DiscretizeBase : IDiscretization
     {
         #region Members
 
         private long[] cuts;
+        private int[] sortedIndices;
 
         #endregion
 
@@ -23,8 +26,13 @@ namespace Infovision.MachineLearning.Discretization
             {
                 if (!this.ValidateCuts(value))
                     throw new InvalidOperationException("Discretization cuts are not valid");
-                this.cuts = value;
+                this.cuts = value;                
             }
+        }
+
+        protected ReadOnlyCollection<int> SortedIndices
+        {
+            get { return Array.AsReadOnly(this.sortedIndices); }
         }
 
         public bool IsDataSorted { get; set; }
@@ -42,7 +50,7 @@ namespace Infovision.MachineLearning.Discretization
 
         #endregion
 
-        #region Methods
+        #region Methods        
 
         public long[] Apply(long[] data)
         {
@@ -60,6 +68,24 @@ namespace Infovision.MachineLearning.Discretization
                 if (value <= Cuts[i])
                     return i;
             return Cuts.Length;
+        }
+
+        protected void SortIndices(long[] data)
+        {
+            this.sortedIndices = Enumerable.Range(0, data.Length).ToArray();
+            if(!this.IsDataSorted)
+                Array.Sort(this.sortedIndices, (a, b) => data[a].CompareTo(data[b]));
+        }
+
+        protected Dictionary<long, double> CountLabels(long[] labels, int start, int end, double[] weights)
+        {
+            var result = new Dictionary<long, double>();
+            for(int i=start; i < labels.Length && i < end; i++)
+                if (result.ContainsKey(labels[sortedIndices[i]]))
+                    result[labels[sortedIndices[i]]] += (weights == null) ? 1.0 : weights[sortedIndices[i]];
+                else
+                    result.Add(labels[sortedIndices[i]], (weights == null) ? 1.0 : weights[sortedIndices[i]]);
+            return result;            
         }
 
         private bool ValidateCuts(long[] cuts)

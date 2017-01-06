@@ -8,7 +8,7 @@ namespace Infovision.MachineLearning.Discretization
 {
     public interface IDiscretizationSupervised : IDiscretization
     {
-        long[] ComputeCuts(long[] data, long[] labels, double[] weights);
+        long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights);
         void Compute(long[] data, long[] labels, double[] weights);
     }
 }

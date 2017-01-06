@@ -12,6 +12,7 @@ namespace Infovision.MachineLearning.Filters.Supervised.Attribute
     /// </summary>
     /// <typeparam name="V">Attribute values data type</typeparam>
     /// <typeparam name="D">Decision atribute / Labels / Classes / Outputs data type</typeparam>
+    [Obsolete("Use Infovision.MachineLearing.Discretization Framework instead")]
     public class Discretization<V, D>
         where V : struct, IComparable, IFormattable, IComparable<V>, IEquatable<V>
         where D : struct, IComparable, IFormattable, IComparable<D>, IEquatable<D>

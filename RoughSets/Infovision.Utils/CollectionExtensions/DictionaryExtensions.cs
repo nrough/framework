@@ -95,6 +95,19 @@ namespace Infovision.Core
                     result = kvp;
             return result;
         }
+
+        /// <summary>
+        /// This is an extension method to set a given value in dictionary to all its elements
+        /// </summary>
+        /// <typeparam name="TKey">Keys base type</typeparam>
+        /// <typeparam name="TValue">Values base type</typeparam>
+        /// <param name="dict">Dictionary on which operation is performed</param>
+        /// <param name="value">Value to set</param>
+        public static void SetAll<TKey, TValue>(this Dictionary<TKey, TValue> dict, TValue value)
+        {
+            foreach (var key in dict.Keys.ToList())
+                dict[key] = value;
+        }
     }
 
     /// <summary>

@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
+    [Serializable]
     public abstract class DiscretizeUnsupervisedBase : DiscretizeBase, IDiscretizationUnsupervised
     {
+        #region Properties
+
+        public int NumberOfBuckets { get; set; }
+
+        #endregion
+
         #region Constructors
 
         public DiscretizeUnsupervisedBase()
@@ -24,6 +31,9 @@ namespace Infovision.MachineLearning.Discretization
             if (data == null) throw new ArgumentNullException("data", "data == null");            
             if (weights != null && weights.Length != data.Length)
                 throw new ArgumentException("weights.Length != data.Length", "weights");
+
+            if (!this.IsDataSorted)
+                this.SortIndices(data);
 
             this.Cuts = ComputeCuts(data, weights);
             if (this.Cuts == null)

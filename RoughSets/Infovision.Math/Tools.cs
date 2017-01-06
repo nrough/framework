@@ -93,11 +93,27 @@ namespace Infovision.Math
             return returnValue;
         }
 
+        public static double Entropy(double[] left, double[] right)
+        {
+            double entropyLeft = 0, entropyRight = 0, sumLeft = left.Sum(), sumRight = right.Sum();
+
+            for (int i = 0; i < left.Length; i++)
+                if(left[i] > 0)
+                    entropyLeft -= (left[i] / sumLeft) * System.Math.Log(left[i] / sumLeft, 2);
+
+            for (int i = 0; i < right.Length; i++)
+                if (right[i] > 0)
+                    entropyRight -= (right[i] / sumRight) * System.Math.Log(right[i] / sumRight, 2);
+
+            return ((sumLeft / (sumLeft + sumRight)) * entropyLeft) + ((sumRight / (sumLeft + sumRight)) * entropyRight);
+        }        
+
         public static double EntropyConditionedOnRows(double[][] matrix)
         {
             double returnValue = 0, total = 0.0;
             double[][] localEntropy = new double[2][];
-            for (int i = 0; i < 2; i++) localEntropy[i] = new double[matrix.Length];
+            for (int i = 0; i < 2; i++)
+                localEntropy[i] = new double[matrix.Length];
 
             for (int i = 0; i < matrix.Length; i++)
             {

@@ -2,6 +2,7 @@
 using System.Linq;
 using Infovision.Data;
 using Infovision.MachineLearning.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Discretization;
 using NUnit.Framework;
 
 namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
@@ -103,6 +104,7 @@ namespace Infovision.MachineLearning.Tests.Filters.Supervised.Attribute
         [TestCase(true, true)]
         public void ComputeTest(bool useBetterEncoding, bool useKononenko)
         {
+                        
             Discretization<int, int> disc = new Discretization<int, int>()
             {
                 UseBetterEncoding = useBetterEncoding,

@@ -134,6 +134,7 @@
     <Compile Include="CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
     <Compile Include="Discretization\DiscretizeBase.cs" />
+    <Compile Include="Discretization\DiscretizeEntropy.cs" />
     <Compile Include="Discretization\DiscretizeUnsupervisedBase.cs" />
     <Compile Include="Discretization\DiscretizeSupervisedBase.cs" />
     <Compile Include="Discretization\DiscretizeEqualFreqency.cs" />

@@ -32,11 +32,9 @@ namespace Infovision.MachineLearning.Discretization
             int numClassesLeft = left.Count(val => val > 0);
             int numClassesRight = right.Count(val => val > 0);            
 
-            // Compute terms for MDL formula
             double delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2, 2)
                 - ((numClassesTotal * priorEntropy) - (numClassesRight * entropyRight) - (numClassesLeft * entropyLeft));
-
-            // Check if split is to be accepted
+            
             if (gain < ((System.Math.Log(numOfInstances - 1, 2) + delta) / numOfInstances))
                 return false;
 

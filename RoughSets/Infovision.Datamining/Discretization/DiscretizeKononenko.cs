@@ -19,30 +19,19 @@ namespace Infovision.MachineLearning.Discretization
             if (base.StopCondition(priorCount, left, right, numOfPossibleCuts, numOfInstances))
                 return true;
 
-            int numClassesTotal = priorCount.Count(val => val > 0);
-                        
-            // Encode distribution prior to split
-            double distPrior = Tools.Log2Binomial(numOfInstances + numClassesTotal - 1, numClassesTotal - 1);
+            int labelCount = priorCount.Count(val => val > 0);
+            double before = Tools.Log2Binomial(numOfInstances + labelCount - 1, labelCount - 1)
+                + Tools.Log2Multinomial(numOfInstances, priorCount);
 
-            // Encode instances prior to split.
-            double instPrior = Tools.Log2Multinomial(numOfInstances, priorCount);
-
-            double before = instPrior + distPrior;
-
-            // Encode distributions and instances after split.
             double leftSum = left.Sum();
             double rightSum = right.Sum();
 
-            double distAfter = Tools.Log2Binomial(leftSum + numClassesTotal - 1, numClassesTotal - 1)
-                             + Tools.Log2Binomial(rightSum + numClassesTotal - 1, numClassesTotal - 1);
-
-            double instAfter = Tools.Log2Multinomial(leftSum, left)
-                             + Tools.Log2Multinomial(rightSum, right);
-
-            // Coding cost after split
-            double after = System.Math.Log(numOfPossibleCuts, 2) + distAfter + instAfter;
-
-            // Check if split is to be accepted
+            double after = System.Math.Log(numOfPossibleCuts, 2)
+                + Tools.Log2Binomial(leftSum + labelCount - 1, labelCount - 1)
+                + Tools.Log2Binomial(rightSum + labelCount - 1, labelCount - 1)
+                + Tools.Log2Multinomial(leftSum, left)
+                + Tools.Log2Multinomial(rightSum, right);
+                                   
             if (before > after)
                 return false;
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
+    [Serializable]
     public class DiscretizeEqualFreqency : DiscretizeUnsupervisedBase
     {
         #region Properties
@@ -36,7 +37,7 @@ namespace Infovision.MachineLearning.Discretization
                              : new long[this.NumberOfBuckets - 1];
             
             double counter = 0, last = 0;
-            int cpindex = 0, lastIndex = -1;
+            int cutPointsIdx = 0, lastIdx = -1;
 
             for (int i = 0; i < data.Length - 1; i++)
             {
@@ -49,36 +50,36 @@ namespace Infovision.MachineLearning.Discretization
                     if (counter >= freq)
                     {
                         // Is this break point worse than the last one?
-                        if (((freq - last) < (counter - freq)) && (lastIndex != -1))
+                        if (((freq - last) < (counter - freq)) && (lastIdx != -1))
                         {                           
-                            cutPoints[cpindex] = (data[SortedIndices[lastIndex]] + data[SortedIndices[lastIndex + 1]]) / 2;
+                            cutPoints[cutPointsIdx] = (data[SortedIndices[lastIdx]] + data[SortedIndices[lastIdx + 1]]) / 2;
                             counter -= last;
                             last = counter;
-                            lastIndex = i;
+                            lastIdx = i;
                         }
                         else
                         {                            
-                            cutPoints[cpindex] = (data[SortedIndices[i]] + data[SortedIndices[i + 1]]) / 2;
+                            cutPoints[cutPointsIdx] = (data[SortedIndices[i]] + data[SortedIndices[i + 1]]) / 2;
                             counter = 0;
                             last = 0;
-                            lastIndex = -1;
+                            lastIdx = -1;
                         }
 
-                        cpindex++;
-                        freq = (weightsSum + counter) / ((cutPoints.Length + 1) - cpindex);
+                        cutPointsIdx++;
+                        freq = (weightsSum + counter) / ((cutPoints.Length + 1) - cutPointsIdx);
                     }
                     else
                     {
-                        lastIndex = i;
+                        lastIdx = i;
                         last = counter;
                     }
                 }
             }
 
             // Check whether there was another possibility for a cut point
-            if ((cpindex < cutPoints.Length) && (lastIndex != -1))
+            if ((cutPointsIdx < cutPoints.Length) && (lastIdx != -1))
             {                
-                cutPoints[cpindex] = (data[SortedIndices[lastIndex]] + data[SortedIndices[lastIndex + 1]]) / 2;
+                cutPoints[cutPointsIdx] = (data[SortedIndices[lastIdx]] + data[SortedIndices[lastIdx + 1]]) / 2;
                 return cutPoints;
             }
             

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
+    [Serializable]
     public class DiscretizeEqualWidth : DiscretizeUnsupervisedBase
     {
         public DiscretizeEqualWidth()
-            : base() { }
+            : base()
+        {
+            this.IsDataSorted = true;
+        }
 
         public override long[] ComputeCuts(long[] data, double[] weights)
         {

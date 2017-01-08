@@ -7,13 +7,12 @@ using System.Linq;
 using System.Text;
 using GenericParsing;
 using Infovision.Data;
-using Infovision.MachineLearning.Filters;
-using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using Infovision.MachineLearning.Roughset;
 using Infovision.Core;
 using Infovision.Core.Data;
 using Infovision.MachineLearning.Weighting;
 using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Discretization;
 
 namespace DisesorTest
 {
@@ -40,14 +39,7 @@ namespace DisesorTest
 
         private RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
         private RuleQualityFunction voteFunction = RuleQuality.CoverageW;
-        private WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
-
-        private bool useSupervisedDiscetization = true;
-        private DiscretizationType discretizationType = DiscretizationType.Supervised_FayyadAndIranisMDL_BetterEncoding;
-        private bool useWeightsInDiscretization = false;
-        private bool useBetterEncoding = true;
-        private bool useKokonenkoMDL = true;
-        private int numberOfBins = 2;
+        private WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;                
 
         private string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
         //double innerEpsilon = 0.4m;
@@ -108,28 +100,8 @@ namespace DisesorTest
             Console.WriteLine("Voting method: {0}", voteFunction.Method.Name);
             Console.WriteLine("Minimum vote key: {0}", minimumVoteValue);
             Console.WriteLine("Weighting generator: {0}", weightGeneratorType);
-            Console.WriteLine();
-
-            Console.WriteLine("Use weights in discretization: {0}", useWeightsInDiscretization);
-            Console.WriteLine("Is discretization (S)upervised or (U)nsupervised: {0}", useSupervisedDiscetization ? "S" : "U");
-            Console.WriteLine();
-
-            if (useSupervisedDiscetization)
-            {
-                Console.WriteLine("(S) Use better encoding: {0}", useSupervisedDiscetization);
-                Console.WriteLine("(S) Use Kononenko MDL criteriaon: {0}", useKokonenkoMDL);
-                Console.WriteLine("(S) Use Fayyad and Iranis MDL criteriaon: {0}", !useKokonenkoMDL);
-                Console.WriteLine();
-            }
-            else
-            {
-                Console.WriteLine("(U) Discretization type: {0}", discretizationType);
-
-                if (discretizationType == DiscretizationType.Unsupervised_EqualWidth)
-                    Console.WriteLine("(U) Number of bins: {0}", numberOfBins);
-
-                Console.WriteLine();
-            }
+            Console.WriteLine();            
+            Console.WriteLine("Using Fayyad and Irani MDL supervised discretization");
 
             if (factoryKey.Contains("Boosting"))
             {
@@ -245,56 +217,27 @@ namespace DisesorTest
 
             Console.Write("Discretizing data...");
 
-            if (!useSupervisedDiscetization)
+            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                                
+            foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
             {
-                var discretizer = DataStoreDiscretizer.Construct(discretizationType);
-                discretizer.NumberOfBins = numberOfBins;
+                Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
+                    field.Id,
+                    field.Alias,
+                    field.FieldValueType,
+                    field.NumberOfValues,
+                    field.CanDiscretize() ? "Can" : "Cannot");
 
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
+                if (field.CanDiscretize())
                 {
-                    Console.WriteLine("Atribute {0} {1} has type {2} and {3} distinct values. {4} be discretized",
-                        field.Id,
-                        field.Alias,
-                        field.FieldValueType,
-                        field.NumberOfValues,
-                        field.CanDiscretize() ? "Can" : "Cannot");
-
-                    if (field.CanDiscretize())
-                    {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? wGen.Weights : null);
-                        Console.WriteLine(this.Cuts2Sting(cuts));
-                    }
+                    long[] cuts = discretizer.GetCuts(train, field.Id, wGen.Weights);
+                    Console.WriteLine(this.Cuts2Sting(cuts));
                 }
-
-                discretizer.Discretize(ref train, ref test, useWeightsInDiscretization ? wGen.Weights : null);
             }
-            else
-            {
-                var discretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
-                {
-                    UseBetterEncoding = useBetterEncoding,
-                    UseKononenko = useKokonenkoMDL
-                };
 
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
-                {
-                    Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
-                        field.Id,
-                        field.Alias,
-                        field.FieldValueType,
-                        field.NumberOfValues,
-                        field.CanDiscretize() ? "Can" : "Cannot");
-
-                    if (field.CanDiscretize())
-                    {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, useWeightsInDiscretization ? wGen.Weights : null);
-                        Console.WriteLine(this.Cuts2Sting(cuts));
-                    }
-                }
-
-                discretizer.Discretize(train, useWeightsInDiscretization ? wGen.Weights : null);
-                discretizer.Discretize(test, train);
-            }
+            discretizer.Discretize(train, wGen.Weights);
+            discretizer.Discretize(test, train);
+                        
             Console.WriteLine("Done");
 
             Args innerArgs = new Args();
@@ -485,7 +428,7 @@ namespace DisesorTest
             Console.WriteLine("Done");
         }
 
-        private string Cuts2Sting(double[] cuts)
+        private string Cuts2Sting(long[] cuts)
         {
             StringBuilder sb = new StringBuilder();
 

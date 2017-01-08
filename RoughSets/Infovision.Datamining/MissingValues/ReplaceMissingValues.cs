@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Infovision.Data;
 
-namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.MissingValues
 {
     public class ReplaceMissingValues
     {
@@ -31,21 +31,7 @@ namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
 
         private DataStore ComputeNoReference(DataStore dataStore)
         {
-            Dictionary<int, Dictionary<long, long>> mostFrequentValues = this.CalcMissingValues(dataStore);
-
-            /*
-            foreach (var kvp in mostFrequentValues)
-            {
-                foreach (var kvp2 in kvp.Value)
-                {
-                    Console.WriteLine("{0} {1} {2}",
-                        kvp.Key,
-                        dataStore.DataStoreInfo.GetDecisionFieldInfo().Internal2External(kvp2.Key),
-                        dataStore.DataStoreInfo.GetFieldInfo(kvp.Key).Internal2External(kvp2.Value));
-                }
-            }
-            */
-
+            Dictionary<int, Dictionary<long, long>> mostFrequentValues = this.CalcMissingValues(dataStore);            
             return this.ReplaceValues(dataStore, mostFrequentValues);
         }
 

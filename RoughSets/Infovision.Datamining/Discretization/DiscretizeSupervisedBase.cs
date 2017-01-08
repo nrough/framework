@@ -139,7 +139,7 @@ namespace Infovision.MachineLearning.Discretization
             return false;
         }
 
-        public void Compute(long[] data, long[] labels, double[] weights)
+        public override void Compute(long[] data, long[] labels, double[] weights)
         {
             if (data == null) throw new ArgumentNullException("data", "data == null");
             if (labels != null && labels.Length != data.Length)

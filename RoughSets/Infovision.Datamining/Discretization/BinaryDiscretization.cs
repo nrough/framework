@@ -2,32 +2,30 @@
 using Infovision.Data;
 using MiscUtil;
 
-namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.Discretization
 {
-    public class BinaryDiscretization<T>
-        where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
+    public class BinaryDiscretization
     {
-        private double[] cuts;
-
-        public double[] Cuts
+        private long[] cuts;
+        public long[] Cuts
         {
             get { return cuts; }
             set { cuts = value; }
         }
 
-        public BinaryDiscretization(double splitPoint)
+        public BinaryDiscretization(long splitPoint)
         {
-            this.cuts = new double[1];
+            this.cuts = new long[1];
             this.cuts[0] = splitPoint;
         }
 
-        public int Search(T value)
+        public int Apply(long value)
         {
             if (this.cuts == null)
                 return 0;
 
             for (int i = 0; i < cuts.Length; i++)
-                if (Operator.Convert<T, double>(value).CompareTo(cuts[i]) <= 0)
+                if (value <= cuts[i])
                     return i;
 
             return cuts.Length;
@@ -46,7 +44,7 @@ namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
                     if (value == fieldInfo.MissingValueInternal)
                         result[i] = "?";
                     else
-                        result[i] = this.Search((T)fieldInfo.Internal2External(value)).ToString();
+                        result[i] = this.Apply(value).ToString();
                 }
             }
             else
@@ -54,7 +52,7 @@ namespace Infovision.MachineLearning.Filters.Unsupervised.Attribute
                 for (int i = 0; i < data.NumberOfRecords; i++)
                 {
                     long value = data.GetFieldIndexValue(i, fieldIdx);
-                    result[i] = this.Search((T)fieldInfo.Internal2External(value)).ToString();
+                    result[i] = this.Apply(value).ToString();
                 }
             }
 

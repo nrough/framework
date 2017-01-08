@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Infovision.MachineLearning.Roughset;
 using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Filters.Supervised.Attribute;
 using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Discretization;
 
 namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 {
@@ -67,16 +67,11 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
                         if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
                         {
-                            var descretizer = new DataStoreDiscretizer()
-                            {
-                                UseBetterEncoding = false,
-                                UseKononenko = false,
-                                Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
                                             .Where(f => f.CanDiscretize())
-                                            .Select(fld => fld.Id)
-                            };
-
-                            descretizer.Discretize(trainingSet, trainingSet.Weights);
+                                            .Select(fld => fld.Id);                            
+                            discretizer.Discretize(trainingSet, trainingSet.Weights);
                         }
 
                         localDataFoldCache.Add(trainingSet.Name, trainingSet);
@@ -105,16 +100,11 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
 
-                            var descretizer = new DataStoreDiscretizer()
-                            {
-                                UseBetterEncoding = false,
-                                UseKononenko = false,
-                                Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                            discretizer.Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
                                             .Where(f => f.CanDiscretize())
-                                            .Select(fld => fld.Id)
-                            };
-
-                            descretizer.Discretize(validationSet, cachedData);
+                                            .Select(fld => fld.Id);                            
+                            discretizer.Discretize(validationSet, cachedData);
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -245,21 +235,15 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
                     if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
                     {
-                        var descretizer = new DataStoreDiscretizer()
-                        {
-                            UseBetterEncoding = false,
-                            UseKononenko = false,
-                            Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                        var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
                                         .Where(f => f.CanDiscretize())
-                                        .Select(fld => fld.Id)
-                        };
-
-                        descretizer.Discretize(trainingSet, trainingSet.Weights);
+                                        .Select(fld => fld.Id);                        
+                        discretizer.Discretize(trainingSet, trainingSet.Weights);
                     }
 
                     localDataFoldCache.Add(trainingSet.Name, trainingSet);
                     return trainingSet;
-
                 }
             };
 
@@ -283,17 +267,12 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                             cachedData = null;
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
-                                
-                            var descretizer = new DataStoreDiscretizer()
-                            {
-                                UseBetterEncoding = false,
-                                UseKononenko = false,
-                                Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
-                                            .Where(f => f.CanDiscretize())
-                                            .Select(fld => fld.Id)
-                            };
 
-                            descretizer.Discretize(validationSet, cachedData);
+                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                            discretizer.Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                                            .Where(f => f.CanDiscretize())
+                                            .Select(fld => fld.Id);
+                            discretizer.Discretize(validationSet, cachedData);                                                        
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -490,16 +469,11 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
             splitter.PostSplitMethod = (trn, tst) =>
             {
-                var descretizer = new DataStoreDiscretizer()
-                {
-                    UseBetterEncoding = false,
-                    UseKononenko = false, //use FayadAndIraniMDL
-                    Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
-                        .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric)
-                };
-
-                descretizer.Discretize(trn, trn.Weights);
-                descretizer.Discretize(tst, trn);
+                var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                        .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
+                discretizer.Discretize(trn, trn.Weights);
+                discretizer.Discretize(tst, trn);
             };
 
             DecisionTreeC45 treec45 = new DecisionTreeC45();

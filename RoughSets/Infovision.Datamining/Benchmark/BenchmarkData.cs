@@ -14,12 +14,7 @@ namespace Infovision.MachineLearning.Benchmark
         public bool CrossValidationActive { get; set; }
         public int CrossValidationFolds { get; set; }
         public FileFormat FileFormat { get; set; }
-        public int DecisionFieldId { get; set; }
-
-        public bool DiscretizeUsingEntropy { get; set; }
-        public bool DiscretizeUsingEqualFreq { get; set; }
-        public bool DiscretizeUsingEqualWidth { get; set; }
-
+        public int DecisionFieldId { get; set; }       
         private Dictionary<int, DataFieldInfo> fieldMetadata;
 
         protected BenchmarkData()
@@ -66,16 +61,11 @@ namespace Infovision.MachineLearning.Benchmark
                 return fieldMetadata[fieldId].Alias;
             else
                 return fieldId.ToString();
-        }
-
-        public bool CheckDiscretize()
-        {
-            return this.DiscretizeUsingEntropy || this.DiscretizeUsingEqualFreq || this.DiscretizeUsingEqualWidth;
-        }
+        }        
 
         public IEnumerable<DataFieldInfo> GetNumericFields()
         {
-            return this.fieldMetadata.Values.Where(f => f.IsNumeric);
+            return this.fieldMetadata.Values.Where(f => f.IsNumeric && f.CanDiscretize());
         }
     }
 }

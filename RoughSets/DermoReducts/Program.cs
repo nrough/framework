@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infovision.Data;
-using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using Infovision.MachineLearning.Roughset;
+using Infovision.MachineLearning.Discretization;
 
 namespace DermoReducts
 {
@@ -88,12 +88,12 @@ namespace DermoReducts
                 f.Name = f.Alias;
             }
 
-            foreach (object val in ageAttribute.Values())
+            foreach (long val in ageAttribute.InternalValues())
             {
                 int value = (int)val;
                 if (value != (int)ageAttribute.MissingValue)
                 {
-                    BinaryDiscretization<int> discretizer = new BinaryDiscretization<int>(value);
+                    BinaryDiscretization discretizer = new BinaryDiscretization(value);
 
                     string[] newValuesTrain = discretizer.Discretize(data, ageAttribute);
 

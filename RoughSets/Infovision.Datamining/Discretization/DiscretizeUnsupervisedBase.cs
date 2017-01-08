@@ -26,7 +26,7 @@ namespace Infovision.MachineLearning.Discretization
 
         public abstract long[] ComputeCuts(long[] data, double[] weights);
 
-        public void Compute(long[] data, double[] weights)
+        public override void Compute(long[] data, long[] labels, double[] weights)
         {
             if (data == null) throw new ArgumentNullException("data", "data == null");            
             if (weights != null && weights.Length != data.Length)

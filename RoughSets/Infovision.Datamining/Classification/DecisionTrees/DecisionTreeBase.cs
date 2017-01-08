@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Discretization;
 
 namespace Infovision.MachineLearning.Classification.DecisionTrees
 {       
@@ -211,7 +211,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
 
                 if (pruningSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
                 {
-                    new DataStoreDiscretizer().Discretize(pruningSet, trainSet);
+                    new DataStoreDiscretizer(new DiscretizeFayyad()).Discretize(pruningSet, trainSet);
                 }
                 
                 IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 

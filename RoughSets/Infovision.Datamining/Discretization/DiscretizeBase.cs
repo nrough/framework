@@ -50,7 +50,9 @@ namespace Infovision.MachineLearning.Discretization
 
         #endregion
 
-        #region Methods        
+        #region Methods
+
+        public abstract void Compute(long[] data, long[] labels, double[] weights);
 
         public long[] Apply(long[] data)
         {

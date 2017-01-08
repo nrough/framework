@@ -11,5 +11,6 @@ namespace Infovision.MachineLearning.Discretization
         long[] Cuts { get; set; }
         long[] Apply(long[] data);
         long Apply(long value);
+        void Compute(long[] data, long[] labels, double[] weights);
     }      
 }

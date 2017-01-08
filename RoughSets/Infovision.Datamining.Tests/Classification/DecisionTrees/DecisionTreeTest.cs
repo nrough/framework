@@ -16,7 +16,6 @@ using Infovision.MachineLearning.Classification.DecisionTrees;
 using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using Infovision.MachineLearning.Classification.DecisionTables;
 using System.Collections.Generic;
-using Infovision.MachineLearning.Filters.Supervised.Attribute;
 using Infovision.MachineLearning.Classification;
 using Infovision.MachineLearning.Roughset;
 

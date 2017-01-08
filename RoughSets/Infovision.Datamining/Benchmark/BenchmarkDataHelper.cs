@@ -114,9 +114,7 @@ namespace Infovision.MachineLearning.Benchmark
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("german", GetFilePath(dataPath, "german.data"), cvFolds)
-            {
-                DiscretizeUsingEntropy = false,
-                DiscretizeUsingEqualFreq = true,
+            {                
                 FileFormat = FileFormat.Csv
             };
 
@@ -126,11 +124,8 @@ namespace Infovision.MachineLearning.Benchmark
 
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("sat", GetFilePath(dataPath, "sat.trn"), GetFilePath(dataPath, "sat.tst"))
-            {
-                DiscretizeUsingEntropy = false,
-                DiscretizeUsingEqualFreq = true
-            };
+            benchmark = new BenchmarkData("sat", GetFilePath(dataPath, "sat.trn"), GetFilePath(dataPath, "sat.tst"));
+            
             for (int i = 1; i <= 36; i++)
                 benchmark.AddFieldInfo(i, new DataFieldInfo(i, typeof(int)) { IsNumeric = true });
             dataFiles.Add(benchmark.Name, benchmark);

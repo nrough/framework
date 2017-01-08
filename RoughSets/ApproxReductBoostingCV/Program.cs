@@ -2,11 +2,11 @@
 using Infovision.Data;
 using Infovision.MachineLearning;
 using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using Infovision.MachineLearning.Roughset;
 using Infovision.Core;
 using Infovision.MachineLearning.Weighting;
 using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning.MissingValues;
 
 namespace ApproxReductBoostingCV
 {

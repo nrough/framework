@@ -133,6 +133,7 @@
     <Compile Include="Convergence.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
+    <Compile Include="Discretization\DataStoreDiscretizer.cs" />
     <Compile Include="Discretization\DiscretizeBase.cs" />
     <Compile Include="Discretization\DiscretizeEntropy.cs" />
     <Compile Include="Discretization\DiscretizeUnsupervisedBase.cs" />
@@ -142,15 +143,10 @@
     <Compile Include="Discretization\IDiscretization.cs" />
     <Compile Include="Discretization\IDiscretizationSupervised.cs" />
     <Compile Include="Discretization\IDiscretizationUnsupervised.cs" />
-    <Compile Include="Filters\Supervised\Attribute\DataStoreDiscretizer.cs" />
-    <Compile Include="Filters\Supervised\Attribute\Discretization.cs" />
     <Compile Include="Discretization\DiscretizeFayyad.cs" />
     <Compile Include="Discretization\DiscretizeKononenko.cs" />
-    <Compile Include="Filters\Unsupervised\Attribute\BinaryDiscretization.cs" />
-    <Compile Include="Filters\Unsupervised\Attribute\DataStoreDiscretizer.cs" />
-    <Compile Include="Filters\Unsupervised\Attribute\Discretization.cs" />
-    <Compile Include="Filters\DiscretizationType.cs" />
-    <Compile Include="Filters\Unsupervised\Attribute\ReplaceMissingValues.cs" />
+    <Compile Include="Discretization\BinaryDiscretization.cs" />
+    <Compile Include="MissingValues\ReplaceMissingValues.cs" />
     <Compile Include="IApproximationModel.cs" />
     <Compile Include="IDistibutionSelectStrategy.cs" />
     <Compile Include="ILearner.cs" />
@@ -506,7 +502,10 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Filters\Supervised\Attribute\" />
+    <Folder Include="Filters\Unsupervised\Attribute\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using Infovision.Data;
-using Infovision.MachineLearning.Filters.Unsupervised.Attribute;
 using Infovision.MachineLearning.Roughset;
 using Infovision.Core;
 using NUnit.Framework;
 using Infovision.MachineLearning.Weighting;
 using Infovision.MachineLearning.Classification;
+using Infovision.MachineLearning.MissingValues;
 
-namespace Infovision.MachineLearning.Tests.Filters.Unsupervised.Attribute
+namespace Infovision.MachineLearning.Tests.MissingValues
 {
     [TestFixture]
     public class ReplaceMissingValuesTest

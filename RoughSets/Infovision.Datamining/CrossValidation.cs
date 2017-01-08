@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Filters.Supervised.Attribute;
+using Infovision.MachineLearning.Discretization;
 
 namespace Infovision.MachineLearning
 {
@@ -80,16 +80,10 @@ namespace Infovision.MachineLearning
 
             if (testDS.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
             {
-                var descretizer = new DataStoreDiscretizer()
-                {
-                    UseBetterEncoding = false,
-                    UseKononenko = false,
-                    Fields2Discretize = testDS.DataStoreInfo.GetFields(FieldTypes.Standard)
+                var descretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                descretizer.Fields2Discretize = testDS.DataStoreInfo.GetFields(FieldTypes.Standard)
                                         .Where(f => f.CanDiscretize())
-                                        .Select(fld => fld.Id)
-                };
-
-                //result.TestData = Data on which Model was build
+                                        .Select(fld => fld.Id);
                 descretizer.Discretize(testDS, result.TestData);
             }
 

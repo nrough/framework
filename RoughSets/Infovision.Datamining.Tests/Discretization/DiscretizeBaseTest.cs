@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infovision.MachineLearning.Discretization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,10 @@ namespace Infovision.MachineLearning.Tests.Discretization
         protected long[] dataNotExisting = { 0, 1, 2, 3, 4, 5, 6,
                                     11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34,
                                     50, 60, 70, 80 };
+
+        public IDiscretization GetDiscretizer()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

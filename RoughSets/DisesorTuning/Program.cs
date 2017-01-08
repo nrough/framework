@@ -8,13 +8,13 @@ using System.Text;
 using GenericParsing;
 using Infovision.Data;
 using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.MachineLearning.Filters;
 using Infovision.MachineLearning.Roughset;
 using Infovision.Core;
 using Infovision.MachineLearning;
 using Infovision.Core.Data;
 using Infovision.MachineLearning.Weighting;
 using Infovision.MachineLearning.Permutations;
+using Infovision.MachineLearning.Discretization;
 
 namespace DisesorTuning
 {
@@ -62,12 +62,8 @@ namespace DisesorTuning
 						RuleQuality.SingleVote),
 					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Identification", //5
 						RuleQuality.CoverageW,
-						RuleQuality.ConfidenceW),
-					ParameterValueCollection<DiscretizationType>.CreateFromElements("DiscretizationType", //6
-						DiscretizationType.Unsupervised_Entropy,
-						DiscretizationType.Supervised_KononenkoMDL_BetterEncoding,
-						DiscretizationType.Supervised_FayyadAndIranisMDL_BetterEncoding),
-					ParameterValueCollection<WeightGeneratorType>.CreateFromElements("WeightGeneratorType", //7
+						RuleQuality.ConfidenceW),					
+					ParameterValueCollection<WeightGeneratorType>.CreateFromElements("WeightGeneratorType", //6
 						WeightGeneratorType.Relative,
 						WeightGeneratorType.Majority),
 					ParameterValueCollection<bool>.CreateFromElements("FixedPermutation",
@@ -88,9 +84,8 @@ namespace DisesorTuning
                 int weakClassifierSize = (int)p[2];
                 double eps = (double)p[3];
                 RuleQualityFunction voting = (RuleQualityFunction)p[4];
-                RuleQualityFunction identification = (RuleQualityFunction)p[5];
-                DiscretizationType discretizationType = (DiscretizationType)p[6];
-                WeightGeneratorType weightGeneratorType = (WeightGeneratorType)p[7];
+                RuleQualityFunction identification = (RuleQualityFunction)p[5];                
+                WeightGeneratorType weightGeneratorType = (WeightGeneratorType)p[6];
                 bool fixedPermutation = (bool)p[8];
 
                 WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
@@ -185,14 +180,7 @@ namespace DisesorTuning
             string testfile = @"c:\data\disesor\testData.csv";
             string testfile_merge = @"c:\data\disesor\testData_merge.csv";
             string labelfile = @"c:\data\disesor\trainingLabels.csv";
-
-            bool useSupervisedDiscetization = false;
-
-            bool useBetterEncoding = true;
-            bool useKokonenkoMDL = true;
-
-            DiscretizationType discretizationType = DiscretizationType.Unsupervised_Entropy;
-
+                       
             Console.Write("Loading raw train data...");
             DataTable rawTrainData;
             using (GenericParserAdapter gpa = new GenericParserAdapter(trainfile))
@@ -263,53 +251,24 @@ namespace DisesorTuning
             Console.WriteLine("Done");
 
             Console.Write("Discretizing data...");
-
-            if (!useSupervisedDiscetization)
+            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());                            
+            foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
             {
-                var discretizer = Infovision.MachineLearning.Filters.Unsupervised.Attribute.DataStoreDiscretizer.Construct(discretizationType);
+                Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
+                    field.Id,
+                    field.FieldValueType,
+                    field.NumberOfValues);                       
 
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
+                if (field.CanDiscretize())
                 {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values. {3} be discretized",
-                        field.Id,
-                        field.FieldValueType,
-                        field.NumberOfValues,
-                        discretizer.CanDiscretize(field) ? "Can" : "Cannot");
-
-                    if (discretizer.CanDiscretize(field))
-                    {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, null);
-                        Console.WriteLine(this.Cuts2Sting(cuts));
-                    }
+                    long[] cuts = discretizer.GetCuts(train, field.Id, null);
+                    Console.WriteLine(this.Cuts2Sting(cuts));
                 }
-
-                discretizer.Discretize(ref train, ref test, null);
             }
-            else
-            {
-                var discretizer = new Infovision.MachineLearning.Filters.Supervised.Attribute.DataStoreDiscretizer()
-                {
-                    UseBetterEncoding = useBetterEncoding,
-                    UseKononenko = useKokonenkoMDL
-                };
-
-                foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
-                {
-                    Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
-                        field.Id,
-                        field.FieldValueType,
-                        field.NumberOfValues);                       
-
-                    if (field.CanDiscretize())
-                    {
-                        double[] cuts = discretizer.GetCuts(train, field.Id, null);
-                        Console.WriteLine(this.Cuts2Sting(cuts));
-                    }
-                }
                 
-                discretizer.Discretize(train, train.Weights);
-                discretizer.Discretize(test, train);
-            }
+            discretizer.Discretize(train, train.Weights);
+            discretizer.Discretize(test, train);
+            
             Console.WriteLine("Done");
         }
 
@@ -376,7 +335,7 @@ namespace DisesorTuning
             Console.WriteLine("Done");
         }
 
-        private string Cuts2Sting(double[] cuts)
+        private string Cuts2Sting(long[] cuts)
         {
             StringBuilder sb = new StringBuilder();
 

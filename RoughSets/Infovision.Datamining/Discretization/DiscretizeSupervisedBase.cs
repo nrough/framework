@@ -32,9 +32,11 @@ namespace Infovision.MachineLearning.Discretization
         public virtual long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights)
         {            
             if (data == null || data.Length == 0) return null;
-            if (start >= end) return null;
+            if (end - start < 2) return null;            
+
             if (start < 0) throw new ArgumentOutOfRangeException("start", "start < 0");
             if (end > data.Length) throw new ArgumentOutOfRangeException("end", "end > data.Length");
+            
 
             var priorCount = CountLabels(labels, start, end, weights);
             if (priorCount.Count == 1) return null;
@@ -99,7 +101,7 @@ namespace Infovision.MachineLearning.Discretization
                 long[] right = this.ComputeCuts(data, labels, bestCutIndex + 1, end, weights);
 
                 // Merge cutpoints and return
-                if ((left == null) && (right) == null)
+                if ((left == null) && (right == null))
                 {
                     return new long[] { bestCutPoint };
                 }

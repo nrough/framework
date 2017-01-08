@@ -33,10 +33,10 @@ namespace Infovision.MachineLearning.Discretization
             int numClassesLeft = left.Count(val => val > 0);
             int numClassesRight = right.Count(val => val > 0);
 
-            double delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2, 2)
+            double delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2.0, 2)
                 - ((numClassesTotal * priorEntropy) - (numClassesRight * entropyRight) - (numClassesLeft * entropyLeft));
             
-            if (gain > ((System.Math.Log(numOfInstances - 1, 2) + delta) / (double)numOfInstances))
+            if (gain > ((System.Math.Log(numOfInstances - 1.0, 2) + delta) / (double)numOfInstances))
                 return false;
 
             return true;

@@ -12,11 +12,11 @@ namespace Infovision.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DiscretizeFayyadTest : DiscretizeSupervisedBaseTest
     {
-        [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
+        //[TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
+        //[TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
         [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.Csv)]
+        //[TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        //[TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.Csv)]
         public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
         {
             DataStore train = DataStore.Load(fileTrain, fileFormat);
@@ -30,10 +30,11 @@ namespace Infovision.MachineLearning.Tests.Discretization
 
             var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
 
+            
             discretizer.Fields2Discretize
                 = train.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
-
+             
             discretizer.Discretize(train, train.Weights);
             DataStoreDiscretizer.Discretize(test, train);
 

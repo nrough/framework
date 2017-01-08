@@ -67,7 +67,7 @@ namespace Infovision.MachineLearning.Discretization
         public static long Apply(long value, long[] cuts)
         {
             if (cuts == null)
-                throw new NullReferenceException("Cuts == null");
+                throw new ArgumentNullException("cuts", "cuts == null");
             for (int i = 0; i < cuts.Length; i++)
                 if (value <= cuts[i])
                     return i;
@@ -92,19 +92,23 @@ namespace Infovision.MachineLearning.Discretization
         protected Dictionary<long, double> CountLabels(long[] labels, int start, int end, double[] weights)
         {
             var result = new Dictionary<long, double>();
-            for(int i=start; i < labels.Length && i < end; i++)
+            for(int i = start; i < labels.Length && i < end; i++)
                 if (result.ContainsKey(labels[sortedIndices[i]]))
                     result[labels[sortedIndices[i]]] += (weights == null) ? 1.0 : weights[sortedIndices[i]];
                 else
                     result.Add(labels[sortedIndices[i]], (weights == null) ? 1.0 : weights[sortedIndices[i]]);
-            return result;            
+            return result;
         }
 
         private bool ValidateCuts(long[] cuts)
         {
+            if (cuts == null)
+                return false;
+
             for (int i = 1; i < cuts.Length; i++)
                 if (cuts[i] <= cuts[i - 1])
                     return false;
+
             return true;
         }
 

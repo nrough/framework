@@ -89,7 +89,8 @@ namespace Infovision.Math
         {
             double returnValue = 0, sum = sample.Sum();
             for (int i = 0; i < sample.Length; i++)
-                returnValue -= (sample[i] / sum) * System.Math.Log(sample[i] / sum, 2);
+                if(sample[i] > 0)
+                    returnValue -= (sample[i] / sum) * System.Math.Log(sample[i] / sum, 2);
             return returnValue;
         }
 
@@ -106,29 +107,6 @@ namespace Infovision.Math
                     entropyRight -= (right[i] / sumRight) * System.Math.Log(right[i] / sumRight, 2);
 
             return ((sumLeft / (sumLeft + sumRight)) * entropyLeft) + ((sumRight / (sumLeft + sumRight)) * entropyRight);
-        }        
-
-        public static double EntropyConditionedOnRows(double[][] matrix)
-        {
-            double returnValue = 0, total = 0.0;
-            double[][] localEntropy = new double[2][];
-            for (int i = 0; i < 2; i++)
-                localEntropy[i] = new double[matrix.Length];
-
-            for (int i = 0; i < matrix.Length; i++)
-            {
-                localEntropy[0][i] = matrix[i].Sum();
-                if (localEntropy[0][i] != 0)
-                {
-                    for (int j = 0; j < matrix[i].Length; j++)
-                        localEntropy[1][i] -= (matrix[i][j] / localEntropy[0][i]) 
-                            * System.Math.Log(matrix[i][j] / localEntropy[0][i], 2);
-                    total += localEntropy[0][i];
-                }
-            }
-            for(int i = 0; i < matrix.Length; i++)
-                returnValue += (localEntropy[0][i] / total) * localEntropy[1][i];
-            return returnValue;
         }
         
         public static double Log2Binomial(double a, double b)
@@ -143,6 +121,12 @@ namespace Infovision.Math
 
         public static void Normalize(double[] values, double sum)
         {
+            if (values == null)
+                return;
+
+            if (sum == 0.0)
+                return;
+
             for (int i = 0; i < values.Length; i++)
                 values[i] /= sum;
         }

@@ -65,7 +65,7 @@ namespace Infovision.MachineLearning.Discretization
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
-                {
+                {                    
                     localFieldInfoTrain.Cuts = GetCuts(dataToDiscretize, fieldId, weights);
                     long[] newValues = this.Discretizer.Apply(dataToDiscretize.GetColumnInternal(fieldId));
                     localFieldInfoTrain.FieldValueType = typeof(long);

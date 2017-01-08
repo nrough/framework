@@ -32,9 +32,11 @@ namespace Infovision.MachineLearning.Discretization
         public virtual long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights)
         {            
             if (data == null || data.Length == 0) return null;
-            if (start >= end) return null;            
-                                    
-            var priorCount = CountLabels(labels, start, end, weights);            
+            if (start >= end) return null;
+            if (start < 0) throw new ArgumentOutOfRangeException("start", "start < 0");
+            if (end > data.Length) throw new ArgumentOutOfRangeException("end", "end > data.Length");
+
+            var priorCount = CountLabels(labels, start, end, weights);
             if (priorCount.Count == 1) return null;
             
             var priorEntopy = Tools.Entropy(priorCount.Values.ToArray());
@@ -47,20 +49,20 @@ namespace Infovision.MachineLearning.Discretization
             int bestCutIndex = -1;
             long bestCutPoint = -1;
             int numCutPoints = 0;
-            double numInstances = 0.0;
+            double instanceWeight = 0.0;
             double bestEntropy = priorEntopy;
             
             for (int i = start; i < end - 1; i++)
-            {
+            {                
                 if (weights == null)
                 {
-                    numInstances++;
+                    instanceWeight++;
                     labelCountLeft[labels[SortedIndices[i]]]++;
                     labelCountRight[labels[SortedIndices[i]]]--;
                 }
                 else
                 {
-                    numInstances += weights[SortedIndices[i]];
+                    instanceWeight += weights[SortedIndices[i]];
                     labelCountLeft[labels[SortedIndices[i]]] += weights[SortedIndices[i]];
                     labelCountRight[labels[SortedIndices[i]]] -= weights[SortedIndices[i]];
                 }                
@@ -84,12 +86,13 @@ namespace Infovision.MachineLearning.Discretization
                 }
             }
 
-            numInstances += (weights == null) ? 1.0 : weights[SortedIndices[end - 1]];
+            int numInstances = (end - start);
 
             if (bestCutIndex == -1) return null;
             if (priorEntopy - bestEntropy <= 0) return null;
 
-            if (!StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight, numCutPoints, numInstances))
+            if ( ! StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight, 
+                    numCutPoints, numInstances, instanceWeight))
             {                
                 //call recurently compute cuts on subarrays
                 long[] left = this.ComputeCuts(data, labels, start, bestCutIndex + 1, weights);
@@ -98,7 +101,7 @@ namespace Infovision.MachineLearning.Discretization
                 // Merge cutpoints and return
                 if ((left == null) && (right) == null)
                 {
-                    return new long[] { bestCutPoint };                    
+                    return new long[] { bestCutPoint };
                 }
 
                 long[] result;
@@ -121,18 +124,20 @@ namespace Infovision.MachineLearning.Discretization
                 result = new long[left.Length + right.Length + 1];
                 Array.Copy(left, 0, result, 0, left.Length);
                 result[left.Length] = bestCutPoint;
-                Array.Copy(right, 0, result, left.Length + 1, right.Length);                
+                Array.Copy(right, 0, result, left.Length + 1, right.Length);
                 return result;
-            }                                                                    
-                                                
+            }
+
             return null;
         }
 
         protected virtual bool StopCondition(
-            double[] priorCount, double[] left, double[] right, int numOfPossibleCuts, double numOfInstances)
+            double[] priorCount, double[] left, double[] right, 
+            int numOfPossibleCuts, int numOfInstances, double instanceWeight)
         {
-            if (DoubleEpsilonComparer.Instance.Equals(numOfInstances, 0.0))
+            if (numOfInstances == 0)
                 return true;
+
             if (numOfPossibleCuts < 1)
                 return true;
 

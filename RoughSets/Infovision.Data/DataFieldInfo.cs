@@ -146,11 +146,8 @@ namespace Infovision.Data
             if (this.IsUnique)
                 return false;
 
-            //if (this.HasMissingValues)
-            //    return false;
-
-            if (this.IsNumeric)
-                return true;            
+            if (this.IsNumeric && this.InternalValues().Count > 1)
+                return true;
 
             return false;
         }

@@ -14,14 +14,14 @@ namespace Infovision.MachineLearning.Discretization
             : base() {}
 
         protected override bool StopCondition(
-            double[] priorCount, double[] left, double[] right, int numOfPossibleCuts, double numOfInstances)
+            double[] priorCount, double[] left, double[] right, int numOfPossibleCuts, int numOfInstances, double instanceWeight)
         {
-            if (base.StopCondition(priorCount, left, right, numOfPossibleCuts, numOfInstances))
+            if (base.StopCondition(priorCount, left, right, numOfPossibleCuts, numOfInstances, instanceWeight))
                 return true;
 
             int labelCount = priorCount.Count(val => val > 0);
-            double before = Tools.Log2Binomial(numOfInstances + labelCount - 1, labelCount - 1)
-                + Tools.Log2Multinomial(numOfInstances, priorCount);
+            double before = Tools.Log2Binomial(numOfPossibleCuts + labelCount - 1, labelCount - 1)
+                + Tools.Log2Multinomial(numOfPossibleCuts, priorCount);
 
             double leftSum = left.Sum();
             double rightSum = right.Sum();

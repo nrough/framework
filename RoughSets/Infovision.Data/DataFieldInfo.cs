@@ -230,6 +230,9 @@ namespace Infovision.Data
                     case TypeCode.Int32:
                         return (long)(int)externalValue;
 
+                    case TypeCode.Int64:
+                        return (long)externalValue;
+
                     case TypeCode.Double:
                         double tmp = (double)externalValue;
                         return (long)(tmp * System.Math.Pow(10, this.NumberOfDecimals));

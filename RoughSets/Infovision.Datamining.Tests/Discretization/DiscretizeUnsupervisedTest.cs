@@ -31,7 +31,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             DataStoreDiscretizer descretizer = new DataStoreDiscretizer(discretizer);
             descretizer.Fields2Discretize = numericFields;
             descretizer.Discretize(trainData, trainData.Weights);
-            descretizer.Discretize(testData, trainData);
+            DataStoreDiscretizer.Discretize(testData, trainData);
 
             foreach (int fieldId in numericFields)
             {

@@ -35,12 +35,13 @@ namespace Infovision.MachineLearning.Tests.Discretization
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
 
             discretizer.Discretize(train, train.Weights);
-            discretizer.Discretize(test, train);
+            DataStoreDiscretizer.Discretize(test, train);
 
             train.DumpExt(@"C:\" + fileTrain + ".disc", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
         }
 
+        [Test]
         public void CreateDiscretizedDataTableTest()
         {
 
@@ -58,7 +59,8 @@ namespace Infovision.MachineLearning.Tests.Discretization
             var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
             discretizer.Fields2Discretize = numericFields;
             discretizer.Discretize(trainData, trainData.Weights);
-            discretizer.Discretize(testData, trainData);
+
+            DataStoreDiscretizer.Discretize(testData, trainData);
 
             foreach (int fieldId in numericFields)
             {

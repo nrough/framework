@@ -54,22 +54,32 @@ namespace Infovision.MachineLearning.Discretization
 
         public abstract void Compute(long[] data, long[] labels, double[] weights);
 
-        public long[] Apply(long[] data)
+        public long[] Apply(long[] values)
         {
-            long[] result = new long[data.Length];
-            for (int i = 0; i < data.Length; i++)
-                result[i] = Apply(data[i]);
-            return result;
+            return DiscretizeBase.Apply(values, Cuts);
         }
 
         public long Apply(long value)
         {
-            if (Cuts == null)
+            return DiscretizeBase.Apply(value, Cuts);            
+        }
+
+        public static long Apply(long value, long[] cuts)
+        {
+            if (cuts == null)
                 throw new NullReferenceException("Cuts == null");
-            for (int i = 0; i < Cuts.Length; i++)
-                if (value <= Cuts[i])
+            for (int i = 0; i < cuts.Length; i++)
+                if (value <= cuts[i])
                     return i;
-            return Cuts.Length;
+            return cuts.Length;
+        }
+
+        public static long[] Apply(long[] values, long[] cuts)
+        {
+            long[] result = new long[values.Length];
+            for (int i = 0; i < values.Length; i++)
+                result[i] = DiscretizeBase.Apply(values[i], cuts);
+            return result;
         }
 
         protected void SortIndices(long[] data)

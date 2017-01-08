@@ -236,7 +236,7 @@ namespace DisesorTest
             }
 
             discretizer.Discretize(train, wGen.Weights);
-            discretizer.Discretize(test, train);
+            DataStoreDiscretizer.Discretize(test, train);
                         
             Console.WriteLine("Done");
 

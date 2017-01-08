@@ -79,12 +79,8 @@ namespace Infovision.MachineLearning
                 this.PostLearningMethod(model);
 
             if (testDS.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
-            {
-                var descretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
-                descretizer.Fields2Discretize = testDS.DataStoreInfo.GetFields(FieldTypes.Standard)
-                                        .Where(f => f.CanDiscretize())
-                                        .Select(fld => fld.Id);
-                descretizer.Discretize(testDS, result.TestData);
+            {                
+                DataStoreDiscretizer.Discretize(testDS, result.TestData);
             }
 
             return Classifier.DefaultClassifer.Classify(model, testDS);

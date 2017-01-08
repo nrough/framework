@@ -267,7 +267,7 @@ namespace DisesorTuning
             }
                 
             discretizer.Discretize(train, train.Weights);
-            discretizer.Discretize(test, train);
+            DataStoreDiscretizer.Discretize(test, train);
             
             Console.WriteLine("Done");
         }

@@ -76,29 +76,27 @@ namespace Infovision.MachineLearning.Discretization
                 }
             }
         }
-
-        //TODO Change to Static method
-        public void Discretize(DataStore dataToDiscretize, DataStore discretizedData)
+        
+        public static void Discretize(DataStore dataToDiscretize, DataStore discretizedData)
         {
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
-            IEnumerable<int> localFields = Fields2Discretize != null
-                                         ? Fields2Discretize
-                                         : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+            IEnumerable<int> localFields = dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             foreach (int fieldId in localFields)
             {
                 localFieldInfoTest = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
-                if (localFieldInfoTest.CanDiscretize())
+                if (localFieldInfoTest.CanDiscretize() )
                 {
                     localFieldInfoTrain = discretizedData.DataStoreInfo.GetFieldInfo(fieldId);
 
                     if (localFieldInfoTrain.Cuts == null)
                         throw new InvalidOperationException("localFieldInfoTrain.Cuts == null");
-
-                    //TODO THis should be based on custs stored in the training field column
-                    long[] newValues = this.Discretizer.Apply(dataToDiscretize.GetColumnInternal(fieldId));
+                    
+                    long[] newValues = DiscretizeBase.Apply(
+                        dataToDiscretize.GetColumnInternal(fieldId), 
+                        localFieldInfoTrain.Cuts);
                                         
-                    localFieldInfoTest.FieldValueType = typeof(int);
+                    localFieldInfoTest.FieldValueType = typeof(long);
                     localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
                     localFieldInfoTest.IsNumeric = false;
                     localFieldInfoTest.IsOrdered = true;

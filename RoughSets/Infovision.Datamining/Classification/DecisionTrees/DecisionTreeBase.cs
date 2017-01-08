@@ -207,11 +207,13 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 tmpTree.PruningType = PruningType.None;
                 tmpTree.Learn(trainSet, attributes);
 
-                pruningSet = this.OnValidationDataSubmission != null ? this.OnValidationDataSubmission(this, attributes, pruningSet) : pruningSet;
+                pruningSet = (this.OnValidationDataSubmission == null)
+                           ? pruningSet
+                           : this.OnValidationDataSubmission(this, attributes, pruningSet);
 
                 if (pruningSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
                 {
-                    new DataStoreDiscretizer(new DiscretizeFayyad()).Discretize(pruningSet, trainSet);
+                    DataStoreDiscretizer.Discretize(pruningSet, trainSet);
                 }
                 
                 IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 

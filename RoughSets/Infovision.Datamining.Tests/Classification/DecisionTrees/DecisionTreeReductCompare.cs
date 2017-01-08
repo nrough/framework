@@ -99,12 +99,8 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                             cachedData = null;
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
-
-                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
-                            discretizer.Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
-                                            .Where(f => f.CanDiscretize())
-                                            .Select(fld => fld.Id);                            
-                            discretizer.Discretize(validationSet, cachedData);
+                                                        
+                            DataStoreDiscretizer.Discretize(validationSet, cachedData);
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -267,12 +263,8 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                             cachedData = null;
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
-
-                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
-                            discretizer.Fields2Discretize = validationSet.DataStoreInfo.GetFields(FieldTypes.Standard)
-                                            .Where(f => f.CanDiscretize())
-                                            .Select(fld => fld.Id);
-                            discretizer.Discretize(validationSet, cachedData);                                                        
+                            
+                            DataStoreDiscretizer.Discretize(validationSet, cachedData);                                                        
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -473,7 +465,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
                         .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
                 discretizer.Discretize(trn, trn.Weights);
-                discretizer.Discretize(tst, trn);
+                DataStoreDiscretizer.Discretize(tst, trn);
             };
 
             DecisionTreeC45 treec45 = new DecisionTreeC45();

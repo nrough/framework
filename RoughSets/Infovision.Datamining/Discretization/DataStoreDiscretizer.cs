@@ -77,19 +77,22 @@ namespace Infovision.MachineLearning.Discretization
 
                         dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
                     }
-                    else
-                    {
-                        Console.WriteLine("Cannot discretize field {0}", fieldId);
-                        Console.WriteLine(localFieldInfoTrain.Histogram.ToString());
-                    }
+                    //else
+                    //{
+                    //    Console.WriteLine("Cannot discretize field {0}", fieldId);
+                    //    Console.WriteLine(localFieldInfoTrain.Histogram.ToString());
+                    //}
                 }
             }
         }
         
-        public static void Discretize(DataStore dataToDiscretize, DataStore discretizedData)
+        public static void Discretize(DataStore dataToDiscretize, DataStore discretizedData, IEnumerable<int> fieldsToDiscretize = null)
         {
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
-            IEnumerable<int> localFields = dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+
+            IEnumerable<int> localFields = fieldsToDiscretize == null
+                                         ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                                         : fieldsToDiscretize;
 
             foreach (int fieldId in localFields)
             {

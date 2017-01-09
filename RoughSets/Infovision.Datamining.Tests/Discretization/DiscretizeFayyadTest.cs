@@ -53,15 +53,13 @@ namespace Infovision.MachineLearning.Tests.Discretization
             
             var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
 
-            discretizer.Fields2Discretize = new int[] { 2 };             
+            discretizer.Fields2Discretize = new int[] { 2 };
             discretizer.Discretize(train, train.Weights);
-            
         }
 
         [Test]
         public void CreateDiscretizedDataTableTest()
         {
-
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);            
             int[] numericFields = data.DataStoreInfo.GetFields(FieldTypes.Standard)
                     .Where(i => i.IsNumeric)

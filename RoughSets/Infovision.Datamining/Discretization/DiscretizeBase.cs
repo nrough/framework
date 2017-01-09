@@ -26,7 +26,7 @@ namespace Infovision.MachineLearning.Discretization
             {
                 if (!this.ValidateCuts(value))
                     throw new InvalidOperationException("Discretization cuts are not valid");
-                this.cuts = value;                
+                this.cuts = value;
             }
         }
 
@@ -103,7 +103,7 @@ namespace Infovision.MachineLearning.Discretization
         private bool ValidateCuts(long[] cuts)
         {
             if (cuts == null)
-                return true;                
+                return true;
 
             for (int i = 1; i < cuts.Length; i++)
                 if (cuts[i] <= cuts[i - 1])

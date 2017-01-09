@@ -65,14 +65,23 @@ namespace Infovision.MachineLearning.Discretization
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
-                {                    
-                    localFieldInfoTrain.Cuts = GetCuts(dataToDiscretize, fieldId, weights);
-                    long[] newValues = this.Discretizer.Apply(dataToDiscretize.GetColumnInternal(fieldId));
-                    localFieldInfoTrain.FieldValueType = typeof(long);
-                    localFieldInfoTrain.IsNumeric = false;
-                    localFieldInfoTrain.IsOrdered = true;
+                {
+                    long[] cuts = GetCuts(dataToDiscretize, fieldId, weights);
+                    if (cuts != null)
+                    {
+                        localFieldInfoTrain.Cuts = cuts;
+                        long[] newValues = this.Discretizer.Apply(dataToDiscretize.GetColumnInternal(fieldId));
+                        localFieldInfoTrain.FieldValueType = typeof(long);
+                        localFieldInfoTrain.IsNumeric = false;
+                        localFieldInfoTrain.IsOrdered = true;
 
-                    dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                        dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cannot discretize field {0}", fieldId);
+                        Console.WriteLine(localFieldInfoTrain.Histogram.ToString());
+                    }
                 }
             }
         }
@@ -89,19 +98,17 @@ namespace Infovision.MachineLearning.Discretization
                 {
                     localFieldInfoTrain = discretizedData.DataStoreInfo.GetFieldInfo(fieldId);
 
-                    if (localFieldInfoTrain.Cuts == null)
-                        throw new InvalidOperationException("localFieldInfoTrain.Cuts == null");
-                    
-                    long[] newValues = DiscretizeBase.Apply(
-                        dataToDiscretize.GetColumnInternal(fieldId), 
-                        localFieldInfoTrain.Cuts);
-                                        
-                    localFieldInfoTest.FieldValueType = typeof(long);
-                    localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
-                    localFieldInfoTest.IsNumeric = false;
-                    localFieldInfoTest.IsOrdered = true;
+                    if (localFieldInfoTrain.Cuts != null)
+                    {
+                        long[] newValues = DiscretizeBase.Apply(
+                            dataToDiscretize.GetColumnInternal(fieldId), localFieldInfoTrain.Cuts);
 
-                    dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
+                        localFieldInfoTest.FieldValueType = typeof(long);
+                        localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
+                        localFieldInfoTest.IsNumeric = false;
+                        localFieldInfoTest.IsOrdered = true;
+                        dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
+                    }
                 }
             }
         }

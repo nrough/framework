@@ -14,11 +14,13 @@ namespace Infovision.MachineLearning.Tests.Discretization
     {
         [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
         [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
-        //[TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
-        //[TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
         [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.Csv)]
         public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
         {
+            Console.WriteLine(fileTrain);
+
             DataStore train = DataStore.Load(fileTrain, fileFormat);
             DataStore test = DataStore.Load(fileTest, fileFormat, train.DataStoreInfo);
 
@@ -39,6 +41,21 @@ namespace Infovision.MachineLearning.Tests.Discretization
 
             train.DumpExt(@"C:\" + fileTrain + ".disc", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
+        }
+
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        public void LetterBug(string fileTrain, string fileTest, FileFormat fileFormat)
+        {
+            Console.WriteLine(fileTrain);
+
+            DataStore train = DataStore.Load(fileTrain, fileFormat);
+            DataStore test = DataStore.Load(fileTest, fileFormat, train.DataStoreInfo);
+            
+            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+
+            discretizer.Fields2Discretize = new int[] { 2 };             
+            discretizer.Discretize(train, train.Weights);
+            
         }
 
         [Test]

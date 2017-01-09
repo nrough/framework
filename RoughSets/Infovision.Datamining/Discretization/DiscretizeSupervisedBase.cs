@@ -39,7 +39,7 @@ namespace Infovision.MachineLearning.Discretization
             
 
             var priorCount = CountLabels(labels, start, end, weights);
-            if (priorCount.Count == 1) return null;
+            if (priorCount.Count < 2) return null;
             
             var priorEntopy = Tools.Entropy(priorCount.Values.ToArray());
 
@@ -157,9 +157,7 @@ namespace Infovision.MachineLearning.Discretization
             if (!this.IsDataSorted)
                 this.SortIndices(data);
 
-            this.Cuts = this.ComputeCuts(data, labels, 0, data.Length, weights);
-            if (this.Cuts == null)
-                this.Cuts = new long[0];
+            this.Cuts = this.ComputeCuts(data, labels, 0, data.Length, weights);            
         }
 
         #endregion

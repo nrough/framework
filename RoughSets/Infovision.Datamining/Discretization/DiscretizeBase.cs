@@ -103,7 +103,7 @@ namespace Infovision.MachineLearning.Discretization
         private bool ValidateCuts(long[] cuts)
         {
             if (cuts == null)
-                return false;
+                return true;                
 
             for (int i = 1; i < cuts.Length; i++)
                 if (cuts[i] <= cuts[i - 1])

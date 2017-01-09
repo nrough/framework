@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Infovision.Core
 {
@@ -89,6 +90,14 @@ namespace Infovision.Core
         public override int GetHashCode()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var kvp in histogramData)
+                sb.AppendFormat("({0} {1}) ", kvp.Key, kvp.Value);
+            return sb.ToString();
         }
 
         #endregion Methods

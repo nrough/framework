@@ -1,4 +1,5 @@
-﻿using Infovision.MachineLearning.Discretization;
+﻿using Infovision.Data;
+using Infovision.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,22 @@ namespace Infovision.MachineLearning.Tests.Discretization
 {
     [TestFixture]
     public class DiscretizeKononenkoTest : DiscretizeSupervisedBaseTest
-    {        
-        [Test]
-        public void ComputeTest()
+    {
+        public override IDiscretization GetDiscretizer()
         {
-            IDiscretizationSupervised kononenko = new DiscretizeKononenko();
-            kononenko.Compute(data, labels, null);
+            return new DiscretizeKononenko();
+        }
 
-            for (int i = 0; i < data.Length; i++)
-                Console.WriteLine("{0} {1}", data[i], kononenko.Apply(data[i]));
+        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        public override void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        {
+            base.CreateDiscretizedDataTableTest(filename, fileFormat, fields);
+        }
 
-            for (int i = 0; i < dataNotExisting.Length; i++)
-                Console.WriteLine("{0} {1}", dataNotExisting[i], kononenko.Apply(dataNotExisting[i]));
-
+        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        public override void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        {
+            base.DiscretizeTest(filename, fileFormat, fields);
         }
     }
 }

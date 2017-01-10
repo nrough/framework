@@ -19,18 +19,19 @@ namespace Infovision.MachineLearning.Discretization
             if (base.StopCondition(priorCount, left, right, numOfPossibleCuts, numOfInstances, instanceWeight))
                 return true;
 
-            int labelCount = priorCount.Count(val => val > 0);
-            double before = Tools.Log2Binomial(numOfPossibleCuts + labelCount - 1, labelCount - 1)
-                + Tools.Log2Multinomial(numOfPossibleCuts, priorCount);
+            int labelCount = priorCount.Count(val => val > 0);            
+
+            double before = Tools.Log2Binomial(numOfInstances + labelCount - 1, labelCount - 1)
+                + Tools.Log2Multinomial(numOfInstances, priorCount.Select(d => (int)d).ToArray());
 
             double leftSum = left.Sum();
             double rightSum = right.Sum();
 
-            double after = System.Math.Log(numOfPossibleCuts, 2)
-                + Tools.Log2Binomial(leftSum + labelCount - 1, labelCount - 1)
-                + Tools.Log2Binomial(rightSum + labelCount - 1, labelCount - 1)
-                + Tools.Log2Multinomial(leftSum, left)
-                + Tools.Log2Multinomial(rightSum, right);
+            double after = System.Math.Log(numOfInstances, 2)
+                + Tools.Log2Binomial((int)leftSum + labelCount - 1, labelCount - 1)
+                + Tools.Log2Binomial((int)rightSum + labelCount - 1, labelCount - 1)
+                + Tools.Log2Multinomial((int)leftSum, left.Select(d => (int)d).ToArray())
+                + Tools.Log2Multinomial((int)rightSum, right.Select(d => (int)d).ToArray());
                                    
             if (before > after)
                 return false;

@@ -12,7 +12,10 @@ namespace Infovision.MachineLearning.Discretization
     public class DiscretizeFayyad : DiscretizeSupervisedBase
     {
         public DiscretizeFayyad()
-            : base() {}
+            : base()
+        {
+            this.UseWeights = true;
+        }
 
         protected override bool StopCondition(
             double[] priorCount, double[] left, double[] right, 

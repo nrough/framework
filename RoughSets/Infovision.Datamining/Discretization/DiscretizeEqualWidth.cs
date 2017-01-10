@@ -12,7 +12,9 @@ namespace Infovision.MachineLearning.Discretization
         public DiscretizeEqualWidth()
             : base()
         {
+            //sorting is not neccessary
             this.IsDataSorted = true;
+            this.UseWeights = true;
         }
 
         public override long[] ComputeCuts(long[] data, double[] weights)

@@ -11,7 +11,7 @@ namespace Infovision.MachineLearning.Discretization
     {
         #region Properties
 
-        public int NumberOfBuckets { get; set; }
+        public int NumberOfBuckets { get; set; } = 2;
 
         #endregion
 

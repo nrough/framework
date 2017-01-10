@@ -10,11 +10,27 @@ namespace Infovision.MachineLearning.Discretization
     [Serializable]
     public class DataStoreDiscretizer
     {
+        #region TODO
+        //Create a list of discretization rules e.g. if one method fails (null cuts) then use next method etc.
+        //Create a method returning a report which field was discretized with what method and what are the cuts
+        #endregion
+
+        #region Members
+
+        private Dictionary<int, long[]> fieldCuts;
+
+        #endregion
+
         #region Properties
 
         public IDiscretization Discretizer { get; set; }
         public IEnumerable<int> Fields2Discretize { get; set; }
-        
+        public Dictionary<int, long[]> FieldCuts
+        {
+            get { return this.fieldCuts; }
+            private set { this.fieldCuts = value; }
+        }
+                
         #endregion
 
         #region Constructors
@@ -24,7 +40,8 @@ namespace Infovision.MachineLearning.Discretization
             if (discretizer == null)
                 throw new ArgumentNullException("discretizer", "discretizer == null");
             this.Discretizer = discretizer;
-        }
+            this.fieldCuts = new Dictionary<int, long[]>();
+        }        
 
         #endregion
 
@@ -60,15 +77,17 @@ namespace Infovision.MachineLearning.Discretization
                                          : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
-
+            this.fieldCuts = new Dictionary<int, long[]>(dataToDiscretize.DataStoreInfo.NumberOfFields);
             foreach (int fieldId in localFields)
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
                 {
                     long[] cuts = GetCuts(dataToDiscretize, fieldId, weights);
+                    this.fieldCuts.Add(fieldId, cuts);
+
                     if (cuts != null)
-                    {
+                    {                                        
                         localFieldInfoTrain.Cuts = cuts;
                         long[] newValues = this.Discretizer.Apply(dataToDiscretize.GetColumnInternal(fieldId));
                         localFieldInfoTrain.FieldValueType = typeof(long);
@@ -77,14 +96,9 @@ namespace Infovision.MachineLearning.Discretization
 
                         dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
                     }
-                    //else
-                    //{
-                    //    Console.WriteLine("Cannot discretize field {0}", fieldId);
-                    //    Console.WriteLine(localFieldInfoTrain.Histogram.ToString());
-                    //}
                 }
             }
-        }
+        }        
         
         public static void Discretize(DataStore dataToDiscretize, DataStore discretizedData, IEnumerable<int> fieldsToDiscretize = null)
         {
@@ -114,17 +128,7 @@ namespace Infovision.MachineLearning.Discretization
                     }
                 }
             }
-        }
-
-        public virtual bool CanDiscretize(DataFieldInfo field)
-        {
-            if (field.CanDiscretize())
-            {
-                return true;
-            }
-
-            return false;
-        }
+        }        
 
         #endregion
     }

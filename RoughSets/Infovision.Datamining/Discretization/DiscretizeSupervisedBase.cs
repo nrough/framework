@@ -37,7 +37,6 @@ namespace Infovision.MachineLearning.Discretization
             if (start < 0) throw new ArgumentOutOfRangeException("start", "start < 0");
             if (end > data.Length) throw new ArgumentOutOfRangeException("end", "end > data.Length");
             
-
             var priorCount = CountLabels(labels, start, end, weights);
             if (priorCount.Count < 2) return null;
             
@@ -56,7 +55,7 @@ namespace Infovision.MachineLearning.Discretization
             
             for (int i = start; i < end - 1; i++)
             {                
-                if (weights == null)
+                if (weights == null || this.UseWeights == false)
                 {
                     instanceWeight++;
                     labelCountLeft[labels[SortedIndices[i]]]++;

@@ -109,14 +109,14 @@ namespace Infovision.Math
             return ((sumLeft / (sumLeft + sumRight)) * entropyLeft) + ((sumRight / (sumLeft + sumRight)) * entropyRight);
         }
         
-        public static double Log2Binomial(double a, double b)
+        public static double Log2Binomial(int a, int b)
         {
-            return SpecialFunctions.BinomialLn((int)a, (int)b) / System.Math.Log(2);
+            return SpecialFunctions.BinomialLn(a, b) / System.Math.Log(2);
         }        
 
-        public static double Log2Multinomial(double a, double[] bs)
+        public static double Log2Multinomial(int a, int[] bs)
         {
-            return System.Math.Log(SpecialFunctions.Multinomial((int)a, bs.Select(d => (int)d).ToArray()), 2);
+            return System.Math.Log(SpecialFunctions.Multinomial(a, bs), 2);
         }
 
         public static void Normalize(double[] values, double sum)

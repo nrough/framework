@@ -13,6 +13,7 @@ namespace Infovision.MachineLearning.Discretization
             : base()
         {
             this.IsDataSorted = true;
+            this.UseWeights = true;
         }
 
         public override long[] ComputeCuts(long[] data, double[] weights)

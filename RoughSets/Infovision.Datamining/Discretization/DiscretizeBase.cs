@@ -35,7 +35,8 @@ namespace Infovision.MachineLearning.Discretization
             get { return Array.AsReadOnly(this.sortedIndices); }
         }
 
-        public bool IsDataSorted { get; set; }
+        public bool IsDataSorted { get; set; } = false;
+        public bool UseWeights { get; set; } = false;
 
         #endregion
 
@@ -94,9 +95,11 @@ namespace Infovision.MachineLearning.Discretization
             var result = new Dictionary<long, double>();
             for(int i = start; i < labels.Length && i < end; i++)
                 if (result.ContainsKey(labels[sortedIndices[i]]))
-                    result[labels[sortedIndices[i]]] += (weights == null) ? 1.0 : weights[sortedIndices[i]];
+                    result[labels[sortedIndices[i]]] += 
+                        (weights == null || this.UseWeights == false) ? 1.0 : weights[sortedIndices[i]];
                 else
-                    result.Add(labels[sortedIndices[i]], (weights == null) ? 1.0 : weights[sortedIndices[i]]);
+                    result.Add(labels[sortedIndices[i]], 
+                        (weights == null || this.UseWeights == false) ? 1.0 : weights[sortedIndices[i]]);
             return result;
         }
 

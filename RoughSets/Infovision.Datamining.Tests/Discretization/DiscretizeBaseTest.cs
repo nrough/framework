@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Tests.Discretization
 {
-    public class DiscretizeBaseTest
+    public abstract class DiscretizeBaseTest
     {
         protected long[] data = {
                         10, 12, 13, 14, 16, 40, 41, 42,
@@ -18,9 +18,17 @@ namespace Infovision.MachineLearning.Tests.Discretization
                                     11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34,
                                     50, 60, 70, 80 };
 
-        public IDiscretization GetDiscretizer()
+        public abstract IDiscretization GetDiscretizer();
+
+        public void ShowInfo(IDiscretization discretizer, long[] dataExisting, long[] dataNotExisting)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(discretizer.ToString());
+
+            for (int i = 0; i < data.Length; i++)
+                Console.WriteLine("{0} {1}", data[i], discretizer.Apply(dataExisting[i]));
+
+            for (int i = 0; i < data.Length; i++)
+                Console.WriteLine("{0} {1}", dataNotExisting[i], discretizer.Apply(dataNotExisting[i]));
         }
     }
 }

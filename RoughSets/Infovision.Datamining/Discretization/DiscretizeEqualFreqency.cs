@@ -18,7 +18,10 @@ namespace Infovision.MachineLearning.Discretization
         #region Constructors
 
         public DiscretizeEqualFreqency()
-            : base() { }
+            : base()
+        {
+            this.UseWeights = true;
+        }
 
         #endregion
 

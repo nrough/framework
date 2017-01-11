@@ -61,6 +61,13 @@ namespace Infovision.Data.Tests
             Assert.IsNotNull(rawData);
             Assert.AreEqual(data.NumberOfRecords, rawData.Length);
             Assert.AreEqual(data.DataStoreInfo.NumberOfFields, rawData[0].Length);
+
+            for (int i = 0; i < rawData.Length; i++)
+            {
+                for (int j = 0; j < rawData[i].Length; j++)
+                    Console.Write("{0} ", rawData[i][j]);
+                Console.Write(Environment.NewLine);
+            }
         }
 
         [Test]

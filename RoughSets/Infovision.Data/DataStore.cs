@@ -260,8 +260,7 @@ namespace Infovision.Data
             return result;
         }
 
-        public T[] GetColumn<T>(int fieldId)
-            where T : IConvertible
+        public T[] GetColumn<T>(int fieldId)            
         {
             T[] result = new T[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
@@ -852,14 +851,12 @@ namespace Infovision.Data
             return this.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
         }
 
-        public T[][] ToArray<T>()
-            where T : IConvertible
+        public T[][] ToArray<T>()            
         {
             return this.ToArray<T>(this.DataStoreInfo.GetFieldIds().ToArray());
         }
 
         public T[][] ToArray<T>(int[] fieldIds)
-            where T : IConvertible
         {
             T[][] result = new T[this.NumberOfRecords][];
             for (int i = 0; i < result.Length; i++)

@@ -126,6 +126,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimpleTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringTest.cs" />
     <Compile Include="Clustering\Hierarchical\DistanceMatrixTest.cs" />
+    <Compile Include="Clustering\KMeansTest.cs" />
     <Compile Include="CrossValidationTest.cs" />
     <Compile Include="Classification\ClassificationResultTest.cs" />
     <Compile Include="Discretization\DiscretizeEntropyTest.cs" />

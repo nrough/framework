@@ -21,21 +21,25 @@ namespace Infovision.MachineLearning.Clustering
         
         public int K { get; set; } = 4;
         public int Iter { get; set; } = 100;
+        public int Retries { get; set; } = 1;
         public Func<double[], double[], double> Distance { get; set; } = Similarity.Euclidean;
         
         public KMeans() { }
-
-        public void Learn(DataStore data, int[] attributes)
+        
+        public ClusteringResult Learn(DataStore data, int[] attributes)
         {
             //check parameters
             if (data == null) throw new ArgumentNullException("data");
             if (attributes == null) throw new ArgumentNullException("attributes");
             if (attributes.Length < 1) throw new ArgumentException("attributes.Length < 1", "attributes");
-            if (this.K < 1) throw new InvalidOperationException();
+            if (K < 1) throw new ArgumentOutOfRangeException("K", "this.K < 1");
+            if (Retries < 1) throw new ArgumentOutOfRangeException("Retries", "this.Retries < 1");
 
             double[][] rawData = data.ToArray<double>(attributes);
             this.clusters = this.Cluster(rawData, this.K);
 
+            ClusteringResult result = new ClusteringResult();
+            return result;
         }
 
         public virtual long Compute(DataRecordInternal record)
@@ -150,7 +154,7 @@ namespace Infovision.MachineLearning.Clustering
                     changed = true;
                     newClustering[i] = newClusterID;
                 }
-            });            
+            });
 
             if (changed == false)
                 return false;

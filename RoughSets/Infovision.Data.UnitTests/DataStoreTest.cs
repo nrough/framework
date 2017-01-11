@@ -51,12 +51,52 @@ namespace Infovision.Data.Tests
         }
 
         [Test]
-        public void ToArrayTest()
+        public void ToDoubleArrayTest()
         {
             var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
             Assert.NotNull(data);
 
             double[][] rawData = data.ToArray<double>();
+
+            Assert.IsNotNull(rawData);
+            Assert.AreEqual(data.NumberOfRecords, rawData.Length);
+            Assert.AreEqual(data.DataStoreInfo.NumberOfFields, rawData[0].Length);
+
+            for (int i = 0; i < rawData.Length; i++)
+            {
+                for (int j = 0; j < rawData[i].Length; j++)
+                    Console.Write("{0} ", rawData[i][j]);
+                Console.Write(Environment.NewLine);
+            }
+        }
+
+        [Test]
+        public void ToLongArrayTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+
+            long[][] rawData = data.ToArray<long>();
+
+            Assert.IsNotNull(rawData);
+            Assert.AreEqual(data.NumberOfRecords, rawData.Length);
+            Assert.AreEqual(data.DataStoreInfo.NumberOfFields, rawData[0].Length);
+
+            for (int i = 0; i < rawData.Length; i++)
+            {
+                for (int j = 0; j < rawData[i].Length; j++)
+                    Console.Write("{0} ", rawData[i][j]);
+                Console.Write(Environment.NewLine);
+            }
+        }
+
+        [Test]
+        public void ToIntArrayTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+
+            int[][] rawData = data.ToArray<int>();
 
             Assert.IsNotNull(rawData);
             Assert.AreEqual(data.NumberOfRecords, rawData.Length);

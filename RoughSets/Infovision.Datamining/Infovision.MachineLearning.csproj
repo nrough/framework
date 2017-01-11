@@ -119,6 +119,7 @@
     <Compile Include="Classification\Classifier.cs" />
     <Compile Include="Classification\DecisionGraphs\OODG.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
+    <Compile Include="Clustering\ClusteringResult.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringBase.cs" />

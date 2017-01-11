@@ -261,6 +261,7 @@ namespace Infovision.Data
         }
 
         public T[] GetColumn<T>(int fieldId)
+            where T : IConvertible
         {
             T[] result = new T[this.NumberOfRecords];
             DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
@@ -268,7 +269,7 @@ namespace Infovision.Data
             try
             {
                 for (int i = 0; i < this.NumberOfRecords; i++)
-                    result[i] = (T)field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
+                    result[i] = (T) Convert.ChangeType(field.Internal2External(this.GetFieldIndexValue(i, fieldIdx)), typeof(T));
             }
             catch (InvalidCastException castException)
             {
@@ -849,6 +850,39 @@ namespace Infovision.Data
         public int[] GetStandardFields()
         {
             return this.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+        }
+
+        public T[][] ToArray<T>()
+            where T : IConvertible
+        {
+            return this.ToArray<T>(this.DataStoreInfo.GetFieldIds().ToArray());
+        }
+
+        public T[][] ToArray<T>(int[] fieldIds)
+            where T : IConvertible
+        {
+            T[][] result = new T[this.NumberOfRecords][];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new T[fieldIds.Length];
+
+            for (int i = 0; i < fieldIds.Length; i++)
+            {
+                DataFieldInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                if (fieldInfo.IsNumeric)
+                {
+                    T[] column = this.GetColumn<T>(fieldIds[i]);
+                    for (int j = 0; j < this.NumberOfRecords; j++)
+                        result[j][i] = column[j];
+                }
+                else
+                {
+                    long[] column = this.GetColumnInternal(fieldIds[i]);
+                    for (int j = 0; j < this.NumberOfRecords; j++)        
+                        result[j][i] = (T) Convert.ChangeType(column[j], typeof(T));
+                }
+            }
+
+            return result;
         }
 
         public DataTable ToDataTable()

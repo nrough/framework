@@ -51,6 +51,19 @@ namespace Infovision.Data.Tests
         }
 
         [Test]
+        public void ToArrayTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+
+            double[][] rawData = data.ToArray<double>();
+
+            Assert.IsNotNull(rawData);
+            Assert.AreEqual(data.NumberOfRecords, rawData.Length);
+            Assert.AreEqual(data.DataStoreInfo.NumberOfFields, rawData[0].Length);
+        }
+
+        [Test]
         public void TestData()
         {
             string trainFileName = @"Data\monks-1.train";

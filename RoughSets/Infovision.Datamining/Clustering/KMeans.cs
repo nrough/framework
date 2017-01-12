@@ -44,6 +44,8 @@ namespace Infovision.MachineLearning.Clustering
 
         public virtual long Compute(DataRecordInternal record)
         {
+            //double[] vector = record.ToArray<double>();
+
             return -1; //unknown
         }
 

@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Data", "Infovision.Data\Infovision.Data.csproj", "{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
+		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A} = {DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Core", "Infovision.Utils\Infovision.Core.csproj", "{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}"

@@ -93,15 +93,13 @@ namespace DermoReducts
                 int value = (int)val;
                 if (value != (int)ageAttribute.MissingValue)
                 {
-                    BinaryDiscretization discretizer = new BinaryDiscretization(value);
-
-                    long[] newValuesTrain = discretizer.Discretize(data, ageAttribute);
-
-                    int newFieldId = data.AddColumn<long>(newValuesTrain);
-                    DataFieldInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(newFieldId);
-
+                    DataStoreDiscretizer discretizer = new DataStoreDiscretizer(new DiscretizeManual(value));
+                    long[] cuts = discretizer.GetCuts(data, ageAttribute.Id, null);
+                    long[] newValuesTrain = DiscretizeBase.Apply(data.GetColumn<long>(ageAttribute.Id), cuts);
+                    
+                    DataFieldInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(data.AddColumn<long>(newValuesTrain));
                     newFieldInfo.IsNumeric = false;
-                    newFieldInfo.Cuts = discretizer.Cuts;
+                    newFieldInfo.Cuts = cuts;
                     newFieldInfo.FieldValueType = typeof(long);
                     newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
                 }

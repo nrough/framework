@@ -18,7 +18,7 @@ namespace Infovision.MachineLearning.Discretization
         //3. K-Means
         //4. Normalized Equal Distances
         //5. Equal distances
-        //6. Equal frequences - not recomended
+        //6. Equal frequencies - not recommended
         
         #endregion
 

@@ -19,6 +19,15 @@ namespace Infovision.MachineLearning.Discretization
 
         #region Properties
 
+        /// <summary>
+        /// Number of discreet values after discretization is performed. 
+        /// For methods that evaluate optimal number of buckets this is the maximum number of dicreet values.        
+        /// </summary>
+        public int NumberOfBuckets { get; set; } = 5;
+
+        /// <summary>
+        /// Calculated cut points
+        /// </summary>
         public long[] Cuts
         {
             get { return this.cuts; }
@@ -29,7 +38,7 @@ namespace Infovision.MachineLearning.Discretization
                 this.cuts = value;
             }
         }
-
+        
         protected ReadOnlyCollection<int> SortedIndices
         {
             get { return Array.AsReadOnly(this.sortedIndices); }
@@ -37,6 +46,7 @@ namespace Infovision.MachineLearning.Discretization
 
         public bool IsDataSorted { get; set; } = false;
         public bool UseWeights { get; set; } = false;
+        public bool MissingValueAsDistinctBucket { get; set; } = true;
 
         #endregion
 

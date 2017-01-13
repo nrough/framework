@@ -10,11 +10,20 @@ namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
     public abstract class DiscretizeSupervisedBase : DiscretizeBase, IDiscretizationSupervised
-    {       
+    {
+        #region TODO
+
+        //TODO Implement setting maximum number of cuts
+
+        #endregion
+        
         #region Constructors
 
         public DiscretizeSupervisedBase()
-            : base() { }
+            : base()
+        {
+            this.NumberOfBuckets = -1;
+        }
 
         #endregion
 

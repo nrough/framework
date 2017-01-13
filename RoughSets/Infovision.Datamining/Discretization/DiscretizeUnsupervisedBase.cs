@@ -8,13 +8,7 @@ namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
     public abstract class DiscretizeUnsupervisedBase : DiscretizeBase, IDiscretizationUnsupervised
-    {
-        #region Properties
-
-        public int NumberOfBuckets { get; set; } = 5;
-
-        #endregion
-
+    {       
         #region Constructors
 
         public DiscretizeUnsupervisedBase()

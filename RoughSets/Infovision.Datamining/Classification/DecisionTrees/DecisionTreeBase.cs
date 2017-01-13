@@ -18,7 +18,12 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
     /// </summary>
     [Serializable]
     public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
-    {        
+    {
+        #region TODO
+        
+        //Add option not to remove attribute id after split - this will allow to use same attributes on various level (attribute must be continuous)
+        #endregion
+
         protected Dictionary<int, List<long>> thresholds = null;
         private DecisionTreeNode root = null;
         private double mA = 1.0;

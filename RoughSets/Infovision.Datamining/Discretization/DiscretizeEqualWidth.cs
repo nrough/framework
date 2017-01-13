@@ -12,7 +12,7 @@ namespace Infovision.MachineLearning.Discretization
         public DiscretizeEqualWidth()
             : base()
         {
-            //sorting is not neccessary
+            //sorting is not necessary
             this.IsDataSorted = true;
             this.UseWeights = true;
         }

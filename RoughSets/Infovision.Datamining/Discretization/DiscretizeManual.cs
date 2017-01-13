@@ -3,19 +3,29 @@ using Infovision.Data;
 
 namespace Infovision.MachineLearning.Discretization
 {
-    public class BinaryDiscretization : DiscretizeUnsupervisedBase
+    /// <summary>
+    /// Manual discretization. Cuts must be given by the user explicitly. 
+    /// </summary>
+    public class DiscretizeManual : DiscretizeUnsupervisedBase
     {
-        public BinaryDiscretization()
+        public DiscretizeManual()
             : base()
         {
             this.IsDataSorted = true;
         }
 
-        public BinaryDiscretization(long splitPoint)
+        public DiscretizeManual(long splitPoint)
             : this()
         {
             this.Cuts = new long[1];
             this.Cuts[0] = splitPoint;
+        }
+
+        public DiscretizeManual(long[] cutPoints)
+            : this()
+        {
+            this.Cuts = new long[cutPoints.Length];
+            Array.Copy(cutPoints, this.Cuts, cutPoints.Length);
         }
 
         public override long[] ComputeCuts(long[] data, double[] weights)
@@ -25,6 +35,7 @@ namespace Infovision.MachineLearning.Discretization
 
         public long[] Discretize(DataStore data, DataFieldInfo fieldInfo)
         {
+
             long[] result = new long[data.NumberOfRecords];
             int fieldIdx = data.DataStoreInfo.GetFieldIndex(fieldInfo.Id);
 

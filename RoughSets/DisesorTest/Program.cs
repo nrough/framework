@@ -217,7 +217,7 @@ namespace DisesorTest
 
             Console.Write("Discretizing data...");
 
-            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+            var discretizer = new DataStoreDiscretizer();
                                 
             foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldTypes.Standard))
             {

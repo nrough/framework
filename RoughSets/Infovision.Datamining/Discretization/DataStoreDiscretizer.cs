@@ -9,6 +9,7 @@ namespace Infovision.MachineLearning.Discretization
     {
         #region TODO
                 
+        //example of some discretization automation
         //http://library.bayesia.com/display/FAQ/Choosing+a+Discretization+Algorithm
         //Supervised
         //1. MDL - Fayyad & Irani or Kononenko - OK
@@ -18,8 +19,7 @@ namespace Infovision.MachineLearning.Discretization
         //4. Normalized Equal Distances
         //5. Equal distances
         //6. Equal frequences - not recomended
-
-        //TODO Create a method returning a report which field was discretized with what method and what are the cuts        
+        
         #endregion
 
         #region Members

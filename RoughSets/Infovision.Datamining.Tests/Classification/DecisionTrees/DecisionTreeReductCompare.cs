@@ -67,7 +67,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
                         if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
                         {
-                            var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                            var discretizer = new DataStoreDiscretizer();
                             discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
@@ -231,7 +231,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
 
                     if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
                     {
-                        var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                        var discretizer = new DataStoreDiscretizer();
                         discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
                                         .Where(f => f.CanDiscretize())
                                         .Select(fld => fld.Id);                        
@@ -461,7 +461,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
             splitter.PostSplitMethod = (trn, tst) =>
             {
-                var discretizer = new DataStoreDiscretizer(new DiscretizeFayyad());
+                var discretizer = new DataStoreDiscretizer();
                 discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
                         .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
                 discretizer.Discretize(trn, trn.Weights);

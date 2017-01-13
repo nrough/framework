@@ -76,7 +76,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             discretizer.Discretize(data, data.Weights);
             
             foreach (var kvp in discretizer.FieldCuts)
-                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.ToStr(' '));
+                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, (kvp.Value == null || kvp.Value.Cuts == null) ? "All" : kvp.Value.Cuts.ToStr(' '));
 
             foreach (int fieldId in numericFields)
                 Assert.IsNotNull(data.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Training file {0} Field {1}", filename, fieldId);
@@ -102,13 +102,13 @@ namespace Infovision.MachineLearning.Tests.Discretization
             DataStoreDiscretizer.Discretize(testData, trainData);
 
             foreach (var kvp in discretizer.FieldCuts)
-                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.ToStr(' '));
-
+                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.Cuts.ToStr(' '));
+            
             foreach (int fieldId in numericFields)
             {
                 Assert.IsNotNull(trainData.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Training file {0} Field {1}", filename, fieldId);
                 Assert.IsNotNull(testData.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Test file {0} Field {1}", filename, fieldId);
-            }
+            }            
         }
 
         [Test]

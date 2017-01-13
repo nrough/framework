@@ -16,7 +16,7 @@ namespace Infovision.MachineLearning.Clustering
     public class KMeans : ModelBase
     {
         private double[][] means;
-        private int[] attributes;
+        private int[] attr;
         private int[] clusters;
         
         public int K { get; set; } = 4;
@@ -35,6 +35,9 @@ namespace Infovision.MachineLearning.Clustering
             if (K < 1) throw new ArgumentOutOfRangeException("K", "this.K < 1");
             if (Retries < 1) throw new ArgumentOutOfRangeException("Retries", "this.Retries < 1");
 
+            attr = new int[attributes.Length];
+            Array.Copy(attributes, 0, attr, 0, attributes.Length);
+
             double[][] rawData = data.ToArray<double>(attributes);
             this.clusters = this.Cluster(rawData, this.K);
 
@@ -44,8 +47,8 @@ namespace Infovision.MachineLearning.Clustering
 
         public virtual long Compute(DataRecordInternal record)
         {
-            //double[] vector = record.ToArray<double>();
-
+            //double[] vector = record.ToArray<double>(this.attr);
+            
             return -1; //unknown
         }
 

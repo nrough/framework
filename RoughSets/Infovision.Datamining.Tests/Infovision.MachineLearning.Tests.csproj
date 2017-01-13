@@ -129,6 +129,7 @@
     <Compile Include="Clustering\KMeansTest.cs" />
     <Compile Include="CrossValidationTest.cs" />
     <Compile Include="Classification\ClassificationResultTest.cs" />
+    <Compile Include="Discretization\DataStoreDiscretizationTest.cs" />
     <Compile Include="Discretization\DiscretizeEntropyTest.cs" />
     <Compile Include="Discretization\DiscretizeEqualFreqencyTest.cs" />
     <Compile Include="Discretization\DiscretizeEqualWidthTest.cs" />

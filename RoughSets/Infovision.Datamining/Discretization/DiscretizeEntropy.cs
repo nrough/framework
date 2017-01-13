@@ -14,6 +14,14 @@ namespace Infovision.MachineLearning.Discretization
         {
             this.IsDataSorted = true;
             this.UseWeights = true;
+            //max number of buckets
+            this.NumberOfBuckets = 10; 
+        }
+
+        public DiscretizeEntropy(int maxNumberOfBuckets)
+            : base()
+        {
+            this.NumberOfBuckets = maxNumberOfBuckets;
         }
 
         public override long[] ComputeCuts(long[] data, double[] weights)

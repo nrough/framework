@@ -11,7 +11,7 @@ namespace Infovision.MachineLearning.Discretization
     {
         #region Properties
 
-        public int NumberOfBuckets { get; set; } = 2;
+        public int NumberOfBuckets { get; set; } = 5;
 
         #endregion
 
@@ -36,8 +36,7 @@ namespace Infovision.MachineLearning.Discretization
                 this.SortIndices(data);
 
             this.Cuts = ComputeCuts(data, weights);
-            if (this.Cuts == null)
-                this.Cuts = new long[0];
+            this.Cleanup();
         }
 
         #endregion

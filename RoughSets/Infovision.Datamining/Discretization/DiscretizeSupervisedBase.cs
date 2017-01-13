@@ -30,13 +30,13 @@ namespace Infovision.MachineLearning.Discretization
         /// <param name="weights">Object weights, can be null, then 1.0 is used as object weight</param>
         /// <returns></returns>
         public virtual long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights)
-        {            
-            if (data == null || data.Length == 0) return null;
-            if (end - start < 2) return null;            
-
+        {
             if (start < 0) throw new ArgumentOutOfRangeException("start", "start < 0");
             if (end > data.Length) throw new ArgumentOutOfRangeException("end", "end > data.Length");
-            
+
+            if (data == null || data.Length == 0) return null;
+            if (end - start < 2) return null;
+                        
             var priorCount = CountLabels(labels, start, end, weights);
             if (priorCount.Count < 2) return null;
             
@@ -156,7 +156,8 @@ namespace Infovision.MachineLearning.Discretization
             if (!this.IsDataSorted)
                 this.SortIndices(data);
 
-            this.Cuts = this.ComputeCuts(data, labels, 0, data.Length, weights);            
+            this.Cuts = this.ComputeCuts(data, labels, 0, data.Length, weights);
+            this.Cleanup();            
         }
 
         #endregion

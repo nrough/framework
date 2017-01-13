@@ -24,10 +24,10 @@ namespace Infovision.UnitTest.Runner
         {
             ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
 
-            //Test_CV(25);
-            //Test_Benchmark(25);
+            Test_CV(25);
+            Test_Benchmark(25);
                                    
-            ProcessResultFiles();
+            //ProcessResultFiles();
         }
 
         public static void Test_Benchmark(int tests)
@@ -84,7 +84,7 @@ namespace Infovision.UnitTest.Runner
                     }
                 }
             }
-        }
+        }       
 
         public static void ProcessResultFiles()
         {

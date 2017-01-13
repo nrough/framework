@@ -29,7 +29,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        //[TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]               
+        //[TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         public void ErrorImpurityTest(string trainFile, string testFile, FileFormat fileFormat, string reductFactoryKey)
         {
@@ -160,21 +160,21 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         }
 
         [Test, Repeat(1)]
-        //[TestCase(@"Data\chess.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\zoo.dta", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\promoters.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\semeion.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\dermatology.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\hypothyroid.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        //[TestCase(@"Data\lymphography.all", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\zoo.dta", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\semeion.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\lymphography.all", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);

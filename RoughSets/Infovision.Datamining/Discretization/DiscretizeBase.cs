@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
-    public abstract class DiscretizeBase : IDiscretization
+    public abstract class DiscretizeBase : ModelBase, IDiscretization
     {
         #region Members
 
@@ -115,6 +115,11 @@ namespace Infovision.MachineLearning.Discretization
             return true;
         }
 
+        protected virtual void Cleanup()
+        {
+            this.sortedIndices = null;
+        }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -130,7 +135,7 @@ namespace Infovision.MachineLearning.Discretization
                 sb.AppendLine(String.Format("{0}: <{1} {2})", Cuts.Length, Cuts[Cuts.Length - 1], "+Inf"));
             }
             return sb.ToString();
-        }
+        }        
         #endregion
     }
 }

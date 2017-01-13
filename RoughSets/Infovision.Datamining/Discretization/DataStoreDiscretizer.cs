@@ -24,15 +24,15 @@ namespace Infovision.MachineLearning.Discretization
 
         #region Members
 
-        private Dictionary<int, IDiscretization> fieldCuts;
+        private Dictionary<int, IDiscretizer> fieldCuts;
 
         #endregion
 
         #region Properties
 
-        public IList<IDiscretization> DiscretizerCollection { get; set; }
+        public IList<IDiscretizer> DiscretizerCollection { get; set; }
         public IEnumerable<int> Fields2Discretize { get; set; }
-        public Dictionary<int, IDiscretization> FieldCuts
+        public Dictionary<int, IDiscretizer> FieldCuts
         {
             get { return this.fieldCuts; }
             private set { this.fieldCuts = value; }
@@ -44,36 +44,36 @@ namespace Infovision.MachineLearning.Discretization
 
         public DataStoreDiscretizer()
         {
-            this.DiscretizerCollection = new List<IDiscretization>(
-                new IDiscretization[] {
+            this.DiscretizerCollection = new List<IDiscretizer>(
+                new IDiscretizer[] {
                     new DiscretizeFayyad(),
                     new DiscretizeEntropy(),
                     new DiscretizeEqualWidth()
                 });
-            this.fieldCuts = new Dictionary<int, IDiscretization>();
+            this.fieldCuts = new Dictionary<int, IDiscretizer>();
         }
 
-        public DataStoreDiscretizer(IDiscretization discretizer)
+        public DataStoreDiscretizer(IDiscretizer discretizer)
         {
             if (discretizer == null)
                 throw new ArgumentNullException("discretizer", "discretizer == null");
-            this.DiscretizerCollection = new List<IDiscretization>(new IDiscretization[] { discretizer });
-            this.fieldCuts = new Dictionary<int, IDiscretization>();
+            this.DiscretizerCollection = new List<IDiscretizer>(new IDiscretizer[] { discretizer });
+            this.fieldCuts = new Dictionary<int, IDiscretizer>();
         }
 
-        public DataStoreDiscretizer(IEnumerable<IDiscretization> discretizerCollection)
+        public DataStoreDiscretizer(IEnumerable<IDiscretizer> discretizerCollection)
         {
             if (discretizerCollection == null)
                 throw new ArgumentNullException("discretizerCollection", "discretizerCollection == null");
-            this.DiscretizerCollection = new List<IDiscretization>(discretizerCollection);
-            this.fieldCuts = new Dictionary<int, IDiscretization>();
+            this.DiscretizerCollection = new List<IDiscretizer>(discretizerCollection);
+            this.fieldCuts = new Dictionary<int, IDiscretizer>();
         }
 
         #endregion
 
         #region Methods
 
-        public virtual IDiscretization SelectDiscretizer(DataStore data, int fieldId, double[] weights = null)
+        public virtual IDiscretizer SelectDiscretizer(DataStore data, int fieldId, double[] weights = null)
         {
             if (this.DiscretizerCollection == null)
                 throw new InvalidOperationException("this.DiscretizerCollection == null");
@@ -94,7 +94,7 @@ namespace Infovision.MachineLearning.Discretization
 
             if (localFieldInfoTrain.CanDiscretize())
             {
-                foreach (IDiscretization discretizer in this.DiscretizerCollection)
+                foreach (IDiscretizer discretizer in this.DiscretizerCollection)
                 {
                     discretizer.Compute(data.GetColumnInternal(fieldId), labels, weights);
                     if (discretizer.Cuts != null)
@@ -107,7 +107,7 @@ namespace Infovision.MachineLearning.Discretization
 
         public virtual long[] GetCuts(DataStore data, int fieldId, double[] weights = null)
         {
-            IDiscretization discretizer = SelectDiscretizer(data, fieldId, weights);
+            IDiscretizer discretizer = SelectDiscretizer(data, fieldId, weights);
             if (discretizer != null)
                 return discretizer.Cuts;
             return null;
@@ -121,13 +121,13 @@ namespace Infovision.MachineLearning.Discretization
                                          : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
-            this.fieldCuts = new Dictionary<int, IDiscretization>(dataToDiscretize.DataStoreInfo.NumberOfFields);
+            this.fieldCuts = new Dictionary<int, IDiscretizer>(dataToDiscretize.DataStoreInfo.NumberOfFields);
             foreach (int fieldId in localFields)
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
                 {
-                    IDiscretization disc = SelectDiscretizer(dataToDiscretize, fieldId, weights);
+                    IDiscretizer disc = SelectDiscretizer(dataToDiscretize, fieldId, weights);
                     this.fieldCuts.Add(fieldId, disc);
 
                     if (disc != null && disc.Cuts != null)

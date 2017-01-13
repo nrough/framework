@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using GenericParsing;
 using Infovision.Data;
 using Infovision.MachineLearning;
 using Infovision.MachineLearning.Benchmark;
@@ -11,6 +10,7 @@ using Infovision.MachineLearning.Roughset;
 using Infovision.MachineLearning.Classification.DecisionTrees;
 using Infovision.MachineLearning.Permutations;
 using Infovision.MachineLearning.Classification;
+using GenericParsing;
 
 namespace DecisionForestTest
 {

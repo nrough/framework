@@ -11,7 +11,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DiscretizeEntropyTest : DiscretizeUnsupervisedTest
     {
-        public override IDiscretization GetDiscretizer()
+        public override IDiscretizer GetDiscretizer()
         {
             DiscretizeEntropy disc = new DiscretizeEntropy();
             return disc;

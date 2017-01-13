@@ -1,39 +1,31 @@
 ﻿using System;
 using Infovision.Data;
-using MiscUtil;
 
 namespace Infovision.MachineLearning.Discretization
 {
-    public class BinaryDiscretization
+    public class BinaryDiscretization : DiscretizeUnsupervisedBase
     {
-        private long[] cuts;
-        public long[] Cuts
+        public BinaryDiscretization()
+            : base()
         {
-            get { return cuts; }
-            set { cuts = value; }
+            this.IsDataSorted = true;
         }
 
         public BinaryDiscretization(long splitPoint)
+            : this()
         {
-            this.cuts = new long[1];
-            this.cuts[0] = splitPoint;
+            this.Cuts = new long[1];
+            this.Cuts[0] = splitPoint;
         }
 
-        public int Apply(long value)
+        public override long[] ComputeCuts(long[] data, double[] weights)
         {
-            if (this.cuts == null)
-                return 0;
-
-            for (int i = 0; i < cuts.Length; i++)
-                if (value <= cuts[i])
-                    return i;
-
-            return cuts.Length;
+            return this.Cuts;
         }
 
-        public string[] Discretize(DataStore data, DataFieldInfo fieldInfo)
+        public long[] Discretize(DataStore data, DataFieldInfo fieldInfo)
         {
-            string[] result = new string[data.NumberOfRecords];
+            long[] result = new long[data.NumberOfRecords];
             int fieldIdx = data.DataStoreInfo.GetFieldIndex(fieldInfo.Id);
 
             if (fieldInfo.HasMissingValues)
@@ -42,9 +34,9 @@ namespace Infovision.MachineLearning.Discretization
                 {
                     long value = data.GetFieldIndexValue(i, fieldIdx);
                     if (value == fieldInfo.MissingValueInternal)
-                        result[i] = "?";
+                        result[i] = fieldInfo.MissingValueInternal;
                     else
-                        result[i] = this.Apply(value).ToString();
+                        result[i] = this.Apply(value);
                 }
             }
             else
@@ -52,7 +44,7 @@ namespace Infovision.MachineLearning.Discretization
                 for (int i = 0; i < data.NumberOfRecords; i++)
                 {
                     long value = data.GetFieldIndexValue(i, fieldIdx);
-                    result[i] = this.Apply(value).ToString();
+                    result[i] = this.Apply(value);
                 }
             }
 

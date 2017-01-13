@@ -11,7 +11,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DiscretizeEqualWidthTest : DiscretizeUnsupervisedTest
     {
-        public override IDiscretization GetDiscretizer()
+        public override IDiscretizer GetDiscretizer()
         {
             return new DiscretizeEqualWidth();
         }

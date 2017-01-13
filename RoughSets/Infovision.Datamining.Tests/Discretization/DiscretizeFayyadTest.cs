@@ -12,7 +12,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DiscretizeFayyadTest : DiscretizeSupervisedBaseTest
     {
-        public override IDiscretization GetDiscretizer()
+        public override IDiscretizer GetDiscretizer()
         {
             return new DiscretizeFayyad();
         }

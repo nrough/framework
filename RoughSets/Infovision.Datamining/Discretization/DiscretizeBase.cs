@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
-    public abstract class DiscretizeBase : ModelBase, IDiscretization
+    public abstract class DiscretizeBase : ModelBase, IDiscretizer
     {
         #region Members
 

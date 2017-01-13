@@ -18,9 +18,9 @@ namespace Infovision.MachineLearning.Tests.Discretization
                                     11, 15, 16, 17, 20, 21, 22, 23, 24, 30, 31, 32, 33, 34,
                                     50, 60, 70, 80 };
 
-        public abstract IDiscretization GetDiscretizer();
+        public abstract IDiscretizer GetDiscretizer();
 
-        public void ShowInfo(IDiscretization discretizer, long[] dataExisting, long[] dataNotExisting)
+        public void ShowInfo(IDiscretizer discretizer, long[] dataExisting, long[] dataNotExisting)
         {
             Console.WriteLine(discretizer.ToString());
 

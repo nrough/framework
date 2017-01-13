@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
-    public interface IDiscretizationSupervised : IDiscretization
+    public interface IDiscretizationSupervised : IDiscretizer
     {
         long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights);
     }

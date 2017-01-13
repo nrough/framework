@@ -11,7 +11,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DiscretizeEqualFreqencyTest : DiscretizeUnsupervisedTest
     {
-        public override IDiscretization GetDiscretizer()
+        public override IDiscretizer GetDiscretizer()
         {
             DiscretizeEqualFreqency disc = new DiscretizeEqualFreqency();
             return disc;

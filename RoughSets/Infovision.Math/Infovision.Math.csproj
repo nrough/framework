@@ -114,7 +114,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enum.cs" />
+    <Compile Include="AgregateFunction.cs" />
     <Compile Include="Correlation.cs" />
     <Compile Include="PrimeTool.cs" />
     <Compile Include="PrimeToolHash.cs" />

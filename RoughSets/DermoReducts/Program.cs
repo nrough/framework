@@ -95,14 +95,14 @@ namespace DermoReducts
                 {
                     BinaryDiscretization discretizer = new BinaryDiscretization(value);
 
-                    string[] newValuesTrain = discretizer.Discretize(data, ageAttribute);
+                    long[] newValuesTrain = discretizer.Discretize(data, ageAttribute);
 
-                    int newFieldId = data.AddColumn<string>(newValuesTrain);
+                    int newFieldId = data.AddColumn<long>(newValuesTrain);
                     DataFieldInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(newFieldId);
 
                     newFieldInfo.IsNumeric = false;
                     newFieldInfo.Cuts = discretizer.Cuts;
-                    newFieldInfo.FieldValueType = typeof(string);
+                    newFieldInfo.FieldValueType = typeof(long);
                     newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
                 }
             }

@@ -20,13 +20,13 @@ namespace Infovision.MachineLearning.Tests.Discretization
             DataStore trainData = null, testData = null;
             splitter.Split(ref trainData, ref testData, 0);
 
-            IDiscretizationUnsupervised discretizer = this.GetDiscretizer() as IDiscretizationUnsupervised;
+            IDiscretizerUnsupervised discretizer = this.GetDiscretizer() as IDiscretizerUnsupervised;
             if (discretizer == null)
                 throw new InvalidOperationException("discretizer == null");
             
-            DataStoreDiscretizer descretizer = new DataStoreDiscretizer(discretizer);
-            descretizer.Fields2Discretize = fields;
-            descretizer.Discretize(trainData, trainData.Weights);
+            DataStoreDiscretizer dataDescretizer = new DataStoreDiscretizer(discretizer);
+            dataDescretizer.Fields2Discretize = fields;
+            dataDescretizer.Discretize(trainData, trainData.Weights);
             DataStoreDiscretizer.Discretize(testData, trainData);
 
             foreach (int fieldId in fields)
@@ -39,7 +39,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
         [Test]
         public void ComputeTest()
         {
-            IDiscretizationUnsupervised discretizer = this.GetDiscretizer() as IDiscretizationUnsupervised;
+            IDiscretizerUnsupervised discretizer = this.GetDiscretizer() as IDiscretizerUnsupervised;
             if (discretizer == null)
                 throw new InvalidOperationException();
             discretizer.Compute(data, null, null);

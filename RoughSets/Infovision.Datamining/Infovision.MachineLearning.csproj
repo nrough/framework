@@ -134,9 +134,9 @@
     <Compile Include="Discretization\DiscretizeSupervisedBase.cs" />
     <Compile Include="Discretization\DiscretizeEqualFreqency.cs" />
     <Compile Include="Discretization\DiscretizeEqualWidth.cs" />
-    <Compile Include="Discretization\IDiscretization.cs" />
-    <Compile Include="Discretization\IDiscretizationSupervised.cs" />
-    <Compile Include="Discretization\IDiscretizationUnsupervised.cs" />
+    <Compile Include="Discretization\IDiscretizer.cs" />
+    <Compile Include="Discretization\IDiscretizerSupervised.cs" />
+    <Compile Include="Discretization\IDiscretizerUnsupervised.cs" />
     <Compile Include="Discretization\DiscretizeFayyad.cs" />
     <Compile Include="Discretization\DiscretizeKononenko.cs" />
     <Compile Include="Discretization\DiscretizeManual.cs" />

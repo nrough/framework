@@ -43,7 +43,6 @@ namespace Infovision.MachineLearning.Clustering
 
             ClusteringResult result = new ClusteringResult();
             result.TestData = data;
-            result.Labels = 
             return result;
         }
 

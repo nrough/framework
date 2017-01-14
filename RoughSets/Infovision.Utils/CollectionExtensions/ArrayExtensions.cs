@@ -105,6 +105,9 @@ namespace Infovision.Core
 
         public static string ToStr<T>(this T[] array, char separator = '|')
         {
+            if (array == null)
+                return "NULL";
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < array.Length; i++)
             {

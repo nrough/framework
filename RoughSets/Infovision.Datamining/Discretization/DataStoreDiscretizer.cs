@@ -1,6 +1,8 @@
-﻿using Infovision.Data;
+﻿using Infovision.Core;
+using Infovision.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Infovision.MachineLearning.Discretization
 {
@@ -39,6 +41,9 @@ namespace Infovision.MachineLearning.Discretization
             private set { this.fieldDiscretizer = value; }
         }
         public bool UpdateDataColumns { get; set; } = true;
+
+        public bool NoFuckinIdeaHowToCallIt { get; set; } = false;
+        public bool BinaryCuts { get; set; } = false;
 
         #endregion
 
@@ -100,7 +105,7 @@ namespace Infovision.MachineLearning.Discretization
                 {
                     discretizer.Compute(data.GetColumnInternal(fieldId), labels, weights);
                     if (discretizer.Cuts != null)
-                        return discretizer;
+                        return (IDiscretizer) discretizer.Clone();
                 }
             }
 
@@ -123,7 +128,9 @@ namespace Infovision.MachineLearning.Discretization
                                          : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
-            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(dataToDiscretize.DataStoreInfo.NumberOfFields);
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(
+                dataToDiscretize.DataStoreInfo.Fields.Count(f => f.CanDiscretize()));
+
             foreach (int fieldId in localFields)
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
@@ -134,29 +141,55 @@ namespace Infovision.MachineLearning.Discretization
 
                     if (disc != null && disc.Cuts != null)
                     {
-                        long[] newValues = disc.Apply(dataToDiscretize.GetColumnInternal(fieldId));
+                        long[] continuousValues = dataToDiscretize.GetColumnInternal(fieldId);
+                        if (NoFuckinIdeaHowToCallIt)
+                        {                            
+                            for (int i = 1; i <= disc.Cuts.Length; i++)
+                            {                                
+                                long[] localCuts = BinaryCuts == false ? disc.Cuts.SubArray(0, i) : disc.Cuts.SubArray(i-1, 1);
+                                if(localCuts.Length > 1)
+                                    Array.Sort(localCuts);
 
-                        if (UpdateDataColumns)
-                        {
-                            localFieldInfoTrain.Cuts = disc.Cuts;
-                            localFieldInfoTrain.FieldValueType = typeof(long);
-                            localFieldInfoTrain.IsNumeric = false;
-                            localFieldInfoTrain.IsOrdered = true;
+                                long[] newValues = DiscretizeBase.Apply(continuousValues, localCuts);
 
-                            dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                                DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                    dataToDiscretize.AddColumn<long>(newValues));
+
+                                newFieldInfo.IsNumeric = false;
+                                newFieldInfo.IsOrdered = true;
+                                newFieldInfo.Cuts = localCuts;
+                                newFieldInfo.FieldValueType = typeof(long);
+                                newFieldInfo.Name = String.Format("{0}-{1}{2}", localFieldInfoTrain.Name, "New", i);
+                                newFieldInfo.Alias = String.Format("{0}-{1}{2}", localFieldInfoTrain.Alias, "New", i);
+                                newFieldInfo.DerivedFrom = fieldId;
+                            }
                         }
                         else
                         {
-                            DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
-                                dataToDiscretize.AddColumn<long>(newValues));
+                            long[] newValues = disc.Apply(continuousValues);
 
-                            newFieldInfo.IsNumeric = false;
-                            newFieldInfo.IsOrdered = true;
-                            newFieldInfo.Cuts = disc.Cuts;
-                            newFieldInfo.FieldValueType = typeof(long);
-                            newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, "New");
-                            newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, "New");
+                            if (UpdateDataColumns)
+                            {
+                                localFieldInfoTrain.Cuts = disc.Cuts;
+                                localFieldInfoTrain.FieldValueType = typeof(long);
+                                localFieldInfoTrain.IsNumeric = false;
+                                localFieldInfoTrain.IsOrdered = true;
 
+                                dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                            }
+                            else
+                            {
+                                DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                    dataToDiscretize.AddColumn<long>(newValues));
+
+                                newFieldInfo.IsNumeric = false;
+                                newFieldInfo.IsOrdered = true;
+                                newFieldInfo.Cuts = disc.Cuts;
+                                newFieldInfo.FieldValueType = typeof(long);
+                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, "New");
+                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, "New");
+                                newFieldInfo.DerivedFrom = fieldId;
+                            }
                         }
                     }
                 }
@@ -177,17 +210,37 @@ namespace Infovision.MachineLearning.Discretization
                 if (localFieldInfoTest.CanDiscretize() )
                 {
                     localFieldInfoTrain = discretizedData.DataStoreInfo.GetFieldInfo(fieldId);
+                    long[] continuousValues = dataToDiscretize.GetColumnInternal(fieldId);
 
-                    if (localFieldInfoTrain.Cuts != null)
+                    if (localFieldInfoTrain != null && localFieldInfoTrain.Cuts != null)
                     {
-                        long[] newValues = DiscretizeBase.Apply(
-                            dataToDiscretize.GetColumnInternal(fieldId), localFieldInfoTrain.Cuts);
+                        long[] newValues = DiscretizeBase.Apply(continuousValues, localFieldInfoTrain.Cuts);
 
                         localFieldInfoTest.FieldValueType = typeof(long);
                         localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
                         localFieldInfoTest.IsNumeric = false;
                         localFieldInfoTest.IsOrdered = true;
                         dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
+                    }
+                    
+                    IEnumerable<DataFieldInfo> derivedFields = discretizedData.DataStoreInfo
+                        .GetFields(f => f.DerivedFrom == fieldId && f.Cuts != null);
+
+                    foreach(var derivedField in derivedFields)
+                    {                       
+                        long[] newValues = DiscretizeBase.Apply(continuousValues, localFieldInfoTrain.Cuts);
+
+                        //TODO Set the same field Id
+                        DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                    dataToDiscretize.AddColumn<long>(newValues, derivedField));
+                        
+                        newFieldInfo.IsNumeric = false;
+                        newFieldInfo.IsOrdered = true;
+                        newFieldInfo.Cuts = derivedField.Cuts;
+                        newFieldInfo.FieldValueType = typeof(long);
+                        newFieldInfo.Name = derivedField.Name;
+                        newFieldInfo.Alias = derivedField.Alias;
+                        newFieldInfo.DerivedFrom = fieldId;
                     }
                 }
             }

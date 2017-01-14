@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
-    public abstract class DiscretizeUnsupervisedBase : DiscretizeBase, IDiscretizationUnsupervised
+    public abstract class DiscretizeUnsupervisedBase : DiscretizeBase, IDiscretizerUnsupervised
     {       
         #region Constructors
 

@@ -74,9 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Data\dermatology.data">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.MachineLearning.Experimenter.csproj">

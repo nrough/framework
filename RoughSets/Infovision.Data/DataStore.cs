@@ -392,7 +392,7 @@ namespace Infovision.Data
                 }
             });
 
-            int newFieldId = this.DataStoreInfo.MaxFieldId + 1;
+            int newFieldId = referenceFieldInfo == null ? this.DataStoreInfo.MaxFieldId + 1 : referenceFieldInfo.Id;
             DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
             for (int row = 0; row < this.NumberOfRecords; row++)
             {

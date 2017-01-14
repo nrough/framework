@@ -10,12 +10,19 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Tests.Discretization
 {
-    public abstract class DiscretizeSupervisedBaseTest : DiscretizeBaseTest
+    public class DiscretizeSupervisedBaseTest : DiscretizeBaseTest
     {        
         protected long[] labels = {
                         1, 1, 1, 2, 2, 2, 2, 2,
                         1, 1, 1, 1, 1, 1, 1, 1,
                         2, 2, 2, 2, 2, 3, 3, 3 };
+
+        public override IDiscretizer GetDiscretizer()
+        {
+            DiscretizeSupervisedBase result = new DiscretizeSupervisedBase();
+            result.NumberOfBuckets = 10;
+            return result;
+        }
 
         [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
         [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
@@ -62,7 +69,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             discretizer.Discretize(train, train.Weights);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, null)]        
         public virtual void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);                        
@@ -76,7 +83,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             discretizer.Discretize(data, data.Weights);
             
             foreach (var kvp in discretizer.FieldDiscretizer)
-                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, (kvp.Value == null || kvp.Value.Cuts == null) ? "All" : kvp.Value.Cuts.ToStr(' '));
+                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, (kvp.Value == null || kvp.Value.Cuts == null) ? "All" : kvp.Value.ToString());
 
             foreach (int fieldId in numericFields)
                 Assert.IsNotNull(data.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Training file {0} Field {1}", filename, fieldId);
@@ -102,7 +109,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             DataStoreDiscretizer.Discretize(testData, trainData);
 
             foreach (var kvp in discretizer.FieldDiscretizer)
-                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.Cuts.ToStr(' '));
+                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.ToString());
             
             foreach (int fieldId in numericFields)
             {
@@ -114,7 +121,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
         [Test]
         public void ComputeTest()
         {
-            IDiscretizationSupervised discretizer = this.GetDiscretizer() as IDiscretizationSupervised;
+            IDiscretizerSupervised discretizer = this.GetDiscretizer() as IDiscretizerSupervised;
             if (discretizer == null)
                 throw new InvalidOperationException();
             discretizer.Compute(data, labels, null);

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Infovision.MachineLearning.Discretization
 {
-    public interface IDiscretizationUnsupervised : IDiscretizer
+    public interface IDiscretizerSupervised : IDiscretizer
     {
-        long[] ComputeCuts(long[] data, double[] weights);        
+        long[] ComputeCuts(long[] data, long[] labels, int start, int end, double[] weights);
     }
 }

@@ -21,7 +21,9 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
     {
         #region TODO
         
-        //Add option not to remove attribute id after split - this will allow to use same attributes on various level (attribute must be continuous)
+        //Add option not to remove attribute id after split 
+        //- this will allow to use same attributes on various level (attribute must be continuous)
+
         #endregion
 
         protected Dictionary<int, List<long>> thresholds = null;

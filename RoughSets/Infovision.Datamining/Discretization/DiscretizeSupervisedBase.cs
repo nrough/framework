@@ -9,14 +9,17 @@ using System.Threading.Tasks;
 namespace Infovision.MachineLearning.Discretization
 {
     [Serializable]
-    public abstract class DiscretizeSupervisedBase : DiscretizeBase, IDiscretizationSupervised
+    public class DiscretizeSupervisedBase : DiscretizeBase, IDiscretizerSupervised
     {
-        #region TODO
+        #region TODO        
+        #endregion
 
-        //TODO Implement setting maximum number of cuts
+        #region Properties
+
+        public bool SortCuts { get; set; } = true;
 
         #endregion
-        
+
         #region Constructors
 
         public DiscretizeSupervisedBase()
@@ -42,103 +45,92 @@ namespace Infovision.MachineLearning.Discretization
         {
             if (start < 0) throw new ArgumentOutOfRangeException("start", "start < 0");
             if (end > data.Length) throw new ArgumentOutOfRangeException("end", "end > data.Length");
-
             if (data == null || data.Length == 0) return null;
-            if (end - start < 2) return null;
-                        
-            var priorCount = CountLabels(labels, start, end, weights);
-            if (priorCount.Count < 2) return null;
-            
-            var priorEntopy = Tools.Entropy(priorCount.Values.ToArray());
 
-            var labelCountRight = new Dictionary<long, double>(priorCount);
-            var labelCountLeft = new Dictionary<long, double>(priorCount);
-            labelCountLeft.SetAll(0);
+            var result = new List<long>();
+            var queue = new Queue<Tuple<int, int>>();
+            queue.Enqueue(new Tuple<int, int>(start, end));            
 
-            double[] bestLeft = null, bestRight = null;                        
-            int bestCutIndex = -1;
-            long bestCutPoint = -1;
-            int numCutPoints = 0;
-            double instanceWeight = 0.0;
-            double bestEntropy = priorEntopy;
-            
-            for (int i = start; i < end - 1; i++)
-            {                
-                if (weights == null || this.UseWeights == false)
+            while (queue.Count != 0)
+            {
+                var current = queue.Dequeue();
+                
+                if (current.Item2 - current.Item1 < 2) continue;
+                var priorCount = CountLabels(labels, current.Item1, current.Item2, weights);
+                if (priorCount.Count < 2) continue;
+
+                var priorEntopy = Tools.Entropy(priorCount.Values.ToArray());
+
+                var labelCountRight = new Dictionary<long, double>(priorCount);
+                var labelCountLeft = new Dictionary<long, double>(priorCount);
+                labelCountLeft.SetAll(0);
+
+                double[] bestLeft = null, bestRight = null;
+                int bestCutIndex = -1;
+                long bestCutPoint = -1;
+                int numCutPoints = 0;
+                double instanceWeight = 0.0;
+                double bestEntropy = priorEntopy;
+
+                for (int i = current.Item1; i < current.Item2 - 1; i++)
                 {
-                    instanceWeight++;
-                    labelCountLeft[labels[SortedIndices[i]]]++;
-                    labelCountRight[labels[SortedIndices[i]]]--;
-                }
-                else
-                {
-                    instanceWeight += weights[SortedIndices[i]];
-                    labelCountLeft[labels[SortedIndices[i]]] += weights[SortedIndices[i]];
-                    labelCountRight[labels[SortedIndices[i]]] -= weights[SortedIndices[i]];
-                }                
-
-                if (data[SortedIndices[i]] < data[SortedIndices[i+1]])
-                {
-                    long currentCutPoint = (data[SortedIndices[i]] + data[SortedIndices[i + 1]]) / 2;
-                    var currentEntropy = Tools.Entropy(labelCountLeft.Values.ToArray(), labelCountRight.Values.ToArray());
-
-                    if (currentEntropy < bestEntropy)
+                    if (weights == null || this.UseWeights == false)
                     {
-                        bestEntropy = currentEntropy;
-                        bestCutIndex = i;
-                        bestCutPoint = currentCutPoint;
-
-                        bestLeft = labelCountLeft.Values.ToArray();
-                        bestRight = labelCountRight.Values.ToArray();
+                        instanceWeight++;
+                        labelCountLeft[labels[SortedIndices[i]]]++;
+                        labelCountRight[labels[SortedIndices[i]]]--;
+                    }
+                    else
+                    {
+                        instanceWeight += weights[SortedIndices[i]];
+                        labelCountLeft[labels[SortedIndices[i]]] += weights[SortedIndices[i]];
+                        labelCountRight[labels[SortedIndices[i]]] -= weights[SortedIndices[i]];
                     }
 
-                    numCutPoints++;
+                    if (data[SortedIndices[i]] < data[SortedIndices[i + 1]])
+                    {
+                        long currentCutPoint = (data[SortedIndices[i]] + data[SortedIndices[i + 1]]) / 2;
+                        var currentEntropy = Tools.Entropy(labelCountLeft.Values.ToArray(), labelCountRight.Values.ToArray());
+
+                        if (currentEntropy < bestEntropy)
+                        {
+                            bestEntropy = currentEntropy;
+                            bestCutIndex = i;
+                            bestCutPoint = currentCutPoint;
+
+                            bestLeft = labelCountLeft.Values.ToArray();
+                            bestRight = labelCountRight.Values.ToArray();
+                        }
+
+                        numCutPoints++;
+                    }
+                }            
+
+                int numInstances = (current.Item2 - current.Item1);
+
+                if (bestCutIndex == -1) continue;
+                if (priorEntopy - bestEntropy <= 0) continue;                
+
+                if (!StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight,
+                        numCutPoints, numInstances, instanceWeight))
+                {
+                    result.Add(bestCutPoint);
+
+                    queue.Enqueue(new Tuple<int, int>(current.Item1, bestCutIndex + 1));
+                    queue.Enqueue(new Tuple<int, int>(bestCutIndex + 1, current.Item2));
                 }
+
+                if (this.NumberOfBuckets > 0 && result.Count >= this.NumberOfBuckets)
+                    break;
             }
 
-            int numInstances = (end - start);
+            if(result.Count == 0)
+                return null;
 
-            if (bestCutIndex == -1) return null;
-            if (priorEntopy - bestEntropy <= 0) return null;
+            if(SortCuts && result.Count > 1)
+                result.Sort();
 
-            if ( ! StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight, 
-                    numCutPoints, numInstances, instanceWeight))
-            {                
-                //call recurently compute cuts on subarrays
-                long[] left = this.ComputeCuts(data, labels, start, bestCutIndex + 1, weights);
-                long[] right = this.ComputeCuts(data, labels, bestCutIndex + 1, end, weights);
-
-                // Merge cutpoints and return
-                if ((left == null) && (right == null))
-                {
-                    return new long[] { bestCutPoint };
-                }
-
-                long[] result;
-                if (right == null)
-                {
-                    result = new long[left.Length + 1];
-                    Array.Copy(left, 0, result, 0, left.Length);
-                    result[left.Length] = bestCutPoint;
-                    return result;
-                }
-
-                if (left == null)
-                {
-                    result = new long[right.Length + 1];
-                    result[0] = bestCutPoint;
-                    Array.Copy(right, 0, result, 1, right.Length);
-                    return result;
-                }
-                
-                result = new long[left.Length + right.Length + 1];
-                Array.Copy(left, 0, result, 0, left.Length);
-                result[left.Length] = bestCutPoint;
-                Array.Copy(right, 0, result, left.Length + 1, right.Length);
-                return result;
-            }
-
-            return null;
+            return result.ToArray();
         }
 
         protected virtual bool StopCondition(
@@ -166,7 +158,7 @@ namespace Infovision.MachineLearning.Discretization
                 this.SortIndices(data);
 
             this.Cuts = this.ComputeCuts(data, labels, 0, data.Length, weights);
-            this.Cleanup();            
+            this.Cleanup();
         }
 
         #endregion

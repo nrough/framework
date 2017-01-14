@@ -172,7 +172,12 @@ namespace Infovision.Data
         {
             if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
                 return this.Fields;
-            return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));
+            return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
+        }
+
+        public IEnumerable<DataFieldInfo> GetFields(Func<DataFieldInfo, bool> selector)
+        {
+            return this.Fields.Where(selector);            
         }
 
         public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)

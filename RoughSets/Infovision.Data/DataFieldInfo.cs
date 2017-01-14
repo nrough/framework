@@ -24,7 +24,6 @@ namespace Infovision.Data
         private bool isUnique;
         private bool isOrdered;
 
-
         public static long DefaultMissingValue = Int64.MaxValue;
 
         #endregion
@@ -35,6 +34,7 @@ namespace Infovision.Data
         public string Alias { get; set; }
         public int Id { get; set; }
         public Type FieldValueType { get; set; }
+        public int DerivedFrom { get; set; }
     
         public Histogram<long> Histogram { get { return histogram; } }
         public Histogram<long> HistogramWeights { get { return histogramWeights; } }

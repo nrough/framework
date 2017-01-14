@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infovision.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -75,6 +76,20 @@ namespace Infovision.MachineLearning.Discretization
             return DiscretizeBase.Apply(value, Cuts);            
         }
 
+        public long Apply(long value, int cutLimit)
+        {
+            long[] localCuts = Cuts.SubArray(0, cutLimit);
+            Array.Sort(localCuts);
+            return DiscretizeBase.Apply(value, localCuts);
+        }
+
+        public long[] Apply(long[] values, int cutLimit)
+        {
+            long[] localCuts = Cuts.SubArray(0, cutLimit);
+            Array.Sort(localCuts);
+            return DiscretizeBase.Apply(values, localCuts);
+        }
+
         public static long Apply(long value, long[] cuts)
         {
             if (cuts == null)
@@ -139,10 +154,10 @@ namespace Infovision.MachineLearning.Discretization
             }
             else
             {
-                sb.AppendLine(String.Format("{0}: <{1} {2})", 0, "-Inf", Cuts[0]));
+                sb.AppendLine(String.Format("{0}: ({1} {2}>", 0, "-Inf", Cuts[0]));
                 for (int i = 1; i < Cuts.Length; i++)
-                    sb.AppendLine(String.Format("{0}: <{1} {2})", i, Cuts[i - 1], Cuts[i]));
-                sb.AppendLine(String.Format("{0}: <{1} {2})", Cuts.Length, Cuts[Cuts.Length - 1], "+Inf"));
+                    sb.AppendLine(String.Format("{0}: ({1} {2}>", i, Cuts[i - 1], Cuts[i]));
+                sb.AppendLine(String.Format("{0}: ({1} {2})", Cuts.Length, Cuts[Cuts.Length - 1], "+Inf"));
             }
             return sb.ToString();
         }        

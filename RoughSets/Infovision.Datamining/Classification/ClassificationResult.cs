@@ -25,7 +25,7 @@ namespace Infovision.MachineLearning.Classification
         private long[] predictionResults;
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
-        private int counter;        
+        private int counter;
         private readonly object syncRoot = new object();
 
         #endregion Members

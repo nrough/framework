@@ -75,7 +75,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             discretizer.Fields2Discretize = numericFields;
             discretizer.Discretize(data, data.Weights);
             
-            foreach (var kvp in discretizer.FieldCuts)
+            foreach (var kvp in discretizer.FieldDiscretizer)
                 Console.WriteLine("Field {0} Cuts {1}", kvp.Key, (kvp.Value == null || kvp.Value.Cuts == null) ? "All" : kvp.Value.Cuts.ToStr(' '));
 
             foreach (int fieldId in numericFields)
@@ -101,7 +101,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             discretizer.Discretize(trainData, trainData.Weights);
             DataStoreDiscretizer.Discretize(testData, trainData);
 
-            foreach (var kvp in discretizer.FieldCuts)
+            foreach (var kvp in discretizer.FieldDiscretizer)
                 Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.Cuts.ToStr(' '));
             
             foreach (int fieldId in numericFields)

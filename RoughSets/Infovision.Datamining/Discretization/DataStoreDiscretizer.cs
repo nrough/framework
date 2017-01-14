@@ -12,7 +12,8 @@ namespace Infovision.MachineLearning.Discretization
         //example of some discretization automation
         //http://library.bayesia.com/display/FAQ/Choosing+a+Discretization+Algorithm
         //Supervised
-        //1. MDL - Fayyad & Irani or Kononenko - OK
+        //1. Decision Tree Discretization (Single attribute)
+        //2. MDL - Fayyad & Irani or Kononenko - OK
         //Unsupervised
         //2. Density Approximation - 
         //3. K-Means
@@ -24,7 +25,7 @@ namespace Infovision.MachineLearning.Discretization
 
         #region Members
 
-        private Dictionary<int, IDiscretizer> fieldCuts;
+        private Dictionary<int, IDiscretizer> fieldDiscretizer;
 
         #endregion
 
@@ -32,11 +33,12 @@ namespace Infovision.MachineLearning.Discretization
 
         public IList<IDiscretizer> DiscretizerCollection { get; set; }
         public IEnumerable<int> Fields2Discretize { get; set; }
-        public Dictionary<int, IDiscretizer> FieldCuts
+        public Dictionary<int, IDiscretizer> FieldDiscretizer
         {
-            get { return this.fieldCuts; }
-            private set { this.fieldCuts = value; }
+            get { return this.fieldDiscretizer; }
+            private set { this.fieldDiscretizer = value; }
         }
+        public bool UpdateDataColumns { get; set; } = true;
 
         #endregion
 
@@ -50,7 +52,7 @@ namespace Infovision.MachineLearning.Discretization
                     new DiscretizeEntropy(),
                     new DiscretizeEqualWidth()
                 });
-            this.fieldCuts = new Dictionary<int, IDiscretizer>();
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>();
         }
 
         public DataStoreDiscretizer(IDiscretizer discretizer)
@@ -58,7 +60,7 @@ namespace Infovision.MachineLearning.Discretization
             if (discretizer == null)
                 throw new ArgumentNullException("discretizer", "discretizer == null");
             this.DiscretizerCollection = new List<IDiscretizer>(new IDiscretizer[] { discretizer });
-            this.fieldCuts = new Dictionary<int, IDiscretizer>();
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>();
         }
 
         public DataStoreDiscretizer(IEnumerable<IDiscretizer> discretizerCollection)
@@ -66,7 +68,7 @@ namespace Infovision.MachineLearning.Discretization
             if (discretizerCollection == null)
                 throw new ArgumentNullException("discretizerCollection", "discretizerCollection == null");
             this.DiscretizerCollection = new List<IDiscretizer>(discretizerCollection);
-            this.fieldCuts = new Dictionary<int, IDiscretizer>();
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>();
         }
 
         #endregion
@@ -121,25 +123,41 @@ namespace Infovision.MachineLearning.Discretization
                                          : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
-            this.fieldCuts = new Dictionary<int, IDiscretizer>(dataToDiscretize.DataStoreInfo.NumberOfFields);
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(dataToDiscretize.DataStoreInfo.NumberOfFields);
             foreach (int fieldId in localFields)
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
                 {
                     IDiscretizer disc = SelectDiscretizer(dataToDiscretize, fieldId, weights);
-                    this.fieldCuts.Add(fieldId, disc);
+                    this.fieldDiscretizer.Add(fieldId, disc);
 
                     if (disc != null && disc.Cuts != null)
-                    {                                        
-                        localFieldInfoTrain.Cuts = disc.Cuts;
+                    {
                         long[] newValues = disc.Apply(dataToDiscretize.GetColumnInternal(fieldId));
 
-                        localFieldInfoTrain.FieldValueType = typeof(long);
-                        localFieldInfoTrain.IsNumeric = false;
-                        localFieldInfoTrain.IsOrdered = true;
+                        if (UpdateDataColumns)
+                        {
+                            localFieldInfoTrain.Cuts = disc.Cuts;
+                            localFieldInfoTrain.FieldValueType = typeof(long);
+                            localFieldInfoTrain.IsNumeric = false;
+                            localFieldInfoTrain.IsOrdered = true;
 
-                        dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                            dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
+                        }
+                        else
+                        {
+                            DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                dataToDiscretize.AddColumn<long>(newValues));
+
+                            newFieldInfo.IsNumeric = false;
+                            newFieldInfo.IsOrdered = true;
+                            newFieldInfo.Cuts = disc.Cuts;
+                            newFieldInfo.FieldValueType = typeof(long);
+                            newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, "New");
+                            newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, "New");
+
+                        }
                     }
                 }
             }

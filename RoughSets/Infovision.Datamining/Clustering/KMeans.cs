@@ -42,6 +42,8 @@ namespace Infovision.MachineLearning.Clustering
             this.clusters = this.Cluster(rawData, this.K);
 
             ClusteringResult result = new ClusteringResult();
+            result.TestData = data;
+            result.Labels = 
             return result;
         }
 

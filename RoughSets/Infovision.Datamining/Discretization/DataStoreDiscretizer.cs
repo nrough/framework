@@ -42,7 +42,7 @@ namespace Infovision.MachineLearning.Discretization
         }
         public bool UpdateDataColumns { get; set; } = true;
 
-        public bool NoFuckinIdeaHowToCallIt { get; set; } = false;
+        public bool AddColumnsBasedOnCuts { get; set; } = false;
         public bool BinaryCuts { get; set; } = false;
 
         #endregion
@@ -142,7 +142,7 @@ namespace Infovision.MachineLearning.Discretization
                     if (disc != null && disc.Cuts != null)
                     {
                         long[] continuousValues = dataToDiscretize.GetColumnInternal(fieldId);
-                        if (NoFuckinIdeaHowToCallIt)
+                        if (AddColumnsBasedOnCuts)
                         {                            
                             for (int i = 1; i <= disc.Cuts.Length; i++)
                             {                                
@@ -159,8 +159,8 @@ namespace Infovision.MachineLearning.Discretization
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = localCuts;
                                 newFieldInfo.FieldValueType = typeof(long);
-                                newFieldInfo.Name = String.Format("{0}-{1}{2}", localFieldInfoTrain.Name, "New", i);
-                                newFieldInfo.Alias = String.Format("{0}-{1}{2}", localFieldInfoTrain.Alias, "New", i);
+                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, i);
+                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, i);
                                 newFieldInfo.DerivedFrom = fieldId;
                             }
                         }
@@ -186,8 +186,8 @@ namespace Infovision.MachineLearning.Discretization
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = disc.Cuts;
                                 newFieldInfo.FieldValueType = typeof(long);
-                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, "New");
-                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, "New");
+                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, 1);
+                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, 1);
                                 newFieldInfo.DerivedFrom = fieldId;
                             }
                         }

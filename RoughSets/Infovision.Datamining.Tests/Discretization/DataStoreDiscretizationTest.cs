@@ -49,7 +49,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
 
             var discretizer = new DataStoreDiscretizer();
             discretizer.Fields2Discretize = numericFields;
-            discretizer.NoFuckinIdeaHowToCallIt = true;
+            discretizer.AddColumnsBasedOnCuts = true;
             discretizer.Discretize(data);
 
             Assert.AreEqual(numberOfFields + 1, data.DataStoreInfo.NumberOfFields);
@@ -72,7 +72,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
 
             var discretizer = new DataStoreDiscretizer();
             discretizer.Fields2Discretize = numericFields;
-            discretizer.NoFuckinIdeaHowToCallIt = true;
+            discretizer.AddColumnsBasedOnCuts = true;
             discretizer.Discretize(trainData);
             
             DataStoreDiscretizer.Discretize(testData, trainData);

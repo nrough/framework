@@ -130,7 +130,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("Error: {0}", error / (double)numOfFolds);
         }
 
-        [Test, Repeat(1)]
+        [Test]
         public void DecisionForestRough_GermanCredit()
         {
             Console.WriteLine("DecisionForestRough_GermanCredit");
@@ -139,6 +139,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
             double error = 0;
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
@@ -146,10 +147,10 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 splitter.Split(ref train, ref test, f);
 
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
-                forest.NumberOfAttributesToCheckForSplit = 3;
-                forest.Size = 50;
-                forest.Gamma = 0.22;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                //forest.NumberOfAttributesToCheckForSplit = 3;
+                forest.Size = 100;
+                //forest.Gamma = 0.22;
+                forest.Learn(train, attributes);
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
                 Console.WriteLine(result);

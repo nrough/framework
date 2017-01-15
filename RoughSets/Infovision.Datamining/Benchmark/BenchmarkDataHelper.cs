@@ -87,10 +87,11 @@ namespace Infovision.MachineLearning.Benchmark
             benchmark = new BenchmarkData("connect", GetFilePath(dataPath, "connect-4.dta"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("soybean-large", GetFilePath(dataPath, "soybean-large.data"), GetFilePath(dataPath, "soybean-large.test"))
+            benchmark = new BenchmarkData("soybean-large", 
+                GetFilePath(dataPath, "soybean-large.data"), 
+                GetFilePath(dataPath, "soybean-large.test"))
             {
-                FileFormat = FileFormat.Csv,
-                DecisionFieldId = 1
+                FileFormat = FileFormat.Csv
             };
 
             dataFiles.Add(benchmark.Name, benchmark);

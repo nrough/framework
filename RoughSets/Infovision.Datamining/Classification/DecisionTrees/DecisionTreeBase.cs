@@ -507,15 +507,17 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             int attributeIdx = this.TrainingData.DataStoreInfo.GetFieldIndex(attributeId);
             int[] indices = data.Indices;
             long[] values = this.TrainingData.GetFieldIndexValue(indices, attributeIdx);
+            //TODO Do we need to sort both arrays and if it is correct?
+
             Array.Sort(values, indices);
 
             List<long> thresholds = new List<long>(values.Length);
 
-            if (values.Length > 0)
+            if (values.Length == 1)
                 thresholds.Add(values[0]);
 
             for (int k = 0; k < values.Length - 1; k++)
-                if (values[k] != values[k + 1])
+                if (values[k] < values[k + 1])
                     thresholds.Add((values[k] + values[k + 1]) / 2);
 
             if (thresholds.Count == 0)

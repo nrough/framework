@@ -24,7 +24,7 @@ namespace Infovision.Data.Tests
             dataStore = DataStore.Load(fileName, FileFormat.Rses1);
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void TestDecisionTreeTest()
         {           
             DataStoreSplitter splitter = new DataStoreSplitter(dataStore, 5);

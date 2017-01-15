@@ -300,7 +300,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("Error: {0}", error / (double)numOfFolds);                        
         }
 
-        [Test, Repeat(50)]
+        [Test, Repeat(1)]
         public void DecisionTreeC45NoPruningForNumericAttributeTest()
         {
             int numOfFolds = 5;
@@ -346,7 +346,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             }            
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestRoughForNumericAttributeTest()
         {
             int numOfFolds = 5;
@@ -369,7 +369,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             }
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void TreeLearnPerformanceTest()
         {
             InfovisionConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
@@ -500,7 +500,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void CARTLearnTest()
         {
             Console.WriteLine("CARTLearnTest");

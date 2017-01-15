@@ -15,7 +15,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
     [TestFixture]
     public class DecisionTreePruningTest
     {
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void ErrorBasedPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -62,7 +62,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine();
         }        
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void ReducedErrorPruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -110,7 +110,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine();
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void PrePruningTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -142,7 +142,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine();
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void PrePrunningTest2()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
@@ -187,7 +187,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             c45.Learn(data, attributes);
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void PrePrunningTest3()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);

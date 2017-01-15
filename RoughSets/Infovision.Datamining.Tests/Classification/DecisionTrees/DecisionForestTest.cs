@@ -17,7 +17,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
     [TestFixture]
     public class DecisionForestTest
     {
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestForNumericAttributeTest()
         {
             int numOfFolds = 5;
@@ -40,7 +40,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             }
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestRoughForNumericAttributeTest()
         {
             int numOfFolds = 5;
@@ -63,7 +63,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             }
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
@@ -90,7 +90,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine(Classifier.DefaultClassifer.Classify(c45tree, test, null));
         }
 
-        [Test, Repeat(10)]
+        [Test, Repeat(1)]
         public void RandomForestCARTTest()
         {
             //double epsilon = 0.07;

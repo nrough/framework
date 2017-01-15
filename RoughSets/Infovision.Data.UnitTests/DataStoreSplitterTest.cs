@@ -38,7 +38,7 @@ namespace Infovision.Data.Tests
         [Test]
         public void SplitRatio()
         {
-            Debugger.Break();
+            //Debugger.Break();
 
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;

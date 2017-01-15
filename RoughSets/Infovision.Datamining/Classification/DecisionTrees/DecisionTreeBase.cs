@@ -496,7 +496,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 throw new ArgumentException("currentScore < 0", "parentMeasure");
 
             var eq = EquivalenceClassCollection.Create(attributeId, data);
-            double gain = this.CalculateImpurityAfterSplit(eq);            
+            double gain = this.CalculateImpurityAfterSplit(eq);
             return new SplitInfo(attributeId,
                 this.ImpurityNormalize(parentMeasure - gain, eq), eq, 
                 SplitType.Discreet, ComparisonType.EqualTo, 0);

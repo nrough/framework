@@ -9,20 +9,7 @@ namespace Infovision.MachineLearning.Discretization
     [Serializable]
     public class DataStoreDiscretizer
     {
-        #region TODO
-                
-        //example of some discretization automation
-        //http://library.bayesia.com/display/FAQ/Choosing+a+Discretization+Algorithm
-        //Supervised
-        //1. Decision Tree Discretization (Single attribute)
-        //2. MDL - Fayyad & Irani or Kononenko - OK
-        //Unsupervised
-        //2. Density Approximation - 
-        //3. K-Means
-        //4. Normalized Equal Distances
-        //5. Equal distances
-        //6. Equal frequencies - not recommended
-        
+        #region TODO                                
         #endregion
 
         #region Members

@@ -273,6 +273,10 @@ namespace Infovision.Data
                                             typedFieldValues[i] = Int32.Parse(fileLine[i], CultureInfo.InvariantCulture);
                                             break;
 
+                                        case TypeCode.Int64:
+                                            typedFieldValues[i] = Int64.Parse(fileLine[i], CultureInfo.InvariantCulture);
+                                            break;
+
                                         case TypeCode.Double:
                                             typedFieldValues[i] = Double.Parse(fileLine[i], CultureInfo.InvariantCulture);
                                             break;

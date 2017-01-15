@@ -5,7 +5,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public static class ClusteringLinkage
-    {
+    {        
         //aka Min
         public static double Single(int[] cluster1, int[] cluster2, DistanceMatrix distanceMatrix, double[][] data)
         {

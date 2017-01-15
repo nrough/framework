@@ -76,8 +76,7 @@ namespace Infovision.Data
         public bool IsOrdered { get { return this.isOrdered; } set { this.isOrdered = value; } }
 
         public long[] Cuts { get; set; }
-
-        //TODO NumberOfValues property needs to be changed for numeric data
+        
         public int NumberOfValues
         {
             get { return this.Histogram.Count; }

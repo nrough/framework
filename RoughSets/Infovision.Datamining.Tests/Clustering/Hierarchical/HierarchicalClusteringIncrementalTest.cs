@@ -11,9 +11,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringIncrementalTest
-    {
-        //TODO Finish incremental cluster implementation
-
+    {        
         [Test]
         public void AddToClusterTest()
         {

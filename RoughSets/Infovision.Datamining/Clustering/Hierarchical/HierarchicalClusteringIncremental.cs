@@ -8,6 +8,16 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
     [Serializable]
     public abstract class HierarchicalClusteringIncremental : HierarchicalClusteringBase
     {
+        #region TODO
+
+        //TODO HierarchicalClusteringIncremental.AddToCluster method fails.
+        //Parent methods works OK
+        //Derived implementation like in SIHC also works fine.
+        //Check the difference between this and SIHC implementation
+        //It is possible that this implementation is the old one that was not updated at all and instead only SIHC should be used
+
+        #endregion
+
         private Dictionary<int, DendrogramNode> nodes;
         public int MinimumNumberOfInstances { get; set; }
 
@@ -57,13 +67,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
         {
             throw new InvalidOperationException("Do not use Compute() method in incremental clustering. Use AddToCluster instead.");
         }
-
-        //TODO HierarchicalClusteringIncremental.AddToCluster method fails.
-        //Parent methods works OK
-        //Childs methods like in SIHC also works fine.
-        //Check the difference between this and SIHC implementation
-        //It is possible that this implementation is the old one that was not updated at all and instead only SIHC should be used
-
+        
         //public override bool AddToCluster(int id, double[] instance)
         public bool AddToCluster_OLD(int id, double[] instance)
         {

@@ -20,6 +20,14 @@ namespace Infovision.MachineLearning.Classification.DecisionRules
     [Serializable]
     public class Holte1R : ModelBase, ILearner, IPredictionModel
     {
+        #region TODO
+
+        //TODO Missing values (Training & Testing)
+        //TODO Refactor Learn Method
+        //TODO Optimize DiscretizationInfo (Output, OutputWeight, Check)
+
+        #endregion
+
         private DecisionListCollection decisionLists;
         private DecisionDistribution aprioriDecisionDistribution;
 
@@ -57,11 +65,7 @@ namespace Infovision.MachineLearning.Classification.DecisionRules
         }
         
         public ClassificationResult Learn(DataStore data, int[] attributes)
-        {
-            //TODO Missing values (Training & Testing)
-            //TODO Refactor Learn Method
-            //TODO Optimize DiscretizationInfo (Output, OutputWeight, Check)
-
+        {            
             this.aprioriDecisionDistribution = EquivalenceClassCollection.Create(new int[] { }, data).DecisionDistribution;
 
             this.decisionLists = new DecisionListCollection(attributes.Length);

@@ -29,7 +29,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             return BenchmarkDataHelper.GetDataFiles("Data");
         }
 
-        [Test, Ignore("For verification!")] //TODO Verify this test, what is tested? I think there is an error in construction of ReductStoreCollection and passing it to classifier.
+        [Test, Ignore("For verification!")] 
         public void RunExperiment()
         {
             int numberOfPermutations = 10;

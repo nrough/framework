@@ -131,7 +131,7 @@ namespace Infovision.MachineLearning.Discretization
             this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(
                 dataToDiscretize.DataStoreInfo.Fields.Count(f => f.CanDiscretize()));
 
-            foreach (int fieldId in localFields)
+            foreach (int fieldId in localFields.ToList())
             {
                 localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTrain.CanDiscretize())
@@ -204,7 +204,7 @@ namespace Infovision.MachineLearning.Discretization
                                          ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
                                          : fieldsToDiscretize;
 
-            foreach (int fieldId in localFields)
+            foreach (int fieldId in localFields.ToList())
             {
                 localFieldInfoTest = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
                 if (localFieldInfoTest.CanDiscretize() )
@@ -226,21 +226,23 @@ namespace Infovision.MachineLearning.Discretization
                     IEnumerable<DataFieldInfo> derivedFields = discretizedData.DataStoreInfo
                         .GetFields(f => f.DerivedFrom == fieldId && f.Cuts != null);
 
-                    foreach(var derivedField in derivedFields)
-                    {                       
-                        long[] newValues = DiscretizeBase.Apply(continuousValues, localFieldInfoTrain.Cuts);
+                    if (derivedFields != null)
+                    {
+                        foreach (var derivedField in derivedFields)
+                        {
+                            long[] newValues = DiscretizeBase.Apply(continuousValues, derivedField.Cuts);
 
-                        //TODO Set the same field Id
-                        DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
-                                    dataToDiscretize.AddColumn<long>(newValues, derivedField));
-                        
-                        newFieldInfo.IsNumeric = false;
-                        newFieldInfo.IsOrdered = true;
-                        newFieldInfo.Cuts = derivedField.Cuts;
-                        newFieldInfo.FieldValueType = typeof(long);
-                        newFieldInfo.Name = derivedField.Name;
-                        newFieldInfo.Alias = derivedField.Alias;
-                        newFieldInfo.DerivedFrom = fieldId;
+                            DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                        dataToDiscretize.AddColumn<long>(newValues, derivedField));
+
+                            newFieldInfo.IsNumeric = false;
+                            newFieldInfo.IsOrdered = true;
+                            newFieldInfo.Cuts = derivedField.Cuts;
+                            newFieldInfo.FieldValueType = typeof(long);
+                            newFieldInfo.Name = derivedField.Name;
+                            newFieldInfo.Alias = derivedField.Alias;
+                            newFieldInfo.DerivedFrom = fieldId;
+                        }
                     }
                 }
             }

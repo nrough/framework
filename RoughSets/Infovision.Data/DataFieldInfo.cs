@@ -115,11 +115,18 @@ namespace Infovision.Data
             this.HasMissingValues = false;
             this.MissingValue = null;
             this.NumberOfDecimals = 0;
+
+            this.IsNumeric = DataFieldInfo.IsNumericType(fieldValueType);
+            this.IsSymbolic = !this.IsNumeric;
         }
 
         #endregion Constructors
-
+    
         #region Methods
+
+        public void InitFromReferenceField(DataFieldInfo referenceField)
+        {
+        }
 
         public void Reset()
         {
@@ -154,10 +161,9 @@ namespace Infovision.Data
 
         public static bool IsNumericType(Type t)
         {
-            if (t == typeof(int)
-                || t == typeof(double)
-                || t == typeof(float)
-                || t == typeof(decimal))
+            if (t == typeof(int) || t == typeof(long)
+                || t == typeof(double) || t == typeof(decimal) || t == typeof(float) 
+                || t == typeof(short) || t == typeof(uint) || t == typeof(ulong) || t == typeof(ushort))
                 return true;
 
             return false;

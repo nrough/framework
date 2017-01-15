@@ -388,12 +388,19 @@ namespace Infovision.Data
             {
                 for (int col = 0; col < this.DataStoreInfo.NumberOfFields; col++)
                 {
-                    newData[(row * (this.DataStoreInfo.NumberOfFields + 1)) + col] = this.data[(row * this.DataStoreInfo.NumberOfFields) + col];
+                    newData[(row * (this.DataStoreInfo.NumberOfFields + 1)) + col] 
+                        = this.data[(row * this.DataStoreInfo.NumberOfFields) + col];
                 }
             });
 
             int newFieldId = referenceFieldInfo == null ? this.DataStoreInfo.MaxFieldId + 1 : referenceFieldInfo.Id;
-            DataFieldInfo newFieldInfo = new DataFieldInfo(newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
+
+            DataFieldInfo newFieldInfo = new DataFieldInfo(
+                newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
+
+            if (referenceFieldInfo != null)
+                newFieldInfo.InitFromDataFieldInfo(referenceFieldInfo, true, true);
+                                   
             for (int row = 0; row < this.NumberOfRecords; row++)
             {
                 isMissing = this.DataStoreInfo.HasMissingData && String.Equals(columnData[row], newFieldInfo.MissingValue);

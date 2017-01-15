@@ -73,9 +73,9 @@ namespace Infovision.MachineLearning.Roughset
     {
         public override int Compare(IReduct left, IReduct right)
         {
-            if (left.ObjectSetInfo.NumberOfRecords < right.ObjectSetInfo.NumberOfRecords)
+            if (left.EquivalenceClasses.NumberOfObjects < right.EquivalenceClasses.NumberOfObjects)
                 return 1;
-            else if (left.ObjectSetInfo.NumberOfRecords > right.ObjectSetInfo.NumberOfRecords)
+            else if (left.EquivalenceClasses.NumberOfObjects > right.EquivalenceClasses.NumberOfObjects)
                 return -1;
             return 0;
         }

@@ -10,7 +10,7 @@ namespace Infovision.Data
     /// Provides meta information about dataset
     /// </summary>
     [Serializable]
-    public class DataStoreInfo : Infovision.Data.IObjectSetInfo
+    public class DataStoreInfo
     {
         #region Members
 

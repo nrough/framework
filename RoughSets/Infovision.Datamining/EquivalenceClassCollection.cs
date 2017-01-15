@@ -477,7 +477,7 @@ namespace Infovision.MachineLearning
             }
         }
 
-        public static bool CheckRegionPositive(HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet)
+        public static bool CheckRegionPositive(HashSet<int> attributeSet, DataStore dataStore, HashSet<int> objectSet)
         {
             double[] weights = new double[dataStore.NumberOfRecords];
             for (int i = 0; i < weights.Length; i++)
@@ -486,7 +486,7 @@ namespace Infovision.MachineLearning
         }
 
         public static bool CheckRegionPositive(
-            HashSet<int> attributeSet, DataStore dataStore, ObjectSet objectSet, double[] objectWeights)
+            HashSet<int> attributeSet, DataStore dataStore, HashSet<int> objectSet, double[] objectWeights)
         {
             var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
             int[] attributeArray = attributeSet.ToArray();

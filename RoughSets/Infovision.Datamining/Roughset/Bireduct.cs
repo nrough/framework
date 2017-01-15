@@ -12,7 +12,7 @@ namespace Infovision.MachineLearning.Roughset
     {
         #region Members
 
-        private ObjectSet objectSet;
+        private HashSet<int> objectSet;
 
         #endregion Members
 
@@ -21,13 +21,13 @@ namespace Infovision.MachineLearning.Roughset
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, double epsilon, double[] weights)
             : base(dataStore, fieldIds, epsilon, weights)
         {
-            this.objectSet = new ObjectSet(dataStore, objectIndexes);
+            this.objectSet = new HashSet<int>(objectIndexes);
         }
 
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, IEnumerable<int> objectIndexes, double epsilon)
             : base(dataStore, fieldIds, epsilon)
         {
-            this.objectSet = new ObjectSet(dataStore, objectIndexes);
+            this.objectSet = new HashSet<int>(objectIndexes);
         }
 
         public Bireduct(DataStore dataStore, IEnumerable<int> fieldIds, double epsilon)
@@ -43,7 +43,7 @@ namespace Infovision.MachineLearning.Roughset
         public Bireduct(Bireduct bireduct)
             : base(bireduct as Reduct)
         {
-            this.objectSet = new ObjectSet(bireduct.DataStore, bireduct.ObjectSet);
+            this.objectSet = new HashSet<int>(bireduct.ObjectSet);
         }
 
         #endregion Constructors
@@ -70,14 +70,9 @@ namespace Infovision.MachineLearning.Roughset
             }
         }
 
-        public override ObjectSet ObjectSet
+        public override HashSet<int> ObjectSet
         {
             get { return this.objectSet; }
-        }
-
-        public override IObjectSetInfo ObjectSetInfo
-        {
-            get { return this.ObjectSet; }
         }
 
         #endregion Properties
@@ -109,7 +104,7 @@ namespace Infovision.MachineLearning.Roughset
 
         protected virtual bool CheckAddObject(int objectIndex)
         {
-            if (this.ObjectSet.ContainsElement(objectIndex))
+            if (this.ObjectSet.Contains(objectIndex))
                 return false;
 
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
@@ -139,18 +134,14 @@ namespace Infovision.MachineLearning.Roughset
                 EquivalenceClass eq = this.EquivalenceClasses.Find(dataVector);
 
                 if (eq == null)
-                {
                     eq = new EquivalenceClass(dataVector, this.DataStore);
-                    
-                    //this.EquivalenceClasses.Partitions.Add(dataVector, eq);
-                }
 
                 eq.AddObject(
                     objectIdx,
                     this.DataStore.GetDecisionValue(objectIdx),
                     1.0 / this.DataStore.NumberOfRecords);
 
-                objectSet.AddElement(objectIdx);
+                objectSet.Add(objectIdx);
 
                 return true;
             }
@@ -160,7 +151,7 @@ namespace Infovision.MachineLearning.Roughset
 
         public override bool ContainsObject(int objectIndex)
         {
-            return this.objectSet.ContainsElement(objectIndex);
+            return this.objectSet.Contains(objectIndex);
         }
 
         protected virtual bool CheckRemoveObject(int objectIdx)
@@ -172,7 +163,7 @@ namespace Infovision.MachineLearning.Roughset
         {
             if (this.CheckRemoveObject(objectIdx))
             {
-                objectSet.RemoveElement(objectIdx);
+                objectSet.Remove(objectIdx);
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, this.Attributes);
                 this.EquivalenceClasses.Find(dataVector).RemoveObject(objectIdx, this.DataStore);
                 return true;

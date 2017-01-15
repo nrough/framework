@@ -99,8 +99,6 @@
     <Compile Include="FileFormat.cs" />
     <Compile Include="IDataReader.cs" />
     <Compile Include="IDataTable.cs" />
-    <Compile Include="IObjectSetInfo.cs" />
-    <Compile Include="ObjectSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

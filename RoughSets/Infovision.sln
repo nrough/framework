@@ -73,6 +73,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.MachineLearning.Tests", "Infovision.Datamining.Tests\Infovision.MachineLearning.Tests.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DDFE474-0A4C-492C-82B2-C0A850217774} = {9DDFE474-0A4C-492C-82B2-C0A850217774}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infovision.Math", "Infovision.Math\Infovision.Math.csproj", "{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}"
 EndProject

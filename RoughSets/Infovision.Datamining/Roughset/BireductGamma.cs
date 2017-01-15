@@ -64,7 +64,7 @@ namespace Infovision.MachineLearning.Roughset
 
         protected override bool CheckAddObject(int objectIndex)
         {
-            if (this.ObjectSet.ContainsElement(objectIndex))
+            if (this.ObjectSet.Contains(objectIndex))
                 return false;
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
 

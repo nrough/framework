@@ -77,9 +77,6 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MiscUtil">
-      <HintPath>..\external\MiscUtil\MiscUtil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -118,7 +115,6 @@
     <Compile Include="CollectionExtensions\ListExtensions.cs" />
     <Compile Include="BaseTypeExtensions\LongExtensions.cs" />
     <Compile Include="DataStructures\Matrix.cs" />
-    <Compile Include="DataStructures\PascalSet.cs" />
     <Compile Include="DataStructures\PriorityQueue.cs" />
     <Compile Include="DataStructures\PriorityQueue_DEL.cs" />
     <Compile Include="Random\RandomExtensions.cs" />

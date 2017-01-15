@@ -6,15 +6,14 @@ using System.Collections.Generic;
 namespace Infovision.MachineLearning.Roughset
 {
     public interface IReduct : ICloneable, IComparable
-    {
-        IObjectSetInfo ObjectSetInfo { get; }
+    {        
         DataStore DataStore { get; }
         HashSet<int> Attributes { get; }
         bool IsException { get; }
         
         //TODO Move to Bireduct Interface? (Exceptions?)
         //TODO This should be based on Eqialence Class Collection
-        ObjectSet ObjectSet { get; }
+        HashSet<int> ObjectSet { get; }
 
         //TODO decide should this be stored in reduct or in data object
         double[] Weights { get; }

@@ -44,17 +44,11 @@ namespace Infovision.MachineLearning.Roughset
         }
 
         public double Epsilon { get; private set; }
-
-        //TODO Solve to return obejcts from Eq Class collection
-        public virtual ObjectSet ObjectSet
+        
+        public virtual HashSet<int> ObjectSet
         {
-            get { return new ObjectSet(this.dataStore, Enumerable.Range(0, this.dataStore.NumberOfRecords).ToArray()); }
-        }
-
-        public virtual IObjectSetInfo ObjectSetInfo
-        {
-            get { return this.dataStore.DataStoreInfo; }
-        }
+            get { return new HashSet<int>(Enumerable.Range(0, this.dataStore.NumberOfRecords).ToArray()); }
+        }        
 
         public virtual EquivalenceClassCollection EquivalenceClasses
         {

@@ -101,8 +101,8 @@ namespace Infovision.MachineLearning.Roughset
                 if (e.NumberOfDecisions == 1)
                     result += e.NumberOfObjects;
 
-            return (reduct.ObjectSetInfo.NumberOfRecords != 0)
-                ? result / reduct.ObjectSetInfo.NumberOfRecords
+            return (reduct.EquivalenceClasses.NumberOfObjects != 0)
+                ? result / reduct.EquivalenceClasses.NumberOfObjects
                 : 0.0;
         }
 

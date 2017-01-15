@@ -113,7 +113,7 @@ namespace Infovision.MachineLearning.Roughset
                     {
                         int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated
                             ? reduct.EquivalenceClasses.CountSupportedObjects()
-                            : reduct.ObjectSetInfo.NumberOfRecords;
+                            : reduct.EquivalenceClasses.NumberOfObjects;
 
                         if (reduct.IsException && includeExceptions == false)
                         {

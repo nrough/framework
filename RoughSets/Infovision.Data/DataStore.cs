@@ -70,19 +70,7 @@ namespace Infovision.Data
             int[] sortedArray = Enumerable.Range(0, this.NumberOfRecords).ToArray();
             Array.Sort(sortedArray, comparer);
             return sortedArray;
-        }
-
-        public int[] Sort(ObjectSet objectSet, IComparer<int> comparer)
-        {
-            int[] objects = objectSet.ToArray();
-            int[] sortedArray = new int[objects.Length];
-
-            for (int i = 0; i < objects.Length; i++)
-                sortedArray[i] = objects[i];
-
-            Array.Sort<int>(sortedArray, comparer);
-            return sortedArray;
-        }
+        }        
 
         private bool CheckResize()
         {

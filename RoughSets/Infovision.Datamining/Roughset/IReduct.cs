@@ -13,9 +13,8 @@ namespace Infovision.MachineLearning.Roughset
         
         //TODO Move to Bireduct Interface? (Exceptions?)
         //TODO This should be based on Eqialence Class Collection
-        HashSet<int> ObjectSet { get; }
-
-        //TODO decide should this be stored in reduct or in data object
+        HashSet<int> SupportedObjects { get; }
+        
         double[] Weights { get; }
 
         double Epsilon { get; }
@@ -29,7 +28,6 @@ namespace Infovision.MachineLearning.Roughset
         
         void SetEquivalenceClassCollection(EquivalenceClassCollection equivalenceClasses);
 
-        //Each implementation of Reduct must define its hash code and equal method
         int GetHashCode();
         bool Equals(object obj);
     }

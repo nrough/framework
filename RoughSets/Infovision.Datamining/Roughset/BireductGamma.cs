@@ -27,7 +27,7 @@ namespace Infovision.MachineLearning.Roughset
         }
 
         public BireductGamma(BireductGamma gammaBireduct)
-            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.ObjectSet.ToArray(),
+            : this(gammaBireduct.DataStore, gammaBireduct.Attributes.ToArray(), gammaBireduct.SupportedObjects.ToArray(),
                    gammaBireduct.Epsilon)
         {
         }
@@ -48,7 +48,7 @@ namespace Infovision.MachineLearning.Roughset
             EquivalenceClassCollection localPartition = new EquivalenceClassCollection(this.DataStore);
             localPartition.Calc(newAttributeSet, this.DataStore);
 
-            foreach (int objectIdx in this.ObjectSet)
+            foreach (int objectIdx in this.SupportedObjects)
             {
                 var dataVector = this.DataStore.GetFieldValues(objectIdx, newAttributeSet);
                 EquivalenceClass reductStat = localPartition.Find(dataVector);
@@ -64,7 +64,7 @@ namespace Infovision.MachineLearning.Roughset
 
         protected override bool CheckAddObject(int objectIndex)
         {
-            if (this.ObjectSet.Contains(objectIndex))
+            if (this.SupportedObjects.Contains(objectIndex))
                 return false;
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
 

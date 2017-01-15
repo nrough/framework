@@ -26,7 +26,7 @@ namespace Infovision.MachineLearning.Roughset
             foreach (IReduct localReduct in this)
             {
                 if (reduct.Attributes.Equals(localReduct.Attributes)
-                    && reduct.ObjectSet.Equals(localReduct.ObjectSet))
+                    && reduct.SupportedObjects.Equals(localReduct.SupportedObjects))
                 {
                     return false;
                 }

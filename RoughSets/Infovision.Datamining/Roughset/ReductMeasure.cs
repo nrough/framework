@@ -143,7 +143,7 @@ namespace Infovision.MachineLearning.Roughset
         public override double Calc(IReduct reduct)
         {
             double result = 0;
-            foreach (int objectIdx in reduct.ObjectSet)
+            foreach (int objectIdx in reduct.SupportedObjects)
             {
                 long decisionValue = reduct.DataStore.GetDecisionValue(objectIdx);
                 result += ((double)reduct.EquivalenceClasses.CountDecision(decisionValue)

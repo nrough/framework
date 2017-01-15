@@ -43,7 +43,7 @@ namespace Infovision.MachineLearning.Roughset
         public Bireduct(Bireduct bireduct)
             : base(bireduct as Reduct)
         {
-            this.objectSet = new HashSet<int>(bireduct.ObjectSet);
+            this.objectSet = new HashSet<int>(bireduct.SupportedObjects);
         }
 
         #endregion Constructors
@@ -61,7 +61,7 @@ namespace Infovision.MachineLearning.Roughset
                         if (this.eqClassMap == null)
                         {
                             this.eqClassMap = EquivalenceClassCollection.Create(
-                                this.Attributes.ToArray(), this.DataStore, this.Weights, this.ObjectSet.ToArray());
+                                this.Attributes.ToArray(), this.DataStore, this.Weights, this.SupportedObjects.ToArray());
                         }
                     }
                 }
@@ -70,7 +70,7 @@ namespace Infovision.MachineLearning.Roughset
             }
         }
 
-        public override HashSet<int> ObjectSet
+        public override HashSet<int> SupportedObjects
         {
             get { return this.objectSet; }
         }
@@ -99,12 +99,12 @@ namespace Infovision.MachineLearning.Roughset
             HashSet<int> newAttributeSet = new HashSet<int>(this.Attributes);
             newAttributeSet.Remove(attributeId);
 
-            return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.ObjectSet);
+            return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.SupportedObjects);
         }
 
         protected virtual bool CheckAddObject(int objectIndex)
         {
-            if (this.ObjectSet.Contains(objectIndex))
+            if (this.SupportedObjects.Contains(objectIndex))
                 return false;
 
             var dataVector = this.DataStore.GetFieldValues(objectIndex, this.Attributes);
@@ -200,7 +200,7 @@ namespace Infovision.MachineLearning.Roughset
             }
             stringBuilder.Append("},{");
 
-            long[] objectIds = Array.ConvertAll<int, long>(this.ObjectSet.ToArray(),
+            long[] objectIds = Array.ConvertAll<int, long>(this.SupportedObjects.ToArray(),
                                                                delegate(int i)
                                                                {
                                                                    return this.DataStore.ObjectIndex2ObjectId(i);
@@ -215,7 +215,7 @@ namespace Infovision.MachineLearning.Roughset
 
         public override int GetHashCode()
         {
-            return (int)this.Attributes.GetHashCode() ^ this.ObjectSet.GetHashCode();
+            return (int)this.Attributes.GetHashCode() ^ this.SupportedObjects.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -230,7 +230,7 @@ namespace Infovision.MachineLearning.Roughset
             if (!this.Attributes.Equals(bireduct.Attributes))
                 return false;
 
-            if (!this.ObjectSet.Equals(bireduct.ObjectSet))
+            if (!this.SupportedObjects.Equals(bireduct.SupportedObjects))
                 return false;
 
             return true;

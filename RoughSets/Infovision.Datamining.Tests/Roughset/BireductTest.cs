@@ -378,7 +378,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 Bireduct bireduct = new Bireduct(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.ObjectSet);
+                EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.SupportedObjects);
 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireduct.TryRemoveAttribute(k));
@@ -390,7 +390,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 BireductGamma bireductGamma = new BireductGamma(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassCollection.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.ObjectSet);
+                EquivalenceClassCollection.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.SupportedObjects);
 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireductGamma.TryRemoveAttribute(k));

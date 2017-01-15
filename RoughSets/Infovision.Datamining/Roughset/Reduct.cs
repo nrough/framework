@@ -45,7 +45,7 @@ namespace Infovision.MachineLearning.Roughset
 
         public double Epsilon { get; private set; }
         
-        public virtual HashSet<int> ObjectSet
+        public virtual HashSet<int> SupportedObjects
         {
             get { return new HashSet<int>(Enumerable.Range(0, this.dataStore.NumberOfRecords).ToArray()); }
         }        

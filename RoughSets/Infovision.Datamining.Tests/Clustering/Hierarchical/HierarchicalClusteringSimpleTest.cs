@@ -11,18 +11,18 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
     {
         private static readonly Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>[] DistancesAndLinkages =
         {
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single, 1),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Complete, 2),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Mean, 3),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Single, 4),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Complete, 5),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Mean, 6),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Single, 7),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Complete, 8),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Mean, 9),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Euclidean, ClusteringLinkage.Average, 35),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.SquareEuclidean, ClusteringLinkage.Average, 65),
-            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Average, 95),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Euclidean, ClusteringLinkage.Single, 1),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Euclidean, ClusteringLinkage.Complete, 2),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Euclidean, ClusteringLinkage.Mean, 3),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.SquaredEuclidean, ClusteringLinkage.Single, 4),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.SquaredEuclidean, ClusteringLinkage.Complete, 5),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.SquaredEuclidean, ClusteringLinkage.Mean, 6),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Manhattan, ClusteringLinkage.Single, 7),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Manhattan, ClusteringLinkage.Complete, 8),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Manhattan, ClusteringLinkage.Mean, 9),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Euclidean, ClusteringLinkage.Average, 35),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.SquaredEuclidean, ClusteringLinkage.Average, 65),
+            new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Distance.Manhattan, ClusteringLinkage.Average, 95),
 
             //can only be used if Distance method is set, not to use when only distance matrix is passed to the histogram
             //new Tuple<Func<double[], double[], double>, Func<int[], int[], DistanceMatrix, double[][], double>, int>(Accord.Math.Distance.Manhattan, ClusteringLinkage.Ward, 10),
@@ -31,25 +31,9 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
         [Test]
         public void ComputeTest()
         {
-            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
+            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Distance.Euclidean, ClusteringLinkage.Single);
             hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
             hClustering.Compute();
-            Assert.IsTrue(true);
-        }
-
-        [Test]
-        public void ComputeLeafNodesFromTreeTest()
-        {
-            HierarchicalClusteringSimple hClustering = new HierarchicalClusteringSimple(Accord.Math.Distance.Euclidean, ClusteringLinkage.Single);
-            hClustering.Instances = HierarchicalClusteringTest.GetDataAsDict();
-            hClustering.Compute();
-
-            int[] leaves = hClustering.GetLeaves();
-
-            //foreach (int i in leaves)
-            //    Console.Write("{0} ", i);
-            //Console.WriteLine();
-
             Assert.IsTrue(true);
         }
 
@@ -92,7 +76,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
             {
                 for (int j = i + 1; j < data.Length; j++)
                 {
-                    double dist = Infovision.Math.Similarity.Euclidean(data[i], data[j]);
+                    double dist = Infovision.Math.Distance.Euclidean(data[i], data[j]);
                     matrix.Add(new MatrixKey(i, j), dist);
                 }
             }

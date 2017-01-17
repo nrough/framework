@@ -28,7 +28,7 @@ namespace Infovision.MachineLearning.Tests.Clustering
 
             KMeans kmeans = new KMeans();
             kmeans.K = 3;
-            kmeans.Distance = Similarity.Euclidean;
+            kmeans.Distance = Distance.Euclidean;
             var result = kmeans.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
 
             Assert.NotNull(result);

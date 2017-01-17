@@ -37,9 +37,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("DecisionTreeC45 B4PR ERRBSD {0:0.00} {1:0.00000} {2} {3} {4}",
                     "N/A",
                     resultBeforePruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    DecisionTreeMetric.GetNumberOfRules(c45WithPruning),
                     resultBeforePruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(c45WithPruning));
+                    DecisionTreeMetric.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
             //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
@@ -52,9 +52,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("DecisionTreeC45 B4PR ERRBSD {0:0.00} {1:0.00000} {2} {3} {4}",
                     "N/A",
                     resultAfterPruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    DecisionTreeMetric.GetNumberOfRules(c45WithPruning),
                     resultAfterPruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(c45WithPruning));
+                    DecisionTreeMetric.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
             //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
@@ -84,9 +84,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("DecisionTreeC45 B4PR REDERR {0:0.00} {1:0.00000} {2} {3} {4}",
                     "N/A",
                     resultBeforePruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    DecisionTreeMetric.GetNumberOfRules(c45WithPruning),
                     resultBeforePruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(c45WithPruning));
+                    DecisionTreeMetric.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultBeforePruning = {0}", resultBeforePruning);
             //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
@@ -99,9 +99,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             Console.WriteLine("DecisionTreeC45 PRND REDERR {0:0.00} {1:0.00000} {2} {3} {4}",
                     "N/A",
                     resultAfterPruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(c45WithPruning),
+                    DecisionTreeMetric.GetNumberOfRules(c45WithPruning),
                     resultAfterPruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(c45WithPruning));
+                    DecisionTreeMetric.GetHeight(c45WithPruning));
 
             //Console.WriteLine("resultAfterPruning = {0}", resultAfterPruning);
             //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPruning));
@@ -131,9 +131,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 Console.WriteLine("C45/Epsilon {0:0.00} {1:0.00000} {2} {3} {4}",
                     eps,
                     resultForTreeWithPrePruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(c45WithPrePruning),
+                    DecisionTreeMetric.GetNumberOfRules(c45WithPrePruning),
                     resultForTreeWithPrePruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(c45WithPrePruning));
+                    DecisionTreeMetric.GetHeight(c45WithPrePruning));
 
                 //Console.WriteLine("C45/Epsilon {0}", resultForTreeWithPrePruning);
                 //Console.WriteLine("number of rules: {0}", DecisionTreeBase.GetNumberOfRules(c45WithPrePruning));
@@ -162,9 +162,9 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 Console.WriteLine("DecisionTreeReduct {0:0.00} {1:0.00000} {2} {3} {4}",
                     eps,
                     resultForTreeWithPrePruning.Accuracy,
-                    DecisionTreeBase.GetNumberOfRules(tree),
+                    DecisionTreeMetric.GetNumberOfRules(tree),
                     resultForTreeWithPrePruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(tree));
+                    DecisionTreeMetric.GetHeight(tree));
 
 
                 //Console.WriteLine("DecisionTreeReduct {0}", resultForTreeWithPrePruning);
@@ -206,10 +206,10 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
                 ClassificationResult resultForTreeWithPrePruning = Classifier.DefaultClassifer.Classify(tree, test);
                 Console.WriteLine("DecisionTreeRough {0:0.00} {1:0.00000} {2} {3} {4}", 
                     eps, 
-                    resultForTreeWithPrePruning.Accuracy, 
-                    DecisionTreeBase.GetNumberOfRules(tree), 
+                    resultForTreeWithPrePruning.Accuracy,
+                    DecisionTreeMetric.GetNumberOfRules(tree), 
                     resultForTreeWithPrePruning.AvgNumberOfAttributes,
-                    DecisionTreeBase.GetHeight(tree));
+                    DecisionTreeMetric.GetHeight(tree));
             }
 
             Console.WriteLine();

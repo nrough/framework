@@ -36,7 +36,7 @@ namespace Infovision.MachineLearning.Roughset
         public override void InitDefaultParameters()
         {
             base.InitDefaultParameters();
-            this.Distance = Similarity.Manhattan;
+            this.Distance = Math.Distance.Manhattan;
             this.Linkage = ClusteringLinkage.Average;
         }
 

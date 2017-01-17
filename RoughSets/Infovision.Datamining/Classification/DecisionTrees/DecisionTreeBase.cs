@@ -229,7 +229,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 switch (this.PruningObjective)
                 {
                     case PruningObjectiveType.MinimizeNumberOfLeafs:
-                        int numOfRules = DecisionTreeBase.GetNumberOfRules(tmpTree);
+                        int numOfRules = DecisionTreeMetric.GetNumberOfRules(tmpTree);
                         if (numOfRules < bestNumOfRules)
                         {
                             bestNumOfRules = numOfRules;
@@ -238,7 +238,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeTreeMaxHeight:
-                        int maxHeight = DecisionTreeBase.GetHeight(tmpTree);
+                        int maxHeight = DecisionTreeMetric.GetHeight(tmpTree);
                         if (maxHeight < bestMaxHeight)
                         {
                             bestMaxHeight = maxHeight;
@@ -256,7 +256,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeTreeAvgHeight:
-                        double avgHeight = DecisionTreeBase.GetAvgHeight(tmpTree);
+                        double avgHeight = DecisionTreeMetric.GetAvgHeight(tmpTree);
                         if (avgHeight < bestAvgHeight)
                         {
                             bestAvgHeight = avgHeight;
@@ -280,10 +280,10 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             result.EnsembleSize = 1;
             result.Gamma = this.Gamma;
 
-            result.AvgNumberOfAttributes = DecisionTreeBase.GetNumberOfAttributes(this);
-            result.MaxTreeHeight = DecisionTreeBase.GetHeight(this);
-            result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this);
-            result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this);            
+            result.AvgNumberOfAttributes = DecisionTreeMetric.GetNumberOfAttributes(this);
+            result.MaxTreeHeight = DecisionTreeMetric.GetHeight(this);
+            result.AvgTreeHeight = DecisionTreeMetric.GetAvgHeight(this);
+            result.NumberOfRules = DecisionTreeMetric.GetNumberOfRules(this);            
         }        
 
         protected void SetNodeOutput(DecisionTreeNode node, Dictionary<long, double> outputWeights)
@@ -543,57 +543,12 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             return new SplitInfo(attributeId,
                 this.ImpurityNormalize(currentScore - maxGain, bestEq),
                 bestEq, SplitType.Binary, ComparisonType.LessThanOrEqualTo, bestThreshold);
-        }        
-
-        public static int GetNumberOfRules(IDecisionTree tree)
-        {
-            int count = 0;
-            TreeNodeTraversal.TraversePostOrder(tree.Root, n =>
-            {
-                if (n.IsLeaf)
-                    count++;
-            });
-            return count;
-        }
-
-        public static int GetHeight(IDecisionTree tree)
-        {            
-            int maxHeight = 0;
-            TreeNodeTraversal.TraversePostOrder(tree.Root, n =>
-            {
-                if (n.IsLeaf && n.Level > maxHeight)
-                    maxHeight = n.Level;
-            });
-            return maxHeight;
-        }
-
-        public static double GetAvgHeight(IDecisionTree tree)
-        {            
-            double sumHeight = 0.0;
-            double count = 0.0;
-            TreeNodeTraversal.TraversePostOrder(tree.Root, n =>
-            {
-                if (n.IsLeaf)
-                {
-                    sumHeight += n.Level;
-                    count++;
-                }
-            });
-
-            return count > 0 ? sumHeight / count : 0.0;
-        }
-
-        public static int GetNumberOfAttributes(IDecisionTree tree)
-        {
-            return (tree.Root != null) && (tree.Root is DecisionTreeNode) 
-                ? ((DecisionTreeNode)tree.Root).GetChildUniqueKeys().Count 
-                : 0;
         }
 
         private static double MeasureSum(IDecisionTreeNode node)
         {
             double sum = 0;
-            TreeNodeTraversal.TraversePostOrder(node, n => 
+            TreeNodeTraversal.TraversePostOrder(node, n =>
             {
                 if (n.IsLeaf)
                     sum += n.Measure;

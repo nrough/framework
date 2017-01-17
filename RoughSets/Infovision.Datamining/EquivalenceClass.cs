@@ -19,7 +19,7 @@ namespace Infovision.MachineLearning
         private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value
         private double avgConfidenceWeight;
         private int confidenceCount;
-        private readonly object mutex = new object();
+        private readonly object syncRoot = new object();
 
         #endregion Members
 
@@ -122,34 +122,7 @@ namespace Infovision.MachineLearning
             int numberOfDecisions = decisionSet.Count;
             this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
-        }
-
-        public EquivalenceClass(long[] dataVector, DataStore data, Dictionary<int, double> instances)
-        {
-            this.dataVector = dataVector;
-            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new HashSet<long>();
-            this.instances = new Dictionary<int, double>(instances);
-            int numberOfDecisions = decisionField.NumberOfValues;
-            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
-            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
-        }
-
-        public EquivalenceClass(long[] dataVector, DataStore data, int capacity)
-        {
-            this.dataVector = dataVector;
-            DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
-            this.decisionSet = new HashSet<long>();
-
-            if (capacity > 0)
-                this.instances = new Dictionary<int, double>(capacity);
-            else
-                this.instances = new Dictionary<int, double>();
-
-            int numberOfDecisions = decisionField.NumberOfValues;
-            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
-            this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
-        }
+        }        
 
         public EquivalenceClass(long[] dataVector, DataStore data)
         {
@@ -212,7 +185,7 @@ namespace Infovision.MachineLearning
 
         public void RecalcStatistics(DataStore data)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 this.WeightSum = 0;
                 int decCount = this.DecisionSet.Count;
@@ -231,7 +204,7 @@ namespace Infovision.MachineLearning
 
         public void AddDecision(long decision, double weight)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 this.decisionSet.Add(decision);
                 this.WeightSum += weight;
@@ -261,7 +234,7 @@ namespace Infovision.MachineLearning
 
         public void AddObject(int objectIndex, long decision, double weight)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 if (objectIndex != -1)
                     this.instances.Add(objectIndex, weight);
@@ -271,7 +244,7 @@ namespace Infovision.MachineLearning
 
         public void AddObjectInstances(Dictionary<int, double> instancesToAdd)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 foreach (var kvp in instancesToAdd)
                     this.instances.Add(kvp.Key, kvp.Value);
@@ -280,7 +253,7 @@ namespace Infovision.MachineLearning
 
         public void RemoveObject(int objectIndex, DataStore data)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 if (this.instances.ContainsKey(objectIndex))
                 {                    
@@ -292,7 +265,7 @@ namespace Infovision.MachineLearning
 
         public void RemoveObject(int objectIndex, long decision, double weight)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 if (this.instances.ContainsKey(objectIndex))
                 {                                        
@@ -315,7 +288,7 @@ namespace Infovision.MachineLearning
             if (this.DecisionSet.Count <= 1) return;
             if (epsilon >= 1.0) return;
 
-            lock (mutex)
+            lock (syncRoot)
             {
                 var list = decisionWeight.ToList();
                 list.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value)); //descending order
@@ -331,18 +304,6 @@ namespace Infovision.MachineLearning
                     }
                 }
             }
-        }
-
-        public void Clear()
-        {
-            this.decisionWeight.SetAll(0);
-            this.decisionCount.SetAll(0);
-
-            this.instances.Clear();
-            this.DecisionSet.Clear();
-
-            this.avgConfidenceWeight = 0;
-            this.confidenceCount = 0;
         }        
 
         #region ICloneable Members

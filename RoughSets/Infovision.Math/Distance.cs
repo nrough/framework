@@ -6,11 +6,11 @@ namespace Infovision.Math
     /// <summary>
     /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html
     /// </summary>
-    public static class Similarity
+    public static class Distance
     {
         public static double Euclidean(double[] a, double[] b)
         {
-            return System.Math.Sqrt(Similarity.SquaredEuclidean(a, b));
+            return System.Math.Sqrt(Distance.SquaredEuclidean(a, b));
         }
 
         public static double Manhattan(double[] a, double[] b)
@@ -127,14 +127,14 @@ namespace Infovision.Math
 
         public static double Tversky(double[] prototype, double[] variant, double alpha, double beta)
         {
-            return Similarity.TverskyDelegate(alpha, beta).Invoke(prototype, variant);
+            return Distance.TverskyDelegate(alpha, beta).Invoke(prototype, variant);
         }
 
         public static Func<double[], double[], double> TverskyDelegate(double alpha, double beta)
         {
             Func<double[], double[], double> tverskyDistance = (p, v) =>
             {
-                int[] assoc = Similarity.BinaryAssociation(p, v);
+                int[] assoc = Distance.BinaryAssociation(p, v);
                 int a = assoc[0];
                 int b = assoc[1];
                 int c = assoc[2];
@@ -152,7 +152,7 @@ namespace Infovision.Math
 
         public static double TverskySymetric(double[] prototype, double[] variant, double alpha, double beta)
         {
-            int[] assoc = Similarity.BinaryAssociation(prototype, variant);
+            int[] assoc = Distance.BinaryAssociation(prototype, variant);
             int a = assoc[0];
             int b = assoc[1];
             int c = assoc[2];
@@ -172,7 +172,7 @@ namespace Infovision.Math
         {
             Func<double[], double[], double> tverskyDistance = (p, v) =>
             {
-                int[] assoc = Similarity.BinaryAssociation(p, v);
+                int[] assoc = Distance.BinaryAssociation(p, v);
                 int a = assoc[0];
                 int b = assoc[1];
                 int c = assoc[2];
@@ -205,7 +205,7 @@ namespace Infovision.Math
 
         public static double CosineB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -216,7 +216,7 @@ namespace Infovision.Math
 
         public static double DiceB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -227,7 +227,7 @@ namespace Infovision.Math
 
         public static double EuclideanB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -239,7 +239,7 @@ namespace Infovision.Math
 
         public static double ForbesB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -251,7 +251,7 @@ namespace Infovision.Math
 
         public static double HammanB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -263,7 +263,7 @@ namespace Infovision.Math
 
         public static double JaccardB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -274,7 +274,7 @@ namespace Infovision.Math
 
         public static double KulczynskiB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -284,7 +284,7 @@ namespace Infovision.Math
 
         public static double ManhattanB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -295,7 +295,7 @@ namespace Infovision.Math
 
         public static double MatchingB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -306,7 +306,7 @@ namespace Infovision.Math
 
         public static double PearsonB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -317,7 +317,7 @@ namespace Infovision.Math
 
         public static double RogersTanimotoB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -328,7 +328,7 @@ namespace Infovision.Math
 
         public static double RussellRaoB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -339,7 +339,7 @@ namespace Infovision.Math
 
         public static double SimpsonB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -349,12 +349,12 @@ namespace Infovision.Math
 
         public static double TanimotoB(double[] v1, double[] v2, double[] w)
         {
-            return Similarity.JaccardB(v1, v2, w);
+            return Distance.JaccardB(v1, v2, w);
         }
 
         public static double YuleB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -366,7 +366,7 @@ namespace Infovision.Math
 
         public static double SokalSneathB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];
@@ -397,7 +397,7 @@ namespace Infovision.Math
 
         public static double KulsinskiB(double[] v1, double[] v2, double[] w)
         {
-            double[] assoc = Similarity.BinaryAssociationDouble(v1, v2, w);
+            double[] assoc = Distance.BinaryAssociationDouble(v1, v2, w);
             double a = assoc[0];
             double b = assoc[1];
             double c = assoc[2];

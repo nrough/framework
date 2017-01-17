@@ -38,7 +38,7 @@ namespace Infovision.MachineLearning.Roughset
         {
             base.InitDefaultParameters();
 
-            this.Distance = Similarity.Manhattan;
+            this.Distance = Math.Distance.Manhattan;
             this.Linkage = ClusteringLinkage.Average;
             this.ReconWeights = ReductEnsembleReconWeightsHelper.GetErrorReconWeights;
             this.NumberOfReductsToTest = 10;

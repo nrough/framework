@@ -46,7 +46,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             argSet.Add(ReductGeneratorParamHelper.TrainData, data);
             argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
             argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
+            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
             argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
             argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 3);
             argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);

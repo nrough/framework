@@ -567,7 +567,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                     parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
                     parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-                    parms.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Similarity.Manhattan);
+                    parms.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
                     parms.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
                     parms.SetParameter(ReductGeneratorParamHelper.MinReductLength, 2);

@@ -22,7 +22,7 @@ namespace Infovision.Math.Tests
                 new double[] {1, 5, 1, 2, 0, 7, 1}  //9
             };
 
-            DistanceMatrix distance = new DistanceMatrix(Accord.Math.Distance.SquareEuclidean);
+            DistanceMatrix distance = new DistanceMatrix(Distance.SquaredEuclidean);
             distance.Initialize(data);
 
             //Console.Write(distance.ToString());

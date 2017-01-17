@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
-using Accord.MachineLearning.DecisionTrees;
-using Accord.MachineLearning.DecisionTrees.Learning;
-using Accord.Math;
-using Accord.Statistics.Filters;
 using Infovision.Data;
 using Infovision.Core;
 using NUnit.Framework;
-using DecTrees = Accord.MachineLearning.DecisionTrees;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Infovision.MachineLearning.Classification.DecisionTrees;
 using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
 using Infovision.MachineLearning.Classification.DecisionTables;
-using System.Collections.Generic;
 using Infovision.MachineLearning.Classification;
 using Infovision.MachineLearning.Roughset;
 
@@ -545,7 +538,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             pruning.Prune();
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeRough.Root, data.DataStoreInfo));
-            Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeRough));
+            Console.WriteLine(DecisionTreeMetric.GetNumberOfRules(treeRough));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRough, test, null));
 
@@ -558,216 +551,11 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             pruning2.Prune();
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
-            Console.WriteLine(DecisionTreeBase.GetNumberOfRules(treeC45));
+            Console.WriteLine(DecisionTreeMetric.GetNumberOfRules(treeC45));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, data, null));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeC45, test, null));
         }                     
 
-        #region Accord Trees
-
-        [Test]
-        public void AccordC45Test()
-        {
-            Console.WriteLine("AccordC45Test");
-
-            DataStore ds = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            foreach (var fieldInfo in ds.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore tst = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, ds.DataStoreInfo);
-
-            DataTable data = ds.ToDataTable();
-            DataTable data_tst = tst.ToDataTable();
-
-            DecisionVariable[] attributes = this.AccordAttributes(ds);
-            int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
-            DecTrees.DecisionTree tree = new DecTrees.DecisionTree(attributes, classCount);
-            C45Learning c45learning = new C45Learning(tree);
-
-            Codification codebook = new Codification(data);
-            DataTable symbols = codebook.Apply(data);
-            double[][] inputs = symbols.ToArray<double>(this.AttributeNames(ds));
-            int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
-
-            DataTable symbols_tst = codebook.Apply(data_tst);
-            int[][] inputs_tst = symbols_tst.ToArray<int>(this.AttributeNames(ds));
-            int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
-
-
-            // Learn the training instances!            
-            c45learning.Learn(inputs, outputs);
-
-            string[] conditionalAttributes = this.AttributeNames(ds);
-            string decisionName = this.DecisionName(ds);
-
-            //this.PrintTree(tree.Root, 2, 0, codebook, decisionName);
-
-            int count = 0;
-            int correct = 0;
-            foreach (DataRow row in data.Rows)
-            {
-                var rec = row.ToArray<string>(conditionalAttributes);
-                string actual = row[decisionName].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Decide(query);
-                string answer = codebook.Translate(decisionName, output);
-
-                count++;
-                if (actual == answer)
-                    correct++;
-            }
-
-            Console.WriteLine("Accuracy train: {0:0.0000}", (double)correct / (double)count);
-
-            count = 0;
-            correct = 0;
-            foreach (DataRow row in data_tst.Rows)
-            {
-                var rec = row.ToArray<string>(conditionalAttributes);
-                string actual = row[decisionName].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Decide(query);
-                string answer = codebook.Translate(decisionName, output);
-
-                count++;
-                if (actual == answer)
-                    correct++;
-            }
-
-            Console.WriteLine("Accuracy test: {0:0.0000}", (double)correct / (double)count);
-        }
-
-        [Test]
-        public void AccordID3Test()
-        {
-            Console.WriteLine("AccordID3Test");
-
-            DataStore ds = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore tst = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, ds.DataStoreInfo);
-
-            DataTable data = ds.ToDataTable();
-            DataTable data_tst = tst.ToDataTable();
-
-            DecisionVariable[] attributes = this.AccordAttributes(ds);
-            int classCount = ds.DataStoreInfo.DecisionInfo.NumberOfValues;
-
-            DecTrees.DecisionTree tree = new DecTrees.DecisionTree(attributes, classCount);
-            ID3Learning id3learning = new ID3Learning(tree);
-
-            Codification codebook = new Codification(data);
-            DataTable symbols = codebook.Apply(data);
-            int[][] inputs = symbols.ToArray<int>(this.AttributeNames(ds));
-            int[] outputs = symbols.ToArray<int>(this.DecisionName(ds));
-
-            DataTable symbols_tst = codebook.Apply(data_tst);
-            int[][] inputs_tst = symbols_tst.ToArray<int>(this.AttributeNames(ds));
-            int[] outputs_tst = symbols_tst.ToArray<int>(this.DecisionName(ds));
-
-            // Learn the training instances!
-            id3learning.Learn(inputs, outputs);
-
-            string[] conditionalAttributes = this.AttributeNames(ds);
-            string decisionName = this.DecisionName(ds);
-
-            //this.PrintTree(tree.Root, 2, 0, codebook, decisionName);
-
-            int count = 0;
-            int correct = 0;
-            foreach (DataRow row in data.Rows)
-            {
-                var rec = row.ToArray<string>(conditionalAttributes);
-                string actual = row[decisionName].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Decide(query);
-                string answer = codebook.Translate(decisionName, output);
-
-                count++;
-                if (actual == answer)
-                    correct++;
-            }
-
-            Console.WriteLine("Accuracy train: {0:0.0000}", (double)correct / (double)count);
-
-            count = 0;
-            correct = 0;
-            foreach (DataRow row in data_tst.Rows)
-            {
-                var rec = row.ToArray<string>(conditionalAttributes);
-                string actual = row[decisionName].ToString();
-                int[] query = codebook.Translate(conditionalAttributes, rec);
-                int output = tree.Decide(query);
-                string answer = codebook.Translate(decisionName, output);
-
-                count++;
-                if (actual == answer)
-                    correct++;
-            }
-
-            Console.WriteLine("Accuracy test: {0:0.0000}", (double)correct / (double)count);
-        }
-
-        public void PrintTree(DecisionNode node, int indentSize, int currentLevel, Codification codebook, string decisionName)
-        {
-            if (!node.IsRoot)
-            {
-                var currentNode = string.Format("{0}({1})", new string(' ', indentSize * currentLevel), node.ToString(codebook));
-                Console.WriteLine(currentNode);
-                if (node.Output != null)
-                {
-                    currentNode = string.Format("{0}({2} == {1})",
-                        new string(' ', indentSize * (currentLevel + 1)),
-                        codebook.Translate(decisionName, (int)node.Output),
-                        decisionName);
-
-                    Console.WriteLine(currentNode);
-                }
-            }
-
-            if (node.Branches != null)
-                foreach (var child in node.Branches)
-                    PrintTree(child, indentSize, currentLevel + 1, codebook, decisionName);
-        }
-
-        public DecisionVariable[] AccordAttributes(DataStore data)
-        {
-            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
-            DecisionVariable[] variables = null;
-            if (data.DataStoreInfo.DecisionFieldId > 0)
-                variables = new DecisionVariable[fieldIds.Length - 1]; //do not include decision attribute
-            else
-                variables = new DecisionVariable[fieldIds.Length];
-
-            int j = 0;
-            for (int i = 0; i < fieldIds.Length; i++)
-            {
-                DataFieldInfo field = data.DataStoreInfo.GetFieldInfo(fieldIds[i]);
-                if (field.Id != data.DataStoreInfo.DecisionFieldId)
-                    variables[j++] = new DecisionVariable(field.Name, field.NumberOfValues);
-            }
-            return variables;
-        }
-
-        public string[] AttributeNames(DataStore data)
-        {
-            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
-            string[] names = null;
-            if (data.DataStoreInfo.DecisionFieldId > 0)
-                names = new string[fieldIds.Length - 1]; //do not include decision attribute
-            else
-                names = new string[fieldIds.Length];
-            int j = 0;
-            for (int i = 0; i < fieldIds.Length; i++)
-            {
-                DataFieldInfo field = data.DataStoreInfo.GetFieldInfo(fieldIds[i]);
-                if (field.Id != data.DataStoreInfo.DecisionFieldId)
-                    names[j++] = field.Name;
-            }
-            return names;
-        }
-
-        public string DecisionName(DataStore data)
-        {
-            return data.DataStoreInfo.DecisionInfo.Name;
-        }
-
-        #endregion Accord Trees
+        
     }
 }

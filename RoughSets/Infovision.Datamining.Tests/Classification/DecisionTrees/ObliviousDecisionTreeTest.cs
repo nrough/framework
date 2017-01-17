@@ -22,7 +22,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         {
             IDecisionTree tree = (IDecisionTree)model;
             Console.WriteLine(DecisionTreeFormatter.Construct(tree));
-            Console.WriteLine("Number of rules: {0}",  DecisionTreeBase.GetNumberOfRules(tree));
+            Console.WriteLine("Number of rules: {0}", DecisionTreeMetric.GetNumberOfRules(tree));
         }
 
         [Test]

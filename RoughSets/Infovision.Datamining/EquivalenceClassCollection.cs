@@ -354,40 +354,7 @@ namespace Infovision.MachineLearning
             result.CalcAvgConfidence();
 
             return result;
-        }
-
-        public static EquivalenceClassCollection CreateFromCuts(DataStore data, int attributeId, long[] cuts)
-        {
-            if (!data.DataStoreInfo.GetFieldInfo(attributeId).IsNumeric)
-                throw new ArgumentException("Attribute is not numeric", "attributeId");
-
-            EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, cuts.Length);
-            int attributeIdx = data.DataStoreInfo.GetFieldIndex(attributeId);
-            double weightSum = 0;
-            long[] cursor = new long[1];
-            for (int i = 0; i < data.NumberOfRecords; i++)
-            {
-                long value = data.GetFieldIndexValue(i, attributeIdx);
-                cursor[0] = 0;
-                while (value > cuts[cursor[0]]) cursor[0]++;
-                
-                double w = data.GetWeight(i);                
-                value = data.GetDecisionValue(i);
-                result.AddDecision(value, w);
-                weightSum += w;
-
-                EquivalenceClass eq = result.Find(cursor);
-                if (eq == null)
-                    eq = new EquivalenceClass(cursor.ToArray(), data);
-                eq.AddObject(i, value, w);
-            }
-
-            result.NumberOfObjects = data.NumberOfRecords;
-            result.WeightSum = weightSum;
-            result.CalcAvgConfidence();
-
-            return result;
-        }
+        }        
 
         public static EquivalenceClassCollection CreateBinaryPartition(DataStore data, int attributeId, int[] indices, long threshold)
         {
@@ -424,52 +391,7 @@ namespace Infovision.MachineLearning
             result.CalcAvgConfidence();
 
             return result;
-        }        
-
-        public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
-        {                        
-            EquivalenceClassCollection result = new EquivalenceClassCollection(data, new int[] { attributeId }, 2);
-
-            double weightSum = 0;
-            if (idx1 != null && idx1.Length > 0)
-            {
-                long[] cursor1 = new long[] { 1 };
-                EquivalenceClass eq1 = new EquivalenceClass(cursor1, data);
-                result.Add(eq1);
-                for (int i = 0; i < idx1.Length; i++)
-                {
-                    double w = data.GetWeight(idx1[i]);
-                    long dec = data.GetDecisionValue(idx1[i]);
-                    eq1.AddObject(idx1[i], dec, w);
-                    result.AddDecision(dec, w);
-                    weightSum += w;
-                }
-
-                result.NumberOfObjects = idx1.Length;
-            }
-
-            if (idx2 != null && idx2.Length > 0)
-            {
-                long[] cursor2 = new long[] { 2 };
-                EquivalenceClass eq2 = new EquivalenceClass(cursor2, data);
-                result.Add(eq2);                
-                for (int i = 0; i < idx2.Length; i++)
-                {
-                    double w = data.GetWeight(idx2[i]);
-                    long dec = data.GetDecisionValue(idx2[i]);
-                    eq2.AddObject(idx2[i], dec, w);
-                    result.AddDecision(dec, w);
-                    weightSum += w;
-                }
-
-                result.NumberOfObjects += idx2.Length;
-            }
-
-            result.WeightSum = weightSum;
-            result.CalcAvgConfidence();
-
-            return result;
-        }        
+        }
 
         private void CalcAvgConfidence()
         {
@@ -742,16 +664,7 @@ namespace Infovision.MachineLearning
         public EquivalenceClass[] ToArray()
         {
             return this.partitions.Values.ToArray();
-        }
-
-        public void Clear()
-        {
-            this.decisionCount.SetAll(0);
-            this.decisionWeight.SetAll(0);
-            
-            foreach (var kvp in this.partitions)
-                this.partitions[kvp.Key].Clear();
-        }
+        }        
 
         public void AddInstance(long[] instance, long decision, double weight, int instanceIdx = -1)
         {

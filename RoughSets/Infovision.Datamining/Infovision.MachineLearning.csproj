@@ -110,6 +110,7 @@
     <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
     <Compile Include="Classification\Classifier.cs" />
     <Compile Include="Classification\DecisionGraphs\OODG.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeMetric.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
     <Compile Include="Clustering\ClusteringResult.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
@@ -124,7 +125,6 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusterTuple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
     <Compile Include="Clustering\KMeans.cs" />
-    <Compile Include="Convergence.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
     <Compile Include="Discretization\DataStoreDiscretizer.cs" />

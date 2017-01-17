@@ -35,10 +35,10 @@ namespace Infovision.MachineLearning.Classification.DecisionTables
         {            
             result.EnsembleSize = 1;
             result.ModelName = this.GetType().Name;
-            result.NumberOfRules = DecisionTreeBase.GetNumberOfRules(this.obliviousDecisionTree);
-            result.AvgNumberOfAttributes = DecisionTreeBase.GetNumberOfAttributes(this.obliviousDecisionTree);
-            result.AvgTreeHeight = DecisionTreeBase.GetAvgHeight(this.obliviousDecisionTree);
-            result.MaxTreeHeight = DecisionTreeBase.GetHeight(this.obliviousDecisionTree);
+            result.NumberOfRules = DecisionTreeMetric.GetNumberOfRules(this.obliviousDecisionTree);
+            result.AvgNumberOfAttributes = DecisionTreeMetric.GetNumberOfAttributes(this.obliviousDecisionTree);
+            result.AvgTreeHeight = DecisionTreeMetric.GetAvgHeight(this.obliviousDecisionTree);
+            result.MaxTreeHeight = DecisionTreeMetric.GetHeight(this.obliviousDecisionTree);
         }
 
         public virtual long Compute(DataRecordInternal record)

@@ -101,7 +101,7 @@ namespace Infovision.MachineLearning.Roughset
 
             this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             this.linkage = ClusteringLinkage.Complete;
-            this.distance = Similarity.Euclidean;
+            this.distance = Distance.Euclidean;
         }
 
         public override void InitFromArgs(Args args)

@@ -22,7 +22,7 @@ namespace Infovision.MachineLearning.Clustering
         public int K { get; set; } = 4;
         public int Iter { get; set; } = 100;
         public int Retries { get; set; } = 1;
-        public Func<double[], double[], double> Distance { get; set; } = Similarity.Euclidean;
+        public Func<double[], double[], double> Distance { get; set; } = Math.Distance.Euclidean;
         
         public KMeans() { }
         

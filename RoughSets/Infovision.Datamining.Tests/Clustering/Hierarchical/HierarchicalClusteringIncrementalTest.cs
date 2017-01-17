@@ -17,7 +17,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
         {
             Dictionary<int, double[]> data = HierarchicalClusteringTest.GetDataAsDict();
 
-            HierarchicalClustering sahn = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
+            HierarchicalClustering sahn = new HierarchicalClustering(Distance.Euclidean, ClusteringLinkage.Complete);
             sahn.Instances = data;
             sahn.Compute();
             DendrogramChart dc1 = new DendrogramChart(sahn, 640, 480);
@@ -25,7 +25,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
             string f1 = String.Format(@"sahn.bmp");
             b1.Save(f1, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            var sihc = new HierarchicalClusteringSIHC(Similarity.Euclidean, ClusteringLinkage.Complete);
+            var sihc = new HierarchicalClusteringSIHC(Distance.Euclidean, ClusteringLinkage.Complete);
 
             foreach (KeyValuePair<int, double[]> kvp in data)
                 sihc.AddToCluster(kvp.Key, kvp.Value);
@@ -35,7 +35,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
             string f2 = String.Format(@"sihc.bmp");
             b2.Save(f2, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            HierarchicalClustering simple = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
+            HierarchicalClustering simple = new HierarchicalClustering(Distance.Euclidean, ClusteringLinkage.Complete);
             simple.Instances = data;
             simple.Compute();
             DendrogramChart dc3 = new DendrogramChart(simple, 640, 480);
@@ -49,7 +49,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
         {
             var data = HierarchicalClusteringTest.GetDataAsDict();
 
-            HierarchicalClustering sahn = new HierarchicalClustering(Similarity.Euclidean, ClusteringLinkage.Complete);
+            HierarchicalClustering sahn = new HierarchicalClustering(Distance.Euclidean, ClusteringLinkage.Complete);
             sahn.Instances = data;
             sahn.Compute();
 
@@ -63,7 +63,7 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
             {
                 int[] tmp = keys.ShuffleDuplicate();
 
-                HierarchicalClusteringSIHC sihc = new HierarchicalClusteringSIHC(Similarity.Euclidean, ClusteringLinkage.Complete);
+                HierarchicalClusteringSIHC sihc = new HierarchicalClusteringSIHC(Distance.Euclidean, ClusteringLinkage.Complete);
                 sihc.MinimumNumberOfInstances = 5;
 
                 for (int i = 0; i < tmp.Length; i++)

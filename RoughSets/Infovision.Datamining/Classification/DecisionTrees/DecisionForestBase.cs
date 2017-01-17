@@ -165,9 +165,9 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             result.NumberOfRules = 0;
             foreach (var tree in this)
             {
-                result.NumberOfRules += DecisionTreeBase.GetNumberOfRules(tree.Item1);
-                result.MaxTreeHeight += DecisionTreeBase.GetHeight(tree.Item1);
-                result.AvgTreeHeight += DecisionTreeBase.GetAvgHeight(tree.Item1);
+                result.NumberOfRules += DecisionTreeMetric.GetNumberOfRules(tree.Item1);
+                result.MaxTreeHeight += DecisionTreeMetric.GetHeight(tree.Item1);
+                result.AvgTreeHeight += DecisionTreeMetric.GetAvgHeight(tree.Item1);
             }
 
             result.NumberOfRules /= trees.Count;

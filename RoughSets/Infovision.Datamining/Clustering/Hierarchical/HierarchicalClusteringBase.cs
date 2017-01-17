@@ -114,7 +114,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
 
         protected virtual void Init()
         {
-            this.Distance = Similarity.Euclidean;
+            this.Distance = Math.Distance.Euclidean;
             this.Linkage = ClusteringLinkage.Complete;
             this.nextNodeId = -1;
             this.instances = new Dictionary<int, double[]>();            

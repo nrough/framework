@@ -78,7 +78,7 @@ namespace Infovision.Math.Tests
         {
             ShowVector(vec1);
             ShowVector(vec2);
-            double result = Similarity.Tversky(vec1, vec2, alpha, beta);
+            double result = Distance.Tversky(vec1, vec2, alpha, beta);
             Assert.That(result, Is.Not.NaN);
             //Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
@@ -107,7 +107,7 @@ namespace Infovision.Math.Tests
 
         private void RunTverskySymetric(double[] vec1, double[] vec2, double alpha, double beta)
         {
-            double result = Similarity.TverskySymetric(vec1, vec2, alpha, beta);
+            double result = Distance.TverskySymetric(vec1, vec2, alpha, beta);
             //Console.WriteLine("Tversky ({0}; {1}): {2}", alpha, beta, result);
             Assert.IsTrue(true);
         }
@@ -171,23 +171,23 @@ namespace Infovision.Math.Tests
         {
             List<Func<double[], double[], double[], double>> list = new List<Func<double[], double[], double[], double>>();
 
-            list.Add(Similarity.CosineB);
-            list.Add(Similarity.DiceB);
-            list.Add(Similarity.EuclideanB);
-            list.Add(Similarity.ForbesB);
-            list.Add(Similarity.HammanB);
-            list.Add(Similarity.JaccardB);
-            list.Add(Similarity.KulczynskiB);
-            list.Add(Similarity.ManhattanB);
-            list.Add(Similarity.MatchingB);
-            list.Add(Similarity.PearsonB);
-            list.Add(Similarity.RogersTanimotoB);
-            list.Add(Similarity.RussellRaoB);
-            list.Add(Similarity.SimpsonB);
-            list.Add(Similarity.TanimotoB);
-            list.Add(Similarity.YuleB);
-            list.Add(Similarity.SokalSneathB);
-            list.Add(Similarity.KulsinskiB);
+            list.Add(Distance.CosineB);
+            list.Add(Distance.DiceB);
+            list.Add(Distance.EuclideanB);
+            list.Add(Distance.ForbesB);
+            list.Add(Distance.HammanB);
+            list.Add(Distance.JaccardB);
+            list.Add(Distance.KulczynskiB);
+            list.Add(Distance.ManhattanB);
+            list.Add(Distance.MatchingB);
+            list.Add(Distance.PearsonB);
+            list.Add(Distance.RogersTanimotoB);
+            list.Add(Distance.RussellRaoB);
+            list.Add(Distance.SimpsonB);
+            list.Add(Distance.TanimotoB);
+            list.Add(Distance.YuleB);
+            list.Add(Distance.SokalSneathB);
+            list.Add(Distance.KulsinskiB);
 
             //TODO Tversky
             //TODO Minkowski
@@ -282,14 +282,14 @@ namespace Infovision.Math.Tests
         {
             List<Func<double[], double[], double>> list = new List<Func<double[], double[], double>>();
 
-            list.Add(Similarity.Euclidean);
-            list.Add(Similarity.Manhattan);
-            list.Add(Similarity.Hamming);
-            list.Add(Similarity.JaccardFuzzy);
-            list.Add(Similarity.SquaredEuclidean);
-            list.Add(Similarity.Cosine);
-            list.Add(Similarity.BrayCurtis);
-            list.Add(Similarity.Canberra);
+            list.Add(Distance.Euclidean);
+            list.Add(Distance.Manhattan);
+            list.Add(Distance.Hamming);
+            list.Add(Distance.JaccardFuzzy);
+            list.Add(Distance.SquaredEuclidean);
+            list.Add(Distance.Cosine);
+            list.Add(Distance.BrayCurtis);
+            list.Add(Distance.Canberra);
 
             return list;
         }

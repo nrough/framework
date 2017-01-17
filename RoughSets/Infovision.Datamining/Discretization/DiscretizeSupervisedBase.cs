@@ -18,6 +18,7 @@ namespace Infovision.MachineLearning.Discretization
         #region Properties
 
         public bool SortCuts { get; set; } = true;
+        public ImpurityFunc Impurity { get; set; } = ImpurityMeasure.Entropy;
 
         #endregion
 
@@ -58,24 +59,20 @@ namespace Infovision.MachineLearning.Discretization
                                 
                 if (current.Item2 - current.Item1 < 2) continue;
 
-                var priorCount = CountLabels(
-                    labels, current.Item1, current.Item2, weights);
-                if (priorCount.Count < 2) continue;
+                //var priorCount = CountLabels(
+                //    labels, current.Item1, current.Item2, weights);
+                //if (priorCount.Count < 2) continue;
 
                 var priorEqClasses = new EquivalenceClassCollection(
                     labels, this.UseWeights ? weights : null, current.Item1, current.Item2, this.SortedIndices);
                 if (priorEqClasses.DecisionWeight.Count < 2) continue;
 
-                var priorEntropy = Tools.Entropy(priorCount.Values.ToArray());                
-                var labelCountRight = new Dictionary<long, double>(priorCount);
-                var labelCountLeft = new Dictionary<long, double>(priorCount);
-                labelCountLeft.SetAll(0);
+                //var priorEntropy = Tools.Entropy(priorCount.Values.ToArray());                
+                //var labelCountRight = new Dictionary<long, double>(priorCount);
+                //var labelCountLeft = new Dictionary<long, double>(priorCount);
+                //labelCountLeft.SetAll(0);
 
-                var priorEntropy2 = ImpurityMeasure.Entropy(priorEqClasses);
-
-                //var labelCountRight2 = (EquivalenceClassCollection)priorCount2.Clone();                
-                //var labelCountLeft2 = (EquivalenceClassCollection)priorCount2.Clone();
-                //labelCountLeft2.Clear();
+                var priorEntropy2 = Impurity(priorEqClasses);                
 
                 var splitEqClasses = new EquivalenceClassCollection(new int[] { -1 });
                 splitEqClasses.WeightSum = priorEqClasses.WeightSum;
@@ -86,21 +83,21 @@ namespace Infovision.MachineLearning.Discretization
                 splitEqClasses.Add(new EquivalenceClass(rightInstance, priorEqClasses.First()));
 
                 EquivalenceClassCollection bestSplit = null;
-                double[] bestLeft = null, bestRight = null;
+                //double[] bestLeft = null, bestRight = null;
                 int bestCutIndex = -1;
                 long bestCutPoint = -1;
                 int numCutPoints = 0;
-                double instanceWeight = 0.0;
-                double bestEntropy = priorEntropy;
-                //double bestEntropy = priorEntropy2;
+                //double instanceWeight = 0.0;
+                //double bestEntropy = priorEntropy;
+                double bestEntropy = priorEntropy2;
 
                 for (int i = current.Item1; i < current.Item2 - 1; i++)
                 {
                     if (weights == null || this.UseWeights == false)
                     {
-                        instanceWeight++;
-                        labelCountLeft[labels[SortedIndices[i]]]++;
-                        labelCountRight[labels[SortedIndices[i]]]--;                        
+                        //instanceWeight++;
+                        //labelCountLeft[labels[SortedIndices[i]]]++;
+                        //labelCountRight[labels[SortedIndices[i]]]--;                        
 
                         splitEqClasses.RemoveInstance(rightInstance, labels[SortedIndices[i]], 1, SortedIndices[i]);
                         splitEqClasses.AddInstance(leftInstance, labels[SortedIndices[i]], 1, SortedIndices[i]);
@@ -108,9 +105,9 @@ namespace Infovision.MachineLearning.Discretization
                     }
                     else
                     {
-                        instanceWeight += weights[SortedIndices[i]];
-                        labelCountLeft[labels[SortedIndices[i]]] += weights[SortedIndices[i]];
-                        labelCountRight[labels[SortedIndices[i]]] -= weights[SortedIndices[i]];                        
+                        //instanceWeight += weights[SortedIndices[i]];
+                        //labelCountLeft[labels[SortedIndices[i]]] += weights[SortedIndices[i]];
+                        //labelCountRight[labels[SortedIndices[i]]] -= weights[SortedIndices[i]];                        
 
                         splitEqClasses.RemoveInstance(rightInstance, labels[SortedIndices[i]], weights[SortedIndices[i]], SortedIndices[i]);
                         splitEqClasses.AddInstance(leftInstance, labels[SortedIndices[i]], weights[SortedIndices[i]], SortedIndices[i]);
@@ -120,20 +117,20 @@ namespace Infovision.MachineLearning.Discretization
                     if (data[SortedIndices[i]] < data[SortedIndices[i + 1]])
                     {
                         long currentCutPoint = (data[SortedIndices[i]] + data[SortedIndices[i + 1]]) / 2;
-                        var currentEntropy = Tools.Entropy(labelCountLeft.Values.ToArray(), labelCountRight.Values.ToArray());
+                        //var currentEntropy = Tools.Entropy(labelCountLeft.Values.ToArray(), labelCountRight.Values.ToArray());
 
-                        var currentEntropy2 = ImpurityMeasure.Entropy(splitEqClasses);
+                        var currentEntropy2 = Impurity(splitEqClasses);
 
-                        if (currentEntropy < bestEntropy)
-                        //if (currentEntropy2 < bestEntropy)
+                        //if (currentEntropy < bestEntropy)
+                        if (currentEntropy2 < bestEntropy)
                         {
-                            bestEntropy = currentEntropy;
-                            //bestEntropy = currentEntropy2;
+                            //bestEntropy = currentEntropy;
+                            bestEntropy = currentEntropy2;
                             bestCutIndex = i;
                             bestCutPoint = currentCutPoint;
 
-                            bestLeft = labelCountLeft.Values.ToArray();
-                            bestRight = labelCountRight.Values.ToArray();
+                            //bestLeft = labelCountLeft.Values.ToArray();
+                            //bestRight = labelCountRight.Values.ToArray();
 
                             bestSplit = (EquivalenceClassCollection)splitEqClasses.Clone();
                         }
@@ -143,12 +140,12 @@ namespace Infovision.MachineLearning.Discretization
                 }            
                 
                 if (bestCutIndex == -1) continue;
-                if (priorEntropy - bestEntropy <= 0) continue;
-                //if (priorEntropy2 - bestEntropy <= 0) continue;
+                //if (priorEntropy - bestEntropy <= 0) continue;
+                if (priorEntropy2 - bestEntropy <= 0) continue;
 
-                if (!StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight,
-                        numCutPoints, current.Item2 - current.Item1, instanceWeight))
-                //if (!StopCondition(priorEqClasses, bestSplit, numCutPoints))
+                //if (!StopCondition(priorCount.Values.ToArray(), bestLeft, bestRight,
+                //        numCutPoints, current.Item2 - current.Item1, instanceWeight))
+                if (!StopCondition(priorEqClasses, bestSplit, numCutPoints))
                 {
                     result.Add(bestCutPoint);
 

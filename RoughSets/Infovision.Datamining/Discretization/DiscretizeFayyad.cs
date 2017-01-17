@@ -26,17 +26,16 @@ namespace Infovision.MachineLearning.Discretization
                 return true;
 
             double priorEntropy = ImpurityMeasure.Entropy(priorEqClasses);            
-            double splitEntropy = ImpurityMeasure.Entropy(splitEqClasses);
+            double splitEntropy = ImpurityMeasure.Entropy(splitEqClasses);            
+
             double gain = priorEntropy - splitEntropy;            
             
             int numClassesTotal = priorEqClasses.DecisionWeight.Count(kvp => kvp.Value > 0);
             int numClassesLeft = splitEqClasses[leftInstance].DecisionWeight.Count(kvp => kvp.Value > 0);
             int numClassesRight = splitEqClasses[rightInstance].DecisionWeight.Count(kvp => kvp.Value > 0);
 
-            double entropyLeft = ImpurityMeasure.Entropy(new EquivalenceClassCollection(
-                splitEqClasses[leftInstance]));
-            double entropyRight = ImpurityMeasure.Entropy(new EquivalenceClassCollection(
-                splitEqClasses[rightInstance]));
+            double entropyLeft = ImpurityMeasure.Entropy(new EquivalenceClassCollection(splitEqClasses[leftInstance]));
+            double entropyRight = ImpurityMeasure.Entropy(new EquivalenceClassCollection(splitEqClasses[rightInstance]));
 
             double delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2.0, 2)
                 - ((numClassesTotal * priorEntropy) 

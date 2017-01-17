@@ -23,7 +23,7 @@ namespace Infovision.MachineLearning.Tests.Discretization
             base.CreateDiscretizedDataTableTest(filename, fileFormat, fields);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, new int[] { 2, 5 })]
         public override void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             base.DiscretizeTest(filename, fileFormat, fields);

@@ -14,12 +14,10 @@ namespace Infovision.MachineLearning
     {
         #region Members
 
+        private readonly object mutex = new object();
         private DataStore data;
         private Dictionary<long[], EquivalenceClass> partitions;
-        private int[] attributes;
-
-        private readonly object mutex = new object();
-
+        private int[] attributes;        
         private Dictionary<long, double> decisionWeight;
         private Dictionary<long, int> decisionCount;
 
@@ -27,14 +25,21 @@ namespace Infovision.MachineLearning
 
         #region Properties
 
-        public Dictionary<long, double> DecisionWeights
+        public Dictionary<long, double> DecisionWeight
         {
             get { return this.decisionWeight; }
+            internal set { this.decisionWeight = value; }
+        }
+
+        public Dictionary<long, int> DecisionCount
+        {
+            get { return this.decisionCount; }
+            internal set { this.decisionCount = value; }
         }
 
         public DecisionDistribution DecisionDistribution
         {
-            get { return new DecisionDistribution(this.DecisionWeights); }
+            get { return new DecisionDistribution(this.DecisionWeight); }
         }
 
         /// <summary>
@@ -46,7 +51,7 @@ namespace Infovision.MachineLearning
         }
 
         /// <summary>
-        /// returns attributes on which eqivalence classes are base
+        /// returns attributes on which equivalence classes are base
         /// </summary>
         public int[] Attributes
         {
@@ -54,7 +59,7 @@ namespace Infovision.MachineLearning
         }
 
         /// <summary>
-        /// Indexes of all trainig dataset objects that belong to collection of equivalence classes
+        /// Indexes of all training dataset objects that belong to collection of equivalence classes
         /// </summary>
         public int[] Indices
         {
@@ -69,12 +74,20 @@ namespace Infovision.MachineLearning
 
         internal double WeightSum { get; set; }
         internal int NumberOfObjects { get; set; }
-
+        public EquivalenceClass this[long[] key] { get { return this.partitions[key]; }}
         public DataStore Data { get { return this.data; } }
 
         #endregion Properties
 
         #region Constructors
+
+        public EquivalenceClassCollection(int[] attributes)
+        {            
+            this.attributes = attributes.ToArray();
+            this.decisionWeight = new Dictionary<long, double>();
+            this.decisionCount = new Dictionary<long, int>();
+            this.InitPartitions();
+        }
 
         public EquivalenceClassCollection(DataStore data, int[] attrCopy, int initialPartitionSize)
         {
@@ -105,17 +118,109 @@ namespace Infovision.MachineLearning
             this.decisionCount = new Dictionary<long, int>(data.DataStoreInfo.GetDecisionValues().Count);
         }
 
+        public EquivalenceClassCollection(EquivalenceClass eqClass)
+        {
+            this.attributes = new int[0];
+            this.InitPartitions(1);
+            this.decisionWeight = new Dictionary<long, double>(eqClass.DecisionWeight);
+            this.decisionCount = new Dictionary<long, int>(eqClass.DecisionCount);
+            this.NumberOfObjects = eqClass.NumberOfObjects;
+            this.WeightSum = eqClass.WeightSum;
+            this.partitions.Add(new long[] { }, new EquivalenceClass(new long[] { }, eqClass));
+        }
+
+        /// <summary>
+        /// Creates an equivalence class collection with a single equivalence class
+        /// </summary>
+        /// <param name="labels">decision attribute values</param>
+        /// <param name="weights">object weights</param>
+        public EquivalenceClassCollection(long[] labels, double[] weights, int[] sortedIndices = null)
+            : this(labels, weights, 0, sortedIndices == null ? labels.Length : sortedIndices.Length, sortedIndices)
+        {
+        }
+
+        /// <summary>
+        /// Creates an equivalence class collection with a single equivalence class based on object index range
+        /// </summary>
+        /// <param name="labels">decision attribute values</param>
+        /// <param name="weights">object weights</param>
+        /// <param name="start">start index</param>
+        /// <param name="end">end index</param>
+        /// <param name="sortedIndices">list of object indexes</param>
+        public EquivalenceClassCollection(
+            long[] labels, double[] weights, int start, int end, int[] sortedIndices = null)
+        {
+            this.attributes = new int[0];
+            this.InitPartitions(1);
+            this.decisionWeight = new Dictionary<long, double>();
+            this.decisionCount = new Dictionary<long, int>();
+            this.NumberOfObjects = end - start;
+            var instances = new Dictionary<int, double>(this.NumberOfObjects);
+            
+            if (sortedIndices == null)
+            {
+                for (int i = start; i < labels.Length && i < end; i++)
+                {
+                    if (this.decisionWeight.ContainsKey(labels[i]))
+                    {
+                        this.decisionCount[labels[i]] += 1;
+                        this.decisionWeight[labels[i]] += (weights == null) ? 1.0 : weights[i];                        
+                    }
+                    else
+                    {
+                        this.decisionCount.Add(labels[i], 1);
+                        this.decisionWeight.Add(
+                            labels[i], 
+                            (weights == null) ? 1.0 : weights[i]);                        
+                    }
+
+                    this.WeightSum += (weights == null) ? 1.0 : weights[i];
+                    instances.Add(i, (weights == null) ? 1.0 : weights[i]);
+                }
+            }
+            else
+            {
+                for (int i = start; i < labels.Length && i < end; i++)
+                {
+                    if (this.decisionWeight.ContainsKey(labels[sortedIndices[i]]))
+                    {
+                        this.decisionCount[labels[sortedIndices[i]]] += 1;
+                        this.decisionWeight[labels[sortedIndices[i]]] +=
+                            (weights == null) ? 1.0 : weights[sortedIndices[i]];                        
+                    }
+                    else
+                    {
+                        this.decisionCount.Add(labels[sortedIndices[i]], 1);
+                        this.decisionWeight.Add(
+                            labels[sortedIndices[i]], 
+                            (weights == null) ? 1.0 : weights[sortedIndices[i]]);
+                        
+                    }
+
+                    this.WeightSum += (weights == null) ? 1.0 : weights[sortedIndices[i]];
+                    instances.Add(sortedIndices[i], (weights == null) ? 1.0 : weights[sortedIndices[i]]);
+                }
+            }
+
+            
+            var equivalenceClass = new EquivalenceClass(
+                new long[] { }, instances, new HashSet<long>(this.decisionCount.Keys));
+
+            equivalenceClass.DecisionWeight = new Dictionary<long, double>(this.decisionWeight);
+            equivalenceClass.DecisionCount = new Dictionary<long, int>(this.decisionCount);
+            equivalenceClass.WeightSum = this.WeightSum;            
+            this.partitions.Add(new long[] { }, equivalenceClass);
+        }
+
         private EquivalenceClassCollection(EquivalenceClassCollection eqClassCollection)
         {
             this.data = eqClassCollection.data;
-
             this.decisionCount = new Dictionary<long, int>(eqClassCollection.decisionCount);
             this.decisionWeight = new Dictionary<long, double>(eqClassCollection.decisionWeight);
-
-            this.attributes = new int[eqClassCollection.Attributes.Length];
-            Array.Copy(eqClassCollection.Attributes, this.attributes, eqClassCollection.Attributes.Length);
-
+            this.attributes = eqClassCollection.Attributes.ToArray();
             this.partitions = (Dictionary<long[], EquivalenceClass>)eqClassCollection.partitions.CloneDictionaryCloningValues<long[], EquivalenceClass>();
+            this.WeightSum = eqClassCollection.WeightSum;
+            this.NumberOfObjects = eqClassCollection.NumberOfObjects;            
         }
 
         #endregion Constructors
@@ -124,7 +229,7 @@ namespace Infovision.MachineLearning
 
         #region MethodsUnderDevelopment
 
-        //|U| (Returns number of suppoerted objects (may differ from all number of records in dataset because of exception rules)
+        //|U| (Returns number of supported objects (may differ from all number of records in dataset because of exception rules)
         public int CountSupportedObjects()
         {
             int sum = 0;
@@ -319,7 +424,7 @@ namespace Infovision.MachineLearning
             result.CalcAvgConfidence();
 
             return result;
-        }
+        }        
 
         public static EquivalenceClassCollection CreateFromBinaryPartition(int attributeId, int[] idx1, int[] idx2, DataStore data)
         {                        
@@ -370,17 +475,14 @@ namespace Infovision.MachineLearning
         {
             foreach (EquivalenceClass eq in this)
             {
-                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.AvgConfidenceWeight = eq.DecisionWeight.FindMaxValuePair().Value;
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
             }
         }
 
         protected void AddRecordInitial(
-            long[] attributeInternalValues,
-            long decisionInternalValue,
-            double objectWeight,
-            DataStore dataStore,
-            int objectIdx = -1)
+            long[] attributeInternalValues, long decisionInternalValue, double objectWeight, 
+            DataStore dataStore, int objectIdx = -1)
         {
             lock (mutex)
             {
@@ -563,7 +665,7 @@ namespace Infovision.MachineLearning
                         : eq.GetDecisionWeight(decision);
                 }
 
-                eq.AvgConfidenceWeight = eq.DecisionWeights.FindMaxValuePair().Value;
+                eq.AvgConfidenceWeight = eq.DecisionWeight.FindMaxValuePair().Value;
                 eq.AvgConfidenceSum = eq.DecisionCount.FindMaxValuePair().Value;
 
                 this.NumberOfObjects += eq.Instances.Count;
@@ -593,7 +695,7 @@ namespace Infovision.MachineLearning
 
                 tmpCollection.partitions.Add(newEqClass.Instance, newEqClass);
                 tmpCollection.decisionCount = new Dictionary<long, int>(newEqClass.DecisionCount);
-                tmpCollection.decisionWeight = new Dictionary<long, double>(newEqClass.DecisionWeights);
+                tmpCollection.decisionWeight = new Dictionary<long, double>(newEqClass.DecisionWeight);
                 tmpCollection.WeightSum = newEqClass.WeightSum;
                 tmpCollection.NumberOfObjects = newEqClass.NumberOfObjects;
                 tmpCollection.CalcAvgConfidence();
@@ -611,7 +713,7 @@ namespace Infovision.MachineLearning
             int countDec = 0;
             double minValue = 0.0;
             KeyValuePair<long, double> result = new KeyValuePair<long, double>(Classifier.UnclassifiedOutput, 0.0);
-            foreach (var kvp in this.DecisionWeights)
+            foreach (var kvp in this.DecisionWeight)
             {
                 if (kvp.Value > 0.0)
                 {
@@ -640,6 +742,52 @@ namespace Infovision.MachineLearning
         public EquivalenceClass[] ToArray()
         {
             return this.partitions.Values.ToArray();
+        }
+
+        public void Clear()
+        {
+            this.decisionCount.SetAll(0);
+            this.decisionWeight.SetAll(0);
+            
+            foreach (var kvp in this.partitions)
+                this.partitions[kvp.Key].Clear();
+        }
+
+        public void AddInstance(long[] instance, long decision, double weight, int instanceIdx = -1)
+        {
+            this.WeightSum += weight;
+            this.NumberOfObjects += 1;
+            if (this.decisionCount.ContainsKey(decision))
+            {
+                this.decisionWeight[decision] += weight;
+                this.decisionCount[decision] += 1;
+            }
+            else
+            {
+                this.decisionWeight.Add(decision, weight);
+                this.decisionCount.Add(decision, 1);
+            }                        
+
+            EquivalenceClass eqClass = null;
+            if (!this.partitions.TryGetValue(instance, out eqClass))
+                eqClass = new EquivalenceClass(instance);
+            eqClass.AddObject(instanceIdx, decision, weight);
+        }
+
+        public void RemoveInstance(long[] instance, long decision, double weight, int instanceIdx = -1)
+        {
+            this.WeightSum -= weight;
+            this.NumberOfObjects -= 1;
+
+            if (this.decisionCount.ContainsKey(decision))
+            {
+                this.decisionCount[decision] -= 1;
+                this.decisionWeight[decision] -= weight;
+            }                                                      
+
+            EquivalenceClass eqClass = null;
+            if (instanceIdx != -1 && this.partitions.TryGetValue(instance, out eqClass))
+                eqClass.RemoveObject(instanceIdx, decision, weight);
         }
         
         #region IEnumerable Members

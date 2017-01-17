@@ -13,18 +13,12 @@ namespace Infovision.MachineLearning
         #region Members
 
         private long[] dataVector;
-        private Dictionary<int, double> instances;  //map: objectIdx -> objectWeight
-
-        //private double totalWeightSum; //sum of object weights belonging to this class
-
+        private Dictionary<int, double> instances;  //map: objectIdx -> objectWeight        
         private HashSet<long> decisionSet;  //set containing all decisions within this class
-
-        private Dictionary<long, double> decisionWeightSums; //map decisionInternalValue -> objectWeight
+        private Dictionary<long, double> decisionWeight; //map decisionInternalValue -> objectWeight
         private Dictionary<long, int> decisionCount; //map decisionInternalValue -> object value
-
         private double avgConfidenceWeight;
         private int confidenceCount;
-
         private readonly object mutex = new object();
 
         #endregion Members
@@ -86,10 +80,10 @@ namespace Infovision.MachineLearning
             internal set { this.instances = value; }
         }
 
-        public Dictionary<long, double> DecisionWeights
+        public Dictionary<long, double> DecisionWeight
         {
-            get { return this.decisionWeightSums; }
-            internal set { this.decisionWeightSums = value; }
+            get { return this.decisionWeight; }
+            internal set { this.decisionWeight = value; }
         }
 
         public Dictionary<long, int> DecisionCount
@@ -102,7 +96,7 @@ namespace Infovision.MachineLearning
         {
             get
             {
-                return new DecisionDistribution(this.DecisionWeights);
+                return new DecisionDistribution(this.DecisionWeight);
             }
         }
 
@@ -110,13 +104,23 @@ namespace Infovision.MachineLearning
 
         #region Constructors
 
+        public EquivalenceClass(long[] dataVector)
+        {
+            this.dataVector = dataVector;
+            this.decisionSet = new HashSet<long>();
+            this.instances = new Dictionary<int, double>();            
+            this.decisionWeight = new Dictionary<long, double>();
+            this.decisionCount = new Dictionary<long, int>();
+        }        
+
         public EquivalenceClass(long[] dataVector, Dictionary<int, double> instances, HashSet<long> decSet)
         {
             this.dataVector = dataVector;
             this.decisionSet = new HashSet<long>(decSet);
             this.instances = new Dictionary<int, double>(instances);
+            this.WeightSum = instances.Values.Sum();            
             int numberOfDecisions = decisionSet.Count;
-            this.decisionWeightSums = new Dictionary<long, double>(numberOfDecisions);
+            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
@@ -127,7 +131,7 @@ namespace Infovision.MachineLearning
             this.decisionSet = new HashSet<long>();
             this.instances = new Dictionary<int, double>(instances);
             int numberOfDecisions = decisionField.NumberOfValues;
-            this.decisionWeightSums = new Dictionary<long, double>(numberOfDecisions);
+            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
@@ -143,18 +147,17 @@ namespace Infovision.MachineLearning
                 this.instances = new Dictionary<int, double>();
 
             int numberOfDecisions = decisionField.NumberOfValues;
-            this.decisionWeightSums = new Dictionary<long, double>(numberOfDecisions);
+            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
         public EquivalenceClass(long[] dataVector, DataStore data)
         {
-            this.dataVector = dataVector;
-            //DataFieldInfo decisionField = data.DataStoreInfo.DecisionInfo;
+            this.dataVector = dataVector;            
             this.decisionSet = new HashSet<long>();
             this.instances = new Dictionary<int, double>();
             int numberOfDecisions = data.DataStoreInfo.DecisionInfo.NumberOfValues;
-            this.decisionWeightSums = new Dictionary<long, double>(numberOfDecisions);
+            this.decisionWeight = new Dictionary<long, double>(numberOfDecisions);
             this.decisionCount = new Dictionary<long, int>(numberOfDecisions);
         }
 
@@ -163,7 +166,19 @@ namespace Infovision.MachineLearning
             this.dataVector = new long[eqClass.dataVector.Length];
             Array.Copy(eqClass.dataVector, this.dataVector, eqClass.dataVector.Length);
             this.instances = new Dictionary<int, double>(eqClass.instances);
-            this.decisionWeightSums = new Dictionary<long, double>(eqClass.decisionWeightSums);
+            this.decisionWeight = new Dictionary<long, double>(eqClass.decisionWeight);
+            this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
+            this.decisionSet = new HashSet<long>(eqClass.DecisionSet);
+            this.WeightSum = eqClass.WeightSum;
+            this.AvgConfidenceWeight = eqClass.AvgConfidenceWeight;
+            this.AvgConfidenceSum = eqClass.AvgConfidenceSum;
+        }
+
+        public EquivalenceClass(long[] dataVector, EquivalenceClass eqClass)
+        {
+            this.dataVector = dataVector;            
+            this.instances = new Dictionary<int, double>(eqClass.instances);
+            this.decisionWeight = new Dictionary<long, double>(eqClass.decisionWeight);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
             this.decisionSet = new HashSet<long>(eqClass.DecisionSet);
             this.WeightSum = eqClass.WeightSum;
@@ -175,7 +190,7 @@ namespace Infovision.MachineLearning
         {
             this.dataVector = dataVector;
             this.instances = new Dictionary<int, double>(eqClass.instances);
-            this.decisionWeightSums = new Dictionary<long, double>(eqClass.decisionWeightSums);
+            this.decisionWeight = new Dictionary<long, double>(eqClass.decisionWeight);
             this.decisionCount = new Dictionary<long, int>(eqClass.decisionCount);
             this.decisionSet = new HashSet<long>(eqClass.DecisionSet);
             this.WeightSum = eqClass.WeightSum;
@@ -190,7 +205,7 @@ namespace Infovision.MachineLearning
         public double GetDecisionWeight(long decision)
         {
             double result = 0;
-            if (this.decisionWeightSums.TryGetValue(decision, out result))
+            if (this.decisionWeight.TryGetValue(decision, out result))
                 return result;
             return 0;
         }
@@ -201,69 +216,56 @@ namespace Infovision.MachineLearning
             {
                 this.WeightSum = 0;
                 int decCount = this.DecisionSet.Count;
-                this.decisionWeightSums = new Dictionary<long, double>(decCount);
+                this.decisionWeight = new Dictionary<long, double>(decCount);
                 this.decisionCount = new Dictionary<long, int>(decCount);
                 foreach (var instance in this.instances)
                 {
                     long decision = data.GetDecisionValue(instance.Key);
                     double w = 0; int count = 0;
-                    this.decisionWeightSums[decision] = this.decisionWeightSums.TryGetValue(decision, out w) ? (w + instance.Value) : instance.Value;
+                    this.decisionWeight[decision] = this.decisionWeight.TryGetValue(decision, out w) ? (w + instance.Value) : instance.Value;
                     this.decisionCount[decision] = this.decisionCount.TryGetValue(decision, out count) ? ++count : 1;
                     this.WeightSum += instance.Value;
                 }
             }
         }
 
-        public void AddDecision(long decisionValue, double weight)
+        public void AddDecision(long decision, double weight)
         {
             lock (mutex)
             {
-                this.decisionSet.Add(decisionValue);
+                this.decisionSet.Add(decision);
                 this.WeightSum += weight;
 
-                double weightSum = 0.0;
-                if (this.decisionWeightSums.TryGetValue(decisionValue, out weightSum))
+                if(this.decisionCount.ContainsKey(decision))
                 {
-                    weight += weightSum;
-                    this.decisionWeightSums[decisionValue] = weight;
+                    this.decisionWeight[decision] += weight;
+                    this.decisionCount[decision] += 1;
                 }
                 else
                 {
-                    this.decisionWeightSums.Add(decisionValue, weight);
-                }
-
-                int count = 0;
-                if (this.decisionCount.TryGetValue(decisionValue, out count))
-                {
-                    count += 1;
-                    this.decisionCount[decisionValue] = count;
-                }
-                else
-                {
-                    this.decisionCount.Add(decisionValue, 1);
-                }
+                    this.decisionWeight.Add(decision, weight);
+                    this.decisionCount.Add(decision, 1);
+                }                
             }
         }
 
-        public void RemoveDecision(long decisionValue, double weight)
+        public void RemoveDecision(long decision, double weight)
         {
-            int count = 0;
-            if (this.decisionCount.TryGetValue(decisionValue, out count))
-                this.decisionCount[decisionValue] = --count;
-
-            double w = 0;
-            if (this.decisionWeightSums.TryGetValue(decisionValue, out w))
-                this.decisionWeightSums[decisionValue] = (w - weight);
-
-            this.WeightSum -= weight;
+            if (this.decisionCount.ContainsKey(decision))
+            {
+                this.decisionCount[decision]--;
+                this.decisionWeight[decision] -= weight;
+                this.WeightSum -= weight;
+            }                        
         }
 
-        public void AddObject(int objectIndex, long decisionValue, double weight)
+        public void AddObject(int objectIndex, long decision, double weight)
         {
             lock (mutex)
             {
-                this.instances.Add(objectIndex, weight);
-                this.AddDecision(decisionValue, weight);
+                if (objectIndex != -1)
+                    this.instances.Add(objectIndex, weight);
+                this.AddDecision(decision, weight);
             }
         }
 
@@ -281,10 +283,20 @@ namespace Infovision.MachineLearning
             lock (mutex)
             {
                 if (this.instances.ContainsKey(objectIndex))
-                {
-                    long decisionValue = data.GetDecisionValue(objectIndex);
-                    double weight = this.instances[objectIndex];
-                    this.RemoveDecision(decisionValue, weight);
+                {                    
+                    this.RemoveDecision(data.GetDecisionValue(objectIndex), this.instances[objectIndex]);
+                    this.instances.Remove(objectIndex);
+                }
+            }
+        }
+
+        public void RemoveObject(int objectIndex, long decision, double weight)
+        {
+            lock (mutex)
+            {
+                if (this.instances.ContainsKey(objectIndex))
+                {                                        
+                    this.RemoveDecision(decision, weight);
                     this.instances.Remove(objectIndex);
                 }
             }
@@ -305,7 +317,7 @@ namespace Infovision.MachineLearning
 
             lock (mutex)
             {
-                var list = decisionWeightSums.ToList();
+                var list = decisionWeight.ToList();
                 list.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value)); //descending order
                 double max = list[0].Value;
                 double threshold = (1.0 - epsilon) * max;
@@ -314,11 +326,23 @@ namespace Infovision.MachineLearning
                     if (list[i].Value < threshold)
                     {
                         this.DecisionSet.Remove(list[i].Key);
-                        this.decisionWeightSums.Remove(list[i].Key);
+                        this.decisionWeight.Remove(list[i].Key);
                         this.decisionCount.Remove(list[i].Key);
                     }
                 }
             }
+        }
+
+        public void Clear()
+        {
+            this.decisionWeight.SetAll(0);
+            this.decisionCount.SetAll(0);
+
+            this.instances.Clear();
+            this.DecisionSet.Clear();
+
+            this.avgConfidenceWeight = 0;
+            this.confidenceCount = 0;
         }        
 
         #region ICloneable Members

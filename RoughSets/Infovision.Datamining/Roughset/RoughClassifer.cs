@@ -111,11 +111,11 @@ namespace Infovision.MachineLearning.Roughset
 
         public Dictionary<long, double> Classify(DataRecordInternal record, IReduct reduct)
         {
-            var decisionIdentification = new Dictionary<long, double>(reduct.EquivalenceClasses.DecisionWeights.Keys.Count);
+            var decisionIdentification = new Dictionary<long, double>(reduct.EquivalenceClasses.DecisionWeight.Keys.Count);
             EquivalenceClass eqClass = reduct.EquivalenceClasses.Find(record);
             if (eqClass != null)
             {
-                foreach (long decisionValue in reduct.EquivalenceClasses.DecisionWeights.Keys)
+                foreach (long decisionValue in reduct.EquivalenceClasses.DecisionWeight.Keys)
                 {
                     if (decisionIdentification.ContainsKey(decisionValue))
                         decisionIdentification[decisionValue] += this.IdentificationFunction(decisionValue, reduct, eqClass);

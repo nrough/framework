@@ -52,8 +52,8 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public int MinimumNumOfInstancesPerLeaf { get; set; } = 1;
         public DataStore TrainingData { get; protected set; }
 
-        public ImpurityFunc ImpurityFunction { get; set; } = ImpurityFunctions.Entropy;
-        public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityFunctions.DummyNormalize;
+        public ImpurityFunc ImpurityFunction { get; set; } = ImpurityMeasure.Entropy;
+        public ImpurityNormalizeFunc ImpurityNormalize { get; set; } = ImpurityMeasure.DummyNormalize;
         
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
@@ -335,7 +335,7 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
                 DecisionTreeNode currentParent = currentInfo.Item2;
                 int[] currentAttributes = currentInfo.Item3;
                                 
-                this.SetNodeOutput(currentParent, currentEqClassCollection.DecisionWeights);
+                this.SetNodeOutput(currentParent, currentEqClassCollection.DecisionWeight);
 
                 if (this.CheckStopCondition(currentEqClassCollection, currentAttributes, ref isConverged, currentParent))
                     continue;

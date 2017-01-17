@@ -14,13 +14,13 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public DecisionTreeID3()
             : base()
         {
-            this.ImpurityFunction = ImpurityFunctions.Entropy;
+            this.ImpurityFunction = ImpurityMeasure.Entropy;
         }
 
         public DecisionTreeID3(string modelName)
             : base(modelName)
         {
-            this.ImpurityFunction = ImpurityFunctions.Entropy;
+            this.ImpurityFunction = ImpurityMeasure.Entropy;
         }                                    
     }
 }

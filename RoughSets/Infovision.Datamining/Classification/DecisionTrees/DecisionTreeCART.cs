@@ -17,13 +17,13 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public DecisionTreeCART()
             : base()
         {
-            this.ImpurityFunction = ImpurityFunctions.Gini;
+            this.ImpurityFunction = ImpurityMeasure.Gini;
         }
 
         public DecisionTreeCART(string modelName)
             : base(modelName)
         {
-            this.ImpurityFunction = ImpurityFunctions.Gini;
+            this.ImpurityFunction = ImpurityMeasure.Gini;
         }        
     }
 }

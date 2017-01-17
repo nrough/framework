@@ -20,15 +20,15 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public ObliviousDecisionTree()
             : base()
         {                     
-            this.ImpurityFunction = ImpurityFunctions.Majority;
-            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority;
+            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
         }
 
         public ObliviousDecisionTree(string modelName)
             : base(modelName)
         {            
-            this.ImpurityFunction = ImpurityFunctions.Majority;
-            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority;
+            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
         }
 
         protected override void CleanUp()

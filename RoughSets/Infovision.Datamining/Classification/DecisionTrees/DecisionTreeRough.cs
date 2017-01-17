@@ -14,15 +14,15 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public DecisionTreeRough()
             : base()
         {
-            this.ImpurityFunction = ImpurityFunctions.Majority;
-            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority;
+            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
         }
 
         public DecisionTreeRough(string modelName)
             : base(modelName)
         {
-            this.ImpurityFunction = ImpurityFunctions.Majority;
-            this.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority;
+            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
         }               
     }
 }

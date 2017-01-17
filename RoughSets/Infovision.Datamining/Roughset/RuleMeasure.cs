@@ -103,7 +103,7 @@ namespace Infovision.MachineLearning.Roughset
             if (eqClass == null) return 0;
             double sum = 0;
             
-            foreach (long dec in reduct.EquivalenceClasses.DecisionWeights.Keys)
+            foreach (long dec in reduct.EquivalenceClasses.DecisionWeight.Keys)
             {
                 int localCount_X = (int)reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[dec];
                 if (localCount_X > 0)
@@ -126,7 +126,7 @@ namespace Infovision.MachineLearning.Roughset
             if (eqClass == null) return 0;
             double sum = 0;
             
-            foreach (long dec in reduct.EquivalenceClasses.DecisionWeights.Keys)
+            foreach (long dec in reduct.EquivalenceClasses.DecisionWeight.Keys)
             {
                 double localWeight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[dec];
                 if (localWeight_X > 0)
@@ -233,7 +233,7 @@ namespace Infovision.MachineLearning.Roughset
             if (eqClass == null) return 0;
             double sum = 0;
             
-            foreach (long dec in reduct.EquivalenceClasses.DecisionWeights.Keys)
+            foreach (long dec in reduct.EquivalenceClasses.DecisionWeight.Keys)
             {
                 double localWeight_X = reduct.DataStore.DataStoreInfo.DecisionInfo.HistogramWeights[dec];
                 if (localWeight_X > 0)

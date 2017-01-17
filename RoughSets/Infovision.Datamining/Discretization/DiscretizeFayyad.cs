@@ -18,6 +18,38 @@ namespace Infovision.MachineLearning.Discretization
         }
 
         protected override bool StopCondition(
+            EquivalenceClassCollection priorEqClasses,
+            EquivalenceClassCollection splitEqClasses,
+            int numOfPossibleCuts)
+        {
+            if (base.StopCondition(priorEqClasses, splitEqClasses, numOfPossibleCuts))
+                return true;
+
+            double priorEntropy = ImpurityMeasure.Entropy(priorEqClasses);            
+            double splitEntropy = ImpurityMeasure.Entropy(splitEqClasses);
+            double gain = priorEntropy - splitEntropy;            
+            
+            int numClassesTotal = priorEqClasses.DecisionWeight.Count(kvp => kvp.Value > 0);
+            int numClassesLeft = splitEqClasses[leftInstance].DecisionWeight.Count(kvp => kvp.Value > 0);
+            int numClassesRight = splitEqClasses[rightInstance].DecisionWeight.Count(kvp => kvp.Value > 0);
+
+            double entropyLeft = ImpurityMeasure.Entropy(new EquivalenceClassCollection(
+                splitEqClasses[leftInstance]));
+            double entropyRight = ImpurityMeasure.Entropy(new EquivalenceClassCollection(
+                splitEqClasses[rightInstance]));
+
+            double delta = System.Math.Log(System.Math.Pow(3, numClassesTotal) - 2.0, 2)
+                - ((numClassesTotal * priorEntropy) 
+                    - (numClassesRight * entropyRight) 
+                    - (numClassesLeft * entropyLeft));
+
+            if (gain > ((System.Math.Log(priorEqClasses.NumberOfObjects - 1.0, 2) + delta) / (double)priorEqClasses.NumberOfObjects))
+                return false;
+
+            return true;
+        }
+
+        protected override bool StopCondition(
             double[] priorCount, double[] left, double[] right, 
             int numOfPossibleCuts, int numOfInstances, double instanceWeight)
         {

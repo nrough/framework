@@ -13,15 +13,15 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
         public DecisionTreeC45()
             : base()
         {
-            this.ImpurityFunction = ImpurityFunctions.Entropy;
-            this.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Entropy;
+            this.ImpurityNormalize = ImpurityMeasure.SplitInformationNormalize;
         }
 
         public DecisionTreeC45(string modelName)
             : base(modelName)
         {
-            this.ImpurityFunction = ImpurityFunctions.Entropy;
-            this.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Entropy;
+            this.ImpurityNormalize = ImpurityMeasure.SplitInformationNormalize;
         }                                
     }
 }

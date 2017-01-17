@@ -50,8 +50,8 @@ namespace Infovision.MachineLearning.Tests
             DataStore data = DataStore.Load(dataFile, fileFormat);            
             DecisionTreeC45 c45 = new DecisionTreeC45();
             c45.PruningType = PruningType.ErrorBasedPruning;            
-            c45.ImpurityFunction = ImpurityFunctions.Majority;
-            c45.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            c45.ImpurityFunction = ImpurityMeasure.Majority;
+            c45.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
 
             CrossValidation<DecisionTreeC45> cv = new CrossValidation<DecisionTreeC45>(c45);
 
@@ -60,8 +60,8 @@ namespace Infovision.MachineLearning.Tests
 
             DecisionTreeC45 c45b = new DecisionTreeC45();
             c45b.PruningType = PruningType.ErrorBasedPruning;
-            c45b.ImpurityFunction = ImpurityFunctions.One;
-            c45b.ImpurityNormalize = ImpurityFunctions.DummyNormalize;
+            c45b.ImpurityFunction = ImpurityMeasure.One;
+            c45b.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
 
             CrossValidation<DecisionTreeC45> cvb = new CrossValidation<DecisionTreeC45>(c45b);
 

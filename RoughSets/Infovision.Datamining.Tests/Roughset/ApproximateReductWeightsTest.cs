@@ -66,8 +66,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 EquivalenceClass reductStat = result.Find(dataVector);
                 Assert.AreEqual(9, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(9, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(9, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(9, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -77,8 +77,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(2, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -88,8 +88,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(19, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(16, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(16, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(3, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(16, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -99,8 +99,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(16, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(14, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(14, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(2, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(14, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -110,8 +110,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(15, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(15, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -121,8 +121,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(11, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(5, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -132,8 +132,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(4, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(6, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -143,8 +143,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(10, reductStat.NumberOfObjects);
                 Assert.AreEqual(2, reductStat.NumberOfDecisions);
-                Assert.AreEqual(1, reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(5, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(1, reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(5, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(5, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(5, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
 
@@ -154,8 +154,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
                 reductStat = result.Find(dataVector);
                 Assert.AreEqual(17, reductStat.NumberOfObjects);
                 Assert.AreEqual(1, reductStat.NumberOfDecisions);
-                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeights.FindMaxValueKey());
-                Assert.AreEqual(17, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeights.FindMaxValueKey()));
+                Assert.AreEqual(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1), reductStat.DecisionWeight.FindMaxValueKey());
+                Assert.AreEqual(17, reductStat.GetNumberOfObjectsWithDecision(reductStat.DecisionWeight.FindMaxValueKey()));
                 Assert.AreEqual(17, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(1)));
                 Assert.AreEqual(0, reductStat.GetNumberOfObjectsWithDecision(dataStoreTrainInfo.GetFieldInfo(dataStoreTrainInfo.DecisionFieldId).External2Internal(0)));
             }

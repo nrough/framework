@@ -363,7 +363,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             treeOblivEntropy.OnTrainingDataSubmission = onTrainingDataSubmission;
             treeOblivEntropy.OnInputAttributeSubmission = onInputAttributeSubmission;
             treeOblivEntropy.OnValidationDataSubmission = onValidationDataSubmission;
-            treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
+            treeOblivEntropy.ImpurityFunction = ImpurityMeasure.Entropy;
             treeOblivEntropy.DefaultOutput = output;
             treeOblivEntropy.PruningType = pruningType;
             CrossValidation<ObliviousDecisionTree> treeOblivEntropyCV = new CrossValidation<ObliviousDecisionTree>(treeOblivEntropy);            
@@ -420,7 +420,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
             treeOblivEntropy.OnTrainingDataSubmission = onTrainingDataSubmission;
             treeOblivEntropy.OnInputAttributeSubmission = onInputAttributeSubmission;
             treeOblivEntropy.OnValidationDataSubmission = onValidationDataSubmission;
-            treeOblivEntropy.ImpurityFunction = ImpurityFunctions.Entropy;
+            treeOblivEntropy.ImpurityFunction = ImpurityMeasure.Entropy;
             treeOblivEntropy.DefaultOutput = output;
             treeOblivEntropy.PruningType = pruningType;
             treeOblivEntropy.Learn(trainDS, attributes);

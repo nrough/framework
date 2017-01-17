@@ -40,9 +40,9 @@ namespace Infovision.MachineLearning.Discretization
             }
         }
         
-        protected ReadOnlyCollection<int> SortedIndices
+        protected int[] SortedIndices
         {
-            get { return Array.AsReadOnly(this.sortedIndices); }
+            get { return this.sortedIndices; }
         }
 
         public bool IsDataSorted { get; set; } = false;

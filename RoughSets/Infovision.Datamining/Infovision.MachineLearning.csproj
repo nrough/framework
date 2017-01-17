@@ -180,7 +180,7 @@
     <Compile Include="Classification\DecisionTrees\DecisionTreeRough.cs" />
     <Compile Include="Classification\DecisionTrees\IDecisionTree.cs" />
     <Compile Include="Classification\DecisionTrees\IDecisionTreeNode.cs" />
-    <Compile Include="Classification\DecisionTrees\ImpurityMeasure.cs" />
+    <Compile Include="ImpurityMeasure.cs" />
     <Compile Include="Classification\DecisionTrees\ObliviousDecisionTree.cs" />
     <Compile Include="Classification\DecisionTrees\PruningObjectiveType.cs" />
     <Compile Include="Classification\DecisionTrees\Pruning\DecisionTreePruningBase.cs" />

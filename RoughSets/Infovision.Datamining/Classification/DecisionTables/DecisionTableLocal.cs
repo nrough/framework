@@ -22,8 +22,8 @@ namespace Infovision.MachineLearning.Classification.DecisionTables
             this.DefaultOutput = this.aprioriDistribution.Output;
 
             this.obliviousDecisionTree = new ObliviousDecisionTree();
-            this.obliviousDecisionTree.ImpurityFunction = ImpurityFunctions.Entropy;
-            this.obliviousDecisionTree.ImpurityNormalize = ImpurityFunctions.SplitInformationNormalize;
+            this.obliviousDecisionTree.ImpurityFunction = ImpurityMeasure.Entropy;
+            this.obliviousDecisionTree.ImpurityNormalize = ImpurityMeasure.SplitInformationNormalize;
             this.obliviousDecisionTree.UseLocalOutput = true;
             this.obliviousDecisionTree.RankedAttributes = this.RankedAttributes;
             this.obliviousDecisionTree.Learn(data, attributes);

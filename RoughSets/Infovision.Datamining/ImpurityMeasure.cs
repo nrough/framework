@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Infovision.MachineLearning
 {
     public delegate double ImpurityFunc(EquivalenceClassCollection equivalenceClasses);
     public delegate double ImpurityNormalizeFunc(double value, EquivalenceClassCollection equivalenceClasses);
 
-    public static class ImpurityFunctions
+    public static class ImpurityMeasure
     {
         public static double One(EquivalenceClassCollection equivalenceClasses)
         {

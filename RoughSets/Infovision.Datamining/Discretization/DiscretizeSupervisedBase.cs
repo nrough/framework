@@ -63,7 +63,7 @@ namespace Infovision.MachineLearning.Discretization
                 if (priorCount.Count < 2) continue;
 
                 var priorEqClasses = new EquivalenceClassCollection(
-                    labels, weights, current.Item1, current.Item2, this.SortedIndices);
+                    labels, this.UseWeights ? weights : null, current.Item1, current.Item2, this.SortedIndices);
                 if (priorEqClasses.DecisionWeight.Count < 2) continue;
 
                 var priorEntropy = Tools.Entropy(priorCount.Values.ToArray());                

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Data;
-using Infovision.MachineLearning.Clustering.Hierarchical;
-using Infovision.Math;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
+using Raccoon.Math;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator

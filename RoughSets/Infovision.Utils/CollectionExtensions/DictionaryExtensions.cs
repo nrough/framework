@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class DictionaryExtensions
     {

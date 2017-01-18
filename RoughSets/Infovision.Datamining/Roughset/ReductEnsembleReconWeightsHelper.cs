@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public static class ReductEnsembleReconWeightsHelper
     {

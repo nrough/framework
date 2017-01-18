@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using Infovision.MachineLearning.Clustering.Hierarchical;
-using Infovision.Math;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
+using Raccoon.Math;
 using NUnit.Framework;
 
-namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarcihcalClusteringSimpleTest
@@ -70,13 +70,13 @@ namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
             int id = t.Item3;
 
             DistanceMatrix matrix = new DistanceMatrix();
-            //matrix.Distance = Infovision.Math.Similarity.Euclidean;
+            //matrix.Distance = Raccoon.Math.Similarity.Euclidean;
             double[][] data = HierarchicalClusteringTest.GetData();
             for (int i = 0; i < data.Length; i++)
             {
                 for (int j = i + 1; j < data.Length; j++)
                 {
-                    double dist = Infovision.Math.Distance.Euclidean(data[i], data[j]);
+                    double dist = Raccoon.Math.Distance.Euclidean(data[i], data[j]);
                     matrix.Add(new MatrixKey(i, j), dist);
                 }
             }

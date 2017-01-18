@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class CSVFileHelper
     {

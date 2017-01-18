@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     public partial class ImageEdgeDialog : DialogForm
     {

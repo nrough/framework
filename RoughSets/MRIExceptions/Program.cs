@@ -5,16 +5,16 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using GenericParsing;
-using Infovision.Data;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MRI;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MRI;
+using Raccoon.Core;
 using itk.simple;
-using Infovision.Core.Data;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Core.Data;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
 
 namespace MRIExceptions
 {

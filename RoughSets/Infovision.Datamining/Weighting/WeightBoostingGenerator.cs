@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Weighting
+namespace Raccoon.MachineLearning.Weighting
 {
     public class WeightBoostingGenerator : WeightGenerator
     {

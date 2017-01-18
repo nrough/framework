@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Roughset;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Roughset;
 
-namespace Infovision.MachineLearning.Permutations
+namespace Raccoon.MachineLearning.Permutations
 {
     public class PermutationGeneratorEnsemble : PermutationGenerator
     {

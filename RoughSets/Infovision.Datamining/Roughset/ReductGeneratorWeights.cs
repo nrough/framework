@@ -1,8 +1,8 @@
 ﻿using System;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class ReductGeneratorWeights : ReductGeneratorMeasure

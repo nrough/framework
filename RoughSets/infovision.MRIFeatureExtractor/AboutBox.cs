@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     partial class AboutBox : Form
     {

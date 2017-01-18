@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     [Serializable]
     public class DataStoreOrderByComparer : Comparer<int>

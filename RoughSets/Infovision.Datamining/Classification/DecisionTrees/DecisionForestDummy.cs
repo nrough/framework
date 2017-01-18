@@ -1,10 +1,10 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System;
 using System.Linq;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public class DecisionForestDummy<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     public delegate void PostSplitMethod(DataStore train, DataStore test);
 

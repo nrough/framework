@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public interface IReductGenerator
     {

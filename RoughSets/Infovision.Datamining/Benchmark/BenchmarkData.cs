@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Benchmark
+namespace Raccoon.MachineLearning.Benchmark
 {
     public class BenchmarkData
     {

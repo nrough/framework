@@ -3,14 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
 
 //TODO Implement Cost of misclassification. (Imbalanced classes)
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
 
@@ -231,7 +231,7 @@ namespace Infovision.MachineLearning.Roughset
 
                 ParallelOptions options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                    MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
                 };
 
                 Parallel.ForEach(

@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class MiningObjectPropertyForm
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees.Pruning
+namespace Raccoon.MachineLearning.Classification.DecisionTrees.Pruning
 {
     public enum PruningType
     {

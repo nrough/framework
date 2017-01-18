@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Discretization
+namespace Raccoon.MachineLearning.Discretization
 {
     /// <summary>
     /// Manual discretization. Cuts must be given by the user explicitly. 

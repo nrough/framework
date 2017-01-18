@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductGenerator : IReductGenerator

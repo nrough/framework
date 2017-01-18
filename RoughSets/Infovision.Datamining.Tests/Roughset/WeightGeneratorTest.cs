@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
 
-namespace  Infovision.MachineLearning.Roughset.UnitTests
+namespace  Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class WeightGeneratorTest

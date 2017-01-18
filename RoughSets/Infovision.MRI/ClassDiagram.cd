@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Infovision.MRI.EdgeNeighbourFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.EdgeNeighbourFilter" Collapsed="true">
     <Position X="1.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAEEBAAAAAQAAQAAAAAABAAIAAQgAAAAIAAAACgBAA=</HashCode>
       <FileName>EdgeNeighbourFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.EdgeNeighbourHistogramFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.EdgeNeighbourHistogramFilter" Collapsed="true">
     <Position X="0.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACIAQBAAAAAAAAAAAAGAQJAAAAAAAAAAAAEAAAAI=</HashCode>
       <FileName>EdgeNeighbourFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.EdgeNeighbourSOMFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.EdgeNeighbourSOMFilter" Collapsed="true">
     <Position X="2.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAEA=</HashCode>
       <FileName>EdgeNeighbourFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.EdgeThresholdFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.EdgeThresholdFilter" Collapsed="true">
     <Position X="14.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAQAAQgAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EdgeThresholdFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeature" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeature" Collapsed="true">
     <Position X="9.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAAQAAEAAAABAAAIAAAACAIAA=</HashCode>
@@ -36,91 +36,91 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatrueVoxelPosition" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatrueVoxelPosition" Collapsed="true">
     <Position X="9.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureVoxelMagnitude" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureVoxelMagnitude" Collapsed="true">
     <Position X="11.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureFilter" Collapsed="true">
     <Position X="7" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAIAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureHistogramCluster" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureHistogramCluster" Collapsed="true">
     <Position X="1.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEACgABAACAgAAAAIACACAAAAIACBAAAAAAAACAIAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureSOMCluster" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureSOMCluster" Collapsed="true">
     <Position X="3.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureMask" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureMask" Collapsed="true">
     <Position X="6" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureEdge" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureEdge" Collapsed="true">
     <Position X="8.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureEdgeNeighbour" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureEdgeNeighbour" Collapsed="true">
     <Position X="10.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureEdgeNeighbourSOM" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureEdgeNeighbourSOM" Collapsed="true">
     <Position X="9" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureEdgeNeighbourHistogram" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureEdgeNeighbourHistogram" Collapsed="true">
     <Position X="11.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageFeatureExtractor" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageFeatureExtractor" Collapsed="true">
     <Position X="16" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAAABAAABAAAAAAAAAAAAoABAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeatureExtractor.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageHistogram" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageHistogram" Collapsed="true">
     <Position X="17.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAGgAACACAAAAAAAAQAgBAAAAAIAICAAAA=</HashCode>
       <FileName>ImageHistogramChart.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.ImageHistogramCluster" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageHistogramCluster" Collapsed="true">
     <Position X="14.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABggiIAAIACCgAQAAYAiQiAiGEKACBACAKAAABCEKAA=</HashCode>
@@ -128,56 +128,56 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Infovision.MRI.ImageSOMCluster" Collapsed="true">
+  <Class Name="Raccoon.MRI.ImageSOMCluster" Collapsed="true">
     <Position X="16" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAAAAIAAQAAAAAAAAAAAAAAAAIAAAAIAQAAAA=</HashCode>
       <FileName>ImageSOMCluster.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.MRIHoleFillImageFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.MRIHoleFillImageFilter" Collapsed="true">
     <Position X="17.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MRIHoleFillImageFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.MRIMaskBinaryImageFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.MRIMaskBinaryImageFilter" Collapsed="true">
     <Position X="14.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAACAAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MRIMaskBinaryImageFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.MRIMaskConcentricImageFilter" Collapsed="true">
+  <Class Name="Raccoon.MRI.MRIMaskConcentricImageFilter" Collapsed="true">
     <Position X="16" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEACAABAAAAAAQEAAgAAAAAEAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>MRIMaskConcentricImageFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Infovision.MRI.SimpleITKHelper" Collapsed="true">
+  <Class Name="Raccoon.MRI.SimpleITKHelper" Collapsed="true">
     <Position X="17.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAFCAAAEgQCAAFAAAQAAEAIAAIIAIABAAAAMAAAQAI=</HashCode>
       <FileName>SimpleITKHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Infovision.MRI.IImageFeature" Collapsed="true">
+  <Interface Name="Raccoon.MRI.IImageFeature" Collapsed="true">
     <Position X="14.25" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ImageFeature.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Infovision.MRI.Endianness" Collapsed="true">
+  <Enum Name="Raccoon.MRI.Endianness" Collapsed="true">
     <Position X="14.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
       <FileName>BaseEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Infovision.MRI.PixelType" Collapsed="true">
+  <Enum Name="Raccoon.MRI.PixelType" Collapsed="true">
     <Position X="16" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QgAAAAAAIAAAAAABAAAAAAAAIAACAAAAEEAAAAAgABA=</HashCode>

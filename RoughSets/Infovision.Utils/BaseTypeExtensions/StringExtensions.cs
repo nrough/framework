@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class StringExtensions
     {

@@ -1,18 +1,18 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
 
-namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionForestTest

@@ -1,13 +1,13 @@
-﻿using Infovision.Core;
-using Infovision.Data;
-using Infovision.Math;
+﻿using Raccoon.Core;
+using Raccoon.Data;
+using Raccoon.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Clustering
+namespace Raccoon.MachineLearning.Clustering
 {
     /// <summary>
     /// https://visualstudiomagazine.com/Articles/2013/12/01/K-Means-Data-Clustering-Using-C.aspx?p=1

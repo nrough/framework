@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Math;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClustering : HierarchicalClusteringBase
@@ -26,14 +26,14 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         public HierarchicalClustering()
-            : this(Infovision.Math.Distance.SquaredEuclidean, ClusteringLinkage.Single) { }
+            : this(Raccoon.Math.Distance.SquaredEuclidean, ClusteringLinkage.Single) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         ///
         /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Infovision.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
+        /// use the <see cref="Raccoon.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
         ///

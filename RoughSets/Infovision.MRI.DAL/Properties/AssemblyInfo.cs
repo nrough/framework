@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these key newInstance to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Infovision.MRI.DAL")]
+[assembly: AssemblyTitle("Raccoon.MRI.DAL")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Infovision.MRI.DAL")]
+[assembly: AssemblyProduct("Raccoon.MRI.DAL")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

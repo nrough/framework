@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Infovision.Data;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Clustering.Hierarchical;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.Math;
+using Raccoon.Core;
 using NUnit.Framework;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductEnsembleExperiment

@@ -1,9 +1,9 @@
 ﻿using System;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using System.Collections.Generic;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public interface IReduct : ICloneable, IComparable
     {        

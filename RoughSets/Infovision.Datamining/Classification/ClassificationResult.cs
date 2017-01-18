@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.Core.Data;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.Core.Data;
 using GenericParsing;
 using System.Reflection;
 using System.Linq.Dynamic;
 using System.Data;
 
-namespace Infovision.MachineLearning.Classification
+namespace Raccoon.MachineLearning.Classification
 {    
     [Serializable]
     public class ClassificationResult : IFormattable

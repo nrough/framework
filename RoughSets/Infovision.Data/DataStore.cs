@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Math;
+using Raccoon.Core;
 using System.Data;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     [Serializable]
     public class DataStore : IDataTable

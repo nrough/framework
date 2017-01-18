@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public enum DecisionForestVoteType
     {

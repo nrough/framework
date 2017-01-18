@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Classification.DecisionRules
+namespace Raccoon.MachineLearning.Classification.DecisionRules
 {
     public class DecisionListCollection : IEnumerable<DecisionList>
     {

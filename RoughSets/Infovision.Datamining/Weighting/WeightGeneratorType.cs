@@ -1,4 +1,4 @@
-﻿namespace Infovision.MachineLearning.Weighting
+﻿namespace Raccoon.MachineLearning.Weighting
 {
     public enum WeightGeneratorType : int
     {

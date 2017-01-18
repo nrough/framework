@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class Bireduct : Reduct
@@ -206,7 +206,7 @@ namespace Infovision.MachineLearning.Roughset
                                                                    return this.DataStore.ObjectIndex2ObjectId(i);
                                                                }
                                                               );
-            stringBuilder.Append(InfovisionHelper.IntArray2Ranges(objectIds));
+            stringBuilder.Append(RaccoonHelper.IntArray2Ranges(objectIds));
             stringBuilder.Append('}');
             stringBuilder.Append(')');
 

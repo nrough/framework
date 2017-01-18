@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class ImageEdgeDialog
     {
@@ -109,7 +109,7 @@
             // 
             // imageEdgeBindingSource
             // 
-            this.imageEdgeBindingSource.DataSource = typeof(Infovision.MRI.DAL.ImageEdge);
+            this.imageEdgeBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageEdge);
             // 
             // foregroundDlg
             // 

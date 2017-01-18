@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     [Serializable]
     public class MiningObjectViewModel : IMiningObjectViewModel

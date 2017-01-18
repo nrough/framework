@@ -1,14 +1,14 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Discretization;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {
     public delegate void PostLearingMethod(IModel model);    
 
@@ -100,7 +100,7 @@ namespace Infovision.MachineLearning
             {
                 var options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                    MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
                 };
 
                 Parallel.For(0, dataSplitter.NFold, options, f =>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.Core;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.Core;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public class ImageFeatureGroupExtractor
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public class ImageFeatureExtractor
     {

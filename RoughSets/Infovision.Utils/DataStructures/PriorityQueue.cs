@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     /// <summary>
     /// Priority Queue data structure

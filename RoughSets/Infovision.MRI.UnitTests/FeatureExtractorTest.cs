@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.Core;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.Core;
 using itk.simple;
 using NUnit.Framework;
-using Infovision.Core.Data;
+using Raccoon.Core.Data;
 
-namespace Infovision.MRI.UnitTests
+namespace Raccoon.MRI.UnitTests
 {
     [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     public class FeatureExtractorTest

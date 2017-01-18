@@ -1,7 +1,7 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {
     public interface IPredictionModel : IModel
     {

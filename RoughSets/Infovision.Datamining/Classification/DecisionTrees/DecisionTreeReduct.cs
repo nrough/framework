@@ -1,16 +1,16 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Roughset;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public class DecisionTreeReduct : DecisionTreeRough
     {

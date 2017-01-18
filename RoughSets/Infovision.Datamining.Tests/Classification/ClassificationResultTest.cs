@@ -5,10 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Core.Data;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Core.Data;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Tests.Classification
+namespace Raccoon.MachineLearning.Tests.Classification
 {
     [TestFixture]
     class ClassificationResultTest

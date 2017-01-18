@@ -1,7 +1,7 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,11 +9,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Roughset;
 
-namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class ObliviousDecisionTreeTest

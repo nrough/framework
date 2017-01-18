@@ -1,5 +1,5 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public abstract class DecisionForestBase<T> : ModelBase, ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
         where T : IDecisionTree, new()

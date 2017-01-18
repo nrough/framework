@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Infovision.MachineLearning.Clustering.Hierarchical;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
+using Raccoon.Math;
+using Raccoon.Core;
 using NUnit.Framework;
 
-namespace Infovision.MachineLearning.Tests.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringIncrementalTest

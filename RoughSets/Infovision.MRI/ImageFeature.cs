@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public interface IImageFeature
     {

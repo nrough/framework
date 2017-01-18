@@ -6,15 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GenericParsing;
-using Infovision.Data;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning;
-using Infovision.Core.Data;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning;
+using Raccoon.Core.Data;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Discretization;
 
 namespace DisesorTuning
 {
@@ -144,11 +144,11 @@ namespace DisesorTuning
                     double sum = 0.0;
                     foreach (var kvp in prediction)
                     {
-                        if (kvp.Key != Infovision.MachineLearning.Classification.Classifier.UnclassifiedOutput)
+                        if (kvp.Key != Raccoon.MachineLearning.Classification.Classifier.UnclassifiedOutput)
                             sum += kvp.Value;
                     }
 
-                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Infovision.MachineLearning.Classification.Classifier.UnclassifiedOutput)))
+                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Raccoon.MachineLearning.Classification.Classifier.UnclassifiedOutput)))
                         unclassified++;
 
                     double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;

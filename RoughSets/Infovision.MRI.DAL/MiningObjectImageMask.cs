@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectImageMask : MiningObject, IMiningObjectViewImage
     {
@@ -85,7 +85,7 @@ namespace Infovision.MRI.DAL
                 IMiningObjectViewImage imageObject = project.GetMiningObject(this.RefId) as IMiningObjectViewImage;
                 if (imageObject != null)
                 {
-                    Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)imageObject.Image;
+                    Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)imageObject.Image;
                     IImage binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
                     MRIMaskConcentricImageFilter imageMaskFilter = new MRIMaskConcentricImageFilter();
 
@@ -94,7 +94,7 @@ namespace Infovision.MRI.DAL
                         imageMaskFilter.AddMaskItem(item);
                     }
 
-                    Infovision.MRI.ImageITK maskImage = new Infovision.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
+                    Raccoon.MRI.ImageITK maskImage = new Raccoon.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
                     imageMask.Image = maskImage;
                 }
             }

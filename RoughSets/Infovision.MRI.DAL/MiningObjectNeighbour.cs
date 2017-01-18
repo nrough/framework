@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectNeighbour : MiningObject
     {

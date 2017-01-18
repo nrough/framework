@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Math;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     public class DataSampler
     {

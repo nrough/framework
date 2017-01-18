@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     public class DendrogramChart
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.Math
+namespace Raccoon.Math
 {
     [Serializable]
     public struct MatrixKey

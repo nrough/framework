@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using Infovision.MRI.DAL;
+using Raccoon.MRI.DAL;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     public partial class ImageMaskDialog : DialogForm
     {

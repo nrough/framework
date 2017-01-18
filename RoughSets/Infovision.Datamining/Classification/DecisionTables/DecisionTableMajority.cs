@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Classification.DecisionTables
+namespace Raccoon.MachineLearning.Classification.DecisionTables
 {
     public class DecisionTableMajority : DecisionTable
     {

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Infovision.Data;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Data;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Classification;
 
 namespace MajorityGeneralizedDecisionTest
 {

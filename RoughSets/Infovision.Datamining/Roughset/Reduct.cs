@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class Reduct : IReduct, IFormattable

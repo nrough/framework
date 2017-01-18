@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public class ReductGeneralizedMajorityDecisionGenerator : ReductGenerator
     {
@@ -137,7 +137,7 @@ namespace Infovision.MachineLearning.Roughset
         {
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
             };
 
             ReductStore localReductPool = new ReductStore(this.attributePermutations.Count);

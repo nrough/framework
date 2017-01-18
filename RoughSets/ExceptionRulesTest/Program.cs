@@ -4,14 +4,14 @@ using System.IO;
 using System.Threading.Tasks;
 using Common.Logging;
 using Common.Logging.Configuration;
-using Infovision.Data;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Data;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
 
 namespace ExceptionRulesTest
 {
@@ -80,7 +80,7 @@ namespace ExceptionRulesTest
                         mA);
 
                     ParallelOptions options = new ParallelOptions();
-                    options.MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism;
+                    options.MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism;
 
                     Parallel.For(0, 100, options, i =>
                     //for(int i=0; i<100; i++)

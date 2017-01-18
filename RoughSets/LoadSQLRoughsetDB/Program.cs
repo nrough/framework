@@ -4,8 +4,8 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
 using GenericParsing;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Roughset;
 
 namespace LoadSQLRoughsetDB
 {

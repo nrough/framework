@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Math;
+using Raccoon.Math;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public static class ClusteringLinkage

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq.Expressions;
-using Infovision.MRI;
+using Raccoon.MRI;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     [Serializable]
     public class ImageRead : MiningObjectViewModel, IMiningObjectViewImage
@@ -180,15 +180,15 @@ namespace Infovision.MRI.DAL
 
         public void Load()
         {
-            Infovision.MRI.IImage image;
+            Raccoon.MRI.IImage image;
             switch (this.ImageTypeId)
             {
                 case ImageType.ITKStandard:
-                    image = new Infovision.MRI.ImageITK();
+                    image = new Raccoon.MRI.ImageITK();
                     break;
 
                 case ImageType.ITKRawImage:
-                    image = new Infovision.MRI.ImageITKRaw(this.FileName,
+                    image = new Raccoon.MRI.ImageITKRaw(this.FileName,
                                                            this.Width,
                                                            this.Height,
                                                            this.Depth,

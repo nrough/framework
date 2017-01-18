@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class ReductWeights : Reduct

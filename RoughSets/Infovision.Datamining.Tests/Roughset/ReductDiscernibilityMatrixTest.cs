@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
 using NUnit.Framework;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductDiscernibilityMatrixTest

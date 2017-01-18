@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Infovision.MachineLearning.Experimenter.Test")]
+[assembly: AssemblyTitle("Raccoon.MachineLearning.Experimenter.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Infovision.MachineLearning.Experimenter.Test")]
+[assembly: AssemblyProduct("Raccoon.MachineLearning.Experimenter.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

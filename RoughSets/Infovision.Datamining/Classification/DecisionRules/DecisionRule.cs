@@ -1,11 +1,11 @@
-﻿using Infovision.Data;
+﻿using Raccoon.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionRules
+namespace Raccoon.MachineLearning.Classification.DecisionRules
 {
     public class DecisionRule
     {

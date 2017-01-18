@@ -2,7 +2,7 @@
 using System.Data;
 using System.Text;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class ImageDatabase
     {
@@ -98,7 +98,7 @@ namespace Infovision.MRI.DAL
             return text.ToString();
         }
 
-        public DataRow AddImage(Infovision.MRI.DAL.ImageRead image)
+        public DataRow AddImage(Raccoon.MRI.DAL.ImageRead image)
         {
             DataTable imageTable = imageStore.Tables[Tables.Image];
             DataRow row = imageTable.NewRow();
@@ -128,7 +128,7 @@ namespace Infovision.MRI.DAL
             return row;
         }
 
-        public Infovision.MRI.DAL.ImageRead GetImage(DataRow dataRow)
+        public Raccoon.MRI.DAL.ImageRead GetImage(DataRow dataRow)
         {
             DAL.ImageRead image = new DAL.ImageRead();
 
@@ -158,7 +158,7 @@ namespace Infovision.MRI.DAL
             return image;
         }
 
-        public Infovision.MRI.DAL.ImageRead GetImage(long id)
+        public Raccoon.MRI.DAL.ImageRead GetImage(long id)
         {
             if (id != 0)
             {

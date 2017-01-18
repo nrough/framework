@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     [Serializable]
     public class DataFieldInfo

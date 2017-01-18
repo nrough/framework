@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public interface IImage
     {

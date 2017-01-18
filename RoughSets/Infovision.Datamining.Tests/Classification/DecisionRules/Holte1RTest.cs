@@ -1,6 +1,6 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Classification.DecisionRules;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification.DecisionRules;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Tests.Classification.UnitTests.DecisionRules
+namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
 {
     [TestFixture]
     public class Holte1RTest

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
 using NUnit.Framework;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Discretization;
 
-namespace Infovision.Data.Tests
+namespace Raccoon.Data.Tests
 {
     [TestFixture]
     internal class DiscretizeTest

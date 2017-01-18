@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI
+﻿namespace Raccoon.MRI
 {
     public enum Endianness
     {

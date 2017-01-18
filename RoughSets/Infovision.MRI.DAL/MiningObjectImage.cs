@@ -5,9 +5,9 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Linq;
-using Infovision.MRI;
+using Raccoon.MRI;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectImage : MiningObject, IMiningObjectViewImage
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class ImageExtract : MiningObjectViewModel, IMiningObjectViewImage
     {
@@ -68,8 +68,8 @@ namespace Infovision.MRI.DAL
 
         public IImage GetExtractedImage()
         {
-            Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)this.ImageRef;
-            return new Infovision.MRI.ImageITK(SimpleITKHelper.GetSlice(itkImage.ItkImage, this.Slice));
+            Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)this.ImageRef;
+            return new Raccoon.MRI.ImageITK(SimpleITKHelper.GetSlice(itkImage.ItkImage, this.Slice));
         }
     }
 }

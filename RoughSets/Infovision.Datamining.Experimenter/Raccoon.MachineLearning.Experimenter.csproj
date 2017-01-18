@@ -7,8 +7,8 @@
     <ProjectGuid>{BDCA67F1-8B38-4F12-9149-D93D7C23CB26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Infovision.MachineLearning.Experimenter</RootNamespace>
-    <AssemblyName>Infovision.MachineLearning.Experimenter</AssemblyName>
+    <RootNamespace>Raccoon.MachineLearning.Experimenter</RootNamespace>
+    <AssemblyName>Raccoon.MachineLearning.Experimenter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

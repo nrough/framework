@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Math
+namespace Raccoon.Math
 {
     /// <summary>
     /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html

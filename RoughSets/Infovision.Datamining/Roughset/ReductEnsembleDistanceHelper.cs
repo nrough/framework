@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public static class ReductEnsembleDistanceHelper
     {
@@ -20,7 +20,7 @@ namespace Infovision.MachineLearning.Roughset
         {
             Func<double[], double[], double> tverskyDistance = (p, v) =>
             {
-                int[] assoc = Infovision.Math.Distance.BinaryAssociation(p, v);
+                int[] assoc = Raccoon.Math.Distance.BinaryAssociation(p, v);
                 int a = assoc[0];
                 int b = assoc[1];
                 int c = assoc[2];

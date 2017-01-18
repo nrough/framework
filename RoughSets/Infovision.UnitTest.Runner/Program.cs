@@ -1,8 +1,8 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.MachineLearning.Tests.Classification.DecisionTrees;
-using Infovision.Core;
-using Infovision.Core.Data;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Tests.Classification.DecisionTrees;
+using Raccoon.Core;
+using Raccoon.Core.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Classification;
-using Infovision.Datamining.RCode;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.Datamining.RCode;
 
-namespace Infovision.UnitTest.Runner
+namespace Raccoon.UnitTest.Runner
 {   
     public class Program
     {

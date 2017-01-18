@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectImageExtract : MiningObjectImage, IMiningObjectViewImage
     {

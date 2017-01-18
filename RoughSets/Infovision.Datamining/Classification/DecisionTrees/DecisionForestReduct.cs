@@ -1,14 +1,14 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     /// <summary>
     /// Generates <i>NumberOfPermutationsPerTree</i> Reducts with <i>Epsilon</i><br /> 

@@ -1,16 +1,16 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Tests
+namespace Raccoon.MachineLearning.Tests
 {
     [TestFixture]
     public class CrossValidationTest

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {        
     public abstract class ModelBase : IModel, ICloneable
     {

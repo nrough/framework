@@ -1,5 +1,5 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Discretization;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Tests.Discretization
+namespace Raccoon.MachineLearning.Tests.Discretization
 {
     public abstract class DiscretizeUnsupervisedTest : DiscretizeBaseTest
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     internal class HierarchicalClusterTuple

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     /// <summary>
     /// Provides meta information about dataset

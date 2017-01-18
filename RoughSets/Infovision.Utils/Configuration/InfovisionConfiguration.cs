@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
-    public class InfovisionConfiguration
+    public class RaccoonConfiguration
     {
 #if DEBUG
         private static int DEBUG_MAX_DOP = 1; // Environment.ProcessorCount;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using itk.simple;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public class MRIMaskConcentricImageFilter
     {

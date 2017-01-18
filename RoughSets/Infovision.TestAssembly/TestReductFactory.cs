@@ -1,13 +1,13 @@
 ﻿using System;
-using Infovision.Data;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning;
 
-namespace Infovision.TestAssembly
+namespace Raccoon.TestAssembly
 {
-    public class TestReductFactory : Infovision.MachineLearning.Roughset.IReductFactory
+    public class TestReductFactory : Raccoon.MachineLearning.Roughset.IReductFactory
     {
         public string FactoryKey
         {

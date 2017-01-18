@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public class EpsilonComparer<T> : EqualityComparer<T>, IComparer<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>

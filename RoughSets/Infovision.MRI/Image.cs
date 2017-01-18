@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     [Serializable]
     public abstract class ImageBase : IImage, ISerializable

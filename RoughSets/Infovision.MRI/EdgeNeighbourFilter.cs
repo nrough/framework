@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using AForge.Neuro;
 using itk.simple;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public class EdgeNeighbourFilter
     {

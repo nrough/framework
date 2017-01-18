@@ -7,11 +7,11 @@ using System.Windows.Forms;
 using CommandLine;
 using CommandLine.Text;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     internal static class Program
     {
-        private static readonly HeadingInfo _headingInfo = new HeadingInfo("Infovision MRI", "1.8");
+        private static readonly HeadingInfo _headingInfo = new HeadingInfo("Raccoon MRI", "1.8");
 
         /// <summary>
         /// The main entry point for the application.

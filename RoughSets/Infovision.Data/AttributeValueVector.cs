@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     [Serializable]
     public class AttributeValueVector : ICloneable

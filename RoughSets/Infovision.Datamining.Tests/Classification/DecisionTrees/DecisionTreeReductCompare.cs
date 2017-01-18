@@ -1,18 +1,18 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification.DecisionTables;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Discretization;
 
-namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeReductCompare

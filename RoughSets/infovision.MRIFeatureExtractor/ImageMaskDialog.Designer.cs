@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class ImageMaskDialog
     {
@@ -173,7 +173,7 @@
             // 
             // imageMaskItemsBindingSource
             // 
-            this.imageMaskItemsBindingSource.DataSource = typeof(Infovision.MRI.DAL.ImageMaskItems);
+            this.imageMaskItemsBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageMaskItems);
             // 
             // ImageMaskDialog
             // 

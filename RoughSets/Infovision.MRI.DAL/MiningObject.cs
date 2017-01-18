@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     [Serializable]
     public class MiningObject : IMiningObject

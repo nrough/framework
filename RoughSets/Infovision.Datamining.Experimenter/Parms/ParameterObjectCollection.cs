@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.MachineLearning.Experimenter.Parms
+namespace Raccoon.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParameterObjectCollection<T> : ParameterBase<T>

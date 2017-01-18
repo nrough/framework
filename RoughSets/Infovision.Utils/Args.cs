@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     [Serializable]
     public class Args

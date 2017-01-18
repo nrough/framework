@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
-using Infovision.Data;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
 
 namespace ExceptionRulesTiming
 {

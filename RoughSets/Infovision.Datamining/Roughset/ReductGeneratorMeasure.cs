@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductGeneratorMeasure : ReductGenerator
@@ -90,7 +90,7 @@ namespace Infovision.MachineLearning.Roughset
         {
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
             };
 
             IReductStore reductStore = this.CreateReductStore(permutationList.Count);

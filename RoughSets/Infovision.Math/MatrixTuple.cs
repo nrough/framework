@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Infovision.Math
+namespace Raccoon.Math
 {
     [Serializable]
     public struct MatrixTuple

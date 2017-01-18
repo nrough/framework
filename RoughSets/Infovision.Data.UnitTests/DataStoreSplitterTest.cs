@@ -1,16 +1,16 @@
-﻿using Infovision.MachineLearning;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.Core;
+﻿using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.Data.Tests
+namespace Raccoon.Data.Tests
 {
     [TestFixture]
     public class DataStoreSplitterTest

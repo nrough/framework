@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Infovision.Data;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.Math;
+using Raccoon.Core;
 using NUnit.Framework;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Clustering.Hierarchical;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductGeneratorComparisonTest

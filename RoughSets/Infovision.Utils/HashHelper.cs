@@ -1,9 +1,9 @@
-﻿using Infovision.Core.CollectionExtensions;
+﻿using Raccoon.Core.CollectionExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class HashHelper
     {

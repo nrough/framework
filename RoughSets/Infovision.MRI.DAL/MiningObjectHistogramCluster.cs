@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectHistogramCluster : MiningObject
     {

@@ -10,7 +10,7 @@ using System.Management;
 using System.Reflection;
 using System.Text;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class EnumHelper
     {
@@ -153,7 +153,7 @@ namespace Infovision.Core
         }
     }
 
-    public static class InfovisionHelper
+    public static class RaccoonHelper
     {
         public static int NumberOfCores()
         {

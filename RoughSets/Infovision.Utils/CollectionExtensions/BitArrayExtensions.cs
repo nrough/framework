@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Core.CollectionExtensions
+namespace Raccoon.Core.CollectionExtensions
 {
     public static class BitArrayExtensions
     {

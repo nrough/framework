@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.DAL
+﻿namespace Raccoon.MRI.DAL
 {
     public class ImageHelper
     {

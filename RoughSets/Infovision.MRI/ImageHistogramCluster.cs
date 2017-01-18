@@ -9,7 +9,7 @@ using System.Text;
 using IntervalTreeLib;
 using MathNet.Numerics.Statistics;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     [Serializable]
     public class ImageHistogramCluster : ISerializable

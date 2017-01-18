@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     public class ImageHelper
     {

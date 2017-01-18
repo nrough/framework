@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductFactoryTest
@@ -40,8 +40,8 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
             try
             {
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);                
-                Assembly assembly = Assembly.Load("Infovision.TestAssembly");
-                Type type = assembly.GetType("Infovision.TestAssembly.TestReductFactory");
+                Assembly assembly = Assembly.Load("Raccoon.TestAssembly");
+                Type type = assembly.GetType("Raccoon.TestAssembly.TestReductFactory");
                 Assert.NotNull(type);
             }
             catch (FileNotFoundException e)
@@ -55,7 +55,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
         [Test]
         public void TestFactoryRegister()
         {
-            ReductFactory.Instance.RegisterFactory("Infovision.TestAssembly.TestReductFactory");
+            ReductFactory.Instance.RegisterFactory("Raccoon.TestAssembly.TestReductFactory");
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData }, new Object[] { "TestReduct", dataStoreTrain });
             IReductGenerator factory = ReductFactory.GetReductGenerator(parms);
             factory.Run();

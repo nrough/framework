@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     public abstract class DataReaderFile : IDataReader
     {

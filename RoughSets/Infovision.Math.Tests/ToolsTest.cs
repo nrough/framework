@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Math.Tests
+namespace Raccoon.Math.Tests
 {
     [TestFixture]
     public class ToolsTest

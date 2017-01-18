@@ -1,11 +1,11 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Classification.DecisionTables;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification.DecisionTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public abstract class ReductBaseComparer : Comparer<IReduct>, ICloneable
     {

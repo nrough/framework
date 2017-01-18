@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Math;
+using Raccoon.Math;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public abstract class HierarchicalClusteringIncremental : HierarchicalClusteringBase

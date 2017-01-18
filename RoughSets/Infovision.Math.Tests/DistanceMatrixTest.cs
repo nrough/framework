@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Infovision.Math.Tests
+namespace Raccoon.Math.Tests
 {
     [TestFixture]
     public class DistanceMatrixTest

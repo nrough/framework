@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Permutations
+namespace Raccoon.MachineLearning.Permutations
 {
     [Serializable]
     public class Permutation : ICloneable

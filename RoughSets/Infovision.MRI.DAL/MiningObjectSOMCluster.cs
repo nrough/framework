@@ -4,9 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Infovision.Datamining.Roughset;
+using Raccoon.Datamining.Roughset;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public class MiningObjectSOMCluster : MiningObject
     {

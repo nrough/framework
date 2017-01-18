@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductGeneratorTest
@@ -40,7 +40,7 @@ namespace Infovision.MachineLearning.Roughset.UnitTests
 
             Args parmsMulti = new Args();
             parmsMulti.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, InfovisionHelper.NumberOfCores());
+            parmsMulti.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, RaccoonHelper.NumberOfCores());
             parmsMulti.SetParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
             parmsMulti.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
 

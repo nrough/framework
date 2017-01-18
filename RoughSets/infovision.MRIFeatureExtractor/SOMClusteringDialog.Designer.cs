@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class SOMClusteringDialog
     {
@@ -147,7 +147,7 @@
             // 
             // sOMClusteringBindingSource
             // 
-            this.sOMClusteringBindingSource.DataSource = typeof(Infovision.MRI.DAL.SOMClustering);
+            this.sOMClusteringBindingSource.DataSource = typeof(Raccoon.MRI.DAL.SOMClustering);
             // 
             // dlgLearningRate
             // 

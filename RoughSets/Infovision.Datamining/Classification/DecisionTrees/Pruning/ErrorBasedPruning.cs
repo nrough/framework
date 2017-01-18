@@ -1,6 +1,6 @@
-﻿using Infovision.Data;
-using Infovision.Math;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Math;
+using Raccoon.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees.Pruning
+namespace Raccoon.MachineLearning.Classification.DecisionTrees.Pruning
 {
     public class ErrorBasedPruning : DecisionTreePruningBase
     {       

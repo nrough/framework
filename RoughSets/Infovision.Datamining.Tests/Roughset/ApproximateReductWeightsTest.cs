@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Data;
-using Infovision.MachineLearning.Benchmark;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Benchmark;
+using Raccoon.Core;
 using NUnit.Framework;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ApproximateReductWeightsTest

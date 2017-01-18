@@ -1,11 +1,11 @@
 ﻿using System;
-using Infovision.Core;
+using Raccoon.Core;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 
-namespace Infovision.Math
+namespace Raccoon.Math
 {
     public static class Tools
     {                                    

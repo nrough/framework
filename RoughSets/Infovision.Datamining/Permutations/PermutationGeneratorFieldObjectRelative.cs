@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Permutations
+namespace Raccoon.MachineLearning.Permutations
 {
     public class PermutationGeneratorFieldObjectRelative : PermutationGeneratorFieldObject
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {
     public interface IDistibutionSelectStrategy
     {

@@ -1,13 +1,13 @@
 ﻿using System.IO;
-using Infovision.Data;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
 using NUnit.Framework;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.MissingValues;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.MissingValues;
 
-namespace Infovision.MachineLearning.Tests.MissingValues
+namespace Raccoon.MachineLearning.Tests.MissingValues
 {
     [TestFixture]
     public class ReplaceMissingValuesTest

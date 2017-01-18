@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     partial class MainForm
     {
@@ -480,7 +480,7 @@ namespace Infovision.MRI.UI
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Infovision MRI";
+            this.Text = "Raccoon MRI";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);

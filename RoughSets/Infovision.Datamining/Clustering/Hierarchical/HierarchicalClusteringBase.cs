@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infovision.Math;
-using Infovision.Core;
+using Raccoon.Math;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Clustering.Hierarchical
+namespace Raccoon.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public abstract class HierarchicalClusteringBase
@@ -506,7 +506,7 @@ namespace Infovision.MachineLearning.Clustering.Hierarchical
                 i++;
             }
 
-            double result = Infovision.Math.Correlation.SpearmansCoeff(lcb1, lcb2);
+            double result = Raccoon.Math.Correlation.SpearmansCoeff(lcb1, lcb2);
             return result;
         }        
 

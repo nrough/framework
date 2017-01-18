@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Infovision.MRI.DAL;
+using Raccoon.MRI.DAL;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     public sealed class MRIApplication
     {
@@ -79,7 +79,7 @@ namespace Infovision.MRI.UI
             this.ShowImage(new DAL.ImageRead(imageView.Image));
         }
 
-        private void ShowImage(Infovision.MRI.DAL.ImageRead image)
+        private void ShowImage(Raccoon.MRI.DAL.ImageRead image)
         {
             ImageForm childImageForm = new ImageForm();
             childImageForm.Image = image;
@@ -125,7 +125,7 @@ namespace Infovision.MRI.UI
         {
             RawImageImportDialog importRAWForm = new RawImageImportDialog();
 
-            Infovision.MRI.DAL.ImageRead image = new Infovision.MRI.DAL.ImageRead();
+            Raccoon.MRI.DAL.ImageRead image = new Raccoon.MRI.DAL.ImageRead();
             image.ImageTypeId = ImageType.ITKRawImage;
             importRAWForm.ImageBindingSource.Add(image);
 
@@ -157,7 +157,7 @@ namespace Infovision.MRI.UI
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                Infovision.MRI.DAL.ImageRead image = new Infovision.MRI.DAL.ImageRead
+                Raccoon.MRI.DAL.ImageRead image = new Raccoon.MRI.DAL.ImageRead
                 {
                     ImageTypeId = ImageType.ITKStandard,
                     FileName = fileDialog.FileName,
@@ -177,7 +177,7 @@ namespace Infovision.MRI.UI
             HistogramDialog histogramDialog = new HistogramDialog();
             IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
 
-            Infovision.MRI.DAL.Histogram histParm = new Infovision.MRI.DAL.Histogram
+            Raccoon.MRI.DAL.Histogram histParm = new Raccoon.MRI.DAL.Histogram
             {
                 SliceFrom = 0,
                 SliceTo = 0,
@@ -212,7 +212,7 @@ namespace Infovision.MRI.UI
             if (imageMaskDialog.ShowDialog() == DialogResult.OK)
             {
                 IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
-                Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)selectedMiningObject.Image;
+                Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)selectedMiningObject.Image;
                 itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage.ItkImage);
 
                 MRIMaskConcentricImageFilter imageMaskFilter = new MRIMaskConcentricImageFilter();
@@ -221,9 +221,9 @@ namespace Infovision.MRI.UI
                     imageMaskFilter.AddMaskItem(item);
                 }
 
-                Infovision.MRI.ImageITK maskImage = new Infovision.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
+                Raccoon.MRI.ImageITK maskImage = new Raccoon.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
 
-                Infovision.MRI.DAL.ImageMask mask = new ImageMask
+                Raccoon.MRI.DAL.ImageMask mask = new ImageMask
                 {
                     Image = maskImage,
                     MaskItems = imageMaskItems.ToList<MRIMaskItem>()
@@ -254,14 +254,14 @@ namespace Infovision.MRI.UI
             if (edgeDialog.ShowDialog() == DialogResult.OK)
             {
                 IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
-                Infovision.MRI.ImageITK itkImage = (Infovision.MRI.ImageITK)selectedMiningObject.Image;
+                Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)selectedMiningObject.Image;
 
                 EdgeThresholdFilter edgeFilter = new EdgeThresholdFilter(imageEdge.Noise,
                                                                         (double)imageEdge.Foreground,
                                                                         (double)imageEdge.Background);
 
                 itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage.ItkImage);
-                Infovision.MRI.ImageITK edgeImage = new Infovision.MRI.ImageITK(edgeFilter.Execute(itkImage.ItkImage));
+                Raccoon.MRI.ImageITK edgeImage = new Raccoon.MRI.ImageITK(edgeFilter.Execute(itkImage.ItkImage));
 
                 imageEdge.Image = edgeImage;
 
@@ -306,7 +306,7 @@ namespace Infovision.MRI.UI
             IMiningObject selectedMiningObject = this.GetMiningObject(id) as IMiningObject;
             IMiningObjectViewImage imageMiningObject = selectedMiningObject as IMiningObjectViewImage;
 
-            Infovision.MRI.DAL.SOMClustering somClustering = new Infovision.MRI.DAL.SOMClustering
+            Raccoon.MRI.DAL.SOMClustering somClustering = new Raccoon.MRI.DAL.SOMClustering
             {
                 LearningRate = 0.1,
                 NumberOfClusters = 9,
@@ -350,7 +350,7 @@ namespace Infovision.MRI.UI
 
             HistogramClusteringDialog histClusteringDialog = new HistogramClusteringDialog();
 
-            Infovision.MRI.DAL.HistogramClustering histClustering = new Infovision.MRI.DAL.HistogramClustering
+            Raccoon.MRI.DAL.HistogramClustering histClustering = new Raccoon.MRI.DAL.HistogramClustering
             {
                 ApproximationDegree = 0,
                 BucketCountWeight = 100,

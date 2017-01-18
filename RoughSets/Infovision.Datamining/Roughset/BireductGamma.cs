@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using System.Linq;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class BireductGamma : Bireduct

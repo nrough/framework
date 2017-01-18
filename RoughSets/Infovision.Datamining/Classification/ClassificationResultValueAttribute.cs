@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification
+namespace Raccoon.MachineLearning.Classification
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class ClassificationResultValueAttribute : Attribute

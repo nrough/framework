@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     [Serializable]
     public class SOMClustering : MiningObjectViewModel

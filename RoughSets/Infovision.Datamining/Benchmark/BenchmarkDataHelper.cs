@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.Benchmark
+namespace Raccoon.MachineLearning.Benchmark
 {
     public class BenchmarkDataHelper
     {

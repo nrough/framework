@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public class RandomSingleton
     {

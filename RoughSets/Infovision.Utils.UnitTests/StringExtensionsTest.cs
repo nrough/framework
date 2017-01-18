@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Infovision.Core.Tests
+namespace Raccoon.Core.Tests
 {
     [TestFixture]
     class StringExtensionsTest

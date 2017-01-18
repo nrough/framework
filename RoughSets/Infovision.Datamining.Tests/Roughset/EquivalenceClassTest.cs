@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.Collections.Specialized;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class EquivalenceClassTest

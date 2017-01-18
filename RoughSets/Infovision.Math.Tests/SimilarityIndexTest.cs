@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace Infovision.Math.Tests
+namespace Raccoon.Math.Tests
 {
     [TestFixture]
     internal class SimilarityTest

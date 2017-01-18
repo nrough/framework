@@ -1,10 +1,10 @@
-﻿using Infovision.Core;
-using Infovision.Data;
+﻿using Raccoon.Core;
+using Raccoon.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Infovision.MachineLearning.Discretization
+namespace Raccoon.MachineLearning.Discretization
 {
     [Serializable]
     public class DataStoreDiscretizer

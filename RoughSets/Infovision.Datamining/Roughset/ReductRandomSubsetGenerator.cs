@@ -1,10 +1,10 @@
 ﻿using System;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public class ReductRandomSubsetGenerator : ReductGenerator
     {

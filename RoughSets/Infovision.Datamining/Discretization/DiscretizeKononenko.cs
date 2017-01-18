@@ -1,11 +1,11 @@
-﻿using Infovision.Math;
+﻿using Raccoon.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Discretization
+namespace Raccoon.MachineLearning.Discretization
 {
     [Serializable]
     public class DiscretizeKononenko : DiscretizeSupervisedBase

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace Infovision.MRI.DAL
+namespace Raccoon.MRI.DAL
 {
     public abstract class ImageFilterBase
     {

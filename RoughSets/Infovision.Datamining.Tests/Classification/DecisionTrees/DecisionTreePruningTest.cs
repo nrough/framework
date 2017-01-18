@@ -1,16 +1,16 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Classification.DecisionTrees;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using System.Diagnostics;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreePruningTest

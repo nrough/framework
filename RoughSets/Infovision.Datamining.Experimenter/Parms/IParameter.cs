@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Infovision.MachineLearning.Experimenter.Parms
+namespace Raccoon.MachineLearning.Experimenter.Parms
 {
     public interface IParameter : IEnumerable, IEnumerator, ICloneable
     {

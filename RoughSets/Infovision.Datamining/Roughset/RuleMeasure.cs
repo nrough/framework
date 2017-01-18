@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public delegate double RuleQualityFunction(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
 

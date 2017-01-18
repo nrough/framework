@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<FxCopProject Version="10.0" Name="Infovision">
+<FxCopProject Version="10.0" Name="Raccoon">
  <ProjectOptions>
   <SharedProject>True</SharedProject>
   <Stylesheet Apply="False">c:\program files (x86)\microsoft fxcop 1.36\Xml\FxCopReport.xsl</Stylesheet>
@@ -22,17 +22,17 @@
  </ProjectOptions>
  <Targets>
   <AssemblyReferenceDirectories>
-   <Directory>$(ProjectDir)/Infovision.Datamining.GeneticAlgorithm/bin/Debug/</Directory>
+   <Directory>$(ProjectDir)/Raccoon.Datamining.GeneticAlgorithm/bin/Debug/</Directory>
    <Directory>$(ProjectDir)/Data/obj/Debug/</Directory>
-   <Directory>$(ProjectDir)/Infovision.Datamining.RoughSet/obj/Debug/</Directory>
-   <Directory>$(ProjectDir)/Infovision.Test/obj/Debug/</Directory>
-   <Directory>$(ProjectDir)/Infovision.Core/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Raccoon.Datamining.RoughSet/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Raccoon.Test/obj/Debug/</Directory>
+   <Directory>$(ProjectDir)/Raccoon.Core/obj/Debug/</Directory>
   </AssemblyReferenceDirectories>
-  <Target Name="$(ProjectDir)/Data/bin/Debug/Infovision.Data.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Infovision.Datamining.RoughSet/bin/Debug/Infovision.Datamining.RoughSet.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Infovision.Datamining/bin/Debug/Infovision.Datamining.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Infovision.Test/bin/Debug/Infovision.Test.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/Infovision.Core/bin/Debug/Infovision.Core.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Data/bin/Debug/Raccoon.Data.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Raccoon.Datamining.RoughSet/bin/Debug/Raccoon.Datamining.RoughSet.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Raccoon.Datamining/bin/Debug/Raccoon.Datamining.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Raccoon.Test/bin/Debug/Raccoon.Test.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/Raccoon.Core/bin/Debug/Raccoon.Core.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
@@ -51,15 +51,15 @@
  </Rules>
  <FxCopReport Version="10.0">
   <Targets>
-   <Target Name="$(ProjectDir)/Data/bin/Debug/Infovision.Data.dll">
+   <Target Name="$(ProjectDir)/Data/bin/Debug/Raccoon.Data.dll">
     <Modules>
-     <Module Name="infovision.data.dll">
+     <Module Name="Raccoon.data.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Data">
+       <Namespace Name="Raccoon.Data">
         <Types>
          <Type Name="IDataStoreSplitter">
           <Members>
-           <Member Name="#Split(Infovision.Data.DataStore&amp;,Infovision.Data.DataStore&amp;)">
+           <Member Name="#Split(Raccoon.Data.DataStore&amp;,Raccoon.Data.DataStore&amp;)">
             <Messages>
              <Message Id="0#" TypeName="DoNotPassTypesByReference" Category="Microsoft.Design" CheckId="CA1045" Created="2012-06-02 18:58:12Z">
               <Issue Level="CriticalWarning">
@@ -94,15 +94,15 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Infovision.Datamining.RoughSet/bin/Debug/Infovision.Datamining.RoughSet.dll">
+   <Target Name="$(ProjectDir)/Raccoon.Datamining.RoughSet/bin/Debug/Raccoon.Datamining.RoughSet.dll">
     <Modules>
-     <Module Name="infovision.datamining.roughset.dll">
+     <Module Name="Raccoon.datamining.roughset.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Datamining.Roughset">
+       <Namespace Name="Raccoon.Datamining.Roughset">
         <Types>
          <Type Name=ReductFactoryKeyHelper.Bireduct>
           <Members>
-           <Member Name="#.ctor(Infovision.Data.DataStore,System.int[],System.int[])">
+           <Member Name="#.ctor(Raccoon.Data.DataStore,System.int[],System.int[])">
             <Messages>
              <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
               <Issue>
@@ -156,7 +156,7 @@
          </Type>
          <Type Name="PermutationList">
           <Members>
-           <Member Name="#.ctor(System.Collections.Generic.List`1&lt;Infovision.Datamining.Roughset.Permutation&gt;)">
+           <Member Name="#.ctor(System.Collections.Generic.List`1&lt;Raccoon.Datamining.Roughset.Permutation&gt;)">
             <Messages>
              <Message TypeName="DoNotExposeGenericLists" Category="Microsoft.Design" CheckId="CA1002" Created="2012-06-02 18:58:12Z">
               <Issue>
@@ -191,7 +191,7 @@
          </Type>
          <Type Name="Reduct">
           <Members>
-           <Member Name="#.ctor(Infovision.Data.DataStore,System.int[])">
+           <Member Name="#.ctor(Raccoon.Data.DataStore,System.int[])">
             <Messages>
              <Message TypeName="DoNotCallOverridableMethodsInConstructors" Category="Microsoft.Usage" CheckId="CA2214" Created="2012-06-02 18:58:12Z">
               <Issue>
@@ -327,7 +327,7 @@
           <Members>
            <Member Name="#ReductStore">
             <Accessors>
-             <Accessor Name="#set_ReductStore(Infovision.Datamining.Roughset.IReductStore)">
+             <Accessor Name="#set_ReductStore(Raccoon.Datamining.Roughset.IReductStore)">
               <Messages>
                <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Created="2012-07-28 09:44:46Z">
                 <Issue>
@@ -346,11 +346,11 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Infovision.Datamining/bin/Debug/Infovision.Datamining.dll">
+   <Target Name="$(ProjectDir)/Raccoon.Datamining/bin/Debug/Raccoon.Datamining.dll">
     <Modules>
-     <Module Name="infovision.datamining.dll">
+     <Module Name="Raccoon.datamining.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Datamining">
+       <Namespace Name="Raccoon.Datamining">
         <Types>
          <Type Name="ClassificationResult">
           <Members>
@@ -371,11 +371,11 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Infovision.Test/bin/Debug/Infovision.Test.dll">
+   <Target Name="$(ProjectDir)/Raccoon.Test/bin/Debug/Raccoon.Test.dll">
     <Modules>
-     <Module Name="infovision.test.dll">
+     <Module Name="Raccoon.test.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Test">
+       <Namespace Name="Raccoon.Test">
         <Types>
          <Type Name="ITestRunable">
           <Members>
@@ -507,11 +507,11 @@
      </Module>
     </Modules>
    </Target>
-   <Target Name="$(ProjectDir)/Infovision.Core/bin/Debug/Infovision.Core.dll">
+   <Target Name="$(ProjectDir)/Raccoon.Core/bin/Debug/Raccoon.Core.dll">
     <Modules>
-     <Module Name="Infovision.Core.dll">
+     <Module Name="Raccoon.Core.dll">
       <Namespaces>
-       <Namespace Name="Infovision.Core">
+       <Namespace Name="Raccoon.Core">
         <Types>
          <Type Name="HashHelper">
           <Members>
@@ -527,13 +527,13 @@
            </Member>
           </Members>
          </Type>
-         <Type Name="InfovisionHelper">
+         <Type Name="RaccoonHelper">
           <Members>
            <Member Name="#IntArray2Ranges(System.int[],System.String,System.String)">
             <Messages>
              <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Created="2012-07-28 09:44:46Z">
               <Issue>
-               <Item>'InfovisionHelper.IntArray2Ranges(int[], string, string)'</Item>
+               <Item>'RaccoonHelper.IntArray2Ranges(int[], string, string)'</Item>
               </Issue>
              </Message>
             </Messages>
@@ -542,7 +542,7 @@
             <Messages>
              <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Created="2012-07-28 09:44:46Z">
               <Issue>
-               <Item>'InfovisionHelper.IntArray2Ranges(long[], string, string)'</Item>
+               <Item>'RaccoonHelper.IntArray2Ranges(long[], string, string)'</Item>
               </Issue>
              </Message>
             </Messages>
@@ -551,7 +551,7 @@
          </Type>
          <Type Name="PascalSet">
           <Members>
-           <Member Name="#op_Addition(Infovision.Core.PascalSet,Infovision.Core.PascalSet)">
+           <Member Name="#op_Addition(Raccoon.Core.PascalSet,Raccoon.Core.PascalSet)">
             <Messages>
              <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
               <Issue>
@@ -561,7 +561,7 @@
              </Message>
             </Messages>
            </Member>
-           <Member Name="#op_Subtraction(Infovision.Core.PascalSet,Infovision.Core.PascalSet)">
+           <Member Name="#op_Subtraction(Raccoon.Core.PascalSet,Raccoon.Core.PascalSet)">
             <Messages>
              <Message TypeName="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Category="Microsoft.Design" CheckId="CA1013" Created="2012-06-09 08:38:48Z">
               <Issue>

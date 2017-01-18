@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Infovision.MachineLearning.Classification.DecisionTrees;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.MachineLearning.Classification.DecisionTables;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Roughset;
 
-namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
@@ -365,7 +365,7 @@ namespace Infovision.MachineLearning.Tests.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void TreeLearnPerformanceTest()
         {
-            InfovisionConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            RaccoonConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.Combine(path, "Data", "dna_modified.trn");

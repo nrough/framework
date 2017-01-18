@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Infovision.MRI.DAL;
+using Raccoon.MRI.DAL;
 
-namespace Infovision.MRI.UI
+namespace Raccoon.MRI.UI
 {
     public partial class ImageForm : Form
     {
-        private Infovision.MRI.DAL.ImageRead image;
+        private Raccoon.MRI.DAL.ImageRead image;
 
         private Bitmap bmp;
         private Bitmap newBmp;
@@ -22,7 +22,7 @@ namespace Infovision.MRI.UI
             mainPanel.Paint += new PaintEventHandler(RePaint);
         }
 
-        public Infovision.MRI.DAL.ImageRead Image
+        public Raccoon.MRI.DAL.ImageRead Image
         {
             get { return this.image; }
             set

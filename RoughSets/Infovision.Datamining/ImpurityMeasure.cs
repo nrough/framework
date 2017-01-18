@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {
     public delegate double ImpurityFunc(EquivalenceClassCollection equivalenceClasses);
     public delegate double ImpurityNormalizeFunc(double value, EquivalenceClassCollection equivalenceClasses);

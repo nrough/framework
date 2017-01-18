@@ -1,0 +1,11 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" processModel="Default" domainUsage="Default" />
+  <Config name="Debug" binpathtype="Auto" runtimeFramework="net-4.0.21006">
+    <assembly path="Raccoon.Data.UnitTests\bin\x64\Debug\Raccoon.Data.UnitTests.dll" />    
+    <assembly path="Raccoon.MachineLearning.Tests\bin\x64\Debug\Raccoon.MachineLearning.Tests.dll" />
+    <assembly path="Raccoon.Core.UnitTests\bin\x64\Debug\Raccoon.Core.UnitTests.dll" />
+    <assembly path="Raccoon.Math.Tests\bin\x64\Debug\Raccoon.Math.Tests.dll" />
+    <assembly path="Raccoon.MachineLearning.Experimenter.Test\bin\x64\Debug\Raccoon.MachineLearning.Experimenter.Test.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto" />
+</NUnitProject>

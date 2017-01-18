@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class HistogramDialog
     {
@@ -58,7 +58,7 @@
             // 
             // histogramParametersBindingSource
             // 
-            this.histogramParametersBindingSource.DataSource = typeof(Infovision.MRI.DAL.Histogram);
+            this.histogramParametersBindingSource.DataSource = typeof(Raccoon.MRI.DAL.Histogram);
             // 
             // sliceToDlg
             // 

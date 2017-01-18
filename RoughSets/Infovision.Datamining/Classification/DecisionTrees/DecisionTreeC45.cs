@@ -1,9 +1,9 @@
-﻿using Infovision.Math;
+﻿using Raccoon.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {            
     /// <summary>
     /// C4.5 Tree Implemetation

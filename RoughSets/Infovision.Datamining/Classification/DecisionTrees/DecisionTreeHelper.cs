@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public static class DecisionTreeHelper
     {

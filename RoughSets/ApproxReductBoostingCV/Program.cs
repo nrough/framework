@@ -1,12 +1,12 @@
 ﻿using System;
-using Infovision.Data;
-using Infovision.MachineLearning;
-using Infovision.MachineLearning.Experimenter.Parms;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Classification;
-using Infovision.MachineLearning.MissingValues;
+using Raccoon.Data;
+using Raccoon.MachineLearning;
+using Raccoon.MachineLearning.Experimenter.Parms;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.MissingValues;
 
 namespace ApproxReductBoostingCV
 {

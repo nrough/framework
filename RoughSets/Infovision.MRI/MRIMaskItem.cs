@@ -1,7 +1,7 @@
 ﻿using System;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MRI
+namespace Raccoon.MRI
 {
     [Serializable]
     public class MRIMaskItem

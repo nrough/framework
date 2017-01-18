@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Infovision.Data.Tests
+namespace Raccoon.Data.Tests
 {
     [TestFixture]
     public class DataStoreInfoTest

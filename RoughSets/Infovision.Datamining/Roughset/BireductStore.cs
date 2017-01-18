@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class BireductStore : ReductStore

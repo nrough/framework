@@ -1,12 +1,12 @@
-﻿using Infovision.Core;
-using Infovision.MachineLearning.Roughset;
+﻿using Raccoon.Core;
+using Raccoon.MachineLearning.Roughset;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public static class DecisionTreeAttributeSelection
     {

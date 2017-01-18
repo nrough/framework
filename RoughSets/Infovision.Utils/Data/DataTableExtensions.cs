@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Core.Data
+namespace Raccoon.Core.Data
 {
     public static class DataTableExtensions
     {

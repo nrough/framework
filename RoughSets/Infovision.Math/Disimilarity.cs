@@ -1,4 +1,4 @@
-﻿namespace Infovision.Math
+﻿namespace Raccoon.Math
 {
     public static class Disimilarity
     {

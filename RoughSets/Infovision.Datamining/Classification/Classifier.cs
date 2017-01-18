@@ -1,9 +1,9 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Classification
+namespace Raccoon.MachineLearning.Classification
 {
     public interface IClassifier
     {
@@ -46,7 +46,7 @@ namespace Infovision.MachineLearning.Classification
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
             };
 
             if (weights == null)

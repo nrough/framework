@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 using System.Diagnostics;
 using System.Threading;
-using Infovision.MachineLearning.Classification.DecisionTrees.Pruning;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Discretization;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {       
     /// <summary>
     /// Base class for decision tree implementations
@@ -426,14 +426,14 @@ namespace Infovision.MachineLearning.Classification.DecisionTrees
             var rangePartitioner = Partitioner.Create(
                 0, 
                 localAttributes.Length, 
-                System.Math.Max(1, localAttributes.Length / InfovisionConfiguration.MaxDegreeOfParallelism));
+                System.Math.Max(1, localAttributes.Length / RaccoonConfiguration.MaxDegreeOfParallelism));
             
             double currentScore = this.CalculateImpurityBeforeSplit(eqClassCollection);
             SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
             };
 
             Parallel.ForEach(rangePartitioner, options, (range) =>

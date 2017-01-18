@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public static class DecimalExtensions
     {

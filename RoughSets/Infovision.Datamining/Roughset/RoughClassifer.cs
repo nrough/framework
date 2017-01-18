@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Math;
-using Infovision.Core;
-using Infovision.MachineLearning.Classification;
+using Raccoon.Data;
+using Raccoon.Math;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public class RoughClassifier
@@ -140,7 +140,7 @@ namespace Infovision.MachineLearning.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
             };
 
             if (weights == null)

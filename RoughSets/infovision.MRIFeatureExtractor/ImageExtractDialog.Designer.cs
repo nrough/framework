@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class ImageExtractDialog
     {
@@ -71,7 +71,7 @@
             // 
             // imageExtractBindingSource
             // 
-            this.imageExtractBindingSource.DataSource = typeof(Infovision.MRI.DAL.ImageExtract);
+            this.imageExtractBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageExtract);
             // 
             // cancelButton
             // 

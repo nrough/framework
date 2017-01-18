@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Data;
+using Raccoon.Data;
 
-namespace Infovision.MachineLearning.MissingValues
+namespace Raccoon.MachineLearning.MissingValues
 {
     public class ReplaceMissingValues
     {

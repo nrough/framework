@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Data;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Discretization;
 
 namespace DermoReducts
 {

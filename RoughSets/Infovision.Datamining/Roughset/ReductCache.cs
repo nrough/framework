@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Caching;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public class ReductCache : MemoryCache
     {

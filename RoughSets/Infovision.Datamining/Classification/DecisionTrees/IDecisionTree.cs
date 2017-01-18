@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     /// <summary>
     /// Interface of a decision tree

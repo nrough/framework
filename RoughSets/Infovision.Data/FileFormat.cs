@@ -1,4 +1,4 @@
-﻿namespace Infovision.Data
+﻿namespace Raccoon.Data
 {
     public enum FileFormat
     {

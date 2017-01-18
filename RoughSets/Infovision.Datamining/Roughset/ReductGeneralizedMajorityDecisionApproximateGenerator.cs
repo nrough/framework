@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.MachineLearning.Permutations;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.MachineLearning.Permutations;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     public class ReductGeneralizedMajorityDecisionApproximateGenerator : ReductGeneralizedMajorityDecisionGenerator
     {
@@ -46,7 +46,7 @@ namespace Infovision.MachineLearning.Roughset
             {
                 ParallelOptions options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = InfovisionConfiguration.MaxDegreeOfParallelism
+                    MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
                 };
 
                 Parallel.ForEach(this.attributePermutations, options, permutation =>

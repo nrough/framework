@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Infovision.Data;
+using Raccoon.Data;
 using NUnit.Framework;
-using Infovision.Core;
+using Raccoon.Core;
 using System.Collections.Generic;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductCacheTest

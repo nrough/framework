@@ -1,8 +1,8 @@
 ﻿using System;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Weighting
+namespace Raccoon.MachineLearning.Weighting
 {
     [Serializable]
     public class WeightGenerator

@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UI
+﻿namespace Raccoon.MRI.UI
 {
     partial class HistogramClusteringDialog
     {
@@ -144,7 +144,7 @@
             // 
             // histogramClusteringBindingSource
             // 
-            this.histogramClusteringBindingSource.DataSource = typeof(Infovision.MRI.DAL.HistogramClustering);
+            this.histogramClusteringBindingSource.DataSource = typeof(Raccoon.MRI.DAL.HistogramClustering);
             // 
             // dlgMinClusterDistance
             // 

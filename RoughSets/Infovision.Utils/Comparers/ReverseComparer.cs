@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     public sealed class ReverseComparer<T> : IComparer<T>
     {

@@ -1,7 +1,7 @@
-﻿using Infovision.MachineLearning.Experimenter.Parms;
+﻿using Raccoon.MachineLearning.Experimenter.Parms;
 using NUnit.Framework;
 
-namespace Infovision.MachineLearning.Experimenter.Test
+namespace Raccoon.MachineLearning.Experimenter.Test
 {
     [TestFixture]
     internal class ValueInRangeFixture

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Infovision.Core
+namespace Raccoon.Core
 {
     [Serializable]
     public class Range<T>

@@ -1,18 +1,18 @@
-﻿using Infovision.Data;
-using Infovision.Core;
+﻿using Raccoon.Data;
+using Raccoon.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning.Classification.DecisionTables;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Roughset;
-using Infovision.MachineLearning.Classification;
+using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Classification;
 
-namespace Infovision.MachineLearning.Tests.Classification.UnitTests.DecisionRules
+namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
 {
     [TestFixture]
     class TestTest

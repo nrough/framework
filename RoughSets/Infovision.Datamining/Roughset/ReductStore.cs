@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Infovision.Data;
-using Infovision.Core;
-using Infovision.Math;
+using Raccoon.Data;
+using Raccoon.Core;
+using Raccoon.Math;
 
-namespace Infovision.MachineLearning.Roughset
+namespace Raccoon.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductStoreBase : IReductStore

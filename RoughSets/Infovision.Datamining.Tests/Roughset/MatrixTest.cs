@@ -1,7 +1,7 @@
-﻿using Infovision.Core;
+﻿using Raccoon.Core;
 using NUnit.Framework;
 
-namespace Infovision.MachineLearning.Roughset.UnitTests
+namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class MatrixTest

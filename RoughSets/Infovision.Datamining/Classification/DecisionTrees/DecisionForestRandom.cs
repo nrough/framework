@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.MachineLearning;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.MachineLearning;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Classification.DecisionTrees
+namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
     public class DecisionForestRandom<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()

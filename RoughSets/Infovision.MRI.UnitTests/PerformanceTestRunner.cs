@@ -1,4 +1,4 @@
-﻿namespace Infovision.MRI.UnitTests
+﻿namespace Raccoon.MRI.UnitTests
 {
     public class PerformanceTestRunner
     {

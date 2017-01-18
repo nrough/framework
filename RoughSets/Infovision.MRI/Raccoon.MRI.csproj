@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{3E09373E-33C7-4119-9FC9-068A141668E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Infovision.MRI.Tests</RootNamespace>
-    <AssemblyName>Infovision.MRI.Tests</AssemblyName>
+    <RootNamespace>Infovision.MRI</RootNamespace>
+    <AssemblyName>Infovision.MRI</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -19,16 +19,6 @@
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -36,26 +26,38 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -70,6 +72,10 @@
       <HintPath>..\packages\AForge.Genetic.2.2.5\lib\AForge.Genetic.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.Imaging.2.2.5\lib\AForge.Imaging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
       <Private>True</Private>
@@ -78,14 +84,18 @@
       <HintPath>..\packages\AForge.Neuro.2.2.5\lib\AForge.Neuro.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="IntervalTreeLib">
+      <HintPath>..\external\IntervalTreeLib\IntervalTreeLib.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=3.13.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.3.13.1\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="PowerCollections">
+      <HintPath>..\external\IntervalTreeLib\PowerCollections.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="SimpleITKCSharpManaged, Version=0.8.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
@@ -93,92 +103,59 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PerformanceTestRunner.cs" />
-    <Compile Include="FeatureExtractorTest.cs" />
-    <Compile Include="ITKSimpleTest.cs" />
+    <Compile Include="EdgeNeighbourFilter.cs" />
+    <Compile Include="IImage.cs" />
+    <Compile Include="Image.cs" />
+    <Compile Include="ImageFeature.cs" />
+    <Compile Include="ImageFeatureGroupExtractor.cs" />
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="ImageHistogramCluster.cs" />
+    <Compile Include="ImageHistogramInterval.cs" />
+    <Compile Include="ImageSOMCluster.cs" />
+    <Compile Include="ImageFeatureExtractor.cs" />
+    <Compile Include="ImageHistogramChart.cs" />
+    <Compile Include="EdgeThresholdFilter.cs" />
+    <Compile Include="ImageITK.cs" />
+    <Compile Include="MRIHoleFillImageFilter.cs" />
+    <Compile Include="MRIMaskConcentricImageFilter.cs" />
+    <Compile Include="MRIMaskBinaryImageFilter.cs" />
+    <Compile Include="MRIMaskItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HistogramTest.cs" />
+    <Compile Include="BaseEnums.cs" />
+    <Compile Include="SimpleITKHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Infovision.MachineLearning.Experimenter.csproj">
+    <ProjectReference Include="..\Infovision.Datamining.Experimenter\Raccoon.MachineLearning.Experimenter.csproj">
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
-      <Name>Infovision.MachineLearning.Experimenter</Name>
+      <Name>Raccoon.MachineLearning.Experimenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.MRI\Infovision.MRI.csproj">
-      <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
-      <Name>Infovision.MRI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\Infovision.Core.csproj">
+    <ProjectReference Include="..\Infovision.Utils\Raccoon.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
-      <Name>Infovision.Core</Name>
+      <Name>Raccoon.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Data\ANA_3CRISP00001.hdr">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\ANA_3CRISP00001.img">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\pd_icbm_normal_1mm_pn3_rf20.rawb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\ph_icbm_1mm_normal_crisp.hdr">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\ph_icbm_1mm_normal_crisp.img">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\ph_icbm_1mm_normal_crisp.rawb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t1_icbm_normal_1mm_pn3_rf20.hdr">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t1_icbm_normal_1mm_pn3_rf20.img">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t1_icbm_normal_1mm_pn3_rf20.mnc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t1_icbm_normal_1mm_pn3_rf20.rawb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t1_icbm_normal_1mm_pn3_rf20_3.mnc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\t2_icbm_normal_1mm_pn3_rf20.rawb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\tst-convert.mnc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\Infovision.MRI.DAL.ImageMask.datasource" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll">
       <Link>SimpleITKCSharpNative.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Brain-MRI.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

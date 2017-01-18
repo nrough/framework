@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using Infovision.Data;
-using Infovision.Core;
+using Raccoon.Data;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning.Permutations
+namespace Raccoon.MachineLearning.Permutations
 {
     [CLSCompliant(false)]
     public class PermutatioGeneratorFieldGroup : PermutationGenerator

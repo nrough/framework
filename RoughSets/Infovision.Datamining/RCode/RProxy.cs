@@ -1,4 +1,4 @@
-﻿using Infovision.Core.Data;
+﻿using Raccoon.Core.Data;
 using RDotNet;
 using System;
 using System.Collections;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.Datamining.RCode
+namespace Raccoon.Datamining.RCode
 {
     public static class RProxy
     {        

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     [Flags]
     public enum FieldTypes
@@ -41,7 +41,7 @@ namespace Infovision.Data
                                     continue;
                                 }
 
-                                if (InfovisionHelper.IsPowerOfTwo((long)ft))
+                                if (RaccoonHelper.IsPowerOfTwo((long)ft))
                                 {
                                     basicTypes.Add(ft);
                                 }

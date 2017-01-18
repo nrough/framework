@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.MachineLearning
+namespace Raccoon.MachineLearning
 {
     [Serializable]
     public class DecisionDistribution

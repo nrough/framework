@@ -1,6 +1,6 @@
-﻿using Infovision.Data;
-using Infovision.MachineLearning.Clustering;
-using Infovision.Math;
+﻿using Raccoon.Data;
+using Raccoon.MachineLearning.Clustering;
+using Raccoon.Math;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infovision.MachineLearning.Tests.Clustering
+namespace Raccoon.MachineLearning.Tests.Clustering
 {
     [TestFixture]
     public class KMeansTest

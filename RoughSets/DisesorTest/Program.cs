@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GenericParsing;
-using Infovision.Data;
-using Infovision.MachineLearning.Roughset;
-using Infovision.Core;
-using Infovision.Core.Data;
-using Infovision.MachineLearning.Weighting;
-using Infovision.MachineLearning.Permutations;
-using Infovision.MachineLearning.Discretization;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Roughset;
+using Raccoon.Core;
+using Raccoon.Core.Data;
+using Raccoon.MachineLearning.Weighting;
+using Raccoon.MachineLearning.Permutations;
+using Raccoon.MachineLearning.Discretization;
 
 namespace DisesorTest
 {

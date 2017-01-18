@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Infovision.Core;
+using Raccoon.Core;
 
-namespace Infovision.Data
+namespace Raccoon.Data
 {
     public class DataReaderFileCsv : DataReaderFile
     {
@@ -449,7 +449,7 @@ namespace Infovision.Data
             if (previousType != null && previousType == typeof(string))
                 return;
 
-            Type type = InfovisionHelper.String2Type(value);
+            Type type = RaccoonHelper.String2Type(value);
 
             if (previousType == null)
             {

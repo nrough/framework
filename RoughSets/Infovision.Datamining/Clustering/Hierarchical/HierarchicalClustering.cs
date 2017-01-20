@@ -61,8 +61,8 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
 
             this.DistanceMatrix = new DistanceMatrix();
             this.DistanceMatrix.Distance = matrix.Distance;
-            foreach (KeyValuePair<MatrixKey, double> kvp in matrix)
-                this.DistanceMatrix.Add(new MatrixKey(kvp.Key.X, kvp.Key.Y), kvp.Value);
+            foreach (KeyValuePair<SymetricPair<int, int>, double> kvp in matrix)
+                this.DistanceMatrix.Add(new SymetricPair<int, int>(kvp.Key.Item1, kvp.Key.Item2), kvp.Value);
         }
 
         private void Initialize()

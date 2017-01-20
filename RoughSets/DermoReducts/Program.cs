@@ -21,7 +21,7 @@ namespace DermoReducts
             for (int i = 0; i < data.NumberOfRecords; i++)
                 w[i] = 1.0;
 
-            IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, w);
+            IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, w);
             DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
             Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.NumberOfValues);

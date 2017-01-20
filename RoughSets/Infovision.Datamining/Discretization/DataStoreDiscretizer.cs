@@ -30,7 +30,8 @@ namespace Raccoon.MachineLearning.Discretization
         public bool UpdateDataColumns { get; set; } = true;
 
         public bool AddColumnsBasedOnCuts { get; set; } = false;
-        public bool BinaryCuts { get; set; } = false;
+        public bool RemoveColumnAfterDiscretization { get; set; } = false;
+        public bool UseBinaryCuts { get; set; } = false;
 
         #endregion
 
@@ -111,12 +112,12 @@ namespace Raccoon.MachineLearning.Discretization
         {
             DataFieldInfo localFieldInfoTrain;
             IEnumerable<int> localFields = Fields2Discretize != null
-                                         ? Fields2Discretize
-                                         : dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard);
+                    ? Fields2Discretize
+                    : dataToDiscretize.DataStoreInfo.GetFields(FieldGroup.Standard)
+                        .Where(f => f.CanDiscretize()).Select(fld => fld.Id);
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
-            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(
-                dataToDiscretize.DataStoreInfo.Fields.Count(f => f.CanDiscretize()));
+            this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(localFields.Count());
 
             foreach (int fieldId in localFields.ToList())
             {
@@ -133,7 +134,7 @@ namespace Raccoon.MachineLearning.Discretization
                         {                            
                             for (int i = 1; i <= disc.Cuts.Length; i++)
                             {                                
-                                long[] localCuts = BinaryCuts == false ? disc.Cuts.SubArray(0, i) : disc.Cuts.SubArray(i-1, 1);
+                                long[] localCuts = UseBinaryCuts == false ? disc.Cuts.SubArray(0, i) : disc.Cuts.SubArray(i-1, 1);
                                 if(localCuts.Length > 1)
                                     Array.Sort(localCuts);
 
@@ -149,6 +150,11 @@ namespace Raccoon.MachineLearning.Discretization
                                 newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, i);
                                 newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, i);
                                 newFieldInfo.DerivedFrom = fieldId;
+                            }
+
+                            if (RemoveColumnAfterDiscretization)
+                            {
+                                dataToDiscretize.RemoveColumn(fieldId);
                             }
                         }
                         else
@@ -188,7 +194,7 @@ namespace Raccoon.MachineLearning.Discretization
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
 
             IEnumerable<int> localFields = fieldsToDiscretize == null
-                                         ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                                         ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
                                          : fieldsToDiscretize;
 
             foreach (int fieldId in localFields.ToList())

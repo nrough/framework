@@ -12,13 +12,13 @@ namespace Raccoon.Data.Tests
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
 
-            Compare(data, FieldTypes.Standard);
-            Compare(data, FieldTypes.All);
-            Compare(data, FieldTypes.Output);
-            Compare(data, FieldTypes.None);
+            Compare(data, FieldGroup.Standard);
+            Compare(data, FieldGroup.All);
+            Compare(data, FieldGroup.Output);
+            Compare(data, FieldGroup.None);
         }
 
-        public void Compare(DataStore data, FieldTypes fieldType)
+        public void Compare(DataStore data, FieldGroup fieldType)
         {
             IEnumerable<int> fieldIds = data.DataStoreInfo.GetFieldIds(fieldType);
             int[] fieldIdsOld = this.GetFieldIds_OLD(data.DataStoreInfo, fieldType);
@@ -33,14 +33,14 @@ namespace Raccoon.Data.Tests
         }
 
         //An old method from DataStoreInfo class
-        public int[] GetFieldIds_OLD(DataStoreInfo dataStoreInfo, FieldTypes fieldTypeFlags)
+        public int[] GetFieldIds_OLD(DataStoreInfo dataStoreInfo, FieldGroup fieldTypeFlags)
         {
             int[] fieldIds = new int[dataStoreInfo.GetNumberOfFields(fieldTypeFlags)];
             int i = 0;
             foreach (DataFieldInfo field in dataStoreInfo.Fields)
             {
-                if (fieldTypeFlags == FieldTypes.All
-                    || fieldTypeFlags == FieldTypes.None
+                if (fieldTypeFlags == FieldGroup.All
+                    || fieldTypeFlags == FieldGroup.None
                     || dataStoreInfo.GetFieldType(field.Id).HasFlag(fieldTypeFlags))
                 {
                     fieldIds[i++] = field.Id;

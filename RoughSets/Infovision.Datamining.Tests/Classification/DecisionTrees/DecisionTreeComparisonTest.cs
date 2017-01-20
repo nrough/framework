@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             int numOfFolds = 5;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             DataStore train = null, test = null;
 
             for (double eps = 0.0; eps < 0.3; eps += 0.01)
@@ -63,7 +63,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.PruningType = PruningType.ErrorBasedPruning;
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
                 Console.WriteLine(result);
@@ -89,7 +89,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 splitter.Split(ref train, ref test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
                 Console.WriteLine(result);
@@ -119,7 +119,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
                 Console.WriteLine(result);
@@ -139,7 +139,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
             double error = 0;
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)

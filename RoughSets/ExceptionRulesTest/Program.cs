@@ -61,7 +61,7 @@ namespace ExceptionRulesTest
                 double mA = new InformationMeasureMajority().Calc(
                     new Reduct(
                         trainData,
-                        trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard),
+                        trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard),
                         0.0,
                         new WeightGeneratorMajority(trainData).Weights));
 

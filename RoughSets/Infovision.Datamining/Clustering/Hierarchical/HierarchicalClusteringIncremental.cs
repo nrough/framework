@@ -87,7 +87,7 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
                     minDistance = distance;
                     minLeafKey = kvp.Key;
                 }
-                this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), distance);
+                this.DistanceMatrix.Add(new SymetricPair<int, int>(kvp.Key, id), distance);
             }
             this.AddInstance(id, instance);
 
@@ -217,7 +217,7 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
         {
             if (cluster1.Length == 1 && cluster2.Length == 1)
             {
-                if (this.DistanceMatrix.ContainsKey(new MatrixKey(cluster1[0], cluster1[0])))
+                if (this.DistanceMatrix.ContainsKey(new SymetricPair<int, int>(cluster1[0], cluster1[0])))
                     return this.DistanceMatrix.GetDistance(cluster1[0], cluster1[0]);
                 else
                     return this.Distance(this.Instances[cluster1[0]], this.Instances[cluster2[0]]);

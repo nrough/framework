@@ -45,7 +45,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
 
             discretizer.Fields2Discretize
-                = train.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                = train.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
 
             discretizer.Discretize(train, train.Weights);
@@ -74,7 +74,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
         {
             DataStore data = DataStore.Load(filename, fileFormat);                        
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
-                .GetFields(FieldTypes.Standard)
+                .GetFields(FieldGroup.Standard)
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 
@@ -99,7 +99,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             splitter.Split(ref trainData, ref testData, 0);
 
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo
-                .GetFields(FieldTypes.Standard)
+                .GetFields(FieldGroup.Standard)
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 

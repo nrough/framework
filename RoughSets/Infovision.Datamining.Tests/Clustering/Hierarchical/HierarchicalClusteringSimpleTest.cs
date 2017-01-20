@@ -77,7 +77,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
                 for (int j = i + 1; j < data.Length; j++)
                 {
                     double dist = Raccoon.Math.Distance.Euclidean(data[i], data[j]);
-                    matrix.Add(new MatrixKey(i, j), dist);
+                    matrix.Add(new SymetricPair<int, int>(i, j), dist);
                 }
             }
 

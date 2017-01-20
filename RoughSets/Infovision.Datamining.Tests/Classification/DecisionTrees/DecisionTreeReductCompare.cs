@@ -37,7 +37,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
 
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
@@ -65,10 +65,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(trainingSet.Name, out cachedData))
                             return cachedData;
 
-                        if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+                        if (trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
                         {
                             var discretizer = new DataStoreDiscretizer();
-                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
                             discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -93,7 +93,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(cacheKey, out cachedData))
                             return cachedData;                        
 
-                        if (validationSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+                        if (validationSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
                         {
                             string trainingCacheKey = cacheKey.Replace("-TST-", "-TRN-");
                             cachedData = null;
@@ -198,7 +198,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 }
             }
             
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             var emptyDistribution = EquivalenceClassCollection
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;            
@@ -229,10 +229,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                     if (localDataFoldCache.TryGetValue(trainingSet.Name, out cachedData))
                         return cachedData;
 
-                    if (trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+                    if (trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
                     {
                         var discretizer = new DataStoreDiscretizer();
-                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldTypes.Standard)
+                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard)
                                         .Where(f => f.CanDiscretize())
                                         .Select(fld => fld.Id);                        
                         discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -257,7 +257,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(cacheKey, out cachedData))
                             return cachedData;
                        
-                        if (validationSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+                        if (validationSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
                         {
                             string trainingCacheKey = cacheKey.Replace("-TST-", "-TRN-");
                             cachedData = null;
@@ -453,7 +453,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         {            
             DataStore data = DataStore.Load(dataFile, fileFormat);
             
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
             long output = emptyDistribution.Output;
@@ -462,7 +462,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             splitter.PostSplitMethod = (trn, tst) =>
             {
                 var discretizer = new DataStoreDiscretizer();
-                discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldTypes.Standard)
+                discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
                         .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
                 discretizer.Discretize(trn, trn.Weights);
                 DataStoreDiscretizer.Discretize(tst, trn);

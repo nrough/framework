@@ -67,7 +67,7 @@ namespace Raccoon.Data.Tests
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore2.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
 
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
                 {
                     Assert.AreEqual(
                         dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType, 
@@ -233,7 +233,7 @@ namespace Raccoon.Data.Tests
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
 
 
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
                 {
                     Assert.AreEqual(
                         dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
@@ -391,7 +391,7 @@ namespace Raccoon.Data.Tests
             DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, 0.75);            
             dataStoreSplitter.Split(ref dataStore1, ref dataStore2, 0);
 
-            foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard))
+            foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
             {
                 elementSum = 0;
                 elementSum1 = 0;

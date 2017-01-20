@@ -9,6 +9,44 @@ namespace Raccoon.Data.Tests
     internal class DataStoreTest
     {        
         [Test]
+        public void RemoveColumnTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+            int numOfCols = data.DataStoreInfo.NumberOfFields;            
+            data.RemoveColumn(1);
+            Assert.AreEqual(numOfCols - 1, data.DataStoreInfo.NumberOfFields);
+        }
+
+        [Test]
+        public void AddColumnTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+            int numOfCols = data.DataStoreInfo.NumberOfFields;
+            int[] newColumn = Enumerable.Range(0, data.NumberOfRecords).ToArray();
+            int newFieldId = data.AddColumn<int>(newColumn);
+            
+            Assert.AreEqual(numOfCols + 1, data.DataStoreInfo.NumberOfFields);
+        }
+
+        [Test]
+        public void AddAndRemoveColumnTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            Assert.NotNull(data);
+            int numOfCols = data.DataStoreInfo.NumberOfFields;
+            int[] newColumn = Enumerable.Range(0, data.NumberOfRecords).ToArray();
+            data.AddColumn<int>(newColumn);
+            data.AddColumn<int>(newColumn);
+            data.AddColumn<int>(newColumn);
+
+            data.RemoveColumn(1);
+
+            Assert.AreEqual(numOfCols + 3 - 1, data.DataStoreInfo.NumberOfFields);
+        }
+
+        [Test]
         public void NumericAttributeTest()
         {
             var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
@@ -320,7 +358,7 @@ namespace Raccoon.Data.Tests
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
 
-            foreach (int fieldId in dataStoreTestInfo.GetFieldIds(FieldTypes.All))
+            foreach (int fieldId in dataStoreTestInfo.GetFieldIds(FieldGroup.All))
             {
                 foreach (long internalValue in dataStoreTestInfo.GetFieldInfo(fieldId).InternalValues())
                 {
@@ -330,7 +368,7 @@ namespace Raccoon.Data.Tests
                 }
             }
 
-            foreach (int fieldId in dataStoreTrainInfo.GetFieldIds(FieldTypes.All))
+            foreach (int fieldId in dataStoreTrainInfo.GetFieldIds(FieldGroup.All))
             {
                 foreach (long internalValue in dataStoreTrainInfo.GetFieldInfo(fieldId).InternalValues())
                 {
@@ -344,8 +382,8 @@ namespace Raccoon.Data.Tests
         [Test]
         public void FieldTypeFlag()
         {
-            FieldTypes fieldTypeFlags = FieldTypes.All;
-            Assert.IsTrue(fieldTypeFlags.HasFlag(FieldTypes.All));
+            FieldGroup fieldTypeFlags = FieldGroup.All;
+            Assert.IsTrue(fieldTypeFlags.HasFlag(FieldGroup.All));
         }
 
         [Test]

@@ -20,8 +20,8 @@ namespace Raccoon.Data
         private int decisionFieldIdx;
         private DataFieldInfo decisionFieldInfo;
         private Dictionary<int, DataFieldInfo> fields;
-        private Dictionary<int, FieldTypes> fieldTypes;
-        private Dictionary<FieldTypes, int> fieldTypeCount;
+        private Dictionary<int, FieldGroup> fieldTypes;
+        private Dictionary<FieldGroup, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
         private int[] fieldIndexLookup;
         private readonly object syncRoot = new object();
@@ -59,14 +59,14 @@ namespace Raccoon.Data
                     if (this.decisionFieldId != 0)
                     {
                         int prevDecisionFieldId = this.decisionFieldId;
-                        fieldTypes[prevDecisionFieldId] = FieldTypes.Standard;
+                        fieldTypes[prevDecisionFieldId] = FieldGroup.Standard;
                     }
 
                     this.decisionFieldId = value;
 
                     if (this.decisionFieldId > 0)
                     {
-                        this.fieldTypes[this.decisionFieldId] = FieldTypes.Output;
+                        this.fieldTypes[this.decisionFieldId] = FieldGroup.Output;
                         this.decisionFieldInfo = fields[this.decisionFieldId];
                         this.decisionFieldIdx = this.GetDecisionFieldIndex();
                     }
@@ -105,19 +105,19 @@ namespace Raccoon.Data
             if (numberOfFields != 0)
             {
                 this.fields = new Dictionary<int, DataFieldInfo>(numberOfFields);
-                this.fieldTypes = new Dictionary<int, FieldTypes>(numberOfFields);
+                this.fieldTypes = new Dictionary<int, FieldGroup>(numberOfFields);
                 this.fieldId2Index = new Dictionary<int, int>(numberOfFields);
                 this.NumberOfFields = numberOfFields;
             }
             else
             {
                 this.fields = new Dictionary<int, DataFieldInfo>();
-                this.fieldTypes = new Dictionary<int, FieldTypes>();
+                this.fieldTypes = new Dictionary<int, FieldGroup>();
                 this.fieldId2Index = new Dictionary<int, int>();
             }
 
-            this.fieldTypeCount = new Dictionary<FieldTypes, int>(FieldTypesHelper.BasicFieldTypes.Count);
-            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+            this.fieldTypeCount = new Dictionary<FieldGroup, int>(FieldTypesHelper.BasicFieldTypes.Count);
+            foreach (FieldGroup ft in FieldTypesHelper.BasicFieldTypes)
                 fieldTypeCount.Add(ft, 0);
 
             this.decisionFieldIdx = -1;
@@ -158,9 +158,9 @@ namespace Raccoon.Data
             return this.fieldId2Index[fieldId];
         }        
 
-        public IEnumerable<int> GetFieldIds(FieldTypes fieldTypeFlags = FieldTypes.All)
+        public IEnumerable<int> GetFieldIds(FieldGroup fieldTypeFlags = FieldGroup.All)
         {
-            if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
+            if (fieldTypeFlags == FieldGroup.All || fieldTypeFlags == FieldGroup.None)
                 return this.Fields.Select(f => f.Id);
 
             return this.Fields
@@ -168,9 +168,9 @@ namespace Raccoon.Data
                 .Select(f => f.Id);
         }
 
-        public IEnumerable<DataFieldInfo> GetFields(FieldTypes fieldTypeFlags)
+        public IEnumerable<DataFieldInfo> GetFields(FieldGroup fieldTypeFlags)
         {
-            if (fieldTypeFlags == FieldTypes.All || fieldTypeFlags == FieldTypes.None)
+            if (fieldTypeFlags == FieldGroup.All || fieldTypeFlags == FieldGroup.None)
                 return this.Fields;
             return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
         }
@@ -180,19 +180,19 @@ namespace Raccoon.Data
             return this.Fields.Where(selector);            
         }
 
-        public virtual int GetNumberOfFields(FieldTypes fieldTypeFlags)
+        public virtual int GetNumberOfFields(FieldGroup fieldTypeFlags)
         {
-            if (fieldTypeFlags == FieldTypes.All
-                || fieldTypeFlags == FieldTypes.None)
+            if (fieldTypeFlags == FieldGroup.All
+                || fieldTypeFlags == FieldGroup.None)
                 return this.NumberOfFields;
 
-            if (fieldTypeFlags == FieldTypes.Output)
+            if (fieldTypeFlags == FieldGroup.Output)
                 return 1;
 
             int numberOfFields = this.NumberOfFields;
             int numberOfNotIncludedFields = 0;
 
-            foreach (FieldTypes ft in FieldTypesHelper.BasicFieldTypes)
+            foreach (FieldGroup ft in FieldTypesHelper.BasicFieldTypes)
             {
                 if (!fieldTypeFlags.HasFlag(ft))
                 {
@@ -203,7 +203,7 @@ namespace Raccoon.Data
             return numberOfFields - numberOfNotIncludedFields;
         }
 
-        public void AddFieldInfo(DataFieldInfo fieldInfo, FieldTypes fieldType)
+        public void AddFieldInfo(DataFieldInfo fieldInfo, FieldGroup fieldType)
         {
             this.fieldId2Index.Add(fieldInfo.Id, this.fields.Count);
 
@@ -212,7 +212,7 @@ namespace Raccoon.Data
             this.SetFieldMinMaxId(fieldInfo.Id);
             this.fieldTypeCount[fieldType]++;
 
-            if (fieldType == FieldTypes.Output)
+            if (fieldType == FieldGroup.Output)
             {
                 this.DecisionFieldId = fieldInfo.Id;
             }
@@ -359,11 +359,11 @@ namespace Raccoon.Data
             }
         }
 
-        public void SetFieldType(int fieldId, FieldTypes fieldType)
+        public void SetFieldType(int fieldId, FieldGroup fieldType)
         {
             if (this.fields.ContainsKey(fieldId))
             {
-                FieldTypes oldFieldType = this.fieldTypes[fieldId];
+                FieldGroup oldFieldType = this.fieldTypes[fieldId];
                 this.fieldTypes[fieldId] = fieldType;
                 this.fieldTypeCount[oldFieldType]--;
 
@@ -375,7 +375,7 @@ namespace Raccoon.Data
             }
         }
 
-        public FieldTypes GetFieldType(int fieldId)
+        public FieldGroup GetFieldType(int fieldId)
         {
             return this.fieldTypes[fieldId];
         }

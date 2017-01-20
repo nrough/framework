@@ -181,7 +181,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
                 for (int j = i + 1; j < data.Length; j++)
                 {
                     double distance = Distance.Euclidean(data[i], data[j]);
-                    matrix.Add(new MatrixKey(i, j), distance);
+                    matrix.Add(new SymetricPair<int, int>(i, j), distance);
                 }
             }
             HierarchicalClustering hClustering = new HierarchicalClustering(matrix, ClusteringLinkage.Single);

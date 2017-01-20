@@ -104,10 +104,10 @@ namespace Raccoon.Data
 
             for (int i = 1; i <= dataStoreInfo.NumberOfFields; i++)
             {
-                FieldTypes fieldType = FieldTypes.Standard;
+                FieldGroup fieldType = FieldGroup.Standard;
                 if (i == this.DecisionId)
                 {
-                    fieldType = FieldTypes.Output;
+                    fieldType = FieldGroup.Output;
                 }
 
                 DataFieldInfo referenceFieldInfo = null;

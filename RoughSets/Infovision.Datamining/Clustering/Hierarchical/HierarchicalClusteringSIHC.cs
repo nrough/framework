@@ -22,7 +22,7 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
         {
             //base.AddToCluster(id, instance);
             foreach (KeyValuePair<int, double[]> kvp in this.Instances)
-                this.DistanceMatrix.Add(new MatrixKey(kvp.Key, id), this.Distance(kvp.Value, instance));
+                this.DistanceMatrix.Add(new SymetricPair<int, int>(kvp.Key, id), this.Distance(kvp.Value, instance));
             this.AddInstance(id, instance);
 
             if (this.NumberOfInstances >= this.MinimumNumberOfInstances)

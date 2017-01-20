@@ -5,7 +5,7 @@ using Raccoon.Core;
 namespace Raccoon.Data
 {
     [Flags]
-    public enum FieldTypes
+    public enum FieldGroup
     {
         None = 0,
         Standard = 1,
@@ -19,10 +19,10 @@ namespace Raccoon.Data
 
     public static class FieldTypesHelper
     {
-        public static List<FieldTypes> basicTypes = null;
+        public static List<FieldGroup> basicTypes = null;
         public static readonly object syncRoot = new object();
 
-        public static ICollection<FieldTypes> BasicFieldTypes
+        public static ICollection<FieldGroup> BasicFieldTypes
         {
             get
             {
@@ -32,11 +32,11 @@ namespace Raccoon.Data
                     {
                         if (basicTypes == null)
                         {
-                            basicTypes = new List<FieldTypes>();
-                            foreach (FieldTypes ft in EnumHelper.GetValues<FieldTypes>())
+                            basicTypes = new List<FieldGroup>();
+                            foreach (FieldGroup ft in EnumHelper.GetValues<FieldGroup>())
                             {
-                                if (ft == FieldTypes.None
-                                    || ft == FieldTypes.All)
+                                if (ft == FieldGroup.None
+                                    || ft == FieldGroup.All)
                                 {
                                     continue;
                                 }

@@ -24,7 +24,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
             PermutationCollection permutationCollection = new PermutationCollection(100, attributes);                

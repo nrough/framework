@@ -138,7 +138,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.initialEqClasses != null
                     && this.Epsilon < 0.5
-                    && permutation.Length < this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) / 2)
+                    && permutation.Length < this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) / 2)
                 {
                     reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
                     this.Reduce(reduct, permutation, reductStore, useCache);

@@ -78,7 +78,7 @@ namespace Raccoon.MachineLearning
             if (this.PostLearningMethod != null)
                 this.PostLearningMethod(model);
 
-            if (testDS.DataStoreInfo.GetFields(FieldTypes.Standard).Any(f => f.CanDiscretize()))
+            if (testDS.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
             {                
                 DataStoreDiscretizer.Discretize(testDS, result.TestData);
             }

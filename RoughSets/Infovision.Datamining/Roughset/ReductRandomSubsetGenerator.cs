@@ -41,7 +41,7 @@ namespace Raccoon.MachineLearning.Roughset
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
 
             this.MinReductLength = 0;
-            this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+            this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
                 this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
@@ -49,8 +49,8 @@ namespace Raccoon.MachineLearning.Roughset
             if (args.Exist(ReductGeneratorParamHelper.MaxReductLength))
                 this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);
 
-            if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard))
-                this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+            if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard))
+                this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             if (this.MaxReductLength < this.MinReductLength)
                 this.MaxReductLength = this.MinReductLength;
@@ -63,7 +63,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 int cut = this.MinReductLength == this.MaxReductLength
                         ? this.MaxReductLength
-                        : (int)((1.0 - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard));
+                        : (int)((1.0 - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)

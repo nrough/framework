@@ -25,7 +25,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             //int[] attributes = new int[] { 3 };
 
             Holte1R oneR = new Holte1R();
@@ -43,7 +43,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         {
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);            
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Holte1R oneR = new Holte1R();
             oneR.Learn(data, attributes);
@@ -59,7 +59,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         {            
             int numOfFolds = 10;
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             DataStore train = null, test = null;
             
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);

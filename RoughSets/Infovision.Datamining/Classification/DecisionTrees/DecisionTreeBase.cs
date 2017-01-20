@@ -218,7 +218,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                            ? pruningSet
                            : this.OnValidationDataSubmission(this, attributes, pruningSet);
 
-                if (pruningSet.DataStoreInfo.GetFields(FieldTypes.Standard).Any(fld => fld.CanDiscretize()))
+                if (pruningSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(fld => fld.CanDiscretize()))
                 {
                     DataStoreDiscretizer.Discretize(pruningSet, trainSet);
                 }

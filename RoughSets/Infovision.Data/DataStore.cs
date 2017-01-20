@@ -206,11 +206,11 @@ namespace Raccoon.Data
 
         internal void CreateWeightHistogramsOnFields()
         {
-            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Standard))
+            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldGroup.Standard))
                 if (fieldInfo.HistogramWeights != null)
                     fieldInfo.CreateWeightHistogram(this, this.weights);
 
-            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldTypes.Output))
+            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldGroup.Output))
                 fieldInfo.CreateWeightHistogram(this, this.weights);
         }
 
@@ -366,11 +366,11 @@ namespace Raccoon.Data
 
         public int AddColumn<T>(T[] columnData, DataFieldInfo referenceFieldInfo = null)
         {
+            if (columnData == null)
+                throw new ArgumentNullException("columnData");
             if (columnData.Length != this.NumberOfRecords)
-                throw new InvalidOperationException("Column data have different size than this dataset");
-
-            long internalValue;
-            bool isMissing;
+                throw new InvalidOperationException("columnData.Length != this.NumberOfRecords");
+            
             long[] newData = new long[this.data.Length + columnData.Length];
             Parallel.For(0, this.NumberOfRecords, row =>
             {
@@ -381,17 +381,23 @@ namespace Raccoon.Data
                 }
             });
 
-            int newFieldId = referenceFieldInfo == null ? this.DataStoreInfo.MaxFieldId + 1 : referenceFieldInfo.Id;
+            int newFieldId = referenceFieldInfo == null 
+                ? this.DataStoreInfo.MaxFieldId + 1 
+                : referenceFieldInfo.Id;
 
             DataFieldInfo newFieldInfo = new DataFieldInfo(
-                newFieldId, typeof(T), referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
+                newFieldId, typeof(T), 
+                referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
 
             if (referenceFieldInfo != null)
                 newFieldInfo.InitFromDataFieldInfo(referenceFieldInfo, true, true);
-                                   
+
+            long internalValue;
+            bool isMissing;
             for (int row = 0; row < this.NumberOfRecords; row++)
             {
-                isMissing = this.DataStoreInfo.HasMissingData && String.Equals(columnData[row], newFieldInfo.MissingValue);
+                isMissing = this.DataStoreInfo.HasMissingData 
+                    && String.Equals(columnData[row], newFieldInfo.MissingValue);
                 internalValue = referenceFieldInfo != null
                     ? referenceFieldInfo.Add(columnData[row], isMissing)
                     : newFieldInfo.Add(columnData[row], isMissing);
@@ -402,7 +408,7 @@ namespace Raccoon.Data
             }
 
             this.data = newData;
-            this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldTypes.Standard);
+            this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldGroup.Standard);
             this.DataStoreInfo.NumberOfFields++;
 
             return newFieldInfo.Id;
@@ -427,7 +433,7 @@ namespace Raccoon.Data
 
         public AttributeValueVector GetDataVector(int objectIdx)
         {
-            return new AttributeValueVector(this.DataStoreInfo.GetFieldIds(FieldTypes.All).ToArray(), this.GetFieldValues(objectIdx), false);
+            return new AttributeValueVector(this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(), this.GetFieldValues(objectIdx), false);
         }
 
         public void GetFieldValues(int objectIndex, int[] fieldIds, ref long[] cursor)
@@ -843,7 +849,7 @@ namespace Raccoon.Data
 
         public int[] GetStandardFields()
         {
-            return this.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            return this.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
         }
 
         public T[][] ToArray<T>()            

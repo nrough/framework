@@ -290,7 +290,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
             innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
             innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
             Args args = new Args();
             args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
@@ -382,7 +382,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
@@ -496,7 +496,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
@@ -582,7 +582,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(trnData));
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 
@@ -684,7 +684,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
 

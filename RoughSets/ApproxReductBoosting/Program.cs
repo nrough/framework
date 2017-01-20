@@ -57,7 +57,7 @@ namespace ApproxReductBoosting
                 Console.WriteLine("Missing newInstance replacing...DONE");
             }
 
-            int numOfAttr = trnDataOrig.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+            int numOfAttr = trnDataOrig.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             ParameterCollection parmList = new ParameterCollection(
                 new IParameter[] {

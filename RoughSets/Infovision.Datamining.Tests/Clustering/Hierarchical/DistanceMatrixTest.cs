@@ -19,7 +19,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
 
                     //Console.WriteLine("{0}, {1}, {2}", i, j, distance);
 
-                    matrix.Add(new MatrixKey(i, j), distance);
+                    matrix.Add(new SymetricPair<int, int>(i, j), distance);
                 }
             }
 

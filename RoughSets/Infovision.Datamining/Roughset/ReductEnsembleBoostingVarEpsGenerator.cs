@@ -115,7 +115,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected virtual double GetDataSetQuality(IReduct reduct)
         {
-            ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), reduct.Epsilon, reduct.Weights);
+            ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), reduct.Epsilon, reduct.Weights);
 
             return this.GetPartitionQuality(allAttributesReduct);
         }

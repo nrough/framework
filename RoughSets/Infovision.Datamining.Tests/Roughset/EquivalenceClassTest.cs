@@ -32,7 +32,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             for (int i = 0; i < total; i++)
             {
                 DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
-                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
                 attributes = attributes.RemoveAt(attributes.Length / 2, (attributes.Length / 2) - 1);
 
                 Stopwatch s = new Stopwatch();

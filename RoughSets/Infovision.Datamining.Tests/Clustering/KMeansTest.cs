@@ -29,7 +29,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering
             KMeans kmeans = new KMeans();
             kmeans.K = 3;
             kmeans.Distance = Distance.Euclidean;
-            var result = kmeans.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            var result = kmeans.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
             Assert.NotNull(result);
         }

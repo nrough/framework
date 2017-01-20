@@ -97,7 +97,7 @@ namespace Raccoon.MachineLearning.Roughset
                     this.WeightGenerator.Generate();
                 }
 
-                int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+                int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
                 double m0 = new InformationMeasureWeights()
                     .Calc(new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
                 this.Threshold = 1.0 - m0;

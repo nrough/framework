@@ -23,10 +23,10 @@ namespace Raccoon.MachineLearning.Permutations
             this.NumberOfShuffles = numberOfShuffles;
 
             //Calculate quality measure for each field
-            this.fieldIdsSorted = new int[this.Data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard)];
+            this.fieldIdsSorted = new int[this.Data.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard)];
             double[] fieldQualityOrig = new double[fieldIdsSorted.Length];
             int c = 0;
-            foreach (var field in this.Data.DataStoreInfo.GetFields(FieldTypes.Standard))
+            foreach (var field in this.Data.DataStoreInfo.GetFields(FieldGroup.Standard))
             {
                 fieldIdsSorted[c] = field.Id;
                 fieldQualityOrig[c] = InformationMeasureWeights.Instance.Calc(

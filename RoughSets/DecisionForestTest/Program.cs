@@ -74,7 +74,7 @@ namespace DecisionForestTest
                     if (benchmarkData.DecisionFieldId > 0)
                         data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
                     splitter = new DataStoreSplitter(data, benchmarkData.CrossValidationFolds);
-                    attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                    attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
                 }
                 else
                 {
@@ -82,7 +82,7 @@ namespace DecisionForestTest
                     if (benchmarkData.DecisionFieldId > 0)
                         trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
                     testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
-                    attributes = trainData.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                    attributes = trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
                 }
                 int numberOfAttributesToCheckForSplit = (int)((double)attributes.Length * 0.33);
 

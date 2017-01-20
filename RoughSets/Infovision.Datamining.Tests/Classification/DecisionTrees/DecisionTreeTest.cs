@@ -29,7 +29,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
 
@@ -122,7 +122,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
 
@@ -251,7 +251,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
                     DecisionTreeRough tree = new DecisionTreeRough();
                     tree.Gamma = eps;
-                    tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                    tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                     ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
                     //Console.WriteLine(result);
@@ -280,7 +280,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 splitter2.Split(ref train, ref prune);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
                 ErrorBasedPruning pruning = new ErrorBasedPruning(tree, prune);
                 pruning.Prune();
 
@@ -306,7 +306,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 splitter.Split(ref train, ref test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(tree, test);
 
@@ -332,7 +332,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
                 Console.WriteLine(result);
@@ -355,7 +355,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
                 forest.Gamma = 0.22;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
                 ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
                 Console.WriteLine(result);
@@ -377,7 +377,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             long sum = 0;
             for (int i = 0; i < total; i++)
             {   
-                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
                 Stopwatch s = new Stopwatch();
                 s.Start();
@@ -403,7 +403,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
-            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
             Assert.Greater(DecisionTreeHelper.CountLeaves(treeID3.Root), 0);
         }
 
@@ -412,7 +412,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             int prevCount = Int32.MaxValue;
 
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
@@ -437,7 +437,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
@@ -467,7 +467,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Gamma = 0;
-            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
             Console.WriteLine(Classifier.DefaultClassifer.Classify(treeID3, data, null));
@@ -484,7 +484,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.MaxHeight = 3;
-            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
             
@@ -507,7 +507,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
             treeCART.Gamma = 0;
-            treeCART.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeCART.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
             ReducedErrorPruning prunning = new ReducedErrorPruning(treeCART, validation);
 
@@ -533,7 +533,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DecisionTreeRough treeRough = new DecisionTreeRough();
             treeRough.MaxHeight = maxHeight;
-            treeRough.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeRough.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
             ReducedErrorPruning pruning = new ReducedErrorPruning(treeRough, prune);
             pruning.Prune();
 
@@ -546,7 +546,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.MaxHeight = maxHeight;
-            treeC45.Learn(train, train.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray());
+            treeC45.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
             ErrorBasedPruning pruning2 = new ErrorBasedPruning(treeC45, prune);
             pruning2.Prune();
 

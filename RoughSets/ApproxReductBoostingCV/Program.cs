@@ -44,7 +44,7 @@ namespace ApproxReductBoostingCV
 
             Console.WriteLine("Using Cross Validation with {0} splits", cvfolds);
 
-            int numOfAttr = data.DataStoreInfo.GetNumberOfFields(FieldTypes.Standard);
+            int numOfAttr = data.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             ParameterCollection parmList = new ParameterCollection(
                 new IParameter[] {

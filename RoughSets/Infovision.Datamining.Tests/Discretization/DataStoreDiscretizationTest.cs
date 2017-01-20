@@ -18,7 +18,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             DataStore data = DataStore.Load(filename, fileFormat);
 
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
-                .GetFields(FieldTypes.Standard)
+                .GetFields(FieldGroup.Standard)
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 
@@ -43,7 +43,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             int numberOfFields = data.DataStoreInfo.NumberOfFields;
 
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
-                .GetFields(FieldTypes.Standard)
+                .GetFields(FieldGroup.Standard)
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 
@@ -66,7 +66,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
 
             int numberOfFields = trainData.DataStoreInfo.NumberOfFields;
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo
-                .GetFields(FieldTypes.Standard)
+                .GetFields(FieldGroup.Standard)
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 

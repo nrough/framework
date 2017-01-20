@@ -36,7 +36,7 @@ namespace Raccoon.MachineLearning.Roughset
         }
 
         public Bireduct(DataStore dataStore, double epsilon)
-            : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), new int[] { }, epsilon)
+            : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), new int[] { }, epsilon)
         {
         }
 

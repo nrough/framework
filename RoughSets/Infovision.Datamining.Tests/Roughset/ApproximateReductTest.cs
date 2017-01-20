@@ -207,7 +207,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double result = InformationMeasureRelative.Instance.Calc(reduct);
 
             Assert.AreEqual(result, 1.0, 0.0000001);
@@ -218,7 +218,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double result = InformationMeasureMajority.Instance.Calc(reduct);
 
             Assert.AreEqual(result, 1.0, 0.0000001);
@@ -231,7 +231,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             Reduct reduct = new Reduct(
                 localDataStore,
-                localDataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+                localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
 
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
             double result = roughMeasure.Calc(reduct);
@@ -354,7 +354,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,
@@ -391,7 +391,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0);
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey,

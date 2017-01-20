@@ -293,7 +293,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             double dataQuality = InformationMeasureWeights.Instance.Calc(allAttributes);
 
@@ -321,7 +321,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldTypes.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
             double dataQuality = measure.Calc(allAttributes);

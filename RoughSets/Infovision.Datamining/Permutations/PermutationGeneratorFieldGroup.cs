@@ -29,7 +29,7 @@ namespace Raccoon.MachineLearning.Permutations
 
         public PermutatioGeneratorFieldGroup(DataStore dataStore)
         {
-            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldTypes.Standard).ToArray();
+            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {

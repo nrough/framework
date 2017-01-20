@@ -98,6 +98,7 @@
     <Compile Include="Classification\DecisionTrees\DecisionTreeReductCompare.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeTest.cs" />
     <Compile Include="Classification\DecisionTrees\ObliviousDecisionTreeTest.cs" />
+    <Compile Include="Classification\DecisionTrees\RoughDecisionTreeTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimpleTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringTest.cs" />

@@ -337,29 +337,15 @@ namespace Raccoon.Data
         {
             lock (mutex)
             {
-                int row = 0;
-                int SIZE_OF_LONG = sizeof(long);
-                int count = 0;
-
-                for (int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
-                    fieldIdx < this.data.Length;
-                    fieldIdx += this.DataStoreInfo.NumberOfFields)
+                long[] newArray = new long[(this.DataStoreInfo.NumberOfFields - 1) * this.NumberOfRecords];
+                int j = 0;
+                int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+                for (int i = 0; i < this.DataStoreInfo.NumberOfFields * this.NumberOfRecords; i++)
                 {
-                    count = (fieldIdx + this.DataStoreInfo.NumberOfFields - 1) > this.data.Length
-                          ? this.data.Length - fieldIdx - 1
-                          : this.DataStoreInfo.NumberOfFields - 1;
-
-                    Buffer.BlockCopy(
-                        this.data,
-                        (fieldIdx + 1) * SIZE_OF_LONG,
-                        this.data,
-                        (fieldIdx - row) * SIZE_OF_LONG,
-                        count * SIZE_OF_LONG);
-
-                    row++;
+                    if (j != (fieldIdx % this.NumberOfRecords))
+                        newArray[j++] = this.data[i];
                 }
-
-                Array.Resize<long>(ref this.data, this.data.Length - this.NumberOfRecords);
+           
                 this.DataStoreInfo.RemoveFieldInfo(fieldId);
             }
         }
@@ -381,32 +367,40 @@ namespace Raccoon.Data
                 }
             });
 
-            int newFieldId = referenceFieldInfo == null 
-                ? this.DataStoreInfo.MaxFieldId + 1 
-                : referenceFieldInfo.Id;
-
-            DataFieldInfo newFieldInfo = new DataFieldInfo(
-                newFieldId, typeof(T), 
-                referenceFieldInfo != null ? referenceFieldInfo.NumberOfValues : 0);
-
-            if (referenceFieldInfo != null)
-                newFieldInfo.InitFromDataFieldInfo(referenceFieldInfo, true, true);
-
+            DataFieldInfo newFieldInfo;
             long internalValue;
             bool isMissing;
-            for (int row = 0; row < this.NumberOfRecords; row++)
-            {
-                isMissing = this.DataStoreInfo.HasMissingData 
-                    && String.Equals(columnData[row], newFieldInfo.MissingValue);
-                internalValue = referenceFieldInfo != null
-                    ? referenceFieldInfo.Add(columnData[row], isMissing)
-                    : newFieldInfo.Add(columnData[row], isMissing);
-                newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
-                newFieldInfo.IncreaseHistogramCount(internalValue);
-                newFieldInfo.IncreaseHistogramWeightsCount(internalValue, this.Weights[row]);
-                newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
-            }
 
+            if (referenceFieldInfo == null)
+            {
+                newFieldInfo = new DataFieldInfo(this.DataStoreInfo.MaxFieldId + 1, typeof(T), 0);
+                for (int row = 0; row < this.NumberOfRecords; row++)
+                {
+                    isMissing = this.DataStoreInfo.HasMissingData
+                        && String.Equals(columnData[row], newFieldInfo.MissingValue);
+                    internalValue = newFieldInfo.Add(columnData[row], isMissing);
+                    newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
+                    newFieldInfo.IncreaseHistogramCount(internalValue);
+                    newFieldInfo.IncreaseHistogramWeightsCount(internalValue, this.Weights[row]);
+                    newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
+                }
+            }
+            else
+            {
+                newFieldInfo = new DataFieldInfo(referenceFieldInfo.Id, typeof(T), referenceFieldInfo.NumberOfValues);
+                newFieldInfo.InitFromDataFieldInfo(referenceFieldInfo, true, true);
+                for (int row = 0; row < this.NumberOfRecords; row++)
+                {
+                    isMissing = this.DataStoreInfo.HasMissingData
+                        && String.Equals(columnData[row], newFieldInfo.MissingValue);
+                    internalValue = referenceFieldInfo.Add(columnData[row], isMissing);
+                    newFieldInfo.AddInternal(internalValue, columnData[row], isMissing);
+                    newFieldInfo.IncreaseHistogramCount(internalValue);
+                    newFieldInfo.IncreaseHistogramWeightsCount(internalValue, this.Weights[row]);
+                    newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
+                }
+            }
+            
             this.data = newData;
             this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldGroup.Standard);
             this.DataStoreInfo.NumberOfFields++;

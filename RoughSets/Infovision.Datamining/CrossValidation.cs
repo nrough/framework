@@ -67,10 +67,10 @@ namespace Raccoon.MachineLearning
             DataStore trainDS = null, testDS = null;
             dataSplitter.Split(ref trainDS, ref testDS, fold);
             
-            int[] localAttributes = attributes;
+            int[] localAttributes = attributes == null ? trainDS.GetStandardFields() : attributes;
             if (this.Attributes != null)
                 if (!this.Attributes.TryGetValue(fold, out localAttributes))
-                    localAttributes = attributes;            
+                    localAttributes = attributes;
 
             T model = (T)this.modelPrototype.Clone();
             ClassificationResult result = model.Learn(trainDS, localAttributes);
@@ -89,7 +89,7 @@ namespace Raccoon.MachineLearning
         private ClassificationResult CV(DataStore data, int[] attributes, IDataStoreSplitter dataSplitter)
         {
             if (data == null) throw new ArgumentNullException("data");
-            if (attributes == null) throw new ArgumentNullException("attributes");
+            //if (attributes == null) throw new ArgumentNullException("attributes");
             if (dataSplitter == null) throw new ArgumentNullException("dataSplitter");
 
             ClassificationResult result = new ClassificationResult(data, data.DataStoreInfo.GetDecisionValues());

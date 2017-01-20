@@ -223,18 +223,19 @@ namespace Raccoon.Data
 
         public void RemoveFieldInfo(int fieldId)
         {
-            int fieldIndex = this.fieldId2Index[fieldId];
-            DataFieldInfo fieldInfo2Remove = this.fields[fieldId];
+            //this.fields[fieldId].IsDeleted = true;
+            
             this.fieldTypeCount[this.fieldTypes[fieldId]]--;
             this.fieldTypes.Remove(fieldId);
             this.fields.Remove(fieldId);
             this.NumberOfFields--;
-            List<int> fieldIndexes = new List<int>(this.fieldId2Index.Keys);
-            foreach (int idx in fieldIndexes)
+            int fieldIndex = this.fieldId2Index[fieldId];
+            foreach (int idx in this.fieldId2Index.Keys.ToList())
             {
                 if (this.fieldId2Index[idx] > fieldIndex)
                     this.fieldId2Index[idx]--;
             }
+            
         }
 
         public void SetFieldIndex(int fieldId, int fieldIdx)

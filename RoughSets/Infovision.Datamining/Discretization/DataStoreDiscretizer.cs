@@ -41,7 +41,7 @@ namespace Raccoon.MachineLearning.Discretization
         {
             this.DiscretizerCollection = new List<IDiscretizer>(
                 new IDiscretizer[] {
-                    new DiscretizeFayyad(),
+                    new DiscretizeSupervisedBase() { NumberOfBuckets = 10 },
                     new DiscretizeEntropy(),
                     new DiscretizeEqualWidth()
                 });
@@ -154,6 +154,7 @@ namespace Raccoon.MachineLearning.Discretization
 
                             if (RemoveColumnAfterDiscretization)
                             {
+                                //TODO add column to delete list and delete at the end
                                 dataToDiscretize.RemoveColumn(fieldId);
                             }
                         }

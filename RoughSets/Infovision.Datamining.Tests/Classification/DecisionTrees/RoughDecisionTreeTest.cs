@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using Raccoon.Core;
-using Raccoon.Data;
+using Raccoon.Data; 
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
@@ -176,45 +176,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
             CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
-            var treeRoughResult = treeRoughCV.Run(data, splitter);
+            var treeRoughResult = treeRoughCV.Run(data, null, splitter);
             treeRoughResult.Epsilon = eps;
             Console.WriteLine(treeRoughResult);
-
-            DecisionTreeC45 treec45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
-            treec45.OnTrainingDataSubmission = onTrainingDataSubmission;
-            treec45.OnInputAttributeSubmission = onInputAttributeSubmission;
-            treec45.OnValidationDataSubmission = onValidationDataSubmission;
-            treec45.DefaultOutput = output;
-            treec45.PruningType = pruningType;
-            CrossValidation<DecisionTreeC45> treec45CV = new CrossValidation<DecisionTreeC45>(treec45);
-            var treec45Result = treec45CV.Run(data, splitter);
-            treec45Result.Epsilon = eps;
-            Console.WriteLine(treec45Result);
-
-            ObliviousDecisionTree treeOblivEntropy = new ObliviousDecisionTree("Olv-Entropy-" + pruningType.ToSymbol());
-            treeOblivEntropy.OnTrainingDataSubmission = onTrainingDataSubmission;
-            treeOblivEntropy.OnInputAttributeSubmission = onInputAttributeSubmission;
-            treeOblivEntropy.OnValidationDataSubmission = onValidationDataSubmission;
-            treeOblivEntropy.ImpurityFunction = ImpurityMeasure.Entropy;
-            treeOblivEntropy.DefaultOutput = output;
-            treeOblivEntropy.PruningType = pruningType;
-            CrossValidation<ObliviousDecisionTree> treeOblivEntropyCV = new CrossValidation<ObliviousDecisionTree>(treeOblivEntropy);
-            var treeOblivEntropyResult = treeOblivEntropyCV.Run(data, splitter);
-            treeOblivEntropyResult.Epsilon = eps;
-            Console.WriteLine(treeOblivEntropyResult);
-
-            if (pruningType == PruningType.None)
-            {
-                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTabMaj-" + pruningType.ToSymbol());
-                decTabMaj.OnTrainingDataSubmission = onTrainingDataSubmission;
-                decTabMaj.OnInputAttributeSubmission = onInputAttributeSubmission;
-                decTabMaj.OnValidationDataSubmission = onValidationDataSubmission;
-                decTabMaj.DefaultOutput = output;
-                CrossValidation<DecisionTableMajority> decTabMajCV = new CrossValidation<DecisionTableMajority>(decTabMaj);
-                var decTabMajResult = decTabMajCV.Run(data, splitter);
-                decTabMajResult.Epsilon = eps;
-                Console.WriteLine(decTabMajResult);
-            }
         }
     }
 }

@@ -84,6 +84,8 @@ namespace Raccoon.Data
 
         public int NumberOfDecimals { get; set; }
 
+        //public bool IsDeleted { get; set; }
+
         #endregion Properties
 
         #region Constructors

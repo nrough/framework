@@ -14,7 +14,7 @@ namespace Raccoon.Data.Tests
             var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
             Assert.NotNull(data);
             int numOfCols = data.DataStoreInfo.NumberOfFields;            
-            data.RemoveColumn(1);
+            data.RemoveColumn(2);
             Assert.AreEqual(numOfCols - 1, data.DataStoreInfo.NumberOfFields);
         }
 
@@ -41,7 +41,7 @@ namespace Raccoon.Data.Tests
             data.AddColumn<int>(newColumn);
             data.AddColumn<int>(newColumn);
 
-            data.RemoveColumn(1);
+            data.RemoveColumn(2);
 
             Assert.AreEqual(numOfCols + 3 - 1, data.DataStoreInfo.NumberOfFields);
         }

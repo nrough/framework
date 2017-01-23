@@ -4,11 +4,7 @@ using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using Raccoon.Core;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Roughset;
@@ -30,9 +26,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         {
             var data = DataStore.Load(@"Data\nursery.2.data", FileFormat.Rses1);
             var tree = new ObliviousDecisionTree();
-            var cv = new CrossValidation<ObliviousDecisionTree>(tree);
+            var cv = new CrossValidation(data);
             cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;
-            var result = cv.Run(data);
+            var result = cv.Run<ObliviousDecisionTree>(tree);
             Console.WriteLine(result);
         }
 

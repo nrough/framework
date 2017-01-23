@@ -252,7 +252,10 @@ namespace Raccoon.Data
 
         public DataFieldInfo GetFieldInfo(int fieldId)
         {
-            return fields[fieldId];
+            DataFieldInfo res = null;
+            if (fields.TryGetValue(fieldId, out res))
+                return res;
+            return null;
         }
 
         public long AddFieldValue(int fieldId, object externalValue, bool isMissing)

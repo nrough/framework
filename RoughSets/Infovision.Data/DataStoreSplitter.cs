@@ -5,12 +5,9 @@ using Raccoon.Core;
 
 namespace Raccoon.Data
 {
-    public delegate void PostSplitMethod(DataStore train, DataStore test);
-
     public interface IDataStoreSplitter
     {
         void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold);
-        PostSplitMethod PostSplitMethod { get; set;}
         int NFold { get; }
     }
 
@@ -59,7 +56,6 @@ namespace Raccoon.Data
         }
 
         public bool UseDataStoreCache { get; private set; }
-        public PostSplitMethod PostSplitMethod { get; set; }
         protected bool SplitCalculated { get; set; }
                         
         #endregion        
@@ -80,19 +76,18 @@ namespace Raccoon.Data
         #region Methods
                 
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
-        {            
+        {
+            if (fold < 0) throw new ArgumentOutOfRangeException("fold");
+            if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");
+            if (dataStore1 == null) throw new ArgumentNullException("dataStore1");
+            if (dataStore2 == null) throw new ArgumentNullException("dataStore2");
+
             this.GetTrainingData(ref dataStore1, fold);
             this.GetTestData(ref dataStore2, fold);
-
-            if (this.PostSplitMethod != null)            
-                this.PostSplitMethod(dataStore1, dataStore2);
         }
 
         private void GetTrainingData(ref DataStore dataStore1, int fold)
-        {           
-            if (fold < 0)
-                throw new ArgumentOutOfRangeException("fold");
-
+        {                       
             if (!this.SplitCalculated)
                 this.GenerateSplit();
 
@@ -128,10 +123,7 @@ namespace Raccoon.Data
         }
 
         private void GetTestData(ref DataStore dataStore2, int fold)
-        {            
-            if (fold < 0)
-                throw new ArgumentOutOfRangeException("fold");
-
+        {                        
             if (!this.SplitCalculated)
                 this.GenerateSplit();
 

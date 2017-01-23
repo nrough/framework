@@ -1,6 +1,5 @@
 ﻿using System;
 using Raccoon.Data;
-using Raccoon.Core;
 using System.Collections.Generic;
 
 namespace Raccoon.MachineLearning.Roughset

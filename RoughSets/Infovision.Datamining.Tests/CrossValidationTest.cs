@@ -21,8 +21,11 @@ namespace Raccoon.MachineLearning.Tests
         {
             Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
-            Console.WriteLine(new CrossValidation<DecisionTreeC45>(new DecisionTreeC45()).Run(data));
+            var cv = new CrossValidation(data);
+            Console.WriteLine(cv.Run<DecisionTreeC45>(new DecisionTreeC45()));
         }
+
+
 
         [Test, Repeat(1)]
         [TestCase(@"Data\chess.data", FileFormat.Rses1)]
@@ -30,15 +33,14 @@ namespace Raccoon.MachineLearning.Tests
         {
             Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
-            DataStoreSplitter splitter = new DataStoreSplitter(data, 10);
+            
+            var cv = new CrossValidation(data, 10);
 
             var c45 = new DecisionTreeC45();            
-            var cv = new CrossValidation<DecisionTreeC45>(c45);            
-            Console.WriteLine(cv.Run(data, splitter));
+            Console.WriteLine(cv.Run<DecisionTreeC45>(c45));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
-            var cv2 = new CrossValidation<DecisionTreeRough>(roughTree);
-            Console.WriteLine(cv2.Run(data, splitter));
+            Console.WriteLine(cv.Run<DecisionTreeRough>(roughTree));
 
         }
 
@@ -53,20 +55,19 @@ namespace Raccoon.MachineLearning.Tests
             c45.ImpurityFunction = ImpurityMeasure.Majority;
             c45.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
 
-            CrossValidation<DecisionTreeC45> cv = new CrossValidation<DecisionTreeC45>(c45);
+            CrossValidation cv10 = new CrossValidation(data, 10);
+            CrossValidation cv5 = new CrossValidation(data, 5);
 
-            Console.WriteLine(cv.Run(data, 10));
-            Console.WriteLine(cv.Run(data, 5));
+            Console.WriteLine(cv10.Run<DecisionTreeC45>(c45));
+            Console.WriteLine(cv5.Run<DecisionTreeC45>(c45));
 
             DecisionTreeC45 c45b = new DecisionTreeC45();
             c45b.PruningType = PruningType.ErrorBasedPruning;
             c45b.ImpurityFunction = ImpurityMeasure.One;
             c45b.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
 
-            CrossValidation<DecisionTreeC45> cvb = new CrossValidation<DecisionTreeC45>(c45b);
-
-            Console.WriteLine(cvb.Run(data, 10));
-            Console.WriteLine(cvb.Run(data, 5));
+            Console.WriteLine(cv10.Run<DecisionTreeC45>(c45b));
+            Console.WriteLine(cv5.Run<DecisionTreeC45>(c45b));
         }
     }
 }

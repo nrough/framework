@@ -110,7 +110,7 @@ namespace Raccoon.MachineLearning.Discretization
 
         public void Discretize(DataStore dataToDiscretize, double[] weights = null)
         {
-            DataFieldInfo localFieldInfoTrain;
+            DataFieldInfo fieldInfo;
             IEnumerable<int> localFields = Fields2Discretize != null
                     ? Fields2Discretize
                     : dataToDiscretize.DataStoreInfo.GetFields(FieldGroup.Standard)
@@ -121,8 +121,8 @@ namespace Raccoon.MachineLearning.Discretization
 
             foreach (int fieldId in localFields.ToList())
             {
-                localFieldInfoTrain = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
-                if (localFieldInfoTrain.CanDiscretize())
+                fieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(fieldId);
+                if (fieldInfo.CanDiscretize())
                 {
                     IDiscretizer disc = SelectDiscretizer(dataToDiscretize, fieldId, weights);
                     this.fieldDiscretizer.Add(fieldId, disc);
@@ -147,8 +147,8 @@ namespace Raccoon.MachineLearning.Discretization
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = localCuts;
                                 newFieldInfo.FieldValueType = typeof(long);
-                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, i);
-                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, i);
+                                newFieldInfo.Name = String.Format("{0}-{1}", fieldInfo.Name, i);
+                                newFieldInfo.Alias = String.Format("{0}-{1}", fieldInfo.Alias, i);
                                 newFieldInfo.DerivedFrom = fieldId;
                             }
 
@@ -164,10 +164,10 @@ namespace Raccoon.MachineLearning.Discretization
 
                             if (UpdateDataColumns)
                             {
-                                localFieldInfoTrain.Cuts = disc.Cuts;
-                                localFieldInfoTrain.FieldValueType = typeof(long);
-                                localFieldInfoTrain.IsNumeric = false;
-                                localFieldInfoTrain.IsOrdered = true;
+                                fieldInfo.Cuts = disc.Cuts;
+                                fieldInfo.FieldValueType = typeof(long);
+                                fieldInfo.IsNumeric = false;
+                                fieldInfo.IsOrdered = true;
 
                                 dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x));
                             }
@@ -180,8 +180,8 @@ namespace Raccoon.MachineLearning.Discretization
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = disc.Cuts;
                                 newFieldInfo.FieldValueType = typeof(long);
-                                newFieldInfo.Name = String.Format("{0}-{1}", localFieldInfoTrain.Name, 1);
-                                newFieldInfo.Alias = String.Format("{0}-{1}", localFieldInfoTrain.Alias, 1);
+                                newFieldInfo.Name = String.Format("{0}-{1}", fieldInfo.Name, 1);
+                                newFieldInfo.Alias = String.Format("{0}-{1}", fieldInfo.Alias, 1);
                                 newFieldInfo.DerivedFrom = fieldId;
                             }
                         }

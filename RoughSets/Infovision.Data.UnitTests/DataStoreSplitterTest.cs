@@ -26,13 +26,12 @@ namespace Raccoon.Data.Tests
 
         [Test, Repeat(1)]
         public void TestDecisionTreeTest()
-        {           
-            DataStoreSplitter splitter = new DataStoreSplitter(dataStore, 5);
+        {
+            CrossValidation treeRoughCV = new CrossValidation(dataStore, 5);
             DecisionTreeRough treeRough = new DecisionTreeRough();            
             treeRough.PruningType = PruningType.None;
-            CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
-            var treeRoughResult = treeRoughCV.Run(dataStore, splitter);            
-            Console.WriteLine(treeRoughResult);            
+            var treeRoughResult = treeRoughCV.Run<DecisionTreeRough>(treeRough);            
+            Console.WriteLine(treeRoughResult);
         }
 
         [Test]

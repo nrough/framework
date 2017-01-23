@@ -312,39 +312,41 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             OnInputAttributeSubmission inputAttributesSubmission = (m, a, d) => inputAttributeSubmit(m, a, d);
             OnValidationDataSubmission validationSubmission = (m, a, d) => validationDataSubmit(m, a, d);
 
+            var cv = new CrossValidation(data, folds);
+
             eps = -1.0;
-            ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.None, reductFactoryKey,
+            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
-            ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.ReducedErrorPruning, reductFactoryKey,
+            ErrorImpurityTestIntPerReduct_CV(dcv, PruningType.ReducedErrorPruning, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
             for (eps = 0.0; eps <= 0.99; eps += 0.01)
             {
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.None, reductFactoryKey,
+                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.ReducedErrorPruning, reductFactoryKey,
+                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
             }
         }        
 
         private void ErrorImpurityTestIntPerReduct_CV(
-            DataStore data, DataStoreSplitter splitter, 
+            CrossValidation cv, 
             PruningType pruningType, string redkey, 
             double eps, long output,
             OnTrainingDataSubmission onTrainingDataSubmission,
             OnInputAttributeSubmission onInputAttributeSubmission,
             OnValidationDataSubmission onValidationDataSubmission)
-        {                                    
+        {
             DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
             treeRough.OnTrainingDataSubmission = onTrainingDataSubmission;
             treeRough.OnInputAttributeSubmission = onInputAttributeSubmission;
             treeRough.OnValidationDataSubmission = onValidationDataSubmission;
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
-            CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);            
-            var treeRoughResult = treeRoughCV.Run(data, splitter);
+                        
+            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
             treeRoughResult.Epsilon = eps;
             Console.WriteLine(treeRoughResult);
 
@@ -354,8 +356,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treec45.OnValidationDataSubmission = onValidationDataSubmission;
             treec45.DefaultOutput = output;
             treec45.PruningType = pruningType;
-            CrossValidation<DecisionTreeC45> treec45CV = new CrossValidation<DecisionTreeC45>(treec45);            
-            var treec45Result = treec45CV.Run(data, splitter);
+            var treec45Result = cv.Run<DecisionTreeC45>(treec45);
             treec45Result.Epsilon = eps;
             Console.WriteLine(treec45Result);
             
@@ -365,9 +366,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treeOblivEntropy.OnValidationDataSubmission = onValidationDataSubmission;
             treeOblivEntropy.ImpurityFunction = ImpurityMeasure.Entropy;
             treeOblivEntropy.DefaultOutput = output;
-            treeOblivEntropy.PruningType = pruningType;
-            CrossValidation<ObliviousDecisionTree> treeOblivEntropyCV = new CrossValidation<ObliviousDecisionTree>(treeOblivEntropy);            
-            var treeOblivEntropyResult = treeOblivEntropyCV.Run(data, splitter);
+            treeOblivEntropy.PruningType = pruningType;            
+            var treeOblivEntropyResult = cv.Run<ObliviousDecisionTree>(treeOblivEntropy);
             treeOblivEntropyResult.Epsilon = eps;
             Console.WriteLine(treeOblivEntropyResult);
 
@@ -378,8 +378,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 decTabMaj.OnInputAttributeSubmission = onInputAttributeSubmission;
                 decTabMaj.OnValidationDataSubmission = onValidationDataSubmission;
                 decTabMaj.DefaultOutput = output;
-                CrossValidation<DecisionTableMajority> decTabMajCV = new CrossValidation<DecisionTableMajority>(decTabMaj);
-                var decTabMajResult = decTabMajCV.Run(data, splitter);
+                var decTabMajResult = cv.Run<DecisionTableMajority>(decTabMaj);
                 decTabMajResult.Epsilon = eps;
                 Console.WriteLine(decTabMajResult);
             }
@@ -449,33 +448,18 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
         [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        public void Discretize_CV_Test(string dataFile, FileFormat fileFormat, PruningType pruningType, string reductFactoryKey, int folds)
+        public void Discretize_CV_Test(string dataFile, FileFormat fileFormat, PruningType pruningType, int folds)
         {            
             DataStore data = DataStore.Load(dataFile, fileFormat);
             
             int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
-            EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
-            DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
-            long output = emptyDistribution.Output;
-
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
-            splitter.PostSplitMethod = (trn, tst) =>
-            {
-                var discretizer = new DataStoreDiscretizer();
-                discretizer.Fields2Discretize = trn.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
-                        .Where(fieldId => tst.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
-                discretizer.Discretize(trn, trn.Weights);
-                DataStoreDiscretizer.Discretize(tst, trn);
-            };
-
             DecisionTreeC45 treec45 = new DecisionTreeC45();
             treec45.PruningType = pruningType;
-            treec45.DefaultOutput = output;
 
-            CrossValidation<DecisionTreeC45> cv = new CrossValidation<DecisionTreeC45>(treec45);            
-            var result = cv.Run(data, splitter);
+            CrossValidation cv = new CrossValidation(data, folds);            
+            var result = cv.Run<DecisionTreeC45>(treec45);
 
-            Console.WriteLine(result);                                               
+            Console.WriteLine(result);
         }
         
     }

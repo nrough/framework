@@ -20,10 +20,6 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
     public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
     {
         #region TODO
-        
-        //Add option not to remove attribute id after split 
-        //- this will allow to use same attributes on various level (attribute must be continuous)
-
         #endregion
 
         protected Dictionary<int, List<long>> thresholds = null;
@@ -127,7 +123,9 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                     this.mA = InformationMeasureWeights.Instance.Calc(
                         EquivalenceClassCollection.Create(attributes, data, data.Weights));
 
-                this.thresholds = new Dictionary<int, List<long>>();               
+                this.thresholds = new Dictionary<int, List<long>>();
+
+
                 foreach (DataFieldInfo field in attributes
                     .Select(k => data.DataStoreInfo.GetFieldInfo(k))
                     .Where(f => f.CanDiscretize()))

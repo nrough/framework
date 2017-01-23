@@ -29,8 +29,6 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
-
             int rednum = 100;
             PermutationGenerator permutationGenerator = new PermutationGenerator(allAttributes);
             PermutationCollection permutationCollection = permutationGenerator.Generate(rednum);
@@ -139,19 +137,21 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             OnInputAttributeSubmission inputAttributesSubmission = (m, a, d) => inputAttributeSubmit(m, a, d);
             OnValidationDataSubmission validationSubmission = (m, a, d) => validationDataSubmit(m, a, d);
 
+            CrossValidation cv = new CrossValidation(data, folds);
+
             eps = -1.0;
-            ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.None, reductFactoryKey,
+            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
-            ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.ReducedErrorPruning, reductFactoryKey,
+            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
             for (eps = 0.0; eps <= 0.99; eps += 0.01)
             {
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.None, reductFactoryKey,
+                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
-                ErrorImpurityTestIntPerReduct_CV(data, splitter, PruningType.ReducedErrorPruning, reductFactoryKey,
+                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
             }
         }
@@ -162,7 +162,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         }
 
         private void ErrorImpurityTestIntPerReduct_CV(
-            DataStore data, DataStoreSplitter splitter,
+            CrossValidation cv,
             PruningType pruningType, string redkey,
             double eps, long output,
             OnTrainingDataSubmission onTrainingDataSubmission,
@@ -175,8 +175,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treeRough.OnValidationDataSubmission = onValidationDataSubmission;
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
-            CrossValidation<DecisionTreeRough> treeRoughCV = new CrossValidation<DecisionTreeRough>(treeRough);
-            var treeRoughResult = treeRoughCV.Run(data, null, splitter);
+
+            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
             treeRoughResult.Epsilon = eps;
             Console.WriteLine(treeRoughResult);
         }

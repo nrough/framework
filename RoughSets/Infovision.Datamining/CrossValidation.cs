@@ -67,19 +67,16 @@ namespace Raccoon.MachineLearning
             DataStore trainDS = null, testDS = null;
             dataSplitter.Split(ref trainDS, ref testDS, fold);
 
-            //discretize
             if (Discretize)
             {
                 var discretizer = new DataStoreDiscretizer();
                 discretizer.Discretize(trainDS, trainDS.Weights);
             }
 
-            //apply data filter
             DataStore filteredTrainDs = trainDS;
             if (filter != null)
                 filteredTrainDs = filter.Apply(trainDS);
 
-            //only fields in attribute array are allowed + derived fields
             HashSet<int> localAttributes = new HashSet<int>();
             foreach (var fieldId in attributes)
             {

@@ -87,6 +87,8 @@
   <ItemGroup>
     <Compile Include="DataSampler.cs" />
     <Compile Include="DataStoreOrderByComparer.cs" />
+    <Compile Include="Examples\BenchmarkBase.cs" />
+    <Compile Include="Examples\IBenchmarkData.cs" />
     <Compile Include="FieldTypes.cs" />
     <Compile Include="DataReaderFile.cs" />
     <Compile Include="DataStoreInfo.cs" />

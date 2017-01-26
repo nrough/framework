@@ -243,5 +243,10 @@ namespace Raccoon.Data
         {
             return (this.SplitRatio > RandomSingleton.Random.NextDouble()) ? 1 : 0;
         }
+
+        public override void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
+        {
+            base.Split(ref dataStore1, ref dataStore2, 0);
+        }
     }
 }

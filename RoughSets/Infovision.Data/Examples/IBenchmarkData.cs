@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Raccoon.Data.Examples
 {
-    public class IBenchmarkData
+    public interface IBenchmarkData
     {
     }
 }

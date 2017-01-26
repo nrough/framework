@@ -20,6 +20,7 @@ namespace Raccoon.MachineLearning
         public DataStore Data { get; set; }
         public IDataStoreSplitter Splitter { get; set; }
         public bool Discretize { get; set; }
+        public IFilter Filter { get; set; }
 
         public CrossValidation(DataStore data)
         {
@@ -42,26 +43,20 @@ namespace Raccoon.MachineLearning
             this.Splitter = splitter;
         }
 
-        public ClassificationResult Run<T>(T modelPrototype, int[] attributes, IFilter filter)
+        public ClassificationResult Run<T>(T modelPrototype, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {            
-            return this.CV<T>(modelPrototype, this.Data, attributes, this.Splitter, filter);
+            return this.CV<T>(modelPrototype, this.Data, attributes, this.Splitter);
         }
 
         public ClassificationResult Run<T>(T modelPrototype)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
-            return this.Run<T>(modelPrototype, this.Data.GetStandardFields(), null);
-        }
-
-        public ClassificationResult Run<T>(T modelPrototype, IFilter filter)
-            where T : IModel, IPredictionModel, ILearner, ICloneable, new()
-        {
-            return this.Run<T>(modelPrototype, this.Data.GetStandardFields(), filter);
+            return this.Run<T>(modelPrototype, this.Data.GetStandardFields());
         }
 
         private ClassificationResult RunFold<T>(T modelPrototype, 
-            IDataStoreSplitter dataSplitter, int fold, int[] attributes, IFilter filter)
+            IDataStoreSplitter dataSplitter, int fold, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
             DataStore trainDS = null, testDS = null;
@@ -74,8 +69,8 @@ namespace Raccoon.MachineLearning
             }
 
             DataStore filteredTrainDs = trainDS;
-            if (filter != null)
-                filteredTrainDs = filter.Apply(trainDS);
+            if (Filter != null)
+                filteredTrainDs = Filter.Apply(trainDS);
 
             HashSet<int> localAttributes = new HashSet<int>();
             foreach (var fieldId in attributes)
@@ -105,14 +100,14 @@ namespace Raccoon.MachineLearning
             }
 
             DataStore filteredTestDs = trainDS;
-            if (filter != null)
-                filteredTestDs = filter.Apply(trainDS);
+            if (Filter != null)
+                filteredTestDs = Filter.Apply(trainDS);
 
             return Classifier.DefaultClassifer.Classify(model, filteredTestDs);
         }
 
         private ClassificationResult CV<T>(T modelPrototype, DataStore data, 
-            int[] attributes, IDataStoreSplitter dataSplitter, IFilter filter)
+            int[] attributes, IDataStoreSplitter dataSplitter)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
             if (data == null) throw new ArgumentNullException("data");
@@ -132,7 +127,7 @@ namespace Raccoon.MachineLearning
 
                 Parallel.For(0, dataSplitter.NFold, options, f =>
                 {
-                    result.AddLocalResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes, filter));
+                    result.AddLocalResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes));
                 });
             }
             else

@@ -318,7 +318,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
-            ErrorImpurityTestIntPerReduct_CV(dcv, PruningType.ReducedErrorPruning, reductFactoryKey,
+            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
                     eps, emptyDistribution.Output, trainingSubmission, inputAttributesSubmission, validationSubmission);
 
             for (eps = 0.0; eps <= 0.99; eps += 0.01)

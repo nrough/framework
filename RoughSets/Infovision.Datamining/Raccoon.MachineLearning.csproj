@@ -140,7 +140,8 @@
     <Compile Include="Discretization\DiscretizeFayyad.cs" />
     <Compile Include="Discretization\DiscretizeKononenko.cs" />
     <Compile Include="Discretization\DiscretizeManual.cs" />
-    <Compile Include="IFilter.cs" />
+    <Compile Include="Filters\DiscretizeFilter.cs" />
+    <Compile Include="Filters\ReductFeatureSelectionFilter.cs" />
     <Compile Include="MissingValues\ReplaceMissingValues.cs" />
     <Compile Include="IApproximationModel.cs" />
     <Compile Include="IDistibutionSelectStrategy.cs" />

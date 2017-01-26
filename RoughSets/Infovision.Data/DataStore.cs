@@ -10,7 +10,7 @@ using System.Data;
 namespace Raccoon.Data
 {
     [Serializable]
-    public class DataStore : IDataTable
+    public class DataStore : IDataTable, ICloneable
     {
         #region Members
 
@@ -347,6 +347,15 @@ namespace Raccoon.Data
                 }
            
                 this.DataStoreInfo.RemoveFieldInfo(fieldId);
+            }
+        }
+
+        public void RemoveColumn(IEnumerable<int> fieldIds)
+        {
+            lock (mutex)
+            {
+                foreach (int fieldId in fieldIds)
+                    RemoveColumn(fieldId);
             }
         }
 
@@ -904,6 +913,13 @@ namespace Raccoon.Data
             }
 
             return datatable;
+        }
+
+        public object Clone()
+        {
+            DataStore data1 = null, data2 = null;
+            new DataStoreSplitterRatio(this, 1.0).Split(ref data1, ref data2);
+            return data1;
         }
 
         #region System.Object Methods

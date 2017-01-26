@@ -78,9 +78,7 @@ namespace Raccoon.Data
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
         {
             if (fold < 0) throw new ArgumentOutOfRangeException("fold");
-            if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");
-            if (dataStore1 == null) throw new ArgumentNullException("dataStore1");
-            if (dataStore2 == null) throw new ArgumentNullException("dataStore2");
+            if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");            
 
             this.GetTrainingData(ref dataStore1, fold);
             this.GetTestData(ref dataStore2, fold);

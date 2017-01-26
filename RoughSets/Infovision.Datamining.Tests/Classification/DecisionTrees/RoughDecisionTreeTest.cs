@@ -6,8 +6,10 @@ using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Filters;
 using Raccoon.MachineLearning.Roughset;
 using System;
+using System.Collections.Generic;
 
 namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
@@ -23,33 +25,35 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;
 
-            CrossValidation cv = new CrossValidation(data, folds);
-            var filter = new ReductFeatureSelectionFilter();
+            CrossValidation cv = new CrossValidation(data, folds);            
+            var discFilter = new DiscretizeFilter();
+            var reductFilter = new ReductFeatureSelectionFilter();
+            cv.Filters.Add(discFilter);
+            cv.Filters.Add(reductFilter);
 
             double eps = -1.0;
-            filter.Epsilon = eps;
+            reductFilter.Epsilon = eps;
 
             ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
-                    eps, emptyDistribution.Output, filter);
+                    eps, emptyDistribution.Output);
 
-            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
-                    eps, emptyDistribution.Output, filter);
+            //ErrorImpurityTestIntPerReduct_CV(
+            //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
 
             for (eps = 0.0; eps <= 0.99; eps += 0.01)
             {
-                filter.Epsilon = eps;
-                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
-                    eps, emptyDistribution.Output, filter);
+                reductFilter.Epsilon = eps;
 
-                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.ReducedErrorPruning, reductFactoryKey,
-                    eps, emptyDistribution.Output, filter);
+                ErrorImpurityTestIntPerReduct_CV(
+                    cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
+
+                //ErrorImpurityTestIntPerReduct_CV(
+                //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
             }
         }        
 
         private void ErrorImpurityTestIntPerReduct_CV(
-            CrossValidation cv,
-            PruningType pruningType, string redkey,
-            double eps, long output, IFilter filter)
+            CrossValidation cv, PruningType pruningType, string redkey, double eps, long output)
         {
             DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());            
             treeRough.DefaultOutput = output;

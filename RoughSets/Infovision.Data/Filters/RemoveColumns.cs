@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Raccoon.Data.Filters
 {
-    public class RemoveColumns : IFilter
+    public class RemoveColumns : FilterBase
     {
         private IEnumerable<int> toRemove;
 
@@ -14,9 +14,9 @@ namespace Raccoon.Data.Filters
         {
             if (columnsToRemove == null) throw new ArgumentNullException("columnsToKeep");
             toRemove = columnsToRemove.ToArray();
-        }
+        }        
 
-        public DataStore Apply(DataStore data)
+        public override DataStore Apply(DataStore data)
         {
             if (data == null) throw new ArgumentNullException("data");
             var res = (DataStore)data.Clone();

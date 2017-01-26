@@ -100,6 +100,7 @@
     <Compile Include="DataStoreSplitter.cs" />
     <Compile Include="AttributeValueVector.cs" />
     <Compile Include="FileFormat.cs" />
+    <Compile Include="Filters\FilterBase.cs" />
     <Compile Include="Filters\KeepColumns.cs" />
     <Compile Include="Filters\RemoveColumns.cs" />
     <Compile Include="IDataReader.cs" />

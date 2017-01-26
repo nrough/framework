@@ -919,6 +919,7 @@ namespace Raccoon.Data
         {
             DataStore data1 = null, data2 = null;
             new DataStoreSplitterRatio(this, 1.0).Split(ref data1, ref data2);
+            data1.Name = this.Name;
             return data1;
         }
 

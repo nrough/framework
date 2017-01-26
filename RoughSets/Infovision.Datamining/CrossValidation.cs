@@ -6,43 +6,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Discretization;
 
 namespace Raccoon.MachineLearning
 {
-    public delegate void PostLearingMethod(IModel model);    
+    public delegate void PostLearingMethod(IModel model);
 
+    [Serializable]
     public class CrossValidation
     {
         private static int DefaultFolds = 5;
+
         public bool RunInParallel { get; set; }
         public PostLearingMethod PostLearningMethod { get; set; }
         public DataStore Data { get; set; }
-        public IDataStoreSplitter Splitter { get; set; }
-        public bool Discretize { get; set; }
-        public IFilter Filter { get; set; }
-
-        public CrossValidation(DataStore data)
-        {
-            this.RunInParallel = true;
-            this.Data = data;
-            this.Splitter = new DataStoreSplitter(data, DefaultFolds, true);
-        }
-
-        public CrossValidation(DataStore data, int folds)
-        {
-            this.RunInParallel = true;
-            this.Data = data;
-            this.Splitter = new DataStoreSplitter(data, folds, true);
-        }
+        public IDataStoreSplitter Splitter { get; set; }        
+        public IList<IFilter> Filters { get; set; }
 
         public CrossValidation(DataStore data, IDataStoreSplitter splitter)
         {
             this.RunInParallel = true;
             this.Data = data;
             this.Splitter = splitter;
+            this.Filters = new List<IFilter>();
         }
 
+        public CrossValidation(DataStore data, int folds)
+            : this(data, new DataStoreSplitter(data, folds, true)) { }
+
+        public CrossValidation(DataStore data)
+            : this(data, new DataStoreSplitter(data, DefaultFolds, true)) { }
+                
         public ClassificationResult Run<T>(T modelPrototype, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {            
@@ -55,22 +48,33 @@ namespace Raccoon.MachineLearning
             return this.Run<T>(modelPrototype, this.Data.GetStandardFields());
         }
 
+        private DataStore ComputeFilters(DataStore data)
+        {
+            var res = data;            
+            foreach (var filter in Filters)
+            {
+                filter.Compute(res);
+                res = filter.Apply(res);
+            }
+            return res;
+        }
+
+        private DataStore ApplyFilters(DataStore data)
+        {
+            var res = data;
+            foreach (var filter in Filters)
+                res = filter.Apply(res);
+            return res;
+        }
+
         private ClassificationResult RunFold<T>(T modelPrototype, 
             IDataStoreSplitter dataSplitter, int fold, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
-            DataStore trainDS = null, testDS = null;
-            dataSplitter.Split(ref trainDS, ref testDS, fold);
-
-            if (Discretize)
-            {
-                var discretizer = new DataStoreDiscretizer();
-                discretizer.Discretize(trainDS, trainDS.Weights);
-            }
-
-            DataStore filteredTrainDs = trainDS;
-            if (Filter != null)
-                filteredTrainDs = Filter.Apply(trainDS);
+            DataStore trainDs = null, testDs = null;
+            dataSplitter.Split(ref trainDs, ref testDs, fold);
+            
+            DataStore filteredTrainDs = ComputeFilters(trainDs);
 
             HashSet<int> localAttributes = new HashSet<int>();
             foreach (var fieldId in attributes)
@@ -93,17 +97,7 @@ namespace Raccoon.MachineLearning
             if (this.PostLearningMethod != null)
                 this.PostLearningMethod(model);
 
-            if (Discretize)
-            {
-                if (testDS.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
-                    DataStoreDiscretizer.Discretize(testDS, result.TestData);
-            }
-
-            DataStore filteredTestDs = trainDS;
-            if (Filter != null)
-                filteredTestDs = Filter.Apply(trainDS);
-
-            return Classifier.DefaultClassifer.Classify(model, filteredTestDs);
+            return Classifier.DefaultClassifer.Classify(model, ApplyFilters(testDs));
         }
 
         private ClassificationResult CV<T>(T modelPrototype, DataStore data, 

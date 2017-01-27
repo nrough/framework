@@ -6,7 +6,9 @@ namespace Raccoon.MachineLearning.Filters
 {
     [Serializable]
     public class DiscretizeFilter : IFilter
-    {
+    {        
+        private object syncRoot = new object();
+
         public DataStoreDiscretizer DataStoreDiscretizer { get; set; } = null;
         private DataStore discretizedData;
 

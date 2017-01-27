@@ -34,8 +34,9 @@ namespace Raccoon.Data.Filters
 
         #region Methods
         public DataStore Apply(DataStore data)
-        {            
-            return new KeepColumns(GetReduct(data)).Apply(data);
+        {
+            int[] attributes = GetReduct(data).Union(new int[] { data.DataStoreInfo.DecisionFieldId }).ToArray();            
+            return new KeepColumns(attributes).Apply(data);
         }
 
         public void Compute(DataStore data)
@@ -53,7 +54,7 @@ namespace Raccoon.Data.Filters
 
                 if (this.Epsilon >= 0.0)
                 {
-                    if (AttributePermutations != null)
+                    if (AttributePermutations == null)
                         AttributePermutations = new PermutationCollection(
                             NumberOfReductsToTest, data.GetStandardFields());
 
@@ -76,10 +77,7 @@ namespace Raccoon.Data.Filters
                 else
                 {
                     res = data.GetStandardFields().ToArray();
-                }
-
-                if (data.DataStoreInfo.DecisionFieldId != 0)
-                    res = res.Union(new int[] { data.DataStoreInfo.DecisionFieldId }).ToArray();
+                }                
                 
                 if (UseCache)
                     reductCache.Add(GetCacheKey(data), res);
@@ -89,10 +87,8 @@ namespace Raccoon.Data.Filters
         }
 
         private string GetCacheKey(DataStore data)
-        {
-            //TODO Should we use some kind of data HashKey?
-            return String.Format("{0}.{1}.{2}.{3}.{4}", 
-                data.Name, data.Fold, data.NumberOfRecords, data.DataStoreInfo.NumberOfFields, Epsilon);
+        {            
+            return String.Format("{0}.{1}.{2}", data.TableId, data.Fold, Epsilon);
         }
         #endregion
     }

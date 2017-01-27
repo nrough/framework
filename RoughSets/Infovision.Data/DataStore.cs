@@ -19,15 +19,12 @@ namespace Raccoon.Data
         private long capacity;
         private int lastIndex;
         private double capacityFactor;
-
         private Dictionary<long, int> objectId2Index;
-        
         private long[] index2ObjectId;
         private double[] weights;
-
         private long[] index2OrigObjectId; //used in case of bagging   
 
-        private readonly object mutex = new object();
+        private readonly object syncRoot = new object();
 
         #endregion
 
@@ -39,6 +36,8 @@ namespace Raccoon.Data
         public bool IsBag { get { return this.index2OrigObjectId != null; } }
         public int NumberOfRecords { get { return this.DataStoreInfo.NumberOfRecords; } }
         public double[] Weights { get { return this.weights; } }
+
+        public Guid TableId { get; set; }
 
         #endregion
 
@@ -316,7 +315,7 @@ namespace Raccoon.Data
 
         public void SwitchColumns(int fieldId1, int fieldId2)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 int fieldIdx1 = this.DataStoreInfo.GetFieldIndex(fieldId1);
                 int fieldIdx2 = this.DataStoreInfo.GetFieldIndex(fieldId2);
@@ -334,25 +333,29 @@ namespace Raccoon.Data
         }
 
         public void RemoveColumn(int fieldId)
-        {
-            lock (mutex)
+        {            
+            lock (syncRoot)
             {
-                long[] newArray = new long[(this.DataStoreInfo.NumberOfFields - 1) * this.NumberOfRecords];
+                if (this.DataStoreInfo.GetFieldInfo(fieldId) == null)
+                    return;
+
+                long[] newData = new long[(this.DataStoreInfo.NumberOfFields - 1) * this.NumberOfRecords];
                 int j = 0;
                 int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
                 for (int i = 0; i < this.DataStoreInfo.NumberOfFields * this.NumberOfRecords; i++)
-                {
-                    if (j != (fieldIdx % this.NumberOfRecords))
-                        newArray[j++] = this.data[i];
+                 {
+                    if ((i % this.DataStoreInfo.NumberOfFields) != fieldIdx)
+                        newData[j++] = this.data[i];
                 }
-           
+
                 this.DataStoreInfo.RemoveFieldInfo(fieldId);
+                this.data = newData;
             }
         }
 
         public void RemoveColumn(IEnumerable<int> fieldIds)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 foreach (int fieldId in fieldIds)
                     RemoveColumn(fieldId);
@@ -436,7 +439,9 @@ namespace Raccoon.Data
 
         public AttributeValueVector GetDataVector(int objectIdx)
         {
-            return new AttributeValueVector(this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(), this.GetFieldValues(objectIdx), false);
+            return new AttributeValueVector(
+                this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(), 
+                this.GetFieldValues(objectIdx), false);
         }
 
         public void GetFieldValues(int objectIndex, int[] fieldIds, ref long[] cursor)
@@ -919,7 +924,11 @@ namespace Raccoon.Data
         {
             DataStore data1 = null, data2 = null;
             new DataStoreSplitterRatio(this, 1.0).Split(ref data1, ref data2);
+
             data1.Name = this.Name;
+            data1.Fold = this.Fold;
+            data1.TableId = this.TableId;
+
             return data1;
         }
 

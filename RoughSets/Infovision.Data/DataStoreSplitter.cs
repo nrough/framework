@@ -78,49 +78,47 @@ namespace Raccoon.Data
         public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
         {
             if (fold < 0) throw new ArgumentOutOfRangeException("fold");
-            if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");            
+            if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");
 
-            this.GetTrainingData(ref dataStore1, fold);
-            this.GetTestData(ref dataStore2, fold);
+            Guid guid = Guid.NewGuid();
+            this.GetTrainingData(ref dataStore1, fold, guid);            
+            this.GetTestData(ref dataStore2, fold, guid);            
         }
 
-        private void GetTrainingData(ref DataStore dataStore1, int fold)
-        {                       
-            if (!this.SplitCalculated)
-                this.GenerateSplit();
+        private void GetTrainingData(ref DataStore dataStore1, int fold, Guid guid)
+        {
+            dataStore1 = null;
 
-            if (this.UseDataStoreCache && this.cacheTestDS.ContainsKey(fold))
+            lock (syncRoot)
             {
-                dataStore1 = this.cacheTrainDS[fold];
-                return;
-            }
+                if (!this.SplitCalculated)
+                    this.GenerateSplit();
 
-            DataStoreInfo dataStoreInfo1 = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
-            dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
-            dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[fold];
+                if (this.UseDataStoreCache && cacheTrainDS.TryGetValue(fold, out dataStore1))                                     
+                    return;
 
-            dataStore1 = new DataStore(dataStoreInfo1);
-            dataStore1.Name = dataStore.Name + "-TRN-" + fold.ToString();
-            dataStore1.Fold = fold;
+                DataStoreInfo dataStoreInfo1 = new DataStoreInfo(dataStore.DataStoreInfo.NumberOfFields);
+                dataStoreInfo1.InitFromDataStoreInfo(dataStore.DataStoreInfo, true, true);
+                dataStoreInfo1.NumberOfRecords = dataStore.DataStoreInfo.NumberOfRecords - foldSize[fold];
 
-            for (int i = 0; i < folds.Length; i++)
-                if (folds[i] != fold)
-                    dataStore1.Insert(dataStore.GetRecordByIndex(i));
+                dataStore1 = new DataStore(dataStoreInfo1);
+                dataStore1.Name = dataStore.Name + "-TRN-" + fold.ToString();
+                dataStore1.Fold = fold;
 
-            dataStore1.NormalizeWeights();
-            dataStore1.CreateWeightHistogramsOnFields();
+                for (int i = 0; i < folds.Length; i++)
+                    if (folds[i] != fold)
+                        dataStore1.Insert(dataStore.GetRecordByIndex(i));
 
-            if (this.UseDataStoreCache && !this.cacheTrainDS.ContainsKey(fold))
-            {
-                lock (syncRoot)
-                {
-                    if(!this.cacheTrainDS.ContainsKey(fold))
-                        this.cacheTrainDS.Add(fold, dataStore1);
-                }
+                dataStore1.NormalizeWeights();
+                dataStore1.CreateWeightHistogramsOnFields();
+                dataStore1.TableId = guid;
+
+                if (this.UseDataStoreCache)
+                    this.cacheTrainDS.Add(fold, dataStore1);
             }
         }
 
-        private void GetTestData(ref DataStore dataStore2, int fold)
+        private void GetTestData(ref DataStore dataStore2, int fold, Guid guid)
         {                        
             if (!this.SplitCalculated)
                 this.GenerateSplit();
@@ -145,6 +143,7 @@ namespace Raccoon.Data
 
             dataStore2.NormalizeWeights();
             dataStore2.CreateWeightHistogramsOnFields();
+            dataStore2.TableId = guid;
 
             if (this.UseDataStoreCache && !this.cacheTestDS.ContainsKey(fold))
             {

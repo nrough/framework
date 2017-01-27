@@ -7,17 +7,7 @@ namespace Raccoon.Data.Tests
 {
     [TestFixture]
     internal class DataStoreTest
-    {        
-        [Test]
-        public void RemoveColumnTest()
-        {
-            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
-            Assert.NotNull(data);
-            int numOfCols = data.DataStoreInfo.NumberOfFields;            
-            data.RemoveColumn(2);
-            Assert.AreEqual(numOfCols - 1, data.DataStoreInfo.NumberOfFields);
-        }
-
+    {                
         [Test]
         public void AddColumnTest()
         {
@@ -33,17 +23,65 @@ namespace Raccoon.Data.Tests
         [Test]
         public void AddAndRemoveColumnTest()
         {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);                        
+            var data2 = (DataStore) data.Clone();
+
+            int[] newColumn = Enumerable.Range(0, data2.NumberOfRecords).ToArray();
+            data2.AddColumn<int>(newColumn);
+            data2.AddColumn<int>(newColumn);
+            data2.AddColumn<int>(newColumn);
+
+            data2.RemoveColumn(2);
+
+            Assert.AreEqual(data.DataStoreInfo.NumberOfFields + 3 - 1, data.DataStoreInfo.NumberOfFields);
+
+            for (int i = 0; i < data.NumberOfRecords; i++)
+            {
+                AttributeValueVector vector = data2.GetDataVector(i);
+                for (int j = 0; j < vector.Length; j++)
+                    Assert.AreEqual(data.GetFieldValue(i, vector.Attributes[j]), vector.Values[j]);
+            }
+        }
+
+        [Test]
+        public void CloneTest()
+        {
             var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
-            Assert.NotNull(data);
-            int numOfCols = data.DataStoreInfo.NumberOfFields;
-            int[] newColumn = Enumerable.Range(0, data.NumberOfRecords).ToArray();
-            data.AddColumn<int>(newColumn);
-            data.AddColumn<int>(newColumn);
-            data.AddColumn<int>(newColumn);
+            var data2 = (DataStore)data.Clone();
 
-            data.RemoveColumn(2);
+            Assert.IsNotNull(data2);
+            Assert.AreNotSame(data, data2);
+            Assert.AreEqual(data.Name, data2.Name);
+            Assert.AreEqual(data.Fold, data2.Fold);
+            Assert.AreEqual(data.TableId, data2.TableId);
+            Assert.AreEqual(data.NumberOfRecords, data2.NumberOfRecords);
 
-            Assert.AreEqual(numOfCols + 3 - 1, data.DataStoreInfo.NumberOfFields);
+            for (int i = 0; i < data.NumberOfRecords; i++)
+            {
+                AttributeValueVector vector = data2.GetDataVector(i);
+                for (int j = 0; j < vector.Length; j++)
+                    Assert.AreEqual(data.GetFieldValue(i, vector.Attributes[j]), vector.Values[j]);
+            }
+
+        }
+
+        [Test]
+        public void RemoveColumnTest()
+        {
+            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);            
+            var data2 = (DataStore) data.Clone();
+
+            data2.RemoveColumn(1);
+            data2.RemoveColumn(new int[] { 1 });
+            data2.RemoveColumn(new int[] { 2, 3, 4, 7, 11, 13 } );
+
+            for (int i = 0; i < data2.NumberOfRecords; i++)
+            {
+                AttributeValueVector vector = data2.GetDataVector(i);
+                for (int j = 0; j < vector.Length; j++)
+                    Assert.AreEqual(data.GetFieldValue(i, vector.Attributes[j]), vector.Values[j]);
+                Assert.AreEqual(data.GetDecisionValue(i), data2.GetDecisionValue(i));
+            }
         }
 
         [Test]

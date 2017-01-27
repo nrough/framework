@@ -88,6 +88,8 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected virtual void CreateReductStoreFromPermutationCollection(PermutationCollection permutationList)
         {
+            if (permutationList == null) throw new ArgumentNullException("permutationList");
+
             ParallelOptions options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism

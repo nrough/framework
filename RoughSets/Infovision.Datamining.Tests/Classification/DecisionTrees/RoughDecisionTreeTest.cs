@@ -6,6 +6,7 @@ using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+using Raccoon.MachineLearning.Discretization;
 using Raccoon.MachineLearning.Filters;
 using Raccoon.MachineLearning.Roughset;
 using System;
@@ -16,7 +17,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     [TestFixture]
     public class RoughDecisionTreeTest
     {
-        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 2)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);            
@@ -27,15 +28,29 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             CrossValidation cv = new CrossValidation(data, folds);            
             var discFilter = new DiscretizeFilter();
-            var reductFilter = new ReductFeatureSelectionFilter();
+
+            discFilter.DataStoreDiscretizer =
+                new DataStoreDiscretizer(
+                    new DiscretizeSupervisedBase()
+                    {
+                        NumberOfBuckets = 5
+                    })
+                {
+                    RemoveColumnAfterDiscretization = true,
+                    UpdateDataColumns = false,
+                    AddColumnsBasedOnCuts = true,
+                    UseBinaryCuts = false
+                };
+
+            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 5 };
             cv.Filters.Add(discFilter);
             cv.Filters.Add(reductFilter);
 
             double eps = -1.0;
             reductFilter.Epsilon = eps;
 
-            ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey,
-                    eps, emptyDistribution.Output);
+            //ErrorImpurityTestIntPerReduct_CV(
+            //    cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
 
             //ErrorImpurityTestIntPerReduct_CV(
             //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);

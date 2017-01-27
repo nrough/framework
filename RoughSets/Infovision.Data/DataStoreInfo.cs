@@ -15,14 +15,14 @@ namespace Raccoon.Data
         #region Members
 
         private int minFieldId = Int32.MaxValue;
-        private int maxFieldId = Int32.MinValue;
-        private int decisionFieldId;
-        private int decisionFieldIdx;
-        private DataFieldInfo decisionFieldInfo;
+        private int maxFieldId = Int32.MinValue;        
         private Dictionary<int, DataFieldInfo> fields;
         private Dictionary<int, FieldGroup> fieldTypes;
         private Dictionary<FieldGroup, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
+        private int decisionFieldId;
+        private int decisionFieldIdx;
+        private DataFieldInfo decisionFieldInfo;
         private int[] fieldIndexLookup;
         private readonly object syncRoot = new object();
 
@@ -131,26 +131,6 @@ namespace Raccoon.Data
         public ICollection<long> GetDecisionValues()
         {
             return this.DecisionInfo.InternalValues();
-        }        
-
-        public int[] GetFieldIndexLookupTable()
-        {            
-            if (this.fieldIndexLookup == null)
-            {
-                lock (syncRoot)
-                {
-                    if (this.fieldIndexLookup == null)
-                    {
-                        this.fieldIndexLookup = new int[this.maxFieldId + 1];
-                        foreach (var kvp in this.fieldId2Index)
-                        {
-                            this.fieldIndexLookup[kvp.Key] = kvp.Value;
-                        }
-                    }
-                }
-            }
-
-            return this.fieldIndexLookup;
         }
 
         public int GetFieldIndex(int fieldId)
@@ -222,20 +202,23 @@ namespace Raccoon.Data
         }
 
         public void RemoveFieldInfo(int fieldId)
-        {
-            //this.fields[fieldId].IsDeleted = true;
-            
+        {                        
             this.fieldTypeCount[this.fieldTypes[fieldId]]--;
             this.fieldTypes.Remove(fieldId);
             this.fields.Remove(fieldId);
             this.NumberOfFields--;
+
             int fieldIndex = this.fieldId2Index[fieldId];
+            fieldId2Index.Remove(fieldId);
+
             foreach (int idx in this.fieldId2Index.Keys.ToList())
             {
                 if (this.fieldId2Index[idx] > fieldIndex)
                     this.fieldId2Index[idx]--;
             }
-            
+
+            if (this.decisionFieldIdx > fieldIndex)
+                this.decisionFieldIdx--;
         }
 
         public void SetFieldIndex(int fieldId, int fieldIdx)

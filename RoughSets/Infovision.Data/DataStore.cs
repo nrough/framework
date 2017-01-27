@@ -923,7 +923,7 @@ namespace Raccoon.Data
         public object Clone()
         {
             DataStore data1 = null, data2 = null;
-            new DataStoreSplitterRatio(this, 1.0).Split(ref data1, ref data2);
+            new DataStoreSplitterRatio(this, 1.0).Split(out data1, out data2);
 
             data1.Name = this.Name;
             data1.Fold = this.Fold;

@@ -7,7 +7,7 @@ namespace Raccoon.Data
 {
     public interface IDataStoreSplitter
     {
-        void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold);
+        void Split(out DataStore dataStore1, out DataStore dataStore2, int fold);
         int NFold { get; }
     }
 
@@ -75,17 +75,17 @@ namespace Raccoon.Data
 
         #region Methods
                 
-        public virtual void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
+        public virtual void Split(out DataStore dataStore1, out DataStore dataStore2, int fold = 0)
         {
             if (fold < 0) throw new ArgumentOutOfRangeException("fold");
             if (fold >= this.NFold) throw new ArgumentOutOfRangeException("fold", "fold >= this.NFold");
 
             Guid guid = Guid.NewGuid();
-            this.GetTrainingData(ref dataStore1, fold, guid);            
-            this.GetTestData(ref dataStore2, fold, guid);            
+            this.GetTrainingData(out dataStore1, fold, guid);            
+            this.GetTestData(out dataStore2, fold, guid);            
         }
 
-        private void GetTrainingData(ref DataStore dataStore1, int fold, Guid guid)
+        private void GetTrainingData(out DataStore dataStore1, int fold, Guid guid)
         {
             dataStore1 = null;
 
@@ -118,7 +118,7 @@ namespace Raccoon.Data
             }
         }
 
-        private void GetTestData(ref DataStore dataStore2, int fold, Guid guid)
+        private void GetTestData(out DataStore dataStore2, int fold, Guid guid)
         {                        
             if (!this.SplitCalculated)
                 this.GenerateSplit();
@@ -241,9 +241,9 @@ namespace Raccoon.Data
             return (this.SplitRatio > RandomSingleton.Random.NextDouble()) ? 1 : 0;
         }
 
-        public override void Split(ref DataStore dataStore1, ref DataStore dataStore2, int fold = 0)
+        public override void Split(out DataStore dataStore1, out DataStore dataStore2, int fold = 0)
         {
-            base.Split(ref dataStore1, ref dataStore2, 0);
+            base.Split(out dataStore1, out dataStore2, 0);
         }
     }
 }

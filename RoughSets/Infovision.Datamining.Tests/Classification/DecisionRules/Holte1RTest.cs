@@ -65,7 +65,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {
-                splitter.Split(ref train, ref test, f);
+                splitter.Split(out train, out test, f);
 
                 Holte1R oneR = new Holte1R();                
                 oneR.Learn(train, attributes);                

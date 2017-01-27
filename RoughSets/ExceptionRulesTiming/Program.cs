@@ -75,7 +75,7 @@ namespace ExceptionRulesTiming
                 {
                     trainData = null;
                     testData = null;                    
-                    splitter.Split(ref trainData, ref testData, f);
+                    splitter.Split(out trainData, out testData, f);
                 }
                 else if (f == 0)
                 {

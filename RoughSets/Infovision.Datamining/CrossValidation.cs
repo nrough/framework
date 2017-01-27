@@ -72,7 +72,7 @@ namespace Raccoon.MachineLearning
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
             DataStore trainDs = null, testDs = null;
-            dataSplitter.Split(ref trainDs, ref testDs, fold);
+            dataSplitter.Split(out trainDs, out testDs, fold);
             
             DataStore filteredTrainDs = ComputeFilters(trainDs);
 

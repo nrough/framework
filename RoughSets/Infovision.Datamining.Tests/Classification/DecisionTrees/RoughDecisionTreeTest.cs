@@ -26,7 +26,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;
 
-            CrossValidation cv = new CrossValidation(data, folds);            
+            CrossValidation cv = new CrossValidation(data, folds);
             var discFilter = new DiscretizeFilter();
 
             discFilter.DataStoreDiscretizer =

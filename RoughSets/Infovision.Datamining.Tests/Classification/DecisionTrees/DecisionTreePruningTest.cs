@@ -27,7 +27,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DataStore train = null, prune = null;
             DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
-            splitter.Split(ref train, ref prune);
+            splitter.Split(out train, out prune);
 
             DecisionTreeC45 c45WithPruning = new DecisionTreeC45();
             c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
@@ -74,7 +74,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             DataStore train = null, prune = null;
             DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
-            splitter.Split(ref train, ref prune);
+            splitter.Split(out train, out prune);
 
             var c45WithPruning = new DecisionTreeC45();
             c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());

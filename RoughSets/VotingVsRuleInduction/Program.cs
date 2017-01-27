@@ -217,7 +217,7 @@ namespace VotingVsRuleInduction
 
                 for (int i = 0; i < benchmark.CrossValidationFolds; i++)
                 {                    
-                    splitter.Split(ref t1, ref t2, i);
+                    splitter.Split(out t1, out t2, i);
                     dataTuple[i] = new Tuple<DataStore, DataStore, int>(t1, t2, i);
                 }
             }

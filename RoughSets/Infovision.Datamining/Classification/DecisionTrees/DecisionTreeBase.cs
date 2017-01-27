@@ -206,7 +206,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
             for (int f = 0; f < cvSplitter.NFold; f++)
             {
-                cvSplitter.Split(ref trainSet, ref pruningSet, f);
+                cvSplitter.Split(out trainSet, out pruningSet, f);
                 
                 var tmpTree = (DecisionTreeBase) this.Clone();                                
                 tmpTree.PruningType = PruningType.None;

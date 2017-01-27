@@ -30,7 +30,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
                 for (int f = 0; f < numOfFolds; f++)
                 {                    
-                    splitter.Split(ref train, ref test, f);
+                    splitter.Split(out train, out test, f);
 
                     DecisionTreeRough tree = new DecisionTreeRough();
                     tree.Gamma = eps;
@@ -59,7 +59,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
-                splitter.Split(ref train, ref test, f);                
+                splitter.Split(out train, out test, f);                
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.PruningType = PruningType.ErrorBasedPruning;
@@ -86,7 +86,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
-                splitter.Split(ref train, ref test, f);
+                splitter.Split(out train, out test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
@@ -114,7 +114,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
-                splitter.Split(ref train, ref test, f);
+                splitter.Split(out train, out test, f);
 
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
@@ -144,7 +144,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
-                splitter.Split(ref train, ref test, f);
+                splitter.Split(out train, out test, f);
 
                 DecisionForestRandom<DecisionTreeRough> forest = new DecisionForestRandom<DecisionTreeRough>();
                 //forest.NumberOfAttributesToCheckForSplit = 3;

@@ -62,7 +62,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             DataStoreSplitter splitter = new DataStoreSplitter(data, 5);
 
             DataStore trainData = null, testData = null;
-            splitter.Split(ref trainData, ref testData, 0);
+            splitter.Split(out trainData, out testData, 0);
 
             int numberOfFields = trainData.DataStoreInfo.NumberOfFields;
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo

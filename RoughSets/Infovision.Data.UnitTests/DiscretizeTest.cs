@@ -49,7 +49,7 @@ namespace Raccoon.Data.Tests
             for (int i = 0; i < benchmark.CrossValidationFolds; i++)
             {
                 if (splitter != null)                    
-                    splitter.Split(ref train, ref test, i);                
+                    splitter.Split(out train, out test, i);                
 
                 Args args = new Args();
                 args.SetParameter(ReductGeneratorParamHelper.TrainData, train);

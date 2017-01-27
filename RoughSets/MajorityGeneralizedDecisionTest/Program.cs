@@ -310,7 +310,7 @@ namespace MajorityGeneralizedDecisionTest
 
                     if (splitter != null)
                     {                        
-                        splitter.Split(ref trainData, ref testData, f);
+                        splitter.Split(out trainData, out testData, f);
 
                         WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
                         trainData.SetWeights(weightGenerator.Weights);

@@ -230,7 +230,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                 for (int f = 0; f <= kvp.Value.CrossValidationFolds; f++)
                 {                    
-                    splitter.Split(ref trainData, ref testData, f);
+                    splitter.Split(out trainData, out testData, f);
 
                     for (int t = 0; t < numberOfTests; t++)
                     {

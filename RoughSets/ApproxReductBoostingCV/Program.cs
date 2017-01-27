@@ -107,7 +107,7 @@ namespace ApproxReductBoostingCV
                     DataStore trnFoldOrig = null;
                     DataStore tstFoldOrig = null;
                     
-                    splitter.Split(ref trnFoldOrig, ref tstFoldOrig, f);
+                    splitter.Split(out trnFoldOrig, out tstFoldOrig, f);
 
                     DataStore trnFoldReplaced = null;
 

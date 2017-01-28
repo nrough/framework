@@ -22,8 +22,7 @@ namespace Raccoon.Data
         private Dictionary<int, int> fieldId2Index;
         private int decisionFieldId;
         private int decisionFieldIdx;
-        private DataFieldInfo decisionFieldInfo;
-        private int[] fieldIndexLookup;
+        private DataFieldInfo decisionFieldInfo;        
         private readonly object syncRoot = new object();
 
         #endregion Members

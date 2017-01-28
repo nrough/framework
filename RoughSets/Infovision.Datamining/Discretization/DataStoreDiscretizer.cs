@@ -153,8 +153,7 @@ namespace Raccoon.MachineLearning.Discretization
                             }
 
                             if (RemoveColumnAfterDiscretization)
-                            {
-                                //TODO add column to delete list and delete at the end
+                            {                                
                                 dataToDiscretize.RemoveColumn(fieldId);
                             }
                         }
@@ -216,6 +215,7 @@ namespace Raccoon.MachineLearning.Discretization
                         localFieldInfoTest.IsOrdered = true;
                         dataToDiscretize.UpdateColumn(fieldId, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
                     }
+
                     
                     IEnumerable<DataFieldInfo> derivedFields = discretizedData.DataStoreInfo
                         .GetFields(f => f.DerivedFrom == fieldId && f.Cuts != null);
@@ -237,6 +237,11 @@ namespace Raccoon.MachineLearning.Discretization
                             newFieldInfo.Alias = derivedField.Alias;
                             newFieldInfo.DerivedFrom = fieldId;
                         }
+                    }
+
+                    if (localFieldInfoTrain == null)
+                    {
+                        dataToDiscretize.RemoveColumn(fieldId);
                     }
                 }
             }

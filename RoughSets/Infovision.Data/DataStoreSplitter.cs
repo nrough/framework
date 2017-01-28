@@ -112,6 +112,7 @@ namespace Raccoon.Data
                 dataStore1.NormalizeWeights();
                 dataStore1.CreateWeightHistogramsOnFields();
                 dataStore1.TableId = guid;
+                dataStore1.DatasetType = DatasetType.Training;
 
                 if (this.UseDataStoreCache)
                     this.cacheTrainDS.Add(fold, dataStore1);
@@ -144,6 +145,7 @@ namespace Raccoon.Data
             dataStore2.NormalizeWeights();
             dataStore2.CreateWeightHistogramsOnFields();
             dataStore2.TableId = guid;
+            dataStore2.DatasetType = DatasetType.Testing;
 
             if (this.UseDataStoreCache && !this.cacheTestDS.ContainsKey(fold))
             {

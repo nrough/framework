@@ -22,7 +22,7 @@ namespace Raccoon.Data
         private Dictionary<long, int> objectId2Index;
         private long[] index2ObjectId;
         private double[] weights;
-        private long[] index2OrigObjectId; //used in case of bagging   
+        private long[] index2OrigObjectId; //used in case of bagging
 
         private readonly object syncRoot = new object();
 
@@ -38,6 +38,7 @@ namespace Raccoon.Data
         public double[] Weights { get { return this.weights; } }
 
         public Guid TableId { get; set; }
+        public DatasetType DatasetType { get; set; }
 
         #endregion
 
@@ -151,9 +152,11 @@ namespace Raccoon.Data
 
             foreach (int fieldId in record.GetFields())
             {
-                long value = record[fieldId];
-                this.data[lastIndex * this.DataStoreInfo.NumberOfFields + (fieldId - 1)] = value;
-                var field = this.DataStoreInfo.GetFieldInfo(fieldId);
+                //int fieldIdx = fieldId - 1;
+                int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
+                var field = this.DataStoreInfo.GetFieldInfo(fieldId);                
+                long value = record[fieldId];                                
+                this.data[lastIndex * this.DataStoreInfo.NumberOfFields + fieldIdx] = value;
                 field.IncreaseHistogramCount(value);
                 field.IncreaseHistogramWeightsCount(value, 1);
             }
@@ -928,6 +931,7 @@ namespace Raccoon.Data
             data1.Name = this.Name;
             data1.Fold = this.Fold;
             data1.TableId = this.TableId;
+            data1.DatasetType = this.DatasetType;
 
             return data1;
         }

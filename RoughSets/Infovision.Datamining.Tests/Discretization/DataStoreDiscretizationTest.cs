@@ -47,12 +47,22 @@ namespace Raccoon.MachineLearning.Tests.Discretization
                 .Where(f => f.CanDiscretize())
                 .Select(g => g.Id) : fields;
 
-            var discretizer = new DataStoreDiscretizer();
+            var discretizer =
+                new DataStoreDiscretizer(
+                    new DiscretizeSupervisedBase()
+                    {
+                        NumberOfBuckets = 5
+                    })
+                {
+                    RemoveColumnAfterDiscretization = true,
+                    UpdateDataColumns = false,
+                    AddColumnsBasedOnCuts = true,
+                    UseBinaryCuts = true
+                };
+
             discretizer.Fields2Discretize = numericFields;
             discretizer.AddColumnsBasedOnCuts = true;
-            discretizer.Discretize(data);
-
-            Assert.AreEqual(numberOfFields + 1, data.DataStoreInfo.NumberOfFields);
+            discretizer.Discretize(data);            
         }
 
         [TestCase(@"Data\german.data", FileFormat.Csv, new int[] { 2 })]

@@ -17,10 +17,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     [TestFixture]
     public class RoughDecisionTreeTest
     {
-        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 2)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
-            DataStore data = DataStore.Load(dataFile, fileFormat);            
+            DataStore data = DataStore.Load(dataFile, fileFormat);
             
             var emptyDistribution = EquivalenceClassCollection
                 .Create(new int[] { }, data, data.Weights)
@@ -33,29 +33,29 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 new DataStoreDiscretizer(
                     new DiscretizeSupervisedBase()
                     {
-                        NumberOfBuckets = 5
+                        NumberOfBuckets = 10
                     })
                 {
                     RemoveColumnAfterDiscretization = true,
                     UpdateDataColumns = false,
                     AddColumnsBasedOnCuts = true,
-                    UseBinaryCuts = false
+                    UseBinaryCuts = true
                 };
 
-            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 5 };
+            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 100 };
             cv.Filters.Add(discFilter);
             cv.Filters.Add(reductFilter);
 
             double eps = -1.0;
             reductFilter.Epsilon = eps;
 
-            //ErrorImpurityTestIntPerReduct_CV(
-            //    cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
+            ErrorImpurityTestIntPerReduct_CV(
+                cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
 
             //ErrorImpurityTestIntPerReduct_CV(
             //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
 
-            for (eps = 0.0; eps <= 0.99; eps += 0.01)
+            for (eps = 0.0; eps <= 0.05; eps += 0.01)
             {
                 reductFilter.Epsilon = eps;
 
@@ -70,11 +70,11 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         private void ErrorImpurityTestIntPerReduct_CV(
             CrossValidation cv, PruningType pruningType, string redkey, double eps, long output)
         {
-            DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());            
+            DecisionTreeC45 treeRough = new DecisionTreeC45("Rough-Majority-" + pruningType.ToSymbol());            
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
 
-            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
+            var treeRoughResult = cv.Run<DecisionTreeC45>(treeRough);
             treeRoughResult.Epsilon = eps;
             Console.WriteLine(treeRoughResult);
         }

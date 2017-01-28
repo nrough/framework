@@ -1,16 +1,12 @@
 ﻿using NUnit.Framework;
-using Raccoon.Core;
 using Raccoon.Data;
 using Raccoon.Data.Filters;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using Raccoon.MachineLearning.Discretization;
 using Raccoon.MachineLearning.Filters;
 using Raccoon.MachineLearning.Roughset;
 using System;
-using System.Collections.Generic;
 
 namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {

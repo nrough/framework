@@ -7,13 +7,14 @@ using Raccoon.MachineLearning.Discretization;
 using Raccoon.MachineLearning.Filters;
 using Raccoon.MachineLearning.Roughset;
 using System;
+using System.Diagnostics;
 
 namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class RoughDecisionTreeTest
     {
-        [Repeat(10)]
+        [Repeat(30)]
         [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
@@ -68,11 +69,22 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         private void ErrorImpurityTestIntPerReduct_CV(
             CrossValidation cv, PruningType pruningType, string redkey, double eps, long output)
         {
-            DecisionTreeC45 treeRough = new DecisionTreeC45("Rough-Majority-" + pruningType.ToSymbol());            
+            Trace.WriteLine("");
+            Trace.WriteLine("");
+
+            DecisionTreeC45 treeC45 = new DecisionTreeC45("RoughMajority-" + pruningType.ToSymbol());            
+            treeC45.DefaultOutput = output;
+            treeC45.PruningType = pruningType;
+
+            var treeC45Result = cv.Run<DecisionTreeC45>(treeC45);
+            treeC45Result.Epsilon = eps;
+            Console.WriteLine(treeC45Result);
+
+            DecisionTreeRough treeRough = new DecisionTreeRough("C45-" + pruningType.ToSymbol());
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
 
-            var treeRoughResult = cv.Run<DecisionTreeC45>(treeRough);
+            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
             treeRoughResult.Epsilon = eps;
             Console.WriteLine(treeRoughResult);
         }

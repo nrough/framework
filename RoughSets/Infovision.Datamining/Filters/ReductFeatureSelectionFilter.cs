@@ -12,7 +12,8 @@ namespace Raccoon.Data.Filters
     public class ReductFeatureSelectionFilter : IFilter
     {
         #region Members
-        private Dictionary<string, int[]> reductCache = new Dictionary<string, int[]>();
+        private Dictionary<string, int[]> reductCache;
+        private Dictionary<string, PermutationCollection> permutationCache;
         private object syncRoot = new object();
         #endregion
 
@@ -20,8 +21,7 @@ namespace Raccoon.Data.Filters
 
         public string ReductFactoryKey { get; set; } = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
         public double Epsilon { get; set; } = 0.03;
-        public int NumberOfReductsToTest { get; set; } = 100;
-        public PermutationCollection AttributePermutations { get; set; } = null;
+        public int NumberOfReductsToTest { get; set; } = 100;        
         public IComparer<IReduct> ReductComparer { get; set; } = ReductRuleNumberComparer.Default;
         public bool UseCache { get; set; } = true;
 
@@ -30,6 +30,8 @@ namespace Raccoon.Data.Filters
         #region Constructors
         public ReductFeatureSelectionFilter()
         {
+            reductCache = new Dictionary<string, int[]>();
+            permutationCache = new Dictionary<string, PermutationCollection>();
         }
         #endregion
 
@@ -51,7 +53,7 @@ namespace Raccoon.Data.Filters
         {            
             lock (syncRoot)
             {
-                int[] res = null;
+                int[] res;
                 if (UseCache && reductCache.TryGetValue(GetCacheKey(data), out res))
                 {
                     TraceAttributes(res, true);
@@ -60,24 +62,24 @@ namespace Raccoon.Data.Filters
 
                 if (this.Epsilon >= 0.0)
                 {
-                    if (AttributePermutations == null)
+                    PermutationCollection permutations;
+                    if (!permutationCache.TryGetValue(GetAttributePermutationCacheKey(data), out permutations))
                     {
-                        AttributePermutations = new PermutationCollection(
-                            NumberOfReductsToTest, data.GetStandardFields());
-
-                        TracePermutations(AttributePermutations, false);
+                        permutations = new PermutationCollection(NumberOfReductsToTest, data.GetStandardFields());
+                        permutationCache.Add(GetAttributePermutationCacheKey(data), permutations);
+                        TracePermutations(permutations, false);
                     }
                     else
                     {
-                        TracePermutations(AttributePermutations, true);
-                    }
+                        TracePermutations(permutations, true);
+                    }                                         
 
                     Args parms = new Args(4);
                     parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
                     parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKey);
                     parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, Epsilon);
                     parms.SetParameter<PermutationCollection>(
-                        ReductGeneratorParamHelper.PermutationCollection, AttributePermutations);                    
+                        ReductGeneratorParamHelper.PermutationCollection, permutations);                    
 
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                     generator.Run();
@@ -100,6 +102,11 @@ namespace Raccoon.Data.Filters
 
                 return res;
             }
+        }
+
+        private string GetAttributePermutationCacheKey(DataStore data)
+        {
+            return String.Format("{0}.{1}", data.TableId, data.Fold);
         }
 
         private string GetCacheKey(DataStore data)

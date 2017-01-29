@@ -43,7 +43,7 @@ namespace Raccoon.MachineLearning.Filters
                 cache.Add(GetCacheKey(data), discretizedData);
 
                 TraceData(discretizedData, false);
-            }            
+            }
         }
 
         public DataStore Apply(DataStore data)

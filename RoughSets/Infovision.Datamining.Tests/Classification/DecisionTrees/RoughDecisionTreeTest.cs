@@ -13,6 +13,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     [TestFixture]
     public class RoughDecisionTreeTest
     {
+        [Repeat(10)]
         [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
@@ -29,7 +30,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 new DataStoreDiscretizer(
                     new DiscretizeSupervisedBase()
                     {
-                        NumberOfBuckets = 10
+                        NumberOfBuckets = 5,
+                        SortCuts = false
                     })
                 {
                     RemoveColumnAfterDiscretization = true,
@@ -38,7 +40,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                     UseBinaryCuts = true
                 };
 
-            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 100 };
+            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 20 };
             cv.Filters.Add(discFilter);
             cv.Filters.Add(reductFilter);
 
@@ -51,7 +53,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //ErrorImpurityTestIntPerReduct_CV(
             //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
 
-            for (eps = 0.0; eps <= 0.05; eps += 0.01)
+            for (eps = 0.0; eps <= 0.02; eps += 0.01)
             {
                 reductFilter.Epsilon = eps;
 

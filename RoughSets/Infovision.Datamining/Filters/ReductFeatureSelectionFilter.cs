@@ -61,17 +61,23 @@ namespace Raccoon.Data.Filters
                 if (this.Epsilon >= 0.0)
                 {
                     if (AttributePermutations == null)
+                    {
                         AttributePermutations = new PermutationCollection(
                             NumberOfReductsToTest, data.GetStandardFields());
+
+                        TracePermutations(AttributePermutations, false);
+                    }
+                    else
+                    {
+                        TracePermutations(AttributePermutations, true);
+                    }
 
                     Args parms = new Args(4);
                     parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
                     parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKey);
                     parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, Epsilon);
                     parms.SetParameter<PermutationCollection>(
-                        ReductGeneratorParamHelper.PermutationCollection, AttributePermutations);
-
-                    TracePermutations(AttributePermutations);
+                        ReductGeneratorParamHelper.PermutationCollection, AttributePermutations);                    
 
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                     generator.Run();
@@ -102,11 +108,21 @@ namespace Raccoon.Data.Filters
         }
 
         [Conditional("DEBUG")]
-        private void TracePermutations(PermutationCollection permutations)
+        private void TracePermutations(PermutationCollection permutations, bool isCached)
         {
-            foreach (var perm in permutations)
+            if (isCached)
             {
-                Trace.WriteLine(String.Format("Perm: {0}", perm.ToArray().ToStr()));
+                foreach (var perm in permutations)
+                {
+                    Trace.WriteLine(String.Format("Cached perm: {0}", perm.ToArray().ToStr()));
+                }
+            }
+            else
+            {
+                foreach (var perm in permutations)
+                {
+                    Trace.WriteLine(String.Format("Perm: {0}", perm.ToArray().ToStr()));
+                }
             }
         }
 
@@ -114,6 +130,7 @@ namespace Raccoon.Data.Filters
         private void TraceData(DataStore data, bool compute)
         {            
             Trace.WriteLine(compute ? "Compute" : "Apply");
+            Trace.WriteLine(String.Format("Epsilon : {0}", this.Epsilon));
             Trace.WriteLine(String.Format("Name : {0}", data.Name));
             Trace.WriteLine(String.Format("Fold : {0}", data.Fold.ToString()));
             Trace.WriteLine(String.Format("Id : {0}", data.TableId.ToString()));

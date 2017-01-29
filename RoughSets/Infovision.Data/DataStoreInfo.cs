@@ -55,11 +55,8 @@ namespace Raccoon.Data
             {
                 if (this.decisionFieldId != value)
                 {
-                    if (this.decisionFieldId != 0)
-                    {
-                        int prevDecisionFieldId = this.decisionFieldId;
-                        fieldTypes[prevDecisionFieldId] = FieldGroup.Standard;
-                    }
+                    if (this.decisionFieldId > 0)                                             
+                        fieldTypes[this.decisionFieldId] = FieldGroup.Standard;
 
                     this.decisionFieldId = value;
 
@@ -134,7 +131,10 @@ namespace Raccoon.Data
 
         public int GetFieldIndex(int fieldId)
         {
-            return this.fieldId2Index[fieldId];
+            int index;
+            if (!fieldId2Index.TryGetValue(fieldId, out index))
+                throw new ArgumentException(String.Format("Field {0} does not exist", fieldId), "fieldId");
+            return index;
         }        
 
         public IEnumerable<int> GetFieldIds(FieldGroup fieldTypeFlags = FieldGroup.All)

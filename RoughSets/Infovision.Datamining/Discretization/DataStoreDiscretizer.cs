@@ -134,7 +134,8 @@ namespace Raccoon.MachineLearning.Discretization
                         {                            
                             for (int i = 1; i <= disc.Cuts.Length; i++)
                             {                                
-                                long[] localCuts = UseBinaryCuts == false ? disc.Cuts.SubArray(0, i) : disc.Cuts.SubArray(i-1, 1);
+                                long[] localCuts = UseBinaryCuts == false 
+                                    ? disc.Cuts.SubArray(0, i) : disc.Cuts.SubArray(i-1, 1);
                                 if(localCuts.Length > 1)
                                     Array.Sort(localCuts);
 

@@ -180,21 +180,20 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         {
             if (this.PruningCVFolds <= 1)
                 throw new InvalidOperationException("this.PruningCVFolds <= 1");
-            if (this.PruningObjective == PruningObjectiveType.None)
-                throw new InvalidOperationException("this.PruningObjective == PruningObjectiveType.None");
+            if (this.PruningCVFolds > 0 && this.PruningObjective == PruningObjectiveType.None)
+                throw new InvalidOperationException("this.PruningCVFolds > 0 && this.PruningObjective == PruningObjectiveType.None");
             if (this.PruningCVFolds > this.TrainingData.NumberOfRecords)
                 throw new InvalidOperationException("this.PruningCVFolds > data.NumberOfRecords");
         }
 
         private ClassificationResult LearnAndPrune(DataStore data, int[] attributes)
-        {
+        {            
             DataStoreSplitter cvSplitter = this.PruningDataSplitter == null
                 ? new DataStoreSplitter(data, this.PruningCVFolds, false)
                 : this.PruningDataSplitter;
 
             this.Init(data, attributes);
-
-            this.CheckPruningConditions();            
+            this.CheckPruningConditions();
 
             DataStore trainSet = null, pruningSet = null;
             IDecisionTree bestModel = null;
@@ -208,17 +207,17 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             {
                 cvSplitter.Split(out trainSet, out pruningSet, f);
                 
-                var tmpTree = (DecisionTreeBase) this.Clone();                                
+                var tmpTree = (DecisionTreeBase) this.Clone();
                 tmpTree.PruningType = PruningType.None;
                 tmpTree.Learn(trainSet, attributes);
 
                 pruningSet = (this.OnValidationDataSubmission == null) ? 
                     pruningSet : this.OnValidationDataSubmission(this, attributes, pruningSet);
 
-                if (pruningSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(fld => fld.CanDiscretize()))
-                {
-                    DataStoreDiscretizer.Discretize(pruningSet, trainSet);
-                }
+                //if (pruningSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(fld => fld.CanDiscretize()))
+                //{
+                //    DataStoreDiscretizer.Discretize(pruningSet, trainSet);
+                //}
                 
                 IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(this.PruningType, tmpTree, pruningSet); 
                 pruningMethod.Prune();

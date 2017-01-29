@@ -27,6 +27,13 @@ namespace Raccoon.MachineLearning.Discretization
         public int NumberOfBuckets { get; set; } = 5;
 
         /// <summary>
+        /// If true, cut point will always be returned as sorted array. Remember that Apply needs sorted cuts.
+        /// Setting to false will in come cases, cause to maintain the order in which the cuts were calculated. 
+        /// This might be helpful in order to create a hierarchy of cuts
+        /// </summary>
+        public bool SortCuts { get; set; } = true;
+
+        /// <summary>
         /// Calculated cut points
         /// </summary>
         public long[] Cuts
@@ -102,6 +109,12 @@ namespace Raccoon.MachineLearning.Discretization
 
         public static long[] Apply(long[] values, long[] cuts)
         {
+            //validate cuts
+            if (cuts == null) throw new ArgumentNullException("cuts");
+            for (int i = 1; i < cuts.Length; i++)
+                if (cuts[i] <= cuts[i - 1])
+                    throw new ArgumentException("cuts[i] <= cuts[i - 1]", "cuts");
+
             long[] result = new long[values.Length];
             for (int i = 0; i < values.Length; i++)
                 result[i] = DiscretizeBase.Apply(values[i], cuts);
@@ -133,9 +146,12 @@ namespace Raccoon.MachineLearning.Discretization
             if (cuts == null)
                 return true;
 
-            for (int i = 1; i < cuts.Length; i++)
-                if (cuts[i] <= cuts[i - 1])
-                    return false;
+            if (SortCuts)
+            {
+                for (int i = 1; i < cuts.Length; i++)
+                    if (cuts[i] <= cuts[i - 1])
+                        return false;
+            }
 
             return true;
         }

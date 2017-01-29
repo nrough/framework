@@ -1,7 +1,8 @@
 ﻿using System;
 
 namespace Raccoon.MachineLearning
-{        
+{
+    [Serializable]
     public abstract class ModelBase : IModel, ICloneable
     {
         public string ModelName { get; set; }        

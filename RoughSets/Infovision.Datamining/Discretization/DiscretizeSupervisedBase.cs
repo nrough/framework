@@ -16,8 +16,7 @@ namespace Raccoon.MachineLearning.Discretization
         protected static long[] rightInstance = new long[] { 2 };
 
         #region Properties
-
-        public bool SortCuts { get; set; } = true;
+       
         public ImpurityFunc Impurity { get; set; } = ImpurityMeasure.Entropy;
 
         #endregion

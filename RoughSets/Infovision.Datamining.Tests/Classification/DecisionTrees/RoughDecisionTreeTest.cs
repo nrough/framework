@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Raccoon.Data;
 using Raccoon.Data.Filters;
+using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using Raccoon.MachineLearning.Discretization;
@@ -54,7 +55,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //ErrorImpurityTestIntPerReduct_CV(
             //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
 
-            for (eps = 0.0; eps <= 0.02; eps += 0.01)
+            for (eps = 0.0; eps <= 0.05; eps += 0.01)
             {
                 reductFilter.Epsilon = eps;
 
@@ -72,7 +73,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             Trace.WriteLine("");
             Trace.WriteLine("");
 
-            DecisionTreeC45 treeC45 = new DecisionTreeC45("RoughMajority-" + pruningType.ToSymbol());            
+            DecisionTreeC45 treeC45 = new DecisionTreeC45("Rough-Majority-" + pruningType.ToSymbol());            
             treeC45.DefaultOutput = output;
             treeC45.PruningType = pruningType;
 
@@ -80,13 +81,22 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treeC45Result.Epsilon = eps;
             Console.WriteLine(treeC45Result);
 
-            DecisionTreeRough treeRough = new DecisionTreeRough("C45-" + pruningType.ToSymbol());
+            DecisionTreeRough treeRough = new DecisionTreeRough("C45-Entropy-" + pruningType.ToSymbol());
             treeRough.DefaultOutput = output;
             treeRough.PruningType = pruningType;
 
             var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
             treeRoughResult.Epsilon = eps;
-            Console.WriteLine(treeRoughResult);
+            Console.WriteLine(treeRoughResult);            
+
+            if (pruningType == PruningType.None)
+            {
+                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTab-Majority-" + pruningType.ToSymbol());                
+                decTabMaj.DefaultOutput = output;
+                var decTabMajResult = cv.Run<DecisionTableMajority>(decTabMaj);
+                decTabMajResult.Epsilon = eps;
+                Console.WriteLine(decTabMajResult);
+            }
         }
     }
 }

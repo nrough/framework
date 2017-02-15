@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Evaluation;
 
 namespace Raccoon.Data.Tests
 {
@@ -44,7 +45,7 @@ namespace Raccoon.Data.Tests
 
             for (int i = 0; i <= 100; i += 10)
             {
-                DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, (double)i / (double)100);                
+                DataSplitter dataStoreSplitter = new DataSplitterRatio(dataStore, (double)i / (double)100);                
                 dataStoreSplitter.Split(out dataStore1, out dataStore2, 0);
 
                 Assert.AreEqual(dataStore.DataStoreInfo.NumberOfRecords, dataStore1.DataStoreInfo.NumberOfRecords + dataStore2.DataStoreInfo.NumberOfRecords);
@@ -206,7 +207,7 @@ namespace Raccoon.Data.Tests
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
 
-            DataStoreSplitter dataStoreSplitter = new DataStoreSplitter(dataStore, 10);
+            DataSplitter dataStoreSplitter = new DataSplitter(dataStore, 10);
 
             for (int i = 0; i < 10; i++)
             {                
@@ -372,7 +373,7 @@ namespace Raccoon.Data.Tests
             DataStore dataStore1 = null;
             DataStore dataStore2 = null;
 
-            DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, 0.75);
+            DataSplitter dataStoreSplitter = new DataSplitterRatio(dataStore, 0.75);
             dataStoreSplitter.Split(out dataStore1, out dataStore2);
 
             Assert.Greater(dataStore1.DataStoreInfo.NumberOfRecords, dataStore2.DataStoreInfo.NumberOfRecords);
@@ -387,7 +388,7 @@ namespace Raccoon.Data.Tests
             int elementSum1;
             int elementSum2;
 
-            DataStoreSplitter dataStoreSplitter = new DataStoreSplitterRatio(dataStore, 0.75);            
+            DataSplitter dataStoreSplitter = new DataSplitterRatio(dataStore, 0.75);            
             dataStoreSplitter.Split(out dataStore1, out dataStore2, 0);
 
             foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))

@@ -5,6 +5,7 @@ using Raccoon.MachineLearning.Classification.DecisionTables;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using Raccoon.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Filters;
 using Raccoon.MachineLearning.Roughset;
 using System;
@@ -16,7 +17,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     public class RoughDecisionTreeTest
     {
         [Repeat(30)]
-        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);

@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     {
                         double epsilon = 0.1;
                         int numberOfPermutations = 10;
-                        string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+                        string reductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
 
                         string trainFileName = @"Data\dna_modified.trn";
                         string testFileName = @"Data\dna_modified.tst";
@@ -63,11 +63,11 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                         DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
 
                         Args args = new Args();
-                        args.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-                        args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                        args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+                        args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+                        args.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+                        args.SetParameter(ReductFactoryOptions.ReductType, reductFactoryKey);
 
-                        args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
+                        args.SetParameter(ReductFactoryOptions.PermutationCollection,
                             ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations));
 
                         IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
@@ -99,7 +99,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             int numberOfPerm = 10;
 
             double epsilon = 0.05;
-            string reductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            string reductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
 
             string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
@@ -111,13 +111,13 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
+            args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            args.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+            args.SetParameter(ReductFactoryOptions.ReductType, reductFactoryKey);
 
             for (int i = 0; i < loops; i++)
             {
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
+                args.SetParameter(ReductFactoryOptions.PermutationCollection,
                             ReductFactory.GetPermutationGenerator(args).Generate(numberOfPerm));
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);

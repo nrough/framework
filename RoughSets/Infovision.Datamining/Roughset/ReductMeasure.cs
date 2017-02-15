@@ -155,7 +155,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public override string ToString()
         {
-            return ReductFactoryKeyHelper.BireductRelative;
+            return ReductTypes.BireductRelative;
         }
 
         #endregion Methods

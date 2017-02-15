@@ -29,20 +29,20 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
+            parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelative);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permGen.Generate(10));
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, permGen.Generate(10));
 
             reductGenerator = ReductFactory.GetReductGenerator(parms);
 
             Args parmsMulti = new Args();
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, RaccoonHelper.NumberOfCores());
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductGeneratorParamHelper.PermutationCollection));
-            parmsMulti.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelative);
+            parmsMulti.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
+            parmsMulti.SetParameter(ReductFactoryOptions.NumberOfThreads, RaccoonHelper.NumberOfCores());
+            parmsMulti.SetParameter(ReductFactoryOptions.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductFactoryOptions.PermutationCollection));
+            parmsMulti.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelative);
 
             reductGeneratorMulti = ReductFactory.GetReductGenerator(parmsMulti);
         }
@@ -68,12 +68,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 //    Console.WriteLine("Epsilon: {0}", i);
 
                 Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-                args.SetParameter(ReductGeneratorParamHelper.Epsilon, (double)(i / 100.0));
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                args.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
+                args.SetParameter(ReductFactoryOptions.Epsilon, (double)(i / 100.0));
+                args.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
                 IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(args);
                 PermutationCollection permutations = permGen.Generate(100);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+                args.SetParameter(ReductFactoryOptions.PermutationCollection, permutations);
 
                 for (int j = 0; j < 100; j++)
                 {
@@ -100,10 +100,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     }
 
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, i / 100.0);
-                    parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, new PermutationCollection(permutations[j]));
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
+                    parms.SetParameter(ReductFactoryOptions.Epsilon, i / 100.0);
+                    parms.SetParameter(ReductFactoryOptions.PermutationCollection, new PermutationCollection(permutations[j]));
+                    parms.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
 
                     IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(parms);
                     reductGenerator.Run();
@@ -140,10 +140,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 0, 6, 2, 10, 3, 9, 5, -4, 8, 4, -2, 12, 11, -3, 1, 13, 7, -1 }));
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationList);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.Bireduct);
+            args.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
+            args.SetParameter(ReductFactoryOptions.Epsilon, 0.0);
+            args.SetParameter(ReductFactoryOptions.PermutationCollection, permutationList);
+            args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.Bireduct);
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();

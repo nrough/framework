@@ -1,9 +1,10 @@
 ﻿namespace Raccoon.MachineLearning.Roughset
 {
-    public static class ReductGeneratorParamHelper
+    public static class ReductFactoryOptions
     {
-        public static readonly string FactoryKey = "FactoryKey";
-        public static readonly string TrainData = "TrainData";
+        public static readonly string FMeasure = "FMeasure";
+        public static readonly string ReductType = "ReductType";
+        public static readonly string DecisionTable = "Data";
         public static readonly string TestData = "TestData";
         public static readonly string NumberOfPermutations = "NumberOfPermutations";
         public static readonly string NumberOfThreads = "NumberOfThreads";
@@ -48,8 +49,9 @@
     }
 
     //TODO Keys should be returned from Generator classes as static fileLine
-    public static class ReductFactoryKeyHelper
+    public static class ReductTypes
     {
+        public const string FEpsilonApproximateReduct = "FEpsilonAppriximateDecisionReduct";
         public const string GammaBireduct = "GammaBireduct";
         public const string BireductRelative = "BireductRelative";
         public const string Bireduct = "Bireduct";

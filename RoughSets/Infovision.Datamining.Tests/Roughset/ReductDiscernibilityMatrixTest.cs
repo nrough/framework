@@ -33,10 +33,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void MeasureRelative()
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 20 / 100.0);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, ReductFactory.GetPermutationGenerator(parms).Generate(10));
+            parms.SetParameter(ReductFactoryOptions.Epsilon, 20 / 100.0);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();

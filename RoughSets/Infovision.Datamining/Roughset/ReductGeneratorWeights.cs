@@ -47,8 +47,8 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
-                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+            if (args.Exist(ReductFactoryOptions.WeightGenerator))
+                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
@@ -95,7 +95,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductMajorityWeights; }
+            get { return ReductTypes.ApproximateReductMajorityWeights; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -126,7 +126,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductRelativeWeights; }
+            get { return ReductTypes.ApproximateReductRelativeWeights; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

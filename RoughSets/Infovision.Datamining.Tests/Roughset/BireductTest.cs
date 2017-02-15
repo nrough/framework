@@ -16,19 +16,19 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void CalcBiReductPositive()
         {
-            this.CheckBireductUnique(ReductFactoryKeyHelper.GammaBireduct);
+            this.CheckBireductUnique(ReductTypes.GammaBireduct);
         }
 
         [Test]
         public void CalcBiReductMajority()
         {
-            this.CheckBireductUnique(ReductFactoryKeyHelper.Bireduct);
+            this.CheckBireductUnique(ReductTypes.Bireduct);
         }
 
         [Test]
         public void CalcBiReductRelative()
         {
-            this.CheckBireductUnique(ReductFactoryKeyHelper.BireductRelative);
+            this.CheckBireductUnique(ReductTypes.BireductRelative);
         }
 
         private void CheckBireductUnique(string reductGeneratorKey)
@@ -41,7 +41,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.NumberOfPermutations },
+            Args parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.NumberOfPermutations },
                                   new Object[] { reductGeneratorKey, dataStoreTrain, 100 });
 
             IReductGenerator bireductGenerator = ReductFactory.GetReductGenerator(parms);
@@ -138,19 +138,19 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void BireductMajorityClassifierTest()
         {
-            this.Classify(ReductFactoryKeyHelper.Bireduct);
+            this.Classify(ReductTypes.Bireduct);
         }
 
         [Test]
         public void BireductPositiveClassifierTest()
         {
-            this.Classify(ReductFactoryKeyHelper.GammaBireduct);
+            this.Classify(ReductTypes.GammaBireduct);
         }
 
         [Test]
         public void BireductRelativeClassifierTest()
         {
-            this.Classify(ReductFactoryKeyHelper.BireductRelative);
+            this.Classify(ReductTypes.BireductRelative);
         }
 
         //Ad 1
@@ -166,10 +166,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             localDataStore.DataStoreInfo.DecisionInfo.Alias = "d";
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, localDataStore);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.0);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+            args.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
+            args.SetParameter(ReductFactoryOptions.Epsilon, 0.0);
+            args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajority);
+            args.SetParameter(ReductFactoryOptions.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();
@@ -230,13 +230,13 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             permutations.Add(new Permutation(new int[] { -4, 4, 2, -1, 11, 3, -2, -3, 6, 1, 12, 10, 9, 5, 7, 0, 13, 8 }));
             Args parms;
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
-                             new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
+            parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.PermutationCollection },
+                             new object[] { ReductTypes.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
-                             new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
+            parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.PermutationCollection },
+                             new object[] { ReductTypes.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
 
@@ -448,13 +448,13 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             Args parms;
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
-                             new object[] { ReductFactoryKeyHelper.Bireduct, localDataStore, permutations });
+            parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.PermutationCollection },
+                             new object[] { ReductTypes.Bireduct, localDataStore, permutations });
 
             BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(parms);
 
-            parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.PermutationCollection },
-                             new object[] { ReductFactoryKeyHelper.GammaBireduct, localDataStore, permutations });
+            parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.PermutationCollection },
+                             new object[] { ReductTypes.GammaBireduct, localDataStore, permutations });
 
             BireductGammaGenerator gammaGenerator = (BireductGammaGenerator)ReductFactory.GetReductGenerator(parms);
 
@@ -515,10 +515,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
             Args args = new Args(4);
-            args.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, dataStoreTrain);
-            args.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, 0.5);
-            args.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, reductGeneratorKey);
-            args.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
+            args.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, dataStoreTrain);
+            args.SetParameter<double>(ReductFactoryOptions.Epsilon, 0.5);
+            args.SetParameter<string>(ReductFactoryOptions.ReductType, reductGeneratorKey);
+            args.SetParameter<PermutationCollection>(ReductFactoryOptions.PermutationCollection, ReductFactory.GetPermutationGenerator(args).Generate(10));
 
             IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
             reductGenerator.Run();

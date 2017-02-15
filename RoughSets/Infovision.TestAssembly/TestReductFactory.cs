@@ -16,7 +16,7 @@ namespace Raccoon.TestAssembly
 
         public IReductGenerator GetReductGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             TestReductGenerator rGen = new TestReductGenerator(dataStore);
             rGen.InitFromArgs(args);
             return rGen;
@@ -24,7 +24,7 @@ namespace Raccoon.TestAssembly
 
         public IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGeneratorReverse(dataStore);
         }
 

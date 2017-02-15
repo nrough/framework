@@ -5,14 +5,14 @@ using Raccoon.Core;
 
 namespace Raccoon.Data
 {
-    public interface IDataStoreSplitter
+    public interface IDataSplitter
     {
         void Split(out DataStore dataStore1, out DataStore dataStore2, int fold);
         int NFold { get; }
     }
 
     [Serializable]
-    public class DataStoreSplitter : IDataStoreSplitter
+    public class DataSplitter : IDataSplitter
     {
         #region Members
 
@@ -62,7 +62,7 @@ namespace Raccoon.Data
 
         #region Constructors
 
-        public DataStoreSplitter(DataStore dataStore, int nfold, bool useCache = false)
+        public DataSplitter(DataStore dataStore, int nfold, bool useCache = false)
         {
             this.dataStore = dataStore;
             this.NFold = nfold;
@@ -226,11 +226,11 @@ namespace Raccoon.Data
     }
 
     [Serializable]
-    public class DataStoreSplitterRatio : DataStoreSplitter
+    public class DataSplitterRatio : DataSplitter
     {        
         public double SplitRatio { get; private set; }
 
-        public DataStoreSplitterRatio(DataStore dataStore, double splitRatio)
+        public DataSplitterRatio(DataStore dataStore, double splitRatio)
             : base(dataStore, 2)
         {
             if (splitRatio > 1 || splitRatio < 0)

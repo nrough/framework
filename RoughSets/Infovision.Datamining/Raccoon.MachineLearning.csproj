@@ -125,7 +125,7 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusterTuple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
     <Compile Include="Clustering\KMeans.cs" />
-    <Compile Include="CrossValidation.cs" />
+    <Compile Include="Evaluation\CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
     <Compile Include="Discretization\DataStoreDiscretizer.cs" />
     <Compile Include="Discretization\DiscretizeBase.cs" />

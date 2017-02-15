@@ -120,6 +120,7 @@
     <Compile Include="Roughset\ApproximateReductTest.cs" />
     <Compile Include="Roughset\ApproximateReductWeightsTest.cs" />
     <Compile Include="Roughset\BireductTest.cs" />
+    <Compile Include="Roughset\CodeSamples.cs" />
     <Compile Include="Roughset\EquivalenceClassTest.cs" />
     <Compile Include="Roughset\MatrixTest.cs" />
     <Compile Include="Roughset\PermutationTest.cs" />

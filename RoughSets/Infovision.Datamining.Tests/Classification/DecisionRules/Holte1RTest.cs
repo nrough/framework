@@ -62,7 +62,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             DataStore train = null, test = null;
             
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {
                 splitter.Split(out train, out test, f);

@@ -15,7 +15,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
         public void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, int[] fields)
         {            
             DataStore data = DataStore.Load(filename, fileFormat);            
-            DataStoreSplitter splitter = new DataStoreSplitter(data, 5);
+            DataSplitter splitter = new DataSplitter(data, 5);
 
             DataStore trainData = null, testData = null;
             splitter.Split(out trainData, out testData, 0);

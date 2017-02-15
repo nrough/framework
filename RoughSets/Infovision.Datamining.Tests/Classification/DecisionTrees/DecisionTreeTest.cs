@@ -244,7 +244,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             for (double eps = 0.0; eps < 0.5; eps += 0.01)
             {
                 double error = 0;
-                DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+                DataSplitter splitter = new DataSplitter(data, numOfFolds);
                 for (int f = 0; f < numOfFolds; f++)
                 {                    
                     splitter.Split(out train, out test, f);
@@ -271,12 +271,12 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore train = null, tmp = null, prune = null, test = null;
 
             double error = 0;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out tmp, out test, f);
 
-                DataStoreSplitter splitter2 = new DataStoreSplitterRatio(tmp, 0.5);
+                DataSplitter splitter2 = new DataSplitterRatio(tmp, 0.5);
                 splitter2.Split(out train, out prune);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
@@ -300,7 +300,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
             double error = 0;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -324,7 +324,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -346,7 +346,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -502,7 +502,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DataStore train = null, validation = null;
-            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            DataSplitter splitter = new DataSplitterRatio(data, 0.5);
             splitter.Split(out train, out validation);
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
@@ -528,7 +528,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DataStore prune = null, train = null;
-            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            DataSplitter splitter = new DataSplitterRatio(data, 0.5);
             splitter.Split(out train, out prune);
 
             DecisionTreeRough treeRough = new DecisionTreeRough();

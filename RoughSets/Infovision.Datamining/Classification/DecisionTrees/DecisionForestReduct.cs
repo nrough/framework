@@ -31,7 +31,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public DecisionForestReduct()
             : base()
         {            
-            this.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.ReductGeneratorFactory = ReductTypes.ApproximateReductMajorityWeights;
             this.MaxRandomEpsilon = 0.2;
         }
 
@@ -72,11 +72,11 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         protected IReduct CalculateReduct(DataStore data, PermutationCollection permutations, double epsilon)
         {
             Args parms = new Args(5);
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter(ReductFactoryOptions.ReductType, this.ReductGeneratorFactory);
+            parms.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, permutations);
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             

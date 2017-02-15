@@ -61,14 +61,14 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     epsilons[i] = (double)(RandomSingleton.Random.Next(minEpsilon, maxEpsilon) / 100.0);
 
                 Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
-                args.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-                args.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
-                args.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                args.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsemble);
+                args.SetParameter(ReductFactoryOptions.DecisionTable, data);
+                args.SetParameter(ReductFactoryOptions.PermutationEpsilon, epsilons);
+                args.SetParameter(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
+                args.SetParameter(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
+                args.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                args.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                args.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();
@@ -113,12 +113,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = reductEnsemble.Count,
-                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], double>)args[ReductFactoryOptions.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductFactoryOptions.Linkage],
                             Dataset = data,
-                            WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
-                            PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
+                            WeightGenerator = (WeightGenerator)args[ReductFactoryOptions.WeightGenerator],
+                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductFactoryOptions.ReconWeights],
+                            PermutationCollection = (PermutationCollection)args[ReductFactoryOptions.PermutationCollection],
 
                             Accuracy = classificationResult.Accuracy,
                             BalancedAccuracy = classificationResult.BalancedAccuracy,
@@ -159,12 +159,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             MaxEpsilon = maxEpsilon,
                             NumberOfPermuations = numberOfPermutations,
                             NumberOfReducts = randomReductGroup.Count,
-                            Distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance],
-                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage],
+                            Distance = (Func<double[], double[], double>)args[ReductFactoryOptions.Distance],
+                            Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductFactoryOptions.Linkage],
                             Dataset = data,
-                            WeightGenerator = (WeightGenerator)args[ReductGeneratorParamHelper.WeightGenerator],
-                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductGeneratorParamHelper.ReconWeights],
-                            PermutationCollection = (PermutationCollection)args[ReductGeneratorParamHelper.PermutationCollection],
+                            WeightGenerator = (WeightGenerator)args[ReductFactoryOptions.WeightGenerator],
+                            DiscernibiltyVector = (Func<IReduct, double[], double[]>)args[ReductFactoryOptions.ReconWeights],
+                            PermutationCollection = (PermutationCollection)args[ReductFactoryOptions.PermutationCollection],
 
                             Accuracy = classificationResult2.Accuracy,
                             BalancedAccuracy = classificationResult2.BalancedAccuracy,
@@ -229,17 +229,17 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             if (addHeader)
             {
                 sb.Append("Id").Append(separator)
-                    .Append(ReductGeneratorParamHelper.NumberOfClusters).Append(separator)
+                    .Append(ReductFactoryOptions.NumberOfClusters).Append(separator)
                     .Append("ClusterId").Append(separator)
                     .Append("TestType").Append(separator)
                     .Append("MinEpsilon").Append(separator)
                     .Append("MaxEpsilon").Append(separator)
                     .Append("NumberOfPermuations").Append(separator)
-                    .Append(ReductGeneratorParamHelper.NumberOfReducts).Append(separator)
-                    .Append(ReductGeneratorParamHelper.Distance).Append(separator)
-                    .Append(ReductGeneratorParamHelper.Linkage).Append(separator)
+                    .Append(ReductFactoryOptions.NumberOfReducts).Append(separator)
+                    .Append(ReductFactoryOptions.Distance).Append(separator)
+                    .Append(ReductFactoryOptions.Linkage).Append(separator)
                     .Append("Dataset").Append(separator)
-                    .Append(ReductGeneratorParamHelper.WeightGenerator).Append(separator)
+                    .Append(ReductFactoryOptions.WeightGenerator).Append(separator)
                     .Append("DiscernibiltyVector").Append(separator)
                     .Append("Accuracy").Append(separator)
                     .Append("BalancedAccuracy").Append(separator)
@@ -248,8 +248,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     .Append("Classified").Append(separator)
                     .Append("Misclassified").Append(separator)
                     .Append("Unclassified").Append(separator)
-                    .Append(ReductGeneratorParamHelper.IdentificationType).Append(separator)
-                    .Append(ReductGeneratorParamHelper.VoteType).Append(separator);
+                    .Append(ReductFactoryOptions.IdentificationType).Append(separator)
+                    .Append(ReductFactoryOptions.VoteType).Append(separator);
 
                 sb.Append(Environment.NewLine);
             }

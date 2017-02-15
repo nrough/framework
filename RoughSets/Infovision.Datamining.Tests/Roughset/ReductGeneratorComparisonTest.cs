@@ -46,16 +46,16 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet.Add("_TestData", testData);
 
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
-            argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 5);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
-            argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
-            argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            argSet.Add(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"reducts.bmp");
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.PermutationEpsilon, epsilons);
+            argSet.Add(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
+            argSet.Add(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
+            argSet.Add(ReductFactoryOptions.NumberOfClusters, 5);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsemble);
+            argSet.Add(ReductFactoryOptions.PermutationCollection, permList);
+            argSet.Add(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            argSet.Add(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductFactoryOptions.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 
             //for (int i = 0; i < numberOfPermutations; i++)
@@ -79,18 +79,18 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test, TestCaseSource("GetComparisonTestArgs")]
         public void ComparisonTest(Dictionary<string, object> args)
         {
-            DataStore data = (DataStore)args[ReductGeneratorParamHelper.TrainData];
+            DataStore data = (DataStore)args[ReductFactoryOptions.DecisionTable];
             DataStore testData = (DataStore)args["_TestData"];
-            int numberOfClusters = (int)args[ReductGeneratorParamHelper.NumberOfClusters];
+            int numberOfClusters = (int)args[ReductFactoryOptions.NumberOfClusters];
 
             //Console.WriteLine("Generator: {0}", (string)args[ReductGeneratorParamHelper.FactoryKey]);
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductFactoryOptions.Distance];
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
-            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductGeneratorParamHelper.Linkage];
+            Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductFactoryOptions.Linkage];
             //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);
 
-            Func<IReduct, double[], RuleQualityFunction, double[]> recognition = (Func<IReduct, double[], RuleQualityFunction, double[]>)args[ReductGeneratorParamHelper.ReconWeights];
+            Func<IReduct, double[], RuleQualityFunction, double[]> recognition = (Func<IReduct, double[], RuleQualityFunction, double[]>)args[ReductFactoryOptions.ReconWeights];
             //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
 
             Args parms = new Args();
@@ -183,7 +183,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             {
                 DendrogramChart dc = new DendrogramChart(ensembleGenerator.Dendrogram, 640, (int)ensembleGenerator.Dendrogram.Root.Height + 100);
                 Bitmap dendrogram = dc.GetAsBitmap();
-                dendrogram.Save((string)args[ReductGeneratorParamHelper.DendrogramBitmapFile]);
+                dendrogram.Save((string)args[ReductFactoryOptions.DendrogramBitmapFile]);
             }
         }
 

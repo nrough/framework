@@ -25,8 +25,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void CreateBireductTest()
         {
-            Args args = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData, ReductGeneratorParamHelper.NumberOfPermutations },
-                                  new Object[] { ReductFactoryKeyHelper.Bireduct, dataStoreTrain, 100 });
+            Args args = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable, ReductFactoryOptions.NumberOfPermutations },
+                                  new Object[] { ReductTypes.Bireduct, dataStoreTrain, 100 });
 
             BireductGenerator bireductGenerator = (BireductGenerator)ReductFactory.GetReductGenerator(args);
             bireductGenerator.Run();
@@ -56,7 +56,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void TestFactoryRegister()
         {
             ReductFactory.Instance.RegisterFactory("Raccoon.TestAssembly.TestReductFactory");
-            Args parms = new Args(new string[] { ReductGeneratorParamHelper.FactoryKey, ReductGeneratorParamHelper.TrainData }, new Object[] { "TestReduct", dataStoreTrain });
+            Args parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable }, new Object[] { "TestReduct", dataStoreTrain });
             IReductGenerator factory = ReductFactory.GetReductGenerator(parms);
             factory.Run();
             IReductStore reductStore = factory.ReductPool;

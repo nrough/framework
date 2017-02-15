@@ -181,21 +181,21 @@ namespace Raccoon.MachineLearning.Roughset
 
         public static IReductGenerator GetReductGenerator(Args args)
         {
-            if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
+            if (!args.Exist(ReductFactoryOptions.ReductType))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
-            string factoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
+            string factoryKey = (string)args.GetParameter(ReductFactoryOptions.ReductType);
             return ReductFactory.GetReductFactory(factoryKey).GetReductGenerator(args);
         }
 
         public static IPermutationGenerator GetPermutationGenerator(Args args)
         {
-             if (!args.Exist(ReductGeneratorParamHelper.FactoryKey))
+             if (!args.Exist(ReductFactoryOptions.ReductType))
                 throw new ArgumentException("No FactoryKey parameter found!", "args");
 
-            if (args.Exist(ReductGeneratorParamHelper.PermuatationGenerator))
-                return (IPermutationGenerator)args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
+            if (args.Exist(ReductFactoryOptions.PermuatationGenerator))
+                return (IPermutationGenerator)args.GetParameter(ReductFactoryOptions.PermuatationGenerator);
 
-            string factoryKey = (string)args.GetParameter(ReductGeneratorParamHelper.FactoryKey);
+            string factoryKey = (string)args.GetParameter(ReductFactoryOptions.ReductType);
 
             return (IPermutationGenerator)ReductFactory.GetReductFactory(factoryKey).GetPermutationGenerator(args);
         }

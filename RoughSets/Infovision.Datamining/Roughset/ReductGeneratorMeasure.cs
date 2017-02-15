@@ -59,13 +59,13 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.DataSetQuality))
-                this.dataSetQuality = args.GetParameter<double>(ReductGeneratorParamHelper.DataSetQuality);
+            if (args.Exist(ReductFactoryOptions.DataSetQuality))
+                this.dataSetQuality = args.GetParameter<double>(ReductFactoryOptions.DataSetQuality);
 
-            if (args.Exist(ReductGeneratorParamHelper.InitialEquivalenceClassCollection))
+            if (args.Exist(ReductFactoryOptions.InitialEquivalenceClassCollection))
             {
                 this.initialEqClasses = args.GetParameter<EquivalenceClassCollection>(
-                    ReductGeneratorParamHelper.InitialEquivalenceClassCollection);
+                    ReductFactoryOptions.InitialEquivalenceClassCollection);
                 this.dataSetQuality = this.InformationMeasure.Calc(this.initialEqClasses);
             }
 
@@ -303,7 +303,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGeneratorReverse(dataStore);
         }
 
@@ -328,7 +328,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductRelative; }
+            get { return ReductTypes.ApproximateReductRelative; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -357,7 +357,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductMajority; }
+            get { return ReductTypes.ApproximateReductMajority; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -386,7 +386,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ApproximateReductPositive; }
+            get { return ReductTypes.ApproximateReductPositive; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

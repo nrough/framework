@@ -49,22 +49,22 @@ namespace VotingVsRuleInduction
                     Console.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                         "Test",
                         "Fold",
-                        ReductGeneratorParamHelper.FactoryKey,
-                        ReductGeneratorParamHelper.NumberOfReducts,
-                        ReductGeneratorParamHelper.Epsilon,
-                        ReductGeneratorParamHelper.IdentificationType,
-                        ReductGeneratorParamHelper.VoteType,
+                        ReductFactoryOptions.ReductType,
+                        ReductFactoryOptions.NumberOfReducts,
+                        ReductFactoryOptions.Epsilon,
+                        ReductFactoryOptions.IdentificationType,
+                        ReductFactoryOptions.VoteType,
                         ClassificationResult.TableHeader()
                         );
 
                     outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                         "Test",
                         "Fold",
-                        ReductGeneratorParamHelper.FactoryKey,
-                        ReductGeneratorParamHelper.NumberOfReducts,
-                        ReductGeneratorParamHelper.Epsilon,
-                        ReductGeneratorParamHelper.IdentificationType,
-                        ReductGeneratorParamHelper.VoteType,
+                        ReductFactoryOptions.ReductType,
+                        ReductFactoryOptions.NumberOfReducts,
+                        ReductFactoryOptions.Epsilon,
+                        ReductFactoryOptions.IdentificationType,
+                        ReductFactoryOptions.VoteType,
                         ClassificationResult.TableHeader()
                         );
 
@@ -87,17 +87,17 @@ namespace VotingVsRuleInduction
                         {
                             bool regeneratedReducts = false;
                             var setup = program.ConvertParameterVector(parmVector);
-                            int f = (int)setup.GetParameter(ReductGeneratorParamHelper.CVActiveFold);
+                            int f = (int)setup.GetParameter(ReductFactoryOptions.CVActiveFold);
 
-                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
-                                || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey))
+                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).Name
+                                || lastFactoryKey != (string)setup.GetParameter(ReductFactoryOptions.ReductType))
                             {
                                 emptyReductResult = false;
                             }
 
-                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
-                                || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey)
-                                || lastEpsilon != (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon))
+                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).Name
+                                || lastFactoryKey != (string)setup.GetParameter(ReductFactoryOptions.ReductType)
+                                || lastEpsilon != (double)setup.GetParameter(ReductFactoryOptions.Epsilon))
                             {
                                 if (emptyReductResult == false)
                                 {
@@ -109,24 +109,24 @@ namespace VotingVsRuleInduction
                                 }
                             }
 
-                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name
-                                || lastFactoryKey != (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey)
-                                || lastEpsilon != (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon)
-                                || lastNumberOfReducts != (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts)
+                            if (lastTrainName != ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).Name
+                                || lastFactoryKey != (string)setup.GetParameter(ReductFactoryOptions.ReductType)
+                                || lastEpsilon != (double)setup.GetParameter(ReductFactoryOptions.Epsilon)
+                                || lastNumberOfReducts != (int)setup.GetParameter(ReductFactoryOptions.NumberOfReducts)
                                 || regeneratedReducts)
                             {
                                 filteredReductStoreCollection = origReductStoreCollection.Filter(
-                                        (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),
+                                        (int)setup.GetParameter(ReductFactoryOptions.NumberOfReducts),
                                         reductLengthComparer);
                             }
 
                             RoughClassifier classifier = new RoughClassifier(
                                 filteredReductStoreCollection,
-                                (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType),
-                                (RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType),
-                                ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).DataStoreInfo.GetDecisionValues());
+                                (RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType),
+                                (RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType),
+                                ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).DataStoreInfo.GetDecisionValues());
 
-                            ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TestData));
+                            ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductFactoryOptions.TestData));
                             result.AvgNumberOfAttributes = filteredReductStoreCollection.GetWeightedAvgMeasure(reductMeasureLength, true);
 
                             result.ModelCreationTime = reductGenerator.ReductGenerationTime;
@@ -139,29 +139,29 @@ namespace VotingVsRuleInduction
                             Console.WriteLine("{0,2}|{1}|{2}|{3,2}|{4,4}|{5,11}|{6,19}|{7}",
                                 t,
                                 f,
-                                setup.GetParameter(ReductGeneratorParamHelper.FactoryKey),
-                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),
-                                setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
-                                ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
-                                ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
+                                setup.GetParameter(ReductFactoryOptions.ReductType),
+                                setup.GetParameter(ReductFactoryOptions.NumberOfReducts),
+                                setup.GetParameter(ReductFactoryOptions.Epsilon),
+                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
+                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
                                 result
                                 );
 
                             outputFile.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                                 t,
                                 f,
-                                setup.GetParameter(ReductGeneratorParamHelper.FactoryKey),
-                                setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts),
-                                setup.GetParameter(ReductGeneratorParamHelper.Epsilon),
-                                ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.IdentificationType)).Method.Name,
-                                ((RuleQualityFunction)setup.GetParameter(ReductGeneratorParamHelper.VoteType)).Method.Name,
+                                setup.GetParameter(ReductFactoryOptions.ReductType),
+                                setup.GetParameter(ReductFactoryOptions.NumberOfReducts),
+                                setup.GetParameter(ReductFactoryOptions.Epsilon),
+                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
+                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
                                 result
                                 );
 
-                            lastTrainName = ((DataStore)setup.GetParameter(ReductGeneratorParamHelper.TrainData)).Name;
-                            lastFactoryKey = (string)setup.GetParameter(ReductGeneratorParamHelper.FactoryKey);
-                            lastEpsilon = (double)setup.GetParameter(ReductGeneratorParamHelper.Epsilon);
-                            lastNumberOfReducts = (int)setup.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
+                            lastTrainName = ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).Name;
+                            lastFactoryKey = (string)setup.GetParameter(ReductFactoryOptions.ReductType);
+                            lastEpsilon = (double)setup.GetParameter(ReductFactoryOptions.Epsilon);
+                            lastNumberOfReducts = (int)setup.GetParameter(ReductFactoryOptions.NumberOfReducts);
                         }
                     }
                 }
@@ -187,16 +187,16 @@ namespace VotingVsRuleInduction
             }
 
             Args conf = new Args();
-            conf.SetParameter(ReductGeneratorParamHelper.TrainData, data.Item1);
-            conf.SetParameter(ReductGeneratorParamHelper.FactoryKey, parameterVector[1]);
-            conf.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permuationCollection);
-            conf.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, parameterVector[3]);
-            conf.SetParameter(ReductGeneratorParamHelper.Epsilon, parameterVector[2]);
+            conf.SetParameter(ReductFactoryOptions.DecisionTable, data.Item1);
+            conf.SetParameter(ReductFactoryOptions.ReductType, parameterVector[1]);
+            conf.SetParameter(ReductFactoryOptions.PermutationCollection, permuationCollection);
+            conf.SetParameter(ReductFactoryOptions.NumberOfReducts, parameterVector[3]);
+            conf.SetParameter(ReductFactoryOptions.Epsilon, parameterVector[2]);
 
-            conf.SetParameter(ReductGeneratorParamHelper.TestData, data.Item2);
-            conf.SetParameter(ReductGeneratorParamHelper.IdentificationType, parameterVector[4]);
-            conf.SetParameter(ReductGeneratorParamHelper.VoteType, parameterVector[5]);
-            conf.SetParameter(ReductGeneratorParamHelper.CVActiveFold, data.Item3);
+            conf.SetParameter(ReductFactoryOptions.TestData, data.Item2);
+            conf.SetParameter(ReductFactoryOptions.IdentificationType, parameterVector[4]);
+            conf.SetParameter(ReductFactoryOptions.VoteType, parameterVector[5]);
+            conf.SetParameter(ReductFactoryOptions.CVActiveFold, data.Item3);
 
             return conf;
         }
@@ -213,7 +213,7 @@ namespace VotingVsRuleInduction
                 if (benchmark.DecisionFieldId > 0)
                     data.SetDecisionFieldId(benchmark.DecisionFieldId);
 
-                DataStoreSplitter splitter = new DataStoreSplitter(data, benchmark.CrossValidationFolds);
+                DataSplitter splitter = new DataSplitter(data, benchmark.CrossValidationFolds);
 
                 for (int i = 0; i < benchmark.CrossValidationFolds; i++)
                 {                    
@@ -235,19 +235,19 @@ namespace VotingVsRuleInduction
             IParameter parmDataTuple = new ParameterObjectReferenceCollection<Tuple<DataStore, DataStore, int>>("Data", dataTuple);
 
             IParameter parmReductType = new ParameterValueCollection<string>(
-                ReductGeneratorParamHelper.FactoryKey, new string[] {
-                    ReductFactoryKeyHelper.ApproximateReductRelativeWeights,
-                    ReductFactoryKeyHelper.ApproximateReductMajorityWeights
+                ReductFactoryOptions.ReductType, new string[] {
+                    ReductTypes.ApproximateReductRelativeWeights,
+                    ReductTypes.ApproximateReductMajorityWeights
                 });
 
-            IParameter parmEpsilon = new ParameterNumericRange<double>(ReductGeneratorParamHelper.Epsilon,
+            IParameter parmEpsilon = new ParameterNumericRange<double>(ReductFactoryOptions.Epsilon,
                 0.0, 0.99, 0.01);
 
-            IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductGeneratorParamHelper.NumberOfReducts,
+            IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductFactoryOptions.NumberOfReducts,
                 new int[] { 20, 10, 2, 1 });
 
             IParameter parmIdentification = new ParameterValueCollection<RuleQualityFunction>(
-                ReductGeneratorParamHelper.IdentificationType, new RuleQualityFunction[] {
+                ReductFactoryOptions.IdentificationType, new RuleQualityFunction[] {
                     RuleQuality.ConfidenceW,
                     RuleQuality.CoverageW,
                     RuleQuality.Confidence,
@@ -255,7 +255,7 @@ namespace VotingVsRuleInduction
                 });
 
             IParameter parmVote = new ParameterValueCollection<RuleQualityFunction>(
-                ReductGeneratorParamHelper.VoteType, new RuleQualityFunction[] {
+                ReductFactoryOptions.VoteType, new RuleQualityFunction[] {
                     RuleQuality.ConfidenceW,
                     RuleQuality.CoverageW,
                     RuleQuality.RatioW,

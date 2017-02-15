@@ -2,6 +2,31 @@
 
 namespace Raccoon.MachineLearning.Roughset
 {
+    public delegate double FMeasure(EquivalenceClassCollection eqClasses);
+
+    public static class FMeasures
+    {
+        public static double Majority(EquivalenceClassCollection eqClasses)
+        {
+            return InformationMeasureMajority.Instance.Calc(eqClasses);
+        }
+
+        public static double Relative(EquivalenceClassCollection eqClasses)
+        {
+            return InformationMeasureRelative.Instance.Calc(eqClasses);
+        }
+
+        public static double Gamma(EquivalenceClassCollection eqClasses)
+        {
+            return InformationMeasurePositive.Instance.Calc(eqClasses);
+        }
+
+        public static double MajorityWeighted(EquivalenceClassCollection eqClasses)
+        {
+            return InformationMeasureWeights.Instance.Calc(eqClasses);
+        }
+    }
+
     public enum InformationMeasureType
     {
         Positive = 0,

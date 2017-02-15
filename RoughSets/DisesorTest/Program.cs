@@ -32,7 +32,7 @@ namespace DisesorTest
         private Dictionary<string, string> metadataDict;
 
         //string factoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
-        private string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+        private string factoryKey = ReductTypes.ReductEnsembleBoosting;
 
         //int numberOfPermutations = 100;
         //double epsilon = 0.0m;
@@ -41,7 +41,7 @@ namespace DisesorTest
         private RuleQualityFunction voteFunction = RuleQuality.CoverageW;
         private WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;                
 
-        private string innerFactoryKey = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+        private string innerFactoryKey = ReductTypes.GeneralizedMajorityDecisionApproximate;
         //double innerEpsilon = 0.4m;
         //int boostingNumberOfReductsInWeakClassifier = 20;
         //int boostingMaxIterations = 100;
@@ -241,41 +241,41 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Args innerArgs = new Args();
-            innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
+            innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            innerArgs.SetParameter(ReductFactoryOptions.ReductType, innerFactoryKey);
             //innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep,
+            innerArgs.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
+            innerArgs.SetParameter(ReductFactoryOptions.ReductionStep,
                 (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * reductionStepRatio)); //10% reduction step
 
-            innerArgs.SetParameter(ReductGeneratorParamHelper.PermuatationGenerator,
+            innerArgs.SetParameter(ReductFactoryOptions.PermuatationGenerator,
                 new PermutationGeneratorFieldQuality(train, wGen, eps,
                     (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * shuffleRatio)));
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            args.SetParameter(ReductGeneratorParamHelper.PermutationCollection,
+            args.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            args.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
+            args.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            args.SetParameter(ReductFactoryOptions.PermutationCollection,
                 ReductFactory.GetPermutationGenerator(args).Generate(weakClassifiers));
-            args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            args.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
 
             //args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, boostingNumberOfReductsInWeakClassifier);
-            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, weakClassifiers);
-            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, identificationFunction);
-            args.SetParameter(ReductGeneratorParamHelper.VoteType, voteFunction);
-            args.SetParameter(ReductGeneratorParamHelper.MinimumVoteValue, minimumVoteValue);
-            args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
-            args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
+            args.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, weakClassifiers);
+            args.SetParameter(ReductFactoryOptions.IdentificationType, identificationFunction);
+            args.SetParameter(ReductFactoryOptions.VoteType, voteFunction);
+            args.SetParameter(ReductFactoryOptions.MinimumVoteValue, minimumVoteValue);
+            args.SetParameter(ReductFactoryOptions.UpdateWeights, boostingUpdateWeights);
+            args.SetParameter(ReductFactoryOptions.CalcModelConfidence, boostingCalcModelConfidence);
             //args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
-            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
-            args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
-            args.SetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets, numberOfWeightResets);
-            args.SetParameter(ReductGeneratorParamHelper.FixedPermutations, fixedPermutations);
-            args.SetParameter(ReductGeneratorParamHelper.UseClassificationCost, useClassificationCost);
+            args.SetParameter(ReductFactoryOptions.MaxIterations, iterations);
+            args.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+            args.SetParameter(ReductFactoryOptions.MaxNumberOfWeightResets, numberOfWeightResets);
+            args.SetParameter(ReductFactoryOptions.FixedPermutations, fixedPermutations);
+            args.SetParameter(ReductFactoryOptions.UseClassificationCost, useClassificationCost);
 
-            args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+            args.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
             /*
             using (StreamWriter f = new StreamWriter(weightsoutput))

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Data.Examples
+namespace Raccoon.Data
 {
-    public class BenchmarkBase : IBenchmarkData
+    public interface IDataStore
     {
     }
 }

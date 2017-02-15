@@ -40,24 +40,24 @@ namespace MajorityGeneralizedDecisionTest
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
-            if (reductGeneratorCache.ContainsKey(ReductFactoryKeyHelper.GeneralizedMajorityDecision))
+            if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecision))
             {
-                generator = reductGeneratorCache[ReductFactoryKeyHelper.GeneralizedMajorityDecision] as ReductGeneralizedMajorityDecisionGenerator;
+                generator = reductGeneratorCache[ReductTypes.GeneralizedMajorityDecision] as ReductGeneralizedMajorityDecisionGenerator;
             }
             else
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+                parms.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+                parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
+                parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
+                parms.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
                 generator.Run();
 
-                reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecision, generator);
+                reductGeneratorCache.Add(ReductTypes.GeneralizedMajorityDecision, generator);
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
@@ -82,24 +82,24 @@ namespace MajorityGeneralizedDecisionTest
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
-            if (reductGeneratorCache.ContainsKey(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate + "NoExp"))
+            if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecisionApproximate + "NoExp"))
             {
-                generator = reductGeneratorCache[ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate + "NoExp"] as ReductGeneralizedMajorityDecisionGenerator;
+                generator = reductGeneratorCache[ReductTypes.GeneralizedMajorityDecisionApproximate + "NoExp"] as ReductGeneralizedMajorityDecisionGenerator;
             }
             else
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+                parms.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+                parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+                parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
+                parms.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
                 generator.Run();
 
-                reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate + "NoExp", generator);
+                reductGeneratorCache.Add(ReductTypes.GeneralizedMajorityDecisionApproximate + "NoExp", generator);
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
@@ -127,26 +127,26 @@ namespace MajorityGeneralizedDecisionTest
             RuleQualityFunction voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
-            if (reductGeneratorCache.ContainsKey(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate))
+            if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecisionApproximate))
             {
-                generator = reductGeneratorCache[ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate] as ReductGeneralizedMajorityDecisionGenerator;
+                generator = reductGeneratorCache[ReductTypes.GeneralizedMajorityDecisionApproximate] as ReductGeneralizedMajorityDecisionGenerator;
             }
             else
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+                parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+                parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                parms.SetParameter<double>(ReductFactoryOptions.Epsilon, eps);
                 //parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
 
-                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+                parms.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                parms.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
                 generator.Run();
 
-                reductGeneratorCache.Add(ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate, generator);
+                reductGeneratorCache.Add(ReductTypes.GeneralizedMajorityDecisionApproximate, generator);
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
@@ -190,25 +190,25 @@ namespace MajorityGeneralizedDecisionTest
             RuleQualityFunction voting)
         {
             ReductGeneratorWeightsMajority generator = null;
-            if (reductGeneratorCache.ContainsKey(ReductFactoryKeyHelper.ApproximateReductMajorityWeights))
+            if (reductGeneratorCache.ContainsKey(ReductTypes.ApproximateReductMajorityWeights))
             {
-                generator = reductGeneratorCache[ReductFactoryKeyHelper.ApproximateReductMajorityWeights] as ReductGeneratorWeightsMajority;
+                generator = reductGeneratorCache[ReductTypes.ApproximateReductMajorityWeights] as ReductGeneratorWeightsMajority;
             }
             else
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+                parms.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+                parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+                parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
+                parms.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
                 generator = ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;
                 generator.UsePerformanceImprovements = true;
                 generator.Run();
 
-                reductGeneratorCache.Add(ReductFactoryKeyHelper.ApproximateReductMajorityWeights, generator);
+                reductGeneratorCache.Add(ReductTypes.ApproximateReductMajorityWeights, generator);
             }
 
             IReductStoreCollection origReductStoreCollection = generator.GetReductStoreCollection();
@@ -267,7 +267,7 @@ namespace MajorityGeneralizedDecisionTest
 
         public void Run(BenchmarkData benchmarkData)
         {
-            DataStoreSplitter splitter;
+            DataSplitter splitter;
 
             this.OpenStream(Path.Combine(@"results", benchmarkData.Name + ".result"));
 
@@ -285,7 +285,7 @@ namespace MajorityGeneralizedDecisionTest
                     if (benchmarkData.DecisionFieldId > 0)
                         data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
 
-                    splitter = new DataStoreSplitter(data, benchmarkData.CrossValidationFolds);
+                    splitter = new DataSplitter(data, benchmarkData.CrossValidationFolds);
 
                     this.InitPermutation(data);
                 }
@@ -374,8 +374,8 @@ namespace MajorityGeneralizedDecisionTest
         {
             Args permParm = new Args();
 
-            permParm.SetParameter(ReductGeneratorParamHelper.TrainData, d);
-            permParm.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
+            permParm.SetParameter(ReductFactoryOptions.DecisionTable, d);
+            permParm.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajority);
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(permParm);
             permList = permGen.Generate(permutationSize);
         }

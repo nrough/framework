@@ -288,11 +288,11 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.UseExceptionRules))
-                this.UseExceptionRules = (bool)args.GetParameter(ReductGeneratorParamHelper.UseExceptionRules);
+            if (args.Exist(ReductFactoryOptions.UseExceptionRules))
+                this.UseExceptionRules = (bool)args.GetParameter(ReductFactoryOptions.UseExceptionRules);
 
-            if (args.Exist(ReductGeneratorParamHelper.EquivalenceClassSortDirection))
-                this.EquivalenceClassSortDirection = (SortDirection)args.GetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection);
+            if (args.Exist(ReductFactoryOptions.EquivalenceClassSortDirection))
+                this.EquivalenceClassSortDirection = (SortDirection)args.GetParameter(ReductFactoryOptions.EquivalenceClassSortDirection);
 
             if (this.UseExceptionRules)
             {
@@ -313,7 +313,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate; }
+            get { return ReductTypes.GeneralizedMajorityDecisionApproximate; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -325,7 +325,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGenerator(dataStore);
         }
     }

@@ -51,7 +51,7 @@ namespace ExceptionRulesTiming
         {
             DataStore trainData = null, testData = null, data = null;
             string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".times");
-            DataStoreSplitter splitter = null;
+            DataSplitter splitter = null;
 
             long[, ,] results1 = new long[numberOfTests, 100, kvp.Value.CrossValidationFolds];
             long[, ,] results2 = new long[numberOfTests, 100, kvp.Value.CrossValidationFolds];
@@ -66,7 +66,7 @@ namespace ExceptionRulesTiming
                 if (kvp.Value.DecisionFieldId != -1)
                     data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                splitter = new DataStoreSplitter(data, kvp.Value.CrossValidationFolds);
+                splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
             }
 
             for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
@@ -164,12 +164,12 @@ namespace ExceptionRulesTiming
             double eps = (double)epsilon / 100;
 
             Args parmsApprox = new Args();
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parmsApprox.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsApprox.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+            parmsApprox.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsApprox.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsApprox.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parmsApprox.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
             ReductGeneratorWeightsMajority generatorApprox =
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
@@ -179,12 +179,12 @@ namespace ExceptionRulesTiming
             t1.Stop();
 
             Args parms_GMDR = new Args();
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms_GMDR.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parms_GMDR.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
+            parms_GMDR.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parms_GMDR.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parms_GMDR.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parms_GMDR.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
             //parms_GMDR.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int) resultApprox.QualityRatio > 0 ? (int) resultApprox.QualityRatio : 1);
 
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
@@ -195,12 +195,12 @@ namespace ExceptionRulesTiming
             t2.Stop();
 
             Args parmsEx = new Args();
-            parmsEx.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsEx.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
+            parmsEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsEx.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+            parmsEx.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsEx.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parmsEx.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -215,15 +215,15 @@ namespace ExceptionRulesTiming
             var localPermList = localPermGenerator.Generate(ensembleSize);
 
             Args parmsRandom = new Args();
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.RandomSubset);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermList);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parmsRandom.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsRandom.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.RandomSubset);
+            parmsRandom.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsRandom.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsRandom.SetParameter(ReductFactoryOptions.PermutationCollection, localPermList);
+            parmsRandom.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MinReductLength, (int)avgSize);
-            parmsRandom.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)avgSize);
+            parmsRandom.SetParameter(ReductFactoryOptions.MinReductLength, (int)avgSize);
+            parmsRandom.SetParameter(ReductFactoryOptions.MaxReductLength, (int)avgSize);
 
             ReductRandomSubsetGenerator generatorRandom =
                 ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;

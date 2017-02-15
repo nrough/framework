@@ -49,20 +49,20 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.Distance))
-                this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
+            if (args.Exist(ReductFactoryOptions.Distance))
+                this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductFactoryOptions.Distance);
 
-            if (args.Exist(ReductGeneratorParamHelper.Linkage))
-                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
+            if (args.Exist(ReductFactoryOptions.Linkage))
+                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductFactoryOptions.Linkage);
 
-            if (args.Exist(ReductGeneratorParamHelper.ReconWeights))
-                this.ReconWeights = (Func<IReduct, double[], RuleQualityFunction, double[]>)args.GetParameter(ReductGeneratorParamHelper.ReconWeights);
+            if (args.Exist(ReductFactoryOptions.ReconWeights))
+                this.ReconWeights = (Func<IReduct, double[], RuleQualityFunction, double[]>)args.GetParameter(ReductFactoryOptions.ReconWeights);
 
-            if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsToTest))
-                this.NumberOfReductsToTest = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest);
+            if (args.Exist(ReductFactoryOptions.NumberOfReductsToTest))
+                this.NumberOfReductsToTest = (int)args.GetParameter(ReductFactoryOptions.NumberOfReductsToTest);
 
-            if (args.Exist(ReductGeneratorParamHelper.AgregateFunction))
-                this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductGeneratorParamHelper.AgregateFunction);
+            if (args.Exist(ReductFactoryOptions.AgregateFunction))
+                this.AgregateFunction = (AgregateFunction)args.GetParameter(ReductFactoryOptions.AgregateFunction);
         }
 
         public override IReduct GetNextReduct(double[] weights)
@@ -148,7 +148,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity; }
+            get { return ReductTypes.ReductEnsembleBoostingWithDiversity; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -160,7 +160,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGenerator(dataStore);
         }
     }

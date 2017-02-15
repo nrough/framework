@@ -26,197 +26,197 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
             Args inner = new Args();
-            inner.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            inner.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            inner.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, 1);
-            inner.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1m);
-            inner.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
+            inner.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            inner.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+            inner.SetParameter(ReductFactoryOptions.NumberOfPermutations, 1);
+            inner.SetParameter(ReductFactoryOptions.Epsilon, 0.1m);
+            inner.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(data));
 
             Dictionary<string, object> argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 1);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 1);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 3);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 3);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 5);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 5);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 10);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 10);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 20);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 20);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 30);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 30);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 40);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 40);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 50);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 50);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 60);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 60);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 70);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 70);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 80);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 80);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 90);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 90);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 100);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 100);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 200);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 200);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-            argSet.Add(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
-            argSet.Add(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
-            argSet.Add(ReductGeneratorParamHelper.MaxReductLength, 4);
-            argSet.Add(ReductGeneratorParamHelper.Threshold, 0.5);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-            argSet.Add(ReductGeneratorParamHelper.MaxIterations, 300);
-            argSet.Add(ReductGeneratorParamHelper.InnerParameters, inner);
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+            argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.Confidence);
+            argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.SingleVote);
+            argSet.Add(ReductFactoryOptions.MaxReductLength, 4);
+            argSet.Add(ReductFactoryOptions.Threshold, 0.5);
+            argSet.Add(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+            argSet.Add(ReductFactoryOptions.MaxIterations, 300);
+            argSet.Add(ReductFactoryOptions.InnerParameters, inner);
             argsList.Add(argSet);
 
             return argsList;
@@ -232,7 +232,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             ReductEnsembleBoostingGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingGenerator;
             reductGenerator.Run();
 
-            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore data = (DataStore)parms.GetParameter(ReductFactoryOptions.DecisionTable);
 
             RoughClassifier classifierTrn = new RoughClassifier(
                         reductGenerator.GetReductGroups(),
@@ -259,14 +259,14 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             //-------------------------------------- Parameters --------------------------
 
-            string factoryKey = ReductFactoryKeyHelper.ReductEnsembleBoosting;
+            string factoryKey = ReductTypes.ReductEnsembleBoosting;
             int numberOfPermutations = 100;
 
             RuleQualityFunction identificationFunction = RuleQuality.CoverageW;
             RuleQualityFunction voteFunction = RuleQuality.CoverageW;
             WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;
 
-            string innerFactoryKey = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
+            string innerFactoryKey = ReductTypes.ApproximateReductRelativeWeights;
             double innerEpsilon = 0.1;
 
             RuleQualityFunction boostingIdentificationFunction = null;
@@ -286,27 +286,27 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             WeightGenerator wGen = WeightGenerator.Construct(weightGeneratorType, train);
 
             Args innerArgs = new Args();
-            innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, innerFactoryKey);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, innerEpsilon);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+            innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            innerArgs.SetParameter(ReductFactoryOptions.ReductType, innerFactoryKey);
+            innerArgs.SetParameter(ReductFactoryOptions.Epsilon, innerEpsilon);
+            innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
+            innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
             Args args = new Args();
-            args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-            args.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-            args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            args.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, numberOfPermutations);
-            args.SetParameter(ReductGeneratorParamHelper.WeightGenerator, wGen);
+            args.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            args.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
+            args.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+            args.SetParameter(ReductFactoryOptions.NumberOfPermutations, numberOfPermutations);
+            args.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
 
-            args.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, weak);
-            args.SetParameter(ReductGeneratorParamHelper.IdentificationType, boostingIdentificationFunction);
-            args.SetParameter(ReductGeneratorParamHelper.VoteType, boostingVoteFunction);
-            args.SetParameter(ReductGeneratorParamHelper.UpdateWeights, boostingUpdateWeights);
-            args.SetParameter(ReductGeneratorParamHelper.CalcModelConfidence, boostingCalcModelConfidence);
-            args.SetParameter(ReductGeneratorParamHelper.MaxIterations, iterations);
-            args.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
-            args.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+            args.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, weak);
+            args.SetParameter(ReductFactoryOptions.IdentificationType, boostingIdentificationFunction);
+            args.SetParameter(ReductFactoryOptions.VoteType, boostingVoteFunction);
+            args.SetParameter(ReductFactoryOptions.UpdateWeights, boostingUpdateWeights);
+            args.SetParameter(ReductFactoryOptions.CalcModelConfidence, boostingCalcModelConfidence);
+            args.SetParameter(ReductFactoryOptions.MaxIterations, iterations);
+            args.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+            args.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(args);
             generator.Run();
@@ -349,14 +349,14 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoosting);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
+                    parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
                     //args.SetParameter(ReductGeneratorParamHelper.MinReductLength, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 10);
-                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 10);
+                    parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
 
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
@@ -374,17 +374,17 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             break;
                     }
 
-                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
+                    parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.2);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
+                    innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.2);
+                    innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
-                    parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+                    parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
                     ReductEnsembleBoostingGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingGenerator;
                     reductGenerator.Run();
@@ -406,7 +406,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     ClassificationResult resultTst = classifierTst.Classify(tstData, null);
 
                     Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}",
-                                      parms.GetParameter(ReductGeneratorParamHelper.FactoryKey),
+                                      parms.GetParameter(ReductFactoryOptions.ReductType),
                                       reductGenerator.IdentyficationType.Method.Name,
                                       reductGenerator.VoteType.Method.Name,
                         //reductGenerator.MinReductLength,
@@ -466,11 +466,11 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingVarEps);
+                    parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
 
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
@@ -488,17 +488,17 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             break;
                     }
 
-                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
+                    parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
+                    innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
+                    innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
-                    parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+                    parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
                     ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
                     reductGenerator.Run();
@@ -562,29 +562,29 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 for (int t = 0; t < 2; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithDiversity);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
-                    parms.SetParameter(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
-                    parms.SetParameter(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.MinReductLength, 2);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingWithDiversity);
+                    parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.SetParameter(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
+                    parms.SetParameter(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
+                    parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.MinReductLength, 2);
                     //args.SetParameter(ReductGeneratorParamHelper.MaxReductLength, 5);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, 20);
-                    parms.SetParameter(ReductGeneratorParamHelper.AgregateFunction, AgregateFunction.Max);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+                    parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfReductsToTest, 20);
+                    parms.SetParameter(ReductFactoryOptions.AgregateFunction, AgregateFunction.Max);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorRelative(trnData));
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
+                    innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
+                    innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorRelative(trnData));
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
-                    parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+                    parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
                     ReductEnsembleBoostingWithDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithDiversityGenerator;
                     reductGenerator.Run();
@@ -652,13 +652,13 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     Args parms = new Args();
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfThreads, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingWithAttributeDiversity);
+                    parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+                    parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
 
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
@@ -676,17 +676,17 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             break;
                     }
 
-                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
+                    parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, false);
 
                     Args innerArgs = new Args();
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductRelativeWeights);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.1);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductGeneratorParamHelper.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
+                    innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
+                    innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
 
-                    parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, innerArgs);
+                    parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
                     ReductEnsembleBoostingWithAttributeDiversityGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingWithAttributeDiversityGenerator;
                     reductGenerator.Run();

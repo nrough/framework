@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Raccoon.Data.Examples;
+using Raccoon.Data.Benchmark;
 using System;
 using System.Collections.Generic;
 using System.Linq;

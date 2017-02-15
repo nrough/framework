@@ -38,7 +38,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity; }
+            get { return ReductTypes.ReductEnsembleBoostingWithAttributeDiversity; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Evaluation;
 
 namespace Raccoon.MachineLearning.Tests
 {

@@ -54,7 +54,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public PruningType PruningType { get; set; } = PruningType.None;
         public int PruningCVFolds { get; set; } = 3;
         public PruningObjectiveType PruningObjective { get; set; } = PruningObjectiveType.MinimizeError;
-        public DataStoreSplitter PruningDataSplitter { get; set; }
+        public DataSplitter PruningDataSplitter { get; set; }
 
         protected class SplitInfo
         {
@@ -188,8 +188,8 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
         private ClassificationResult LearnAndPrune(DataStore data, int[] attributes)
         {            
-            DataStoreSplitter cvSplitter = this.PruningDataSplitter == null
-                ? new DataStoreSplitter(data, this.PruningCVFolds, false)
+            DataSplitter cvSplitter = this.PruningDataSplitter == null
+                ? new DataSplitter(data, this.PruningCVFolds, false)
                 : this.PruningDataSplitter;
 
             this.Init(data, attributes);

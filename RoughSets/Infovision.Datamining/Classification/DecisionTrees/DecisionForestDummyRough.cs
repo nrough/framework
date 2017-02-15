@@ -36,16 +36,16 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                 var localPermutationCollection = new PermutationCollection(permutationCollection[i]);
 
                 Args parms = new Args(6);
-                parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
-                parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, this.ReductGeneratorFactory);
-                parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, this.Gamma);
-                parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, localPermutationCollection);
-                parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
+                parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
+                parms.SetParameter<string>(ReductFactoryOptions.ReductType, this.ReductGeneratorFactory);
+                parms.SetParameter<double>(ReductFactoryOptions.Epsilon, this.Gamma);
+                parms.SetParameter<PermutationCollection>(ReductFactoryOptions.PermutationCollection, localPermutationCollection);
+                parms.SetParameter<bool>(ReductFactoryOptions.UseExceptionRules, false);
 
-                if (this.ReductGeneratorFactory != ReductFactoryKeyHelper.GeneralizedMajorityDecision
-                    && this.ReductGeneratorFactory != ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate)
+                if (this.ReductGeneratorFactory != ReductTypes.GeneralizedMajorityDecision
+                    && this.ReductGeneratorFactory != ReductTypes.GeneralizedMajorityDecisionApproximate)
                 {
-                    parms.SetParameter<EquivalenceClassCollection>(ReductGeneratorParamHelper.InitialEquivalenceClassCollection,
+                    parms.SetParameter<EquivalenceClassCollection>(ReductFactoryOptions.InitialEquivalenceClassCollection,
                         EquivalenceClassCollection.Create(permutationCollection[i].ToArray(), data, data.Weights));
                 }
 

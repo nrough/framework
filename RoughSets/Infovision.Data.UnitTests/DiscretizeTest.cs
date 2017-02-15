@@ -32,13 +32,13 @@ namespace Raccoon.Data.Tests
 
             BenchmarkData benchmark = kvp.Value;
             DataStore data = null, train = null, test = null;
-            DataStoreSplitter splitter = null;
+            DataSplitter splitter = null;
             DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
 
             if (benchmark.CrossValidationActive)
             {
                 data = DataStore.Load(benchmark.DataFile, benchmark.FileFormat);
-                splitter = new DataStoreSplitter(data, benchmark.CrossValidationFolds);
+                splitter = new DataSplitter(data, benchmark.CrossValidationFolds);
             }
             else
             {
@@ -52,11 +52,11 @@ namespace Raccoon.Data.Tests
                     splitter.Split(out train, out test, i);                
 
                 Args args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
+                args.SetParameter(ReductFactoryOptions.DecisionTable, train);
+                args.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+                args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
                 PermutationCollection permutations = ReductFactory.GetPermutationGenerator(args).Generate(numberOfPermutations);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+                args.SetParameter(ReductFactoryOptions.PermutationCollection, permutations);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();
@@ -102,10 +102,10 @@ namespace Raccoon.Data.Tests
                 }            
 
                 args = new Args();
-                args.SetParameter(ReductGeneratorParamHelper.TrainData, train);
-                args.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-                args.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-                args.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+                args.SetParameter(ReductFactoryOptions.DecisionTable, train);
+                args.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+                args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+                args.SetParameter(ReductFactoryOptions.PermutationCollection, permutations);
 
                 reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();

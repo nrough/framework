@@ -19,7 +19,7 @@ namespace Raccoon.Data.Filters
 
         #region Properties
 
-        public string ReductFactoryKey { get; set; } = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+        public string ReductFactoryKey { get; set; } = ReductTypes.ApproximateReductMajorityWeights;
         public double Epsilon { get; set; } = 0.03;
         public int NumberOfReductsToTest { get; set; } = 100;        
         public IComparer<IReduct> ReductComparer { get; set; } = ReductRuleNumberComparer.Default;
@@ -75,11 +75,11 @@ namespace Raccoon.Data.Filters
                     }                                         
 
                     Args parms = new Args(4);
-                    parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
-                    parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKey);
-                    parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, Epsilon);
+                    parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
+                    parms.SetParameter<string>(ReductFactoryOptions.ReductType, ReductFactoryKey);
+                    parms.SetParameter<double>(ReductFactoryOptions.Epsilon, Epsilon);
                     parms.SetParameter<PermutationCollection>(
-                        ReductGeneratorParamHelper.PermutationCollection, permutations);                    
+                        ReductFactoryOptions.PermutationCollection, permutations);                    
 
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                     generator.Run();

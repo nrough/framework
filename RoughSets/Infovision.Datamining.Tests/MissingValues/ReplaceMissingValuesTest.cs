@@ -33,21 +33,21 @@ namespace Raccoon.MachineLearning.Tests.MissingValues
             tstCompleteDate.DumpExt(@"temp\missingvals.tst", ",");
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps);
-            parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-            parms.SetParameter(ReductGeneratorParamHelper.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-            parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, 1);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
-            parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, false);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingVarEps);
+            parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.SetParameter(ReductFactoryOptions.MaxIterations, 1);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(trnData));
+            parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, false);
 
             Args inner = new Args();
-            inner.SetParameter(ReductGeneratorParamHelper.TrainData, trnData);
-            inner.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            inner.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 1);
-            inner.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(trnData));
+            inner.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
+            inner.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+            inner.SetParameter(ReductFactoryOptions.NumberOfReducts, 1);
+            inner.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(trnData));
 
-            parms.SetParameter(ReductGeneratorParamHelper.InnerParameters, inner);
+            parms.SetParameter(ReductFactoryOptions.InnerParameters, inner);
 
             ReductEnsembleBoostingVarEpsGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleBoostingVarEpsGenerator;
             reductGenerator.Run();

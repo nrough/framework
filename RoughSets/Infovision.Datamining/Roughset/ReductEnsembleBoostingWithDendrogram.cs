@@ -44,11 +44,11 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.Distance))
-                this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductGeneratorParamHelper.Distance);
+            if (args.Exist(ReductFactoryOptions.Distance))
+                this.Distance = (Func<double[], double[], double>)args.GetParameter(ReductFactoryOptions.Distance);
 
-            if (args.Exist(ReductGeneratorParamHelper.Linkage))
-                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductGeneratorParamHelper.Linkage);
+            if (args.Exist(ReductFactoryOptions.Linkage))
+                this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductFactoryOptions.Linkage);
         }
 
         protected override void Generate()
@@ -130,7 +130,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ReductEnsembleBoostingWithDendrogram; }
+            get { return ReductTypes.ReductEnsembleBoostingWithDendrogram; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -142,7 +142,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGenerator(dataStore);
         }
     }

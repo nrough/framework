@@ -27,7 +27,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             for (double eps = 0.0; eps < 0.3; eps += 0.01)
             {
                 double error = 0;
-                DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+                DataSplitter splitter = new DataSplitter(data, numOfFolds);
                 for (int f = 0; f < numOfFolds; f++)
                 {                    
                     splitter.Split(out train, out test, f);
@@ -56,7 +56,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore train = null, test = null;
 
             double error = 0;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);                
@@ -83,7 +83,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
             double error = 0;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -111,7 +111,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore train = null, test = null;
             double error = 0;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -141,7 +141,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double error = 0;
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);

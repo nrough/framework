@@ -37,17 +37,17 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
-                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+            if (args.Exist(ReductFactoryOptions.WeightGenerator))
+                this.weightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
 
             this.MinReductLength = 0;
             this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
-            if (args.Exist(ReductGeneratorParamHelper.MinReductLength))
-                this.MinReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MinReductLength);
+            if (args.Exist(ReductFactoryOptions.MinReductLength))
+                this.MinReductLength = (int)args.GetParameter(ReductFactoryOptions.MinReductLength);
 
-            if (args.Exist(ReductGeneratorParamHelper.MaxReductLength))
-                this.MaxReductLength = (int)args.GetParameter(ReductGeneratorParamHelper.MaxReductLength);
+            if (args.Exist(ReductFactoryOptions.MaxReductLength))
+                this.MaxReductLength = (int)args.GetParameter(ReductFactoryOptions.MaxReductLength);
 
             if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard))
                 this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
@@ -107,7 +107,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.RandomSubset; }
+            get { return ReductTypes.RandomSubset; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -119,7 +119,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGenerator(dataStore);
         }
     }

@@ -24,7 +24,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             for (int f = 0; f < numOfFolds; f++)
             {                
@@ -47,7 +47,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
             DataStore train = null, test = null;
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, numOfFolds);
+            DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -154,7 +154,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             randomForest.Size = 10;
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Gamma = epsilon;
-            randomForest.ReductGeneratorFactory = ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate;
+            randomForest.ReductGeneratorFactory = ReductTypes.GeneralizedMajorityDecisionApproximate;
 
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray()).Error;
             Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
@@ -205,7 +205,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 semiRoughForest.Size = size;
                 semiRoughForest.Gamma = epsilon;
                 semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
-                semiRoughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
+                semiRoughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
                 semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
                 var semiRoughForestResult = Classifier.DefaultClassifer.Classify(semiRoughForest, test, null);
                 semiRoughForestResult.ModelName = "SemiRough";
@@ -221,7 +221,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 roughForest.NumberOfTreeProbes = numberOfTreeProbes;
                 roughForest.Gamma = epsilon;
                 //roughForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
-                roughForest.ReductGeneratorFactory = ReductFactoryKeyHelper.ApproximateReductRelativeWeights;
+                roughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
                 roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
                 var roughForestResult = Classifier.DefaultClassifer.Classify(roughForest, test, null);
                 roughForestResult.ModelName = "Rough";
@@ -262,17 +262,17 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             {
                 for (double eps = 0.0; eps < 1.0; eps += 0.05)
                 {
-                    string factoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+                    string factoryKey = ReductTypes.ApproximateReductMajorityWeights;
                     WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
                     PermutationCollection permList = new PermutationGenerator(data).Generate(10);
 
                     Args parms = new Args(6);
-                    parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
-                    parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                    parms.SetParameter<WeightGenerator>(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, eps);
-                    parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, permList);
-                    parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
+                    parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
+                    parms.SetParameter<string>(ReductFactoryOptions.ReductType, factoryKey);
+                    parms.SetParameter<WeightGenerator>(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    parms.SetParameter<double>(ReductFactoryOptions.Epsilon, eps);
+                    parms.SetParameter<PermutationCollection>(ReductFactoryOptions.PermutationCollection, permList);
+                    parms.SetParameter<bool>(ReductFactoryOptions.UseExceptionRules, false);
 
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                     if (generator is ReductGeneratorMeasure)

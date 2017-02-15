@@ -156,15 +156,15 @@ namespace Raccoon.MachineLearning.Roughset
         {
             this.Parameters = args;
 
-            if (args.Exist(ReductGeneratorParamHelper.TrainData))
+            if (args.Exist(ReductFactoryOptions.DecisionTable))
             {
-                this.DataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+                this.DataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
                 this.initFromDataStore(this.DataStore);
             }
 
-            if (args.Exist(ReductGeneratorParamHelper.PermuatationGenerator))
+            if (args.Exist(ReductFactoryOptions.PermuatationGenerator))
             {
-                this.PermutationGenerator = (IPermutationGenerator)args.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator);
+                this.PermutationGenerator = (IPermutationGenerator)args.GetParameter(ReductFactoryOptions.PermuatationGenerator);
             }
             else
             {
@@ -174,18 +174,18 @@ namespace Raccoon.MachineLearning.Roughset
                 }
             }
 
-            if (args.Exist(ReductGeneratorParamHelper.PermutationCollection))
+            if (args.Exist(ReductFactoryOptions.PermutationCollection))
             {
-                this.Permutations = (PermutationCollection)args.GetParameter(ReductGeneratorParamHelper.PermutationCollection);
+                this.Permutations = (PermutationCollection)args.GetParameter(ReductFactoryOptions.PermutationCollection);
             }
-            else if (args.Exist(ReductGeneratorParamHelper.NumberOfReducts))
+            else if (args.Exist(ReductFactoryOptions.NumberOfReducts))
             {
-                int numberOfReducts = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReducts);
+                int numberOfReducts = (int)args.GetParameter(ReductFactoryOptions.NumberOfReducts);
                 this.Permutations = this.PermutationGenerator.Generate(numberOfReducts);
             }
-            else if (args.Exist(ReductGeneratorParamHelper.NumberOfPermutations))
+            else if (args.Exist(ReductFactoryOptions.NumberOfPermutations))
             {
-                int numberOfPermutations = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfPermutations);
+                int numberOfPermutations = (int)args.GetParameter(ReductFactoryOptions.NumberOfPermutations);
                 this.Permutations = this.PermutationGenerator.Generate(numberOfPermutations);
             }
             else
@@ -196,14 +196,14 @@ namespace Raccoon.MachineLearning.Roughset
             if (args.Exist("USECACHE"))
                 this.UseCache = true;
 
-            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                this.Epsilon = (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon);
+            if (args.Exist(ReductFactoryOptions.Epsilon))
+                this.Epsilon = (double)args.GetParameter(ReductFactoryOptions.Epsilon);
 
-            if (args.Exist(ReductGeneratorParamHelper.ReductionStep))
-                this.ReductionStep = (int)args.GetParameter(ReductGeneratorParamHelper.ReductionStep);
+            if (args.Exist(ReductFactoryOptions.ReductionStep))
+                this.ReductionStep = (int)args.GetParameter(ReductFactoryOptions.ReductionStep);
 
-            if (args.Exist(ReductGeneratorParamHelper.InnerParameters))
-                this.InnerParameters = (Args)args.GetParameter(ReductGeneratorParamHelper.InnerParameters);
+            if (args.Exist(ReductFactoryOptions.InnerParameters))
+                this.InnerParameters = (Args)args.GetParameter(ReductFactoryOptions.InnerParameters);
 
             //TODO FieldGroups
         }

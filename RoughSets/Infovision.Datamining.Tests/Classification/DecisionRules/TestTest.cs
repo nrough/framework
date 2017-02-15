@@ -30,14 +30,14 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             PermutationCollection permutationCollection = new PermutationCollection(100, attributes);                
 
             Args parms = new Args();
-            parms.SetParameter<DataStore>(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter<string>(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms.SetParameter<WeightGenerator>(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.SetParameter<double>(ReductGeneratorParamHelper.Epsilon, 0.20);
-            parms.SetParameter<PermutationCollection>(ReductGeneratorParamHelper.PermutationCollection, permutationCollection);
-            parms.SetParameter<bool>(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms.SetParameter<int>(ReductGeneratorParamHelper.NumberOfReducts, 100);
-            parms.SetParameter<int>(ReductGeneratorParamHelper.NumberOfReductsToTest, 100);
+            parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter<string>(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+            parms.SetParameter<WeightGenerator>(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parms.SetParameter<double>(ReductFactoryOptions.Epsilon, 0.20);
+            parms.SetParameter<PermutationCollection>(ReductFactoryOptions.PermutationCollection, permutationCollection);
+            parms.SetParameter<bool>(ReductFactoryOptions.UseExceptionRules, false);
+            parms.SetParameter<int>(ReductFactoryOptions.NumberOfReducts, 100);
+            parms.SetParameter<int>(ReductFactoryOptions.NumberOfReductsToTest, 100);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();

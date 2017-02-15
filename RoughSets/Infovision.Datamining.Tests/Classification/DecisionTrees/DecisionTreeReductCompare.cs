@@ -11,6 +11,7 @@ using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Discretization;
+using Raccoon.MachineLearning.Evaluation;
 
 namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {
@@ -18,19 +19,19 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     public class DecisionTreeReductCompare
     {
         [Test, Repeat(1)]                
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\spect.train", @"Data\spect.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\dna.train", @"Data\dna.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights)]
         public void ErrorImpurityTest(string trainFile, string testFile, FileFormat fileFormat, string reductFactoryKey)
         {
             DataStore data = DataStore.Load(trainFile, fileFormat);
@@ -122,10 +123,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                             return cachedReduct;
 
                         Args parms = new Args(4);
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainingSet);
-                        parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
-                        parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                        parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationCollection);
+                        parms.SetParameter(ReductFactoryOptions.DecisionTable, trainingSet);
+                        parms.SetParameter(ReductFactoryOptions.ReductType, reductFactoryKey);
+                        parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
+                        parms.SetParameter(ReductFactoryOptions.PermutationCollection, permutationCollection);
                         IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                         generator.Run();
 
@@ -160,21 +161,21 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         }
 
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\zoo.dta", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\semeion.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\zoo.dta", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\soybean-small.2.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\house-votes-84.2.data", FileFormat.Rses1_1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\agaricus-lepiota.2.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\breast-cancer-wisconsin.2.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\promoters.2.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\semeion.data", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\nursery.2.data", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\german.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\dermatology.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\lymphography.all", FileFormat.Csv, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology_modified.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\dermatology.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\hypothyroid.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\lymphography.all", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void ErrorImpurityTest_CV(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -203,7 +204,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;            
 
-            DataStoreSplitter splitter = new DataStoreSplitter(data, folds, true);
+            DataSplitter splitter = new DataSplitter(data, folds, true);
 
             int rednum = 100;
             PermutationGenerator permutationGenerator = new PermutationGenerator(allAttributes);
@@ -292,10 +293,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                     }
 
                     Args parms = new Args(4);
-                    parms.SetParameter(ReductGeneratorParamHelper.TrainData, trainingSet);
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, reductFactoryKey);
-                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-                    parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutationCollection);
+                    parms.SetParameter(ReductFactoryOptions.DecisionTable, trainingSet);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, reductFactoryKey);
+                    parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
+                    parms.SetParameter(ReductFactoryOptions.PermutationCollection, permutationCollection);
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
                     generator.Run();
 
@@ -446,8 +447,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             return String.Format("{0}#{1}", data.Name, epsilon);
         }
 
-        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductFactoryKeyHelper.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.None, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\vehicle.tab", FileFormat.Rses1, PruningType.ReducedErrorPruning, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void Discretize_CV_Test(string dataFile, FileFormat fileFormat, PruningType pruningType, int folds)
         {            
             DataStore data = DataStore.Load(dataFile, fileFormat);

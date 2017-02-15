@@ -134,7 +134,7 @@ namespace Raccoon.MachineLearning.Roughset
             IReduct emptyReduct = this.CreateReduct(new int[] { }, this.Epsilon, WeightGenerator.Weights);
             this.M0 = this.GetPartitionQuality(emptyReduct);
 
-            if (!args.Exist(ReductGeneratorParamHelper.Epsilon))
+            if (!args.Exist(ReductFactoryOptions.Epsilon))
             {
                 int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
                 this.Epsilon = (1.0 / K) * this.Threshold;
@@ -146,7 +146,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps; }
+            get { return ReductTypes.ReductEnsembleBoostingVarEps; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)

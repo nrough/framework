@@ -92,7 +92,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.Bireduct; }
+            get { return ReductTypes.Bireduct; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -104,10 +104,10 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
 
-            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                return new PermutationGeneratorFieldObject(dataStore, args.GetParameter<double>(ReductGeneratorParamHelper.Epsilon));
+            if (args.Exist(ReductFactoryOptions.Epsilon))
+                return new PermutationGeneratorFieldObject(dataStore, args.GetParameter<double>(ReductFactoryOptions.Epsilon));
 
             return new PermutationGeneratorFieldObject(dataStore);
         }
@@ -139,7 +139,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.BireductRelative; }
+            get { return ReductTypes.BireductRelative; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)
@@ -151,10 +151,10 @@ namespace Raccoon.MachineLearning.Roughset
 
         public override IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
 
-            if (args.Exist(ReductGeneratorParamHelper.Epsilon))
-                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter(ReductGeneratorParamHelper.Epsilon));
+            if (args.Exist(ReductFactoryOptions.Epsilon))
+                return new PermutationGeneratorFieldObjectRelative(dataStore, (double)args.GetParameter(ReductFactoryOptions.Epsilon));
 
             return new PermutationGeneratorFieldObjectRelative(dataStore);
         }
@@ -197,7 +197,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public override string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.GammaBireduct; }
+            get { return ReductTypes.GammaBireduct; }
         }
 
         public override IReductGenerator GetReductGenerator(Args args)

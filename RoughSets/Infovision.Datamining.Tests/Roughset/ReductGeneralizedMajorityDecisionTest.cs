@@ -41,7 +41,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void MajorityGeneralizedDecisionPerformanceTest()
         {
             DataStore trainData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1);
+            DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1, trainData.DataStoreInfo);
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
             double eps = 0.0;
             int ensembleSize = 10;
@@ -52,16 +52,16 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
 
             Args parms_GMDR = new Args();
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+            parms_GMDR.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parms_GMDR.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
+            parms_GMDR.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parms_GMDR.SetParameter(ReductFactoryOptions.Epsilon, eps);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms_GMDR);
             PermutationCollection permList = permGen.Generate(ensembleSize * 10);
 
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parms_GMDR.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parms_GMDR.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parms_GMDR.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
             ReductGeneralizedMajorityDecisionGenerator generator_GMDR =
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
@@ -84,12 +84,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             //Console.WriteLine(result_GMDR);
 
             Args parmsApprox = new Args();
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsApprox.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
+            parmsApprox.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsApprox.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+            parmsApprox.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsApprox.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsApprox.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parmsApprox.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
             ReductGeneratorWeightsMajority generatorApprox =
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
@@ -124,11 +124,11 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             for (double eps = 0.0; eps < 1.0; eps += 0.1)
             {
                 Args parms = new Args();
-                parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-                parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-                parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-                parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-                parms.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
+                parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+                parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
+                parms.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+                parms.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(data));
+                parms.SetParameter(ReductFactoryOptions.Epsilon, eps);
 
                 ReductGeneralizedMajorityDecisionGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
 
@@ -174,12 +174,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public IReduct CalculateGeneralizedDecisionReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecision);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(data));
+            parms.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
+            parms.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, SortDirection.Descending);
 
             ReductGeneralizedMajorityDecisionGenerator reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneralizedMajorityDecisionGenerator;
@@ -193,10 +193,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public IReduct CalculateApproximateReductFromSubset(DataStore data, double epsilon, int[] attributeSubset)
         {
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajorityWeights);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, new WeightGeneratorMajority(data));
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);            
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajorityWeights);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(data));
+            parms.SetParameter(ReductFactoryOptions.Epsilon, epsilon);            
 
             ReductGeneratorWeightsMajority reductGenerator =
                 ReductFactory.GetReductGenerator(parms) as ReductGeneratorWeightsMajority;

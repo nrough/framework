@@ -8,6 +8,7 @@ using System.Linq;
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Evaluation;
 
 namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 {

@@ -404,16 +404,16 @@ namespace MRIExceptions
             train.SetWeights(weightGenerator.Weights);
 
             Args parms = new Args();
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, train);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, train);
 
             //Remember to change ###############################################
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
-            parms.SetParameter(ReductGeneratorParamHelper.EquivalenceClassSortDirection, SortDirection.Descending);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permutations);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parms.SetParameter(ReductFactoryOptions.Epsilon, epsilon);
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
+            parms.SetParameter(ReductFactoryOptions.NumberOfReducts, 100);
+            parms.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, SortDirection.Descending);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, permutations);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();

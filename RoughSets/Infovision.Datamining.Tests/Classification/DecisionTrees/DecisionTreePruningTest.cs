@@ -26,7 +26,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DataStore train = null, prune = null;
-            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            DataSplitter splitter = new DataSplitterRatio(data, 0.5);
             splitter.Split(out train, out prune);
 
             DecisionTreeC45 c45WithPruning = new DecisionTreeC45();
@@ -73,7 +73,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
             DataStore train = null, prune = null;
-            DataStoreSplitter splitter = new DataStoreSplitterRatio(data, 0.5);
+            DataSplitter splitter = new DataSplitterRatio(data, 0.5);
             splitter.Split(out train, out prune);
 
             var c45WithPruning = new DecisionTreeC45();

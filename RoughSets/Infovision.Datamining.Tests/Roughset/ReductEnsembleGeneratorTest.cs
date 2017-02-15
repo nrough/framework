@@ -43,18 +43,18 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();
-            argSet.Add(ReductGeneratorParamHelper.TrainData, data);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfThreads, 1);
-            argSet.Add(ReductGeneratorParamHelper.PermutationEpsilon, epsilons);
-            argSet.Add(ReductGeneratorParamHelper.Distance, (Func<double[], double[], double>)Distance.Manhattan);
-            argSet.Add(ReductGeneratorParamHelper.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
-            argSet.Add(ReductGeneratorParamHelper.NumberOfClusters, 3);
-            argSet.Add(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ReductEnsemble);
-            argSet.Add(ReductGeneratorParamHelper.PermutationCollection, permList);
-            argSet.Add(ReductGeneratorParamHelper.DendrogramBitmapFile, @"euclidean");
+            argSet.Add(ReductFactoryOptions.DecisionTable, data);
+            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
+            argSet.Add(ReductFactoryOptions.PermutationEpsilon, epsilons);
+            argSet.Add(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
+            argSet.Add(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);
+            argSet.Add(ReductFactoryOptions.NumberOfClusters, 3);
+            argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsemble);
+            argSet.Add(ReductFactoryOptions.PermutationCollection, permList);
+            argSet.Add(ReductFactoryOptions.DendrogramBitmapFile, @"euclidean");
             argSet.Add("ReductWeightFileName", @"euclidean");
-            argSet.Add(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            argSet.Add(ReductGeneratorParamHelper.ReconWeights, reconWeights);
+            argSet.Add(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            argSet.Add(ReductFactoryOptions.ReconWeights, reconWeights);
             argsList.Add(argSet);
 
             return argsList;
@@ -63,7 +63,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test, TestCaseSource("GetGenerateTestArgs")]
         public void GenerateTest(Dictionary<string, object> args)
         {
-            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductGeneratorParamHelper.Distance];
+            Func<double[], double[], double> distance = (Func<double[], double[], double>)args[ReductFactoryOptions.Distance];
             //Console.WriteLine("{0}.{1}", distance.Method.DeclaringType.Name, distance.Method.Name);
 
             Args parms = new Args();
@@ -74,9 +74,9 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             ReductEnsembleGenerator reductGenerator = ReductFactory.GetReductGenerator(parms) as ReductEnsembleGenerator;
             reductGenerator.Run();
-            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args[ReductGeneratorParamHelper.NumberOfClusters]);
+            IReductStoreCollection reductStoreCollection = reductGenerator.GetReductStoreCollection((int)args[ReductFactoryOptions.NumberOfClusters]);
 
-            DataStore data = (DataStore)parms.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore data = (DataStore)parms.GetParameter(ReductFactoryOptions.DecisionTable);
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             double[][] errorWeights = reductGenerator.GetWeightVectorsFromReducts(reductPool);
 

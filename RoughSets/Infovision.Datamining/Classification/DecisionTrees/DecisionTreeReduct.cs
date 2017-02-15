@@ -25,7 +25,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public DecisionTreeReduct()
             : base()
         {
-            this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.ReductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
             this.ReductIterations = 1;
             this.Gamma = 0.0;
             this.ReductEpsilon = 0.0;
@@ -35,7 +35,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public DecisionTreeReduct(string modelName)
             : base(modelName)
         {
-            this.ReductFactoryKey = ReductFactoryKeyHelper.ApproximateReductMajorityWeights;
+            this.ReductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
             this.ReductIterations = 1;
             this.Gamma = 0.0;
             this.ReductEpsilon = 0.0;
@@ -61,14 +61,14 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                 this.ReductComparer = new ReductAccuracyComparer(data);
 
             Args parms = new Args(8);
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, this.ReductFactoryKey);
-            parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, this.WeightGenerator);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, this.ReductEpsilon);
-            parms.SetParameter(ReductGeneratorParamHelper.PermutationCollection, this.PermutationCollection);
-            parms.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, false);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, this.ReductIterations);
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsToTest, this.ReductIterations);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter(ReductFactoryOptions.ReductType, this.ReductFactoryKey);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, this.WeightGenerator);
+            parms.SetParameter(ReductFactoryOptions.Epsilon, this.ReductEpsilon);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, this.PermutationCollection);
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
+            parms.SetParameter(ReductFactoryOptions.NumberOfReducts, this.ReductIterations);
+            parms.SetParameter(ReductFactoryOptions.NumberOfReductsToTest, this.ReductIterations);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run();

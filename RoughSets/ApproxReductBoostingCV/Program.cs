@@ -40,7 +40,7 @@ namespace ApproxReductBoostingCV
             Console.WriteLine("Missing Values: {0}", data.DataStoreInfo.HasMissingData);
 
             int cvfolds = 5;
-            DataStoreSplitter splitter = new DataStoreSplitter(data, cvfolds);
+            DataSplitter splitter = new DataSplitter(data, cvfolds);
 
             Console.WriteLine("Using Cross Validation with {0} splits", cvfolds);
 
@@ -55,15 +55,15 @@ namespace ApproxReductBoostingCV
                     ParameterValueCollection<string>.CreateFromElements("ReductFactory"
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoosting
                                                                                 //,ReductFactoryKeyHelper.ReductEnsembleBoostingWithAttributeDiversity
-                                                                                ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEps
-                                                                                ,ReductFactoryKeyHelper.ReductEnsembleBoostingVarEpsWithAttributeDiversity
+                                                                                ,ReductTypes.ReductEnsembleBoostingVarEps
+                                                                                ,ReductTypes.ReductEnsembleBoostingVarEpsWithAttributeDiversity
                                                                                ),
                     ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
                     ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0M, 2.0)))
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", 1)
-                    new ParameterNumericRange<int>(ReductGeneratorParamHelper.Epsilon, 0, 50, 5)
+                    new ParameterNumericRange<int>(ReductFactoryOptions.Epsilon, 0, 50, 5)
                 }
             );
 
@@ -117,7 +117,7 @@ namespace ApproxReductBoostingCV
                     if (trnFoldOrig.DataStoreInfo.HasMissingData)
                     {
                         trnFoldReplaced = new ReplaceMissingValues().Compute(trnFoldOrig);
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldReplaced);
+                        parms.SetParameter(ReductFactoryOptions.DecisionTable, trnFoldReplaced);
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -135,7 +135,7 @@ namespace ApproxReductBoostingCV
                     }
                     else
                     {
-                        parms.SetParameter(ReductGeneratorParamHelper.TrainData, trnFoldOrig);
+                        parms.SetParameter(ReductFactoryOptions.DecisionTable, trnFoldOrig);
                         switch (weightingSchema)
                         {
                             case WeightingSchema.Majority:
@@ -152,15 +152,15 @@ namespace ApproxReductBoostingCV
                         }
                     }
 
-                    parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, factoryKey);
-                    parms.SetParameter(ReductGeneratorParamHelper.IdentificationType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.VoteType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
-                    parms.SetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier, 1);
-                    parms.SetParameter(ReductGeneratorParamHelper.MaxIterations, iter);
-                    parms.SetParameter(ReductGeneratorParamHelper.UpdateWeights, updateWeights);
-                    parms.SetParameter(ReductGeneratorParamHelper.Epsilon, epsilon / 100.0);
-                    parms.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-                    parms.SetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
+                    parms.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
+                    parms.SetParameter(ReductFactoryOptions.IdentificationType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.VoteType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
+                    parms.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
+                    parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
+                    parms.SetParameter(ReductFactoryOptions.UpdateWeights, updateWeights);
+                    parms.SetParameter(ReductFactoryOptions.Epsilon, epsilon / 100.0);
+                    parms.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+                    parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, checkEnsembleErrorDuringTraining);
 
                     ReductEnsembleBoostingGenerator reductGenerator = (ReductEnsembleBoostingGenerator)ReductFactory.GetReductGenerator(parms);
                     reductGenerator.Run();

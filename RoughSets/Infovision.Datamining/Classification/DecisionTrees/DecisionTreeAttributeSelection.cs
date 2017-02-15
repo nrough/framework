@@ -13,10 +13,10 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public static int[] ApproximateReductAttributeSelection(LocalDataStoreSlot data, int[] attributes)
         {
             Args parms = new Args(4);
-            parms.SetParameter(ReductGeneratorParamHelper.TrainData, data);
-            parms.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.ApproximateReductMajority);
-            parms.SetParameter(ReductGeneratorParamHelper.Epsilon, 0.01 );
-            parms.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, 100);
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, data);
+            parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductMajority);
+            parms.SetParameter(ReductFactoryOptions.Epsilon, 0.01 );
+            parms.SetParameter(ReductFactoryOptions.NumberOfReducts, 100);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
             generator.Run(); 

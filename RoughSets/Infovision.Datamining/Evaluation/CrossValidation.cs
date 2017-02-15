@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Raccoon.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning
+namespace Raccoon.MachineLearning.Evaluation
 {
     public delegate void PostLearingMethod(IModel model);
 
@@ -19,10 +19,10 @@ namespace Raccoon.MachineLearning
         public bool RunInParallel { get; set; }
         public PostLearingMethod PostLearningMethod { get; set; }
         public DataStore Data { get; set; }
-        public IDataStoreSplitter Splitter { get; set; }        
+        public IDataSplitter Splitter { get; set; }        
         public IList<IFilter> Filters { get; set; }
 
-        public CrossValidation(DataStore data, IDataStoreSplitter splitter)
+        public CrossValidation(DataStore data, IDataSplitter splitter)
         {
             this.RunInParallel = true;
             this.Data = data;
@@ -31,10 +31,10 @@ namespace Raccoon.MachineLearning
         }
 
         public CrossValidation(DataStore data, int folds)
-            : this(data, new DataStoreSplitter(data, folds, true)) { }
+            : this(data, new DataSplitter(data, folds, true)) { }
 
         public CrossValidation(DataStore data)
-            : this(data, new DataStoreSplitter(data, DefaultFolds, true)) { }
+            : this(data, new DataSplitter(data, DefaultFolds, true)) { }
                 
         public ClassificationResult Run<T>(T modelPrototype, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
@@ -68,7 +68,7 @@ namespace Raccoon.MachineLearning
         }
 
         private ClassificationResult RunFold<T>(T modelPrototype, 
-            IDataStoreSplitter dataSplitter, int fold, int[] attributes)
+            IDataSplitter dataSplitter, int fold, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
             DataStore trainDs = null, testDs = null;
@@ -101,7 +101,7 @@ namespace Raccoon.MachineLearning
         }
 
         private ClassificationResult CV<T>(T modelPrototype, DataStore data, 
-            int[] attributes, IDataStoreSplitter dataSplitter)
+            int[] attributes, IDataSplitter dataSplitter)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
         {
             if (data == null) throw new ArgumentNullException("data");

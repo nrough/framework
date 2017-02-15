@@ -87,9 +87,9 @@ namespace Raccoon.MachineLearning.Roughset
 
             if (this.DataStore != null)
             {
-                if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
+                if (args.Exist(ReductFactoryOptions.WeightGenerator))
                 {
-                    this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+                    this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
                 }
                 else
                 {
@@ -105,44 +105,44 @@ namespace Raccoon.MachineLearning.Roughset
                 this.InitFromDecisionValues(this.DataStore, this.DataStore.DataStoreInfo.GetDecisionValues());
             }
 
-            if (args.Exist(ReductGeneratorParamHelper.WeightGenerator))
-                this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductGeneratorParamHelper.WeightGenerator);
+            if (args.Exist(ReductFactoryOptions.WeightGenerator))
+                this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
 
-            if (args.Exist(ReductGeneratorParamHelper.Threshold))
-                this.Threshold = (double)args.GetParameter(ReductGeneratorParamHelper.Threshold);
+            if (args.Exist(ReductFactoryOptions.Threshold))
+                this.Threshold = (double)args.GetParameter(ReductFactoryOptions.Threshold);
 
-            if (args.Exist(ReductGeneratorParamHelper.IdentificationType))
-                this.IdentyficationType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.IdentificationType);
+            if (args.Exist(ReductFactoryOptions.IdentificationType))
+                this.IdentyficationType = (RuleQualityFunction)args.GetParameter(ReductFactoryOptions.IdentificationType);
 
-            if (args.Exist(ReductGeneratorParamHelper.VoteType))
-                this.VoteType = (RuleQualityFunction)args.GetParameter(ReductGeneratorParamHelper.VoteType);
+            if (args.Exist(ReductFactoryOptions.VoteType))
+                this.VoteType = (RuleQualityFunction)args.GetParameter(ReductFactoryOptions.VoteType);
 
-            if (args.Exist(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier))
-                this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductGeneratorParamHelper.NumberOfReductsInWeakClassifier);
+            if (args.Exist(ReductFactoryOptions.NumberOfReductsInWeakClassifier))
+                this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier);
 
-            if (args.Exist(ReductGeneratorParamHelper.MaxIterations))
-                this.MaxIterations = (int)args.GetParameter(ReductGeneratorParamHelper.MaxIterations);
+            if (args.Exist(ReductFactoryOptions.MaxIterations))
+                this.MaxIterations = (int)args.GetParameter(ReductFactoryOptions.MaxIterations);
 
-            if (args.Exist(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining))
-                this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductGeneratorParamHelper.CheckEnsembleErrorDuringTraining);
+            if (args.Exist(ReductFactoryOptions.CheckEnsembleErrorDuringTraining))
+                this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining);
 
-            if (args.Exist(ReductGeneratorParamHelper.UpdateWeights))
-                this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductGeneratorParamHelper.UpdateWeights);
+            if (args.Exist(ReductFactoryOptions.UpdateWeights))
+                this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductFactoryOptions.UpdateWeights);
 
-            if (args.Exist(ReductGeneratorParamHelper.CalcModelConfidence))
-                this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductGeneratorParamHelper.CalcModelConfidence);
+            if (args.Exist(ReductFactoryOptions.CalcModelConfidence))
+                this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductFactoryOptions.CalcModelConfidence);
 
-            if (args.Exist(ReductGeneratorParamHelper.MaxNumberOfWeightResets))
-                this.MaxNumberOfWeightResets = (int)args.GetParameter(ReductGeneratorParamHelper.MaxNumberOfWeightResets);
+            if (args.Exist(ReductFactoryOptions.MaxNumberOfWeightResets))
+                this.MaxNumberOfWeightResets = (int)args.GetParameter(ReductFactoryOptions.MaxNumberOfWeightResets);
 
-            if (args.Exist(ReductGeneratorParamHelper.MinimumVoteValue))
-                this.MinimumVoteValue = (double)args.GetParameter(ReductGeneratorParamHelper.MinimumVoteValue);
+            if (args.Exist(ReductFactoryOptions.MinimumVoteValue))
+                this.MinimumVoteValue = (double)args.GetParameter(ReductFactoryOptions.MinimumVoteValue);
 
-            if (args.Exist(ReductGeneratorParamHelper.FixedPermutations))
-                this.FixedPermutations = (bool)args.GetParameter(ReductGeneratorParamHelper.FixedPermutations);
+            if (args.Exist(ReductFactoryOptions.FixedPermutations))
+                this.FixedPermutations = (bool)args.GetParameter(ReductFactoryOptions.FixedPermutations);
 
-            if (args.Exist(ReductGeneratorParamHelper.UseClassificationCost))
-                this.UseClassificationCost = (bool)args.GetParameter(ReductGeneratorParamHelper.UseClassificationCost);
+            if (args.Exist(ReductFactoryOptions.UseClassificationCost))
+                this.UseClassificationCost = (bool)args.GetParameter(ReductFactoryOptions.UseClassificationCost);
         }
 
         protected void InitFromDecisionValues(DataStore data, ICollection<long> decisionValues)
@@ -388,28 +388,28 @@ namespace Raccoon.MachineLearning.Roughset
             Array.Copy(weights, weightsCopy, weights.Length);
             WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
             localWeightGen.Weights = weightsCopy;
-            localParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+            localParameters.SetParameter(ReductFactoryOptions.WeightGenerator, localWeightGen);
 
             if (this.FixedPermutations)
             {
-                if (localParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false && size != 0)
+                if (localParameters.Exist(ReductFactoryOptions.PermutationCollection) == false && size != 0)
                 {
-                    PermutationCollection localPermCollection = this.InnerParameters.Exist(ReductGeneratorParamHelper.PermuatationGenerator)
-                        ? ((IPermutationGenerator)this.InnerParameters.GetParameter(ReductGeneratorParamHelper.PermuatationGenerator)).Generate(size)
+                    PermutationCollection localPermCollection = this.InnerParameters.Exist(ReductFactoryOptions.PermuatationGenerator)
+                        ? ((IPermutationGenerator)this.InnerParameters.GetParameter(ReductFactoryOptions.PermuatationGenerator)).Generate(size)
                         : this.PermutationGenerator.Generate(size);
-                    localParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
-                    this.InnerParameters.SetParameter(ReductGeneratorParamHelper.PermutationCollection, localPermCollection);
+                    localParameters.SetParameter(ReductFactoryOptions.PermutationCollection, localPermCollection);
+                    this.InnerParameters.SetParameter(ReductFactoryOptions.PermutationCollection, localPermCollection);
                 }
-                else if (this.InnerParameters.Exist(ReductGeneratorParamHelper.PermutationCollection) == false)
+                else if (this.InnerParameters.Exist(ReductFactoryOptions.PermutationCollection) == false)
                 {
                     throw new InvalidOperationException("No fixed permutation nor collection size to generate permutation was given");
                 }
             }
             else if (size != 0)
             {
-                localParameters.RemoveParameter(ReductGeneratorParamHelper.PermutationCollection);
-                localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfReducts, size);
-                localParameters.SetParameter(ReductGeneratorParamHelper.NumberOfPermutations, size);
+                localParameters.RemoveParameter(ReductFactoryOptions.PermutationCollection);
+                localParameters.SetParameter(ReductFactoryOptions.NumberOfReducts, size);
+                localParameters.SetParameter(ReductFactoryOptions.NumberOfPermutations, size);
             }
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(localParameters);
@@ -434,10 +434,10 @@ namespace Raccoon.MachineLearning.Roughset
             int[] attr = new int[permutation.Length];
             Array.Copy(permutation, attr, permutation.Length);
 
-            this.InnerParameters.SetParameter(ReductGeneratorParamHelper.WeightGenerator, localWeightGen);
+            this.InnerParameters.SetParameter(ReductFactoryOptions.WeightGenerator, localWeightGen);
 
             double localEpsilon = epsilon;
-            this.InnerParameters.SetProperty(ReductGeneratorParamHelper.Epsilon, ref localEpsilon);
+            this.InnerParameters.SetProperty(ReductFactoryOptions.Epsilon, ref localEpsilon);
 
             IReductGenerator generator = ReductFactory.GetReductGenerator(this.InnerParameters);
             IReduct reduct = generator.CreateReduct(permutation, localEpsilon, weights);
@@ -512,7 +512,7 @@ namespace Raccoon.MachineLearning.Roughset
     {
         public virtual string FactoryKey
         {
-            get { return ReductFactoryKeyHelper.ReductEnsembleBoosting; }
+            get { return ReductTypes.ReductEnsembleBoosting; }
         }
 
         public virtual IReductGenerator GetReductGenerator(Args args)
@@ -524,7 +524,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IPermutationGenerator GetPermutationGenerator(Args args)
         {
-            DataStore dataStore = (DataStore)args.GetParameter(ReductGeneratorParamHelper.TrainData);
+            DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
             return new PermutationGenerator(dataStore);
         }
     }

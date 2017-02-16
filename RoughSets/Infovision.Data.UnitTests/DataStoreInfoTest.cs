@@ -10,7 +10,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void GetFieldIdsTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
 
             Compare(data, FieldGroup.Standard);
             Compare(data, FieldGroup.All);

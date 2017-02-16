@@ -23,7 +23,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering
         [Test]
         public void LearnTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.Csv);
+            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
             Assert.NotNull(data);
 
             KMeans kmeans = new KMeans();

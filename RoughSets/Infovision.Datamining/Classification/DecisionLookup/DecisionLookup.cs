@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTables
+namespace Raccoon.MachineLearning.Classification.DecisionLookup
 {
-    public class DecisionTable : ClassificationModelBase, ILearner, IPredictionModel
+    public class DecisionLookup : ClassificationModelBase, ILearner, IPredictionModel
     {
         private EquivalenceClassCollection eqClassCollection;        
 
-        public DecisionTable()
+        public DecisionLookup()
             : base()
         {            
         }
 
-        public DecisionTable(string modelName)
+        public DecisionLookup(string modelName)
             : base(modelName)
         {            
         }
@@ -33,7 +33,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTables
 
             this.eqClassCollection = EquivalenceClassCollection.Create(selectedAttributes, selectedData);
 
-            return Classifier.DefaultClassifer.Classify(this, selectedData);
+            return Classifier.Default.Classify(this, selectedData);
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)

@@ -23,8 +23,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.Rses1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.Rses1, dataStoreTrain.DataStoreInfo);
+            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
+            dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
         }

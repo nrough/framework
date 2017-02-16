@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Raccoon.Data
 {
-    public class DecisionTable<T>
+    public class TmpDecisionTable<T>
         where T : IDataStore
     {
         IDataStore data;
 
-        public DecisionTable(T dataStore)
+        public TmpDecisionTable(T dataStore)
         {
             data = dataStore;
         }

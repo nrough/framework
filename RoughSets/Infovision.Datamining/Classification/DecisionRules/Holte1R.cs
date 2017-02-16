@@ -175,7 +175,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionRules
             decisionLists.Shuffle();
             decisionLists.Sort();
 
-            return Classifier.DefaultClassifer.Classify(this, data);              
+            return Classifier.Default.Classify(this, data);              
         }
 
         public void SetClassificationResultParameters(ClassificationResult result)

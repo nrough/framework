@@ -22,7 +22,7 @@ namespace Raccoon.Data.Tests
         public void Init()
         {
             string fileName = @"Data\nursery.2.data";
-            dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            dataStore = DataStore.Load(fileName, FileFormat.RSES1);
         }
 
         [Test, Repeat(1)]

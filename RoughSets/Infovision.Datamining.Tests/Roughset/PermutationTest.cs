@@ -15,7 +15,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
         public PermutationTest()
         {
-            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.Rses1);            
+            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.RSES1);            
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 

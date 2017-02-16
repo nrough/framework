@@ -43,7 +43,7 @@ namespace DecisionForestTest
             foreach (int size in sizes)
             {
                 forest.Size = size;
-                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, testData, null);
+                ClassificationResult result = Classifier.Default.Classify(forest, testData, null);
 
                 result.ModelCreationTime = forest.LearningResult.ModelCreationTime;
 

@@ -91,20 +91,20 @@ namespace Raccoon.MachineLearning.Benchmark
                 GetFilePath(dataPath, "soybean-large.data"), 
                 GetFilePath(dataPath, "soybean-large.test"))
             {
-                FileFormat = FileFormat.Csv
+                FileFormat = FileFormat.CSV
             };
 
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("house", GetFilePath(dataPath, "house-votes-84.2.data"), cvFolds)
             {
-                FileFormat = FileFormat.Rses1_1
+                FileFormat = FileFormat.RSES1_1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("audiology", GetFilePath(dataPath, "audiology.standardized.2.data"), GetFilePath(dataPath, "audiology.standardized.2.test"))
             {
-                FileFormat = FileFormat.Rses1
+                FileFormat = FileFormat.RSES1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
@@ -116,7 +116,7 @@ namespace Raccoon.MachineLearning.Benchmark
 
             benchmark = new BenchmarkData("german", GetFilePath(dataPath, "german.data"), cvFolds)
             {                
-                FileFormat = FileFormat.Csv
+                FileFormat = FileFormat.CSV
             };
 
             int[] numericFields = new int[] { 2, 5, 8, 11, 13, 16, 18 };

@@ -15,8 +15,8 @@ namespace Raccoon.MachineLearning.Tests.MissingValues
         [Test]
         public void ComputeTest()
         {
-            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.Csv);
-            DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.Csv, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.CSV);
+            DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.CSV, trnData.DataStoreInfo);
             trnData.SetDecisionFieldId(1);
             tstData.SetDecisionFieldId(1);
 

@@ -120,7 +120,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees.Pruning
 
         private double ComputeError()
         {
-            ClassificationResult result = Classifier.DefaultClassifer.Classify(this.DecisionTree, this.PruningData);
+            ClassificationResult result = Classifier.Default.Classify(this.DecisionTree, this.PruningData);
             return result.Error;
         }
 

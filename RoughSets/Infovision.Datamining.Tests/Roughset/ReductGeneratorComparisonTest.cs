@@ -25,8 +25,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public static IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             int numberOfPermutations = 20;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
             int minEpsilon = 5;
             int maxEpsilon = 25;
 
@@ -71,7 +71,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void QuickTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
             //Console.WriteLine(weightGenerator.GetType().Name);
         }

@@ -234,16 +234,16 @@ namespace DisesorTuning
             Console.WriteLine("Done");
 
             Console.Write("Loading training data store...");
-            train = DataStore.Load(trainfile_merge, FileFormat.Csv);
+            train = DataStore.Load(trainfile_merge, FileFormat.CSV);
             Console.WriteLine("Done");
 
             Console.Write("Loading test data...");
-            test = DataStore.Load(testfile_merge, FileFormat.Csv, train.DataStoreInfo);
+            test = DataStore.Load(testfile_merge, FileFormat.CSV, train.DataStoreInfo);
             test.SetDecisionFieldId(-1);
             Console.WriteLine("Done");
 
             Console.Write("Loading labels...");
-            DataStore labels = DataStore.Load(labelfile, FileFormat.Csv);
+            DataStore labels = DataStore.Load(labelfile, FileFormat.CSV);
             int decisionFieldId = train.AddColumn<string>(labels.GetColumn<string>(1));
             labels = null;
             train.SetDecisionFieldId(decisionFieldId);

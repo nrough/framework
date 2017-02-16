@@ -11,7 +11,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
 {
     public abstract class DiscretizeUnsupervisedTest : DiscretizeBaseTest
     {
-        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        [TestCase(@"Data\german.data", FileFormat.CSV, null)]
         public void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, int[] fields)
         {            
             DataStore data = DataStore.Load(filename, fileFormat);            

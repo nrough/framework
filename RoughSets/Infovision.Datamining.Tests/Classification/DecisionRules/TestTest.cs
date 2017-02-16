@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Classification.DecisionLookup;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Weighting;
 using Raccoon.MachineLearning.Roughset;
@@ -21,9 +21,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
         public void NumberOfRulesVsAccuracy(string trainFile, string testFile)
         {
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
@@ -45,9 +45,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
             foreach (var reductStore in generator.GetReductStoreCollection())
                 foreach (var reduct in reductStore)
                 {
-                    DecisionTableMajority decTable = new DecisionTableMajority();
+                    DecisionLookupMajority decTable = new DecisionLookupMajority();
                     decTable.Learn(data, reduct.Attributes.ToArray());
-                    ClassificationResult result = Classifier.DefaultClassifer.Classify(decTable, test);
+                    ClassificationResult result = Classifier.Default.Classify(decTable, test);
                     Console.WriteLine("{0} {1} {2}", reduct, result.Error, result.NumberOfRules);
                 }
         }

@@ -25,7 +25,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void Learn2Test()
         {
-            var data = DataStore.Load(@"Data\nursery.2.data", FileFormat.Rses1);
+            var data = DataStore.Load(@"Data\nursery.2.data", FileFormat.RSES1);
             var tree = new ObliviousDecisionTree();
             var cv = new CrossValidation(data);
             cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;
@@ -36,9 +36,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void TestObliviousTreeDepth()
         {
-            DataStore data = DataStore.Load(@"Data\spect.train", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\spect.train", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\spect.test", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\spect.test", FileFormat.RSES1, data.DataStoreInfo);
 
             int[] attributes = new int[] { 19, 20, 16, 21, 17, 14, 8, 18, 9, 2, 13 };
 
@@ -52,7 +52,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             ClassificationResult.OutputColumns = @"ds;m;t;eps;ens;acc;attr;numrul;dthm;dtha;gamma";
             Console.WriteLine(ClassificationResult.TableHeader());
 
-            var treeOblivMajResult = Classifier.DefaultClassifer.Classify(treeOblivMaj, test);
+            var treeOblivMajResult = Classifier.Default.Classify(treeOblivMaj, test);
             Console.WriteLine(treeOblivMajResult);
 
         }
@@ -71,16 +71,16 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             Console.WriteLine("Obilivious Decision Tree");
 
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();                        
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)
                 obiliviousTree.Gamma = epsilon;
             Console.WriteLine(obiliviousTree.Learn(data, attributes));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree, test));
             //Console.WriteLine(DecisionTreeFormatter.Construct(obiliviousTree));
 
             Console.WriteLine("Obilivious Decision Tree with Pruning");
@@ -88,8 +88,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             ErrorBasedPruning pruning = new ErrorBasedPruning(obiliviousTree, test);            
             pruning.Prune();
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, data));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree, data));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree, test));
 
 
             Console.WriteLine("M Decision Tree based on Reduct");
@@ -101,8 +101,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             treeRed.ReductIterations = numOfReducts;
             treeRed.Learn(data, attributes);
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, data, null));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test, null));
+            Console.WriteLine(Classifier.Default.Classify(treeRed, data, null));
+            Console.WriteLine(Classifier.Default.Classify(treeRed, test, null));
 
             IReduct reduct = treeRed.Reduct;
 
@@ -112,15 +112,15 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             if (epsilon >= 0)
                 obiliviousTree2.Gamma = epsilon;
             Console.WriteLine(obiliviousTree2.Learn(data, reduct.Attributes.ToArray()));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree2, test));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree2, test));
 
             Console.WriteLine("Obilivious Decision Tree based on Reduct after Pruning");
 
             ErrorBasedPruning pruning2 = new ErrorBasedPruning(obiliviousTree2, test);            
             pruning2.Prune();
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree2, data));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree2, test));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree2, data));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree2, test));
 
             Console.WriteLine("C45 Decision Tree");
 
@@ -128,7 +128,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             if (epsilon >= 0)
                 c45.Gamma = epsilon;
             Console.WriteLine(c45.Learn(data, attributes));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45, test));
+            Console.WriteLine(Classifier.Default.Classify(c45, test));
 
             Console.WriteLine("C45 Decision Tree with Prunning");
 
@@ -138,7 +138,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             if (epsilon >= 0)
                 c45p.Gamma = epsilon;
             Console.WriteLine(c45p.Learn(data, attributes));
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45p, test));            
+            Console.WriteLine(Classifier.Default.Classify(c45p, test));            
         }
 
         [Test]
@@ -149,16 +149,16 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double reductEpsilon = 0.05;
             int numOfReducts = 100;
 
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)
                 obiliviousTree.Gamma = epsilon;
             var result = obiliviousTree.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(obiliviousTree, test));
+            Console.WriteLine(Classifier.Default.Classify(obiliviousTree, test));
 
             DecisionTreeReduct treeRed = new DecisionTreeReduct();
             if (epsilon >= 0)
@@ -168,7 +168,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             var result2 = treeRed.Learn(data, attributes);            
 
             IReduct reduct = treeRed.Reduct;
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(treeRed, test));
+            Console.WriteLine(Classifier.Default.Classify(treeRed, test));
 
             PermutationCollection permutations = new PermutationCollection(5, reduct.Attributes.ToArray());
             foreach (var perm in permutations)
@@ -181,7 +181,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 obiliviousTree_Ordered.RankedAttributes = true;
                 obiliviousTree_Ordered.Learn(data, perm.ToArray());
 
-                var result_Ordered = Classifier.DefaultClassifer.Classify(obiliviousTree_Ordered, test);                
+                var result_Ordered = Classifier.Default.Classify(obiliviousTree_Ordered, test);                
                 Console.WriteLine(result_Ordered);
                 //Console.WriteLine(DecisionTreeFormatter.Construct(obiliviousTree_Ordered));
             }            

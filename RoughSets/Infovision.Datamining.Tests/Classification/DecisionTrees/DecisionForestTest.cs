@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -35,7 +35,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 forest.Size = 50;
                 forest.Learn(train, attributes);
 
-                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
             }
         }
@@ -44,7 +44,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestRoughForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -58,7 +58,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 forest.Gamma = 0.22;
                 forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
 
-                ClassificationResult result = Classifier.DefaultClassifer.Classify(forest, test);
+                ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
             }
         }
@@ -67,10 +67,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             //double epsilon = 0.07;
 
@@ -82,12 +82,12 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             randomForest.VoteType = DecisionForestVoteType.ErrorBased;
             //randomForest.Epsilon = epsilon;
             double error = randomForest.Learn(data, attributes).Error;
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeC45 c45tree = new DecisionTreeC45();
             //c45tree.Epsilon = epsilon;
             c45tree.Learn(data, attributes);
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(c45tree, test, null));
+            Console.WriteLine(Classifier.Default.Classify(c45tree, test, null));
         }
 
         [Test, Repeat(1)]
@@ -96,10 +96,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //double epsilon = 0.07;
 
             Console.WriteLine("RandomForestCARTTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
@@ -108,11 +108,11 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             randomForest.NumberOfTreeProbes = 1;
             //randomForest.Epsilon = epsilon;
             double error = randomForest.Learn(data, attributes).Error;
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeCART cartTree = new DecisionTreeCART();
             cartTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(cartTree, test, null));
+            Console.WriteLine(Classifier.Default.Classify(cartTree, test, null));
         }
 
         [Test]
@@ -121,10 +121,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeRough> randomForest = new DecisionForestRandom<DecisionTreeRough>();
             randomForest.Size = 100;
@@ -132,11 +132,11 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Gamma = epsilon;
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray()).Error;
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
             roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(roughTree, test, null));
+            Console.WriteLine(Classifier.Default.Classify(roughTree, test, null));
         }
 
         [Test]
@@ -145,10 +145,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughGammaTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestReduct<DecisionTreeRough> randomForest = new DecisionForestReduct<DecisionTreeRough>();
             randomForest.Size = 10;
@@ -157,12 +157,12 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             randomForest.ReductGeneratorFactory = ReductTypes.GeneralizedMajorityDecisionApproximate;
 
             double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray()).Error;
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(randomForest, test, null));
+            Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
             roughTree.Gamma = epsilon;
             roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(roughTree, test, null));
+            Console.WriteLine(Classifier.Default.Classify(roughTree, test, null));
         }
 
         [Test]
@@ -178,8 +178,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             //DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
-            DataStore test = DataStore.Load(@"Data\letter.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
+            DataStore test = DataStore.Load(@"Data\letter.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             
             for (int i = 0; i < 1; i++)
@@ -192,7 +192,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 dummyForest.Gamma = epsilon;
                 dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
                 dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-                var dummyForestResult = Classifier.DefaultClassifer.Classify(dummyForest, test, null);
+                var dummyForestResult = Classifier.Default.Classify(dummyForest, test, null);
                 dummyForestResult.ModelName = "Dummy";
                 dummyForestResult.TestNum = i;
                 dummyForestResult.Fold = 0;
@@ -207,7 +207,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
                 semiRoughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
                 semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-                var semiRoughForestResult = Classifier.DefaultClassifer.Classify(semiRoughForest, test, null);
+                var semiRoughForestResult = Classifier.Default.Classify(semiRoughForest, test, null);
                 semiRoughForestResult.ModelName = "SemiRough";
                 semiRoughForestResult.TestNum = i;
                 semiRoughForestResult.Fold = 0;
@@ -223,7 +223,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 //roughForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                 roughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
                 roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-                var roughForestResult = Classifier.DefaultClassifer.Classify(roughForest, test, null);
+                var roughForestResult = Classifier.Default.Classify(roughForest, test, null);
                 roughForestResult.ModelName = "Rough";
                 roughForestResult.TestNum = i;
                 roughForestResult.Fold = 0;
@@ -238,7 +238,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                 roughForest.Gamma = epsilon;
                 randomForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                 randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
-                var randomForestResult = Classifier.DefaultClassifer.Classify(randomForest, test, null);
+                var randomForestResult = Classifier.Default.Classify(randomForest, test, null);
                 randomForestResult.ModelName = "RandomC45";
                 randomForestResult.TestNum = i;
                 randomForestResult.Fold = 0;
@@ -253,10 +253,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void ReductSubsetC45Tree()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
 
             for (int t = 0; t < 1; t++)
             {
@@ -295,7 +295,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
                     treeC45.Gamma = 0.0; //eps
                     treeC45.Learn(data, reduct.Attributes.ToArray());
 
-                    ClassificationResult resultC45 = Classifier.DefaultClassifer.Classify(treeC45, test);
+                    ClassificationResult resultC45 = Classifier.Default.Classify(treeC45, test);
                     resultC45.Epsilon = eps;
                     resultC45.ModelName = "C4.5";
                     Console.WriteLine(resultC45);

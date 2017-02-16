@@ -16,7 +16,7 @@ namespace DermoReducts
 
         public static void HandleMissingData(string filename, string outputfile, string weightsfile)
         {
-            DataStore data = DataStore.Load(filename, FileFormat.Csv);
+            DataStore data = DataStore.Load(filename, FileFormat.CSV);
             double[] w = new double[data.NumberOfRecords];
             for (int i = 0; i < data.NumberOfRecords; i++)
                 w[i] = 1.0;
@@ -77,7 +77,7 @@ namespace DermoReducts
 
         public static void DiscretizeAgeAttribute(string filename, string outputfile)
         {
-            DataStore data = DataStore.Load(filename, FileFormat.Csv);
+            DataStore data = DataStore.Load(filename, FileFormat.CSV);
             data.SetDecisionFieldId(35);
 
             DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34

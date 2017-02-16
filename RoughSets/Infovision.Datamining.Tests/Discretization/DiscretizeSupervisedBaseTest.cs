@@ -24,11 +24,11 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             return result;
         }
 
-        [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
-        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.Csv)]
+        [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.RSES1)]
+        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.RSES1)]
+        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.RSES1)]
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.RSES1)]
+        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.CSV)]
         public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
         {
             Console.WriteLine(fileTrain);
@@ -55,7 +55,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
         }
 
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.Rses1)]
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.RSES1)]
         public void LetterBug(string fileTrain, string fileTest, FileFormat fileFormat)
         {
             Console.WriteLine(fileTrain);
@@ -69,7 +69,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             discretizer.Discretize(train, train.Weights);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, null)]        
+        [TestCase(@"Data\german.data", FileFormat.CSV, null)]        
         public virtual void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);                        
@@ -89,7 +89,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
                 Assert.IsNotNull(data.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Training file {0} Field {1}", filename, fieldId);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, null)]
+        [TestCase(@"Data\german.data", FileFormat.CSV, null)]
         public virtual void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);

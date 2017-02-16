@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using Raccoon.Data;
 using Raccoon.Data.Filters;
-using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Classification.DecisionLookup;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
 using Raccoon.MachineLearning.Discretization;
@@ -17,7 +17,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
     public class RoughDecisionTreeTest
     {
         [Repeat(30)]
-        [TestCase(@"Data\german.data", FileFormat.Csv, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\german.data", FileFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -92,9 +92,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             if (pruningType == PruningType.None)
             {
-                DecisionTableMajority decTabMaj = new DecisionTableMajority("DecTab-Majority-" + pruningType.ToSymbol());                
+                DecisionLookupMajority decTabMaj = new DecisionLookupMajority("DecTab-Majority-" + pruningType.ToSymbol());                
                 decTabMaj.DefaultOutput = output;
-                var decTabMajResult = cv.Run<DecisionTableMajority>(decTabMaj);
+                var decTabMajResult = cv.Run<DecisionLookupMajority>(decTabMaj);
                 decTabMajResult.Epsilon = eps;
                 Console.WriteLine(decTabMajResult);
             }

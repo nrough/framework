@@ -33,8 +33,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void RunExperiment()
         {
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
             string resultFileName = @"dna_modified_103.csv";
             int minEpsilon = 0;
             int maxEpsilon = 25;

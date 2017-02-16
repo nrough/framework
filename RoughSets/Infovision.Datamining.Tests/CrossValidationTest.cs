@@ -17,7 +17,7 @@ namespace Raccoon.MachineLearning.Tests
     public class CrossValidationTest
     {
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.Rses1)]
+        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
         public void RunTest(string dataFile, FileFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());
@@ -29,7 +29,7 @@ namespace Raccoon.MachineLearning.Tests
 
 
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.Rses1)]
+        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
         public void RunTestWithSplitter(string dataFile, FileFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());
@@ -46,7 +46,7 @@ namespace Raccoon.MachineLearning.Tests
         }
 
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.Rses1)]
+        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
         public void RunTestWithFolds(string dataFile, FileFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());

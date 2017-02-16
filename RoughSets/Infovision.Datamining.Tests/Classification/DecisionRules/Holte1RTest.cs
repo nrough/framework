@@ -22,16 +22,16 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         //[TestCase(@"Data\dna.train", @"Data\dna.test")]
         public void ClassiferTest(string trainFile, string testFile)
         {            
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);
+            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             //int[] attributes = new int[] { 3 };
 
             Holte1R oneR = new Holte1R();
             oneR.Learn(data, attributes);
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+            Console.WriteLine(Classifier.Default.Classify(oneR, test));
 
             foreach (var decisionList in oneR.GetRules())
                 Console.WriteLine(decisionList.ToString(data.DataStoreInfo));
@@ -41,14 +41,14 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         [TestCase(@"Data\playgolf2.train", @"Data\playgolf2.train")]
         public void DiscretizationTest(string trainFile, string testFile)
         {
-            DataStore data = DataStore.Load(trainFile, FileFormat.Rses1);            
-            DataStore test = DataStore.Load(testFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);            
+            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Holte1R oneR = new Holte1R();
             oneR.Learn(data, attributes);
 
-            Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+            Console.WriteLine(Classifier.Default.Classify(oneR, test));
 
             foreach (var decisionList in oneR.GetRules())
                 Console.WriteLine(decisionList.ToString(data.DataStoreInfo));
@@ -58,7 +58,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         public void DecisionTreeRough_GermanCredit()
         {            
             int numOfFolds = 10;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.Csv);
+            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             DataStore train = null, test = null;
             
@@ -69,7 +69,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
 
                 Holte1R oneR = new Holte1R();                
                 oneR.Learn(train, attributes);                
-                Console.WriteLine(Classifier.DefaultClassifer.Classify(oneR, test));
+                Console.WriteLine(Classifier.Default.Classify(oneR, test));
                 
                 foreach (var decisionList in oneR.GetRules())
                     Console.WriteLine(decisionList.ToString(data.DataStoreInfo));

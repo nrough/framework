@@ -1,6 +1,6 @@
 ﻿using Raccoon.Data;
 using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Classification.DecisionTables;
+using Raccoon.MachineLearning.Classification.DecisionLookup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,15 +43,15 @@ namespace Raccoon.MachineLearning.Roughset
         }
         public override int Compare(IReduct left, IReduct right)
         {
-            DecisionTable decTabLeft = new DecisionTable();
+            DecisionLookup decTabLeft = new DecisionLookup();
             decTabLeft.Learn(this.Data, left.Attributes.ToArray());
             decTabLeft.DefaultOutput = null;
-            ClassificationResult leftResult = Classifier.DefaultClassifer.Classify(decTabLeft, this.Data, this.Data.Weights);
+            ClassificationResult leftResult = Classifier.Default.Classify(decTabLeft, this.Data, this.Data.Weights);
 
-            DecisionTable decTabRight = new DecisionTable();
+            DecisionLookup decTabRight = new DecisionLookup();
             decTabRight.Learn(this.Data, right.Attributes.ToArray());
             decTabRight.DefaultOutput = null;
-            ClassificationResult rightResult = Classifier.DefaultClassifer.Classify(decTabRight, this.Data, this.Data.Weights);
+            ClassificationResult rightResult = Classifier.Default.Classify(decTabRight, this.Data, this.Data.Weights);
 
             return leftResult.Accuracy.CompareTo(rightResult.Accuracy);
         }

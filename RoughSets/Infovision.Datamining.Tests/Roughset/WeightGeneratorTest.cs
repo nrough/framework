@@ -18,7 +18,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void BalancedAccuracy()
         {
             string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
@@ -36,7 +36,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
                 localDataStore.DataStoreInfo.GetDecisionValues());
 
             string localFileNameTest = @"Data\dna_modified.tst";
-            DataStore dataStoreTest = DataStore.Load(localFileNameTest, FileFormat.Rses1);
+            DataStore dataStoreTest = DataStore.Load(localFileNameTest, FileFormat.RSES1);
 
             ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 
@@ -68,7 +68,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void CompareMajorityWeightVsMajority()
         {
             string localFileName = @"Data\dna.train";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
 
             IReductGenerator redGenStd = new ReductGeneratorMajority();
             redGenStd.Epsilon = 0.1;
@@ -113,7 +113,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
             permutationList.Add(new Permutation(new int[] { 57, 1, 34, 12, 23, 29, 45, 38, 5, 11, 4, 26, 33, 58, 43, 61, 42, 8, 53, 47, 36, 13, 50, 15, 40, 25, 30, 19, 55, 46, 22, 7, 14, 21, 27, 16, 49, 24, 9, 37, 51, 64, 20, 54, 32, 62, 28, 6, 59, 63, 48, 2, 17, 44, 56, 35, 52, 10, 60, 3, 31, 39, 18, 41 }));
 
             string localFileName = @"Data\optdigits.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelative);
@@ -139,7 +139,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightReductRelative2()
         {
             string localFileName = @"Data\dna.train";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
             PermutationCollection permutationList = permGen.Generate(5);
@@ -171,7 +171,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightReductMajority2()
         {
             string localFileName = @"Data\dna.train";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
 
             PermutationGenerator permGen = new PermutationGenerator(localDataStore);
             PermutationCollection permutationList = permGen.Generate(5);
@@ -203,7 +203,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightReductRelative()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
@@ -239,7 +239,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightReductMajority()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { 3, 4, 1, 2 }));
@@ -275,7 +275,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightEqualConstructorTest()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
             Assert.IsNotNull(weightGenerator);
@@ -285,7 +285,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightRelativeConstructorTest()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             WeightGenerator weightGenerator = new WeightGeneratorRelative(dataStore);
             Assert.IsNotNull(weightGenerator);
@@ -294,7 +294,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         private void TestWeightsNormalized(WeightGenerator weightGenerator)
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
             double weightSum = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
@@ -307,7 +307,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         private void CheckWeightsEqual(WeightGenerator weightGenerator)
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             double weight = 0;
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
@@ -327,7 +327,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightEqualGenerateTest()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
             this.CheckWeightsEqual(weightGenerator);
@@ -338,7 +338,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void WeightRelativeGenerateTest()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             WeightGenerator weightGenerator = new WeightGeneratorRelative(dataStore);
             this.TestWeightsNormalized(weightGenerator);
@@ -348,7 +348,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void InformationMeasureMajorityTest()
         {
             string fileName = @"Data\playgolf.train";
-            DataStore dataStore = DataStore.Load(fileName, FileFormat.Rses1);
+            DataStore dataStore = DataStore.Load(fileName, FileFormat.RSES1);
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
 
@@ -367,7 +367,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void ReductMajorityTest()
         {
             string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
             int numberOfPermutations = 10;
 
             Args args = new Args();
@@ -400,7 +400,7 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
         public void ReductRelativeTest()
         {
             string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.Rses1);
+            DataStore localDataStore = DataStore.Load(localFileName, FileFormat.RSES1);
             int numberOfPermutations = 20;
 
             Args args = new Args();

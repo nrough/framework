@@ -324,7 +324,7 @@ namespace MRIExceptions
 
             DataTable dataTable = featureExtractor.GetDataTable();
             dataTable.Dumb(trainFileName, ";");
-            DataStore trainingData = DataStore.Load(trainFileName, FileFormat.Csv);
+            DataStore trainingData = DataStore.Load(trainFileName, FileFormat.CSV);
 
             trainingData.SetDecisionFieldId(22);
 
@@ -379,7 +379,7 @@ namespace MRIExceptions
 
             DataTable testDataTable = featureExtractorTest.GetDataTable();
             testDataTable.Dumb(testFileName, ";");
-            DataStore testData = DataStore.Load(testFileName, FileFormat.Csv, trainingData.DataStoreInfo);
+            DataStore testData = DataStore.Load(testFileName, FileFormat.CSV, trainingData.DataStoreInfo);
 
             testData.SetDecisionFieldId(22);
 

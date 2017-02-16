@@ -24,7 +24,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 2;

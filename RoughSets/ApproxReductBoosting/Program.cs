@@ -20,7 +20,7 @@ namespace ApproxReductBoosting
             int maxNumberOfIterations = Int32.Parse(args[3]);
             int startIteration = Int32.Parse(args[4]);
             int iterationStep = Int32.Parse(args[5]);
-            FileFormat fileFormat = args.Length >= 7 ? (FileFormat)Int32.Parse(args[6]) : FileFormat.Rses1;
+            FileFormat fileFormat = args.Length >= 7 ? (FileFormat)Int32.Parse(args[6]) : FileFormat.RSES1;
             int decisionPosition = args.Length >= 8 ? Int32.Parse(args[7]) : -1;
 
             if (startIteration < 1)

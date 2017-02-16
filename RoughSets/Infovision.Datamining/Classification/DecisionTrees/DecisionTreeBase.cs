@@ -173,7 +173,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
             this.CleanUp();
 
-            return Classifier.DefaultClassifer.Classify(this, selectedData, selectedData.Weights);
+            return Classifier.Default.Classify(this, selectedData, selectedData.Weights);
         }
 
         private void CheckPruningConditions()
@@ -243,7 +243,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                         break;
 
                     case PruningObjectiveType.MinimizeError:
-                        ClassificationResult tmpResult = Classifier.DefaultClassifer.Classify(tmpTree, pruningSet);
+                        ClassificationResult tmpResult = Classifier.Default.Classify(tmpTree, pruningSet);
                         if (tmpResult.Error < bestError)
                         {
                             bestError = tmpResult.Error;
@@ -267,7 +267,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
             this.Root = bestModel.Root;
             this.CleanUp();
-            return Classifier.DefaultClassifer.Classify(this, data);
+            return Classifier.Default.Classify(this, data);
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)

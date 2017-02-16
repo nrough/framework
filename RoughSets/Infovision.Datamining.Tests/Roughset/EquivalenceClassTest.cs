@@ -16,8 +16,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void CreateTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.GetStandardFields();
 
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(attributes, data);
@@ -31,7 +31,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             long total = 30;
             for (int i = 0; i < total; i++)
             {
-                DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.Rses1);
+                DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
                 int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
                 attributes = attributes.RemoveAt(attributes.Length / 2, (attributes.Length / 2) - 1);
 
@@ -49,7 +49,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void RemoveObjectsWithMinorDecisionsTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 100;

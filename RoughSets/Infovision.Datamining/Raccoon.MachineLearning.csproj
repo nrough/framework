@@ -162,9 +162,9 @@
     <Compile Include="Classification\DecisionRules\DecisionRule.cs" />
     <Compile Include="Classification\DecisionRules\DecisionRuleCondition.cs" />
     <Compile Include="Classification\DecisionRules\Holte1R.cs" />
-    <Compile Include="Classification\DecisionTables\DecisionTable.cs" />
-    <Compile Include="Classification\DecisionTables\DecisionTableLocal.cs" />
-    <Compile Include="Classification\DecisionTables\DecisionTableMajority.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookup.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookupLocal.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookupMajority.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionForestBase.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionForestDummy.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionForestDummyRough.cs" />

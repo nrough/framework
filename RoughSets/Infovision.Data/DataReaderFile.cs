@@ -40,15 +40,15 @@ namespace Raccoon.Data
             IDataReader dataReader;
             switch (fileFormat)
             {
-                case FileFormat.Csv:
+                case FileFormat.CSV:
                     dataReader = new DataReaderFileCsv(fileName);
                     break;
 
-                case FileFormat.Rses1:
+                case FileFormat.RSES1:
                     dataReader = new DataReaderFileRses(fileName);
                     break;
 
-                case FileFormat.Rses1_1:
+                case FileFormat.RSES1_1:
                     dataReader = new DataReaderFileRses11(fileName);
                     break;
 

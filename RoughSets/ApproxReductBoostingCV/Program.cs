@@ -19,7 +19,7 @@ namespace ApproxReductBoostingCV
             int maxNumberOfIterations = Int32.Parse(args[2]);
             int startIteration = Int32.Parse(args[3]);
             int iterationStep = Int32.Parse(args[4]);
-            FileFormat fileFormat = args.Length >= 6 ? (FileFormat)Int32.Parse(args[5]) : FileFormat.Rses1;
+            FileFormat fileFormat = args.Length >= 6 ? (FileFormat)Int32.Parse(args[5]) : FileFormat.RSES1;
             int decisionPosition = args.Length >= 7 ? Int32.Parse(args[6]) : -1;
 
             if (startIteration < 1)

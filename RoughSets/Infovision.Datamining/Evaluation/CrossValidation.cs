@@ -15,26 +15,35 @@ namespace Raccoon.MachineLearning.Evaluation
     public class CrossValidation
     {
         private static int DefaultFolds = 5;
+        private static int DefaultRepeat = 1;
 
         public bool RunInParallel { get; set; }
         public PostLearingMethod PostLearningMethod { get; set; }
         public DataStore Data { get; set; }
         public IDataSplitter Splitter { get; set; }        
         public IList<IFilter> Filters { get; set; }
+        public int Iterations { get; set; }
 
-        public CrossValidation(DataStore data, IDataSplitter splitter)
+        public CrossValidation(DataStore data, IDataSplitter splitter, int repeat)
         {
             this.RunInParallel = true;
             this.Data = data;
             this.Splitter = splitter;
             this.Filters = new List<IFilter>();
+            this.Iterations = repeat;
         }
 
+        public CrossValidation(DataStore data, IDataSplitter splitter)
+            : this(data, splitter, DefaultRepeat) { }
+
+        public CrossValidation(DataStore data, int folds, int repeat)
+            : this(data, new DataSplitter(data, folds, true), repeat) { }
+
         public CrossValidation(DataStore data, int folds)
-            : this(data, new DataSplitter(data, folds, true)) { }
+            : this(data, new DataSplitter(data, folds, true), DefaultRepeat) { }
 
         public CrossValidation(DataStore data)
-            : this(data, new DataSplitter(data, DefaultFolds, true)) { }
+            : this(data, new DataSplitter(data, DefaultFolds, true), DefaultRepeat) { }
                 
         public ClassificationResult Run<T>(T modelPrototype, int[] attributes)
             where T : IModel, IPredictionModel, ILearner, ICloneable, new()
@@ -97,7 +106,7 @@ namespace Raccoon.MachineLearning.Evaluation
             if (this.PostLearningMethod != null)
                 this.PostLearningMethod(model);
 
-            return Classifier.DefaultClassifer.Classify(model, ApplyFilters(testDs));
+            return Classifier.Default.Classify(model, ApplyFilters(testDs));
         }
 
         private ClassificationResult CV<T>(T modelPrototype, DataStore data, 

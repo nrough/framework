@@ -59,8 +59,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
-                        DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);
-                        DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
+                        DataStore trainData = DataStore.Load(trainFileName, FileFormat.RSES1);
+                        DataStore testData = DataStore.Load(testFileName, FileFormat.RSES1, trainData.DataStoreInfo);
 
                         Args args = new Args();
                         args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
@@ -107,8 +107,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             RuleQualityFunction identificationFunc = RuleQuality.ConfidenceW;
             RuleQualityFunction voteFunc = RuleQuality.ConfidenceW;
 
-            DataStore trainData = DataStore.Load(trainFileName, FileFormat.Rses1);
-            DataStore testData = DataStore.Load(testFileName, FileFormat.Rses1, trainData.DataStoreInfo);
+            DataStore trainData = DataStore.Load(trainFileName, FileFormat.RSES1);
+            DataStore testData = DataStore.Load(testFileName, FileFormat.RSES1, trainData.DataStoreInfo);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);

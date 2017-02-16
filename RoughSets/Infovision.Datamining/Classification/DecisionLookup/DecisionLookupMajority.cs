@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Raccoon.Data;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTables
+namespace Raccoon.MachineLearning.Classification.DecisionLookup
 {
-    public class DecisionTableMajority : DecisionTable
+    public class DecisionLookupMajority : DecisionLookup
     {
         private DecisionDistribution aprioriDistribution;
 
-        public DecisionTableMajority()
+        public DecisionLookupMajority()
             : base()
         {
         }
 
-        public DecisionTableMajority(string modelName)
+        public DecisionLookupMajority(string modelName)
             : base(modelName)
         {
         }

@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Benchmark
         {
             this.CrossValidationActive = false;
             this.CrossValidationFolds = 1;
-            this.FileFormat = FileFormat.Rses1;
+            this.FileFormat = FileFormat.RSES1;
             this.DecisionFieldId = -1;
 
             this.fieldMetadata = new Dictionary<int, DataFieldInfo>();

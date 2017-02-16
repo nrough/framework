@@ -12,7 +12,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
     [TestFixture]
     public class DataStoreDiscretizationTest
     {
-        [TestCase(@"Data\german.data", FileFormat.Csv, new int[] { 2 })]
+        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
         public void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
@@ -36,7 +36,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             }
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, new int[] { 2 })]
+        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
         public void AddNewColumnsTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
@@ -65,7 +65,7 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             discretizer.Discretize(data);            
         }
 
-        [TestCase(@"Data\german.data", FileFormat.Csv, new int[] { 2 })]
+        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
         public void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, int[] fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);

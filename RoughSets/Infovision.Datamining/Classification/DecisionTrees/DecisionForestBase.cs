@@ -135,7 +135,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                         break;
 
                     case DecisionForestVoteType.ErrorBased:
-                        double error = Classifier.DefaultClassifer.Classify(decisionTree, oobData).Error;
+                        double error = Classifier.Default.Classify(decisionTree, oobData).Error;
                         this.AddTree(decisionTree, 1.0 - error);
                         break;
 
@@ -147,7 +147,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
             s.Stop();
 
-            ClassificationResult trainResult = Classifier.DefaultClassifer.Classify(this, data, data.Weights);            
+            ClassificationResult trainResult = Classifier.Default.Classify(this, data, data.Weights);            
             trainResult.ModelCreationTime = s.ElapsedMilliseconds;
             this.learningResult = trainResult;
 

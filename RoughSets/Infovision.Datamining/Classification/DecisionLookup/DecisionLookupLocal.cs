@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTables
+namespace Raccoon.MachineLearning.Classification.DecisionLookup
 {
-    public class DecisionTableLocal : ClassificationModelBase, ILearner, IPredictionModel
+    public class DecisionLookupLocal : ClassificationModelBase, ILearner, IPredictionModel
     {
         private ObliviousDecisionTree obliviousDecisionTree = null;
         private DecisionDistribution aprioriDistribution;
@@ -28,7 +28,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTables
             this.obliviousDecisionTree.RankedAttributes = this.RankedAttributes;
             this.obliviousDecisionTree.Learn(data, attributes);
 
-            return Classifier.DefaultClassifer.Classify(this, data);
+            return Classifier.Default.Classify(this, data);
         }
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)

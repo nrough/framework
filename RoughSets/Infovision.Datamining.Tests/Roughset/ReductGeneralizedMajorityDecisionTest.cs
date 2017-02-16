@@ -40,8 +40,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void MajorityGeneralizedDecisionPerformanceTest()
         {
-            DataStore trainData = DataStore.Load(@"Data\dna.train", FileFormat.Rses1);
-            DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.Rses1, trainData.DataStoreInfo);
+            DataStore trainData = DataStore.Load(@"Data\dna.train", FileFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.RSES1, trainData.DataStoreInfo);
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
             double eps = 0.0;
             int ensembleSize = 10;
@@ -252,7 +252,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct2()
         {            
-            DataStore trainData = DataStore.Load(@"data\playgolf.train", FileFormat.Rses1);            
+            DataStore trainData = DataStore.Load(@"data\playgolf.train", FileFormat.RSES1);            
             double eps = 0.0;
             //double eps = 0.2; This will not work
 

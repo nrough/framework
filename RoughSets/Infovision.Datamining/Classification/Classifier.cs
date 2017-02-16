@@ -17,7 +17,7 @@ namespace Raccoon.MachineLearning.Classification
         private static volatile Classifier instance = null;
         private static object syncRoot = new object();
 
-        public static Classifier DefaultClassifer
+        public static Classifier Default
         {
             get
             {

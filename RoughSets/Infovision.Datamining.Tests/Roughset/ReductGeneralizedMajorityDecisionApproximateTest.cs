@@ -40,7 +40,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void EmptyReductsTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
-            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, data.DataStoreInfo);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, data);
@@ -69,7 +69,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
 
-            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, data.DataStoreInfo);
 
             //log.InfoFormat(data.Name);
 
@@ -224,7 +224,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, FileFormat.Rses1);
+                data = DataStore.Load(kvp.Value.DataFile, FileFormat.RSES1);
                 name = data.Name;
                 DataSplitter splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
 
@@ -253,10 +253,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             else
             {
                 int f = 0;
-                trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.Rses1);
+                trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.RSES1);
                 foreach (int fieldId in trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                     trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
-                testData = DataStore.Load(kvp.Value.TestFile, FileFormat.Rses1, trainData.DataStoreInfo);
+                testData = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, trainData.DataStoreInfo);
                 name = trainData.Name;
                 Console.WriteLine(trainData.Name);
 

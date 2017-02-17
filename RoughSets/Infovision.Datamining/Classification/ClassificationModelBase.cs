@@ -24,6 +24,11 @@ namespace Raccoon.MachineLearning.Classification
             : base(modelName)
         {
         }
+
+        public virtual void SetClassificationResultParameters(ClassificationResult result)
+        {
+
+        }
     }
     
     public delegate DataStore OnTrainingDataSubmission(

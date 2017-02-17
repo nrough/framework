@@ -4,6 +4,7 @@ using Raccoon.Data;
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionRules;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
+using Raccoon.MachineLearning.Ensembles;
 using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Weighting;
@@ -46,7 +47,6 @@ namespace Raccoon.MachineLearning.Tests.Roughset
         [Test]
         public void WeightedApproximateDecisionReduct()
         {
-
             //load benchmark data
             var data = Data.Benchmark.Factory.Zoo();
             //set object weights using r(u) weighting schema
@@ -126,6 +126,27 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             //Test and output results
             var result = Classifier.Default.Classify(forest, test);
             Console.WriteLine(result);
+        }
+
+        [Test]
+        public void ReductAdaBoost()
+        {
+            //load training and testing DNA (spieces) data sets 
+            var train = Data.Benchmark.Factory.Dna();
+            var test = Data.Benchmark.Factory.DnaTest();
+
+            //set weights 
+            var weightGen = new WeightGeneratorConstant(train);
+            weightGen.Value = (double)1 / (double)train.NumberOfRecords;
+            train.SetWeights(weightGen.Weights);
+
+            UpdateWeightsDelegate()
+
+            //create ada boost ensemble 
+            var adaBoost = new AdaBoost<ApproximateDecisionReduct>(weakClassifier);
+            adaBoost.Learn(train, train.SelectAttributes(a => a.IsStandard));
+
+
         }
     }
 }

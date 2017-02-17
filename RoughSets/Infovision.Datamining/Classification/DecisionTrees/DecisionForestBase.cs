@@ -194,7 +194,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                     break;
             }
 
-            return votes.Count > 0 ? votes.FindMaxValueKey() : -1;
+            return votes.Count > 0 ? votes.FindMaxValueKey() : Classifier.UnclassifiedOutput;
         }
 
         protected void AddTree(T tree, double vote)

@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgregateFunction.cs" />
+    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Correlation.cs" />
     <Compile Include="PrimeTool.cs" />
     <Compile Include="PrimeToolHash.cs" />

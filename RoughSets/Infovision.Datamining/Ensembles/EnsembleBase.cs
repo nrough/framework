@@ -1,0 +1,71 @@
+﻿using Raccoon.Core;
+using Raccoon.Data;
+using Raccoon.MachineLearning.Classification;
+using Raccoon.MachineLearning.Roughset;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Raccoon.MachineLearning.Ensembles
+{
+    public abstract class EnsembleBase : ClassificationModelBase, ILearner, IPredictionModel
+    {
+        protected static int DefaultIterations = 100;
+
+        public int Iterations { get; set; }
+        public int Size { get; set; }
+        public CalcModelConfidenceDelegate CalcModelConfidence { get; set; }
+
+        protected class WeakClassifierInfo
+        {
+            public WeakClassifierInfo(IPredictionModel model, double weight)
+            {
+                this.Model = model;
+                this.Weight = weight;
+            }
+            public IPredictionModel Model { get; set; }
+            public double Weight { get; set; }
+        }
+
+        protected IList<WeakClassifierInfo> weakClassifiers;
+
+        public EnsembleBase()
+        {
+            Iterations = -1;
+            Size = -1;
+            weakClassifiers = new List<WeakClassifierInfo>();
+            CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1
+        }
+
+        public abstract ClassificationResult Learn(DataStore data, int[] attributes);
+
+        public void AddClassfier(IPredictionModel model, double weight)
+        {
+            weakClassifiers.Add(new WeakClassifierInfo(model, weight));
+        }
+
+        public virtual long Compute(DataRecordInternal record)
+        {
+            var votes = new Dictionary<long, double>(weakClassifiers.Count);
+
+            int i = 0;
+            foreach (var weakClassifierInfo in weakClassifiers)
+            {
+                i++;
+                long result = weakClassifierInfo.Model.Compute(record);
+
+                if (votes.ContainsKey(result))
+                    votes[result] += weakClassifierInfo.Weight;
+                else
+                    votes.Add(result, weakClassifierInfo.Weight);
+
+                if (this.Size > 0 && i >= this.Size)
+                    break;
+            }
+
+            return votes.Count > 0 ? votes.FindMaxValueKey() : Classifier.UnclassifiedOutput;
+        }
+    }
+}

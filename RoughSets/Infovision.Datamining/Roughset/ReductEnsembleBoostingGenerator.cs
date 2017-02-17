@@ -12,6 +12,7 @@ using Raccoon.MachineLearning.Classification;
 //TODO Implement Cost of misclassification. (Imbalanced classes)
 namespace Raccoon.MachineLearning.Roughset
 {
+    
     public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
 
     public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
@@ -268,12 +269,8 @@ namespace Raccoon.MachineLearning.Roughset
 
                 result = null;
 
-                //Normalize object weights
-                //Parallel.For(0, this.TrainData.NumberOfRecords, i =>
                 for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                {
                     weights[i] /= sum;
-                }//);
 
                 alphaSum += alpha;
 

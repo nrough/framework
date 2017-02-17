@@ -113,6 +113,7 @@
     <Compile Include="Classification\DecisionGraphs\OODG.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeMetric.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
+    <Compile Include="Classification\Ensembles\ReductDecisionRules.cs" />
     <Compile Include="Clustering\ClusteringResult.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />
@@ -126,10 +127,10 @@
     <Compile Include="Clustering\Hierarchical\HierarchicalClusterTuple.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
     <Compile Include="Clustering\KMeans.cs" />
-    <Compile Include="Ensembles\AdaBoost.cs" />
-    <Compile Include="Ensembles\Bagging.cs" />
-    <Compile Include="Ensembles\EnsembleBase.cs" />
-    <Compile Include="Ensembles\MultimodalEnsemble.cs" />
+    <Compile Include="Classification\Ensembles\AdaBoost.cs" />
+    <Compile Include="Classification\Ensembles\Bagging.cs" />
+    <Compile Include="Classification\Ensembles\EnsembleBase.cs" />
+    <Compile Include="Classification\Ensembles\MultimodalEnsemble.cs" />
     <Compile Include="Evaluation\CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
     <Compile Include="Discretization\DataStoreDiscretizer.cs" />

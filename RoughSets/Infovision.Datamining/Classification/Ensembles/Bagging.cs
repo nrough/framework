@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Ensembles
+namespace Raccoon.MachineLearning.Classification.Ensembles
 {
     public class Bagging<TModel> : EnsembleBase
         where TModel : ILearner, IPredictionModel, ICloneable

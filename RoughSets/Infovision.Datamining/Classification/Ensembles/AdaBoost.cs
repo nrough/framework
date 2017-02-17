@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Ensembles
+namespace Raccoon.MachineLearning.Classification.Ensembles
 {
     public class AdaBoost<T> : EnsembleBase
         where T : ILearner, IPredictionModel, ICloneable

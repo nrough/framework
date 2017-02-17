@@ -4,7 +4,7 @@ using Raccoon.Data;
 using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionRules;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Ensembles;
+using Raccoon.MachineLearning.Classification.Ensembles;
 using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Weighting;
@@ -140,10 +140,11 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             weightGen.Value = (double)1 / (double)train.NumberOfRecords;
             train.SetWeights(weightGen.Weights);
 
-            UpdateWeightsDelegate()
+            var classifierPrototype = new ReductDecisionRules();
+            //TODO set parameters
 
             //create ada boost ensemble 
-            var adaBoost = new AdaBoost<ApproximateDecisionReduct>(weakClassifier);
+            var adaBoost = new AdaBoost<ReductDecisionRules>(classifierPrototype);
             adaBoost.Learn(train, train.SelectAttributes(a => a.IsStandard));
 
 

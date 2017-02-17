@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Raccoon.Data;
 using Raccoon.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Ensembles
+namespace Raccoon.MachineLearning.Classification.Ensembles
 {
     public class MultimodalEnsemble : EnsembleBase
     {

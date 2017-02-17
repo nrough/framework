@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Ensembles
+namespace Raccoon.MachineLearning.Classification.Ensembles
 {
     public abstract class EnsembleBase : ClassificationModelBase, ILearner, IPredictionModel
     {
@@ -36,7 +36,7 @@ namespace Raccoon.MachineLearning.Ensembles
             Iterations = -1;
             Size = -1;
             weakClassifiers = new List<WeakClassifierInfo>();
-            CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1
+            CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         }
 
         public abstract ClassificationResult Learn(DataStore data, int[] attributes);

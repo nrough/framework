@@ -5,6 +5,7 @@ using Raccoon.MachineLearning.Classification;
 using Raccoon.MachineLearning.Classification.DecisionRules;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.Ensembles;
+using Raccoon.MachineLearning.Clustering.Hierarchical;
 using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Weighting;
@@ -34,6 +35,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             parm.SetParameter(ReductFactoryOptions.FMeasure,
                 (FMeasure)FMeasures.Majority);
             parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 5);
 
             //compute reducts
             var reducts =
@@ -65,6 +67,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             parm.SetParameter(ReductFactoryOptions.FMeasure,
                 (FMeasure)FMeasures.MajorityWeighted);
             parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 5);
 
             //compute reducts
             var reductGenerator = ReductFactory.GetReductGenerator(parm);
@@ -174,11 +177,29 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             var train = Data.Benchmark.Factory.Dna();
             var test = Data.Benchmark.Factory.DnaTest();
 
-            //classify test data set
-            var result = Classifier.Default.Classify(adaBoost, test);
+            var reductDiversifier = new HierarchicalClusterReductDiversifier();
+            reductDiversifier.Data = train;
+            reductDiversifier.Distance = Math.Distance.Hamming;
+            reductDiversifier.Linkage = ClusteringLinkage.Average;
 
-            //print result header & result
-            Console.WriteLine(ClassificationResult.TableHeader());
+            //create parameters for reduct factory
+            var parm = new Args();
+            parm.SetParameter(ReductFactoryOptions.ReductType,
+                ReductTypes.ApproximateDecisionReduct);
+            parm.SetParameter(ReductFactoryOptions.FMeasure,
+                (FMeasure)FMeasures.MajorityWeighted);
+            parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 100);
+            parm.SetParameter(ReductFactoryOptions.Diversify, reductDiversifier);
+            parm.SetParameter(ReductFactoryOptions.SelectTopReducts, 10);
+
+            var rules = new ReductDecisionRules();
+            rules.ReductGeneratorArgs = parm;
+
+            //classify test data set
+            var result = Classifier.Default.Classify(rules, test);
+
+            //print results
             Console.WriteLine(result);
         }
     }

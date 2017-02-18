@@ -40,8 +40,8 @@ namespace Raccoon.MachineLearning.Roughset
         public bool UseExceptionRules { get; set; }
         public bool ExceptionRulesAsGaps { get; set; }
         public bool IdentifyMultipleDecision { get; set; }
-        public RuleQualityFunction IdentificationFunction { get; set; }
-        public RuleQualityFunction VoteFunction { get; set; }
+        public RuleQualityMethod IdentificationFunction { get; set; }
+        public RuleQualityMethod VoteFunction { get; set; }
         public double MinimumVoteValue { get; set; }
         public virtual long ClassificationTime { get { return timer.ElapsedMilliseconds; } }
 
@@ -75,8 +75,8 @@ namespace Raccoon.MachineLearning.Roughset
 
         public RoughClassifier(
             IReductStoreCollection reductStoreCollection,
-            RuleQualityFunction identificationFunction,
-            RuleQualityFunction voteFunction,
+            RuleQualityMethod identificationFunction,
+            RuleQualityMethod voteFunction,
             ICollection<long> decisionValues)
         {
             this.ReductStoreCollection = reductStoreCollection;
@@ -102,7 +102,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             this.MinimumVoteValue = Double.MinValue;
 
-            MethodInfo singleVoteMethod = ((RuleQualityFunction)RuleQuality.SingleVote).Method;
+            MethodInfo singleVoteMethod = ((RuleQualityMethod)RuleQualityMethods.SingleVote).Method;
             this.singleVoteName = singleVoteMethod.Name;
             this.singleVoteModule = singleVoteMethod.DeclaringType.FullName;
         }
@@ -427,7 +427,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         #region Recognition Vectors (needs improvement)
 
-        public static bool IsObjectRecognizable(DataStore data, int objectIdx, IReduct reduct, RuleQualityFunction decisionIndentificationMethod)
+        public static bool IsObjectRecognizable(DataStore data, int objectIdx, IReduct reduct, RuleQualityMethod decisionIndentificationMethod)
         {
             DataRecordInternal record = data.GetRecordByIndex(objectIdx, false);
             var decision = RoughClassifier.IdentifyDecision(record, reduct, decisionIndentificationMethod);
@@ -436,7 +436,7 @@ namespace Raccoon.MachineLearning.Roughset
             return false;
         }
 
-        public static double[] GetDiscernibilityVector(DataStore data, double[] weights, IReduct reduct, RuleQualityFunction decisionIndentificationMethod)
+        public static double[] GetDiscernibilityVector(DataStore data, double[] weights, IReduct reduct, RuleQualityMethod decisionIndentificationMethod)
         {
             double[] result = new double[data.NumberOfRecords];
             for (int objectIdx = 0; objectIdx < data.NumberOfRecords; objectIdx++)
@@ -445,7 +445,7 @@ namespace Raccoon.MachineLearning.Roughset
             return result;
         }
 
-        public static Tuple<long, double> IdentifyDecision(DataRecordInternal record, IReduct reduct, RuleQualityFunction decisionIndentificationMethod)
+        public static Tuple<long, double> IdentifyDecision(DataRecordInternal record, IReduct reduct, RuleQualityMethod decisionIndentificationMethod)
         {
             ICollection<long> decisions = reduct.DataStore.DataStoreInfo.GetDecisionValues();
             int decCountPlusOne = decisions.Count + 1;

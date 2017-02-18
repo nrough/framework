@@ -31,8 +31,8 @@ namespace  Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence,
-                RuleQuality.SingleVote,
+                RuleQualityMethods.Confidence,
+                RuleQualityMethods.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
 
             string localFileNameTest = @"Data\dna_modified.tst";

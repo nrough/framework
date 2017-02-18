@@ -37,8 +37,8 @@ namespace DisesorTest
         //int numberOfPermutations = 100;
         //double epsilon = 0.0m;
 
-        private RuleQualityFunction identificationFunction = RuleQuality.ConfidenceW;
-        private RuleQualityFunction voteFunction = RuleQuality.CoverageW;
+        private RuleQualityMethod identificationFunction = RuleQualityMethods.ConfidenceW;
+        private RuleQualityMethod voteFunction = RuleQualityMethods.CoverageW;
         private WeightGeneratorType weightGeneratorType = WeightGeneratorType.Relative;                
 
         private string innerFactoryKey = ReductTypes.GeneralizedMajorityDecisionApproximate;

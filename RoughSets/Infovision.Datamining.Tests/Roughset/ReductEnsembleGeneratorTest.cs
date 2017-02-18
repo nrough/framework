@@ -39,7 +39,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 epsilons[i] = (double)(RandomSingleton.Random.Next(36) / 100.0);
             }
 
-            Func<IReduct, double[], RuleQualityFunction, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            Func<IReduct, double[], RuleQualityMethod, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();

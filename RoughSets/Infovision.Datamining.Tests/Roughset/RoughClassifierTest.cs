@@ -28,34 +28,34 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                         IdentificationType identificationType = identType;
                         VoteType voteType = vType;
-                        RuleQualityFunction identificationFunc;
-                        RuleQualityFunction voteFunc;
+                        RuleQualityMethod identificationFunc;
+                        RuleQualityMethod voteFunc;
 
                         switch (identificationType)
                         {
-                            case IdentificationType.Support: identificationFunc = RuleQuality.Support; break;
-                            case IdentificationType.Confidence: identificationFunc = RuleQuality.Confidence; break;
-                            case IdentificationType.Coverage: identificationFunc = RuleQuality.Coverage; break;
-                            case IdentificationType.WeightSupport: identificationFunc = RuleQuality.SupportW; break;
-                            case IdentificationType.WeightConfidence: identificationFunc = RuleQuality.ConfidenceW; break;
-                            case IdentificationType.WeightCoverage: identificationFunc = RuleQuality.CoverageW; break;
+                            case IdentificationType.Support: identificationFunc = RuleQualityMethods.Support; break;
+                            case IdentificationType.Confidence: identificationFunc = RuleQualityMethods.Confidence; break;
+                            case IdentificationType.Coverage: identificationFunc = RuleQualityMethods.Coverage; break;
+                            case IdentificationType.WeightSupport: identificationFunc = RuleQualityMethods.SupportW; break;
+                            case IdentificationType.WeightConfidence: identificationFunc = RuleQualityMethods.ConfidenceW; break;
+                            case IdentificationType.WeightCoverage: identificationFunc = RuleQualityMethods.CoverageW; break;
                             default: throw new ArgumentException("Unknown key", "identificationType");
                         }
 
                         switch (voteType)
                         {
-                            case VoteType.Support: voteFunc = RuleQuality.Support; break;
-                            case VoteType.Confidence: voteFunc = RuleQuality.Confidence; break;
-                            case VoteType.Coverage: voteFunc = RuleQuality.Coverage; break;
-                            case VoteType.Ratio: voteFunc = RuleQuality.Ratio; break;
-                            case VoteType.Strength: voteFunc = RuleQuality.Strength; break;
-                            case VoteType.MajorDecision: voteFunc = RuleQuality.SingleVote; break;
-                            case VoteType.WeightSupport: voteFunc = RuleQuality.SupportW; break;
-                            case VoteType.WeightConfidence: voteFunc = RuleQuality.ConfidenceW; break;
-                            case VoteType.WeightCoverage: voteFunc = RuleQuality.CoverageW; break;
-                            case VoteType.WeightRatio: voteFunc = RuleQuality.RatioW; break;
-                            case VoteType.WeightStrength: voteFunc = RuleQuality.StrengthW; break;
-                            case VoteType.ConfidenceRelative: voteFunc = RuleQuality.ConfidenceRelative; break;
+                            case VoteType.Support: voteFunc = RuleQualityMethods.Support; break;
+                            case VoteType.Confidence: voteFunc = RuleQualityMethods.Confidence; break;
+                            case VoteType.Coverage: voteFunc = RuleQualityMethods.Coverage; break;
+                            case VoteType.Ratio: voteFunc = RuleQualityMethods.Ratio; break;
+                            case VoteType.Strength: voteFunc = RuleQualityMethods.Strength; break;
+                            case VoteType.MajorDecision: voteFunc = RuleQualityMethods.SingleVote; break;
+                            case VoteType.WeightSupport: voteFunc = RuleQualityMethods.SupportW; break;
+                            case VoteType.WeightConfidence: voteFunc = RuleQualityMethods.ConfidenceW; break;
+                            case VoteType.WeightCoverage: voteFunc = RuleQualityMethods.CoverageW; break;
+                            case VoteType.WeightRatio: voteFunc = RuleQualityMethods.RatioW; break;
+                            case VoteType.WeightStrength: voteFunc = RuleQualityMethods.StrengthW; break;
+                            case VoteType.ConfidenceRelative: voteFunc = RuleQualityMethods.ConfidenceRelative; break;
                             default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
@@ -104,8 +104,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            RuleQualityFunction identificationFunc = RuleQuality.ConfidenceW;
-            RuleQualityFunction voteFunc = RuleQuality.ConfidenceW;
+            RuleQualityMethod identificationFunc = RuleQualityMethods.ConfidenceW;
+            RuleQualityMethod voteFunc = RuleQualityMethods.ConfidenceW;
 
             DataStore trainData = DataStore.Load(trainFileName, FileFormat.RSES1);
             DataStore testData = DataStore.Load(testFileName, FileFormat.RSES1, trainData.DataStoreInfo);

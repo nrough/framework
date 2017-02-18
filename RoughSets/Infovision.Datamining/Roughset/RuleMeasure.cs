@@ -2,9 +2,9 @@
 
 namespace Raccoon.MachineLearning.Roughset
 {
-    public delegate double RuleQualityFunction(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
+    public delegate double RuleQualityMethod(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
 
-    public static class RuleQuality
+    public static class RuleQualityMethods
     {
         //P(X,E)
         public static double Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)
@@ -151,7 +151,7 @@ namespace Raccoon.MachineLearning.Roughset
         }
     }
 
-    public static class RuleQualityAvg
+    public static class RuleQualityAvgMethods
     {
         //P(X,E)
         public static double Support(long decisionValue, IReduct reduct, EquivalenceClass eqClass)

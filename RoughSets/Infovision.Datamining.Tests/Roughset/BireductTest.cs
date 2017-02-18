@@ -176,8 +176,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence,
-                RuleQuality.SingleVote,
+                RuleQualityMethods.Confidence,
+                RuleQualityMethods.SingleVote,
                 localDataStore.DataStoreInfo.GetDecisionValues());
 
             //Console.Write(classifier.PrintDecisionRules(localDataStore.DataStoreInfo));
@@ -525,8 +525,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 reductGenerator.GetReductStoreCollection(),
-                RuleQuality.Confidence,
-                RuleQuality.SingleVote,
+                RuleQualityMethods.Confidence,
+                RuleQualityMethods.SingleVote,
                 dataStoreTrain.DataStoreInfo.GetDecisionValues());
             ClassificationResult classificationResult = classifier.Classify(dataStoreTest, null);
 

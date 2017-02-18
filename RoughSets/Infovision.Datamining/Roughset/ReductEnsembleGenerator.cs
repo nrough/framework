@@ -17,7 +17,7 @@ namespace Raccoon.MachineLearning.Roughset
         private IPermutationGenerator permutationGenerator;
         private double dataSetQuality = 1.0;
         private WeightGenerator weightGenerator;
-        private Func<IReduct, double[], RuleQualityFunction, double[]> recognition;
+        private Func<IReduct, double[], RuleQualityMethod, double[]> recognition;
         private Func<int[], int[], DistanceMatrix, double[][], double> linkage;
         private Func<double[], double[], double> distance;
         private HierarchicalClusteringBase hCluster;
@@ -125,7 +125,7 @@ namespace Raccoon.MachineLearning.Roughset
                 this.WeightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
 
             if (args.Exist(ReductFactoryOptions.ReconWeights))
-                this.recognition = (Func<IReduct, double[], RuleQualityFunction, double[]>)args.GetParameter(ReductFactoryOptions.ReconWeights);
+                this.recognition = (Func<IReduct, double[], RuleQualityMethod, double[]>)args.GetParameter(ReductFactoryOptions.ReconWeights);
         }
 
         protected override void Generate()
@@ -218,7 +218,7 @@ namespace Raccoon.MachineLearning.Roughset
             for (int i = 0; i < store.Count; i++)
             {
                 IReduct reduct = store.GetReduct(i);
-                errors[i] = recognition(reduct, reduct.Weights, RuleQuality.ConfidenceW);
+                errors[i] = recognition(reduct, reduct.Weights, RuleQualityMethods.ConfidenceW);
             }
             return errors;
         }

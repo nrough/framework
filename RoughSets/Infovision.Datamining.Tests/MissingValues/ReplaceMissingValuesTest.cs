@@ -35,8 +35,8 @@ namespace Raccoon.MachineLearning.Tests.MissingValues
             Args parms = new Args();
             parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
             parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingVarEps);
-            parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityFunction)RuleQuality.ConfidenceW);
-            parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityFunction)RuleQuality.ConfidenceW);
+            parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
+            parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
             parms.SetParameter(ReductFactoryOptions.MaxIterations, 1);
             parms.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorMajority(trnData));
             parms.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, false);

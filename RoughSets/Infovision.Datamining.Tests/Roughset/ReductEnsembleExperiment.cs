@@ -41,8 +41,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
 
-            RuleQualityFunction identificationType = RuleQuality.ConfidenceW;
-            RuleQualityFunction voteType = RuleQuality.ConfidenceW;
+            RuleQualityMethod identificationType = RuleQualityMethods.ConfidenceW;
+            RuleQualityMethod voteType = RuleQualityMethods.ConfidenceW;
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
 
@@ -68,7 +68,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 args.SetParameter(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
                 args.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-                args.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();

@@ -168,7 +168,7 @@ namespace LoadSQLRoughsetDB
             int i = 0;
             DataRow dataSetRow = null;
 
-            var methods = typeof(RuleQuality).GetMethods(BindingFlags.Static | BindingFlags.Public);
+            var methods = typeof(RuleQualityMethods).GetMethods(BindingFlags.Static | BindingFlags.Public);
             foreach (var methodInfo in methods)
             {
                 dataSetRow = table.NewRow();

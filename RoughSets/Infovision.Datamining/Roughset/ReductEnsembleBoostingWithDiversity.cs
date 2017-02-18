@@ -16,7 +16,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public Func<double[], double[], double> Distance { get; set; }
         public Func<int[], int[], DistanceMatrix, double[][], double> Linkage { get; set; }
-        public Func<IReduct, double[], RuleQualityFunction, double[]> ReconWeights { get; set; }
+        public Func<IReduct, double[], RuleQualityMethod, double[]> ReconWeights { get; set; }
         public int NumberOfReductsToTest { get; set; }
         public AgregateFunction AgregateFunction { get; set; }
 
@@ -56,7 +56,7 @@ namespace Raccoon.MachineLearning.Roughset
                 this.Linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args.GetParameter(ReductFactoryOptions.Linkage);
 
             if (args.Exist(ReductFactoryOptions.ReconWeights))
-                this.ReconWeights = (Func<IReduct, double[], RuleQualityFunction, double[]>)args.GetParameter(ReductFactoryOptions.ReconWeights);
+                this.ReconWeights = (Func<IReduct, double[], RuleQualityMethod, double[]>)args.GetParameter(ReductFactoryOptions.ReconWeights);
 
             if (args.Exist(ReductFactoryOptions.NumberOfReductsToTest))
                 this.NumberOfReductsToTest = (int)args.GetParameter(ReductFactoryOptions.NumberOfReductsToTest);

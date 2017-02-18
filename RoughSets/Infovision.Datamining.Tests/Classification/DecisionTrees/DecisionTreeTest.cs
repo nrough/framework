@@ -71,7 +71,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             reductStore.AddReduct(reduct);
             reductStoreCollection.AddStore(reductStore);
 
-            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvg.SupportW, RuleQuality.SupportW, data.DataStoreInfo.GetDecisionValues());
+            RoughClassifier classifier = new RoughClassifier(reductStoreCollection, RuleQualityAvgMethods.SupportW, RuleQualityMethods.SupportW, data.DataStoreInfo.GetDecisionValues());
             ClassificationResult result2 = classifier.Classify(test, null);
             result2.Epsilon = epsilon;
             result2.Gamma = reductEpsilon;
@@ -175,7 +175,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection, 
-                    RuleQualityAvg.SupportW, RuleQuality.SupportW, 
+                    RuleQualityAvgMethods.SupportW, RuleQualityMethods.SupportW, 
                     data.DataStoreInfo.GetDecisionValues());
 
                 ClassificationResult result2 = classifier.Classify(test, null);

@@ -1,4 +1,5 @@
-﻿using Raccoon.Data;
+﻿using Raccoon.Core;
+using Raccoon.Data;
 using Raccoon.MachineLearning.Roughset;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,28 @@ namespace Raccoon.MachineLearning.Classification.Ensembles
 {
     public class ReductDecisionRules : EnsembleBase
     {
+        public Args ReductGeneratorArgs { get; set; }
+        public RuleQualityMethod DecisionIdentificationMethod { get; set; }
+        public RuleQualityMethod RuleVotingMethod { get; set; }
+
         private IList<IReduct> reducts;
 
         public ReductDecisionRules()
         {
             reducts = new List<IReduct>();
+
+            Args parm = new Args();
+            parm.SetParameter(ReductFactoryOptions.ReductType,
+                ReductTypes.ApproximateDecisionReduct);
+            parm.SetParameter(ReductFactoryOptions.FMeasure,
+                (FMeasure)FMeasures.MajorityWeighted);
+            parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 10);
+
+            ReductGeneratorArgs = parm;
+
+            DecisionIdentificationMethod = RuleQualityMethods.Confidence;
+            RuleVotingMethod = RuleQualityMethods.SingleVote;
         }
 
         public ReductDecisionRules(IReduct reduct)
@@ -32,8 +50,23 @@ namespace Raccoon.MachineLearning.Classification.Ensembles
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)
         {
+            if (reducts == null || reducts.Count == 0)
+            {
+                if (ReductGeneratorArgs == null)
+                    throw new InvalidOperationException("ReductGeneratorArgs == null");
 
+                Args localArgs = (Args) ReductGeneratorArgs.Clone();
+                localArgs.SetParameter(ReductFactoryOptions.DecisionTable, data);
 
+                IReductGenerator generator = ReductFactory.GetReductGenerator(localArgs);
+                generator.Run();
+
+                reducts = new List<IReduct>(generator.GetReducts());
+            }
+
+            //Create rules and save them for Classify method
+
+            
             return Classifier.Default.Classify(this, data);
         }
     }

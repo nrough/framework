@@ -20,8 +20,8 @@ namespace Raccoon.MachineLearning.Roughset
     public class ReductEnsembleBoostingGenerator : ReductGenerator
     {
         public double Threshold { get; set; }
-        public RuleQualityFunction IdentyficationType { get; set; }
-        public RuleQualityFunction VoteType { get; set; }
+        public RuleQualityMethod IdentyficationType { get; set; }
+        public RuleQualityMethod VoteType { get; set; }
         public double MinimumVoteValue { get; set; }
         public int NumberOfReductsInWeakClassifier { get; set; }
         public int MaxIterations { get; set; }
@@ -48,8 +48,8 @@ namespace Raccoon.MachineLearning.Roughset
             : base()
         {
             this.Threshold = 0.5;
-            this.IdentyficationType = RuleQuality.ConfidenceW;
-            this.VoteType = RuleQuality.CoverageW;
+            this.IdentyficationType = RuleQualityMethods.ConfidenceW;
+            this.VoteType = RuleQualityMethods.CoverageW;
             this.NumberOfReductsInWeakClassifier = 1;
             this.MaxIterations = 100;
             this.MaxNumberOfWeightResets = 0;
@@ -71,8 +71,8 @@ namespace Raccoon.MachineLearning.Roughset
             base.InitDefaultParameters();
 
             this.Threshold = 0.5;
-            this.IdentyficationType = RuleQuality.ConfidenceW;
-            this.VoteType = RuleQuality.CoverageW;
+            this.IdentyficationType = RuleQualityMethods.ConfidenceW;
+            this.VoteType = RuleQualityMethods.CoverageW;
             this.NumberOfReductsInWeakClassifier = 1;
             this.MaxIterations = 100;
             this.MaxNumberOfWeightResets = 0;
@@ -113,10 +113,10 @@ namespace Raccoon.MachineLearning.Roughset
                 this.Threshold = (double)args.GetParameter(ReductFactoryOptions.Threshold);
 
             if (args.Exist(ReductFactoryOptions.IdentificationType))
-                this.IdentyficationType = (RuleQualityFunction)args.GetParameter(ReductFactoryOptions.IdentificationType);
+                this.IdentyficationType = (RuleQualityMethod)args.GetParameter(ReductFactoryOptions.IdentificationType);
 
             if (args.Exist(ReductFactoryOptions.VoteType))
-                this.VoteType = (RuleQualityFunction)args.GetParameter(ReductFactoryOptions.VoteType);
+                this.VoteType = (RuleQualityMethod)args.GetParameter(ReductFactoryOptions.VoteType);
 
             if (args.Exist(ReductFactoryOptions.NumberOfReductsInWeakClassifier))
                 this.NumberOfReductsInWeakClassifier = (int)args.GetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier);

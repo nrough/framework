@@ -36,8 +36,8 @@ namespace MajorityGeneralizedDecisionTest
 
         public void MajorityGeneralizedDecisionPerformanceTest(
             WeightGenerator weightGenerator,
-            RuleQualityFunction identification,
-            RuleQualityFunction voting)
+            RuleQualityMethod identification,
+            RuleQualityMethod voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
             if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecision))
@@ -78,8 +78,8 @@ namespace MajorityGeneralizedDecisionTest
 
         public void MajorityGeneralizedDecisionNoExceptionsPerformanceTest(
             WeightGenerator weightGenerator,
-            RuleQualityFunction identification,
-            RuleQualityFunction voting)
+            RuleQualityMethod identification,
+            RuleQualityMethod voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
             if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecisionApproximate + "NoExp"))
@@ -123,8 +123,8 @@ namespace MajorityGeneralizedDecisionTest
 
         public void MajorityGeneralizedDecisionGapsPerformanceTest(
             WeightGenerator weightGenerator,
-            RuleQualityFunction identification,
-            RuleQualityFunction voting)
+            RuleQualityMethod identification,
+            RuleQualityMethod voting)
         {
             ReductGeneralizedMajorityDecisionGenerator generator = null;
             if (reductGeneratorCache.ContainsKey(ReductTypes.GeneralizedMajorityDecisionApproximate))
@@ -186,8 +186,8 @@ namespace MajorityGeneralizedDecisionTest
 
         public void ApproximateDecisionReduct(
             WeightGenerator weightGenerator,
-            RuleQualityFunction identification,
-            RuleQualityFunction voting)
+            RuleQualityMethod identification,
+            RuleQualityMethod voting)
         {
             ReductGeneratorWeightsMajority generator = null;
             if (reductGeneratorCache.ContainsKey(ReductTypes.ApproximateReductMajorityWeights))
@@ -337,27 +337,27 @@ namespace MajorityGeneralizedDecisionTest
                                 //only confidenceW
                                 for (int j = 2; j <= 2; j++)
                                 {
-                                    RuleQualityFunction v1, v2;
+                                    RuleQualityMethod v1, v2;
                                     switch (j)
                                     {
-                                        case 0: v1 = RuleQualityAvg.Confidence; v2 = RuleQuality.Confidence; break;
-                                        case 1: v1 = RuleQualityAvg.ConfidenceRelativeW; v2 = RuleQuality.ConfidenceRelativeW; break;
-                                        case 2: v1 = RuleQualityAvg.ConfidenceW; v2 = RuleQuality.ConfidenceW; break;
-                                        case 3: v1 = RuleQualityAvg.Coverage; v2 = RuleQuality.Coverage; break;
-                                        case 4: v1 = RuleQualityAvg.CoverageW; v2 = RuleQuality.CoverageW; break;
-                                        case 5: v1 = RuleQualityAvg.Ratio; v2 = RuleQuality.Ratio; break;
-                                        case 6: v1 = RuleQualityAvg.RatioW; v2 = RuleQuality.RatioW; break;
-                                        case 7: v1 = RuleQualityAvg.Support; v2 = RuleQuality.Support; break;
-                                        case 8: v1 = RuleQualityAvg.SupportW; v2 = RuleQuality.SupportW; break;
-                                        case 9: v1 = RuleQuality.SingleVote; v2 = RuleQuality.SingleVote; break;
+                                        case 0: v1 = RuleQualityAvgMethods.Confidence; v2 = RuleQualityMethods.Confidence; break;
+                                        case 1: v1 = RuleQualityAvgMethods.ConfidenceRelativeW; v2 = RuleQualityMethods.ConfidenceRelativeW; break;
+                                        case 2: v1 = RuleQualityAvgMethods.ConfidenceW; v2 = RuleQualityMethods.ConfidenceW; break;
+                                        case 3: v1 = RuleQualityAvgMethods.Coverage; v2 = RuleQualityMethods.Coverage; break;
+                                        case 4: v1 = RuleQualityAvgMethods.CoverageW; v2 = RuleQualityMethods.CoverageW; break;
+                                        case 5: v1 = RuleQualityAvgMethods.Ratio; v2 = RuleQualityMethods.Ratio; break;
+                                        case 6: v1 = RuleQualityAvgMethods.RatioW; v2 = RuleQualityMethods.RatioW; break;
+                                        case 7: v1 = RuleQualityAvgMethods.Support; v2 = RuleQualityMethods.Support; break;
+                                        case 8: v1 = RuleQualityAvgMethods.SupportW; v2 = RuleQualityMethods.SupportW; break;
+                                        case 9: v1 = RuleQualityMethods.SingleVote; v2 = RuleQualityMethods.SingleVote; break;
 
-                                        default: v1 = RuleQuality.SingleVote; v2 = RuleQuality.SingleVote; break;
+                                        default: v1 = RuleQualityMethods.SingleVote; v2 = RuleQualityMethods.SingleVote; break;
                                     }
 
-                                    this.MajorityGeneralizedDecisionGapsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
-                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
+                                    this.MajorityGeneralizedDecisionGapsPerformanceTest(weightGenerator, RuleQualityAvgMethods.ConfidenceW, v1);
+                                    this.MajorityGeneralizedDecisionNoExceptionsPerformanceTest(weightGenerator, RuleQualityAvgMethods.ConfidenceW, v1);
                                     //this.MajorityGeneralizedDecisionPerformanceTest(weightGenerator, RuleQualityAvg.ConfidenceW, v1);
-                                    this.ApproximateDecisionReduct(weightGenerator, RuleQuality.ConfidenceW, v2);
+                                    this.ApproximateDecisionReduct(weightGenerator, RuleQualityMethods.ConfidenceW, v2);
                                 }
 
                                 Console.WriteLine();

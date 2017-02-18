@@ -377,7 +377,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         #endregion IEnumerable Members
 
-        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, double[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ";")
+        public virtual void SaveErrorVectorsInRFormat(DataStore data, Func<IReduct, double[], RuleQualityMethod, double[]> recognition, string filePath, RuleQualityMethod decisionIdentificationMethod, string separator = ";")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)
@@ -401,7 +401,7 @@ namespace Raccoon.MachineLearning.Roughset
             File.WriteAllText(filePath, sb.ToString());
         }
 
-        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, double[], RuleQualityFunction, double[]> recognition, string filePath, RuleQualityFunction decisionIdentificationMethod, string separator = ",")
+        public virtual void SaveErrorVectorsInWekaFormat(DataStore data, Func<IReduct, double[], RuleQualityMethod, double[]> recognition, string filePath, RuleQualityMethod decisionIdentificationMethod, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.NumberOfRecords; i++)

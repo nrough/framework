@@ -122,8 +122,8 @@ namespace VotingVsRuleInduction
 
                             RoughClassifier classifier = new RoughClassifier(
                                 filteredReductStoreCollection,
-                                (RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType),
-                                (RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType),
+                                (RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.IdentificationType),
+                                (RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.VoteType),
                                 ((DataStore)setup.GetParameter(ReductFactoryOptions.DecisionTable)).DataStoreInfo.GetDecisionValues());
 
                             ClassificationResult result = classifier.Classify((DataStore)setup.GetParameter(ReductFactoryOptions.TestData));
@@ -142,8 +142,8 @@ namespace VotingVsRuleInduction
                                 setup.GetParameter(ReductFactoryOptions.ReductType),
                                 setup.GetParameter(ReductFactoryOptions.NumberOfReducts),
                                 setup.GetParameter(ReductFactoryOptions.Epsilon),
-                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
-                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
+                                ((RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
+                                ((RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
                                 result
                                 );
 
@@ -153,8 +153,8 @@ namespace VotingVsRuleInduction
                                 setup.GetParameter(ReductFactoryOptions.ReductType),
                                 setup.GetParameter(ReductFactoryOptions.NumberOfReducts),
                                 setup.GetParameter(ReductFactoryOptions.Epsilon),
-                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
-                                ((RuleQualityFunction)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
+                                ((RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.IdentificationType)).Method.Name,
+                                ((RuleQualityMethod)setup.GetParameter(ReductFactoryOptions.VoteType)).Method.Name,
                                 result
                                 );
 
@@ -246,27 +246,27 @@ namespace VotingVsRuleInduction
             IParameter parmNumberOfReducts = new ParameterValueCollection<int>(ReductFactoryOptions.NumberOfReducts,
                 new int[] { 20, 10, 2, 1 });
 
-            IParameter parmIdentification = new ParameterValueCollection<RuleQualityFunction>(
-                ReductFactoryOptions.IdentificationType, new RuleQualityFunction[] {
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.CoverageW,
-                    RuleQuality.Confidence,
-                    RuleQuality.Coverage,
+            IParameter parmIdentification = new ParameterValueCollection<RuleQualityMethod>(
+                ReductFactoryOptions.IdentificationType, new RuleQualityMethod[] {
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.CoverageW,
+                    RuleQualityMethods.Confidence,
+                    RuleQualityMethods.Coverage,
                 });
 
-            IParameter parmVote = new ParameterValueCollection<RuleQualityFunction>(
-                ReductFactoryOptions.VoteType, new RuleQualityFunction[] {
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.CoverageW,
-                    RuleQuality.RatioW,
-                    RuleQuality.SupportW,
-                    RuleQuality.SingleVote,
-                    RuleQuality.ConfidenceRelativeW,
-                    RuleQuality.Confidence,
-                    RuleQuality.Coverage,
-                    RuleQuality.Ratio,
-                    RuleQuality.Support,
-                    RuleQuality.ConfidenceRelative
+            IParameter parmVote = new ParameterValueCollection<RuleQualityMethod>(
+                ReductFactoryOptions.VoteType, new RuleQualityMethod[] {
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.CoverageW,
+                    RuleQualityMethods.RatioW,
+                    RuleQualityMethods.SupportW,
+                    RuleQualityMethods.SingleVote,
+                    RuleQualityMethods.ConfidenceRelativeW,
+                    RuleQualityMethods.Confidence,
+                    RuleQualityMethods.Coverage,
+                    RuleQualityMethods.Ratio,
+                    RuleQualityMethods.Support,
+                    RuleQualityMethods.ConfidenceRelative
                 });
 
             ParameterCollection parameterList = new ParameterCollection(

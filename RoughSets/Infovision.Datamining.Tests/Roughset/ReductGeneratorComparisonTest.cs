@@ -54,7 +54,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsemble);
             argSet.Add(ReductFactoryOptions.PermutationCollection, permList);
             argSet.Add(ReductFactoryOptions.WeightGenerator, weightGenerator);
-            argSet.Add(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityFunction, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
             argSet.Add(ReductFactoryOptions.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 
@@ -90,7 +90,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             Func<int[], int[], DistanceMatrix, double[][], double> linkage = (Func<int[], int[], DistanceMatrix, double[][], double>)args[ReductFactoryOptions.Linkage];
             //Console.WriteLine("{0}.{1}", linkage.Method.DeclaringType.Name, linkage.Method.Name);
 
-            Func<IReduct, double[], RuleQualityFunction, double[]> recognition = (Func<IReduct, double[], RuleQualityFunction, double[]>)args[ReductFactoryOptions.ReconWeights];
+            Func<IReduct, double[], RuleQualityMethod, double[]> recognition = (Func<IReduct, double[], RuleQualityMethod, double[]>)args[ReductFactoryOptions.ReconWeights];
             //Console.WriteLine("{0}.{1}", recognition.Method.DeclaringType.Name, recognition.Method.Name);
 
             Args parms = new Args();
@@ -109,8 +109,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             ReductStore reductPool = reductGenerator.ReductPool as ReductStore;
             if (reductPool != null)
             {
-                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv", RuleQuality.Confidence);
-                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv", RuleQuality.Confidence);
+                reductPool.SaveErrorVectorsInRFormat(data, recognition, @"reducts_r.csv", RuleQualityMethods.Confidence);
+                reductPool.SaveErrorVectorsInWekaFormat(data, recognition, @"reducts_weka.csv", RuleQualityMethods.Confidence);
             }
 
             //Console.WriteLine("------------------------ Reduct Pool ------------------------");
@@ -135,8 +135,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                 RoughClassifier rc = new RoughClassifier(
                     localStoreCollection,
-                    RuleQuality.Confidence,
-                    RuleQuality.SingleVote,
+                    RuleQualityMethods.Confidence,
+                    RuleQualityMethods.SingleVote,
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 
@@ -170,8 +170,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                 RoughClassifier rc = new RoughClassifier(
                     tmpReductStoreCollection,
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
                     data.DataStoreInfo.GetDecisionValues());
                 ClassificationResult classificationResult = rc.Classify(testData, null);
 

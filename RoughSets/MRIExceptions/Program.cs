@@ -429,8 +429,8 @@ namespace MRIExceptions
 
             RoughClassifier classifier = new RoughClassifier(
                 filteredReductStoreCollection,
-                RuleQualityAvg.ConfidenceW,
-                RuleQualityAvg.ConfidenceW,
+                RuleQualityAvgMethods.ConfidenceW,
+                RuleQualityAvgMethods.ConfidenceW,
                 train.DataStoreInfo.GetDecisionValues());
 
             classifier.UseExceptionRules = true;

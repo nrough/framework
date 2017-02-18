@@ -118,8 +118,8 @@ namespace ApproxReductBoosting
                     parms.SetParameter(ReductFactoryOptions.DecisionTable, trnDataOrig);
 
                 parms.SetParameter(ReductFactoryOptions.ReductType, factoryKey);
-                parms.SetParameter(ReductFactoryOptions.IdentificationType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
-                parms.SetParameter(ReductFactoryOptions.VoteType, (Func<long, IReduct, EquivalenceClass, double>)RuleQuality.ConfidenceW);
+                parms.SetParameter(ReductFactoryOptions.IdentificationType, (Func<long, IReduct, EquivalenceClass, double>)RuleQualityMethods.ConfidenceW);
+                parms.SetParameter(ReductFactoryOptions.VoteType, (Func<long, IReduct, EquivalenceClass, double>)RuleQualityMethods.ConfidenceW);
                 parms.SetParameter(ReductFactoryOptions.NumberOfReductsInWeakClassifier, 1);
                 parms.SetParameter(ReductFactoryOptions.MaxIterations, iter);
                 parms.SetParameter(ReductFactoryOptions.UpdateWeights, updateWeights);
@@ -158,8 +158,8 @@ namespace ApproxReductBoosting
 
                 RoughClassifier classifierTst = new RoughClassifier(
                     reductGenerator.GetReductGroups(),
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
                     trnDataOrig.DataStoreInfo.GetDecisionValues());
                 ClassificationResult resultTst = classifierTst.Classify(tstDataOrig, null);
 

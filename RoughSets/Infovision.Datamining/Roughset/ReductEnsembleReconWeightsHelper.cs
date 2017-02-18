@@ -10,7 +10,7 @@ namespace Raccoon.MachineLearning.Roughset
         /// <param name="reduct"></param>
         /// <param name="objectWeights"></param>
         /// <returns></returns>
-        public static double[] GetDefaultReconWeights(IReduct reduct, double[] objectWeights, RuleQualityFunction decisionIdentificationMethod)
+        public static double[] GetDefaultReconWeights(IReduct reduct, double[] objectWeights, RuleQualityMethod decisionIdentificationMethod)
         {
             //TODO If arg_max returns more than one decisionInternalValue, this method should take this into account
             double[] result = new double[objectWeights.Length];
@@ -28,7 +28,7 @@ namespace Raccoon.MachineLearning.Roughset
         /// <param name="reduct"></param>
         /// <param name="objectWeights"></param>
         /// <returns></returns>
-        public static double[] GetErrorReconWeights(IReduct reduct, double[] objectWeights, RuleQualityFunction decisionIdentificationMethod)
+        public static double[] GetErrorReconWeights(IReduct reduct, double[] objectWeights, RuleQualityMethod decisionIdentificationMethod)
         {
             double[] result = new double[objectWeights.Length];
             Array.Copy(objectWeights, result, objectWeights.Length);
@@ -44,7 +44,7 @@ namespace Raccoon.MachineLearning.Roughset
         /// <param name="reduct"></param>
         /// <param name="objectWeights"></param>
         /// <returns></returns>
-        public static double[] GetCorrectReconWeights(IReduct reduct, double[] objectWeights, RuleQualityFunction decisionIdentificationMethod)
+        public static double[] GetCorrectReconWeights(IReduct reduct, double[] objectWeights, RuleQualityMethod decisionIdentificationMethod)
         {
             double[] result = new double[objectWeights.Length];
             for (int i = 0; i < reduct.DataStore.NumberOfRecords; i++)
@@ -53,7 +53,7 @@ namespace Raccoon.MachineLearning.Roughset
             return result;
         }
 
-        public static double[] GetCorrectBinary(IReduct reduct, double[] objectWeights, RuleQualityFunction decisionIdentificationMethod)
+        public static double[] GetCorrectBinary(IReduct reduct, double[] objectWeights, RuleQualityMethod decisionIdentificationMethod)
         {
             double[] result = new double[objectWeights.Length];
             for (int i = 0; i < reduct.DataStore.NumberOfRecords; i++)

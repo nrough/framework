@@ -128,8 +128,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                     RoughClassifier classifier_1 = new RoughClassifier(
                         reductStoreCollection,
-                        RuleQuality.ConfidenceW,
-                        RuleQuality.ConfidenceW,
+                        RuleQualityMethods.ConfidenceW,
+                        RuleQualityMethods.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult result_1 = classifier_1.Classify(test, null);
@@ -167,8 +167,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
                     RoughClassifier classifier_2 = new RoughClassifier(
                         reductStoreCollection2,
-                        RuleQuality.ConfidenceW,
-                        RuleQuality.ConfidenceW,
+                        RuleQualityMethods.ConfidenceW,
+                        RuleQualityMethods.ConfidenceW,
                         data.DataStoreInfo.GetDecisionValues());
                     ClassificationResult result_2 = classifier_2.Classify(test, null);
 
@@ -331,15 +331,15 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifier = new RoughClassifier(
                 generator.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW,
-                RuleQuality.ConfidenceW,
+                RuleQualityMethods.ConfidenceW,
+                RuleQualityMethods.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result = classifier.Classify(testData, null);
 
             RoughClassifier classifier2 = new RoughClassifier(
                 generator2.GetReductStoreCollection(),
-                RuleQuality.ConfidenceW,
-                RuleQuality.ConfidenceW,
+                RuleQualityMethods.ConfidenceW,
+                RuleQualityMethods.ConfidenceW,
                 trainData.DataStoreInfo.GetDecisionValues());
             ClassificationResult result2 = classifier2.Classify(testData, null);
 

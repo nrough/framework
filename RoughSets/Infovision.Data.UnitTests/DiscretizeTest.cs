@@ -67,8 +67,8 @@ namespace Raccoon.Data.Tests
 
                 RoughClassifier classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 ClassificationResult classificationResult = classifier.Classify(test);
@@ -121,8 +121,8 @@ namespace Raccoon.Data.Tests
 
                 classifier = new RoughClassifier(
                     reductStoreCollection,
-                    RuleQuality.ConfidenceW,
-                    RuleQuality.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
+                    RuleQualityMethods.ConfidenceW,
                     train.DataStoreInfo.DecisionInfo.InternalValues());
 
                 classificationResult = classifier.Classify(test);

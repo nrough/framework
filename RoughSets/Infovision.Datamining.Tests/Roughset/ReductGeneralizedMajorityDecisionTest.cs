@@ -71,8 +71,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifier_GMDR = new RoughClassifier(
                 filteredReductStoreCollection_GMDR,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
             ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
@@ -99,8 +99,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             RoughClassifier classifierApprox = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierApprox.UseExceptionRules = false;
             ClassificationResult resultApprox = classifierApprox.Classify(testData);

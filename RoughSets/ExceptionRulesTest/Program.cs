@@ -160,8 +160,8 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifierApprox = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierApprox.UseExceptionRules = false;
             ClassificationResult resultApprox = classifierApprox.Classify(testData);
@@ -186,8 +186,8 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifier_GMDR = new RoughClassifier(
                 filteredReductStoreCollection_GMDR,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
             ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
@@ -211,8 +211,8 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifierEx = new RoughClassifier(
                 filteredReductStoreCollectionEx,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierEx.UseExceptionRules = true;
             classifierEx.ExceptionRulesAsGaps = false;
@@ -245,8 +245,8 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifierGaps = new RoughClassifier(
                 filteredReductStoreCollectionGap,
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierGaps.UseExceptionRules = true;
             classifierGaps.ExceptionRulesAsGaps = true;
@@ -272,8 +272,8 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifierRandom = new RoughClassifier(
                 generatorRandom.GetReductStoreCollection(),
-                RuleQuality.CoverageW,
-                RuleQuality.CoverageW,
+                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.CoverageW,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierRandom.UseExceptionRules = false;
             ClassificationResult resultRandom = classifierRandom.Classify(testData);

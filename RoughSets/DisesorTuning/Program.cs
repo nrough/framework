@@ -56,13 +56,13 @@ namespace DisesorTuning
 						1, 2, 5, 10, 20, 50, 100, 200, 300),
 					new ParameterNumericRange<double>(ReductFactoryOptions.Epsilon, //3
 						0.0, 0.50, 0.05),
-					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Voting", //4
-						RuleQuality.CoverageW,
-						RuleQuality.ConfidenceW,
-						RuleQuality.SingleVote),
-					ParameterValueCollection<RuleQualityFunction>.CreateFromElements("Identification", //5
-						RuleQuality.CoverageW,
-						RuleQuality.ConfidenceW),					
+					ParameterValueCollection<RuleQualityMethod>.CreateFromElements("Voting", //4
+						RuleQualityMethods.CoverageW,
+						RuleQualityMethods.ConfidenceW,
+						RuleQualityMethods.SingleVote),
+					ParameterValueCollection<RuleQualityMethod>.CreateFromElements("Identification", //5
+						RuleQualityMethods.CoverageW,
+						RuleQualityMethods.ConfidenceW),					
 					ParameterValueCollection<WeightGeneratorType>.CreateFromElements("WeightGeneratorType", //6
 						WeightGeneratorType.Relative,
 						WeightGeneratorType.Majority),
@@ -83,8 +83,8 @@ namespace DisesorTuning
                 string innerFactoryKey = (string)p[1];
                 int weakClassifierSize = (int)p[2];
                 double eps = (double)p[3];
-                RuleQualityFunction voting = (RuleQualityFunction)p[4];
-                RuleQualityFunction identification = (RuleQualityFunction)p[5];                
+                RuleQualityMethod voting = (RuleQualityMethod)p[4];
+                RuleQualityMethod identification = (RuleQualityMethod)p[5];                
                 WeightGeneratorType weightGeneratorType = (WeightGeneratorType)p[6];
                 bool fixedPermutation = (bool)p[8];
 

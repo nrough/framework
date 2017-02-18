@@ -302,8 +302,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
                     RoughClassifier roughClassifier 
                         = new RoughClassifier(reductsfiltered, 
-                                              RuleQuality.ConfidenceW, 
-                                              RuleQuality.ConfidenceW, 
+                                              RuleQualityMethods.ConfidenceW, 
+                                              RuleQualityMethods.ConfidenceW, 
                                               data.DataStoreInfo.GetDecisionValues());
 
                     ClassificationResult reductResult = roughClassifier.Classify(test);

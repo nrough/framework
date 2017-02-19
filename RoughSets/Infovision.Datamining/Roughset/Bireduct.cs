@@ -183,7 +183,7 @@ namespace Raccoon.MachineLearning.Roughset
             int[] attr = this.Attributes.ToArray();
             for (int i = 0; i < attr.Length; i++)
             {
-                DataFieldInfo dataField = this.DataStore.DataStoreInfo.GetFieldInfo(attr[i]);
+                AttributeInfo dataField = this.DataStore.DataStoreInfo.GetFieldInfo(attr[i]);
                 string attrName = !String.IsNullOrEmpty(dataField.Alias)
                                 ? dataField.Alias
                                 : !String.IsNullOrEmpty(dataField.Name)

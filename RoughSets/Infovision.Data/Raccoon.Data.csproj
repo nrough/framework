@@ -98,7 +98,7 @@
     <Compile Include="DataRecordInternal.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="DataReaderFileText.cs" />
-    <Compile Include="DataFieldInfo.cs" />
+    <Compile Include="AttributeInfo.cs" />
     <Compile Include="DataStoreSplitter.cs" />
     <Compile Include="AttributeValueVector.cs" />
     <Compile Include="FileFormat.cs" />

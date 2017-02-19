@@ -43,7 +43,7 @@ namespace Raccoon.MachineLearning.MissingValues
             {
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                 {
-                    DataFieldInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
+                    AttributeInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
                     if (fieldInfo.HasMissingValues == false)
                         continue;
 
@@ -89,7 +89,7 @@ namespace Raccoon.MachineLearning.MissingValues
             var mostFrequentValues = new Dictionary<int, Dictionary<long, long>>(dataStore.DataStoreInfo.NumberOfFields);
             foreach (var field in fieldMap)
             {
-                DataFieldInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(field.Key);
+                AttributeInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(field.Key);
 
                 int fieldMaxCount = Int32.MinValue;
                 long fieldMaxValue = 0;
@@ -163,7 +163,7 @@ namespace Raccoon.MachineLearning.MissingValues
 
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                 {
-                    DataFieldInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
+                    AttributeInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
                     if (fieldInfo.HasMissingValues == false)
                         continue;
 

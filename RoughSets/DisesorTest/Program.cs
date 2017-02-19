@@ -208,10 +208,10 @@ namespace DisesorTest
             foreach (string name in names)
             {
                 fieldId++;
-                DataFieldInfo trainInfo = train.DataStoreInfo.GetFieldInfo(fieldId);
+                AttributeInfo trainInfo = train.DataStoreInfo.GetFieldInfo(fieldId);
                 trainInfo.Alias = name;
 
-                DataFieldInfo testInfo = test.DataStoreInfo.GetFieldInfo(fieldId);
+                AttributeInfo testInfo = test.DataStoreInfo.GetFieldInfo(fieldId);
                 testInfo.Alias = name;
             }
 
@@ -219,7 +219,7 @@ namespace DisesorTest
 
             var discretizer = new DataStoreDiscretizer();
                                 
-            foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (AttributeInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
             {
                 Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
                     field.Id,

@@ -53,22 +53,22 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {            
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
             r.Id = id;
             return r;
         }
 
         protected virtual WeightGenerator CreateWeightGenerator()
         {
-            WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DataStore);
-            wGen.Value = 1.0 / this.DataStore.NumberOfRecords;
+            WeightGeneratorConstant wGen = new WeightGeneratorConstant(this.DecisionTable);
+            wGen.Value = 1.0 / this.DecisionTable.NumberOfRecords;
             return wGen;
         }
 
@@ -85,8 +85,8 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override WeightGenerator CreateWeightGenerator()
         {
-            WeightGenerator wGen = new WeightGeneratorMajority(this.DataStore);
-            this.DataStore.SetWeights(wGen.Weights);
+            WeightGenerator wGen = new WeightGeneratorMajority(this.DecisionTable);
+            this.DecisionTable.SetWeights(wGen.Weights);
             return wGen;
         }
     }
@@ -116,8 +116,8 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override WeightGenerator CreateWeightGenerator()
         {
-            WeightGenerator wGen = new WeightGeneratorRelative(this.DataStore);
-            this.DataStore.SetWeights(wGen.Weights);
+            WeightGenerator wGen = new WeightGeneratorRelative(this.DecisionTable);
+            this.DecisionTable.SetWeights(wGen.Weights);
             return wGen;
         }
     }

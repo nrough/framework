@@ -33,7 +33,7 @@ namespace Raccoon.Data.Tests
             BenchmarkData benchmark = kvp.Value;
             DataStore data = null, train = null, test = null;
             DataSplitter splitter = null;
-            DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
+            AttributeInfo localFieldInfoTrain, localFieldInfoTest;
 
             if (benchmark.CrossValidationActive)
             {
@@ -75,7 +75,7 @@ namespace Raccoon.Data.Tests
                 Console.WriteLine("Accuracy: {0}", classificationResult.Accuracy);                
 
                 
-                foreach (DataFieldInfo field in benchmark.GetNumericFields())
+                foreach (AttributeInfo field in benchmark.GetNumericFields())
                 {
                     var discretizer = new DiscretizeEqualFreqency();
 

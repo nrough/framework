@@ -15,7 +15,7 @@ namespace Raccoon.MachineLearning.Benchmark
         public int CrossValidationFolds { get; set; }
         public FileFormat FileFormat { get; set; }
         public int DecisionFieldId { get; set; }       
-        private Dictionary<int, DataFieldInfo> fieldMetadata;
+        private Dictionary<int, AttributeInfo> fieldMetadata;
 
         protected BenchmarkData()
         {
@@ -24,7 +24,7 @@ namespace Raccoon.MachineLearning.Benchmark
             this.FileFormat = FileFormat.RSES1;
             this.DecisionFieldId = -1;
 
-            this.fieldMetadata = new Dictionary<int, DataFieldInfo>();
+            this.fieldMetadata = new Dictionary<int, AttributeInfo>();
         }
 
         public BenchmarkData(string name, string dataFile, int folds)
@@ -45,12 +45,12 @@ namespace Raccoon.MachineLearning.Benchmark
             this.TestFile = testFile;
         }
 
-        public void AddFieldInfo(int fieldId, DataFieldInfo fieldInfo)
+        public void AddFieldInfo(int fieldId, AttributeInfo fieldInfo)
         {
             this.fieldMetadata.Add(fieldId, fieldInfo);
         }
 
-        public DataFieldInfo GetFieldinfo(int fieldId)
+        public AttributeInfo GetFieldinfo(int fieldId)
         {
             return this.fieldMetadata[fieldId];
         }
@@ -63,7 +63,7 @@ namespace Raccoon.MachineLearning.Benchmark
                 return fieldId.ToString();
         }        
 
-        public IEnumerable<DataFieldInfo> GetNumericFields()
+        public IEnumerable<AttributeInfo> GetNumericFields()
         {
             return this.fieldMetadata.Values.Where(f => f.IsNumeric && f.CanDiscretize());
         }

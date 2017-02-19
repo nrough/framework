@@ -77,9 +77,9 @@ namespace Raccoon.MachineLearning.Roughset
         {
             reductsCalculated = false;
 
-            weights = new double[this.DataStore.NumberOfRecords];
-            for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
-                weights[i] = 1.0 / this.DataStore.NumberOfRecords;
+            weights = new double[this.DecisionTable.NumberOfRecords];
+            for (int i = 0; i < this.DecisionTable.NumberOfRecords; i++)
+                weights[i] = 1.0 / this.DecisionTable.NumberOfRecords;
 
             this.reducts = new IReduct[this.MaxIterations];
             for (int i = 0; i < this.MaxIterations; i++)

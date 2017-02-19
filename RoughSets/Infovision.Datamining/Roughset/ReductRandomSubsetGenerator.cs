@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.weightGenerator == null)
                 {
-                    this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                    this.weightGenerator = new WeightGeneratorConstant(this.DecisionTable);
                 }
 
                 return this.weightGenerator;
@@ -41,7 +41,7 @@ namespace Raccoon.MachineLearning.Roughset
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
 
             this.MinReductLength = 0;
-            this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+            this.MaxReductLength = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             if (args.Exist(ReductFactoryOptions.MinReductLength))
                 this.MinReductLength = (int)args.GetParameter(ReductFactoryOptions.MinReductLength);
@@ -49,8 +49,8 @@ namespace Raccoon.MachineLearning.Roughset
             if (args.Exist(ReductFactoryOptions.MaxReductLength))
                 this.MaxReductLength = (int)args.GetParameter(ReductFactoryOptions.MaxReductLength);
 
-            if (this.MaxReductLength > this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard))
-                this.MaxReductLength = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+            if (this.MaxReductLength > this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard))
+                this.MaxReductLength = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
 
             if (this.MaxReductLength < this.MinReductLength)
                 this.MaxReductLength = this.MinReductLength;
@@ -63,7 +63,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 int cut = this.MinReductLength == this.MaxReductLength
                         ? this.MaxReductLength
-                        : (int)((1.0 - this.Epsilon) * this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard));
+                        : (int)((1.0 - this.Epsilon) * this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)
@@ -90,14 +90,14 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights, equivalenceClasses);
             r.Id = id;
             return r;
         }

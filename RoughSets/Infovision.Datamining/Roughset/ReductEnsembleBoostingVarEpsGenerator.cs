@@ -38,7 +38,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public override IReduct GetNextReduct(double[] weights)
         {
-            Permutation permutation = new PermutationGenerator(this.DataStore).Generate(1)[0];
+            Permutation permutation = new PermutationGenerator(this.DecisionTable).Generate(1)[0];
             return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
         }
 
@@ -47,7 +47,7 @@ namespace Raccoon.MachineLearning.Roughset
             double[] weightsCopy = new double[weights.Length];
             Array.Copy(weights, weightsCopy, weights.Length);
 
-            ReductWeights reduct = new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, weightsCopy);
+            ReductWeights reduct = new ReductWeights(this.DecisionTable, new int[] { }, this.Epsilon, weightsCopy);
             reduct.Id = this.GetNextReductId().ToString();
             this.Reach(reduct, permutation, null);
             this.Reduce(reduct, permutation, null);
@@ -115,7 +115,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected virtual double GetDataSetQuality(IReduct reduct)
         {
-            ReductWeights allAttributesReduct = new ReductWeights(this.DataStore, this.DataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), reduct.Epsilon, reduct.Weights);
+            ReductWeights allAttributesReduct = new ReductWeights(this.DecisionTable, this.DecisionTable.DataStoreInfo.GetFieldIds(FieldGroup.Standard), reduct.Epsilon, reduct.Weights);
 
             return this.GetPartitionQuality(allAttributesReduct);
         }
@@ -136,7 +136,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             if (!args.Exist(ReductFactoryOptions.Epsilon))
             {
-                int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+                int K = this.DecisionTable.DataStoreInfo.NumberOfDecisionValues;
                 this.Epsilon = (1.0 / K) * this.Threshold;
             }
         }

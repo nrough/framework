@@ -13,7 +13,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObject(this.DataStore, this.Epsilon); }
+            get { return new PermutationGeneratorAttributeObject(this.DecisionTable, this.Epsilon); }
         }
 
         #endregion Properties
@@ -55,7 +55,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            Bireduct r = new Bireduct(this.DataStore, fieldIds, epsilon);
+            Bireduct r = new Bireduct(this.DecisionTable, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
@@ -68,7 +68,7 @@ namespace Raccoon.MachineLearning.Roughset
         //protected virtual IReduct CalculateReduct(Permutation permutation, IReductStore reductStore)
         protected virtual IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            Bireduct bireduct = this.CreateReductObject(this.DataStore.GetStandardFields(),
+            Bireduct bireduct = this.CreateReductObject(this.DecisionTable.GetStandardFields(),
                                                         this.Epsilon,
                                                         this.GetNextReductId().ToString()) as Bireduct;
 
@@ -107,9 +107,9 @@ namespace Raccoon.MachineLearning.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
 
             if (args.Exist(ReductFactoryOptions.Epsilon))
-                return new PermutationGeneratorFieldObject(dataStore, args.GetParameter<double>(ReductFactoryOptions.Epsilon));
+                return new PermutationGeneratorAttributeObject(dataStore, args.GetParameter<double>(ReductFactoryOptions.Epsilon));
 
-            return new PermutationGeneratorFieldObject(dataStore);
+            return new PermutationGeneratorAttributeObject(dataStore);
         }
     }
 
@@ -129,7 +129,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorFieldObjectRelative(this.DataStore, this.Epsilon); }
+            get { return new PermutationGeneratorFieldObjectRelative(this.DecisionTable, this.Epsilon); }
         }
 
         #endregion Properties
@@ -176,14 +176,14 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            BireductGamma r = new BireductGamma(this.DataStore, epsilon);
+            BireductGamma r = new BireductGamma(this.DecisionTable, epsilon);
             r.Id = id;
             return r;
         }
 
         protected override IReduct CalculateReduct(int[] permutation, IReductStore reductStore)
         {
-            BireductGamma bireduct = this.CreateReductObject(this.DataStore.GetStandardFields(),
+            BireductGamma bireduct = this.CreateReductObject(this.DecisionTable.GetStandardFields(),
                                                              this.Epsilon,
                                                              this.GetNextReductId().ToString()) as BireductGamma;
             Reach(bireduct, permutation, reductStore);

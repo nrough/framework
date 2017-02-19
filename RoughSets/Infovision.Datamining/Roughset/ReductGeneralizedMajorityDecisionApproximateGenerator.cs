@@ -91,7 +91,7 @@ namespace Raccoon.MachineLearning.Roughset
                 throw new ArgumentNullException("reductStore", "reductStore cannot be null when calculating exceptions");
 
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Count);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DecisionTable, newAttributes, eqClasses.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
@@ -140,7 +140,7 @@ namespace Raccoon.MachineLearning.Roughset
 
                         if (exceptionEqClasses == null)
                         {
-                            exceptionEqClasses = new EquivalenceClassCollection(this.DataStore, eqClasses.Attributes);
+                            exceptionEqClasses = new EquivalenceClassCollection(this.DecisionTable, eqClasses.Attributes);
                         }
 
                         exeptionEq = new EquivalenceClass(eq.Instance, eq.Instances, eq.DecisionSet);
@@ -166,7 +166,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 //exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
                 ReductWeights exception = new ReductWeights(
-                    this.DataStore,
+                    this.DecisionTable,
                     eqClasses.Attributes,
                     this.Epsilon,
                     this.WeightGenerator.Weights,
@@ -213,7 +213,7 @@ namespace Raccoon.MachineLearning.Roughset
             IReductStoreCollection reductStoreCollection = null)
         {
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DataStore, newAttributes, eqClasses.Count);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DecisionTable, newAttributes, eqClasses.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 

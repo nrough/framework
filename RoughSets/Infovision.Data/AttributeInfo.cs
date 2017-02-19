@@ -6,7 +6,7 @@ using Raccoon.Core;
 namespace Raccoon.Data
 {
     [Serializable]
-    public class DataFieldInfo
+    public class AttributeInfo
     {
         #region Members
 
@@ -90,7 +90,7 @@ namespace Raccoon.Data
 
         #region Constructors
 
-        public DataFieldInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)
+        public AttributeInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)
         {
             this.initialNumberOfValues = initialNumberOfValues;
             this.FieldValueType = fieldValueType;
@@ -117,7 +117,7 @@ namespace Raccoon.Data
             this.MissingValue = null;
             this.NumberOfDecimals = 0;
 
-            this.IsNumeric = DataFieldInfo.IsNumericType(fieldValueType);
+            this.IsNumeric = AttributeInfo.IsNumericType(fieldValueType);
             this.IsSymbolic = !this.IsNumeric;
         }
 
@@ -125,7 +125,7 @@ namespace Raccoon.Data
     
         #region Methods
 
-        public void InitFromReferenceField(DataFieldInfo referenceField)
+        public void InitFromReferenceField(AttributeInfo referenceField)
         {
         }
 
@@ -170,7 +170,7 @@ namespace Raccoon.Data
             return false;
         }
 
-        public void InitFromDataFieldInfo(DataFieldInfo dataFieldInfo, bool initValues, bool initMissingValues)
+        public void InitFromDataFieldInfo(AttributeInfo dataFieldInfo, bool initValues, bool initMissingValues)
         {
             if (initValues)
             {
@@ -291,7 +291,7 @@ namespace Raccoon.Data
                 if (this.MissingValue == null)
                 {
                     this.MissingValue = value;
-                    this.MissingValueInternal = DataFieldInfo.DefaultMissingValue;
+                    this.MissingValueInternal = AttributeInfo.DefaultMissingValue;
                 }
                 else if (!this.MissingValue.Equals(value))
                 {

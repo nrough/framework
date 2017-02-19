@@ -126,7 +126,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                 this.thresholds = new Dictionary<int, List<long>>();
 
 
-                foreach (DataFieldInfo field in attributes
+                foreach (AttributeInfo field in attributes
                     .Select(k => data.DataStoreInfo.GetFieldInfo(k))
                     .Where(f => f.CanDiscretize()))
                 {                                        
@@ -472,7 +472,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
         protected virtual SplitInfo GetSplitInfo(int attributeId, EquivalenceClassCollection data, double currentScore, IDecisionTreeNode parentTreeNode)
         {
-            DataFieldInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(attributeId);
+            AttributeInfo attributeInfo = this.TrainingData.DataStoreInfo.GetFieldInfo(attributeId);
 
             if (attributeInfo.IsSymbolic)
             {

@@ -78,7 +78,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.weightGenerator == null)
                 {
-                    this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                    this.weightGenerator = new WeightGeneratorConstant(this.DecisionTable);
                 }
 
                 return this.weightGenerator;
@@ -242,13 +242,13 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.GetStandardFields(), 0, "");
+            IReduct reduct = this.CreateReductObject(this.DecisionTable.GetStandardFields(), 0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }

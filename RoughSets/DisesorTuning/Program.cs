@@ -252,7 +252,7 @@ namespace DisesorTuning
 
             Console.Write("Discretizing data...");
             var discretizer = new DataStoreDiscretizer();
-            foreach (DataFieldInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (AttributeInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
             {
                 Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
                     field.Id,

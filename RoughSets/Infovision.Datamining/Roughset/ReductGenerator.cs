@@ -28,8 +28,8 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual IReductStore ReductPool { get; protected set; }
         public virtual bool UseCache { get; private set; }
-        public virtual PermutationCollection Permutations { get; protected set; }
-        public virtual DataStore DataStore { get; private set; }
+        public virtual PermutationCollection Permutations { get; set; }
+        public virtual DataStore DecisionTable { get; set; }
         public virtual double Epsilon { get; set; }
         public virtual int ReductionStep { get; set; }
 
@@ -158,8 +158,8 @@ namespace Raccoon.MachineLearning.Roughset
 
             if (args.Exist(ReductFactoryOptions.DecisionTable))
             {
-                this.DataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
-                this.initFromDataStore(this.DataStore);
+                this.DecisionTable = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
+                this.initFromDataStore(this.DecisionTable);
             }
 
             if (args.Exist(ReductFactoryOptions.PermuatationGenerator))
@@ -168,9 +168,9 @@ namespace Raccoon.MachineLearning.Roughset
             }
             else
             {
-                if (this.DataStore != null)
+                if (this.DecisionTable != null)
                 {
-                    this.PermutationGenerator = new PermutationGenerator(this.DataStore);
+                    this.PermutationGenerator = new PermutationGenerator(this.DecisionTable);
                 }
             }
 

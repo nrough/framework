@@ -82,7 +82,7 @@ namespace Raccoon.MachineLearning.Discretization
             if (fieldId < 1)
                 throw new ArgumentOutOfRangeException("fieldId", "fieldId < 1");
 
-            DataFieldInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);
+            AttributeInfo localFieldInfoTrain = data.DataStoreInfo.GetFieldInfo(fieldId);
             long[] labels = data.DataStoreInfo.DecisionFieldId > 0
                 ? data.GetColumnInternal(data.DataStoreInfo.DecisionFieldId)
                 : null;
@@ -110,7 +110,7 @@ namespace Raccoon.MachineLearning.Discretization
 
         public void Discretize(DataStore dataToDiscretize, double[] weights = null)
         {
-            DataFieldInfo fieldInfo;
+            AttributeInfo fieldInfo;
             IEnumerable<int> localFields = Fields2Discretize != null
                     ? Fields2Discretize
                     : dataToDiscretize.DataStoreInfo.GetFields(FieldGroup.Standard)
@@ -141,7 +141,7 @@ namespace Raccoon.MachineLearning.Discretization
 
                                 long[] newValues = DiscretizeBase.Apply(continuousValues, localCuts);
 
-                                DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                AttributeInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
                                     dataToDiscretize.AddColumn<long>(newValues));
 
                                 newFieldInfo.IsNumeric = false;
@@ -173,7 +173,7 @@ namespace Raccoon.MachineLearning.Discretization
                             }
                             else
                             {
-                                DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                                AttributeInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
                                     dataToDiscretize.AddColumn<long>(newValues));
 
                                 newFieldInfo.IsNumeric = false;
@@ -192,7 +192,7 @@ namespace Raccoon.MachineLearning.Discretization
         
         public static void Discretize(DataStore dataToDiscretize, DataStore discretizedData, IEnumerable<int> fieldsToDiscretize = null)
         {
-            DataFieldInfo localFieldInfoTrain, localFieldInfoTest;
+            AttributeInfo localFieldInfoTrain, localFieldInfoTest;
 
             IEnumerable<int> localFields = fieldsToDiscretize == null
                                          ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
@@ -218,7 +218,7 @@ namespace Raccoon.MachineLearning.Discretization
                     }
 
                     
-                    IEnumerable<DataFieldInfo> derivedFields = discretizedData.DataStoreInfo
+                    IEnumerable<AttributeInfo> derivedFields = discretizedData.DataStoreInfo
                         .GetFields(f => f.DerivedFrom == fieldId && f.Cuts != null);
 
                     if (derivedFields != null)
@@ -227,7 +227,7 @@ namespace Raccoon.MachineLearning.Discretization
                         {
                             long[] newValues = DiscretizeBase.Apply(continuousValues, derivedField.Cuts);
 
-                            DataFieldInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
+                            AttributeInfo newFieldInfo = dataToDiscretize.DataStoreInfo.GetFieldInfo(
                                         dataToDiscretize.AddColumn<long>(newValues, derivedField));
 
                             newFieldInfo.IsNumeric = false;

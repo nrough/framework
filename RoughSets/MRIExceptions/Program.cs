@@ -438,8 +438,8 @@ namespace MRIExceptions
 
             int n = 1;
             uint[] position = new uint[] { 0, 0 };
-            DataFieldInfo xField = train.DataStoreInfo.GetFieldInfo(1);
-            DataFieldInfo yField = train.DataStoreInfo.GetFieldInfo(2);
+            AttributeInfo xField = train.DataStoreInfo.GetFieldInfo(1);
+            AttributeInfo yField = train.DataStoreInfo.GetFieldInfo(2);
 
             foreach (ReductStore rst in filteredReductStoreCollection)
             {
@@ -485,9 +485,9 @@ namespace MRIExceptions
 
             uint[] position = new uint[] { 0, 0 };
             byte pixelValue;
-            DataFieldInfo xField = test.DataStoreInfo.GetFieldInfo(1);
-            DataFieldInfo yField = test.DataStoreInfo.GetFieldInfo(2);
-            DataFieldInfo decField = test.DataStoreInfo.DecisionInfo;
+            AttributeInfo xField = test.DataStoreInfo.GetFieldInfo(1);
+            AttributeInfo yField = test.DataStoreInfo.GetFieldInfo(2);
+            AttributeInfo decField = test.DataStoreInfo.DecisionInfo;
 
             ImageITK resultImage = new ImageITK
             {

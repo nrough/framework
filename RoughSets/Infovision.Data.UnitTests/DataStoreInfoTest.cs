@@ -37,7 +37,7 @@ namespace Raccoon.Data.Tests
         {
             int[] fieldIds = new int[dataStoreInfo.GetNumberOfFields(fieldTypeFlags)];
             int i = 0;
-            foreach (DataFieldInfo field in dataStoreInfo.Fields)
+            foreach (AttributeInfo field in dataStoreInfo.Fields)
             {
                 if (fieldTypeFlags == FieldGroup.All
                     || fieldTypeFlags == FieldGroup.None

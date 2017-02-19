@@ -253,7 +253,7 @@ namespace Raccoon.Data
         public T[] GetColumn<T>(int fieldId)            
         {
             T[] result = new T[this.NumberOfRecords];
-            DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
+            AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             try
             {
@@ -285,16 +285,16 @@ namespace Raccoon.Data
         public object[] GetColumn(int fieldId)
         {
             object[] result = new object[this.NumberOfRecords];
-            DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
+            AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
             for (int i = 0; i < this.NumberOfRecords; i++)
                 result[i] = field.Internal2External(this.GetFieldIndexValue(i, fieldIdx));
             return result;
         }
 
-        public void UpdateColumn(int fieldId, object[] data, DataFieldInfo referenceFieldInfo = null)
+        public void UpdateColumn(int fieldId, object[] data, AttributeInfo referenceFieldInfo = null)
         {
-            DataFieldInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldId);
+            AttributeInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldId);
             fieldInfo.Reset();
             long internalValue;
             bool isMissing;
@@ -365,7 +365,7 @@ namespace Raccoon.Data
             }
         }
 
-        public int AddColumn<T>(T[] columnData, DataFieldInfo referenceFieldInfo = null)
+        public int AddColumn<T>(T[] columnData, AttributeInfo referenceFieldInfo = null)
         {
             if (columnData == null)
                 throw new ArgumentNullException("columnData");
@@ -382,13 +382,13 @@ namespace Raccoon.Data
                 }
             });
 
-            DataFieldInfo newFieldInfo;
+            AttributeInfo newFieldInfo;
             long internalValue;
             bool isMissing;
 
             if (referenceFieldInfo == null)
             {
-                newFieldInfo = new DataFieldInfo(this.DataStoreInfo.MaxFieldId + 1, typeof(T), 0);
+                newFieldInfo = new AttributeInfo(this.DataStoreInfo.MaxFieldId + 1, typeof(T), 0);
                 for (int row = 0; row < this.NumberOfRecords; row++)
                 {
                     isMissing = this.DataStoreInfo.HasMissingData
@@ -402,7 +402,7 @@ namespace Raccoon.Data
             }
             else
             {
-                newFieldInfo = new DataFieldInfo(referenceFieldInfo.Id, typeof(T), referenceFieldInfo.NumberOfValues);
+                newFieldInfo = new AttributeInfo(referenceFieldInfo.Id, typeof(T), referenceFieldInfo.NumberOfValues);
                 newFieldInfo.InitFromDataFieldInfo(referenceFieldInfo, true, true);
                 for (int row = 0; row < this.NumberOfRecords; row++)
                 {
@@ -613,7 +613,7 @@ namespace Raccoon.Data
                 foreach (int fieldId in record.GetFields())
                 {
                     position++;
-                    DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                    AttributeInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
                     object externalVal = attr.Internal2External(record[fieldId]);
                     string externalValStr = String.Empty;
 
@@ -640,7 +640,7 @@ namespace Raccoon.Data
 
             if (decisionAsLastField && this.DataStoreInfo.DecisionFieldId > 0)
             {
-                foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+                foreach (AttributeInfo field in this.DataStoreInfo.Fields)
                 {
                     if (field.Id != this.DataStoreInfo.DecisionFieldId)
                     {
@@ -655,7 +655,7 @@ namespace Raccoon.Data
             }
             else
             {
-                foreach (DataFieldInfo field in this.DataStoreInfo.Fields)
+                foreach (AttributeInfo field in this.DataStoreInfo.Fields)
                 {
                     position++;
                     if (position == this.DataStoreInfo.NumberOfFields)
@@ -740,7 +740,7 @@ namespace Raccoon.Data
                             if (fieldId != this.DataStoreInfo.DecisionFieldId)
                             {
                                 position++;
-                                DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                                AttributeInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
                                 object externalVal = attr.Internal2External(record[fieldId]);
                                 string externalValStr = String.Empty;
 
@@ -764,7 +764,7 @@ namespace Raccoon.Data
                         foreach (int fieldId in record.GetFields())
                         {
                             position++;
-                            DataFieldInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
+                            AttributeInfo attr = this.DataStoreInfo.GetFieldInfo(fieldId);
                             object externalVal = attr.Internal2External(record[fieldId]);
                             string externalValStr = String.Empty;
 
@@ -876,7 +876,7 @@ namespace Raccoon.Data
 
             for (int i = 0; i < fieldIds.Length; i++)
             {
-                DataFieldInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                AttributeInfo fieldInfo = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
                 if (fieldInfo.IsNumeric)
                 {
                     T[] column = this.GetColumn<T>(fieldIds[i]);
@@ -900,7 +900,7 @@ namespace Raccoon.Data
             int[] fieldIds = this.DataStoreInfo.GetFieldIds().ToArray();
             for (int i = 0; i < fieldIds.Length; i++)
             {
-                DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
+                AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);
                 datatable.Columns.Add(field.Name);
             }
 
@@ -910,7 +910,7 @@ namespace Raccoon.Data
                 AttributeValueVector record = this.GetDataVector(i, fieldIds);                
                 for (int j = 0; j < fieldIds.Length; j++)
                 {
-                    DataFieldInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[j]);
+                    AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[j]);
                     object externalVal = field.Internal2External(record[j]);
                     if (field.HasMissingValues && record[j] == field.MissingValueInternal)
                         recordStr[j] = this.DataStoreInfo.MissingValue;

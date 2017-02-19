@@ -110,14 +110,14 @@ namespace Raccoon.Data
                     fieldType = FieldGroup.Output;
                 }
 
-                DataFieldInfo referenceFieldInfo = null;
+                AttributeInfo referenceFieldInfo = null;
                 if (this.ReferenceDataStoreInfo != null)
                 {
                     referenceFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(i);
                 }
 
-                DataFieldInfo fieldInfo =
-                    new DataFieldInfo(
+                AttributeInfo fieldInfo =
+                    new AttributeInfo(
                         i,
                         (referenceFieldInfo == null)
                             ? this.AttributeType(i - 1)
@@ -144,7 +144,7 @@ namespace Raccoon.Data
                 }
                 else
                 {
-                    fieldInfo.IsNumeric = DataFieldInfo.IsNumericType(fieldInfo.FieldValueType);
+                    fieldInfo.IsNumeric = AttributeInfo.IsNumericType(fieldInfo.FieldValueType);
                     fieldInfo.IsSymbolic = !fieldInfo.IsNumeric;
                     fieldInfo.IsOrdered = fieldInfo.IsNumeric;                    
                     //fieldInfo.IsUnique = referenceFieldInfo.IsUnique; 
@@ -301,7 +301,7 @@ namespace Raccoon.Data
 
                                 if (this.ReferenceDataStoreInfo != null)
                                 {
-                                    DataFieldInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);
+                                    AttributeInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);
                                     if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
                                     {
                                         for (int j = 0; j < localFieldInfo.Cuts.Length; j++)
@@ -424,7 +424,7 @@ namespace Raccoon.Data
 
         private void CheckMaxNumberOfDecimals(int fieldIndex, string value)
         {
-            if (!DataFieldInfo.IsNumericType(this.AttributeType(fieldIndex)))
+            if (!AttributeInfo.IsNumericType(this.AttributeType(fieldIndex)))
                 return;
 
             int count = value.GetNumberOfDecimals();

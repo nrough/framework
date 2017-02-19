@@ -28,11 +28,11 @@ namespace Raccoon.MachineLearning.Benchmark
             BenchmarkData benchmark = new BenchmarkData("golf",
                 GetFilePath(dataPath, "playgolf.train"), GetFilePath(dataPath, "playgolf.train"));
 
-            benchmark.AddFieldInfo(1, new DataFieldInfo(1, typeof(string)) { Name = "Outlook", Alias = "O" });
-            benchmark.AddFieldInfo(2, new DataFieldInfo(2, typeof(string)) { Name = "Temperature", Alias = "T" });
-            benchmark.AddFieldInfo(3, new DataFieldInfo(3, typeof(string)) { Name = "Humidity", Alias = "H" });
-            benchmark.AddFieldInfo(4, new DataFieldInfo(4, typeof(string)) { Name = "Wind", Alias = "W" });
-            benchmark.AddFieldInfo(5, new DataFieldInfo(4, typeof(string)) { Name = "Play", Alias = "d" });
+            benchmark.AddFieldInfo(1, new AttributeInfo(1, typeof(string)) { Name = "Outlook", Alias = "O" });
+            benchmark.AddFieldInfo(2, new AttributeInfo(2, typeof(string)) { Name = "Temperature", Alias = "T" });
+            benchmark.AddFieldInfo(3, new AttributeInfo(3, typeof(string)) { Name = "Humidity", Alias = "H" });
+            benchmark.AddFieldInfo(4, new AttributeInfo(4, typeof(string)) { Name = "Wind", Alias = "W" });
+            benchmark.AddFieldInfo(5, new AttributeInfo(4, typeof(string)) { Name = "Play", Alias = "d" });
 
             dataFiles.Add(benchmark.Name, benchmark);
 
@@ -121,14 +121,14 @@ namespace Raccoon.MachineLearning.Benchmark
 
             int[] numericFields = new int[] { 2, 5, 8, 11, 13, 16, 18 };
             for (int i = 0; i < numericFields.Length; i++)
-                benchmark.AddFieldInfo(numericFields[i], new DataFieldInfo(numericFields[i], typeof(int)) { IsNumeric = true });
+                benchmark.AddFieldInfo(numericFields[i], new AttributeInfo(numericFields[i], typeof(int)) { IsNumeric = true });
 
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("sat", GetFilePath(dataPath, "sat.trn"), GetFilePath(dataPath, "sat.tst"));
             
             for (int i = 1; i <= 36; i++)
-                benchmark.AddFieldInfo(i, new DataFieldInfo(i, typeof(int)) { IsNumeric = true });
+                benchmark.AddFieldInfo(i, new AttributeInfo(i, typeof(int)) { IsNumeric = true });
             dataFiles.Add(benchmark.Name, benchmark);
 
             if (names != null && names.Length > 0)

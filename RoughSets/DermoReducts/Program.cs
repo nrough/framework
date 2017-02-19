@@ -22,7 +22,7 @@ namespace DermoReducts
                 w[i] = 1.0;
 
             IReduct reduct = new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, w);
-            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
+            AttributeInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
             Dictionary<long, int> countVals = new Dictionary<long, int>(ageAttribute.NumberOfValues);
             foreach (long val in ageAttribute.InternalValues())
@@ -80,9 +80,9 @@ namespace DermoReducts
             DataStore data = DataStore.Load(filename, FileFormat.CSV);
             data.SetDecisionFieldId(35);
 
-            DataFieldInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
+            AttributeInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34
 
-            foreach (DataFieldInfo f in data.DataStoreInfo.Fields)
+            foreach (AttributeInfo f in data.DataStoreInfo.Fields)
             {
                 f.Alias = (f.Id == data.DataStoreInfo.DecisionFieldId) ? "d" : String.Format("a{0}", f.Id);
                 f.Name = f.Alias;
@@ -97,7 +97,7 @@ namespace DermoReducts
                     long[] cuts = discretizer.GetCuts(data, ageAttribute.Id, null);
                     long[] newValuesTrain = DiscretizeBase.Apply(data.GetColumn<long>(ageAttribute.Id), cuts);
                     
-                    DataFieldInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(data.AddColumn<long>(newValuesTrain));
+                    AttributeInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(data.AddColumn<long>(newValuesTrain));
                     newFieldInfo.IsNumeric = false;
                     newFieldInfo.Cuts = cuts;
                     newFieldInfo.FieldValueType = typeof(long);

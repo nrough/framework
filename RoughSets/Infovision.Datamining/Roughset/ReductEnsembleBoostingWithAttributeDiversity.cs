@@ -29,7 +29,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public override IReduct GetNextReduct(double[] weights)
         {
-            Permutation permutation = new PermutationGeneratorEnsemble(this.DataStore, this.GetReductGroups()).Generate(1)[0];
+            Permutation permutation = new PermutationGeneratorEnsemble(this.DecisionTable, this.GetReductGroups()).Generate(1)[0];
             return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
         }
     }

@@ -25,7 +25,7 @@ namespace Raccoon.MachineLearning.Roughset
                     {
                         if (this.weightGenerator == null)
                         {
-                            this.weightGenerator = new WeightGeneratorConstant(this.DataStore);
+                            this.weightGenerator = new WeightGeneratorConstant(this.DecisionTable);
                         }
                     }
                 }
@@ -124,7 +124,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected virtual void CalcDataSetQuality()
         {
-            IReduct reduct = this.CreateReductObject(this.DataStore.GetStandardFields(), 0, "");
+            IReduct reduct = this.CreateReductObject(this.DecisionTable.GetStandardFields(), 0, "");
             this.DataSetQuality = this.GetPartitionQuality(reduct);
         }
 
@@ -158,11 +158,11 @@ namespace Raccoon.MachineLearning.Roughset
             IReductStore reductStore = null, 
             IReductStoreCollection reductStoreCollection = null)
         {
-            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DataStore, weights);
+            EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DecisionTable, weights);
             int len = permutation.Length;
 
             eqClasses.WeightSum = this.DataSetQuality;
-            eqClasses.NumberOfObjects = this.DataStore.NumberOfRecords;
+            eqClasses.NumberOfObjects = this.DecisionTable.NumberOfRecords;
 
             this.KeepMajorDecisions(eqClasses, epsilon);
 
@@ -238,7 +238,7 @@ namespace Raccoon.MachineLearning.Roughset
         protected virtual EquivalenceClassCollection Reduce(EquivalenceClassCollection eqClasses, int attributeIdx, int length, IReductStore reductStore = null, IReductStoreCollection reductStoreCollection = null)
         {
             EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(
-                this.DataStore,
+                this.DecisionTable,
                 eqClasses.Attributes.RemoveAt(attributeIdx, length),
                 eqClasses.Count);
 
@@ -285,14 +285,14 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {            
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights);
             r.Id = id;
             return r;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection eqClasses)
         {
-            ReductWeights r = new ReductWeights(this.DataStore, fieldIds, epsilon, this.WeightGenerator.Weights, eqClasses);
+            ReductWeights r = new ReductWeights(this.DecisionTable, fieldIds, epsilon, this.WeightGenerator.Weights, eqClasses);
             r.Id = id;
             return r;
         }

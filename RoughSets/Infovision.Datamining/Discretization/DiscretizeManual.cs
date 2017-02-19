@@ -33,7 +33,7 @@ namespace Raccoon.MachineLearning.Discretization
             return this.Cuts;
         }
 
-        public long[] Discretize(DataStore data, DataFieldInfo fieldInfo)
+        public long[] Discretize(DataStore data, AttributeInfo fieldInfo)
         {
 
             long[] result = new long[data.NumberOfRecords];

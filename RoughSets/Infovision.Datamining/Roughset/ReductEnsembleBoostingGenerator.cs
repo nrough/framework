@@ -86,7 +86,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitFromArgs(args);
 
-            if (this.DataStore != null)
+            if (this.DecisionTable != null)
             {
                 if (args.Exist(ReductFactoryOptions.WeightGenerator))
                 {
@@ -94,16 +94,16 @@ namespace Raccoon.MachineLearning.Roughset
                 }
                 else
                 {
-                    this.WeightGenerator = new WeightBoostingGenerator(this.DataStore);
+                    this.WeightGenerator = new WeightBoostingGenerator(this.DecisionTable);
                     this.WeightGenerator.Generate();
                 }
 
-                int numOfAttr = this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+                int numOfAttr = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
                 double m0 = new InformationMeasureWeights()
-                    .Calc(new ReductWeights(this.DataStore, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
+                    .Calc(new ReductWeights(this.DecisionTable, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
                 this.Threshold = 1.0 - m0;
 
-                this.InitFromDecisionValues(this.DataStore, this.DataStore.DataStoreInfo.GetDecisionValues());
+                this.InitFromDecisionValues(this.DecisionTable, this.DecisionTable.DataStoreInfo.GetDecisionValues());
             }
 
             if (args.Exist(ReductFactoryOptions.WeightGenerator))
@@ -179,15 +179,15 @@ namespace Raccoon.MachineLearning.Roughset
             iterPassed = 0;
             this.NumberOfWeightResets = 0;
             double error = -1.0;
-            int K = this.DataStore.DataStoreInfo.NumberOfDecisionValues;
+            int K = this.DecisionTable.DataStoreInfo.NumberOfDecisionValues;
 
             this.WeightGenerator.Generate();
             double[] weights = this.WeightGenerator.Weights;
 
-            long[] decisionValues = this.DataStore.DataStoreInfo.GetDecisionValues().ToArray();
+            long[] decisionValues = this.DecisionTable.DataStoreInfo.GetDecisionValues().ToArray();
             object tmpLock = new object();
 
-            long[] predictions = new long[this.DataStore.NumberOfRecords];
+            long[] predictions = new long[this.DecisionTable.NumberOfRecords];
 
             do
             {
@@ -195,7 +195,7 @@ namespace Raccoon.MachineLearning.Roughset
 
                 RoughClassifier classifier = new RoughClassifier(reductStoreCollection, this.IdentyficationType, this.VoteType, decisionValues);
                 classifier.MinimumVoteValue = this.MinimumVoteValue;
-                ClassificationResult result = classifier.Classify(this.DataStore, weights);
+                ClassificationResult result = classifier.Classify(this.DecisionTable, weights);
                 error = result.WeightMisclassified + result.WeightUnclassified;
 
                 //Console.WriteLine("Iteration {0}: {1} error", iterPassed + 1, error);
@@ -244,7 +244,7 @@ namespace Raccoon.MachineLearning.Roughset
                         double partialSum = initialValue;
                         for (int i = range.Item1; i < range.Item2; i++)
                         {
-                            long actual = this.DataStore.GetDecisionValue(i);
+                            long actual = this.DecisionTable.GetDecisionValue(i);
                             double classificationCost = 1.0;
                             if (actual != result.GetPrediction(i))
                                 classificationCost = this.classificationCosts[this.value2index[actual]];
@@ -269,7 +269,7 @@ namespace Raccoon.MachineLearning.Roughset
 
                 result = null;
 
-                for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
+                for (int i = 0; i < this.DecisionTable.NumberOfRecords; i++)
                     weights[i] /= sum;
 
                 alphaSum += alpha;
@@ -287,7 +287,7 @@ namespace Raccoon.MachineLearning.Roughset
                         }
 
                         RoughClassifier classifierEnsemble = new RoughClassifier(this.Models, this.IdentyficationType, this.VoteType, decisionValues);
-                        ClassificationResult resultEnsemble = classifierEnsemble.Classify(this.DataStore);
+                        ClassificationResult resultEnsemble = classifierEnsemble.Classify(this.DecisionTable);
 
                         // De-normalize weights for models confidence
                         foreach (IReductStore rs in this.Models.Where(r => r.IsActive))
@@ -310,7 +310,7 @@ namespace Raccoon.MachineLearning.Roughset
 
                                 RoughClassifier localClassifierEnsemble = new RoughClassifier(
                                     this.Models, this.IdentyficationType, this.VoteType, decisionValues);
-                                ClassificationResult localResultEnsemble = localClassifierEnsemble.Classify(this.DataStore);
+                                ClassificationResult localResultEnsemble = localClassifierEnsemble.Classify(this.DecisionTable);
 
                                 // De-normalize weights for models confidence
                                 foreach (IReductStore rs in this.Models.Where(r => r.IsActive))
@@ -369,7 +369,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             Permutation permutation = this.InnerParameters != null
                                     ? ReductFactory.GetPermutationGenerator(this.InnerParameters).Generate(1)[0]
-                                    : new PermutationGenerator(this.DataStore).Generate(1)[0];
+                                    : new PermutationGenerator(this.DecisionTable).Generate(1)[0];
 
             return this.CreateReduct(permutation.ToArray(), this.Epsilon, weights);
         }
@@ -383,7 +383,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             double[] weightsCopy = new double[weights.Length];
             Array.Copy(weights, weightsCopy, weights.Length);
-            WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
+            WeightGenerator localWeightGen = new WeightGenerator(this.DecisionTable);
             localWeightGen.Weights = weightsCopy;
             localParameters.SetParameter(ReductFactoryOptions.WeightGenerator, localWeightGen);
 
@@ -425,7 +425,7 @@ namespace Raccoon.MachineLearning.Roughset
             double[] weightsCopy = new double[weights.Length];
             Array.Copy(weights, weightsCopy, weights.Length);
 
-            WeightGenerator localWeightGen = new WeightGenerator(this.DataStore);
+            WeightGenerator localWeightGen = new WeightGenerator(this.DecisionTable);
             localWeightGen.Weights = weightsCopy;
 
             int[] attr = new int[permutation.Length];

@@ -16,13 +16,13 @@ namespace Raccoon.Data
 
         private int minFieldId = Int32.MaxValue;
         private int maxFieldId = Int32.MinValue;        
-        private Dictionary<int, DataFieldInfo> fields;
+        private Dictionary<int, AttributeInfo> fields;
         private Dictionary<int, FieldGroup> fieldTypes;
         private Dictionary<FieldGroup, int> fieldTypeCount;
         private Dictionary<int, int> fieldId2Index;
         private int decisionFieldId;
         private int decisionFieldIdx;
-        private DataFieldInfo decisionFieldInfo;        
+        private AttributeInfo decisionFieldInfo;        
         private readonly object syncRoot = new object();
 
         #endregion Members
@@ -75,7 +75,7 @@ namespace Raccoon.Data
             get { return this.decisionFieldIdx; }
         }
 
-        public DataFieldInfo DecisionInfo
+        public AttributeInfo DecisionInfo
         {
             get
             {
@@ -84,7 +84,7 @@ namespace Raccoon.Data
             }
         }
 
-        public IEnumerable<DataFieldInfo> Fields
+        public IEnumerable<AttributeInfo> Fields
         {
             get { return this.fields.Values; }
         }
@@ -100,14 +100,14 @@ namespace Raccoon.Data
         {
             if (numberOfFields != 0)
             {
-                this.fields = new Dictionary<int, DataFieldInfo>(numberOfFields);
+                this.fields = new Dictionary<int, AttributeInfo>(numberOfFields);
                 this.fieldTypes = new Dictionary<int, FieldGroup>(numberOfFields);
                 this.fieldId2Index = new Dictionary<int, int>(numberOfFields);
                 this.NumberOfFields = numberOfFields;
             }
             else
             {
-                this.fields = new Dictionary<int, DataFieldInfo>();
+                this.fields = new Dictionary<int, AttributeInfo>();
                 this.fieldTypes = new Dictionary<int, FieldGroup>();
                 this.fieldId2Index = new Dictionary<int, int>();
             }
@@ -147,14 +147,14 @@ namespace Raccoon.Data
                 .Select(f => f.Id);
         }
 
-        public IEnumerable<DataFieldInfo> GetFields(FieldGroup fieldTypeFlags)
+        public IEnumerable<AttributeInfo> GetFields(FieldGroup fieldTypeFlags)
         {
             if (fieldTypeFlags == FieldGroup.All || fieldTypeFlags == FieldGroup.None)
                 return this.Fields;
             return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
         }
 
-        public IEnumerable<DataFieldInfo> GetFields(Func<DataFieldInfo, bool> selector)
+        public IEnumerable<AttributeInfo> GetFields(Func<AttributeInfo, bool> selector)
         {
             return this.Fields.Where(selector);            
         }
@@ -182,7 +182,7 @@ namespace Raccoon.Data
             return numberOfFields - numberOfNotIncludedFields;
         }
 
-        public void AddFieldInfo(DataFieldInfo fieldInfo, FieldGroup fieldType)
+        public void AddFieldInfo(AttributeInfo fieldInfo, FieldGroup fieldType)
         {
             this.fieldId2Index.Add(fieldInfo.Id, this.fields.Count);
 
@@ -232,9 +232,9 @@ namespace Raccoon.Data
             }
         }
 
-        public DataFieldInfo GetFieldInfo(int fieldId)
+        public AttributeInfo GetFieldInfo(int fieldId)
         {
-            DataFieldInfo res = null;
+            AttributeInfo res = null;
             if (fields.TryGetValue(fieldId, out res))
                 return res;
             return null;
@@ -247,7 +247,7 @@ namespace Raccoon.Data
 
         public void AddFieldInternalValue(int fieldId, long internalValue, object externalValue, bool isMissing)
         {
-            DataFieldInfo attributeInfo = this.GetFieldInfo(fieldId);
+            AttributeInfo attributeInfo = this.GetFieldInfo(fieldId);
             attributeInfo.AddInternal(internalValue, externalValue, isMissing);
         }
 
@@ -261,7 +261,7 @@ namespace Raccoon.Data
 
         public int NumberOfObjectsWithDecision(long decisionValue)
         {
-            DataFieldInfo decisionInfo;
+            AttributeInfo decisionInfo;
             if (fields.TryGetValue(this.DecisionFieldId, out decisionInfo))
             {
                 return (int)decisionInfo.Histogram.GetBinValue(decisionValue);
@@ -281,7 +281,7 @@ namespace Raccoon.Data
         public string ToStringInfo()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (DataFieldInfo fieldInfo in this.Fields)
+            foreach (AttributeInfo fieldInfo in this.Fields)
             {
                 stringBuilder.AppendFormat("Attribute {0} is {1} and has {2} distinct values",
                                            fieldInfo.Name,
@@ -317,10 +317,10 @@ namespace Raccoon.Data
                 this.maxFieldId = dataStoreInfo.MaxFieldId;
             }
 
-            this.fields = new Dictionary<int, DataFieldInfo>(dataStoreInfo.NumberOfFields);
-            foreach (KeyValuePair<int, DataFieldInfo> kvp in dataStoreInfo.fields)
+            this.fields = new Dictionary<int, AttributeInfo>(dataStoreInfo.NumberOfFields);
+            foreach (KeyValuePair<int, AttributeInfo> kvp in dataStoreInfo.fields)
             {
-                DataFieldInfo dfi = new DataFieldInfo(kvp.Key, kvp.Value.FieldValueType);
+                AttributeInfo dfi = new AttributeInfo(kvp.Key, kvp.Value.FieldValueType);
                 dfi.InitFromDataFieldInfo(kvp.Value, initValues, initMissingValues);
                 this.AddFieldInfo(dfi, dataStoreInfo.fieldTypes[kvp.Key]);
             }
@@ -340,7 +340,7 @@ namespace Raccoon.Data
         {
             foreach (int fieldId in fieldIds)
             {
-                DataFieldInfo fieldInfo = this.GetFieldInfo(fieldId);
+                AttributeInfo fieldInfo = this.GetFieldInfo(fieldId);
                 fieldInfo.CreateWeightHistogram(data, weights);
             }
         }

@@ -81,7 +81,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             if (!this.IsDataSetQualityCalculated())
             {
-                IReduct tmpReduct = this.CreateReductObject(this.DataStore.GetStandardFields(), 0, "tmpReduct");
+                IReduct tmpReduct = this.CreateReductObject(this.DecisionTable.GetStandardFields(), 0, "tmpReduct");
                 this.dataSetQuality = this.informationMeasure.Calc(tmpReduct);
             }
         }
@@ -114,14 +114,14 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id)
         {
-            Reduct r = new Reduct(this.DataStore, fieldIds, epsilon);
+            Reduct r = new Reduct(this.DecisionTable, fieldIds, epsilon);
             r.Id = id;
             return r;
         }
 
         protected override IReduct CreateReductObject(int[] fieldIds, double epsilon, string id, EquivalenceClassCollection equivalenceClasses)
         {
-            Reduct r = new Reduct(this.DataStore, fieldIds, epsilon, this.DataStore.Weights, equivalenceClasses);
+            Reduct r = new Reduct(this.DecisionTable, fieldIds, epsilon, this.DecisionTable.Weights, equivalenceClasses);
             r.Id = id;
             return r;
         }
@@ -140,7 +140,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.initialEqClasses != null
                     && this.Epsilon < 0.5
-                    && permutation.Length < this.DataStore.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) / 2)
+                    && permutation.Length < this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) / 2)
                 {
                     reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
                     this.Reduce(reduct, permutation, reductStore, useCache);
@@ -289,7 +289,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("m=").Append(this.GetType().Name);
-            stringBuilder.Append("|d=").Append(this.DataStore.Name);
+            stringBuilder.Append("|d=").Append(this.DecisionTable.Name);
             stringBuilder.Append("|a=").Append(reduct.Attributes.ToArray().ToStr(' '));
             return stringBuilder.ToString();
         }

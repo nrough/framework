@@ -2,18 +2,15 @@
 using Raccoon.Core;
 using Raccoon.Data;
 using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Classification.DecisionRules;
 using Raccoon.MachineLearning.Classification.DecisionTrees;
 using Raccoon.MachineLearning.Classification.Ensembles;
 using Raccoon.MachineLearning.Clustering.Hierarchical;
 using Raccoon.MachineLearning.Evaluation;
+using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Weighting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Raccoon.MachineLearning.Tests.Roughset
 {
@@ -158,6 +155,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             //create weak classifier prototype
             var prototype = new ReductDecisionRules();
             prototype.ReductGeneratorArgs = parm;
+            prototype.DecisionIdentificationMethod = RuleQualityMethods.Confidence;
 
             //create ada boost ensemble 
             var adaBoost = new AdaBoost<ReductDecisionRules>(prototype);
@@ -177,12 +175,15 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             var train = Data.Benchmark.Factory.Dna();
             var test = Data.Benchmark.Factory.DnaTest();
 
+            //create reduct diversification 
             var reductDiversifier = new HierarchicalClusterReductDiversifier();
             reductDiversifier.Data = train;
-            reductDiversifier.Distance = Math.Distance.Hamming;
+            reductDiversifier.Distance = ReductDistance.Hamming;
             reductDiversifier.Linkage = ClusteringLinkage.Average;
+            reductDiversifier.NumberOfReducts = 10;
 
-            //create parameters for reduct factory
+            //create parameters for reduct factory 
+            //including reduct diversification
             var parm = new Args();
             parm.SetParameter(ReductFactoryOptions.ReductType,
                 ReductTypes.ApproximateDecisionReduct);
@@ -190,17 +191,71 @@ namespace Raccoon.MachineLearning.Tests.Roughset
                 (FMeasure)FMeasures.MajorityWeighted);
             parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
             parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 100);
-            parm.SetParameter(ReductFactoryOptions.Diversify, reductDiversifier);
-            parm.SetParameter(ReductFactoryOptions.SelectTopReducts, 10);
+            parm.SetParameter(ReductFactoryOptions.Diversify,
+                reductDiversifier);
 
             var rules = new ReductDecisionRules();
             rules.ReductGeneratorArgs = parm;
+            rules.DecisionIdentificationMethod = RuleQualityMethods.Confidence;
+            rules.RuleVotingMethod = RuleQualityMethods.Coverage;
 
             //classify test data set
             var result = Classifier.Default.Classify(rules, test);
 
-            //print results
+            //show results
             Console.WriteLine(result);
+        }
+
+        [Test]
+        public void Bireduct()
+        {
+            //load training and testing DNA (spieces) data sets 
+            var train = Data.Benchmark.Factory.Dna();
+            var test = Data.Benchmark.Factory.DnaTest();
+
+            //create parameters for reduct factory
+            var parm = new Args();
+            parm.SetParameter(ReductFactoryOptions.ReductType, 
+                ReductTypes.Bireduct);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 100);
+
+            //generate bireducts
+            IReductGenerator bireductGen = 
+                ReductFactory.GetReductGenerator(parm);
+            var bireducts = bireductGen.GetReducts();
+
+            //for each bireduct show its attributes and supported objects
+            foreach (var bireduct in bireducts)
+            {
+                Console.WriteLine(bireduct.Attributes.ToArray().ToStr());
+                Console.WriteLine(bireduct.SupportedObjects.ToArray().ToStr());
+            }
+        }
+
+        [Test]
+        public void BireductsFromClassHierarchy()
+        {
+            //load training data sets 
+            var train = Data.Benchmark.Factory.Dna();
+
+            //genesrate permutations based on attributes and objects
+            var permGenerator = new PermutationGeneratorAttributeObject(train, 0.5);
+            //generate 100 permutations
+            var permutations = permGenerator.Generate(100);
+
+            //setup gamma-bireduct generator 
+            //generate bireducts based on permutations
+            var bireductGammaGenerator = new BireductGammaGenerator();
+            bireductGammaGenerator.DecisionTable = train;
+            bireductGammaGenerator.Permutations = permutations;
+            var bireducts = bireductGammaGenerator.GetReducts();
+
+            //for each bireduct show its attributes and supported objects
+            foreach (var bireduct in bireducts)
+            {
+                Console.WriteLine(bireduct.Attributes.ToArray().ToStr());
+                Console.WriteLine(bireduct.SupportedObjects.ToArray().ToStr());
+            }
         }
     }
 }

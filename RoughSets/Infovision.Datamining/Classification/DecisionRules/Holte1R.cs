@@ -73,7 +73,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionRules
 
             for (int i = 0; i < attributes.Length; i++)
             {
-                DataFieldInfo attributeInfo = data.DataStoreInfo.GetFieldInfo(attributes[i]);
+                AttributeInfo attributeInfo = data.DataStoreInfo.GetFieldInfo(attributes[i]);
 
                 if (attributeInfo.IsSymbolic)
                 {

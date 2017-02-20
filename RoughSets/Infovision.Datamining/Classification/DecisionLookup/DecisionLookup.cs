@@ -36,8 +36,10 @@ namespace Raccoon.MachineLearning.Classification.DecisionLookup
             return Classifier.Default.Classify(this, selectedData);
         }
 
-        public virtual void SetClassificationResultParameters(ClassificationResult result)
-        {            
+        public override void SetClassificationResultParameters(ClassificationResult result)
+        {
+            base.SetClassificationResultParameters(result);
+
             result.EnsembleSize = 1;
             result.ModelName = this.ModelName;
 

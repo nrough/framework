@@ -75,6 +75,13 @@ namespace Raccoon.Data
         public bool IsUnique { get { return this.isUnique; } set { this.isUnique = value; } }        
         public bool IsOrdered { get { return this.isOrdered; } set { this.isOrdered = value; } }
 
+        public Type BaseType { get; set; }
+        public bool IsStandard { get; set; }
+        public bool IsDecision { get; set; }
+        public bool IsIdentifier { get; set; }
+        public bool IsSystem { get; set; }
+        public bool IsWeight { get; set; }
+
         public long[] Cuts { get; set; }
         
         public int NumberOfValues

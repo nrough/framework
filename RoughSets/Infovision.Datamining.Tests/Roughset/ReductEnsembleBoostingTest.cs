@@ -34,7 +34,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             Dictionary<string, object> argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -47,7 +46,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -60,7 +58,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -73,7 +70,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -86,7 +82,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -195,7 +190,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -208,7 +202,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
             argSet.Add(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.Confidence);
             argSet.Add(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.SingleVote);
@@ -350,7 +343,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 {
                     Args parms = new Args();
                     parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
-                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
                     parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoosting);
                     parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
                     parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
@@ -563,7 +555,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 {
                     Args parms = new Args();
                     parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
-                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
                     parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingWithDiversity);
                     parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
                     parms.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
@@ -653,7 +644,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 {
                     Args parms = new Args();
                     parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
-                    parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
                     parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingWithAttributeDiversity);
                     parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
                     parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);

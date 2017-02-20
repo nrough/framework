@@ -27,7 +27,7 @@ namespace Raccoon.Data.Benchmark
         public static DataStore Dna()
         {
             DataStore res = DataStore.Load(Path.Combine(location, "dna.train"), FileFormat.RSES1);
-            foreach (var fieldInfo in res.DataStoreInfo.GetFields(x => x.IsNumeric))
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res;            
         }
@@ -41,7 +41,7 @@ namespace Raccoon.Data.Benchmark
         public static DataStore DnaModified()
         {
             DataStore res = DataStore.Load(Path.Combine(location, "dna_modified.trn"), FileFormat.RSES1);
-            foreach (var fieldInfo in res.DataStoreInfo.GetFields(x => x.IsNumeric))
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res; ;
         }
@@ -197,7 +197,7 @@ namespace Raccoon.Data.Benchmark
         public static DataStore Semeion()
         {
             var res = DataStore.Load(Path.Combine(location, "semeion.data"), FileFormat.RSES1);
-            foreach (var fieldInfo in res.DataStoreInfo.GetFields(x => x.IsNumeric))
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res;
         }
@@ -230,7 +230,7 @@ namespace Raccoon.Data.Benchmark
         public static DataStore Zoo()
         {
             var res =  DataStore.Load(Path.Combine(location, "zoo.dta"), FileFormat.RSES1);
-            foreach (var fieldInfo in res.DataStoreInfo.GetFields(x => x.IsNumeric))
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res;
         }

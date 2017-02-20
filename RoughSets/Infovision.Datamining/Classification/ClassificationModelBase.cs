@@ -27,7 +27,7 @@ namespace Raccoon.MachineLearning.Classification
 
         public virtual void SetClassificationResultParameters(ClassificationResult result)
         {
-
+            result.ModelName = ModelName;
         }
     }
     

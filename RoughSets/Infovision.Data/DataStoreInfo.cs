@@ -154,7 +154,7 @@ namespace Raccoon.Data
             return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
         }
 
-        public IEnumerable<AttributeInfo> GetFields(Func<AttributeInfo, bool> selector)
+        public IEnumerable<AttributeInfo> SelectAttributes(Func<AttributeInfo, bool> selector)
         {
             return this.Fields.Where(selector);            
         }

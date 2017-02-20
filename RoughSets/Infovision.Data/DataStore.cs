@@ -690,6 +690,11 @@ namespace Raccoon.Data
             return DataStore.Load(fileName, fileFormat, null);
         }
 
+        public IEnumerable<AttributeInfo> SelectAttributes(Func<AttributeInfo, bool> selector)
+        {
+            return this.DataStoreInfo.SelectAttributes(selector);
+        }
+
         public void Dump(string filePath, string separator, bool includeHeader = false)
         {
             //System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));

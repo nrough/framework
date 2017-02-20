@@ -121,7 +121,9 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             splitter.Split(out train, out test);
 
             //Build Random Forest
-            forest.Learn(train, train.SelectAttributes(a => a.IsStandard));
+            forest.Learn(train, 
+                train.SelectAttributes(a => a.IsStandard)
+                    .Select(f => f.Id).ToArray());
 
             //Test and output results
             var result = Classifier.Default.Classify(forest, test);
@@ -159,7 +161,9 @@ namespace Raccoon.MachineLearning.Tests.Roughset
 
             //create ada boost ensemble 
             var adaBoost = new AdaBoost<ReductDecisionRules>(prototype);
-            adaBoost.Learn(train, train.SelectAttributes(a => a.IsStandard));
+            adaBoost.Learn(train, 
+                train.SelectAttributes(a => a.IsStandard)
+                     .Select(f => f.Id).ToArray());
 
             //classify test data set
             var result = Classifier.Default.Classify(adaBoost, test);

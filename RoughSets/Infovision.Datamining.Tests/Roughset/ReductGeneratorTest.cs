@@ -30,7 +30,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             Args parms = new Args();
             parms.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
-            parms.SetParameter(ReductFactoryOptions.NumberOfThreads, 1);
             parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelative);
 
             IPermutationGenerator permGen = ReductFactory.GetPermutationGenerator(parms);
@@ -40,7 +39,6 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             Args parmsMulti = new Args();
             parmsMulti.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
-            parmsMulti.SetParameter(ReductFactoryOptions.NumberOfThreads, RaccoonHelper.NumberOfCores());
             parmsMulti.SetParameter(ReductFactoryOptions.PermutationCollection, (PermutationCollection)parms.GetParameter(ReductFactoryOptions.PermutationCollection));
             parmsMulti.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelative);
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : ModelBase, ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
+    public abstract class DecisionForestBase<T> : ClassificationModelBase, ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
         where T : IDecisionTree, new()
     {
         private List<Tuple<T, double>> trees;
@@ -31,7 +31,6 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
         public double Gamma { get; set; }
-        public long? DefaultOutput { get; set; }
         public int BagSizePercent { get; set; }
         public DataSampler DataSampler { get; set; }
         public DecisionForestVoteType VoteType { get; set; } 
@@ -154,8 +153,10 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             return trainResult;
         }
 
-        public void SetClassificationResultParameters(ClassificationResult result)
+        public override void SetClassificationResultParameters(ClassificationResult result)
         {
+            base.SetClassificationResultParameters(result);
+
             result.AvgNumberOfAttributes = this.AverageNumberOfAttributes;
             result.EnsembleSize = this.Size;
             result.Epsilon = this.Gamma;

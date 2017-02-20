@@ -93,7 +93,7 @@ namespace Raccoon.MachineLearning.Evaluation
                     localAttributes.Add(fieldId);
 
                 IEnumerable<int> derivedFieldIds = filteredTrainDs.DataStoreInfo
-                        .GetFields(f => f.DerivedFrom == fieldId)
+                        .SelectAttributes(f => f.DerivedFrom == fieldId)
                         .Select(g => g.Id);
 
                 foreach (var derivedFieldId in derivedFieldIds)

@@ -15,20 +15,10 @@ namespace Raccoon.MachineLearning.Roughset
 
         private IInformationMeasure informationMeasure;
         private double dataSetQuality;
+
         protected EquivalenceClassCollection initialEqClasses;
 
         #endregion Members
-
-        #region Constructors
-
-        protected ReductGeneratorMeasure()
-            : base()
-        {
-            this.dataSetQuality = Double.MinValue;
-            this.UsePerformanceImprovements = true;
-        }
-
-        #endregion Constructors
 
         #region Properties
 
@@ -52,6 +42,19 @@ namespace Raccoon.MachineLearning.Roughset
         public bool UsePerformanceImprovements { get; set; }
 
         #endregion Properties
+
+        #region Constructors
+
+        protected ReductGeneratorMeasure()
+            : base()
+        {
+            this.dataSetQuality = Double.MinValue;
+            this.UsePerformanceImprovements = true;
+        }
+
+        #endregion Constructors
+
+        
 
         #region Methods
 

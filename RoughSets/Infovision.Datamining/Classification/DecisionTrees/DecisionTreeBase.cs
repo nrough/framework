@@ -270,8 +270,10 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             return Classifier.Default.Classify(this, data);
         }
 
-        public virtual void SetClassificationResultParameters(ClassificationResult result)
-        {            
+        public override void SetClassificationResultParameters(ClassificationResult result)
+        {
+            base.SetClassificationResultParameters(result);
+
             result.ModelName = this.ModelName;
             result.EnsembleSize = 1;
             result.Gamma = this.Gamma;

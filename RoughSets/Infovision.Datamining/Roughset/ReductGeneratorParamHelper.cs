@@ -7,7 +7,7 @@
         public static readonly string DecisionTable = "Data";
         public static readonly string TestData = "TestData";
         public static readonly string NumberOfPermutations = "NumberOfPermutations";
-        public static readonly string NumberOfThreads = "NumberOfThreads";
+        
         public static readonly string PermutationCollection = "PermutationCollection";
         public static readonly string Epsilon = "Epsilon";
         public static readonly string PermutationEpsilon = "PermutationEpsilon";
@@ -18,8 +18,7 @@
         public static readonly string ReconWeights = "ReconWeights";
         public static readonly string DendrogramBitmapFile = "DendrogramBitmapFile";
         public static readonly string NumberOfReducts = "NumberOfReducts";
-        public static readonly string ReductSize = "ReductSize";
-        public static readonly string MinimumNumberOfInstances = "MinimumNumberOfInstances";
+        
         public static readonly string IdentificationType = "IdentificationType";
         public static readonly string VoteType = "VoteType";
         public static readonly string MaxReductLength = "MaxReductLength";
@@ -40,26 +39,32 @@
         public static readonly string MinimumVoteValue = "MinimumVoteValue";
         public static readonly string FixedPermutations = "FixedPermutations";
         public static readonly string UseClassificationCost = "UseClassificationCost";
-        public static readonly string CVNumberOfFolds = "CVNumberOfFolds";
         public static readonly string CVActiveFold = "CVActiveFold";
-        public static readonly string ReductComparer = "ReductComparer";
         public static readonly string EquivalenceClassSortDirection = "EquivalenceClassSortDirection";
         public static readonly string DataSetQuality = "DataSetQuality";
         public static readonly string InitialEquivalenceClassCollection = "InitialEquivalenceClassCollection";
+
+
+        public static readonly string Diversify = "Diversify";
+        public static readonly string ReductComparer = "ReductComparer";
+        public static readonly string SelectTopReducts = "SelectTopReducts";
     }
 
     //TODO Keys should be returned from Generator classes as static fileLine
     public static class ReductTypes
     {
-        public const string FEpsilonApproximateReduct = "FEpsilonAppriximateDecisionReduct";
+        public const string ApproximateDecisionReduct = "ApproximateDecisionReduct";
+
         public const string GammaBireduct = "GammaBireduct";
         public const string BireductRelative = "BireductRelative";
         public const string Bireduct = "Bireduct";
+
         public const string ApproximateReductPositive = "ApproximateReductPositive";
         public const string ApproximateReductRelativeWeights = "ApproximateReductRelativeWeights";
         public const string ApproximateReductRelative = "ApproximateReductRelative";
         public const string ApproximateReductMajorityWeights = "ApproximateReductMajorityWeights";
         public const string ApproximateReductMajority = "ApproximateReductMajority";
+
         public const string ReductEnsembleStream = "ReductEnsembleStream";
         public const string ReductEnsemble = "ReductEnsemble";
         public const string ReductEnsembleBoosting = "ReductEnsembleBoosting";
@@ -68,8 +73,10 @@
         public const string ReductEnsembleBoostingWithAttributeDiversity = "ReductEnsembleBoostingWithAttributeDiversity";
         public const string ReductEnsembleBoostingVarEps = "ReductEnsembleBoostingVarEps";
         public const string ReductEnsembleBoostingVarEpsWithAttributeDiversity = "ReductEnsembleBoostingVarEpsWithAttributeDiversity";
+
         public const string GeneralizedMajorityDecision = "GeneralizedMajorityDecision";
         public const string GeneralizedMajorityDecisionApproximate = "GeneralizedMajorityDecisionApproximate";
+
         public const string RandomSubset = "RandomSubset";
     }
 }

@@ -219,7 +219,7 @@ namespace Raccoon.MachineLearning.Discretization
 
                     
                     IEnumerable<AttributeInfo> derivedFields = discretizedData.DataStoreInfo
-                        .GetFields(f => f.DerivedFrom == fieldId && f.Cuts != null);
+                        .SelectAttributes(f => f.DerivedFrom == fieldId && f.Cuts != null);
 
                     if (derivedFields != null)
                     {

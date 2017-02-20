@@ -557,7 +557,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                     parms.SetParameter(ReductFactoryOptions.DecisionTable, trnData);
                     parms.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsembleBoostingWithDiversity);
                     parms.SetParameter(ReductFactoryOptions.IdentificationType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);
-                    parms.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+                    parms.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductToVectorConversionMethods.GetCorrectReconWeights);
                     parms.SetParameter(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
                     parms.SetParameter(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Complete);
                     parms.SetParameter(ReductFactoryOptions.VoteType, (RuleQualityMethod)RuleQualityMethods.ConfidenceW);

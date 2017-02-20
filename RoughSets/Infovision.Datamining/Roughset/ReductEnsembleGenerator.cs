@@ -99,7 +99,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             base.InitDefaultParameters();
 
-            this.recognition = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            this.recognition = ReductToVectorConversionMethods.GetDefaultReconWeights;
             this.linkage = ClusteringLinkage.Complete;
             this.distance = Distance.Euclidean;
         }

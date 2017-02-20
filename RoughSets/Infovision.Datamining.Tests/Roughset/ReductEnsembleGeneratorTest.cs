@@ -39,12 +39,11 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 epsilons[i] = (double)(RandomSingleton.Random.Next(36) / 100.0);
             }
 
-            Func<IReduct, double[], RuleQualityMethod, double[]> reconWeights = ReductEnsembleReconWeightsHelper.GetDefaultReconWeights;
+            Func<IReduct, double[], RuleQualityMethod, double[]> reconWeights = ReductToVectorConversionMethods.GetDefaultReconWeights;
             Dictionary<string, object> argSet;
 
             argSet = new Dictionary<string, object>();
             argSet.Add(ReductFactoryOptions.DecisionTable, data);
-            argSet.Add(ReductFactoryOptions.NumberOfThreads, 1);
             argSet.Add(ReductFactoryOptions.PermutationEpsilon, epsilons);
             argSet.Add(ReductFactoryOptions.Distance, (Func<double[], double[], double>)Distance.Manhattan);
             argSet.Add(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Single);

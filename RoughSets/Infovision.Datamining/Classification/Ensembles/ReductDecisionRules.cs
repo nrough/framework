@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Raccoon.MachineLearning.Classification.Ensembles
 {
+    [Serializable]
     public class ReductDecisionRules : EnsembleBase
     {
         public Args ReductGeneratorArgs { get; set; }

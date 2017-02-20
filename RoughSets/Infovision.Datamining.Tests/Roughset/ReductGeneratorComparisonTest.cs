@@ -54,7 +54,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             argSet.Add(ReductFactoryOptions.ReductType, ReductTypes.ReductEnsemble);
             argSet.Add(ReductFactoryOptions.PermutationCollection, permList);
             argSet.Add(ReductFactoryOptions.WeightGenerator, weightGenerator);
-            argSet.Add(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectReconWeights);
+            argSet.Add(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductToVectorConversionMethods.GetCorrectReconWeights);
             argSet.Add(ReductFactoryOptions.DendrogramBitmapFile, @"reducts.bmp");
             argsList.Add(argSet);
 

@@ -40,7 +40,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             this.Distance = Math.Distance.Manhattan;
             this.Linkage = ClusteringLinkage.Average;
-            this.ReconWeights = ReductEnsembleReconWeightsHelper.GetErrorReconWeights;
+            this.ReconWeights = ReductToVectorConversionMethods.GetErrorReconWeights;
             this.NumberOfReductsToTest = 10;
             this.AgregateFunction = AgregateFunction.Max;
         }

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Raccoon.MachineLearning.Classification.Ensembles
 {
-    public abstract class EnsembleBase : ClassificationModelBase, ILearner, IPredictionModel
+    public abstract class EnsembleBase 
+        : ClassificationModelBase, ILearner, IPredictionModel, IEnumerable<IPredictionModel>
     {
         protected static int DefaultIterations = 100;
 
@@ -41,9 +42,15 @@ namespace Raccoon.MachineLearning.Classification.Ensembles
 
         public abstract ClassificationResult Learn(DataStore data, int[] attributes);
 
-        public void AddClassfier(IPredictionModel model, double weight)
+        public virtual void AddClassfier(IPredictionModel model, double weight)
         {
             weakClassifiers.Add(new WeakClassifierInfo(model, weight));
+        }
+
+        public virtual void Reset()
+        {
+            weakClassifiers = Iterations > 0 ? new List<WeakClassifierInfo>(Iterations)
+                : new List<WeakClassifierInfo>(Iterations);
         }
 
         public virtual long Compute(DataRecordInternal record)
@@ -66,6 +73,16 @@ namespace Raccoon.MachineLearning.Classification.Ensembles
             }
 
             return votes.Count > 0 ? votes.FindMaxValueKey() : Classifier.UnclassifiedOutput;
+        }
+
+        public IEnumerator<IPredictionModel> GetEnumerator()
+        {
+            return weakClassifiers.Select(c => c.Model).GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

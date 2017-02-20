@@ -67,7 +67,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             Dictionary<int, double[]> instances = new Dictionary<int, double[]>(this.MaxIterations);
             for (int i = 0; i < reducts.Length; i++)
-                instances.Add(i, ReductEnsembleReconWeightsHelper.GetDefaultReconWeights(reducts[i], weights, RuleQualityMethods.ConfidenceW));
+                instances.Add(i, ReductToVectorConversionMethods.GetDefaultReconWeights(reducts[i], weights, RuleQualityMethods.ConfidenceW));
 
             hCluster.Instances = instances;
             hCluster.Compute();

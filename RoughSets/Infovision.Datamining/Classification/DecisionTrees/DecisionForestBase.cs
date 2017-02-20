@@ -6,15 +6,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Raccoon.MachineLearning.Classification.Ensembles;
 
 namespace Raccoon.MachineLearning.Classification.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : ClassificationModelBase, ILearner, IPredictionModel, IEnumerable<Tuple<T, double>>
+    public abstract class DecisionForestBase<T> : EnsembleBase, ILearner, IPredictionModel
         where T : IDecisionTree, new()
     {
-        private List<Tuple<T, double>> trees;
         private ClassificationResult learningResult;
-
         public ClassificationResult LearningResult
         {
             get
@@ -28,7 +27,6 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             }
         }
 
-        public int Size { get; set; }
         public int NumberOfTreeProbes { get; set; }
         public double Gamma { get; set; }
         public int BagSizePercent { get; set; }
@@ -41,10 +39,11 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             {
                 int i = 0;
                 int attributeLengthSum = 0;
-                foreach (var member in this)
+                foreach (var weakClassifier in weakClassifiers)
                 {
                     i++;
-                    attributeLengthSum += ((DecisionTreeNode)member.Item1.Root).GetChildUniqueKeys().Count;
+                    IDecisionTree tree = weakClassifier.Model as IDecisionTree;
+                    attributeLengthSum += ((DecisionTreeNode)tree.Root).GetChildUniqueKeys().Count;
                     if (i >= this.Size)
                         break;
                 }
@@ -54,22 +53,22 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
         }               
 
         public DecisionForestBase()
+            : base()
         {
-            this.Size = 100;
-            this.NumberOfTreeProbes = 1;
-            this.BagSizePercent = 100;
-            this.Gamma = -1.0;
-            this.VoteType = DecisionForestVoteType.Unified;
-
-            this.trees = new List<Tuple<T, double>>(this.Size);
+            Iterations = 100;
+            Size = 100;
+            NumberOfTreeProbes = 1;
+            BagSizePercent = 100;
+            Gamma = -1.0;
+            VoteType = DecisionForestVoteType.Unified;
         }
 
-        public virtual void Reset()
+        public override void Reset()
         {
-            this.trees = new List<Tuple<T, double>>(this.Size);
+            base.Reset();
+
             this.learningResult = null;
             this.DefaultOutput = null;
-
         }
 
         protected virtual void InitDataSampler(DataStore data)
@@ -90,10 +89,8 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             return tree;
         }
 
-        //protected virtual Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         protected virtual T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            //Tuple<T, double> bestTree = null;
             T bestTree = default(T);
             int minNumberOfLeaves = int.MaxValue;
             for (int probe = 0; probe < this.NumberOfTreeProbes; probe++)
@@ -105,7 +102,6 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
                 if (numOfLeaves < minNumberOfLeaves)
                 {                    
                     minNumberOfLeaves = numOfLeaves;
-                    //bestTree = new Tuple<T, double>(tree, error);
                     bestTree = tree;
                 }
             }
@@ -113,7 +109,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             return bestTree;
         }
 
-        public virtual ClassificationResult Learn(DataStore data, int[] attributes)
+        public override ClassificationResult Learn(DataStore data, int[] attributes)
         {            
             this.InitDataSampler(data);            
 
@@ -164,32 +160,33 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             result.AvgTreeHeight = 0;
             result.MaxTreeHeight = 0;
             result.NumberOfRules = 0;
-            foreach (var tree in this)
+            foreach (var weakClassifier in weakClassifiers)
             {
-                result.NumberOfRules += DecisionTreeMetric.GetNumberOfRules(tree.Item1);
-                result.MaxTreeHeight += DecisionTreeMetric.GetHeight(tree.Item1);
-                result.AvgTreeHeight += DecisionTreeMetric.GetAvgHeight(tree.Item1);
+                IDecisionTree tree = weakClassifier.Model as IDecisionTree;
+                result.NumberOfRules += DecisionTreeMetric.GetNumberOfRules(tree);
+                result.MaxTreeHeight += DecisionTreeMetric.GetHeight(tree);
+                result.AvgTreeHeight += DecisionTreeMetric.GetAvgHeight(tree);
             }
 
-            result.NumberOfRules /= trees.Count;
-            result.MaxTreeHeight /= trees.Count;
-            result.AvgTreeHeight /= trees.Count;
+            result.NumberOfRules /= weakClassifiers.Count;
+            result.MaxTreeHeight /= weakClassifiers.Count;
+            result.AvgTreeHeight /= weakClassifiers.Count;
         }
 
-        public long Compute(DataRecordInternal record)
+        public override long Compute(DataRecordInternal record)
         {            
-            var votes = new Dictionary<long, double>(System.Math.Min(this.trees.Count, this.Size));
+            var votes = new Dictionary<long, double>(System.Math.Min(weakClassifiers.Count, this.Size));
 
             int i = 0;
-            foreach (var member in this)
+            foreach (var weakClassifier in weakClassifiers)
             {
                 i++;
-                long result = member.Item1.Compute(record);
+                long result = weakClassifier.Model.Compute(record);
 
                 if (votes.ContainsKey(result))
-                    votes[result] += member.Item2;
+                    votes[result] += weakClassifier.Weight;
                 else
-                    votes.Add(result, member.Item2);                
+                    votes.Add(result, weakClassifier.Weight);                
 
                 if (i >= this.Size)
                     break;
@@ -200,22 +197,7 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
 
         protected void AddTree(T tree, double vote)
         {
-            this.trees.Add(new Tuple<T, double>(tree, vote));
-        }
-
-        protected void AddTree(Tuple<T, double> tree)
-        {
-            this.trees.Add(tree);
-        }
-
-        public IEnumerator<Tuple<T, double>> GetEnumerator()
-        {
-            return this.trees.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            this.AddClassfier((IPredictionModel)tree, vote);
         }
     }
 }

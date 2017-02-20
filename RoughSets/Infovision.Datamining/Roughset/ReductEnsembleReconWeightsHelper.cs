@@ -2,7 +2,7 @@
 
 namespace Raccoon.MachineLearning.Roughset
 {
-    public static class ReductEnsembleReconWeightsHelper
+    public static class ReductToVectorConversionMethods
     {
         /// <summary>
         ///

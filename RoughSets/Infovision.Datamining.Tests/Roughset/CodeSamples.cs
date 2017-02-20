@@ -8,6 +8,7 @@ using Raccoon.MachineLearning.Clustering.Hierarchical;
 using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Roughset;
+using Raccoon.MachineLearning.Roughset.Diversify;
 using Raccoon.MachineLearning.Weighting;
 using System;
 using System.Linq;
@@ -180,10 +181,12 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             var test = Data.Benchmark.Factory.DnaTest();
 
             //create reduct diversification 
-            var reductDiversifier = new HierarchicalClusterReductDiversifier();
-            reductDiversifier.Data = train;
-            reductDiversifier.Distance = ReductDistance.Hamming;
+            var reductDiversifier = new HierarchicalClusterReductDiversify();
+            reductDiversifier.DecisionTable = train;
+            reductDiversifier.Distance = Math.Distance.Hamming;
             reductDiversifier.Linkage = ClusteringLinkage.Average;
+            reductDiversifier.ReductToVectorMethod 
+                = ReductToVectorConversionMethods.GetCorrectBinary;
             reductDiversifier.NumberOfReducts = 10;
 
             //create parameters for reduct factory 

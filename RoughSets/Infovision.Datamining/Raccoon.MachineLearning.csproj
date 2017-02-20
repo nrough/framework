@@ -199,6 +199,8 @@
     <Compile Include="Classification\DecisionTrees\Pruning\ReducedErrorPruningBottomUp.cs" />
     <Compile Include="Classification\DecisionTrees\SplitType.cs" />
     <Compile Include="Classification\DecisionTrees\TreeNodeTraversal.cs" />
+    <Compile Include="Roughset\Diversify\HierarchicalClusterReductDiversifier.cs" />
+    <Compile Include="Roughset\Diversify\ReductDiversifyBase.cs" />
     <Compile Include="Roughset\EnumHelper.cs" />
     <Compile Include="Roughset\Enums.cs" />
     <Compile Include="EquivalenceClass.cs" />

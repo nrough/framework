@@ -68,7 +68,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 args.SetParameter(ReductFactoryOptions.Linkage, (Func<int[], int[], DistanceMatrix, double[][], double>)ClusteringLinkage.Mean);
                 args.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
                 args.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-                args.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductEnsembleReconWeightsHelper.GetCorrectBinary);
+                args.SetParameter(ReductFactoryOptions.ReconWeights, (Func<IReduct, double[], RuleQualityMethod, double[]>)ReductToVectorConversionMethods.GetCorrectBinary);
 
                 IReductGenerator reductGenerator = ReductFactory.GetReductGenerator(args);
                 reductGenerator.Run();

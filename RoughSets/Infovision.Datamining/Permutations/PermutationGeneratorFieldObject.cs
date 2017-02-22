@@ -6,14 +6,14 @@ using Raccoon.Core;
 
 namespace Raccoon.MachineLearning.Permutations
 {
-    public class PermutationGeneratorAttributeObject : PermutationGenerator
+    public class PermutationAttributeObjectGenerator : PermutationGenerator
     {
         private double fieldSelectionRatio = 0.5;
         private int numberOfFields = 0;
 
         #region Constructors
 
-        public PermutationGeneratorAttributeObject(int[] objects, int[] fields, double fieldSelectionRatio)
+        public PermutationAttributeObjectGenerator(int[] objects, int[] fields, double fieldSelectionRatio)
         {
             this.elements = new int[objects.Length + fields.Length];
             for (int i = 0; i < objects.Length; i++)
@@ -23,17 +23,17 @@ namespace Raccoon.MachineLearning.Permutations
             this.numberOfFields = fields.Length;
         }
 
-        public PermutationGeneratorAttributeObject(int[] objects, int[] fields)
+        public PermutationAttributeObjectGenerator(int[] objects, int[] fields)
             : this(objects, fields, (double)fields.Length / (double)(fields.Length + objects.Length))
         {
         }
 
-        public PermutationGeneratorAttributeObject(DataStore dataSet)
+        public PermutationAttributeObjectGenerator(DataStore dataSet)
             : this(Enumerable.Range(0, dataSet.NumberOfRecords).ToArray(), dataSet.GetStandardFields())
         {
         }
 
-        public PermutationGeneratorAttributeObject(DataStore dataSet, double fieldSelectionRatio)
+        public PermutationAttributeObjectGenerator(DataStore dataSet, double fieldSelectionRatio)
             : this(Enumerable.Range(0, dataSet.NumberOfRecords).ToArray(), dataSet.GetStandardFields(), fieldSelectionRatio)
         {
         }

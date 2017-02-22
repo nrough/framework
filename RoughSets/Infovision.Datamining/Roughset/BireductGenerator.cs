@@ -13,7 +13,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         protected override IPermutationGenerator PermutationGenerator
         {
-            get { return new PermutationGeneratorAttributeObject(this.DecisionTable, this.Epsilon); }
+            get { return new PermutationAttributeObjectGenerator(this.DecisionTable, this.Epsilon); }
         }
 
         #endregion Properties
@@ -107,9 +107,9 @@ namespace Raccoon.MachineLearning.Roughset
             DataStore dataStore = (DataStore)args.GetParameter(ReductFactoryOptions.DecisionTable);
 
             if (args.Exist(ReductFactoryOptions.Epsilon))
-                return new PermutationGeneratorAttributeObject(dataStore, args.GetParameter<double>(ReductFactoryOptions.Epsilon));
+                return new PermutationAttributeObjectGenerator(dataStore, args.GetParameter<double>(ReductFactoryOptions.Epsilon));
 
-            return new PermutationGeneratorAttributeObject(dataStore);
+            return new PermutationAttributeObjectGenerator(dataStore);
         }
     }
 

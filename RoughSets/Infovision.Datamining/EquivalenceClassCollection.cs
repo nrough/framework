@@ -501,40 +501,23 @@ namespace Raccoon.MachineLearning
             }
         }
 
-        public static bool CheckRegionPositive(HashSet<int> attributeSet, DataStore dataStore, HashSet<int> objectSet)
-        {
-            double[] weights = new double[dataStore.NumberOfRecords];
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = 1.0 / dataStore.NumberOfRecords;
-            return EquivalenceClassCollection.CheckRegionPositive(attributeSet, dataStore, objectSet, weights);
-        }
-
         public static bool CheckRegionPositive(
-            HashSet<int> attributeSet, DataStore dataStore, HashSet<int> objectSet, double[] objectWeights)
+            int[] attributes, DataStore decisionTable, int[] objects)
         {
-            var localPartitions = new Dictionary<long[], EquivalenceClass>(Int64ArrayEqualityComparer.Instance);
-            int[] attributeArray = attributeSet.ToArray();
-            foreach (int objectIndex in objectSet)
+            var localPartitions = new Dictionary<long[], long>(Int64ArrayEqualityComparer.Instance);
+            foreach (int objectIndex in objects)
             {
-                long[] record = dataStore.GetFieldValues(objectIndex, attributeArray);
-                EquivalenceClass reductStatistic = null;
-                if (localPartitions.TryGetValue(record, out reductStatistic))
+                long[] record = decisionTable.GetFieldValues(objectIndex, attributes);
+                long decision;
+                if (localPartitions.TryGetValue(record, out decision))
                 {
-                    reductStatistic.AddObject(objectIndex,
-                        dataStore.GetDecisionValue(objectIndex),
-                        objectWeights[objectIndex]);
-
-                    if (reductStatistic.NumberOfDecisions > 1)
+                    if (decisionTable.GetDecisionValue(objectIndex) != decision)
                         return false;
                 }
                 else
                 {
-                    reductStatistic = new EquivalenceClass(record, dataStore);
-                    reductStatistic.AddObject(objectIndex,
-                        dataStore.GetDecisionValue(objectIndex),
-                        objectWeights[objectIndex]);
 
-                    localPartitions[record] = reductStatistic;
+                    localPartitions[record] = decisionTable.GetDecisionValue(objectIndex);
                 }
             }
 

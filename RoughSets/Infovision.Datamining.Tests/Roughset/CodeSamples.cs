@@ -9,6 +9,7 @@ using Raccoon.MachineLearning.Evaluation;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Roughset;
 using Raccoon.MachineLearning.Roughset.Diversify;
+using Raccoon.MachineLearning.Roughset.Reducts;
 using Raccoon.MachineLearning.Weighting;
 using System;
 using System.Linq;
@@ -21,7 +22,6 @@ namespace Raccoon.MachineLearning.Tests.Roughset
         [Test]
         public void ApproximateDecisionReduct()
         {
-
             //load data
             var data = Data.Benchmark.Factory.Golf();
 
@@ -42,6 +42,23 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             //output reducts and attributes
             foreach (IReduct reduct in reducts)
                 Console.WriteLine(reduct.Attributes.ToArray().ToStr());
+        }
+
+        [Test]
+        public void ApproxximateDecisionReductFromClassHierarchy()
+        {
+            var data = Data.Benchmark.Factory.Golf();
+            var weightGen = new WeightGeneratorConstant(data, 1.0 / (double)data.NumberOfRecords);
+            weightGen.Generate();
+            data.SetWeights(weightGen.Weights);
+
+            ApproximateDecisionReduct model = new ApproximateDecisionReduct();
+            model.FMeasure = FMeasures.MajorityWeighted;
+            model.Epsilon = 0.0;
+
+            var reducts = model.Learn(data, data.SelectAttributes(a => a.IsStandard).Select(f => f.Id).ToArray());
+            foreach (var reduct in reducts)
+                Console.WriteLine(reduct);
         }
 
         [Test]
@@ -246,7 +263,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
             var train = Data.Benchmark.Factory.Dna();
 
             //genesrate permutations based on attributes and objects
-            var permGenerator = new PermutationGeneratorAttributeObject(train, 0.5);
+            var permGenerator = new PermutationAttributeObjectGenerator(train, 0.5);
             //generate 100 permutations
             var permutations = permGenerator.Generate(100);
 

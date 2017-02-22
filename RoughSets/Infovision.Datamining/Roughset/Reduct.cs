@@ -13,7 +13,7 @@ namespace Raccoon.MachineLearning.Roughset
         #region Members
 
         private HashSet<int> attributeSet;
-        protected readonly object mutex = new object();
+        protected readonly object syncRoot = new object();
 
         //TODO To Remove
         private double[] objectWeights;
@@ -56,7 +56,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.eqClassMap == null)
                 {
-                    lock (mutex)
+                    lock (syncRoot)
                     {
                         if (this.eqClassMap == null)
                         {
@@ -154,7 +154,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual bool AddAttribute(int attributeId)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 if (this.attributeSet.Add(attributeId))
                 {
@@ -167,7 +167,7 @@ namespace Raccoon.MachineLearning.Roughset
 
         public virtual bool TryRemoveAttribute(int attributeId)
         {
-            lock (mutex)
+            lock (syncRoot)
             {
                 if (this.attributeSet.Remove(attributeId))
                 {

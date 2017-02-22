@@ -98,16 +98,6 @@ namespace Raccoon.MachineLearning.Roughset
         }
     }
 
-    //TODO Implement Reduct DiversityComparer
-    public class DiversityComparer : ReductBaseComparer
-    {
-        public override int Compare(IReduct left, IReduct right)
-        {
-            
-            return 0;
-        }
-    }
-
     public abstract class ReductStoreBaseComparer : Comparer<IReductStore>, ICloneable
     {
         public object Clone()

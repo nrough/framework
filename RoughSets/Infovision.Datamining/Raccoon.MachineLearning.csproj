@@ -249,6 +249,8 @@
     <Compile Include="Roughset\ReductStoreCollection.cs" />
     <Compile Include="Roughset\ReductStoreWeights.cs" />
     <Compile Include="Roughset\ReductStoreWorkerTaskInfo.cs" />
+    <Compile Include="Roughset\Reducts\ApproximateDecisionReduct.cs" />
+    <Compile Include="Roughset\Reducts\DecisionBireduct.cs" />
     <Compile Include="Roughset\ReductWeight.cs" />
     <Compile Include="Roughset\RoughClassifer.cs" />
     <Compile Include="Roughset\RuleMeasure.cs" />
@@ -506,6 +508,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

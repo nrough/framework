@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Raccoon.MachineLearning.Weighting;
 using Raccoon.MachineLearning.Permutations;
 using Raccoon.MachineLearning.Classification;
+using System.Linq;
 
 namespace Raccoon.MachineLearning.Roughset.UnitTests
 {
@@ -378,7 +379,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 Bireduct bireduct = new Bireduct(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes, localDataStore, bireduct.SupportedObjects);
+                EquivalenceClassCollection.CheckRegionPositive(bireduct.Attributes.ToArray(), localDataStore, bireduct.SupportedObjects.ToArray());
 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireduct.TryRemoveAttribute(k));
@@ -390,7 +391,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             for (int i = 0; i < attributesBireducts.Length; i++)
             {
                 BireductGamma bireductGamma = new BireductGamma(localDataStore, attributesBireducts[i], objectsBireducts[i], 0);
-                EquivalenceClassCollection.CheckRegionPositive(bireductGamma.Attributes, localDataStore, bireductGamma.SupportedObjects);
+                EquivalenceClassCollection.CheckRegionPositive(bireductGamma.Attributes.ToArray(), localDataStore, bireductGamma.SupportedObjects.ToArray());
 
                 for (int k = 1; k <= 4; k++)
                     Assert.IsFalse(bireductGamma.TryRemoveAttribute(k));

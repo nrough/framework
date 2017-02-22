@@ -150,7 +150,6 @@ namespace Raccoon.MachineLearning.Roughset
                 }
                 else
                 {
-
                     reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
                     this.Reach(reduct, permutation, reductStore, useCache);
                     this.Reduce(reduct, permutation, reductStore, useCache);
@@ -235,10 +234,6 @@ namespace Raccoon.MachineLearning.Roughset
             return ToleranceDoubleComparer.Instance.Compare(
                 this.GetPartitionQuality(reduct),
                 (1.0 - this.Epsilon) * this.DataSetQuality) != -1;
-                
-            //if (partitionQuality >= (1.0 - this.Epsilon) * this.DataSetQuality)
-            //    return true;
-            //return false;
         }
 
         protected virtual bool IsReduct(IReduct reduct, IReductStore reductStore, bool useCache)

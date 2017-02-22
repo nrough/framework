@@ -21,5 +21,7 @@ namespace Raccoon.MachineLearning.Roughset.Diversify
             : base()
         {
         }
+
+
     }
 }

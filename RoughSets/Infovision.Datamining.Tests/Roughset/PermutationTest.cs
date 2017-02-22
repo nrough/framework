@@ -22,7 +22,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void FieldObjectPermutationRatioTest()
         {
-            PermutationGeneratorAttributeObject permGen = new PermutationGeneratorAttributeObject(dataStore, 0.5);
+            PermutationAttributeObjectGenerator permGen = new PermutationAttributeObjectGenerator(dataStore, 0.5);
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.GetStandardFields(),
@@ -42,7 +42,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void FieldObjectPermutationTest()
         {
-            PermutationGeneratorAttributeObject permGen = new PermutationGeneratorAttributeObject(dataStore);
+            PermutationAttributeObjectGenerator permGen = new PermutationAttributeObjectGenerator(dataStore);
             PermutationCollection permList = permGen.Generate(100);
             this.CheckPermutationCompletness(permList,
                 dataStore.GetStandardFields(),
@@ -196,7 +196,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
         private double CalcAndPrintRatio(int numberOfFields, int numberOfObjects, double fieldSelectionRatio)
         {
-            double result = PermutationGeneratorAttributeObject.CalcSelectionRatio(numberOfFields, numberOfObjects, fieldSelectionRatio);
+            double result = PermutationAttributeObjectGenerator.CalcSelectionRatio(numberOfFields, numberOfObjects, fieldSelectionRatio);
             //Console.WriteLine("{0} {1} {2} {3}", numberOfFields, numberOfObjects, fieldSelectionRatio, result);
             return result;
         }
@@ -204,12 +204,12 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void FieldImportance()
         {
-            PermutationGeneratorAttributeObject permGen;
+            PermutationAttributeObjectGenerator permGen;
             PermutationCollection permList;
             int[] fields = dataStore.GetStandardFields();
             int[] objects = Enumerable.Range(0, dataStore.NumberOfRecords).ToArray();
 
-            permGen = new PermutationGeneratorAttributeObject(objects, fields, 0);
+            permGen = new PermutationAttributeObjectGenerator(objects, fields, 0);
             permList = permGen.Generate(100);
 
             foreach (Permutation perm in permList)
@@ -230,7 +230,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                 }
             }
 
-            permGen = new PermutationGeneratorAttributeObject(objects, fields, 1);
+            permGen = new PermutationAttributeObjectGenerator(objects, fields, 1);
             permList = permGen.Generate(100);
 
             foreach (Permutation perm in permList)

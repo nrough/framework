@@ -56,7 +56,7 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 if (this.eqClassMap == null)
                 {
-                    lock (mutex)
+                    lock (syncRoot)
                     {
                         if (this.eqClassMap == null)
                         {
@@ -99,7 +99,7 @@ namespace Raccoon.MachineLearning.Roughset
             HashSet<int> newAttributeSet = new HashSet<int>(this.Attributes);
             newAttributeSet.Remove(attributeId);
 
-            return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet, this.DataStore, this.SupportedObjects);
+            return EquivalenceClassCollection.CheckRegionPositive(newAttributeSet.ToArray(), this.DataStore, this.SupportedObjects.ToArray());
         }
 
         protected virtual bool CheckAddObject(int objectIndex)

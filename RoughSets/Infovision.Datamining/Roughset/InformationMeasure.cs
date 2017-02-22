@@ -195,7 +195,9 @@ namespace Raccoon.MachineLearning.Roughset
                 {
                     //relativeCount = (double) e.GetNumberOfObjectsWithDecision(decisionValue) / (double)reduct.EquivalenceClasses.CountDecision(decisionValue);
                     relativeCount = (double)e.GetNumberOfObjectsWithDecision(decisionValue) 
-                        / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
+                        / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue]
+
+                    reduct.EquivalenceClasses.NumberOfObjects
 
                     if (relativeCount > maxValue)
                         maxValue = relativeCount;

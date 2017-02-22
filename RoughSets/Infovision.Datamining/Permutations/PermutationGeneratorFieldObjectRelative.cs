@@ -4,7 +4,7 @@ using Raccoon.Core;
 
 namespace Raccoon.MachineLearning.Permutations
 {
-    public class PermutationGeneratorFieldObjectRelative : PermutationGeneratorAttributeObject
+    public class PermutationGeneratorFieldObjectRelative : PermutationAttributeObjectGenerator
     {
         private int[] elementWeights;
         private int sumWeights = 0;

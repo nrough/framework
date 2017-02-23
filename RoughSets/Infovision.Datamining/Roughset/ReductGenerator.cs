@@ -18,6 +18,7 @@ namespace NRough.MachineLearning.Roughset
 
         [NonSerialized]
         protected readonly Stopwatch timer = new Stopwatch();
+
         protected readonly object mutex = new object();
 
         #endregion Members

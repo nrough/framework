@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.Core;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.Core;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public class ImageFeatureGroupExtractor
     {

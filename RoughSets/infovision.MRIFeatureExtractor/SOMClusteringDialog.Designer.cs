@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class SOMClusteringDialog
     {
@@ -147,7 +147,7 @@
             // 
             // sOMClusteringBindingSource
             // 
-            this.sOMClusteringBindingSource.DataSource = typeof(Raccoon.MRI.DAL.SOMClustering);
+            this.sOMClusteringBindingSource.DataSource = typeof(NRough.MRI.DAL.SOMClustering);
             // 
             // dlgLearningRate
             // 

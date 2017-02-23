@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public static class ReductGeneratorExtensions
     {

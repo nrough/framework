@@ -1,10 +1,10 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
+﻿using NRough.Core;
+using NRough.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Discretization
+namespace NRough.MachineLearning.Discretization
 {
     [Serializable]
     public class DataStoreDiscretizer

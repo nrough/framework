@@ -1,10 +1,10 @@
 ﻿using System;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Roughset;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Roughset;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     public class PermutationGeneratorFieldQuality : PermutationGenerator
     {

@@ -1,18 +1,18 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification.DecisionLookup;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Classification.DecisionLookup;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
+namespace NRough.MachineLearning.Tests.Classification.UnitTests.DecisionRules
 {
     [TestFixture]
     class TestTest
@@ -21,9 +21,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.UnitTests.DecisionRules
         [TestCase(@"Data\monks-2.train", @"Data\monks-2.test")]
         public void NumberOfRulesVsAccuracy(string trainFile, string testFile)
         {
-            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
+            DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);

@@ -1,6 +1,6 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Discretization;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     public class DiscretizeSupervisedBaseTest : DiscretizeBaseTest
     {        
@@ -24,12 +24,12 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             return result;
         }
 
-        [TestCase(@"Data\sat.trn", @"Data\sat.tst", FileFormat.RSES1)]
-        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", FileFormat.RSES1)]
-        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", FileFormat.RSES1)]
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.RSES1)]
-        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", FileFormat.CSV)]
-        public void DiscretizeData(string fileTrain, string fileTest, FileFormat fileFormat)
+        [TestCase(@"Data\sat.trn", @"Data\sat.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\vowel.trn", @"Data\vowel.tst", DataFormat.CSV)]
+        public void DiscretizeData(string fileTrain, string fileTest, DataFormat fileFormat)
         {
             Console.WriteLine(fileTrain);
 
@@ -55,8 +55,8 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
         }
 
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", FileFormat.RSES1)]
-        public void LetterBug(string fileTrain, string fileTest, FileFormat fileFormat)
+        [TestCase(@"Data\letter.trn", @"Data\letter.tst", DataFormat.RSES1)]
+        public void LetterBug(string fileTrain, string fileTest, DataFormat fileFormat)
         {
             Console.WriteLine(fileTrain);
 
@@ -69,8 +69,8 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             discretizer.Discretize(train, train.Weights);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, null)]        
-        public virtual void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, null)]        
+        public virtual void DiscretizeTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);                        
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
@@ -89,8 +89,8 @@ namespace Raccoon.MachineLearning.Tests.Discretization
                 Assert.IsNotNull(data.DataStoreInfo.GetFieldInfo(fieldId).Cuts, "Training file {0} Field {1}", filename, fieldId);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, null)]
-        public virtual void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, null)]
+        public virtual void CreateDiscretizedDataTableTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
             DataSplitter splitter = new DataSplitter(data, 5);            

@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Weighting
+namespace NRough.MachineLearning.Weighting
 {
     public class WeightBoostingGenerator : WeightGenerator
     {

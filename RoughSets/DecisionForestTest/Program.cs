@@ -3,13 +3,13 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Benchmark;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
 using GenericParsing;
 
 namespace DecisionForestTest

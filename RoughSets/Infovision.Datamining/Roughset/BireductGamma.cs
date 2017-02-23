@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class BireductGamma : Bireduct

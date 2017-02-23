@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public class ReductGeneralizedMajorityDecisionGenerator : ReductGenerator
     {
@@ -137,7 +137,7 @@ namespace Raccoon.MachineLearning.Roughset
         {
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             ReductStore localReductPool = new ReductStore(this.attributePermutations.Count);

@@ -1,20 +1,20 @@
 ﻿using NUnit.Framework;
-using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.Ensembles;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.MachineLearning.Evaluation;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Roughset.Diversify;
-using Raccoon.MachineLearning.Roughset.Reducts;
-using Raccoon.MachineLearning.Weighting;
+using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.Ensembles;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.MachineLearning.Evaluation;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughset.Diversify;
+using NRough.MachineLearning.Roughset.Reducts;
+using NRough.MachineLearning.Weighting;
 using System;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Tests.Roughset
+namespace NRough.MachineLearning.Tests.Roughset
 {
     [TestFixture]
     public class CodeSamples
@@ -111,7 +111,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
         public void DecisionTree()
         {
             //load data
-            var data = DataStore.Load("data.txt", FileFormat.CSV);
+            var data = DataStore.Load("data.txt", DataFormat.CSV);
             //create 10-fold 25-repeated cross validation
             var cv = new CrossValidation(data, 10, 25);
 
@@ -127,7 +127,7 @@ namespace Raccoon.MachineLearning.Tests.Roughset
         public void RandomForest()
         {
             //load data from a CSV file
-            var data = DataStore.Load(@"german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"german.data", DataFormat.CSV);
 
             //Initialize Random Forest
             var forest = new DecisionForestRandom<DecisionTreeC45>();

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductFactoryTest
@@ -18,8 +18,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
         }
 
         [Test]
@@ -40,8 +40,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             try
             {
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);                
-                Assembly assembly = Assembly.Load("Raccoon.TestAssembly");
-                Type type = assembly.GetType("Raccoon.TestAssembly.TestReductFactory");
+                Assembly assembly = Assembly.Load("NRough.TestAssembly");
+                Type type = assembly.GetType("NRough.TestAssembly.TestReductFactory");
                 Assert.NotNull(type);
             }
             catch (FileNotFoundException e)
@@ -55,7 +55,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test, Ignore("TODO Link TestAssembly for release and debug")]
         public void TestFactoryRegister()
         {
-            ReductFactory.Instance.RegisterFactory("Raccoon.TestAssembly.TestReductFactory");
+            ReductFactory.Instance.RegisterFactory("NRough.TestAssembly.TestReductFactory");
             Args parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable }, new Object[] { "TestReduct", dataStoreTrain });
             IReductGenerator factory = ReductFactory.GetReductGenerator(parms);
             factory.Run();

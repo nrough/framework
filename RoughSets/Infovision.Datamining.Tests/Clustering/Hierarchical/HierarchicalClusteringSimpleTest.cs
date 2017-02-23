@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
 using NUnit.Framework;
 
-namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
+namespace NRough.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarcihcalClusteringSimpleTest
@@ -70,13 +70,13 @@ namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
             int id = t.Item3;
 
             DistanceMatrix matrix = new DistanceMatrix();
-            //matrix.Distance = Raccoon.Math.Similarity.Euclidean;
+            //matrix.Distance = NRough.Math.Similarity.Euclidean;
             double[][] data = HierarchicalClusteringTest.GetData();
             for (int i = 0; i < data.Length; i++)
             {
                 for (int j = i + 1; j < data.Length; j++)
                 {
-                    double dist = Raccoon.Math.Distance.Euclidean(data[i], data[j]);
+                    double dist = NRough.Math.Distance.Euclidean(data[i], data[j]);
                     matrix.Add(new SymetricPair<int, int>(i, j), dist);
                 }
             }

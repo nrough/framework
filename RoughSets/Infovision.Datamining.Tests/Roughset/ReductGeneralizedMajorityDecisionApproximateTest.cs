@@ -4,17 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Benchmark;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
 using System.Collections.Specialized;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductGeneralizedMajorityDecisionApproximateTest
@@ -40,7 +40,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void EmptyReductsTest(KeyValuePair<string, BenchmarkData> kvp)
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
-            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, data.DataStoreInfo);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, data);
@@ -69,7 +69,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
 
-            DataStore test = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, data.DataStoreInfo);
 
             //log.InfoFormat(data.Name);
 
@@ -224,7 +224,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, FileFormat.RSES1);
+                data = DataStore.Load(kvp.Value.DataFile, DataFormat.RSES1);
                 name = data.Name;
                 DataSplitter splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
 
@@ -253,10 +253,10 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             else
             {
                 int f = 0;
-                trainData = DataStore.Load(kvp.Value.TrainFile, FileFormat.RSES1);
+                trainData = DataStore.Load(kvp.Value.TrainFile, DataFormat.RSES1);
                 foreach (int fieldId in trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
                     trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
-                testData = DataStore.Load(kvp.Value.TestFile, FileFormat.RSES1, trainData.DataStoreInfo);
+                testData = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, trainData.DataStoreInfo);
                 name = trainData.Name;
                 Console.WriteLine(trainData.Name);
 

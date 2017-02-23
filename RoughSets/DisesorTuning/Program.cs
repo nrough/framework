@@ -6,15 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GenericParsing;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
-using Raccoon.MachineLearning;
-using Raccoon.Core.Data;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Discretization;
+using NRough.Data;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
+using NRough.MachineLearning;
+using NRough.Core.Data;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Discretization;
 
 namespace DisesorTuning
 {
@@ -144,11 +144,11 @@ namespace DisesorTuning
                     double sum = 0.0;
                     foreach (var kvp in prediction)
                     {
-                        if (kvp.Key != Raccoon.MachineLearning.Classification.Classifier.UnclassifiedOutput)
+                        if (kvp.Key != NRough.MachineLearning.Classification.Classifier.UnclassifiedOutput)
                             sum += kvp.Value;
                     }
 
-                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(Raccoon.MachineLearning.Classification.Classifier.UnclassifiedOutput)))
+                    if (prediction.Count == 0 || (prediction.Count == 1 && prediction.ContainsKey(NRough.MachineLearning.Classification.Classifier.UnclassifiedOutput)))
                         unclassified++;
 
                     double warning = prediction.ContainsKey(warningLabel) ? prediction[warningLabel] : 0.0;
@@ -234,16 +234,16 @@ namespace DisesorTuning
             Console.WriteLine("Done");
 
             Console.Write("Loading training data store...");
-            train = DataStore.Load(trainfile_merge, FileFormat.CSV);
+            train = DataStore.Load(trainfile_merge, DataFormat.CSV);
             Console.WriteLine("Done");
 
             Console.Write("Loading test data...");
-            test = DataStore.Load(testfile_merge, FileFormat.CSV, train.DataStoreInfo);
+            test = DataStore.Load(testfile_merge, DataFormat.CSV, train.DataStoreInfo);
             test.SetDecisionFieldId(-1);
             Console.WriteLine("Done");
 
             Console.Write("Loading labels...");
-            DataStore labels = DataStore.Load(labelfile, FileFormat.CSV);
+            DataStore labels = DataStore.Load(labelfile, DataFormat.CSV);
             int decisionFieldId = train.AddColumn<string>(labels.GetColumn<string>(1));
             labels = null;
             train.SetDecisionFieldId(decisionFieldId);

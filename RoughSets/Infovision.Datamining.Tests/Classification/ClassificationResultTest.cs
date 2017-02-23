@@ -5,10 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Core.Data;
-using Raccoon.MachineLearning.Classification;
+using NRough.Core.Data;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Tests.Classification
+namespace NRough.MachineLearning.Tests.Classification
 {
     [TestFixture]
     class ClassificationResultTest

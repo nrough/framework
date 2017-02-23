@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     public class ImageNeighbour : MiningObjectViewModel
     {

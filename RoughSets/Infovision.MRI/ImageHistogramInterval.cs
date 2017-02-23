@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     [Serializable]
     public class ImageHistogramInterval

@@ -1,9 +1,9 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification
+namespace NRough.MachineLearning.Classification
 {
     public interface IClassifier
     {
@@ -46,7 +46,7 @@ namespace Raccoon.MachineLearning.Classification
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             if (weights == null)

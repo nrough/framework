@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Classification.DecisionRules
+namespace NRough.MachineLearning.Classification.DecisionRules
 {
+    [Serializable]
     public class DecisionListCollection : IEnumerable<DecisionList>
     {
         private List<DecisionList> decisionLists;

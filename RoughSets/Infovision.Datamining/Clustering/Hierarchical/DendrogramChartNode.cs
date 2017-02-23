@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Raccoon.MachineLearning.Clustering.Hierarchical
+namespace NRough.MachineLearning.Clustering.Hierarchical
 {
     internal class DendrogramChartNode
     {

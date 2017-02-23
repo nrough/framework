@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.MachineLearning.Benchmark;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
 
 namespace ExceptionRulesTiming
 {

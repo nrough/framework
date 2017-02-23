@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Raccoon.MachineLearning.Experimenter.Parms
+namespace NRough.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParameterObjectReferenceCollection<T> : ParameterBase<T>

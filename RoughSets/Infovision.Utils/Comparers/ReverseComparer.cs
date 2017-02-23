@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public sealed class ReverseComparer<T> : IComparer<T>
     {

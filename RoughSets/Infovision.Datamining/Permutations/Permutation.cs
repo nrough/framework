@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     [Serializable]
     public class Permutation : ICloneable

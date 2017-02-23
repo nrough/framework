@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public delegate double RuleQualityMethod(long decisionValue, IReduct reduct, EquivalenceClass eqClass);
 

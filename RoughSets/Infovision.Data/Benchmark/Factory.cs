@@ -1,11 +1,14 @@
-﻿using System;
+﻿using NRough.Data.Properties;
+using NRough.Data.Readers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Data.Benchmark
+namespace NRough.Data.Benchmark
 {
     public class Factory
     {        
@@ -26,81 +29,187 @@ namespace Raccoon.Data.Benchmark
 
         public static DataStore Dna()
         {
-            DataStore res = DataStore.Load(Path.Combine(location, "dna.train"), FileFormat.RSES1);
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dna.train"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                res = dataReader.Read();
+            }
+
             foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
-            return res;            
+            return res;
+            
+            //DataStore res = DataStore.Load(Path.Combine(location, "dna.train"), DataFormat.RSES1);
+            //foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
+            //    fieldInfo.IsNumeric = false;
+            //return res;            
         }
 
         public static DataStore DnaTest()
         {
-            DataStore train = Dna();
-            return DataStore.Load(Path.Combine(location, "dna.test"), FileFormat.RSES1, train.DataStoreInfo);
+            DataStore train = Dna();            
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dna.test"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }            
+
+            //DataStore train = Dna();
+            //return DataStore.Load(Path.Combine(location, "dna.test"), DataFormat.RSES1, train.DataStoreInfo);
         }
 
         public static DataStore DnaModified()
         {
-            DataStore res = DataStore.Load(Path.Combine(location, "dna_modified.trn"), FileFormat.RSES1);
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dna_modified.trn"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                res = dataReader.Read();
+            }
+
             foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
-            return res; ;
+            return res;
+            
+            //DataStore res = DataStore.Load(Path.Combine(location, "dna_modified.trn"), DataFormat.RSES1);
+            //foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
+            //    fieldInfo.IsNumeric = false;
+            //return res; ;
         }
 
         public static DataStore DnaModifiedTest()
         {
-            DataStore train = DnaModified();
-            return DataStore.Load(Path.Combine(location, "dna_modified.tst"), FileFormat.RSES1, train.DataStoreInfo);
+            DataStore train = Dna();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dna_modified.tst"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }            
+
+            //DataStore train = DnaModified();
+            //return DataStore.Load(Path.Combine(location, "dna_modified.tst"), DataFormat.RSES1, train.DataStoreInfo);
         }
 
         public static DataStore German()
         {
-            return DataStore.Load(Path.Combine(location, "german.data"), FileFormat.CSV);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.german.data"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "german.data"), DataFormat.CSV);
         }
 
         public static DataStore Mashroom()
-        {
-            return DataStore.Load(Path.Combine(location, "agaricus-lepiota.2.data"), FileFormat.RSES1);            
+        {            
+            //var names1 = typeof(Factory).Assembly.GetManifestResourceNames();
+            //var names2 = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.agaricus-lepiota.2.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }            
         }
 
         public static DataStore Audiology()
         {
-            return DataStore.Load(Path.Combine(location, "audiology.standardized.2.data"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.audiology.standardized.2.data"))
+            { 
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }            
         }
 
         public static DataStore Breast()
-        {            
-            return DataStore.Load(Path.Combine(location, "breast-cancer-wisconsin.2.data"), FileFormat.RSES1);
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.breast-cancer-wisconsin.2.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "breast-cancer-wisconsin.2.data"), DataFormat.RSES1);
         }
 
         public static DataStore Chess()
         {
-            return DataStore.Load(Path.Combine(location, "chess.dta"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.chess.dta"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "chess.dta"), DataFormat.RSES1);
         }
 
         public static DataStore Dermatology()
-        {            
-            return DataStore.Load(Path.Combine(location, "dermatology.data"), FileFormat.CSV);
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dermatology.data"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "dermatology.data"), DataFormat.CSV);
         }
 
         public static DataStore Connect4()
         {
-            var res = DataStore.Load(Path.Combine(location, "connect-4.data"), FileFormat.CSV);
-            res.SetDecisionFieldId(43);
-            return res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.dermatology.data"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                var data = dataReader.Read();
+                data.SetDecisionFieldId(43);
+                return data;
+            }            
+
+            //var res = DataStore.Load(Path.Combine(location, "connect-4.data"), DataFormat.CSV);
+            //res.SetDecisionFieldId(43);
+            //return res;
         }
 
         public static DataStore House()
         {
-            return DataStore.Load(Path.Combine(location, "house-votes-84.2.data"), FileFormat.RSES1_1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.house-votes-84.2.data"))
+            {
+                IDataReader dataReader = new DataRSES11FileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "house-votes-84.2.data"), DataFormat.RSES1_1);
         }
 
         public static DataStore Hypothyrois()
-        {            
-            return DataStore.Load(Path.Combine(location, "hypothyroid.data"), FileFormat.CSV);
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.hypothyroid.data"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "hypothyroid.data"), DataFormat.CSV);
         }
 
         public static DataStore Letter()
-        {
+        {           
             throw new NotImplementedException();
         }
 
@@ -145,8 +254,15 @@ namespace Raccoon.Data.Benchmark
         }
 
         public static DataStore Nursery()
-        {            
-            return DataStore.Load(Path.Combine(location, "nursery.2.data"), FileFormat.RSES1);
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.nursery.2.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "nursery.2.data"), DataFormat.RSES1);
         }
 
         public static DataStore Opt()
@@ -171,17 +287,38 @@ namespace Raccoon.Data.Benchmark
 
         public static DataStore Golf()
         {
-            return DataStore.Load(Path.Combine(location, "playgolf.train"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.playgolf.train"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "playgolf.train"), DataFormat.RSES1);
         }
 
         public static DataStore Tenis()
         {
-            return DataStore.Load(Path.Combine(location, "playgolf2.train"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.playgolf2.train"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "playgolf2.train"), DataFormat.RSES1);
         }
 
         public static DataStore Promoters()
         {
-            return DataStore.Load(Path.Combine(location, "promoters.2.data"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.promoters.2.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "promoters.2.data"), DataFormat.RSES1);
         }
 
         public static DataStore Sat()
@@ -196,7 +333,15 @@ namespace Raccoon.Data.Benchmark
 
         public static DataStore Semeion()
         {
-            var res = DataStore.Load(Path.Combine(location, "semeion.data"), FileFormat.RSES1);
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.semeion.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                res = dataReader.Read();
+            }
+
+            //var res = DataStore.Load(Path.Combine(location, "semeion.data"), DataFormat.RSES1);
             foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res;
@@ -208,8 +353,15 @@ namespace Raccoon.Data.Benchmark
         }
 
         public static DataStore SoybeanSmall()
-        {            
-            return DataStore.Load(Path.Combine(location, "soybean-small.2.data"), FileFormat.RSES1); 
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.soybean-small.2.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "soybean-small.2.data"), DataFormat.RSES1); 
         }
 
         public static DataStore Spect()
@@ -219,7 +371,14 @@ namespace Raccoon.Data.Benchmark
 
         public static DataStore Vehicle()
         {
-            return DataStore.Load(Path.Combine(location, "vehicle.tab"), FileFormat.RSES1);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.vehicle.tab"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+
+            //return DataStore.Load(Path.Combine(location, "vehicle.tab"), DataFormat.RSES1);
         }
 
         public static DataStore Vowel()
@@ -229,7 +388,7 @@ namespace Raccoon.Data.Benchmark
 
         public static DataStore Zoo()
         {
-            var res =  DataStore.Load(Path.Combine(location, "zoo.dta"), FileFormat.RSES1);
+            var res =  DataStore.Load(Path.Combine(location, "zoo.dta"), DataFormat.RSES1);
             foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
                 fieldInfo.IsNumeric = false;
             return res;

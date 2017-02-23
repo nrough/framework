@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public class DialogForm : Form
     {

@@ -1,10 +1,10 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System;
 using System.Linq;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     public class DecisionForestDummy<T> : DecisionForestBase<T>
         where T : IDecisionTree, new()

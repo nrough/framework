@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Math;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Clustering.Hierarchical
+namespace NRough.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClustering : HierarchicalClusteringBase
@@ -26,14 +26,14 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         public HierarchicalClustering()
-            : this(Raccoon.Math.Distance.SquaredEuclidean, ClusteringLinkage.Single) { }
+            : this(NRough.Math.Distance.SquaredEuclidean, ClusteringLinkage.Single) { }
 
         /// <summary>
         ///   Initializes a new instance of the HierarchicalClustering algorithm
         /// </summary>
         ///
         /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Raccoon.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
+        /// use the <see cref="NRough.Math.Distance.SquaredEuclidean(double[], double[])"/> distance.</param>
         /// <param name="linkage">The linkage function to use. Default is to
         /// use the <see cref="ClusteringLinkage.Single(int[], int[], DistanceMatrix)"/> linkage.</param>
         ///

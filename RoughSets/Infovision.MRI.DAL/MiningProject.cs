@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     [Serializable]
     public class MiningProject
@@ -125,7 +125,7 @@ namespace Raccoon.MRI.DAL
 
         public IImage[] GetImageArray(long[] objectIds)
         {
-            IImage[] result = new Raccoon.MRI.ImageITK[objectIds.Length];
+            IImage[] result = new NRough.MRI.ImageITK[objectIds.Length];
             int i = 0;
             foreach (long id in objectIds)
             {
@@ -214,7 +214,7 @@ namespace Raccoon.MRI.DAL
         {
             XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-newInstance");
             XNamespace xsd = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
-            //XNamespace ns = XNamespace.Get("http://schema.Raccoon.pl/MRI");
+            //XNamespace ns = XNamespace.Get("http://schema.NRough.pl/MRI");
 
             XDocument xmlDoc = new XDocument(
                                     new XDeclaration("1.0", "utf-8", null),

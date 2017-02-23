@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public interface IImage
     {

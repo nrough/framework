@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Raccoon.Core.Tests
+namespace NRough.Core.Tests
 {
     [TestFixture]
     class StringExtensionsTest

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
     [Serializable]
     public class EquivalenceClass : ICloneable

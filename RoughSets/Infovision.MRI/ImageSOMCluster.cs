@@ -4,7 +4,7 @@ using AForge;
 using AForge.Neuro;
 using AForge.Neuro.Learning;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     [Serializable]
     public class ImageSOMCluster

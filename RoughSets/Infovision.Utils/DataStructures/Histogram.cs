@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     [Serializable]
     public class Histogram<T>

@@ -1,4 +1,4 @@
-﻿using Raccoon.Core.Data;
+﻿using NRough.Core.Data;
 using RDotNet;
 using System;
 using System.Collections;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Datamining.RCode
+namespace NRough.Datamining.RCode
 {
     public static class RProxy
     {        

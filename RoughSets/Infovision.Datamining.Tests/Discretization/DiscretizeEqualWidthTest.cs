@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Discretization;
+using NRough.MachineLearning.Discretization;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     [TestFixture]
     public class DiscretizeEqualWidthTest : DiscretizeUnsupervisedTest

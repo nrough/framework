@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Raccoon.Math;
+using NRough.Math;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     /// <summary>
     /// Decision tree learning where in each node a split is selected based on attribute generating highest measure M. 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Raccoon.Math
+namespace NRough.Math
 {
     public static class Correlation
     {

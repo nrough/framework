@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Math;
+using NRough.Core;
 using System.Data;
+using System.IO;
+using NRough.Data.Readers;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     [Serializable]
     public class DataStore : IDataTable, ICloneable
@@ -63,14 +65,14 @@ namespace Raccoon.Data
             this.objectId2Index = new Dictionary<long, int>(capacity);
             this.index2ObjectId = new long[capacity];
             this.weights = new double[capacity];
-        }        
-       
+        }
+
         public int[] Sort(IComparer<int> comparer)
         {
             int[] sortedArray = Enumerable.Range(0, this.NumberOfRecords).ToArray();
             Array.Sort(sortedArray, comparer);
             return sortedArray;
-        }        
+        }
 
         private bool CheckResize()
         {
@@ -125,10 +127,10 @@ namespace Raccoon.Data
                 throw new ArgumentException("record", "record.ObjectId == 0");
             long origObjectId = record.ObjectId;
             record.ObjectId = 0;
-            long newObjectId = this.Insert(record);            
+            long newObjectId = this.Insert(record);
             if (this.index2OrigObjectId == null)
                 this.index2OrigObjectId = new long[capacity];
-            this.index2OrigObjectId[record.ObjectIdx] = origObjectId;            
+            this.index2OrigObjectId[record.ObjectIdx] = origObjectId;
             return newObjectId;
         }
 
@@ -154,8 +156,8 @@ namespace Raccoon.Data
             {
                 //int fieldIdx = fieldId - 1;
                 int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
-                var field = this.DataStoreInfo.GetFieldInfo(fieldId);                
-                long value = record[fieldId];                                
+                var field = this.DataStoreInfo.GetFieldInfo(fieldId);
+                long value = record[fieldId];
                 this.data[lastIndex * this.DataStoreInfo.NumberOfFields + fieldIdx] = value;
                 field.IncreaseHistogramCount(value);
                 field.IncreaseHistogramWeightsCount(value, 1);
@@ -244,13 +246,13 @@ namespace Raccoon.Data
         public long[] GetColumnInternal(int fieldId)
         {
             int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
-            long[] result = new long[this.NumberOfRecords];            
+            long[] result = new long[this.NumberOfRecords];
             for (int i = 0; i < this.NumberOfRecords; i++)
                 result[i] = this.GetFieldIndexValue(i, fieldIdx);
             return result;
         }
 
-        public T[] GetColumn<T>(int fieldId)            
+        public T[] GetColumn<T>(int fieldId)
         {
             T[] result = new T[this.NumberOfRecords];
             AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldId);
@@ -258,7 +260,7 @@ namespace Raccoon.Data
             try
             {
                 for (int i = 0; i < this.NumberOfRecords; i++)
-                    result[i] = (T) Convert.ChangeType(field.Internal2External(this.GetFieldIndexValue(i, fieldIdx)), typeof(T));
+                    result[i] = (T)Convert.ChangeType(field.Internal2External(this.GetFieldIndexValue(i, fieldIdx)), typeof(T));
             }
             catch (InvalidCastException castException)
             {
@@ -336,7 +338,7 @@ namespace Raccoon.Data
         }
 
         public void RemoveColumn(int fieldId)
-        {            
+        {
             lock (syncRoot)
             {
                 if (this.DataStoreInfo.GetFieldInfo(fieldId) == null)
@@ -346,7 +348,7 @@ namespace Raccoon.Data
                 int j = 0;
                 int fieldIdx = this.DataStoreInfo.GetFieldIndex(fieldId);
                 for (int i = 0; i < this.DataStoreInfo.NumberOfFields * this.NumberOfRecords; i++)
-                 {
+                {
                     if ((i % this.DataStoreInfo.NumberOfFields) != fieldIdx)
                         newData[j++] = this.data[i];
                 }
@@ -371,13 +373,13 @@ namespace Raccoon.Data
                 throw new ArgumentNullException("columnData");
             if (columnData.Length != this.NumberOfRecords)
                 throw new InvalidOperationException("columnData.Length != this.NumberOfRecords");
-            
+
             long[] newData = new long[this.data.Length + columnData.Length];
             Parallel.For(0, this.NumberOfRecords, row =>
             {
                 for (int col = 0; col < this.DataStoreInfo.NumberOfFields; col++)
                 {
-                    newData[(row * (this.DataStoreInfo.NumberOfFields + 1)) + col] 
+                    newData[(row * (this.DataStoreInfo.NumberOfFields + 1)) + col]
                         = this.data[(row * this.DataStoreInfo.NumberOfFields) + col];
                 }
             });
@@ -415,7 +417,7 @@ namespace Raccoon.Data
                     newData[row * (this.DataStoreInfo.NumberOfFields + 1) + this.DataStoreInfo.NumberOfFields] = internalValue;
                 }
             }
-            
+
             this.data = newData;
             this.DataStoreInfo.AddFieldInfo(newFieldInfo, FieldGroup.Standard);
             this.DataStoreInfo.NumberOfFields++;
@@ -443,7 +445,7 @@ namespace Raccoon.Data
         public AttributeValueVector GetDataVector(int objectIdx)
         {
             return new AttributeValueVector(
-                this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(), 
+                this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(),
                 this.GetFieldValues(objectIdx), false);
         }
 
@@ -471,7 +473,7 @@ namespace Raccoon.Data
             int j = 0;
             foreach (int fieldId in fieldSet)
                 data[j++] = this.GetFieldValue(objectIndex, fieldId);
-            return data;                
+            return data;
         }
 
         public long[] GetFieldValues(int objectIdx)
@@ -543,7 +545,7 @@ namespace Raccoon.Data
             //TODO this should be called inside setting this.DataStoreInfo.DecisionFieldId property but we miss reference to DataStore and its weights
             this.DataStoreInfo.DecisionInfo.CreateWeightHistogram(this, this.weights);
         }
-        
+
         public long GetDecisionValue(int objectIndex)
         {
             return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.DecisionFieldIndex);
@@ -668,26 +670,40 @@ namespace Raccoon.Data
             return stringBuilder.ToString();
         }
 
-        public static DataStore Load(string fileName, FileFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
+        public static DataStore Load(string fileName, DataFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
-            IDataReader fileReader = DataReaderFile.Construct(fileFormat, fileName);
+            var fileReader = DataFileReader.Construct(fileFormat, fileName);
+            return fileReader.Read();
+
+            /*
             fileReader.ReferenceDataStoreInfo = referenceDataStoreInfo;
             DataStore dataStore = DataStore.Load(fileReader);
             return dataStore;
+            */
         }
 
         public static DataStore Load(IDataReader dataReader)
         {
+            return dataReader.Read();
+
+            /*
             DataStoreInfo dataStoreInfo = dataReader.Analyze();
             DataStore dataStore = new DataStore(dataStoreInfo);
             dataStore.Name = dataReader.DataName;
             dataReader.Load(dataStore, dataStoreInfo);
             return dataStore;
+            */
         }
 
-        public static DataStore Load(string fileName, FileFormat fileFormat)
+        public static DataStore Load(string fileName, DataFormat fileFormat)
         {
             return DataStore.Load(fileName, fileFormat, null);
+        }
+
+        public static DataStore Load(DataTable dataTable)
+        {
+            var dataReader = new Readers.DataTableReader(dataTable);
+            return dataReader.Read();
         }
 
         public IEnumerable<AttributeInfo> SelectAttributes(Func<AttributeInfo, bool> selector)

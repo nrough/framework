@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class MiningObjectPropertyForm
     {

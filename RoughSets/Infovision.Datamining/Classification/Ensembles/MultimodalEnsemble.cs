@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Classification.Ensembles
+namespace NRough.MachineLearning.Classification.Ensembles
 {
     public class MultimodalEnsemble : EnsembleBase
     {

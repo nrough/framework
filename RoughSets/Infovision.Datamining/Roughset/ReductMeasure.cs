@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductMeasure : IReductMeasure

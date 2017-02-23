@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
 
-namespace Raccoon.MachineLearning.Tests.Clustering.Hierarchical
+namespace NRough.MachineLearning.Tests.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringTest

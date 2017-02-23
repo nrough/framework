@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class ListExtensions
     {

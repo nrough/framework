@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     [Serializable]
     public class AttributeInfo

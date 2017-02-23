@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     [Serializable]
     public class DataStoreOrderByComparer : Comparer<int>

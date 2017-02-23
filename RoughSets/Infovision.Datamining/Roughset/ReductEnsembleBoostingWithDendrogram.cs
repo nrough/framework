@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public class ReductEnsembleBoostingWithDendrogramGenerator : ReductEnsembleBoostingGenerator
     {

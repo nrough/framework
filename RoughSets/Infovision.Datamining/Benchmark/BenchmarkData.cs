@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Benchmark
+namespace NRough.MachineLearning.Benchmark
 {
     public class BenchmarkData
     {
@@ -13,7 +13,7 @@ namespace Raccoon.MachineLearning.Benchmark
         public string NamesFile { get; set; }
         public bool CrossValidationActive { get; set; }
         public int CrossValidationFolds { get; set; }
-        public FileFormat FileFormat { get; set; }
+        public DataFormat FileFormat { get; set; }
         public int DecisionFieldId { get; set; }       
         private Dictionary<int, AttributeInfo> fieldMetadata;
 
@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Benchmark
         {
             this.CrossValidationActive = false;
             this.CrossValidationFolds = 1;
-            this.FileFormat = FileFormat.RSES1;
+            this.FileFormat = DataFormat.RSES1;
             this.DecisionFieldId = -1;
 
             this.fieldMetadata = new Dictionary<int, AttributeInfo>();

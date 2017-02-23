@@ -1,9 +1,9 @@
-﻿using Raccoon.Core.CollectionExtensions;
+﻿using NRough.Core.CollectionExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class HashHelper
     {

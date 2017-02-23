@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using itk.simple;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     [Serializable]
     public class ImageITK : ImageBase
@@ -597,7 +597,7 @@ namespace Raccoon.MRI
                 this.Width = (uint)this.bitmap.Width;
                 this.Height = (uint)this.bitmap.Height;
                 this.PixelType = typeof(int);
-                this.PixelTypeId = Raccoon.MRI.PixelType.Int32;
+                this.PixelTypeId = NRough.MRI.PixelType.Int32;
             }
         }
 

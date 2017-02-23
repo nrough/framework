@@ -1,17 +1,17 @@
-﻿using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.Core;
+﻿using NRough.MachineLearning;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Evaluation;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Evaluation;
 
-namespace Raccoon.Data.Tests
+namespace NRough.Data.Tests
 {
     [TestFixture]
     public class DataStoreSplitterTest
@@ -22,7 +22,7 @@ namespace Raccoon.Data.Tests
         public void Init()
         {
             string fileName = @"Data\nursery.2.data";
-            dataStore = DataStore.Load(fileName, FileFormat.RSES1);
+            dataStore = DataStore.Load(fileName, DataFormat.RSES1);
         }
 
         [Test, Repeat(1)]

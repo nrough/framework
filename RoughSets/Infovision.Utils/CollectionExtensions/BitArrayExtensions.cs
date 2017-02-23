@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Core.CollectionExtensions
+namespace NRough.Core.CollectionExtensions
 {
     public static class BitArrayExtensions
     {

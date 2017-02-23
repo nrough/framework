@@ -1,8 +1,8 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.MachineLearning.Tests.Classification.DecisionTrees;
-using Raccoon.Core;
-using Raccoon.Core.Data;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.MachineLearning.Tests.Classification.DecisionTrees;
+using NRough.Core;
+using NRough.Core.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.Datamining.RCode;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Classification;
+using NRough.Datamining.RCode;
 
-namespace Raccoon.UnitTest.Runner
+namespace NRough.UnitTest.Runner
 {   
     public class Program
     {
@@ -34,7 +34,7 @@ namespace Raccoon.UnitTest.Runner
         {
             DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string trainFile, testFile, reductFactoryKey;
-            FileFormat fileFormat;
+            DataFormat fileFormat;
 
             MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest");
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
@@ -49,7 +49,7 @@ namespace Raccoon.UnitTest.Runner
                     {
                         trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
                         testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
-                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[2];                        
+                        fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];                        
                         reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
                         
                         test.ErrorImpurityTest(trainFile, testFile, fileFormat, reductFactoryKey);
@@ -62,7 +62,7 @@ namespace Raccoon.UnitTest.Runner
         {
             DecisionTreeReductCompare test = new DecisionTreeReductCompare();
             string dataFile, reductFactoryKey;
-            FileFormat fileFormat;
+            DataFormat fileFormat;
             int folds;
 
             MethodBase method = typeof(DecisionTreeReductCompare).GetMethod("ErrorImpurityTest_CV");
@@ -76,7 +76,7 @@ namespace Raccoon.UnitTest.Runner
                     foreach (var testCase in testCases)
                     {
                         dataFile = (string)((TestCaseAttribute)testCase).Arguments[0];
-                        fileFormat = (FileFormat)((TestCaseAttribute)testCase).Arguments[1];                        
+                        fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[1];                        
                         reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[2];
                         folds = (int)((TestCaseAttribute)testCase).Arguments[3];
 

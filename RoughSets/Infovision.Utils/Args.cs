@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     [Serializable]
     public class Args

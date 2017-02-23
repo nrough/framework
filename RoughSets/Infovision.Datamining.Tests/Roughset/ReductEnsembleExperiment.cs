@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Benchmark;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductEnsembleExperiment
@@ -33,8 +33,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public void RunExperiment()
         {
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             string resultFileName = @"dna_modified_103.csv";
             int minEpsilon = 0;
             int maxEpsilon = 25;

@@ -1,11 +1,11 @@
 ﻿using System;
-using Raccoon.Core;
+using NRough.Core;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 
-namespace Raccoon.Math
+namespace NRough.Math
 {
     public static class Tools
     {                                    

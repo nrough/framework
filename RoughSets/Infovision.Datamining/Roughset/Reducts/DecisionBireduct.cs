@@ -1,13 +1,13 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Permutations;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Permutations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Roughset.Reducts
+namespace NRough.MachineLearning.Roughset.Reducts
 {
     public class DecisionBireduct : ModelBase
     {
@@ -48,7 +48,7 @@ namespace Raccoon.MachineLearning.Roughset.Reducts
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             Parallel.For(0, Permutations.Length, options, i =>
@@ -101,7 +101,8 @@ namespace Raccoon.MachineLearning.Roughset.Reducts
                 }
             }
 
-            return new Bireduct(DecisionTable, attr, obj);
+            throw new NotImplementedException();
+            //return new Bireduct(DecisionTable, attr, obj);
         }
 
         

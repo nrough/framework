@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
-using Raccoon.Data;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Math;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Benchmark;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.MachineLearning.Roughset;
+using NRough.Math;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
 
 namespace VotingVsRuleInduction
 {

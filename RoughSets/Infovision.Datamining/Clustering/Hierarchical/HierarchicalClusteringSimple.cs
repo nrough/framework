@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Math;
+using NRough.Math;
 
-namespace Raccoon.MachineLearning.Clustering.Hierarchical
+namespace NRough.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public class HierarchicalClusteringSimple : HierarchicalClustering

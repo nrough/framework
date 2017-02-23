@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Benchmark
+namespace NRough.MachineLearning.Benchmark
 {
     public class BenchmarkDataHelper
     {
@@ -91,20 +91,20 @@ namespace Raccoon.MachineLearning.Benchmark
                 GetFilePath(dataPath, "soybean-large.data"), 
                 GetFilePath(dataPath, "soybean-large.test"))
             {
-                FileFormat = FileFormat.CSV
+                FileFormat = DataFormat.CSV
             };
 
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("house", GetFilePath(dataPath, "house-votes-84.2.data"), cvFolds)
             {
-                FileFormat = FileFormat.RSES1_1
+                FileFormat = DataFormat.RSES1_1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("audiology", GetFilePath(dataPath, "audiology.standardized.2.data"), GetFilePath(dataPath, "audiology.standardized.2.test"))
             {
-                FileFormat = FileFormat.RSES1
+                FileFormat = DataFormat.RSES1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
@@ -116,7 +116,7 @@ namespace Raccoon.MachineLearning.Benchmark
 
             benchmark = new BenchmarkData("german", GetFilePath(dataPath, "german.data"), cvFolds)
             {                
-                FileFormat = FileFormat.CSV
+                FileFormat = DataFormat.CSV
             };
 
             int[] numericFields = new int[] { 2, 5, 8, 11, 13, 16, 18 };

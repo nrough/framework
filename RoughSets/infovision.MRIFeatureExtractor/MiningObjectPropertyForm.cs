@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using Raccoon.MRI.DAL;
+using NRough.MRI.DAL;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public partial class MiningObjectPropertyForm : Form
     {

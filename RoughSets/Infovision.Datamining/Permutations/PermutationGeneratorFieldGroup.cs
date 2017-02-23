@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     [CLSCompliant(false)]
     public class PermutatioGeneratorFieldGroup : PermutationGenerator

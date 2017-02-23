@@ -1,16 +1,16 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughset;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     public class DecisionTreeReduct : DecisionTreeRough
     {

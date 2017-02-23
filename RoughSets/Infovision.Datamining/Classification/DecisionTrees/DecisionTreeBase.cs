@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using System.Diagnostics;
 using System.Threading;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Discretization;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Discretization;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {       
     /// <summary>
     /// Base class for decision tree implementations
@@ -424,14 +424,14 @@ namespace Raccoon.MachineLearning.Classification.DecisionTrees
             var rangePartitioner = Partitioner.Create(
                 0, 
                 localAttributes.Length, 
-                System.Math.Max(1, localAttributes.Length / RaccoonConfiguration.MaxDegreeOfParallelism));
+                System.Math.Max(1, localAttributes.Length / ConfigManager.MaxDegreeOfParallelism));
             
             double currentScore = this.CalculateImpurityBeforeSplit(eqClassCollection);
             SplitInfo[] scores = new SplitInfo[localAttributes.Length];
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             Parallel.ForEach(rangePartitioner, options, (range) =>

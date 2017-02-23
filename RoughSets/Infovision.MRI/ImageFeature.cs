@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public interface IImageFeature
     {

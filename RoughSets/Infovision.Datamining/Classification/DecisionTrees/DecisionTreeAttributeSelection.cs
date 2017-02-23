@@ -1,12 +1,12 @@
-﻿using Raccoon.Core;
-using Raccoon.MachineLearning.Roughset;
+﻿using NRough.Core;
+using NRough.MachineLearning.Roughset;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     public static class DecisionTreeAttributeSelection
     {

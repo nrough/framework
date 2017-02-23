@@ -3,14 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
 
 //TODO Implement Cost of misclassification. (Imbalanced classes)
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     
     public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
@@ -232,7 +232,7 @@ namespace Raccoon.MachineLearning.Roughset
 
                 ParallelOptions options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                    MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
                 };
 
                 Parallel.ForEach(

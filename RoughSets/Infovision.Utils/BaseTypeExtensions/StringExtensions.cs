@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class StringExtensions
     {

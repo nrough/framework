@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductGeneratorComparisonTest
@@ -25,8 +25,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         public static IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             int numberOfPermutations = 20;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             int minEpsilon = 5;
             int maxEpsilon = 25;
 
@@ -71,7 +71,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void QuickTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
             //Console.WriteLine(weightGenerator.GetType().Name);
         }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Discretization;
+using NRough.Data;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Discretization;
 
 namespace DermoReducts
 {
@@ -16,7 +16,7 @@ namespace DermoReducts
 
         public static void HandleMissingData(string filename, string outputfile, string weightsfile)
         {
-            DataStore data = DataStore.Load(filename, FileFormat.CSV);
+            DataStore data = DataStore.Load(filename, DataFormat.CSV);
             double[] w = new double[data.NumberOfRecords];
             for (int i = 0; i < data.NumberOfRecords; i++)
                 w[i] = 1.0;
@@ -77,7 +77,7 @@ namespace DermoReducts
 
         public static void DiscretizeAgeAttribute(string filename, string outputfile)
         {
-            DataStore data = DataStore.Load(filename, FileFormat.CSV);
+            DataStore data = DataStore.Load(filename, DataFormat.CSV);
             data.SetDecisionFieldId(35);
 
             AttributeInfo ageAttribute = data.DataStoreInfo.GetFieldInfo(34); //a34

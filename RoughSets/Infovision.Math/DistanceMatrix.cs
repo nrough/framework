@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Raccoon.Math
+namespace NRough.Math
 {
     public interface IDistanceMatrix
     {

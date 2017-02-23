@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Raccoon.Data;
+using NRough.Data;
 using NUnit.Framework;
-using Raccoon.Core;
+using NRough.Core;
 using System.Collections.Generic;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductCacheTest
@@ -20,8 +20,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
         }

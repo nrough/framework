@@ -5,10 +5,10 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public interface IFactoryProduct
     {

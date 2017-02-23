@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class ImageEdgeDialog
     {
@@ -109,7 +109,7 @@
             // 
             // imageEdgeBindingSource
             // 
-            this.imageEdgeBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageEdge);
+            this.imageEdgeBindingSource.DataSource = typeof(NRough.MRI.DAL.ImageEdge);
             // 
             // foregroundDlg
             // 

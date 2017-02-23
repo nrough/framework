@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Math;
+using NRough.Math;
 
-namespace Raccoon.MachineLearning.Clustering.Hierarchical
+namespace NRough.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public abstract class HierarchicalClusteringIncremental : HierarchicalClusteringBase

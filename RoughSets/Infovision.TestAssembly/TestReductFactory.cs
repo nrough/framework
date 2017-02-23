@@ -1,13 +1,13 @@
 ﻿using System;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning;
+using NRough.Data;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning;
 
-namespace Raccoon.TestAssembly
+namespace NRough.TestAssembly
 {
-    public class TestReductFactory : Raccoon.MachineLearning.Roughset.IReductFactory
+    public class TestReductFactory : NRough.MachineLearning.Roughset.IReductFactory
     {
         public string FactoryKey
         {

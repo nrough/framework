@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Raccoon.MRI.DAL;
+using NRough.MRI.DAL;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public partial class MainForm : Form
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     public class PermutationGeneratorTwinReverse : PermutationGeneratorTwin
     {

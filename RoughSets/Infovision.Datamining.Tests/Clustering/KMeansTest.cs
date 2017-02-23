@@ -1,6 +1,6 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Clustering;
-using Raccoon.Math;
+﻿using NRough.Data;
+using NRough.MachineLearning.Clustering;
+using NRough.Math;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Clustering
+namespace NRough.MachineLearning.Tests.Clustering
 {
     [TestFixture]
     public class KMeansTest
@@ -23,7 +23,7 @@ namespace Raccoon.MachineLearning.Tests.Clustering
         [Test]
         public void LearnTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
 
             KMeans kmeans = new KMeans();

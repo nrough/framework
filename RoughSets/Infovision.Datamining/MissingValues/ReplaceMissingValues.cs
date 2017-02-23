@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.MissingValues
+namespace NRough.MachineLearning.MissingValues
 {
     public class ReplaceMissingValues
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Math;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Clustering.Hierarchical
+namespace NRough.MachineLearning.Clustering.Hierarchical
 {
     [Serializable]
     public abstract class HierarchicalClusteringBase
@@ -506,7 +506,7 @@ namespace Raccoon.MachineLearning.Clustering.Hierarchical
                 i++;
             }
 
-            double result = Raccoon.Math.Correlation.SpearmansCoeff(lcb1, lcb2);
+            double result = NRough.Math.Correlation.SpearmansCoeff(lcb1, lcb2);
             return result;
         }        
 

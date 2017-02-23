@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
+using NRough.Data;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class ReductEnsembleGenerator : ReductGenerator

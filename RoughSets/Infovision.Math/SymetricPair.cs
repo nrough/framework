@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.Math
+namespace NRough.Math
 {
     [Serializable]
     public struct SymetricPair<T1, T2>
@@ -30,7 +30,7 @@ namespace Raccoon.Math
         {
             return item1.GetHashCode() ^ item2.GetHashCode();
         }
-
+        
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -46,6 +46,8 @@ namespace Raccoon.Math
 
             return false;
         }
+        public static bool operator ==(SymetricPair<T1, T2> a, SymetricPair<T1, T2> b) { return a.Equals(b); }
+        public static bool operator !=(SymetricPair<T1, T2> a, SymetricPair<T1, T2> b) { return !a.Equals(b); }
 
         #endregion System.Object Methods
     }

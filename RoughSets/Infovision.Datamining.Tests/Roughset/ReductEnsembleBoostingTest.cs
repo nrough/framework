@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ReductEnsembleBoostingTest
@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
@@ -247,8 +247,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [TestCase(0.0, 100, 10)]
         public void GenerateBoostingTestNullExceptionError(double epsilon, int iterations, int weak)
         {
-            DataStore train = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, train.DataStoreInfo);
+            DataStore train = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, train.DataStoreInfo);
 
             //-------------------------------------- Parameters --------------------------
 
@@ -315,8 +315,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void GenerateExperimentBoostingStandard()
         {
-            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
-            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
             WeightingSchema weightingSchema = WeightingSchema.Majority;
             int numberOfTests = 1;
             int maxNumberOfIterations = 100;
@@ -424,8 +424,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             //TrainData trnData = TrainData.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             //TrainData tstData = TrainData.Load(@"Data\dna_modified.tst", FileFormat.Rses1, trnData.DataStoreInfo);
 
-            DataStore trnData = DataStore.Load(@"Data\optdigits.trn", FileFormat.RSES1);
-            DataStore tstData = DataStore.Load(@"Data\optdigits.tst", FileFormat.RSES1, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\optdigits.trn", DataFormat.RSES1);
+            DataStore tstData = DataStore.Load(@"Data\optdigits.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
             WeightingSchema weightingSchema = WeightingSchema.Majority;
             int numberOfTests = 2;
@@ -535,8 +535,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             //Console.WriteLine("GenerateExperimentBoostingWithDiversity");
 
-            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
-            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
             /*
             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
@@ -613,8 +613,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             //Console.WriteLine("GenerateExperimentBoostingWithAttributeDiversity");
 
-            DataStore trnData = DataStore.Load(@"Data\pendigits.trn", FileFormat.RSES1);
-            DataStore tstData = DataStore.Load(@"Data\pendigits.tst", FileFormat.RSES1, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\pendigits.trn", DataFormat.RSES1);
+            DataStore tstData = DataStore.Load(@"Data\pendigits.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
             WeightingSchema weightingSchema = WeightingSchema.Majority;
             int numberOfTests = 1;

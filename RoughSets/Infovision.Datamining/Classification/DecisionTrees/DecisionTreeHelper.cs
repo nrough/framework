@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     public static class DecisionTreeHelper
     {

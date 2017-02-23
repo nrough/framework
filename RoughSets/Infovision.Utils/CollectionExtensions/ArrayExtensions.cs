@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class ArrayExtensions
     {

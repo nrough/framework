@@ -1,5 +1,5 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Discretization;
+﻿using NRough.Data;
+using NRough.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     [TestFixture]
     public class DiscretizeFayyadTest : DiscretizeSupervisedBaseTest
@@ -17,16 +17,16 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             return new DiscretizeFayyad();
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2, 5, 8, 11, 13, 16, 18 })]
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2, 5, 8 })]
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2, 5 })]
-        public override void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2, 5, 8, 11, 13, 16, 18 })]
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2, 5, 8 })]
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2, 5 })]
+        public override void CreateDiscretizedDataTableTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {
             base.CreateDiscretizedDataTableTest(filename, fileFormat, fields);
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2, 5})]        
-        public override void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2, 5})]        
+        public override void DiscretizeTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {            
             base.DiscretizeTest(filename, fileFormat, fields);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.Math
+namespace NRough.Math
 {
     /// <summary>
     /// http://www.daylight.com/dayhtml/doc/theory/theory.finger.html

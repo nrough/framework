@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.DataVisualization.Charting;
 using itk.simple;
 using NUnit.Framework;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MRI.UnitTests
+namespace NRough.MRI.UnitTests
 {
     [TestFixture, Ignore("NoReason")]
     public class HistogramTest
@@ -58,7 +58,7 @@ namespace Raccoon.MRI.UnitTests
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUInt32 vector = new VectorUInt32(new uint[] { 0, 0 });
-            Raccoon.Core.Histogram<long> histogram = new Raccoon.Core.Histogram<long>();
+            NRough.Core.Histogram<long> histogram = new NRough.Core.Histogram<long>();
             for (uint x = 0; x < slice.GetWidth(); x++)
             {
                 for (uint y = 0; y < slice.GetHeight(); y++)

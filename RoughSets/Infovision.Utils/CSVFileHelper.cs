@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class CSVFileHelper
     {

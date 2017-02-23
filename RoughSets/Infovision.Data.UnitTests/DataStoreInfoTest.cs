@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Raccoon.Data.Tests
+namespace NRough.Data.Tests
 {
     [TestFixture]
     public class DataStoreInfoTest
@@ -10,7 +10,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void GetFieldIdsTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             Compare(data, FieldGroup.Standard);
             Compare(data, FieldGroup.All);

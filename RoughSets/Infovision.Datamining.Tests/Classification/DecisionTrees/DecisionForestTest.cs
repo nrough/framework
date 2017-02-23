@@ -1,18 +1,18 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
 
-namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionForestTest
@@ -21,7 +21,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -44,7 +44,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestRoughForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -67,10 +67,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             //double epsilon = 0.07;
 
@@ -96,10 +96,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //double epsilon = 0.07;
 
             Console.WriteLine("RandomForestCARTTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
@@ -121,10 +121,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeRough> randomForest = new DecisionForestRandom<DecisionTreeRough>();
             randomForest.Size = 100;
@@ -145,10 +145,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughGammaTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestReduct<DecisionTreeRough> randomForest = new DecisionForestReduct<DecisionTreeRough>();
             randomForest.Size = 10;
@@ -178,8 +178,8 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.Rses1);
             //DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.Rses1, data.DataStoreInfo);
 
-            DataStore data = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
-            DataStore test = DataStore.Load(@"Data\letter.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore data = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
+            DataStore test = DataStore.Load(@"Data\letter.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             
             for (int i = 0; i < 1; i++)
@@ -253,10 +253,10 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void ReductSubsetC45Tree()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields)
                 fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             for (int t = 0; t < 1; t++)
             {

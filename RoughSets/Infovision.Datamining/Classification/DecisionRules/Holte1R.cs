@@ -1,12 +1,12 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionRules
+namespace NRough.MachineLearning.Classification.DecisionRules
 {
     /// <summary>
     /// For each attribute a, form a rule as follows: <br />

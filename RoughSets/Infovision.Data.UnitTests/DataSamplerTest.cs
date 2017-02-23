@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Raccoon.Data.Tests
+namespace NRough.Data.Tests
 {
     [TestFixture]
     public class DataSamplerTest
@@ -8,7 +8,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void GetDataTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataSampler sampler = new DataSampler(data);
             DataStore subData = null;
             for (int i = 0; i < 10; i++)

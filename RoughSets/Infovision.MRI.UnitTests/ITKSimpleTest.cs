@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using itk.simple;
 using NUnit.Framework;
 
-namespace Raccoon.MRI.UnitTests
+namespace NRough.MRI.UnitTests
 {
     [TestFixture]
     public class ITKSimpleTest

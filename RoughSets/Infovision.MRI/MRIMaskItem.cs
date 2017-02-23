@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     [Serializable]
     public class MRIMaskItem

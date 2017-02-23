@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.Core.Data;
+using NRough.Data;
+using NRough.Core;
+using NRough.Core.Data;
 using GenericParsing;
 using System.Reflection;
 using System.Linq.Dynamic;
 using System.Data;
 
-namespace Raccoon.MachineLearning.Classification
+namespace NRough.MachineLearning.Classification
 {    
     [Serializable]
     public class ClassificationResult : IFormattable

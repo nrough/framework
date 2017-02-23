@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
 using NUnit.Framework;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductDiscernibilityMatrixTest
@@ -23,8 +23,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
         }

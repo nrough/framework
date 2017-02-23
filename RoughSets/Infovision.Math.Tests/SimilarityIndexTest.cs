@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace Raccoon.Math.Tests
+namespace NRough.Math.Tests
 {
     [TestFixture]
     internal class SimilarityTest

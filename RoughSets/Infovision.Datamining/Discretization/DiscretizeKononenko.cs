@@ -1,11 +1,11 @@
-﻿using Raccoon.Math;
+﻿using NRough.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Discretization
+namespace NRough.MachineLearning.Discretization
 {
     [Serializable]
     public class DiscretizeKononenko : DiscretizeSupervisedBase

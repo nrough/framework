@@ -1,12 +1,12 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Discretization;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Discretization;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Raccoon.MachineLearning.Filters
+namespace NRough.MachineLearning.Filters
 {
     [Serializable]
     public class DiscretizeFilter : IFilter

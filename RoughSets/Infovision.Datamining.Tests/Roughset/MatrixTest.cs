@@ -1,7 +1,7 @@
-﻿using Raccoon.Core;
+﻿using NRough.Core;
 using NUnit.Framework;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class MatrixTest

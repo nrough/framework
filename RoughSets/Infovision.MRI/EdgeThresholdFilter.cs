@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using itk.simple;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     [Serializable]
     public class EdgeThresholdFilter

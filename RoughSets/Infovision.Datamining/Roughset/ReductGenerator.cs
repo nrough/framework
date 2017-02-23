@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductGenerator : IReductGenerator
@@ -16,6 +16,7 @@ namespace Raccoon.MachineLearning.Roughset
         private int[][] fieldGroups;
         private int reductIdSequence;
 
+        [NonSerialized]
         protected readonly Stopwatch timer = new Stopwatch();
         protected readonly object mutex = new object();
 

@@ -1,11 +1,11 @@
-﻿using Raccoon.Data;
+﻿using NRough.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionRules
+namespace NRough.MachineLearning.Classification.DecisionRules
 {
     public class DecisionRule
     {

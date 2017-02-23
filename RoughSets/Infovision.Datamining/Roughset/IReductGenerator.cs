@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public interface IReductGenerator
     {

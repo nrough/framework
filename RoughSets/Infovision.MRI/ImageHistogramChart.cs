@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public class ImageHistogram
     {

@@ -1,24 +1,24 @@
 ﻿using NUnit.Framework;
-using Raccoon.Data;
-using Raccoon.Data.Filters;
-using Raccoon.MachineLearning.Classification.DecisionLookup;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.MachineLearning.Discretization;
-using Raccoon.MachineLearning.Evaluation;
-using Raccoon.MachineLearning.Filters;
-using Raccoon.MachineLearning.Roughset;
+using NRough.Data;
+using NRough.Data.Filters;
+using NRough.MachineLearning.Classification.DecisionLookup;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.MachineLearning.Discretization;
+using NRough.MachineLearning.Evaluation;
+using NRough.MachineLearning.Filters;
+using NRough.MachineLearning.Roughset;
 using System;
 using System.Diagnostics;
 
-namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class RoughDecisionTreeTest
     {
         [Repeat(30)]
-        [TestCase(@"Data\german.data", FileFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        public void DecisionTreeWithNewDiscretization(string dataFile, FileFormat fileFormat, string reductFactoryKey, int folds)
+        [TestCase(@"Data\german.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        public void DecisionTreeWithNewDiscretization(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
             

@@ -1,13 +1,13 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Evaluation
+namespace NRough.MachineLearning.Evaluation
 {
     public delegate void PostLearingMethod(IModel model);
 
@@ -125,7 +125,7 @@ namespace Raccoon.MachineLearning.Evaluation
             {
                 var options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                    MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
                 };
 
                 Parallel.For(0, dataSplitter.NFold, options, f =>

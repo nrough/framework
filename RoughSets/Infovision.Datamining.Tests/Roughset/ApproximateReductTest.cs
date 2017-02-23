@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class ApproximateReductTest
@@ -16,8 +16,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -136,8 +136,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -158,8 +158,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             ReductStore reductStore = new ReductStore(1);
@@ -185,8 +185,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -205,7 +205,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void MeasureRelativeTest()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
 
             Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double result = InformationMeasureRelative.Instance.Calc(reduct);
@@ -216,7 +216,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void MeasureMajorityTest()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
 
             Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
             double result = InformationMeasureMajority.Instance.Calc(reduct);
@@ -227,7 +227,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void MeasurePositiveTest()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
 
             Reduct reduct = new Reduct(
                 localDataStore,
@@ -245,8 +245,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -316,8 +316,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -349,8 +349,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -386,8 +386,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 

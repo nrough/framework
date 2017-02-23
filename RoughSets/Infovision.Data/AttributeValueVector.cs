@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     [Serializable]
     public class AttributeValueVector : ICloneable

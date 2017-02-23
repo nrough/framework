@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class StopwatchExtensions
     {

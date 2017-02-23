@@ -1,8 +1,8 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Math;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughset;
+using NRough.Math;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.Ensembles
+namespace NRough.MachineLearning.Classification.Ensembles
 {
     public class AdaBoost<T> : EnsembleBase
         where T : ILearner, IPredictionModel, ICloneable

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Benchmark;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductGeneralizedMajorityDecisionTest
@@ -40,8 +40,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void MajorityGeneralizedDecisionPerformanceTest()
         {
-            DataStore trainData = DataStore.Load(@"Data\dna.train", FileFormat.RSES1);
-            DataStore testData = DataStore.Load(@"Data\dna.test", FileFormat.RSES1, trainData.DataStoreInfo);
+            DataStore trainData = DataStore.Load(@"Data\dna.train", DataFormat.RSES1);
+            DataStore testData = DataStore.Load(@"Data\dna.test", DataFormat.RSES1, trainData.DataStoreInfo);
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
             double eps = 0.0;
             int ensembleSize = 10;
@@ -252,7 +252,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct2()
         {            
-            DataStore trainData = DataStore.Load(@"data\playgolf.train", FileFormat.RSES1);            
+            DataStore trainData = DataStore.Load(@"data\playgolf.train", DataFormat.RSES1);            
             double eps = 0.0;
             //double eps = 0.2; This will not work
 

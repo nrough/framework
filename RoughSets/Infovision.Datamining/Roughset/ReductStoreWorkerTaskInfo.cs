@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MachineLearning.Roughset
+﻿namespace NRough.MachineLearning.Roughset
 {
     internal class ReductStoreWorkerTaskInfo
     {

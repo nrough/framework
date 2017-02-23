@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class HistogramDialog
     {
@@ -58,7 +58,7 @@
             // 
             // histogramParametersBindingSource
             // 
-            this.histogramParametersBindingSource.DataSource = typeof(Raccoon.MRI.DAL.Histogram);
+            this.histogramParametersBindingSource.DataSource = typeof(NRough.MRI.DAL.Histogram);
             // 
             // sliceToDlg
             // 

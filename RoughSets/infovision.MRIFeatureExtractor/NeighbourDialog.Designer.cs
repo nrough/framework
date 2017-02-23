@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class NeighbourDialog
     {
@@ -97,7 +97,7 @@
             // 
             // imageNeighbourBindingSource
             // 
-            this.imageNeighbourBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageNeighbour);
+            this.imageNeighbourBindingSource.DataSource = typeof(NRough.MRI.DAL.ImageNeighbour);
             // 
             // dlgLabelObject
             // 

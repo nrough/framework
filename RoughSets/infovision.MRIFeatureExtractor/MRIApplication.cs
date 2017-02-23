@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Raccoon.MRI.DAL;
+using NRough.MRI.DAL;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public sealed class MRIApplication
     {
@@ -79,7 +79,7 @@ namespace Raccoon.MRI.UI
             this.ShowImage(new DAL.ImageRead(imageView.Image));
         }
 
-        private void ShowImage(Raccoon.MRI.DAL.ImageRead image)
+        private void ShowImage(NRough.MRI.DAL.ImageRead image)
         {
             ImageForm childImageForm = new ImageForm();
             childImageForm.Image = image;
@@ -125,7 +125,7 @@ namespace Raccoon.MRI.UI
         {
             RawImageImportDialog importRAWForm = new RawImageImportDialog();
 
-            Raccoon.MRI.DAL.ImageRead image = new Raccoon.MRI.DAL.ImageRead();
+            NRough.MRI.DAL.ImageRead image = new NRough.MRI.DAL.ImageRead();
             image.ImageTypeId = ImageType.ITKRawImage;
             importRAWForm.ImageBindingSource.Add(image);
 
@@ -157,7 +157,7 @@ namespace Raccoon.MRI.UI
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                Raccoon.MRI.DAL.ImageRead image = new Raccoon.MRI.DAL.ImageRead
+                NRough.MRI.DAL.ImageRead image = new NRough.MRI.DAL.ImageRead
                 {
                     ImageTypeId = ImageType.ITKStandard,
                     FileName = fileDialog.FileName,
@@ -177,7 +177,7 @@ namespace Raccoon.MRI.UI
             HistogramDialog histogramDialog = new HistogramDialog();
             IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
 
-            Raccoon.MRI.DAL.Histogram histParm = new Raccoon.MRI.DAL.Histogram
+            NRough.MRI.DAL.Histogram histParm = new NRough.MRI.DAL.Histogram
             {
                 SliceFrom = 0,
                 SliceTo = 0,
@@ -212,7 +212,7 @@ namespace Raccoon.MRI.UI
             if (imageMaskDialog.ShowDialog() == DialogResult.OK)
             {
                 IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
-                Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)selectedMiningObject.Image;
+                NRough.MRI.ImageITK itkImage = (NRough.MRI.ImageITK)selectedMiningObject.Image;
                 itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage.ItkImage);
 
                 MRIMaskConcentricImageFilter imageMaskFilter = new MRIMaskConcentricImageFilter();
@@ -221,9 +221,9 @@ namespace Raccoon.MRI.UI
                     imageMaskFilter.AddMaskItem(item);
                 }
 
-                Raccoon.MRI.ImageITK maskImage = new Raccoon.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
+                NRough.MRI.ImageITK maskImage = new NRough.MRI.ImageITK(imageMaskFilter.Execute(binaryMaskImage));
 
-                Raccoon.MRI.DAL.ImageMask mask = new ImageMask
+                NRough.MRI.DAL.ImageMask mask = new ImageMask
                 {
                     Image = maskImage,
                     MaskItems = imageMaskItems.ToList<MRIMaskItem>()
@@ -254,14 +254,14 @@ namespace Raccoon.MRI.UI
             if (edgeDialog.ShowDialog() == DialogResult.OK)
             {
                 IMiningObjectViewImage selectedMiningObject = this.GetMiningObject(id) as IMiningObjectViewImage;
-                Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)selectedMiningObject.Image;
+                NRough.MRI.ImageITK itkImage = (NRough.MRI.ImageITK)selectedMiningObject.Image;
 
                 EdgeThresholdFilter edgeFilter = new EdgeThresholdFilter(imageEdge.Noise,
                                                                         (double)imageEdge.Foreground,
                                                                         (double)imageEdge.Background);
 
                 itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage.ItkImage);
-                Raccoon.MRI.ImageITK edgeImage = new Raccoon.MRI.ImageITK(edgeFilter.Execute(itkImage.ItkImage));
+                NRough.MRI.ImageITK edgeImage = new NRough.MRI.ImageITK(edgeFilter.Execute(itkImage.ItkImage));
 
                 imageEdge.Image = edgeImage;
 
@@ -306,7 +306,7 @@ namespace Raccoon.MRI.UI
             IMiningObject selectedMiningObject = this.GetMiningObject(id) as IMiningObject;
             IMiningObjectViewImage imageMiningObject = selectedMiningObject as IMiningObjectViewImage;
 
-            Raccoon.MRI.DAL.SOMClustering somClustering = new Raccoon.MRI.DAL.SOMClustering
+            NRough.MRI.DAL.SOMClustering somClustering = new NRough.MRI.DAL.SOMClustering
             {
                 LearningRate = 0.1,
                 NumberOfClusters = 9,
@@ -350,7 +350,7 @@ namespace Raccoon.MRI.UI
 
             HistogramClusteringDialog histClusteringDialog = new HistogramClusteringDialog();
 
-            Raccoon.MRI.DAL.HistogramClustering histClustering = new Raccoon.MRI.DAL.HistogramClustering
+            NRough.MRI.DAL.HistogramClustering histClustering = new NRough.MRI.DAL.HistogramClustering
             {
                 ApproximationDegree = 0,
                 BucketCountWeight = 100,

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     public class MiningObjectImageHistogram : MiningObject, IMiningObjectViewImage
     {

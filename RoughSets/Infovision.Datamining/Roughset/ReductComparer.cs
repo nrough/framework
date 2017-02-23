@@ -1,11 +1,11 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Classification.DecisionLookup;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Classification.DecisionLookup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public abstract class ReductBaseComparer : Comparer<IReduct>, ICloneable
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Raccoon.MachineLearning.Experimenter.Parms
+namespace NRough.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParametersValueEnumerator : IEnumerator

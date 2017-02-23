@@ -1,11 +1,11 @@
-﻿using Raccoon.Data;
+﻿using NRough.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees.Pruning
+namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 {
     public interface IDecisionTreePruning
     {

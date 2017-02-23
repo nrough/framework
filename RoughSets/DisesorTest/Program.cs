@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GenericParsing;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
-using Raccoon.Core.Data;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Discretization;
+using NRough.Data;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
+using NRough.Core.Data;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Discretization;
 
 namespace DisesorTest
 {
@@ -183,16 +183,16 @@ namespace DisesorTest
             Console.WriteLine("Done");
 
             Console.Write("Loading training data store...");
-            DataStore train = DataStore.Load(trainfile_merge, FileFormat.CSV);
+            DataStore train = DataStore.Load(trainfile_merge, DataFormat.CSV);
             Console.WriteLine("Done");
 
             Console.Write("Loading test data...");
-            DataStore test = DataStore.Load(testfile_merge, FileFormat.CSV, train.DataStoreInfo);
+            DataStore test = DataStore.Load(testfile_merge, DataFormat.CSV, train.DataStoreInfo);
             test.SetDecisionFieldId(-1);
             Console.WriteLine("Done");
 
             Console.Write("Loading labels...");
-            DataStore labels = DataStore.Load(labelfile, FileFormat.CSV);
+            DataStore labels = DataStore.Load(labelfile, DataFormat.CSV);
             int decisionFieldId = train.AddColumn<string>(labels.GetColumn<string>(1));
             labels = null;
             train.SetDecisionFieldId(decisionFieldId);

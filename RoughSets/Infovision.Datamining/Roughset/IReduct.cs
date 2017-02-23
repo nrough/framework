@@ -1,8 +1,8 @@
 ﻿using System;
-using Raccoon.Data;
+using NRough.Data;
 using System.Collections.Generic;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public interface IReduct : ICloneable, IComparable
     {        

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
     [Serializable]
     public class DecisionDistribution

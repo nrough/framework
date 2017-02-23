@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of fileLine. Change these key newInstance to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Raccoon.UnitTests")]
+[assembly: AssemblyTitle("NRough.UnitTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Raccoon.UnitTests")]
+[assembly: AssemblyProduct("NRough.UnitTests")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

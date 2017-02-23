@@ -6,7 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class IEnumerableExternsions
     {

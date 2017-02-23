@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     public class ImageMask : MiningObjectViewModel, IMiningObjectViewImage
     {

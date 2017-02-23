@@ -1,16 +1,16 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.Core;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Evaluation;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Evaluation;
 
-namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class ObliviousDecisionTreeTest
@@ -25,7 +25,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void Learn2Test()
         {
-            var data = DataStore.Load(@"Data\nursery.2.data", FileFormat.RSES1);
+            var data = DataStore.Load(@"Data\nursery.2.data", DataFormat.RSES1);
             var tree = new ObliviousDecisionTree();
             var cv = new CrossValidation(data);
             cv.PostLearningMethod = ObliviousDecisionTreeTest.PrintTree;
@@ -36,9 +36,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void TestObliviousTreeDepth()
         {
-            DataStore data = DataStore.Load(@"Data\spect.train", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\spect.train", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\spect.test", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\spect.test", DataFormat.RSES1, data.DataStoreInfo);
 
             int[] attributes = new int[] { 19, 20, 16, 21, 17, 14, 8, 18, 9, 2, 13 };
 
@@ -71,9 +71,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             Console.WriteLine("Obilivious Decision Tree");
 
-            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
+            DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();                        
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
@@ -149,9 +149,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             double reductEpsilon = 0.05;
             int numOfReducts = 100;
 
-            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
+            DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();

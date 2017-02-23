@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     [Serializable]
     public class Range<T>

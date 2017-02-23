@@ -1,11 +1,11 @@
-﻿using Raccoon.Data;
+﻿using NRough.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification
+namespace NRough.MachineLearning.Classification
 {
     [Serializable]
     public class ConstDecision : ClassificationModelBase, IPredictionModel, ILearner, ICloneable

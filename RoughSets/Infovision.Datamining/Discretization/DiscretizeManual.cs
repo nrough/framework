@@ -1,7 +1,7 @@
 ﻿using System;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Discretization
+namespace NRough.MachineLearning.Discretization
 {
     /// <summary>
     /// Manual discretization. Cuts must be given by the user explicitly. 

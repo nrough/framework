@@ -8,7 +8,7 @@ using System.Text;
 //using System.Windows.Media.Imaging;
 using itk.simple;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public class SimpleITKHelper
     {

@@ -5,16 +5,16 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using GenericParsing;
-using Raccoon.Data;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MRI;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Roughset;
+using NRough.MRI;
+using NRough.Core;
 using itk.simple;
-using Raccoon.Core.Data;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
+using NRough.Core.Data;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
 
 namespace MRIExceptions
 {
@@ -324,7 +324,7 @@ namespace MRIExceptions
 
             DataTable dataTable = featureExtractor.GetDataTable();
             dataTable.Dumb(trainFileName, ";");
-            DataStore trainingData = DataStore.Load(trainFileName, FileFormat.CSV);
+            DataStore trainingData = DataStore.Load(trainFileName, DataFormat.CSV);
 
             trainingData.SetDecisionFieldId(22);
 
@@ -379,7 +379,7 @@ namespace MRIExceptions
 
             DataTable testDataTable = featureExtractorTest.GetDataTable();
             testDataTable.Dumb(testFileName, ";");
-            DataStore testData = DataStore.Load(testFileName, FileFormat.CSV, trainingData.DataStoreInfo);
+            DataStore testData = DataStore.Load(testFileName, DataFormat.CSV, trainingData.DataStoreInfo);
 
             testData.SetDecisionFieldId(22);
 

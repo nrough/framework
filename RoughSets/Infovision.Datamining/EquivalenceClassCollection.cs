@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
     [Serializable]
     public class EquivalenceClassCollection : IEnumerable<EquivalenceClass>, ICloneable

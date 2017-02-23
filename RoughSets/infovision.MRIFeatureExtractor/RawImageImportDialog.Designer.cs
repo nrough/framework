@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class RawImageImportDialog
     {
@@ -108,7 +108,7 @@
             // 
             // imageBindingSource
             // 
-            this.imageBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageRead);
+            this.imageBindingSource.DataSource = typeof(NRough.MRI.DAL.ImageRead);
             this.imageBindingSource.CurrentChanged += new System.EventHandler(this.imageMetaDataBindingSource_CurrentChanged);
             // 
             // label4

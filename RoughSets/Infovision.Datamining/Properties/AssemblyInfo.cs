@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Raccoon.MachineLearning")]
+[assembly: AssemblyTitle("NRough.MachineLearning")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Raccoon.MachineLearning")]
+[assembly: AssemblyProduct("NRough.MachineLearning")]
 [assembly: AssemblyCopyright("Copyright © 2012-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -36,6 +36,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: CLSCompliantAttribute(true)]
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
 }

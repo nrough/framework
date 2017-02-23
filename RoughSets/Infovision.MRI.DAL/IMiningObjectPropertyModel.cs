@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     internal interface IMiningObjectViewModel : INotifyPropertyChanged
     {

@@ -1,5 +1,5 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Discretization;
+﻿using NRough.Data;
+using NRough.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     public abstract class DiscretizeUnsupervisedTest : DiscretizeBaseTest
     {
-        [TestCase(@"Data\german.data", FileFormat.CSV, null)]
-        public void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, int[] fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, null)]
+        public void CreateDiscretizedDataTableTest(string filename, DataFormat fileFormat, int[] fields)
         {            
             DataStore data = DataStore.Load(filename, fileFormat);            
             DataSplitter splitter = new DataSplitter(data, 5);

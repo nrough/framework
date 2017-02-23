@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Data;
+using NRough.Data;
 
-namespace Raccoon.MachineLearning.Classification.DecisionLookup
+namespace NRough.MachineLearning.Classification.DecisionLookup
 {
     public class DecisionLookupMajority : DecisionLookup
     {

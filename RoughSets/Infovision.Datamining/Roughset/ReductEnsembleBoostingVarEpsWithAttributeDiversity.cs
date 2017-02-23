@@ -1,9 +1,9 @@
 ﻿using System;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public class ReductEnsembleBoostingVarEpsWithAttributeDiversityGenerator : ReductEnsembleBoostingVarEpsGenerator
     {

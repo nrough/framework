@@ -1,6 +1,6 @@
 ﻿using itk.simple;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public class MRIMaskBinaryImageFilter
     {

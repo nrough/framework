@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Clustering.Hierarchical;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Clustering.Hierarchical;
+using NRough.Math;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductEnsembleGeneratorTest
@@ -24,7 +24,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 2;

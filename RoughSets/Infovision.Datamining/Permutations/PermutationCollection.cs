@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Raccoon.Core;
+using NRough.Core;
 //using Newtonsoft.Json.Linq;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     [Serializable]
     public class PermutationCollection : ICloneable, IEnumerable<Permutation>

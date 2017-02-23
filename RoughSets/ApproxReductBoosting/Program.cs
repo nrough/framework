@@ -1,12 +1,12 @@
 ﻿using System;
-using Raccoon.Data;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.MissingValues;
+using NRough.Data;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.MissingValues;
 
 namespace ApproxReductBoosting
 {
@@ -20,7 +20,7 @@ namespace ApproxReductBoosting
             int maxNumberOfIterations = Int32.Parse(args[3]);
             int startIteration = Int32.Parse(args[4]);
             int iterationStep = Int32.Parse(args[5]);
-            FileFormat fileFormat = args.Length >= 7 ? (FileFormat)Int32.Parse(args[6]) : FileFormat.RSES1;
+            DataFormat fileFormat = args.Length >= 7 ? (DataFormat)Int32.Parse(args[6]) : DataFormat.RSES1;
             int decisionPosition = args.Length >= 8 ? Int32.Parse(args[7]) : -1;
 
             if (startIteration < 1)

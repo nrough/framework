@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
     [Serializable]
     public abstract class ModelBase : IModel, ICloneable

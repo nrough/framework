@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public interface IReductStore : IEnumerable<IReduct>
     {

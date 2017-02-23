@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductGeneratorMeasure : ReductGenerator
@@ -95,7 +95,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             IReductStore reductStore = this.CreateReductStore(permutationList.Count);

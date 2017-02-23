@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.MachineLearning;
-using Raccoon.MachineLearning.Benchmark;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
+using NRough.MachineLearning;
+using NRough.MachineLearning.Benchmark;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Discretization;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Discretization;
 
-namespace Raccoon.Data.Tests
+namespace NRough.Data.Tests
 {
     [TestFixture]
     internal class DiscretizeTest

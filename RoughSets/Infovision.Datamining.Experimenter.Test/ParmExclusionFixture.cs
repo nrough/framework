@@ -1,7 +1,7 @@
-﻿using Raccoon.MachineLearning.Experimenter.Parms;
+﻿using NRough.MachineLearning.Experimenter.Parms;
 using NUnit.Framework;
 
-namespace Raccoon.MachineLearning.Experimenter.Test
+namespace NRough.MachineLearning.Experimenter.Test
 {
     [TestFixture]
     internal class ParmExclusionFixture

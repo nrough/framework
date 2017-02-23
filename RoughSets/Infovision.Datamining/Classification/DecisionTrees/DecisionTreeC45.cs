@@ -1,9 +1,9 @@
-﻿using Raccoon.Math;
+﻿using NRough.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {            
     /// <summary>
     /// C4.5 Tree Implemetation

@@ -1,13 +1,13 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.Math;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Clustering
+namespace NRough.MachineLearning.Clustering
 {
     /// <summary>
     /// https://visualstudiomagazine.com/Articles/2013/12/01/K-Means-Data-Clustering-Using-C.aspx?p=1

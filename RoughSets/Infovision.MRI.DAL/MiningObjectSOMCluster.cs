@@ -4,9 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Raccoon.Datamining.Roughset;
+using NRough.Datamining.Roughset;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     public class MiningObjectSOMCluster : MiningObject
     {

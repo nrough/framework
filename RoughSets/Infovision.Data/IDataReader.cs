@@ -1,4 +1,4 @@
-﻿namespace Raccoon.Data
+﻿namespace NRough.Data
 {
     public interface IDataReader
     {
@@ -8,7 +8,6 @@
         string MissingValue { get; set; }
         DataStoreInfo ReferenceDataStoreInfo { get; set; }
 
-        DataStoreInfo Analyze();
-        void Load(DataStore dataStore, DataStoreInfo dataStoreInfo);
+        DataStore Read();        
     }
 }

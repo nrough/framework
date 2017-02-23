@@ -1,7 +1,7 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning
+namespace NRough.MachineLearning
 {
     public interface ILearner
     {

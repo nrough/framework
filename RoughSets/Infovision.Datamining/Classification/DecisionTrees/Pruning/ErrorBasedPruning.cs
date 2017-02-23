@@ -1,6 +1,6 @@
-﻿using Raccoon.Data;
-using Raccoon.Math;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Math;
+using NRough.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees.Pruning
+namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 {
     public class ErrorBasedPruning : DecisionTreePruningBase
     {       

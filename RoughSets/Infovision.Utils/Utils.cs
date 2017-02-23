@@ -10,7 +10,7 @@ using System.Management;
 using System.Reflection;
 using System.Text;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     public static class EnumHelper
     {
@@ -153,7 +153,7 @@ namespace Raccoon.Core
         }
     }
 
-    public static class RaccoonHelper
+    public static class MiscHelper
     {
         public static int NumberOfCores()
         {

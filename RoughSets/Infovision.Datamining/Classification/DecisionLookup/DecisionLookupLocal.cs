@@ -1,12 +1,12 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification.DecisionTrees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionLookup
+namespace NRough.MachineLearning.Classification.DecisionLookup
 {
     public class DecisionLookupLocal : ClassificationModelBase, ILearner, IPredictionModel
     {

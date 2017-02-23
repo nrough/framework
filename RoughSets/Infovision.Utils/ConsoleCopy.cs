@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     /// <summary>
     /// http://stackoverflow.com/questions/420429/mirroring-console-output-to-a-file
@@ -16,6 +16,7 @@ namespace Raccoon.Core
         private StreamWriter fileWriter;
         private TextWriter doubleWriter;
         private TextWriter oldOut;
+        private bool isDisposed;
 
         class DoubleWriter : TextWriter
         {
@@ -67,21 +68,45 @@ namespace Raccoon.Core
             Console.SetOut(doubleWriter);
         }
 
+
         public void Dispose()
         {
-            Console.SetOut(oldOut);
-            if (fileWriter != null)
-            {
-                fileWriter.Flush();
-                fileWriter.Close();
-                fileWriter = null;
-            }
-            if (fileStream != null)
-            {
-                fileStream.Close();
-                fileStream = null;
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!isDisposed)
+            {
+                if (disposing)
+                {
+                    Console.SetOut(oldOut);
+                    if (fileWriter != null)
+                    {
+                        fileWriter.Flush();
+                        fileWriter.Close();
+                        //fileWriter.Dispose();
+                        fileWriter = null;
+                    }
+                    if (fileStream != null)
+                    {
+                        fileStream.Close();
+                        //fileStream.Dispose();
+                        fileStream = null;
+                    }
+
+                    if (doubleWriter != null)
+                    {
+                        doubleWriter.Close();
+                        //doubleWriter.Dispose();
+                        doubleWriter = null;
+                    }
+                }
+                    
+                isDisposed = true;
+            }
+        }
+        
     }
 }

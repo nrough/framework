@@ -1,10 +1,10 @@
 ﻿using System;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Weighting;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Weighting;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public class ReductRandomSubsetGenerator : ReductGenerator
     {

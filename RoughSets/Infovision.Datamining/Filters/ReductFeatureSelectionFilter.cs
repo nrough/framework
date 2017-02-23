@@ -1,12 +1,12 @@
-﻿using Raccoon.Core;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Roughset;
+﻿using NRough.Core;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughset;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Raccoon.Data.Filters
+namespace NRough.Data.Filters
 {
     [Serializable]
     public class ReductFeatureSelectionFilter : IFilter

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     [Flags]
     public enum FieldGroup
@@ -41,7 +41,7 @@ namespace Raccoon.Data
                                     continue;
                                 }
 
-                                if (RaccoonHelper.IsPowerOfTwo((long)ft))
+                                if (MiscHelper.IsPowerOfTwo((long)ft))
                                 {
                                     basicTypes.Add(ft);
                                 }

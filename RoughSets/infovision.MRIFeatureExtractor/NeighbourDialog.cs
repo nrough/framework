@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public partial class NeighbourDialog : DialogForm
     {

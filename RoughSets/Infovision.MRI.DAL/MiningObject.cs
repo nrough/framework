@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     [Serializable]
     public class MiningObject : IMiningObject

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Xml.Linq;
 
-namespace Raccoon.MRI.DAL
+namespace NRough.MRI.DAL
 {
     public class MiningObjectImageEdge : MiningObject, IMiningObjectViewImage
     {
@@ -72,14 +72,14 @@ namespace Raccoon.MRI.DAL
 
         private void InitImage(IImage sourceImage)
         {
-            Raccoon.MRI.ImageITK itkImage = (Raccoon.MRI.ImageITK)sourceImage;
+            NRough.MRI.ImageITK itkImage = (NRough.MRI.ImageITK)sourceImage;
 
             EdgeThresholdFilter edgeFilter = new EdgeThresholdFilter(this.Noise,
                                                                 (double)this.Foreground,
                                                                 (double)this.Background);
 
             //itk.simple.Image binaryMaskImage = new MRIMaskBinaryImageFilter().Execute(itkImage);
-            Raccoon.MRI.ImageITK edgeImage = new Raccoon.MRI.ImageITK(edgeFilter.Execute(itkImage));
+            NRough.MRI.ImageITK edgeImage = new NRough.MRI.ImageITK(edgeFilter.Execute(itkImage));
 
             this.Image = edgeImage;
         }

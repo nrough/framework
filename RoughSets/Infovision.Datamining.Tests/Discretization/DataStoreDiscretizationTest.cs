@@ -1,5 +1,5 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Discretization;
+﻿using NRough.Data;
+using NRough.MachineLearning.Discretization;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     [TestFixture]
     public class DataStoreDiscretizationTest
     {
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
-        public void DiscretizeTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2 })]
+        public void DiscretizeTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
 
@@ -36,8 +36,8 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             }
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
-        public void AddNewColumnsTest(string filename, FileFormat fileFormat, IEnumerable<int> fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2 })]
+        public void AddNewColumnsTest(string filename, DataFormat fileFormat, IEnumerable<int> fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
             int numberOfFields = data.DataStoreInfo.NumberOfFields;
@@ -65,8 +65,8 @@ namespace Raccoon.MachineLearning.Tests.Discretization
             discretizer.Discretize(data);            
         }
 
-        [TestCase(@"Data\german.data", FileFormat.CSV, new int[] { 2 })]
-        public void CreateDiscretizedDataTableTest(string filename, FileFormat fileFormat, int[] fields)
+        [TestCase(@"Data\german.data", DataFormat.CSV, new int[] { 2 })]
+        public void CreateDiscretizedDataTableTest(string filename, DataFormat fileFormat, int[] fields)
         {
             DataStore data = DataStore.Load(filename, fileFormat);
             DataSplitter splitter = new DataSplitter(data, 5);

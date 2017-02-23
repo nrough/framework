@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public delegate double FMeasure(EquivalenceClassCollection eqClasses);
 
@@ -192,12 +192,10 @@ namespace Raccoon.MachineLearning.Roughset
             {
                 maxValue = Double.MinValue;
                 foreach (long decisionValue in e.DecisionValues)
-                {
-                    //relativeCount = (double) e.GetNumberOfObjectsWithDecision(decisionValue) / (double)reduct.EquivalenceClasses.CountDecision(decisionValue);
-                    relativeCount = (double)e.GetNumberOfObjectsWithDecision(decisionValue) 
-                        / reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue]
-
-                    reduct.EquivalenceClasses.NumberOfObjects
+                {                    
+                    relativeCount =
+                        (double)e.GetNumberOfObjectsWithDecision(decisionValue) /
+                            reduct.DataStore.DataStoreInfo.DecisionInfo.Histogram[decisionValue];
 
                     if (relativeCount > maxValue)
                         maxValue = relativeCount;

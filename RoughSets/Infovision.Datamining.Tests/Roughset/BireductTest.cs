@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Permutations;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Classification;
 using System.Linq;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class BireductTest
@@ -37,8 +37,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna.train";
             string testFileName = @"Data\dna.train";
 
-            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            var dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            var dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            var dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -64,8 +64,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna.train";
             string testFileName = @"Data\dna.train";
 
-            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            var dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            var dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            var dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -104,8 +104,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna.train";
             string testFileName = @"Data\dna.train";
 
-            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            var dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            var dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            var dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
@@ -158,7 +158,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void PrintDecisionRulesTest()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
 
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
@@ -188,7 +188,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void TestBireductGolf_2()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
@@ -307,7 +307,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             \end{table}
              */
 
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
@@ -405,7 +405,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void PrintDecisionRulesForBireduct()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
             localDataStore.DataStoreInfo.GetFieldInfo(3).Alias = "H";
@@ -510,8 +510,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna.train";
             string testFileName = @"Data\dna.train";
 
-            var dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            var dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            var dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            var dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             var dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Raccoon.Data.Tests
+namespace NRough.Data.Tests
 {
     [TestFixture]
     internal class DataStoreTest
@@ -11,7 +11,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void AddColumnTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
             int numOfCols = data.DataStoreInfo.NumberOfFields;
             int[] newColumn = Enumerable.Range(0, data.NumberOfRecords).ToArray();
@@ -23,7 +23,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void AddAndRemoveColumnTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);                        
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);                        
             var data2 = (DataStore) data.Clone();
 
             int[] newColumn = Enumerable.Range(0, data2.NumberOfRecords).ToArray();
@@ -46,7 +46,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void CloneTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             var data2 = (DataStore)data.Clone();
 
             Assert.IsNotNull(data2);
@@ -68,7 +68,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void RemoveColumnTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);            
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);            
             var data2 = (DataStore) data.Clone();
 
             data2.RemoveColumn(1);
@@ -87,7 +87,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void NumericAttributeTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
 
             Assert.IsTrue(data.DataStoreInfo.GetFieldInfo(2).IsNumeric, "Field 2 is not numeric");
@@ -121,7 +121,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void TestNumbercInternalValueEncoding()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
             Assert.AreEqual(data.GetFieldIndexValue(1, 1), 48);
         }
@@ -129,7 +129,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void ToDoubleArrayTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
 
             double[][] rawData = data.ToArray<double>();
@@ -149,7 +149,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void ToLongArrayTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
 
             long[][] rawData = data.ToArray<long>();
@@ -169,7 +169,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void ToIntArrayTest()
         {
-            var data = DataStore.Load(@"data\german.data", FileFormat.CSV);
+            var data = DataStore.Load(@"data\german.data", DataFormat.CSV);
             Assert.NotNull(data);
 
             int[][] rawData = data.ToArray<int>();
@@ -192,8 +192,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -230,8 +230,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -297,8 +297,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -323,8 +323,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -352,8 +352,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -390,8 +390,8 @@ namespace Raccoon.Data.Tests
             string trainFileName = @"Data\monks-1.train";
             string testFileName = @"Data\monks-1.test";
 
-            DataStore dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            DataStore dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
@@ -427,7 +427,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void OrderByTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             int[][] orderBy = new int[][]
             {
@@ -458,7 +458,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void CopyTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore data2 = DataStore.Copy(data, 0, data.NumberOfRecords);
             int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
 
@@ -479,7 +479,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void SwapTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
                 for (int j = 0; j < data.NumberOfRecords; j++)
@@ -501,7 +501,7 @@ namespace Raccoon.Data.Tests
         [Test]
         public void ShuffleTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             data.Shuffle();
         }
     }

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Raccoon.MachineLearning.Experimenter.Parms;
-using Raccoon.Core;
+using NRough.MachineLearning.Experimenter.Parms;
+using NRough.Core;
 using itk.simple;
 using NUnit.Framework;
-using Raccoon.Core.Data;
+using NRough.Core.Data;
 
-namespace Raccoon.MRI.UnitTests
+namespace NRough.MRI.UnitTests
 {
     [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     public class FeatureExtractorTest

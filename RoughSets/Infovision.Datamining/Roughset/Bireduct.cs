@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class Bireduct : Reduct
@@ -206,7 +206,7 @@ namespace Raccoon.MachineLearning.Roughset
                                                                    return this.DataStore.ObjectIndex2ObjectId(i);
                                                                }
                                                               );
-            stringBuilder.Append(RaccoonHelper.IntArray2Ranges(objectIds));
+            stringBuilder.Append(MiscHelper.IntArray2Ranges(objectIds));
             stringBuilder.Append('}');
             stringBuilder.Append(')');
 

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Roughset;
+using NRough.Data;
+using NRough.Core;
+using NRough.MachineLearning.Roughset;
 
-namespace Raccoon.MachineLearning.Permutations
+namespace NRough.MachineLearning.Permutations
 {
     public class PermutationGeneratorEnsemble : PermutationGenerator
     {

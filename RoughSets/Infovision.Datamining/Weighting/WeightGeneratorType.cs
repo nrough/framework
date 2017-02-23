@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MachineLearning.Weighting
+﻿namespace NRough.MachineLearning.Weighting
 {
     public enum WeightGeneratorType : int
     {

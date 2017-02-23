@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using RDotNet;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class RNetTest

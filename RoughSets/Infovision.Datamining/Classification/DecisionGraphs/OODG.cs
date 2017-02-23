@@ -1,11 +1,11 @@
-﻿using Raccoon.Data;
+﻿using NRough.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.DecisionGraphs
+namespace NRough.MachineLearning.Classification.DecisionGraphs
 {
     public class OODG : ModelBase, ILearner, IPredictionModel
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Raccoon.Core;
+using NRough.Core;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     /// <summary>
     /// Provides meta information about dataset

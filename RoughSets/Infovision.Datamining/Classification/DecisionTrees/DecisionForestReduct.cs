@@ -1,14 +1,14 @@
-﻿using Raccoon.Data;
-using Raccoon.Core;
+﻿using NRough.Data;
+using NRough.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     /// <summary>
     /// Generates <i>NumberOfPermutationsPerTree</i> Reducts with <i>Epsilon</i><br /> 

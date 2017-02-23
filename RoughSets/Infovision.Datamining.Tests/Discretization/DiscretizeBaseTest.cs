@@ -1,11 +1,11 @@
-﻿using Raccoon.MachineLearning.Discretization;
+﻿using NRough.MachineLearning.Discretization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Tests.Discretization
+namespace NRough.MachineLearning.Tests.Discretization
 {
     public abstract class DiscretizeBaseTest
     {

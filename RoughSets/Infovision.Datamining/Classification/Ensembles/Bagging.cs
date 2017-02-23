@@ -1,12 +1,12 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
+﻿using NRough.Data;
+using NRough.MachineLearning.Classification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.Ensembles
+namespace NRough.MachineLearning.Classification.Ensembles
 {
     public class Bagging<TModel> : EnsembleBase
         where TModel : ILearner, IPredictionModel, ICloneable

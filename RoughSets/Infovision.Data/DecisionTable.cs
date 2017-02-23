@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     public class TmpDecisionTable<T>
-        where T : IDataStore
+        where T : IDataStorage
     {
-        IDataStore data;
+        IDataStorage data;
 
         public TmpDecisionTable(T dataStore)
         {

@@ -1,4 +1,4 @@
-﻿namespace Raccoon.Math
+﻿namespace NRough.Math
 {
     public enum AgregateFunction
     {

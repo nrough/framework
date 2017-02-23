@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.UI
+﻿namespace NRough.MRI.UI
 {
     partial class ImageMaskDialog
     {
@@ -173,7 +173,7 @@
             // 
             // imageMaskItemsBindingSource
             // 
-            this.imageMaskItemsBindingSource.DataSource = typeof(Raccoon.MRI.DAL.ImageMaskItems);
+            this.imageMaskItemsBindingSource.DataSource = typeof(NRough.MRI.DAL.ImageMaskItems);
             // 
             // ImageMaskDialog
             // 

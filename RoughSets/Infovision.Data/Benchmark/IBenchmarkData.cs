@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Data.Benchmark
+namespace NRough.Data.Benchmark
 {
     public interface IBenchmarkData
     {

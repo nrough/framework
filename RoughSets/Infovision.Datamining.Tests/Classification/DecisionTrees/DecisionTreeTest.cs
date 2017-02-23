@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
-using Raccoon.MachineLearning.Classification.DecisionLookup;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
+using NRough.MachineLearning.Classification.DecisionLookup;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughset;
 
-namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest
@@ -26,9 +26,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             
-            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
+            DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
@@ -119,9 +119,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             //Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\treeComparisonTest.log"));
 
-            DataStore data = DataStore.Load(trainFile, FileFormat.RSES1);
+            DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(testFile, FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
@@ -238,7 +238,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionTreeRoughForNumericAttributeTest()
         {            
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
             
             for (double eps = 0.0; eps < 0.5; eps += 0.01)
@@ -267,7 +267,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionTreeC45ForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, tmp = null, prune = null, test = null;
 
             double error = 0;
@@ -297,7 +297,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionTreeC45NoPruningForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
             double error = 0;
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -321,7 +321,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -343,7 +343,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void DecisionForestRoughForNumericAttributeTest()
         {
             int numOfFolds = 5;
-            DataStore data = DataStore.Load(@"Data\german.data", FileFormat.CSV);
+            DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
@@ -365,12 +365,12 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void TreeLearnPerformanceTest()
         {
-            RaccoonConfiguration.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            ConfigManager.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.Combine(path, "Data", "dna_modified.trn");
 
-            DataStore data = DataStore.Load(path, FileFormat.RSES1);
+            DataStore data = DataStore.Load(path, DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
 
             int total = 20;
@@ -398,9 +398,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         {
             Console.WriteLine("CountLeavesTest");
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
@@ -410,7 +410,7 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void GetRulesFromTreeTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
             int prevCount = Int32.MaxValue;
@@ -434,9 +434,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         [Test]
         public void CheckTreeConvergedTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
 
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
@@ -461,9 +461,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         {
             Console.WriteLine("ID3LearnTest");
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Gamma = 0;
@@ -478,9 +478,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void C45LearnTest()
         {            
             Console.WriteLine("C45LearnTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);            
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);            
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.MaxHeight = 3;
@@ -497,9 +497,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
         public void CARTLearnTest()
         {
             Console.WriteLine("CARTLearnTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DataStore train = null, validation = null;
             DataSplitter splitter = new DataSplitterRatio(data, 0.5);
@@ -523,9 +523,9 @@ namespace Raccoon.MachineLearning.Tests.Classification.DecisionTrees
 
             int maxHeight = -1;
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", FileFormat.RSES1);
+            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            DataStore test = DataStore.Load(@"Data\dna_modified.tst", FileFormat.RSES1, data.DataStoreInfo);
+            DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DataStore prune = null, train = null;
             DataSplitter splitter = new DataSplitterRatio(data, 0.5);

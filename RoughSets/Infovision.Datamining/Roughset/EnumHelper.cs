@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     public static class EnumHelper
     {

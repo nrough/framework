@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
-using Raccoon.Math;
+using NRough.Data;
+using NRough.Core;
+using NRough.Math;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public abstract class ReductStoreBase : IReductStore

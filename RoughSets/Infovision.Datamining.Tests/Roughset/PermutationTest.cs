@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class PermutationTest
@@ -15,7 +15,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
 
         public PermutationTest()
         {
-            dataStore = DataStore.Load(@"Data\monks-1.train", FileFormat.RSES1);            
+            dataStore = DataStore.Load(@"Data\monks-1.train", DataFormat.RSES1);            
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
         }
 

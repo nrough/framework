@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-namespace Raccoon.MRI
+namespace NRough.MRI
 {
     public class ImageFeatureExtractor
     {

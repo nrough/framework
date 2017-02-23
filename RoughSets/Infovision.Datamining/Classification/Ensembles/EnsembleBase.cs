@@ -1,14 +1,14 @@
-﻿using Raccoon.Core;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Roughset;
+﻿using NRough.Core;
+using NRough.Data;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughset;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.MachineLearning.Classification.Ensembles
+namespace NRough.MachineLearning.Classification.Ensembles
 {
     public abstract class EnsembleBase 
         : ClassificationModelBase, ILearner, IPredictionModel, IEnumerable<IPredictionModel>

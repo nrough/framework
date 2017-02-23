@@ -1,24 +1,24 @@
-﻿using Raccoon.Data;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.MachineLearning.Classification.DecisionTrees;
-using Raccoon.MachineLearning.Classification.DecisionTrees.Pruning;
+﻿using NRough.Data;
+using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Classification.DecisionTrees;
+using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.Evaluation;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Evaluation;
 
-namespace Raccoon.MachineLearning.Tests
+namespace NRough.MachineLearning.Tests
 {
     [TestFixture]
     public class CrossValidationTest
     {
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
-        public void RunTest(string dataFile, FileFormat fileFormat)
+        [TestCase(@"Data\chess.data", DataFormat.RSES1)]
+        public void RunTest(string dataFile, DataFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -29,8 +29,8 @@ namespace Raccoon.MachineLearning.Tests
 
 
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
-        public void RunTestWithSplitter(string dataFile, FileFormat fileFormat)
+        [TestCase(@"Data\chess.data", DataFormat.RSES1)]
+        public void RunTestWithSplitter(string dataFile, DataFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -46,8 +46,8 @@ namespace Raccoon.MachineLearning.Tests
         }
 
         [Test, Repeat(1)]
-        [TestCase(@"Data\chess.data", FileFormat.RSES1)]
-        public void RunTestWithFolds(string dataFile, FileFormat fileFormat)
+        [TestCase(@"Data\chess.data", DataFormat.RSES1)]
+        public void RunTestWithFolds(string dataFile, DataFormat fileFormat)
         {
             Console.WriteLine(ClassificationResult.TableHeader());
             DataStore data = DataStore.Load(dataFile, fileFormat);            

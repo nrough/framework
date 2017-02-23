@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raccoon.Math;
-using Raccoon.Core;
+using NRough.Math;
+using NRough.Core;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
     public class DataSampler
     {

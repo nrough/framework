@@ -1,4 +1,4 @@
-﻿namespace Raccoon.MRI.DAL
+﻿namespace NRough.MRI.DAL
 {
     public class ImageHelper
     {

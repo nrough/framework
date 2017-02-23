@@ -1,8 +1,8 @@
 ﻿using System;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Weighting;
+using NRough.Core;
+using NRough.MachineLearning.Weighting;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class ReductGeneratorWeights : ReductGeneratorMeasure

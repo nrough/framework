@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Classification;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     public class RoughClassifierTest
@@ -59,8 +59,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
                             default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
-                        DataStore trainData = DataStore.Load(trainFileName, FileFormat.RSES1);
-                        DataStore testData = DataStore.Load(testFileName, FileFormat.RSES1, trainData.DataStoreInfo);
+                        DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
+                        DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 
                         Args args = new Args();
                         args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
@@ -107,8 +107,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             RuleQualityMethod identificationFunc = RuleQualityMethods.ConfidenceW;
             RuleQualityMethod voteFunc = RuleQualityMethods.ConfidenceW;
 
-            DataStore trainData = DataStore.Load(trainFileName, FileFormat.RSES1);
-            DataStore testData = DataStore.Load(testFileName, FileFormat.RSES1, trainData.DataStoreInfo);
+            DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
+            DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, trainData);

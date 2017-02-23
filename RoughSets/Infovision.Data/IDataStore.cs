@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Raccoon.Data
+namespace NRough.Data
 {
-    public interface IDataStore
+    public interface IDataStorage
     {
     }
 }

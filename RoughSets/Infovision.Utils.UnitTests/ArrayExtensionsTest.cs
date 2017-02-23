@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Raccoon.Core.Tests
+namespace NRough.Core.Tests
 {
     [TestFixture]
     internal class ArrayExtensionsTest

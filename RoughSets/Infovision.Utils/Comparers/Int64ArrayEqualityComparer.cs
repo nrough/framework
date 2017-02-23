@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     [Serializable]
     public class Int64ArrayEqualityComparer : IEqualityComparer<long[]>

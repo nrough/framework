@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class Reduct : IReduct, IFormattable
@@ -69,12 +69,12 @@ namespace Raccoon.MachineLearning.Roughset
             }
         }
 
-        public virtual bool IsEquivalenceClassCollectionCalculated
+        public bool IsEquivalenceClassCollectionCalculated
         {
             get { return this.eqClassMap != null; }
         }
 
-        public virtual bool IsException { get; set; }
+        public bool IsException { get; set; }
 
         #endregion Properties
 

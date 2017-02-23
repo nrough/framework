@@ -5,18 +5,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Raccoon.Data;
-using Raccoon.Math;
-using Raccoon.Core;
-using Raccoon.MachineLearning.Classification;
+using NRough.Data;
+using NRough.Math;
+using NRough.Core;
+using NRough.MachineLearning.Classification;
 
-namespace Raccoon.MachineLearning.Roughset
+namespace NRough.MachineLearning.Roughset
 {
     [Serializable]
     public class RoughClassifier
     {
         #region Members
 
+        [NonSerialized]
         protected readonly Stopwatch timer = new Stopwatch();
 
         private int numberOfModels;
@@ -140,7 +141,7 @@ namespace Raccoon.MachineLearning.Roughset
 
             ParallelOptions options = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = RaccoonConfiguration.MaxDegreeOfParallelism
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
             if (weights == null)

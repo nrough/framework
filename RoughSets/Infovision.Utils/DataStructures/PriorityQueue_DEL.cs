@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     [Serializable]
     public class PriorityQueue_DEL<TKey, TValue>

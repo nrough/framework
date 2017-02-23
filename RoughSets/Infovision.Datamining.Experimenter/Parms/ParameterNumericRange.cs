@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Globalization;
 
-namespace Raccoon.MachineLearning.Experimenter.Parms
+namespace NRough.MachineLearning.Experimenter.Parms
 {
     [Serializable]
     public class ParameterNumericRange<T> : ParameterBase<T>

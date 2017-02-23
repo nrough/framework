@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Raccoon.MachineLearning.Classification.DecisionTrees
+namespace NRough.MachineLearning.Classification.DecisionTrees
 {
     /// <summary>
     /// Interface of a decision tree

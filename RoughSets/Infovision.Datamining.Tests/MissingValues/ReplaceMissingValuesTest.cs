@@ -1,13 +1,13 @@
 ﻿using System.IO;
-using Raccoon.Data;
-using Raccoon.MachineLearning.Roughset;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.MachineLearning.Roughset;
+using NRough.Core;
 using NUnit.Framework;
-using Raccoon.MachineLearning.Weighting;
-using Raccoon.MachineLearning.Classification;
-using Raccoon.MachineLearning.MissingValues;
+using NRough.MachineLearning.Weighting;
+using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.MissingValues;
 
-namespace Raccoon.MachineLearning.Tests.MissingValues
+namespace NRough.MachineLearning.Tests.MissingValues
 {
     [TestFixture]
     public class ReplaceMissingValuesTest
@@ -15,8 +15,8 @@ namespace Raccoon.MachineLearning.Tests.MissingValues
         [Test]
         public void ComputeTest()
         {
-            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", FileFormat.CSV);
-            DataStore tstData = DataStore.Load(@"Data\soybean-large.test", FileFormat.CSV, trnData.DataStoreInfo);
+            DataStore trnData = DataStore.Load(@"Data\soybean-large.data", DataFormat.CSV);
+            DataStore tstData = DataStore.Load(@"Data\soybean-large.test", DataFormat.CSV, trnData.DataStoreInfo);
             trnData.SetDecisionFieldId(1);
             tstData.SetDecisionFieldId(1);
 

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using CommandLine;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public sealed class CommandLineOptions
     {
@@ -12,7 +12,7 @@ namespace Raccoon.MRI.UI
         public string GetUsage()
         {
             var usage = new StringBuilder();
-            usage.AppendLine("MRI Raccoon 1.0");
+            usage.AppendLine("MRI NRough 1.0");
             usage.AppendLine("Read user manual for usage instructions...");
             return usage.ToString();
         }

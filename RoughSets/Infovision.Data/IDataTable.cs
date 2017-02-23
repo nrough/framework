@@ -1,4 +1,4 @@
-﻿namespace Raccoon.Data
+﻿namespace NRough.Data
 {
     public interface IDataTable
     {

@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Raccoon.Core
+namespace NRough.Core
 {
     /// <summary>
     /// Priority Queue data structure

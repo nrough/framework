@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Raccoon.Data;
-using Raccoon.Core;
+using NRough.Data;
+using NRough.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
-using Raccoon.MachineLearning.Permutations;
+using NRough.MachineLearning.Permutations;
 
-namespace Raccoon.MachineLearning.Roughset.UnitTests
+namespace NRough.MachineLearning.Roughset.UnitTests
 {
     [TestFixture]
     internal class ReductGeneratorTest
@@ -25,8 +25,8 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             string trainFileName = @"Data\dna.train";
             string testFileName = @"Data\dna.test";
 
-            dataStoreTrain = DataStore.Load(trainFileName, FileFormat.RSES1);
-            dataStoreTest = DataStore.Load(testFileName, FileFormat.RSES1, dataStoreTrain.DataStoreInfo);
+            dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             Args parms = new Args();
             parms.SetParameter(ReductFactoryOptions.DecisionTable, dataStoreTrain);
@@ -53,7 +53,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
             //if (showInfo)
             //    Console.WriteLine(factoryKey);
 
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
 
             localDataStore.DataStoreInfo.GetFieldInfo(1).Alias = "O";
             localDataStore.DataStoreInfo.GetFieldInfo(2).Alias = "T";
@@ -128,7 +128,7 @@ namespace Raccoon.MachineLearning.Roughset.UnitTests
         [Test]
         public void TestBireductGolf_2()
         {
-            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", FileFormat.RSES1);
+            DataStore localDataStore = DataStore.Load(@"Data\playgolf.train", DataFormat.RSES1);
 
             PermutationCollection permutationList = new PermutationCollection();
             permutationList.Add(new Permutation(new int[] { -3, 1, 6, 8, 0, -4, 12, 11, 5, 4, 7, 3, 10, 2, 13, 9, -1, -2 }));

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Raccoon.MRI.UI
+namespace NRough.MRI.UI
 {
     public partial class RawImageImportDialog : DialogForm
     {

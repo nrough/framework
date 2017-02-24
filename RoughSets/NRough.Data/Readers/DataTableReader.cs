@@ -23,7 +23,7 @@ namespace NRough.Data.Readers
 
         public override DataStore Read()
         {           
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -117,26 +117,26 @@
     <Compile Include="Discretization\DiscretizeUnsupervisedTest.cs" />
     <Compile Include="MissingValues\ReplaceMissingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Roughset\ApproximateReductTest.cs" />
-    <Compile Include="Roughset\ApproximateReductWeightsTest.cs" />
-    <Compile Include="Roughset\BireductTest.cs" />
+    <Compile Include="Roughsets\ApproximateReductTest.cs" />
+    <Compile Include="Roughsets\ApproximateReductWeightsTest.cs" />
+    <Compile Include="Roughsets\BireductTest.cs" />
     <Compile Include="CodeSamples.cs" />
-    <Compile Include="Roughset\EquivalenceClassTest.cs" />
-    <Compile Include="Roughset\MatrixTest.cs" />
-    <Compile Include="Roughset\PermutationTest.cs" />
-    <Compile Include="Roughset\ReductCacheTest.cs" />
-    <Compile Include="Roughset\ReductDiscernibilityMatrixTest.cs" />
-    <Compile Include="Roughset\ReductEnsembleBoostingTest.cs" />
-    <Compile Include="Roughset\ReductEnsembleExperiment.cs" />
-    <Compile Include="Roughset\ReductEnsembleGeneratorTest.cs" />
-    <Compile Include="Roughset\ReductFactoryTest.cs" />
-    <Compile Include="Roughset\ReductGeneralizedMajorityDecisionApproximateTest.cs" />
-    <Compile Include="Roughset\ReductGeneralizedMajorityDecisionTest.cs" />
-    <Compile Include="Roughset\ReductGeneratorComparisonTest.cs" />
-    <Compile Include="Roughset\ReductGeneratorTest.cs" />
-    <Compile Include="Roughset\RNetTest.cs" />
-    <Compile Include="Roughset\RoughClassifierTest.cs" />
-    <Compile Include="Roughset\WeightGeneratorTest.cs" />
+    <Compile Include="Roughsets\EquivalenceClassTest.cs" />
+    <Compile Include="Roughsets\MatrixTest.cs" />
+    <Compile Include="Roughsets\PermutationTest.cs" />
+    <Compile Include="Roughsets\ReductCacheTest.cs" />
+    <Compile Include="Roughsets\ReductDiscernibilityMatrixTest.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingTest.cs" />
+    <Compile Include="Roughsets\ReductEnsembleExperiment.cs" />
+    <Compile Include="Roughsets\ReductEnsembleGeneratorTest.cs" />
+    <Compile Include="Roughsets\ReductFactoryTest.cs" />
+    <Compile Include="Roughsets\ReductGeneralizedMajorityDecisionApproximateTest.cs" />
+    <Compile Include="Roughsets\ReductGeneralizedMajorityDecisionTest.cs" />
+    <Compile Include="Roughsets\ReductGeneratorComparisonTest.cs" />
+    <Compile Include="Roughsets\ReductGeneratorTest.cs" />
+    <Compile Include="Roughsets\RNetTest.cs" />
+    <Compile Include="Roughsets\RoughClassifierTest.cs" />
+    <Compile Include="Roughsets\WeightGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infovision.Datamining.Experimenter\NRough.MachineLearning.Experimenter.csproj">
@@ -166,7 +166,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <Content Include="Roughset\NLog.config">
+    <Content Include="Roughsets\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

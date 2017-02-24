@@ -77,15 +77,15 @@
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
       <Name>NRough.MachineLearning.Experimenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining\NRough.MachineLearning.csproj">
+    <ProjectReference Include="..\NRough.MachineLearning\NRough.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
       <Name>NRough.MachineLearning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Data\NRough.Data.csproj">
+    <ProjectReference Include="..\NRough.Data\NRough.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>NRough.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\NRough.Core.csproj">
+    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>

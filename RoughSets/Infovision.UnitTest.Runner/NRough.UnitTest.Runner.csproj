@@ -105,23 +105,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.Tests\NRough.Tests.MachineLearning.csproj">
+    <ProjectReference Include="..\NRough.Tests.MachineLearning\NRough.Tests.MachineLearning.csproj">
       <Project>{c32f57fc-32d0-4853-8145-2645a559bf6b}</Project>
       <Name>NRough.Tests.MachineLearning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Datamining\NRough.MachineLearning.csproj">
+    <ProjectReference Include="..\NRough.MachineLearning\NRough.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>
       <Name>NRough.MachineLearning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Data\NRough.Data.csproj">
+    <ProjectReference Include="..\NRough.Data\NRough.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>NRough.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Math\NRough.Math.csproj">
+    <ProjectReference Include="..\NRough.Math\NRough.Math.csproj">
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>NRough.Math</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.Utils\NRough.Core.csproj">
+    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>

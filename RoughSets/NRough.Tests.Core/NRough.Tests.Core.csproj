@@ -71,7 +71,7 @@
     <Compile Include="StringExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Utils\NRough.Core.csproj">
+    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>

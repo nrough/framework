@@ -1,11 +1,11 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Debug" processModel="Default" domainUsage="Default" />
   <Config name="Debug" binpathtype="Auto" runtimeFramework="net-4.0.21006">
-    <assembly path="Infovision.Data.UnitTests\bin\x64\Debug\NRough.Data.UnitTests.dll" />    
-    <assembly path="Infovision.Datamining.Tests\bin\x64\Debug\NRough.Tests.MachineLearning.dll" />
-    <assembly path="Infovision.Core.UnitTests\bin\x64\Debug\NRough.Tests.Core.dll" />
-    <assembly path="Infovision.Tests.Math\bin\x64\Debug\NRough.Tests.Math.dll" />
-    <assembly path="Infovision.MachineLearning.Experimenter.Test\bin\x64\Debug\NRough.MachineLearning.Experimenter.Test.dll" />
+    <assembly path="NRough.Tests.Data\bin\x64\Debug\NRough.Data.UnitTests.dll" />    
+    <assembly path="NRough.Tests.MachineLearning\bin\x64\Debug\NRough.Tests.MachineLearning.dll" />
+    <assembly path="NRough.Tests.Core\bin\x64\Debug\NRough.Tests.Core.dll" />
+    <assembly path="NRough.Tests.Math\bin\x64\Debug\NRough.Tests.Math.dll" />
+    <assembly path="Infovision.Datamining.Experimenter.Test\bin\x64\Debug\NRough.MachineLearning.Experimenter.Test.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

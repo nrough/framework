@@ -80,7 +80,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Math\NRough.Math.csproj">
+    <ProjectReference Include="..\NRough.Math\NRough.Math.csproj">
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>NRough.Math</Name>
     </ProjectReference>

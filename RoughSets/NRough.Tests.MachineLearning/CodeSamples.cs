@@ -14,7 +14,7 @@ using NRough.MachineLearning.Weighting;
 using System;
 using System.Linq;
 
-namespace NRough.Tests.MachineLearning.Roughsets
+namespace NRough.Tests.MachineLearning
 {
     [TestFixture]
     public class CodeSamples
@@ -325,11 +325,11 @@ namespace NRough.Tests.MachineLearning.Roughsets
                 new PermutationCollection(10,
                     train.SelectAttributes(a => a.IsStandard)
                         .Select(f => f.Id).ToArray()));
-            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, 
+                true);
 
             //generate reducts with exceptions
-            var reductGenerator = ReductFactory.GetReductGenerator(parms)
-                as ReductGeneralizedMajorityDecisionGenerator;
+            var reductGenerator = ReductFactory.GetReductGenerator(parms);
             var reducts = reductGenerator.GetReducts();
 
             foreach (var reduct in reducts)

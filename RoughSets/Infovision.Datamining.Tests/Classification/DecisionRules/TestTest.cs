@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using NRough.MachineLearning.Classification.DecisionLookup;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Classification;
 
-namespace NRough.MachineLearning.Tests.Classification.UnitTests.DecisionRules
+namespace NRough.Tests.MachineLearning.Classification.DecisionRules
 {
     [TestFixture]
     class TestTest

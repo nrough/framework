@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NRough.Data;
 
-namespace NRough.Data.Tests.Benchmark
+namespace NRough.Tests.Data.Benchmark
 {
     [TestFixture]
     public class FactoryTest

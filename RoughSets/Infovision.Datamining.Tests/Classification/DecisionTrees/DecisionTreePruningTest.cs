@@ -10,7 +10,7 @@ using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using System.Diagnostics;
 using NRough.MachineLearning.Classification;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreePruningTest

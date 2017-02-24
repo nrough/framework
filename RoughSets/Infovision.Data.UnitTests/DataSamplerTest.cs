@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using NRough.Data;
+using NUnit.Framework;
 
-namespace NRough.Data.Tests
+namespace NRough.Tests.Data
 {
     [TestFixture]
     public class DataSamplerTest

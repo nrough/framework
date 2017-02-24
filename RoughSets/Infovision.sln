@@ -26,16 +26,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning", "I
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A} = {DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Data.Tests", "Infovision.Data.UnitTests\NRough.Data.Tests.csproj", "{5D273260-69B2-49ED-8B82-21E0BC9D0778}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Data", "Infovision.Data.UnitTests\NRough.Tests.Data.csproj", "{5D273260-69B2-49ED-8B82-21E0BC9D0778}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.TestAssembly", "Infovision.TestAssembly\NRough.TestAssembly.csproj", "{9DDFE474-0A4C-492C-82B2-C0A850217774}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.TestAssembly", "Infovision.TestAssembly\NRough.Tests.TestAssembly.csproj", "{9DDFE474-0A4C-492C-82B2-C0A850217774}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Core.Tests", "Infovision.Utils.UnitTests\NRough.Core.Tests.csproj", "{EA325EEA-CB1E-4517-974B-7205C8420198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Core", "Infovision.Utils.UnitTests\NRough.Tests.Core.csproj", "{EA325EEA-CB1E-4517-974B-7205C8420198}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 	EndProjectSection
@@ -68,11 +68,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{79AD8C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning.Experimenter", "Infovision.Datamining.Experimenter\NRough.MachineLearning.Experimenter.csproj", "{BDCA67F1-8B38-4F12-9149-D93D7C23CB26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning.Experimenter.Test", "Infovision.Datamining.Experimenter.Test\NRough.MachineLearning.Experimenter.Test.csproj", "{D4C765AF-AC85-472D-9549-5D682015A124}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning.Experimenter", "Infovision.Datamining.Experimenter.Test\NRough.Tests.MachineLearning.Experimenter.csproj", "{D4C765AF-AC85-472D-9549-5D682015A124}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning.Tests", "Infovision.Datamining.Tests\NRough.MachineLearning.Tests.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning", "Infovision.Datamining.Tests\NRough.Tests.MachineLearning.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DDFE474-0A4C-492C-82B2-C0A850217774} = {9DDFE474-0A4C-492C-82B2-C0A850217774}
 	EndProjectSection
@@ -129,7 +129,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx86", "SimpleITKx8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{F198125A-8AA1-4258-9545-6C6C50EAD439}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Math.Tests", "Infovision.Math.Tests\NRough.Math.Tests.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Math", "Infovision.Math.Tests\NRough.Tests.Math.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{DC06D7E3-73A5-415B-8937-E66C64AD7C05}"
 EndProject
@@ -1019,49 +1019,49 @@ Global
 		SccProjectUniqueName18 = Infovision.Datamining.Experimenter\\NRough.MachineLearning.Experimenter.csproj
 		SccProjectName18 = Infovision.Datamining.Experimenter
 		SccLocalPath18 = Infovision.Datamining.Experimenter
-		SccProjectUniqueName19 = Infovision.Utils.UnitTests\\NRough.Core.Tests.csproj
+		SccProjectUniqueName19 = Infovision.UnitTest.Runner\\NRough.UnitTest.Runner.csproj
 		SccProjectTopLevelParentUniqueName19 = Infovision.sln
-		SccProjectName19 = Infovision.Utils.UnitTests
-		SccLocalPath19 = Infovision.Utils.UnitTests
-		SccProjectUniqueName20 = Infovision.Data.UnitTests\\NRough.Data.Tests.csproj
+		SccProjectName19 = Infovision.UnitTest.Runner
+		SccLocalPath19 = Infovision.UnitTest.Runner
+		SccProjectUniqueName20 = Infovision.MRI\\NRough.MRI.csproj
 		SccProjectTopLevelParentUniqueName20 = Infovision.sln
-		SccProjectName20 = Infovision.Data.UnitTests
-		SccLocalPath20 = Infovision.Data.UnitTests
-		SccProjectUniqueName21 = Infovision.Datamining.Experimenter.Test\\NRough.MachineLearning.Experimenter.Test.csproj
+		SccProjectName20 = Infovision.MRI
+		SccLocalPath20 = Infovision.MRI
+		SccProjectUniqueName21 = Infovision.MRI.DAL\\NRough.MRI.DAL.csproj
 		SccProjectTopLevelParentUniqueName21 = Infovision.sln
-		SccProjectName21 = Infovision.Datamining.Experimenter.Test
-		SccLocalPath21 = Infovision.Datamining.Experimenter.Test
-		SccProjectUniqueName22 = Infovision.Datamining.Tests\\NRough.MachineLearning.Tests.csproj
+		SccProjectName21 = Infovision.MRI.DAL
+		SccLocalPath21 = Infovision.MRI.DAL
+		SccProjectUniqueName22 = infovision.MRIFeatureExtractor\\NRough.MRI.UI.csproj
 		SccProjectTopLevelParentUniqueName22 = Infovision.sln
-		SccProjectName22 = Infovision.Datamining.Tests
-		SccLocalPath22 = Infovision.Datamining.Tests
-		SccProjectUniqueName23 = Infovision.Math.Tests\\NRough.Math.Tests.csproj
+		SccProjectName22 = infovision.MRIFeatureExtractor
+		SccLocalPath22 = infovision.MRIFeatureExtractor
+		SccProjectUniqueName23 = Infovision.MRI.UnitTests\\NRough.MRI.Tests.csproj
 		SccProjectTopLevelParentUniqueName23 = Infovision.sln
-		SccProjectName23 = Infovision.Math.Tests
-		SccLocalPath23 = Infovision.Math.Tests
-		SccProjectUniqueName24 = Infovision.TestAssembly\\NRough.TestAssembly.csproj
+		SccProjectName23 = Infovision.MRI.UnitTests
+		SccLocalPath23 = Infovision.MRI.UnitTests
+		SccProjectUniqueName24 = Infovision.Utils.UnitTests\\NRough.Tests.Core.csproj
 		SccProjectTopLevelParentUniqueName24 = Infovision.sln
-		SccProjectName24 = Infovision.TestAssembly
-		SccLocalPath24 = Infovision.TestAssembly
-		SccProjectUniqueName25 = Infovision.UnitTest.Runner\\NRough.UnitTest.Runner.csproj
+		SccProjectName24 = Infovision.Utils.UnitTests
+		SccLocalPath24 = Infovision.Utils.UnitTests
+		SccProjectUniqueName25 = Infovision.Data.UnitTests\\NRough.Tests.Data.csproj
 		SccProjectTopLevelParentUniqueName25 = Infovision.sln
-		SccProjectName25 = Infovision.UnitTest.Runner
-		SccLocalPath25 = Infovision.UnitTest.Runner
-		SccProjectUniqueName26 = Infovision.MRI\\NRough.MRI.csproj
+		SccProjectName25 = Infovision.Data.UnitTests
+		SccLocalPath25 = Infovision.Data.UnitTests
+		SccProjectUniqueName26 = Infovision.Datamining.Experimenter.Test\\NRough.Tests.MachineLearning.Experimenter.csproj
 		SccProjectTopLevelParentUniqueName26 = Infovision.sln
-		SccProjectName26 = Infovision.MRI
-		SccLocalPath26 = Infovision.MRI
-		SccProjectUniqueName27 = Infovision.MRI.DAL\\NRough.MRI.DAL.csproj
+		SccProjectName26 = Infovision.Datamining.Experimenter.Test
+		SccLocalPath26 = Infovision.Datamining.Experimenter.Test
+		SccProjectUniqueName27 = Infovision.Datamining.Tests\\NRough.Tests.MachineLearning.csproj
 		SccProjectTopLevelParentUniqueName27 = Infovision.sln
-		SccProjectName27 = Infovision.MRI.DAL
-		SccLocalPath27 = Infovision.MRI.DAL
-		SccProjectUniqueName28 = infovision.MRIFeatureExtractor\\NRough.MRI.UI.csproj
+		SccProjectName27 = Infovision.Datamining.Tests
+		SccLocalPath27 = Infovision.Datamining.Tests
+		SccProjectUniqueName28 = Infovision.Math.Tests\\NRough.Tests.Math.csproj
 		SccProjectTopLevelParentUniqueName28 = Infovision.sln
-		SccProjectName28 = infovision.MRIFeatureExtractor
-		SccLocalPath28 = infovision.MRIFeatureExtractor
-		SccProjectUniqueName29 = Infovision.MRI.UnitTests\\NRough.MRI.Tests.csproj
+		SccProjectName28 = Infovision.Math.Tests
+		SccLocalPath28 = Infovision.Math.Tests
+		SccProjectUniqueName29 = Infovision.TestAssembly\\NRough.Tests.TestAssembly.csproj
 		SccProjectTopLevelParentUniqueName29 = Infovision.sln
-		SccProjectName29 = Infovision.MRI.UnitTests
-		SccLocalPath29 = Infovision.MRI.UnitTests
+		SccProjectName29 = Infovision.TestAssembly
+		SccLocalPath29 = Infovision.TestAssembly
 	EndGlobalSection
 EndGlobal

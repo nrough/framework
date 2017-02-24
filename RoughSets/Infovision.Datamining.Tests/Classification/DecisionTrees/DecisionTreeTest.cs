@@ -10,9 +10,9 @@ using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NRough.MachineLearning.Classification.DecisionLookup;
 using NRough.MachineLearning.Classification;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeTest

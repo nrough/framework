@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using NRough.Math;
 
-namespace NRough.Math.Tests
+namespace NRough.Tests.Math
 {
     [TestFixture]
     internal class SimilarityTest

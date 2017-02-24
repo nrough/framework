@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NRough.Data;
 using NRough.Core;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 
 namespace NRough.MachineLearning.Permutations
 {

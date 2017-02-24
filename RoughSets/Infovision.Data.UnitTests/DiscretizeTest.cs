@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Benchmark;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Discretization;
+using NRough.Data;
 
-namespace NRough.Data.Tests
+namespace NRough.Tests.Data
 {
     [TestFixture]
     internal class DiscretizeTest

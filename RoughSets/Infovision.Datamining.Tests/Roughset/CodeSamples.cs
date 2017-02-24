@@ -7,14 +7,14 @@ using NRough.MachineLearning.Classification.Ensembles;
 using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.MachineLearning.Evaluation;
 using NRough.MachineLearning.Permutations;
-using NRough.MachineLearning.Roughset;
-using NRough.MachineLearning.Roughset.Diversify;
-using NRough.MachineLearning.Roughset.Reducts;
+using NRough.MachineLearning.Roughsets;
+using NRough.MachineLearning.Roughsets.Diversify;
+using NRough.MachineLearning.Roughsets.Reducts;
 using NRough.MachineLearning.Weighting;
 using System;
 using System.Linq;
 
-namespace NRough.MachineLearning.Tests.Roughset
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     public class CodeSamples
@@ -262,7 +262,7 @@ namespace NRough.MachineLearning.Tests.Roughset
             //load training data sets 
             var train = Data.Benchmark.Factory.Dna();
 
-            //genesrate permutations based on attributes and objects
+            //generate permutations based on attributes and objects
             var permGenerator = new PermutationAttributeObjectGenerator(train, 0.5);
             //generate 100 permutations
             var permutations = permGenerator.Generate(100);
@@ -280,6 +280,78 @@ namespace NRough.MachineLearning.Tests.Roughset
                 Console.WriteLine(bireduct.Attributes.ToArray().ToStr());
                 Console.WriteLine(bireduct.SupportedObjects.ToArray().ToStr());
             }
+        }
+
+        [Test]
+        public void GeneralizedMajorityDecisionReduct()
+        {
+            //load training data sets 
+            var train = Data.Benchmark.Factory.Dna();
+
+            //setup reduct factory parameters
+            Args parms = new Args();
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            parms.SetParameter(ReductFactoryOptions.ReductType, 
+                ReductTypes.GeneralizedMajorityDecision);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator, 
+                new WeightGeneratorMajority(train));
+            parms.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection, 
+                new PermutationCollection(10, 
+                    train.SelectAttributes(a => a.IsStandard)
+                        .Select(f => f.Id).ToArray()));
+
+            //generate reducts
+            var reductGenerator = ReductFactory.GetReductGenerator(parms);
+            var reducts = reductGenerator.GetReducts();
+        }
+
+        [Test]
+        public void GeneralizedMajorityDecisionReductWithExceptions()
+        {
+            //load training and test data sets
+            var train = Data.Benchmark.Factory.Dna();
+            var test = Data.Benchmark.Factory.DnaTest();
+
+            //setup reduct factory parameters
+            Args parms = new Args();
+            parms.SetParameter(ReductFactoryOptions.DecisionTable, train);
+            parms.SetParameter(ReductFactoryOptions.ReductType,
+                ReductTypes.GeneralizedMajorityDecision);
+            parms.SetParameter(ReductFactoryOptions.WeightGenerator,
+                new WeightGeneratorMajority(train));
+            parms.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parms.SetParameter(ReductFactoryOptions.PermutationCollection,
+                new PermutationCollection(10,
+                    train.SelectAttributes(a => a.IsStandard)
+                        .Select(f => f.Id).ToArray()));
+            parms.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
+
+            //generate reducts with exceptions
+            var reductGenerator = ReductFactory.GetReductGenerator(parms)
+                as ReductGeneralizedMajorityDecisionGenerator;
+            var reducts = reductGenerator.GetReducts();
+
+            foreach (var reduct in reducts)
+            {
+                var r = reduct as ReductWithExceptions;                
+                foreach (var exception in r.Exceptions)
+                {
+                    Console.WriteLine(exception.Attributes.ToArray().ToStr());
+                    Console.WriteLine(exception.SupportedObjects.ToArray().ToStr());
+                }
+            }
+
+            var rules = new ReductDecisionRules(reducts);            
+            rules.DecisionIdentificationMethod = RuleQualityMethods.Confidence;
+            rules.RuleVotingMethod = RuleQualityMethods.SingleVote;
+            rules.Learn(train, null);
+
+            //classify test data set
+            var result = Classifier.Default.Classify(rules, test);
+
+            //show results
+            Console.WriteLine(result);
         }
     }
 }

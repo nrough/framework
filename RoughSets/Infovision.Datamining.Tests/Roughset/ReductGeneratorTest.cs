@@ -6,8 +6,10 @@ using NRough.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
 using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughsets;
+using NRough.MachineLearning;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     internal class ReductGeneratorTest

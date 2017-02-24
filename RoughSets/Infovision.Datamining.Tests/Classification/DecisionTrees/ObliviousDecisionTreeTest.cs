@@ -7,10 +7,11 @@ using System;
 using System.Linq;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Permutations;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Evaluation;
+using NRough.MachineLearning;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class ObliviousDecisionTreeTest

@@ -7,7 +7,7 @@ using NRough.Math;
 using NRough.Core;
 using NUnit.Framework;
 
-namespace NRough.MachineLearning.Tests.Clustering.Hierarchical
+namespace NRough.Tests.MachineLearning.Clustering.Hierarchical
 {
     [TestFixture]
     public class HierarchicalClusteringIncrementalTest

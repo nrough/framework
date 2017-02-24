@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NRough.Core.Data;
 using NRough.MachineLearning.Classification;
 
-namespace NRough.MachineLearning.Tests.Classification
+namespace NRough.Tests.MachineLearning.Classification
 {
     [TestFixture]
     class ClassificationResultTest

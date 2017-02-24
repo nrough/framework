@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Classification;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     class DecisionTreeComparisonTest

@@ -1,6 +1,6 @@
 ﻿using NRough.Data;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
-using NRough.MachineLearning.Tests.Classification.DecisionTrees;
+using NRough.Tests.MachineLearning.Classification.DecisionTrees;
 using NRough.Core;
 using NRough.Core.Data;
 using NUnit.Framework;

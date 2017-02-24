@@ -1,5 +1,5 @@
 ﻿using NRough.MachineLearning;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NRough.Core;
@@ -10,8 +10,9 @@ using System.Diagnostics;
 using System.Linq;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Evaluation;
+using NRough.Data;
 
-namespace NRough.Data.Tests
+namespace NRough.Tests.Data
 {
     [TestFixture]
     public class DataStoreSplitterTest

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.MachineLearning.Tests.Clustering
+namespace NRough.Tests.MachineLearning.Clustering
 {
     [TestFixture]
     public class KMeansTest

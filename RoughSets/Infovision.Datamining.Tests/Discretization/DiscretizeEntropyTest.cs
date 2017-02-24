@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.MachineLearning.Tests.Discretization
+namespace NRough.Tests.MachineLearning.Discretization
 {
     [TestFixture]
     public class DiscretizeEntropyTest : DiscretizeUnsupervisedTest

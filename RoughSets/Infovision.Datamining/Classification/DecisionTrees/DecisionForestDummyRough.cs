@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Permutations;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees

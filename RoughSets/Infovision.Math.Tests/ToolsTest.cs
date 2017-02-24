@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.Math.Tests
+namespace NRough.Tests.Math
 {
     [TestFixture]
     public class ToolsTest

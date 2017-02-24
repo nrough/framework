@@ -4,8 +4,9 @@ using NRough.Data;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughsets;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     public class RoughClassifierTest

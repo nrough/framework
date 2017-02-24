@@ -105,9 +105,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.Tests\NRough.MachineLearning.Tests.csproj">
+    <ProjectReference Include="..\Infovision.Datamining.Tests\NRough.Tests.MachineLearning.csproj">
       <Project>{c32f57fc-32d0-4853-8145-2645a559bf6b}</Project>
-      <Name>NRough.MachineLearning.Tests</Name>
+      <Name>NRough.Tests.MachineLearning</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infovision.Datamining\NRough.MachineLearning.csproj">
       <Project>{82e1f95c-4559-44ab-9114-42e78da331a1}</Project>

@@ -1,7 +1,7 @@
 ﻿using NRough.Math;
 using NUnit.Framework;
 
-namespace NRough.MachineLearning.Tests.Clustering.Hierarchical
+namespace NRough.Tests.MachineLearning.Clustering.Hierarchical
 {
     [TestFixture]
     public class DistanceMatrixTest

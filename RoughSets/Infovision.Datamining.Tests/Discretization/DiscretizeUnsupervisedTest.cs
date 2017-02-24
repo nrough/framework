@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.MachineLearning.Tests.Discretization
+namespace NRough.Tests.MachineLearning.Discretization
 {
     public abstract class DiscretizeUnsupervisedTest : DiscretizeBaseTest
     {

@@ -1,5 +1,5 @@
 ﻿using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NUnit.Framework;
@@ -10,8 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Evaluation;
+using NRough.MachineLearning;
 
-namespace NRough.MachineLearning.Tests
+namespace NRough.Tests.MachineLearning
 {
     [TestFixture]
     public class CrossValidationTest

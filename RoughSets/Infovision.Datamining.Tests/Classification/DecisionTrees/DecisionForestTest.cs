@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Classification;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionForestTest

@@ -11,8 +11,9 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughsets;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     internal class ReductGeneratorComparisonTest

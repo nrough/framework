@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using NRough.Math;
+using NUnit.Framework;
 
-namespace NRough.Math.Tests
+namespace NRough.Tests.Math
 {
     [TestFixture]
     public class DistanceMatrixTest

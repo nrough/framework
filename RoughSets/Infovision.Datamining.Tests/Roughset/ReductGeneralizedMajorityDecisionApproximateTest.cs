@@ -13,8 +13,9 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
 using System.Collections.Specialized;
+using NRough.MachineLearning.Roughsets;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     public class ReductGeneralizedMajorityDecisionApproximateTest

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these key newInstance to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NRough.MachineLearning.Tests")]
+[assembly: AssemblyTitle("NRough.Tests.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NRough.MachineLearning.Tests")]
+[assembly: AssemblyProduct("NRough.Tests.Data")]
 [assembly: AssemblyCopyright("Copyright © 2014-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

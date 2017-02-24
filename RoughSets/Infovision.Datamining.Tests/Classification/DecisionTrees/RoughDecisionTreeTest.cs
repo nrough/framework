@@ -7,11 +7,12 @@ using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NRough.MachineLearning.Discretization;
 using NRough.MachineLearning.Evaluation;
 using NRough.MachineLearning.Filters;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using System;
 using System.Diagnostics;
+using NRough.MachineLearning;
 
-namespace NRough.MachineLearning.Tests.Classification.DecisionTrees
+namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class RoughDecisionTreeTest

@@ -1,7 +1,8 @@
 ﻿using NRough.Core;
+using NRough.MachineLearning.Roughsets;
 using NUnit.Framework;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     public class MatrixTest

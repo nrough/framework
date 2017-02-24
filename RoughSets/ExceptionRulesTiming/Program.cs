@@ -6,7 +6,7 @@ using Common.Logging;
 using Common.Logging.Configuration;
 using NRough.Data;
 using NRough.MachineLearning.Benchmark;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;

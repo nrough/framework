@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.MachineLearning.Tests.Classification.UnitTests.DecisionRules
+namespace NRough.Tests.MachineLearning.Classification.DecisionRules
 {
     [TestFixture]
     public class Holte1RTest

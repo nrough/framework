@@ -7,7 +7,7 @@ using System.Linq;
 using GenericParsing;
 using NRough.Data;
 using NRough.MachineLearning;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MRI;
 using NRough.Core;
 using itk.simple;

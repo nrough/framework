@@ -2,7 +2,7 @@
 using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 
 namespace NRough.MachineLearning.Permutations
 {

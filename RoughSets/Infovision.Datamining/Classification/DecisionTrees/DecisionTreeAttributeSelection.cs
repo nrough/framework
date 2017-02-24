@@ -1,5 +1,5 @@
 ﻿using NRough.Core;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using System;
 using System.Collections.Generic;
 using System.Linq;

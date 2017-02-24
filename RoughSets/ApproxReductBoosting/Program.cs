@@ -2,7 +2,7 @@
 using NRough.Data;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Experimenter.Parms;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;

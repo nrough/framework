@@ -1,6 +1,6 @@
 ﻿using NRough.Core;
 using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using System;
 using System.Collections.Generic;
 using System.Linq;

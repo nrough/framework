@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Discretization;
 
-namespace NRough.MachineLearning.Tests.Discretization
+namespace NRough.Tests.MachineLearning.Discretization
 {
     [TestFixture]
     public class DiscretizeEqualWidthTest : DiscretizeUnsupervisedTest

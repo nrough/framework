@@ -8,7 +8,7 @@ using NRough.Core;
 using System.Diagnostics;
 using System.Threading;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Discretization;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees

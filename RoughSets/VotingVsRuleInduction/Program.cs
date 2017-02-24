@@ -7,7 +7,7 @@ using NRough.Data;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Experimenter.Parms;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Math;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;

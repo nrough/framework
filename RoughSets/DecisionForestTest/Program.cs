@@ -6,7 +6,7 @@ using System.Linq;
 using NRough.Data;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Benchmark;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;

@@ -1,7 +1,7 @@
 ﻿using NRough.Core;
 using NRough.Data;
 using NRough.MachineLearning.Classification;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Math;
 using System;
 using System.Collections.Concurrent;

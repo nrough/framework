@@ -1,7 +1,7 @@
 ﻿using NRough.MachineLearning.Experimenter.Parms;
 using NUnit.Framework;
 
-namespace NRough.MachineLearning.Experimenter.Test
+namespace NRough.Tests.MachineLearning.Experimenter
 {
     [TestFixture]
     internal class PerformanceFixture

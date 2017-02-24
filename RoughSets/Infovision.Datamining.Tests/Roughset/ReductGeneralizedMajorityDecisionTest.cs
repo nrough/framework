@@ -8,8 +8,9 @@ using NUnit.Framework;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughsets;
 
-namespace NRough.MachineLearning.Roughset.UnitTests
+namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
     internal class ReductGeneralizedMajorityDecisionTest
@@ -42,6 +43,7 @@ namespace NRough.MachineLearning.Roughset.UnitTests
         {
             DataStore trainData = DataStore.Load(@"Data\dna.train", DataFormat.RSES1);
             DataStore testData = DataStore.Load(@"Data\dna.test", DataFormat.RSES1, trainData.DataStoreInfo);
+
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
             double eps = 0.0;
             int ensembleSize = 10;

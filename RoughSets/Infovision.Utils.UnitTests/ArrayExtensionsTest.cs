@@ -1,7 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
+using NRough.Core;
 
-namespace NRough.Core.Tests
+namespace NRough.Tests.Core
 {
     [TestFixture]
     internal class ArrayExtensionsTest

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using NRough.Data;
 
-namespace NRough.Data.Tests
+namespace NRough.Tests.Data
 {
     [TestFixture]
     internal class DataStoreTest

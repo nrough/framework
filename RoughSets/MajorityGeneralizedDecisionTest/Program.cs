@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using NRough.Data;
 using NRough.MachineLearning;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Permutations;

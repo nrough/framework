@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Discretization;
 
 namespace DermoReducts

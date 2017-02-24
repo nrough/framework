@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using GenericParsing;
 using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.Core.Data;
 using NRough.MachineLearning.Weighting;

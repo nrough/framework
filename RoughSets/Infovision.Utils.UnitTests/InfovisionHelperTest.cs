@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using NRough.Core;
+using NUnit.Framework;
 
-namespace NRough.Core.Tests
+namespace NRough.Tests.Core
 {
     [TestFixture]
     internal class UtilsTest

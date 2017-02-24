@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.MissingValues;
 
-namespace NRough.MachineLearning.Tests.MissingValues
+namespace NRough.Tests.MachineLearning.MissingValues
 {
     [TestFixture]
     public class ReplaceMissingValuesTest

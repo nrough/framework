@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using NRough.Core;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace NRough.Core.Tests
+namespace NRough.Tests.Core
 {
     [TestFixture]
     class StringExtensionsTest

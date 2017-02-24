@@ -1,13 +1,13 @@
 ﻿using System;
 using NRough.Data;
-using NRough.MachineLearning.Roughset;
+using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning;
 
-namespace NRough.TestAssembly
+namespace NRough.Tests.TestAssembly
 {
-    public class TestReductFactory : NRough.MachineLearning.Roughset.IReductFactory
+    public class TestReductFactory : NRough.MachineLearning.Roughsets.IReductFactory
     {
         public string FactoryKey
         {

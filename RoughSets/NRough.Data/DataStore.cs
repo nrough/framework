@@ -267,7 +267,7 @@ namespace NRough.Data
                 throw new InvalidCastException(
                     String.Format("Invalid cast exception for field {0} (Discovered type was: {1}, Expected type was {2}",
                         fieldId,
-                        field.FieldValueType.ToString(),
+                        field.DataType.ToString(),
                         typeof(T).ToString()),
                     castException);
             }
@@ -276,7 +276,7 @@ namespace NRough.Data
                 throw new AggregateException(
                     String.Format("Exception was thrown for field {0} (Discovered type was: {1}, Expected type was {2}",
                         fieldId,
-                        field.FieldValueType.ToString(),
+                        field.DataType.ToString(),
                         typeof(T).ToString()),
                     aggregateException);
             }

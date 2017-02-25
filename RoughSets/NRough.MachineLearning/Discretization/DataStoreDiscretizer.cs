@@ -147,7 +147,7 @@ namespace NRough.MachineLearning.Discretization
                                 newFieldInfo.IsNumeric = false;
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = localCuts;
-                                newFieldInfo.FieldValueType = typeof(long);
+                                newFieldInfo.DataType = typeof(long);
                                 newFieldInfo.Name = String.Format("{0}-{1}", fieldInfo.Name, i);
                                 newFieldInfo.Alias = String.Format("{0}-{1}", fieldInfo.Alias, i);
                                 newFieldInfo.DerivedFrom = fieldId;
@@ -165,7 +165,7 @@ namespace NRough.MachineLearning.Discretization
                             if (UpdateDataColumns)
                             {
                                 fieldInfo.Cuts = disc.Cuts;
-                                fieldInfo.FieldValueType = typeof(long);
+                                fieldInfo.DataType = typeof(long);
                                 fieldInfo.IsNumeric = false;
                                 fieldInfo.IsOrdered = true;
 
@@ -179,7 +179,7 @@ namespace NRough.MachineLearning.Discretization
                                 newFieldInfo.IsNumeric = false;
                                 newFieldInfo.IsOrdered = true;
                                 newFieldInfo.Cuts = disc.Cuts;
-                                newFieldInfo.FieldValueType = typeof(long);
+                                newFieldInfo.DataType = typeof(long);
                                 newFieldInfo.Name = String.Format("{0}-{1}", fieldInfo.Name, 1);
                                 newFieldInfo.Alias = String.Format("{0}-{1}", fieldInfo.Alias, 1);
                                 newFieldInfo.DerivedFrom = fieldId;
@@ -210,7 +210,7 @@ namespace NRough.MachineLearning.Discretization
                     {
                         long[] newValues = DiscretizeBase.Apply(continuousValues, localFieldInfoTrain.Cuts);
 
-                        localFieldInfoTest.FieldValueType = typeof(long);
+                        localFieldInfoTest.DataType = typeof(long);
                         localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
                         localFieldInfoTest.IsNumeric = false;
                         localFieldInfoTest.IsOrdered = true;
@@ -233,7 +233,7 @@ namespace NRough.MachineLearning.Discretization
                             newFieldInfo.IsNumeric = false;
                             newFieldInfo.IsOrdered = true;
                             newFieldInfo.Cuts = derivedField.Cuts;
-                            newFieldInfo.FieldValueType = typeof(long);
+                            newFieldInfo.DataType = typeof(long);
                             newFieldInfo.Name = derivedField.Name;
                             newFieldInfo.Alias = derivedField.Alias;
                             newFieldInfo.DerivedFrom = fieldId;

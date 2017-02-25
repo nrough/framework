@@ -224,7 +224,7 @@ namespace DisesorTest
                 Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
                     field.Id,
                     field.Alias,
-                    field.FieldValueType,
+                    field.DataType,
                     field.NumberOfValues,
                     field.CanDiscretize() ? "Can" : "Cannot");
 

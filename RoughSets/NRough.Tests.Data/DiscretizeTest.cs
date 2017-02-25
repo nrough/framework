@@ -89,7 +89,7 @@ namespace NRough.Tests.Data
                     long[] newValues = discretizer.Apply(oldValues);
                     localFieldInfoTrain.Cuts = discretizer.Cuts;
                     
-                    localFieldInfoTrain.FieldValueType = typeof(int);
+                    localFieldInfoTrain.DataType = typeof(int);
                     train.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x));
 
                     localFieldInfoTest = test.DataStoreInfo.GetFieldInfo(field.Id);
@@ -97,7 +97,7 @@ namespace NRough.Tests.Data
                     localFieldInfoTest.IsOrdered = true;
 
                     newValues = discretizer.Apply(test.GetColumnInternal(field.Id));
-                    localFieldInfoTest.FieldValueType = typeof(long);
+                    localFieldInfoTest.DataType = typeof(long);
                     localFieldInfoTest.Cuts = localFieldInfoTrain.Cuts;
                     test.UpdateColumn(field.Id, Array.ConvertAll(newValues, x => (object)x), localFieldInfoTrain);
                 }            

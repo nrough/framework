@@ -71,8 +71,8 @@ namespace NRough.Tests.Data
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
                 {
                     Assert.AreEqual(
-                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType, 
-                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType, 
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).DataType,
                         string.Format("Field Id {0}", fieldId));
 
                     Assert.AreEqual(
@@ -128,8 +128,8 @@ namespace NRough.Tests.Data
 
 
                     Assert.AreEqual(
-                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
-                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).DataType,
                         string.Format("Field Id {0}", fieldId));
 
                     Assert.AreEqual(
@@ -237,8 +237,8 @@ namespace NRough.Tests.Data
                 foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
                 {
                     Assert.AreEqual(
-                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
-                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType,
+                        dataStore1.DataStoreInfo.GetFieldInfo(fieldId).DataType,
                         string.Format("Field Id {0}", fieldId));
 
                     Assert.AreEqual(
@@ -294,8 +294,8 @@ namespace NRough.Tests.Data
 
 
                     Assert.AreEqual(
-                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
-                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).FieldValueType,
+                        dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType,
+                        dataStore2.DataStoreInfo.GetFieldInfo(fieldId).DataType,
                         string.Format("Field Id {0}", fieldId));
 
                     Assert.AreEqual(

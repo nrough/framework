@@ -95,7 +95,7 @@ namespace NRough.Data.Readers
                         i,
                         (referenceFieldInfo == null)
                             ? this.AttributeType(i - 1)
-                            : referenceFieldInfo.FieldValueType,
+                            : referenceFieldInfo.DataType,
                         this.valueCount[i - 1].Count);
 
                 if (referenceFieldInfo != null)
@@ -118,7 +118,7 @@ namespace NRough.Data.Readers
                 }
                 else
                 {
-                    fieldInfo.IsNumeric = AttributeInfo.IsNumericType(fieldInfo.FieldValueType);
+                    fieldInfo.IsNumeric = AttributeInfo.IsNumericType(fieldInfo.DataType);
                     fieldInfo.IsSymbolic = !fieldInfo.IsNumeric;
                     fieldInfo.IsOrdered = fieldInfo.IsNumeric;
                     fieldInfo.NumberOfDecimals = this.GetNumberOfDecimals(i - 1);
@@ -211,7 +211,7 @@ namespace NRough.Data.Readers
                         {
                             if (this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue))
                             {
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
+                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
                                 {
                                     case TypeCode.Int32:
                                         typedFieldValues[i] = Int32.MaxValue;
@@ -235,7 +235,7 @@ namespace NRough.Data.Readers
                             }
                             else
                             {
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).FieldValueType))
+                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
                                 {
                                     case TypeCode.Int32:
                                         typedFieldValues[i] = Int32.Parse(fileLine[i], CultureInfo.InvariantCulture);

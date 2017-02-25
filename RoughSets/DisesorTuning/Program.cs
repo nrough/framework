@@ -256,7 +256,7 @@ namespace DisesorTuning
             {
                 Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
                     field.Id,
-                    field.FieldValueType,
+                    field.DataType,
                     field.NumberOfValues);                       
 
                 if (field.CanDiscretize())

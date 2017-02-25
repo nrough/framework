@@ -182,16 +182,29 @@ namespace NRough.Data
             return numberOfFields - numberOfNotIncludedFields;
         }
 
-        public void AddFieldInfo(AttributeInfo fieldInfo, FieldGroup fieldType)
+        public void AddFieldInfo(AttributeInfo fieldInfo, FieldGroup fieldType = FieldGroup.None)
         {
+            FieldGroup localFieldType = fieldType;
+            if (localFieldType == FieldGroup.None)
+            {
+                if (fieldInfo.IsStandard)
+                    localFieldType = FieldGroup.Standard;
+                else if(fieldInfo.IsDecision)
+                    localFieldType = FieldGroup.Output;
+                else if(fieldInfo.IsIdentifier || fieldInfo.IsUnique)
+                    localFieldType = FieldGroup.Id;
+                else if (fieldInfo.IsSystem)
+                    localFieldType = FieldGroup.Sys;
+            }
+
             this.fieldId2Index.Add(fieldInfo.Id, this.fields.Count);
 
             this.fields.Add(fieldInfo.Id, fieldInfo);
-            this.fieldTypes.Add(fieldInfo.Id, fieldType);
+            this.fieldTypes.Add(fieldInfo.Id, localFieldType);
             this.SetFieldMinMaxId(fieldInfo.Id);
-            this.fieldTypeCount[fieldType]++;
+            this.fieldTypeCount[localFieldType]++;
 
-            if (fieldType == FieldGroup.Output)
+            if (localFieldType == FieldGroup.Output)
             {
                 this.DecisionFieldId = fieldInfo.Id;
             }
@@ -285,7 +298,7 @@ namespace NRough.Data
             {
                 stringBuilder.AppendFormat("Attribute {0} is {1} and has {2} distinct values",
                                            fieldInfo.Name,
-                                           fieldInfo.FieldValueType,
+                                           fieldInfo.DataType,
                                            fieldInfo.NumberOfValues); //fieldInfo.Histogram.Elements);
                 stringBuilder.Append(Environment.NewLine);
 
@@ -320,7 +333,7 @@ namespace NRough.Data
             this.fields = new Dictionary<int, AttributeInfo>(dataStoreInfo.NumberOfFields);
             foreach (KeyValuePair<int, AttributeInfo> kvp in dataStoreInfo.fields)
             {
-                AttributeInfo dfi = new AttributeInfo(kvp.Key, kvp.Value.FieldValueType);
+                AttributeInfo dfi = new AttributeInfo(kvp.Key, kvp.Value.DataType);
                 dfi.InitFromDataFieldInfo(kvp.Value, initValues, initMissingValues);
                 this.AddFieldInfo(dfi, dataStoreInfo.fieldTypes[kvp.Key]);
             }

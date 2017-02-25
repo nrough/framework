@@ -33,7 +33,7 @@ namespace NRough.Data
         public string Name { get; set; }
         public string Alias { get; set; }
         public int Id { get; set; }
-        public Type FieldValueType { get; set; }
+        public Type DataType { get; set; }
         public int DerivedFrom { get; set; }
     
         public Histogram<long> Histogram { get { return histogram; } }
@@ -75,7 +75,6 @@ namespace NRough.Data
         public bool IsUnique { get { return this.isUnique; } set { this.isUnique = value; } }        
         public bool IsOrdered { get { return this.isOrdered; } set { this.isOrdered = value; } }
 
-        public Type BaseType { get; set; }
         public bool IsStandard { get; set; }
         public bool IsDecision { get; set; }
         public bool IsIdentifier { get; set; }
@@ -91,16 +90,14 @@ namespace NRough.Data
 
         public int NumberOfDecimals { get; set; }
 
-        //public bool IsDeleted { get; set; }
-
         #endregion Properties
 
         #region Constructors
 
-        public AttributeInfo(int attributeId, Type fieldValueType, int initialNumberOfValues = 0)
+        public AttributeInfo(int attributeId, Type dataType, int initialNumberOfValues = 0)
         {
             this.initialNumberOfValues = initialNumberOfValues;
-            this.FieldValueType = fieldValueType;
+            this.DataType = dataType;
             this.maxValueInternalId = 0;
 
             if (this.initialNumberOfValues == 0)
@@ -124,7 +121,7 @@ namespace NRough.Data
             this.MissingValue = null;
             this.NumberOfDecimals = 0;
 
-            this.IsNumeric = AttributeInfo.IsNumericType(fieldValueType);
+            this.IsNumeric = AttributeInfo.IsNumericType(dataType);
             this.IsSymbolic = !this.IsNumeric;
         }
 
@@ -206,7 +203,7 @@ namespace NRough.Data
                 this.maxValueInternalId = dataFieldInfo.maxValueInternalId;
             }
 
-            this.FieldValueType = dataFieldInfo.FieldValueType;
+            this.DataType = dataFieldInfo.DataType;
             this.Name = dataFieldInfo.Name;
             this.Alias = dataFieldInfo.Alias;
             this.Id = dataFieldInfo.Id;
@@ -272,7 +269,7 @@ namespace NRough.Data
 
             if (this.IsNumeric)
             {
-                switch (Type.GetTypeCode(this.FieldValueType))
+                switch (Type.GetTypeCode(this.DataType))
                 {
                     case TypeCode.Double: return internalValue.ConvertToDouble(this.NumberOfDecimals);
                     case TypeCode.Int32: return internalValue.ConvertToInt(this.NumberOfDecimals);

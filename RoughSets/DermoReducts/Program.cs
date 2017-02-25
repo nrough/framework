@@ -100,7 +100,7 @@ namespace DermoReducts
                     AttributeInfo newFieldInfo = data.DataStoreInfo.GetFieldInfo(data.AddColumn<long>(newValuesTrain));
                     newFieldInfo.IsNumeric = false;
                     newFieldInfo.Cuts = cuts;
-                    newFieldInfo.FieldValueType = typeof(long);
+                    newFieldInfo.DataType = typeof(long);
                     newFieldInfo.Alias = String.Format("{0}-{1}", "Age", value);
                 }
             }

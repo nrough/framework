@@ -17,7 +17,7 @@ namespace NRough.Data.Filters
         public override DataStore Apply(DataStore data)
         {            
             if (data == null) throw new ArgumentNullException("data");            
-            var columns = new HashSet<int>(data.DataStoreInfo.GetFieldIds());
+            var columns = new HashSet<int>(data.DataStoreInfo.SelectAttributeIds());
             foreach (int k in toKeep)
                 columns.Remove(k);
             return new RemoveColumns(columns).Apply(data);

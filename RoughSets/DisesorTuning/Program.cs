@@ -96,10 +96,10 @@ namespace DisesorTuning
                 innerArgs.SetParameter(ReductFactoryOptions.Epsilon, eps);
                 innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
                 innerArgs.SetParameter(ReductFactoryOptions.ReductionStep,
-                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * reductionStepRatio));
+                    (int)(train.DataStoreInfo.CountAttributes(a => a.IsStandard) * reductionStepRatio));
                 innerArgs.SetParameter(ReductFactoryOptions.PermuatationGenerator,
                     new PermutationGeneratorFieldQuality(train, wGen, eps,
-                        (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * shuffleRatio)));
+                        (int)(train.DataStoreInfo.CountAttributes(a => a.IsStandard) * shuffleRatio)));
 
                 Args args = new Args();
                 args.SetParameter(ReductFactoryOptions.DecisionTable, train);
@@ -252,7 +252,7 @@ namespace DisesorTuning
 
             Console.Write("Discretizing data...");
             var discretizer = new DataStoreDiscretizer();
-            foreach (AttributeInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (AttributeInfo field in train.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
                 Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
                     field.Id,

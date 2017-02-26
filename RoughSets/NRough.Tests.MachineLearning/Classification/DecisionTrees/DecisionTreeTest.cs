@@ -27,9 +27,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
 
@@ -120,9 +120,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             //Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\treeComparisonTest.log"));
 
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             Trace.WriteLine(ClassificationResult.TableHeader());
 
@@ -251,7 +251,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                     DecisionTreeRough tree = new DecisionTreeRough();
                     tree.Gamma = eps;
-                    tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                    tree.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                     ClassificationResult result = Classifier.Default.Classify(tree, test);
                     //Console.WriteLine(result);
@@ -280,7 +280,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 splitter2.Split(out train, out prune);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
                 ErrorBasedPruning pruning = new ErrorBasedPruning(tree, prune);
                 pruning.Prune();
 
@@ -306,7 +306,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 splitter.Split(out train, out test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(tree, test);
 
@@ -332,7 +332,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
@@ -355,7 +355,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
                 forest.Gamma = 0.22;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
@@ -371,13 +371,13 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             path = Path.Combine(path, "Data", "dna_modified.trn");
 
             DataStore data = DataStore.Load(path, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
 
             int total = 20;
             long sum = 0;
             for (int i = 0; i < total; i++)
             {   
-                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+                int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
                 Stopwatch s = new Stopwatch();
                 s.Start();
@@ -399,11 +399,11 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Console.WriteLine("CountLeavesTest");
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
-            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeID3.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             Assert.Greater(DecisionTreeHelper.CountLeaves(treeID3.Root), 0);
         }
 
@@ -411,8 +411,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void GetRulesFromTreeTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             int prevCount = Int32.MaxValue;
 
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
@@ -435,9 +435,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void CheckTreeConvergedTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
@@ -462,12 +462,12 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Console.WriteLine("ID3LearnTest");
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionTreeID3 treeID3 = new DecisionTreeID3();
             treeID3.Gamma = 0;
-            treeID3.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeID3.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             //Console.WriteLine(DecisionTreeFormatter.Construct(treeID3.Root, data, 2));
             Console.WriteLine(Classifier.Default.Classify(treeID3, data, null));
@@ -479,12 +479,12 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {            
             Console.WriteLine("C45LearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);            
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.MaxHeight = 3;
-            treeC45.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeC45.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             Console.WriteLine(DecisionTreeFormatter.Construct(treeC45.Root, data.DataStoreInfo));
             
@@ -498,7 +498,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             Console.WriteLine("CARTLearnTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DataStore train = null, validation = null;
@@ -507,7 +507,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             DecisionTreeCART treeCART = new DecisionTreeCART();
             treeCART.Gamma = 0;
-            treeCART.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeCART.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             ReducedErrorPruning prunning = new ReducedErrorPruning(treeCART, validation);
 
@@ -524,7 +524,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             int maxHeight = -1;
 
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DataStore prune = null, train = null;
@@ -533,7 +533,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             DecisionTreeRough treeRough = new DecisionTreeRough();
             treeRough.MaxHeight = maxHeight;
-            treeRough.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeRough.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             ReducedErrorPruning pruning = new ReducedErrorPruning(treeRough, prune);
             pruning.Prune();
 
@@ -546,7 +546,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             DecisionTreeC45 treeC45 = new DecisionTreeC45();
             treeC45.MaxHeight = maxHeight;
-            treeC45.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            treeC45.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             ErrorBasedPruning pruning2 = new ErrorBasedPruning(treeC45, prune);
             pruning2.Prune();
 

@@ -143,7 +143,7 @@ namespace NRough.MachineLearning.Roughsets
             {
                 if (this.initialEqClasses != null
                     && this.Epsilon < 0.5
-                    && permutation.Length < this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) / 2)
+                    && permutation.Length < this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard) / 2)
                 {
                     reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
                     this.Reduce(reduct, permutation, reductStore, useCache);

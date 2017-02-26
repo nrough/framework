@@ -85,7 +85,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             }
 
             InformationMeasureRelative roughMeasure = new InformationMeasureRelative();
-            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.SelectAttributeIds(a => a.IsStandard), 0);
 
             double r = roughMeasure.Calc(reduct);
             double u = sumWeights;
@@ -93,7 +93,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             Assert.AreEqual(r, u, 0.0000001);
 
             WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(dataStoreTrain);
-            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weightGenerator.Weights);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             double w = weightMeasure.Calc(reductWeights);
 
@@ -123,7 +123,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             }
 
             InformationMeasureMajority roughMeasure = new InformationMeasureMajority();
-            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct reduct = new Reduct(dataStoreTrain, dataStoreTrainInfo.SelectAttributeIds(a => a.IsStandard), 0);
 
             double r = roughMeasure.Calc(reduct);
             double u = sumWeights;
@@ -131,7 +131,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             Assert.AreEqual(r, u, 0.0000001);
 
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(dataStoreTrain);
-            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weightGenerator.Weights);
+            ReductWeights reductWeights = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weightGenerator.Weights);
             InformationMeasureWeights weightMeasure = new InformationMeasureWeights();
             double w = weightMeasure.Calc(reductWeights);
 

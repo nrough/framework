@@ -21,7 +21,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             int numOfFolds = 5;
             DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             DataStore train = null, test = null;
 
             for (double eps = 0.0; eps < 0.3; eps += 0.01)
@@ -63,7 +63,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
                 tree.PruningType = PruningType.ErrorBasedPruning;
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(tree, test);
                 Console.WriteLine(result);
@@ -89,7 +89,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 splitter.Split(out train, out test, f);
 
                 DecisionTreeC45 tree = new DecisionTreeC45();
-                tree.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(tree, test);
                 Console.WriteLine(result);
@@ -119,7 +119,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 DecisionForestRandom<DecisionTreeC45> forest = new DecisionForestRandom<DecisionTreeC45>();
                 forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
@@ -139,7 +139,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
             DataStore train = null, test = null;
             double error = 0;
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
             for (int f = 0; f < numOfFolds; f++)

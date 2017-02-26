@@ -84,7 +84,7 @@ namespace NRough.Data
             }
         }
 
-        public IEnumerable<AttributeInfo> Fields
+        public IEnumerable<AttributeInfo> Attributes
         {
             get { return this.fields.Values; }
         }
@@ -137,49 +137,29 @@ namespace NRough.Data
             return index;
         }        
 
-        public IEnumerable<int> GetFieldIds(FieldGroup fieldTypeFlags = FieldGroup.All)
+        public IEnumerable<AttributeInfo> SelectAttributes()
         {
-            if (fieldTypeFlags == FieldGroup.All || fieldTypeFlags == FieldGroup.None)
-                return this.Fields.Select(f => f.Id);
-
-            return this.Fields
-                .Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags))
-                .Select(f => f.Id);
-        }
-
-        public IEnumerable<AttributeInfo> GetFields(FieldGroup fieldTypeFlags)
-        {
-            if (fieldTypeFlags == FieldGroup.All || fieldTypeFlags == FieldGroup.None)
-                return this.Fields;
-            return this.Fields.Where(field => this.fieldTypes[field.Id].HasFlag(fieldTypeFlags));            
+            return Attributes;
         }
 
         public IEnumerable<AttributeInfo> SelectAttributes(Func<AttributeInfo, bool> selector)
         {
-            return this.Fields.Where(selector);            
+            return this.Attributes.Where(selector);            
         }
 
-        public virtual int GetNumberOfFields(FieldGroup fieldTypeFlags)
+        public IEnumerable<int> SelectAttributeIds()
         {
-            if (fieldTypeFlags == FieldGroup.All
-                || fieldTypeFlags == FieldGroup.None)
-                return this.NumberOfFields;
+            return Attributes.Select(f => f.Id);
+        }
 
-            if (fieldTypeFlags == FieldGroup.Output)
-                return 1;
+        public IEnumerable<int> SelectAttributeIds(Func<AttributeInfo, bool> selector)
+        {
+            return this.Attributes.Where(selector).Select(f => f.Id);
+        }
 
-            int numberOfFields = this.NumberOfFields;
-            int numberOfNotIncludedFields = 0;
-
-            foreach (FieldGroup ft in FieldTypesHelper.BasicFieldTypes)
-            {
-                if (!fieldTypeFlags.HasFlag(ft))
-                {
-                    numberOfNotIncludedFields += this.fieldTypeCount[ft];
-                }
-            }
-
-            return numberOfFields - numberOfNotIncludedFields;
+        public int CountAttributes(Func<AttributeInfo, bool> selector)
+        {
+            return this.Attributes.Count(selector);
         }
 
         public void AddFieldInfo(AttributeInfo fieldInfo, FieldGroup fieldType = FieldGroup.None)
@@ -294,7 +274,7 @@ namespace NRough.Data
         public string ToStringInfo()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (AttributeInfo fieldInfo in this.Fields)
+            foreach (AttributeInfo fieldInfo in this.Attributes)
             {
                 stringBuilder.AppendFormat("Attribute {0} is {1} and has {2} distinct values",
                                            fieldInfo.Name,

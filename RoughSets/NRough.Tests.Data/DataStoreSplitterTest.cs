@@ -68,7 +68,7 @@ namespace NRough.Tests.Data
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.Values().Count, dataStore2.DataStoreInfo.DecisionInfo.Values().Count, "DataStoreInfo.DecisionInfo.Values().Count");
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
 
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.SelectAttributeIds())
                 {
                     Assert.AreEqual(
                         dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType, 
@@ -234,7 +234,7 @@ namespace NRough.Tests.Data
                 Assert.AreEqual(dataStore.DataStoreInfo.DecisionInfo.InternalValues().Count, dataStore2.DataStoreInfo.DecisionInfo.InternalValues().Count, "DataStoreInfo.DecisionInfo.InternalValues().Count");
 
 
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.All))
+                foreach (int fieldId in dataStore.DataStoreInfo.SelectAttributeIds())
                 {
                     Assert.AreEqual(
                         dataStore.DataStoreInfo.GetFieldInfo(fieldId).DataType,
@@ -392,7 +392,7 @@ namespace NRough.Tests.Data
             DataSplitter dataStoreSplitter = new DataSplitterRatio(dataStore, 0.75);            
             dataStoreSplitter.Split(out dataStore1, out dataStore2, 0);
 
-            foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
+            foreach (int fieldId in dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
             {
                 elementSum = 0;
                 elementSum1 = 0;

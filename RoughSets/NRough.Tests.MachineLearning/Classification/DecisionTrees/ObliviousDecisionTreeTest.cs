@@ -38,7 +38,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void TestObliviousTreeDepth()
         {
             DataStore data = DataStore.Load(@"Data\spect.train", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\spect.test", DataFormat.RSES1, data.DataStoreInfo);
 
             int[] attributes = new int[] { 19, 20, 16, 21, 17, 14, 8, 18, 9, 2, 13 };
@@ -73,9 +73,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Console.WriteLine("Obilivious Decision Tree");
 
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();                        
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();                        
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)
@@ -151,9 +151,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             int numOfReducts = 100;
 
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             ObliviousDecisionTree obiliviousTree = new ObliviousDecisionTree();
             if (epsilon >= 0)

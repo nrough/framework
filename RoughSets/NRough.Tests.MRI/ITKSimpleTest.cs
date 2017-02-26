@@ -8,8 +8,9 @@ using System.Runtime.InteropServices;
 
 using itk.simple;
 using NUnit.Framework;
+using NRough.MRI;
 
-namespace NRough.MRI.UnitTests
+namespace NRough.Tests.MRI
 {
     [TestFixture]
     public class ITKSimpleTest

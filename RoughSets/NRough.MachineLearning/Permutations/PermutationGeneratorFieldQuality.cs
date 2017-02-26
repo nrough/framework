@@ -23,10 +23,10 @@ namespace NRough.MachineLearning.Permutations
             this.NumberOfShuffles = numberOfShuffles;
 
             //Calculate quality measure for each field
-            this.fieldIdsSorted = new int[this.Data.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard)];
+            this.fieldIdsSorted = new int[this.Data.DataStoreInfo.CountAttributes(a => a.IsStandard)];
             double[] fieldQualityOrig = new double[fieldIdsSorted.Length];
             int c = 0;
-            foreach (var field in this.Data.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (var field in this.Data.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
                 fieldIdsSorted[c] = field.Id;
                 fieldQualityOrig[c] = InformationMeasureWeights.Instance.Calc(

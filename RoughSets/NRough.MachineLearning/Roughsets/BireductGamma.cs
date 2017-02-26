@@ -22,7 +22,7 @@ namespace NRough.MachineLearning.Roughsets
         }
 
         public BireductGamma(DataStore dataStore, double epsilon)
-            : this(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), new int[] { }, epsilon)
+            : this(dataStore, dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), new int[] { }, epsilon)
         {
         }
 

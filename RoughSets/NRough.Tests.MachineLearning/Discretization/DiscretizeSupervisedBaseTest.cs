@@ -45,7 +45,7 @@ namespace NRough.Tests.MachineLearning.Discretization
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
 
             discretizer.Fields2Discretize
-                = train.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
+                = train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard)
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
 
             discretizer.Discretize(train, train.Weights);
@@ -74,9 +74,7 @@ namespace NRough.Tests.MachineLearning.Discretization
         {
             DataStore data = DataStore.Load(filename, fileFormat);                        
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
-                .GetFields(FieldGroup.Standard)
-                .Where(f => f.CanDiscretize())
-                .Select(g => g.Id) : fields;
+                .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
             discretizer.Fields2Discretize = numericFields;
@@ -99,9 +97,7 @@ namespace NRough.Tests.MachineLearning.Discretization
             splitter.Split(out trainData, out testData, 0);
 
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo
-                .GetFields(FieldGroup.Standard)
-                .Where(f => f.CanDiscretize())
-                .Select(g => g.Id) : fields;
+                .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
             discretizer.Fields2Discretize = numericFields;

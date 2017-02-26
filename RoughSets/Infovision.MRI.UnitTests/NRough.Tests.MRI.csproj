@@ -7,8 +7,8 @@
     <ProjectGuid>{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NRough.MRI.Tests</RootNamespace>
-    <AssemblyName>NRough.MRI.Tests</AssemblyName>
+    <RootNamespace>NRough.Tests.MRI</RootNamespace>
+    <AssemblyName>NRough.Tests.MRI</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

@@ -251,7 +251,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
             double[] weights = new WeightGeneratorRelative(localDataStore).Weights;
-            ReductWeights reduct = new ReductWeights(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weights);
+            ReductWeights reduct = new ReductWeights(localDataStore, localDataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weights);
 
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             double result = roughMeasure.Calc(reduct);
@@ -264,7 +264,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
             double[] weights = new WeightGeneratorMajority(localDataStore).Weights;
-            ReductWeights reduct = new ReductWeights(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weights);
+            ReductWeights reduct = new ReductWeights(localDataStore, localDataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weights);
 
             InformationMeasureWeights roughMeasure = new InformationMeasureWeights();
             double result = roughMeasure.Calc(reduct);
@@ -338,7 +338,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
             double[] weights = new WeightGeneratorMajority(dataStoreTrain).Weights;
-            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weights);
+            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weights);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductFactoryOptions.ReductType,
@@ -374,7 +374,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
             double[] weights = new WeightGeneratorMajority(dataStoreTrain).Weights;
-            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weights);
+            ReductWeights allAttributes = new ReductWeights(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weights);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductFactoryOptions.ReductType, ReductFactoryOptions.DecisionTable }, new Object[] { ReductTypes.ApproximateReductRelativeWeights, dataStoreTrain });

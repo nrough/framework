@@ -100,7 +100,7 @@
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>NRough.Math</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.MRI\NRough.MRI.csproj">
+    <ProjectReference Include="..\NRough.MRI\NRough.MRI.csproj">
       <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
       <Name>NRough.MRI</Name>
     </ProjectReference>

@@ -34,7 +34,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             for (int i = 0; i < total; i++)
             {
                 DataStore data = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
-                int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+                int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
                 attributes = attributes.RemoveAt(attributes.Length / 2, (attributes.Length / 2) - 1);
 
                 Stopwatch s = new Stopwatch();

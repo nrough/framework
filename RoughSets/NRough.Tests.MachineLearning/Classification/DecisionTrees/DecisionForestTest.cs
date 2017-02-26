@@ -25,7 +25,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             DataStore train = null, test = null;
 
             DataSplitter splitter = new DataSplitter(data, numOfFolds);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             for (int f = 0; f < numOfFolds; f++)
             {                
                 splitter.Split(out train, out test, f);
@@ -56,7 +56,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 //forest.NumberOfAttributesToCheckForSplit = 3;
                 forest.Size = 50;
                 forest.Gamma = 0.22;
-                forest.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                forest.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult result = Classifier.Default.Classify(forest, test);
                 Console.WriteLine(result);
@@ -68,14 +68,14 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             Console.WriteLine("RandomForestTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             //double epsilon = 0.07;
 
             DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>();
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             randomForest.Size = 100;
             //randomForest.NumberOfAttributesToCheckForSplit = (int) System.Math.Floor(System.Math.Sqrt(attributes.Length));
             randomForest.NumberOfTreeProbes = 1;
@@ -97,12 +97,12 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestCARTTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
             DecisionForestRandom<DecisionTreeCART> randomForest = new DecisionForestRandom<DecisionTreeCART>();
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             randomForest.Size = 200;
             //randomForest.NumberOfAttributesToCheckForSplit = (int)System.Math.Floor(System.Math.Sqrt(attributes.Length));
             randomForest.NumberOfTreeProbes = 1;
@@ -111,7 +111,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeCART cartTree = new DecisionTreeCART();
-            cartTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            cartTree.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             Console.WriteLine(Classifier.Default.Classify(cartTree, test, null));
         }
 
@@ -122,7 +122,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestRoughTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -131,11 +131,11 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             randomForest.NumberOfAttributesToCheckForSplit = 5;
             randomForest.NumberOfTreeProbes = 10;
             randomForest.Gamma = epsilon;
-            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray()).Error;
+            double error = randomForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray()).Error;
             Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
-            roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            roughTree.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             Console.WriteLine(Classifier.Default.Classify(roughTree, test, null));
         }
 
@@ -146,7 +146,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestRoughGammaTest");
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -156,12 +156,12 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             randomForest.Gamma = epsilon;
             randomForest.ReductGeneratorFactory = ReductTypes.GeneralizedMajorityDecisionApproximate;
 
-            double error = randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray()).Error;
+            double error = randomForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray()).Error;
             Console.WriteLine(Classifier.Default.Classify(randomForest, test, null));
 
             DecisionTreeRough roughTree = new DecisionTreeRough();
             roughTree.Gamma = epsilon;
-            roughTree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            roughTree.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
             Console.WriteLine(Classifier.Default.Classify(roughTree, test, null));
         }
 
@@ -191,7 +191,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 dummyForest.Size = size;
                 dummyForest.Gamma = epsilon;
                 dummyForest.NumberOfTreeProbes = numberOfTreeProbes;
-                dummyForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                dummyForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
                 var dummyForestResult = Classifier.Default.Classify(dummyForest, test, null);
                 dummyForestResult.ModelName = "Dummy";
                 dummyForestResult.TestNum = i;
@@ -206,7 +206,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 semiRoughForest.Gamma = epsilon;
                 semiRoughForest.NumberOfTreeProbes = numberOfTreeProbes;
                 semiRoughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
-                semiRoughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                semiRoughForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
                 var semiRoughForestResult = Classifier.Default.Classify(semiRoughForest, test, null);
                 semiRoughForestResult.ModelName = "SemiRough";
                 semiRoughForestResult.TestNum = i;
@@ -222,7 +222,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 roughForest.Gamma = epsilon;
                 //roughForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
                 roughForest.ReductGeneratorFactory = ReductTypes.ApproximateReductRelativeWeights;
-                roughForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                roughForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
                 var roughForestResult = Classifier.Default.Classify(roughForest, test, null);
                 roughForestResult.ModelName = "Rough";
                 roughForestResult.TestNum = i;
@@ -237,7 +237,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 roughForest.NumberOfTreeProbes = numberOfTreeProbes;
                 roughForest.Gamma = epsilon;
                 randomForest.NumberOfAttributesToCheckForSplit = numberOfAttributesToCheckForSplit;
-                randomForest.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                randomForest.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
                 var randomForestResult = Classifier.Default.Classify(randomForest, test, null);
                 randomForestResult.ModelName = "RandomC45";
                 randomForestResult.TestNum = i;
@@ -254,7 +254,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void ReductSubsetC45Tree()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 

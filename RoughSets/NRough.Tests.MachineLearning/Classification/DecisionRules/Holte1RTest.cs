@@ -23,9 +23,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionRules
         public void ClassiferTest(string trainFile, string testFile)
         {            
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             //int[] attributes = new int[] { 3 };
 
             Holte1R oneR = new Holte1R();
@@ -43,7 +43,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionRules
         {
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);            
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             Holte1R oneR = new Holte1R();
             oneR.Learn(data, attributes);
@@ -59,7 +59,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionRules
         {            
             int numOfFolds = 10;
             DataStore data = DataStore.Load(@"Data\german.data", DataFormat.CSV);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             DataStore train = null, test = null;
             
             DataSplitter splitter = new DataSplitter(data, numOfFolds);

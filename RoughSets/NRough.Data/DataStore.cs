@@ -186,7 +186,7 @@ namespace NRough.Data
         {
             Dictionary<int, long> valueMap = new Dictionary<int, long>(this.DataStoreInfo.NumberOfFields);
 
-            foreach (int fieldId in this.DataStoreInfo.GetFieldIds())
+            foreach (int fieldId in this.DataStoreInfo.SelectAttributeIds())
                 valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
 
             DataRecordInternal ret = new DataRecordInternal(valueMap);
@@ -210,11 +210,11 @@ namespace NRough.Data
 
         internal void CreateWeightHistogramsOnFields()
         {
-            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (var fieldInfo in this.DataStoreInfo.SelectAttributes(a => a.IsStandard))
                 if (fieldInfo.HistogramWeights != null)
                     fieldInfo.CreateWeightHistogram(this, this.weights);
 
-            foreach (var fieldInfo in this.DataStoreInfo.GetFields(FieldGroup.Output))
+            foreach (var fieldInfo in this.DataStoreInfo.SelectAttributes(a => a.IsDecision))
                 fieldInfo.CreateWeightHistogram(this, this.weights);
         }
 
@@ -445,7 +445,7 @@ namespace NRough.Data
         public AttributeValueVector GetDataVector(int objectIdx)
         {
             return new AttributeValueVector(
-                this.DataStoreInfo.GetFieldIds(FieldGroup.All).ToArray(),
+                this.DataStoreInfo.SelectAttributeIds().ToArray(),
                 this.GetFieldValues(objectIdx), false);
         }
 
@@ -642,7 +642,7 @@ namespace NRough.Data
 
             if (decisionAsLastField && this.DataStoreInfo.DecisionFieldId > 0)
             {
-                foreach (AttributeInfo field in this.DataStoreInfo.Fields)
+                foreach (AttributeInfo field in this.DataStoreInfo.Attributes)
                 {
                     if (field.Id != this.DataStoreInfo.DecisionFieldId)
                     {
@@ -657,7 +657,7 @@ namespace NRough.Data
             }
             else
             {
-                foreach (AttributeInfo field in this.DataStoreInfo.Fields)
+                foreach (AttributeInfo field in this.DataStoreInfo.Attributes)
                 {
                     position++;
                     if (position == this.DataStoreInfo.NumberOfFields)
@@ -881,12 +881,12 @@ namespace NRough.Data
 
         public int[] GetStandardFields()
         {
-            return this.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            return this.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
         }
 
         public T[][] ToArray<T>()            
         {
-            return this.ToArray<T>(this.DataStoreInfo.GetFieldIds().ToArray());
+            return this.ToArray<T>(this.DataStoreInfo.SelectAttributeIds().ToArray());
         }
 
         public T[][] ToArray<T>(int[] fieldIds)
@@ -918,7 +918,7 @@ namespace NRough.Data
         public DataTable ToDataTable()
         {
             DataTable datatable = new DataTable(String.IsNullOrEmpty(this.Name) ? "" : this.Name);
-            int[] fieldIds = this.DataStoreInfo.GetFieldIds().ToArray();
+            int[] fieldIds = this.DataStoreInfo.SelectAttributeIds().ToArray();
             for (int i = 0; i < fieldIds.Length; i++)
             {
                 AttributeInfo field = this.DataStoreInfo.GetFieldInfo(fieldIds[i]);

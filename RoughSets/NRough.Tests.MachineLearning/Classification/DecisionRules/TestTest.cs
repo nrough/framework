@@ -22,9 +22,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionRules
         public void NumberOfRulesVsAccuracy(string trainFile, string testFile)
         {
             DataStore data = DataStore.Load(trainFile, DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes) fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(data);
             PermutationCollection permutationCollection = new PermutationCollection(100, attributes);                

@@ -295,7 +295,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             double dataQuality = InformationMeasureWeights.Instance.Calc(allAttributes);
 
@@ -323,7 +323,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
             IReduct allAttributes =
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, new WeightGeneratorMajority(data).Weights);
+                new ReductWeights(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0.0, new WeightGeneratorMajority(data).Weights);
 
             IInformationMeasure measure = new InformationMeasureWeights();
             double dataQuality = measure.Calc(allAttributes);

@@ -67,7 +67,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
 
-            foreach (int fieldId in data.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
+            foreach (int fieldId in data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
 
             DataStore test = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, data.DataStoreInfo);
@@ -81,10 +81,10 @@ namespace NRough.Tests.MachineLearning.Roughsets
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(data);
 
             double dataQuality = new InformationMeasureWeights().Calc(
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, weightGenerator.Weights));
+                new ReductWeights(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0.0, weightGenerator.Weights));
 
             double dataQuality_2 = new InformationMeasureWeights().Calc(
-                new ReductWeights(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0.0, weightGenerator.Weights));
+                new ReductWeights(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0.0, weightGenerator.Weights));
             
             Assert.That(dataQuality, Is.EqualTo(dataQuality_2).Using((IComparer<double>)ToleranceDoubleComparer.Instance));
 
@@ -255,7 +255,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             {
                 int f = 0;
                 trainData = DataStore.Load(kvp.Value.TrainFile, DataFormat.RSES1);
-                foreach (int fieldId in trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
+                foreach (int fieldId in trainData.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
                     trainData.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);
                 testData = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, trainData.DataStoreInfo);
                 name = trainData.Name;

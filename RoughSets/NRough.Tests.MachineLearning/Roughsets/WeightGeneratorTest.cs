@@ -354,7 +354,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             WeightGenerator weightGenerator = new WeightGeneratorMajority(dataStore);
 
-            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0, weightGenerator.Weights);
+            ReductWeights reduct = new ReductWeights(dataStore, dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0, weightGenerator.Weights);
             IInformationMeasure infoMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority);
             double infoMeasureResult = infoMeasure.Calc(reduct);
 

@@ -20,7 +20,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             
-           foreach (var fieldInfo in data.DataStoreInfo.Fields)
+           foreach (var fieldInfo in data.DataStoreInfo.Attributes)
               fieldInfo.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -30,7 +30,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             splitter.Split(out train, out prune);
 
             DecisionTreeC45 c45WithPruning = new DecisionTreeC45();
-            c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            c45WithPruning.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             ClassificationResult resultBeforePruning = Classifier.Default.Classify(c45WithPruning, test);
 
@@ -67,7 +67,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -77,7 +77,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             splitter.Split(out train, out prune);
 
             var c45WithPruning = new DecisionTreeC45();
-            c45WithPruning.Learn(train, train.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            c45WithPruning.Learn(train, train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             var resultBeforePruning = Classifier.Default.Classify(c45WithPruning, test);
 
@@ -115,7 +115,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -124,7 +124,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             {
                 DecisionTreeC45 c45WithPrePruning = new DecisionTreeC45();
                 c45WithPrePruning.Gamma = eps;
-                c45WithPrePruning.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                c45WithPrePruning.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.Default.Classify(c45WithPrePruning, test);
 
@@ -147,7 +147,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
+            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -156,7 +156,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             {
                 var tree = new DecisionTreeReduct();
                 tree.Gamma = eps;
-                tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.Default.Classify(tree, test);
                 Console.WriteLine("DecisionTreeReduct {0:0.00} {1:0.00000} {2} {3} {4}",
@@ -177,10 +177,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void PrunningInternalTest()
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
-                fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes)
+                attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
-            int[] attributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             DecisionTreeC45 c45 = new DecisionTreeC45();
             c45.PruningType = PruningType.ErrorBasedPruning;
@@ -192,8 +192,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
-            foreach (var fieldInfo in data.DataStoreInfo.Fields)
-                fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes)
+                attribute.IsNumeric = false;
 
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -201,7 +201,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             {
                 var tree = new DecisionTreeRough();
                 tree.Gamma = eps;
-                tree.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+                tree.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
                 ClassificationResult resultForTreeWithPrePruning = Classifier.Default.Classify(tree, test);
                 Console.WriteLine("DecisionTreeRough {0:0.00} {1:0.00000} {2} {3} {4}", 

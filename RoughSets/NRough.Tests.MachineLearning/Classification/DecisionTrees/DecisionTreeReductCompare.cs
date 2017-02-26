@@ -36,10 +36,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void ErrorImpurityTest(string trainFile, string testFile, DataFormat fileFormat, string reductFactoryKey)
         {
             DataStore data = DataStore.Load(trainFile, fileFormat);
-            foreach (var fieldInfo in data.DataStoreInfo.Fields) fieldInfo.IsNumeric = false;
+            foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
 
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
 
             EquivalenceClassCollection emptyClassCollection = EquivalenceClassCollection.Create(new int[] { }, data, data.Weights);
             DecisionDistribution emptyDistribution = emptyClassCollection.DecisionDistribution;
@@ -67,10 +67,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(trainingSet.Name, out cachedData))
                             return cachedData;
 
-                        if (trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
+                        if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
                             var discretizer = new DataStoreDiscretizer();
-                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard)
+                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
                             discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -95,7 +95,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(cacheKey, out cachedData))
                             return cachedData;                        
 
-                        if (validationSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
+                        if (validationSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
                             string trainingCacheKey = cacheKey.Replace("-TST-", "-TRN-");
                             cachedData = null;
@@ -187,20 +187,20 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             {
                 if (dataFile == @"Data\dermatology.data")
                 {
-                    foreach (var fieldInfo in data.DataStoreInfo.Fields)
+                    foreach (var attribute in data.DataStoreInfo.Attributes)
                     {
-                        if (fieldInfo.Id != 34) //Age Attribute
-                            fieldInfo.IsNumeric = false;
+                        if (attribute.Id != 34) //Age Attribute
+                            attribute.IsNumeric = false;
                     }
                 }
                 else
                 {
-                    foreach (var fieldInfo in data.DataStoreInfo.Fields)
-                        fieldInfo.IsNumeric = false;
+                    foreach (var attribute in data.DataStoreInfo.Attributes)
+                        attribute.IsNumeric = false;
                 }
             }
             
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             var emptyDistribution = EquivalenceClassCollection
                 .Create(new int[] { }, data, data.Weights)
                 .DecisionDistribution;            
@@ -231,12 +231,11 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                     if (localDataFoldCache.TryGetValue(trainingSet.Name, out cachedData))
                         return cachedData;
 
-                    if (trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
+                    if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                     {
                         var discretizer = new DataStoreDiscretizer();
-                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo.GetFields(FieldGroup.Standard)
-                                        .Where(f => f.CanDiscretize())
-                                        .Select(fld => fld.Id);                        
+                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo
+                            .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());                        
                         discretizer.Discretize(trainingSet, trainingSet.Weights);
                     }
 
@@ -259,7 +258,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                         if (localDataFoldCache.TryGetValue(cacheKey, out cachedData))
                             return cachedData;
                        
-                        if (validationSet.DataStoreInfo.GetFields(FieldGroup.Standard).Any(f => f.CanDiscretize()))
+                        if (validationSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
                             string trainingCacheKey = cacheKey.Replace("-TST-", "-TRN-");
                             cachedData = null;
@@ -454,7 +453,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {            
             DataStore data = DataStore.Load(dataFile, fileFormat);
             
-            int[] allAttributes = data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] allAttributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             DecisionTreeC45 treec45 = new DecisionTreeC45();
             treec45.PruningType = pruningType;
 

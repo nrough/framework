@@ -41,7 +41,7 @@ namespace NRough.MachineLearning.Roughsets
                 this.weightGenerator = (WeightGenerator)args.GetParameter(ReductFactoryOptions.WeightGenerator);
 
             this.MinReductLength = 0;
-            this.MaxReductLength = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+            this.MaxReductLength = this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard);
 
             if (args.Exist(ReductFactoryOptions.MinReductLength))
                 this.MinReductLength = (int)args.GetParameter(ReductFactoryOptions.MinReductLength);
@@ -49,8 +49,8 @@ namespace NRough.MachineLearning.Roughsets
             if (args.Exist(ReductFactoryOptions.MaxReductLength))
                 this.MaxReductLength = (int)args.GetParameter(ReductFactoryOptions.MaxReductLength);
 
-            if (this.MaxReductLength > this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard))
-                this.MaxReductLength = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+            if (this.MaxReductLength > this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard))
+                this.MaxReductLength = this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard);
 
             if (this.MaxReductLength < this.MinReductLength)
                 this.MaxReductLength = this.MinReductLength;
@@ -63,7 +63,7 @@ namespace NRough.MachineLearning.Roughsets
             {
                 int cut = this.MinReductLength == this.MaxReductLength
                         ? this.MaxReductLength
-                        : (int)((1.0 - this.Epsilon) * this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard));
+                        : (int)((1.0 - this.Epsilon) * this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard));
 
                 int[] attributes = new int[cut];
                 for (int i = 0; i < cut; i++)

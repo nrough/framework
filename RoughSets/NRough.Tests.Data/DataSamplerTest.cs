@@ -15,7 +15,7 @@ namespace NRough.Tests.Data
             for (int i = 0; i < 10; i++)
             {
                 subData = sampler.GetData(i).Item1;
-                foreach (var field in subData.DataStoreInfo.Fields)
+                foreach (var field in subData.DataStoreInfo.Attributes)
                 {
                     Assert.AreNotEqual(
                         field.Histogram,

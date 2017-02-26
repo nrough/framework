@@ -284,7 +284,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             innerArgs.SetParameter(ReductFactoryOptions.ReductType, innerFactoryKey);
             innerArgs.SetParameter(ReductFactoryOptions.Epsilon, innerEpsilon);
             innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
-            innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+            innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(train.DataStoreInfo.CountAttributes(a => a.IsStandard) * 0.1)); //10% reduction step
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, train);
@@ -375,7 +375,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.2);
                     innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.CountAttributes(a => a.IsStandard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
@@ -489,7 +489,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.CountAttributes(a => a.IsStandard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
@@ -574,7 +574,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, new WeightGeneratorRelative(trnData));
-                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.CountAttributes(a => a.IsStandard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 
@@ -675,7 +675,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     innerArgs.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.ApproximateReductRelativeWeights);
                     innerArgs.SetParameter(ReductFactoryOptions.Epsilon, 0.1);
                     innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * 0.1)); //10% reduction step
+                    innerArgs.SetParameter(ReductFactoryOptions.ReductionStep, (int)(trnData.DataStoreInfo.CountAttributes(a => a.IsStandard) * 0.1)); //10% reduction step
 
                     parms.SetParameter(ReductFactoryOptions.InnerParameters, innerArgs);
 

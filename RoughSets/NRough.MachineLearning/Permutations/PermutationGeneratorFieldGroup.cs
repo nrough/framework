@@ -29,7 +29,7 @@ namespace NRough.MachineLearning.Permutations
 
         public PermutatioGeneratorFieldGroup(DataStore dataStore)
         {
-            int[] fieldIds = dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray();
+            int[] fieldIds = dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             this.fieldGroups = new int[fieldIds.Length][];
             for (int i = 0; i < fieldIds.Length; i++)
             {

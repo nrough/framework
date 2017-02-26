@@ -29,7 +29,7 @@ namespace NRough.Tests.MachineLearning.Clustering
             KMeans kmeans = new KMeans();
             kmeans.K = 3;
             kmeans.Distance = Distance.Euclidean;
-            var result = kmeans.Learn(data, data.DataStoreInfo.GetFieldIds(FieldGroup.Standard).ToArray());
+            var result = kmeans.Learn(data, data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             Assert.NotNull(result);
         }

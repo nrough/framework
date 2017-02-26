@@ -98,7 +98,7 @@ namespace NRough.MachineLearning.Roughsets
                     this.WeightGenerator.Generate();
                 }
 
-                int numOfAttr = this.DecisionTable.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard);
+                int numOfAttr = this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard);
                 double m0 = new InformationMeasureWeights()
                     .Calc(new ReductWeights(this.DecisionTable, new int[] { }, this.Epsilon, this.WeightGenerator.Weights));
                 this.Threshold = 1.0 - m0;

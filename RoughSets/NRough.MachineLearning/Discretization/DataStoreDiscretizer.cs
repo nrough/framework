@@ -113,8 +113,7 @@ namespace NRough.MachineLearning.Discretization
             AttributeInfo fieldInfo;
             IEnumerable<int> localFields = Fields2Discretize != null
                     ? Fields2Discretize
-                    : dataToDiscretize.DataStoreInfo.GetFields(FieldGroup.Standard)
-                        .Where(f => f.CanDiscretize()).Select(fld => fld.Id);
+                    : dataToDiscretize.DataStoreInfo.SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);
             this.fieldDiscretizer = new Dictionary<int, IDiscretizer>(localFields.Count());
@@ -195,7 +194,7 @@ namespace NRough.MachineLearning.Discretization
             AttributeInfo localFieldInfoTrain, localFieldInfoTest;
 
             IEnumerable<int> localFields = fieldsToDiscretize == null
-                                         ? dataToDiscretize.DataStoreInfo.GetFieldIds(FieldGroup.Standard)
+                                         ? dataToDiscretize.DataStoreInfo.SelectAttributeIds(a => a.IsStandard)
                                          : fieldsToDiscretize;
 
             foreach (int fieldId in localFields.ToList())

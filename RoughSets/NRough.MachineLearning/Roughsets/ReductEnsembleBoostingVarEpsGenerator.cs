@@ -115,7 +115,7 @@ namespace NRough.MachineLearning.Roughsets
 
         protected virtual double GetDataSetQuality(IReduct reduct)
         {
-            ReductWeights allAttributesReduct = new ReductWeights(this.DecisionTable, this.DecisionTable.DataStoreInfo.GetFieldIds(FieldGroup.Standard), reduct.Epsilon, reduct.Weights);
+            ReductWeights allAttributesReduct = new ReductWeights(this.DecisionTable, this.DecisionTable.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), reduct.Epsilon, reduct.Weights);
 
             return this.GetPartitionQuality(allAttributesReduct);
         }

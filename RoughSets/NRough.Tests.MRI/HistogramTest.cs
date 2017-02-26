@@ -9,8 +9,9 @@ using System.Windows.Forms.DataVisualization.Charting;
 using itk.simple;
 using NUnit.Framework;
 using NRough.Core;
+using NRough.MRI;
 
-namespace NRough.MRI.UnitTests
+namespace NRough.Tests.MRI
 {
     [TestFixture, Ignore("NoReason")]
     public class HistogramTest

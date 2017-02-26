@@ -41,7 +41,7 @@ namespace NRough.MachineLearning.MissingValues
             var fieldMap = new Dictionary<int, Dictionary<long, Dictionary<long, int>>>();
             for (int i = 0; i < dataStore.NumberOfRecords; i++)
             {
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
+                foreach (int fieldId in dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
                 {
                     AttributeInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
                     if (fieldInfo.HasMissingValues == false)
@@ -161,7 +161,7 @@ namespace NRough.MachineLearning.MissingValues
                 long decisionValue = dataStore.GetDecisionValue(i);
                 DataRecordInternal record = dataStore.GetRecordByIndex(i);
 
-                foreach (int fieldId in dataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard))
+                foreach (int fieldId in dataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
                 {
                     AttributeInfo fieldInfo = dataStore.DataStoreInfo.GetFieldInfo(fieldId);
                     if (fieldInfo.HasMissingValues == false)

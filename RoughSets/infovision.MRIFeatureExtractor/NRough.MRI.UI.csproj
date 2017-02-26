@@ -256,7 +256,7 @@
       <Project>{ce1a029c-63c1-4b26-bad9-c62d64dc089e}</Project>
       <Name>NRough.MRI.DAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infovision.MRI\NRough.MRI.csproj">
+    <ProjectReference Include="..\NRough.MRI\NRough.MRI.csproj">
       <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
       <Name>NRough.MRI</Name>
     </ProjectReference>

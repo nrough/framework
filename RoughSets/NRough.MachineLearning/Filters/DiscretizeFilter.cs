@@ -75,7 +75,7 @@ namespace NRough.MachineLearning.Filters
             Trace.WriteLine(String.Format("Fold : {0}", data.Fold.ToString()));
             Trace.WriteLine(String.Format("Id : {0}", data.TableId.ToString()));
             Trace.WriteLine(String.Format("Type : {0}", data.DatasetType.ToSymbol()));
-            Trace.WriteLine(data.DataStoreInfo.GetFieldIds().ToArray().ToStr());
+            Trace.WriteLine(data.DataStoreInfo.SelectAttributeIds().ToArray().ToStr());
         }
     }
 }

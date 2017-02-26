@@ -219,7 +219,7 @@ namespace DisesorTest
 
             var discretizer = new DataStoreDiscretizer();
                                 
-            foreach (AttributeInfo field in train.DataStoreInfo.GetFields(FieldGroup.Standard))
+            foreach (AttributeInfo field in train.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
                 Console.WriteLine("Atribute {0} {1} as type {2} and {3} distinct values. {4} be discretized",
                     field.Id,
@@ -247,11 +247,11 @@ namespace DisesorTest
             innerArgs.SetParameter(ReductFactoryOptions.Epsilon, eps);
             innerArgs.SetParameter(ReductFactoryOptions.WeightGenerator, wGen);
             innerArgs.SetParameter(ReductFactoryOptions.ReductionStep,
-                (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * reductionStepRatio)); //10% reduction step
+                (int)(train.DataStoreInfo.CountAttributes(a => a.IsStandard) * reductionStepRatio)); //10% reduction step
 
             innerArgs.SetParameter(ReductFactoryOptions.PermuatationGenerator,
                 new PermutationGeneratorFieldQuality(train, wGen, eps,
-                    (int)(train.DataStoreInfo.GetNumberOfFields(FieldGroup.Standard) * shuffleRatio)));
+                    (int)(train.DataStoreInfo.CountAttributes(a => a.IsStandard) * shuffleRatio)));
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, train);

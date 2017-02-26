@@ -209,7 +209,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0);
             double result = InformationMeasureRelative.Instance.Calc(reduct);
 
             Assert.AreEqual(result, 1.0, 0.0000001);
@@ -220,7 +220,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             DataStore localDataStore = DataStore.Load(@"Data\letter.trn", DataFormat.RSES1);
 
-            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct reduct = new Reduct(localDataStore, localDataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0);
             double result = InformationMeasureMajority.Instance.Calc(reduct);
 
             Assert.AreEqual(result, 1.0, 0.0000001);
@@ -233,7 +233,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             Reduct reduct = new Reduct(
                 localDataStore,
-                localDataStore.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
+                localDataStore.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0);
 
             InformationMeasurePositive roughMeasure = new InformationMeasurePositive();
             double result = roughMeasure.Calc(reduct);
@@ -356,7 +356,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Majority).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductFactoryOptions.ReductType,
@@ -393,7 +393,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
 
-            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.GetFieldIds(FieldGroup.Standard), 0);
+            Reduct allAttributes = new Reduct(dataStoreTrain, dataStoreTrain.DataStoreInfo.SelectAttributeIds(a => a.IsStandard), 0);
             double allAttrMeasure = InformationMeasureBase.Construct(InformationMeasureType.Relative).Calc(allAttributes);
 
             Args parms = new Args(new string[] { ReductFactoryOptions.ReductType,

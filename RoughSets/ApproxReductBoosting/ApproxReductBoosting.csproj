@@ -164,7 +164,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infovision.Datamining.Experimenter\NRough.MachineLearning.Experimenter.csproj">
+    <ProjectReference Include="..\NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj">
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
       <Name>NRough.MachineLearning.Experimenter</Name>
     </ProjectReference>

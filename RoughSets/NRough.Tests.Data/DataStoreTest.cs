@@ -397,7 +397,7 @@ namespace NRough.Tests.Data
             DataStoreInfo dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;
             DataStoreInfo dataStoreTestInfo = dataStoreTest.DataStoreInfo;
 
-            foreach (int fieldId in dataStoreTestInfo.GetFieldIds(FieldGroup.All))
+            foreach (int fieldId in dataStoreTestInfo.SelectAttributeIds())
             {
                 foreach (long internalValue in dataStoreTestInfo.GetFieldInfo(fieldId).InternalValues())
                 {
@@ -407,7 +407,7 @@ namespace NRough.Tests.Data
                 }
             }
 
-            foreach (int fieldId in dataStoreTrainInfo.GetFieldIds(FieldGroup.All))
+            foreach (int fieldId in dataStoreTrainInfo.SelectAttributeIds())
             {
                 foreach (long internalValue in dataStoreTrainInfo.GetFieldInfo(fieldId).InternalValues())
                 {
@@ -461,7 +461,7 @@ namespace NRough.Tests.Data
         {
             DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore data2 = DataStore.Copy(data, 0, data.NumberOfRecords);
-            int[] fieldIds = data.DataStoreInfo.GetFieldIds().ToArray();
+            int[] fieldIds = data.DataStoreInfo.SelectAttributeIds().ToArray();
 
             for (int i = 0; i < data.NumberOfRecords; i++)
             {

@@ -91,7 +91,7 @@ namespace ExceptionRulesTiming
                 double mA = new InformationMeasureMajority().Calc(
                     new Reduct(
                         trainData,
-                        trainData.DataStoreInfo.GetFieldIds(FieldGroup.Standard),
+                        trainData.DataStoreInfo.SelectAttributeIds(a => a.IsStandard),
                         0.0,
                         new WeightGeneratorMajority(trainData).Weights));
 

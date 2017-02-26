@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using NRough.MachineLearning.Experimenter.Parms;
-using NRough.Core;
 using itk.simple;
 using NUnit.Framework;
 using NRough.Core.Data;
+using NRough.MRI;
 
-namespace NRough.MRI.UnitTests
+namespace NRough.Tests.MRI
 {
     [TestFixture, System.Runtime.InteropServices.GuidAttribute("AE5C3100-EE1D-49F0-AAE1-22DF19D49FEF")]
     public class FeatureExtractorTest

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NRough.MRI.UnitTests
+namespace NRough.Tests.MRI
 {
     public class PerformanceTestRunner
     {

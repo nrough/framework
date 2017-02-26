@@ -21,7 +21,7 @@ namespace NRough.MachineLearning.Discretization
         #region Properties
 
         public IList<IDiscretizer> DiscretizerCollection { get; set; }
-        public IEnumerable<int> Fields2Discretize { get; set; }
+        public IEnumerable<int> FieldsToDiscretize { get; set; }
         public Dictionary<int, IDiscretizer> FieldDiscretizer
         {
             get { return this.fieldDiscretizer; }
@@ -111,8 +111,8 @@ namespace NRough.MachineLearning.Discretization
         public void Discretize(DataStore dataToDiscretize, double[] weights = null)
         {
             AttributeInfo fieldInfo;
-            IEnumerable<int> localFields = Fields2Discretize != null
-                    ? Fields2Discretize
+            IEnumerable<int> localFields = FieldsToDiscretize != null
+                    ? FieldsToDiscretize
                     : dataToDiscretize.DataStoreInfo.SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());
 
             long[] labels = dataToDiscretize.GetColumnInternal(dataToDiscretize.DataStoreInfo.DecisionFieldId);

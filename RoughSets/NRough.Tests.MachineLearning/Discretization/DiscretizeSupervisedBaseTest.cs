@@ -44,7 +44,7 @@ namespace NRough.Tests.MachineLearning.Discretization
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
 
-            discretizer.Fields2Discretize
+            discretizer.FieldsToDiscretize
                 = train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard)
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
 
@@ -65,7 +65,7 @@ namespace NRough.Tests.MachineLearning.Discretization
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
 
-            discretizer.Fields2Discretize = new int[] { 2 };
+            discretizer.FieldsToDiscretize = new int[] { 2 };
             discretizer.Discretize(train, train.Weights);
         }
 
@@ -77,7 +77,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
-            discretizer.Fields2Discretize = numericFields;
+            discretizer.FieldsToDiscretize = numericFields;
             discretizer.Discretize(data, data.Weights);
             
             foreach (var kvp in discretizer.FieldDiscretizer)
@@ -100,7 +100,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
             var discretizer = new DataStoreDiscretizer(this.GetDiscretizer());
-            discretizer.Fields2Discretize = numericFields;
+            discretizer.FieldsToDiscretize = numericFields;
             discretizer.Discretize(trainData, trainData.Weights);
             DataStoreDiscretizer.Discretize(testData, trainData);
 

@@ -56,7 +56,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                     UseBinaryCuts = true
                 };
 
-            discretizer.Fields2Discretize = numericFields;
+            discretizer.FieldsToDiscretize = numericFields;
             discretizer.AddColumnsBasedOnCuts = true;
             discretizer.Discretize(data);            
         }
@@ -75,7 +75,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
             var discretizer = new DataStoreDiscretizer();
-            discretizer.Fields2Discretize = numericFields;
+            discretizer.FieldsToDiscretize = numericFields;
             discretizer.AddColumnsBasedOnCuts = true;
             discretizer.Discretize(trainData);
             

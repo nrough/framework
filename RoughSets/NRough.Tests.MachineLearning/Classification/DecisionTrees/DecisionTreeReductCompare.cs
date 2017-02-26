@@ -70,7 +70,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                         if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
                             var discretizer = new DataStoreDiscretizer();
-                            discretizer.Fields2Discretize = trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard)
+                            discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
                             discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -234,7 +234,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                     if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                     {
                         var discretizer = new DataStoreDiscretizer();
-                        discretizer.Fields2Discretize = trainingSet.DataStoreInfo
+                        discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo
                             .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());                        
                         discretizer.Discretize(trainingSet, trainingSet.Weights);
                     }

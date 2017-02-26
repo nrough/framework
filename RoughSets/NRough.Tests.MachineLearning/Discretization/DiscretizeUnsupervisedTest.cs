@@ -25,7 +25,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                 throw new InvalidOperationException("discretizer == null");
             
             DataStoreDiscretizer dataDescretizer = new DataStoreDiscretizer(discretizer);
-            dataDescretizer.Fields2Discretize = fields;
+            dataDescretizer.FieldsToDiscretize = fields;
             dataDescretizer.Discretize(trainData, trainData.Weights);
             DataStoreDiscretizer.Discretize(testData, trainData);
 

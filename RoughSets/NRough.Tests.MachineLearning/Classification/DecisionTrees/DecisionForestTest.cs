@@ -67,7 +67,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void DecisionForestRandomTest()
         {
             Console.WriteLine("RandomForestTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -96,7 +98,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             //double epsilon = 0.07;
 
             Console.WriteLine("RandomForestCARTTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -121,7 +125,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -145,7 +151,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             double epsilon = 0.07;
 
             Console.WriteLine("RandomForestRoughGammaTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -253,7 +261,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test]
         public void ReductSubsetC45Tree()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);

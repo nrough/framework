@@ -99,14 +99,16 @@ namespace NRough.Core
         public static T[] RemoveValue<T>(this T[] array, T value)
         {
             int numIndex = Array.IndexOf(array, value);
-            return array.RemoveAt(numIndex);
-            //return array.Where((val, idx) => idx != numIndex).ToArray();
+            return array.RemoveAt(numIndex);            
         }
 
         public static string ToStr<T>(this T[] array, char separator = '|')
         {
             if (array == null)
                 return "NULL";
+
+            if (array.Length == 0)
+                return "NOELEMENTS";
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < array.Length; i++)

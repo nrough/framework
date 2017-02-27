@@ -123,14 +123,34 @@ namespace NRough.Data
 
             this.IsNumeric = AttributeInfo.IsNumericType(dataType);
             this.IsSymbolic = !this.IsNumeric;
+            this.IsOrdered = false;
+
+            this.IsDecision = false;
+            this.IsIdentifier = false;
+            this.IsUnique = false;
+            this.IsSystem = false;
+            this.IsStandard = true;
+            this.IsWeight = false;
         }
 
         #endregion Constructors
     
         #region Methods
 
-        public void InitFromReferenceField(AttributeInfo referenceField)
+        public void InitFromReferenceAttribute(AttributeInfo referenceAttribute)
         {
+            IsNumeric = referenceAttribute.IsNumeric;
+            IsSymbolic = referenceAttribute.IsSymbolic;
+            IsOrdered = referenceAttribute.IsOrdered;
+            IsUnique = referenceAttribute.IsUnique;
+            MissingValue = referenceAttribute.MissingValue;
+            MissingValueInternal = referenceAttribute.MissingValueInternal;
+            NumberOfDecimals = referenceAttribute.NumberOfDecimals;
+            IsDecision = referenceAttribute.IsDecision;
+            IsIdentifier = referenceAttribute.IsIdentifier;
+            IsStandard = referenceAttribute.IsStandard;
+            IsWeight = referenceAttribute.IsWeight;
+            IsSystem = referenceAttribute.IsSystem;
         }
 
         public void Reset()

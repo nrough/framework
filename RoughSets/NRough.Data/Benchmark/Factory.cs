@@ -84,7 +84,7 @@ namespace NRough.Data.Benchmark
 
         public static DataStore DnaModifiedTest()
         {
-            DataStore train = Dna();
+            DataStore train = DnaModified();
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
                 "NRough.Data.Benchmark.Data.dna_modified.tst"))
             {
@@ -371,13 +371,17 @@ namespace NRough.Data.Benchmark
 
         public static DataStore Vehicle()
         {
+            DataStore result = null;
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
                 "NRough.Data.Benchmark.Data.vehicle.tab"))
             {
                 IDataReader dataReader = new DataRSESFileReader(stream);
-                return dataReader.Read();
+                result = dataReader.Read();
             }
 
+            result.DataStoreInfo.DecisionInfo.IsNumeric = false;
+            return result;
+            
             //return DataStore.Load(Path.Combine(location, "vehicle.tab"), DataFormat.RSES1);
         }
 

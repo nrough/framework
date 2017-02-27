@@ -398,7 +398,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             Console.WriteLine("CountLeavesTest");
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -410,7 +412,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test]
         public void GetRulesFromTreeTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             int prevCount = Int32.MaxValue;
@@ -434,7 +438,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test]
         public void CheckTreeConvergedTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
@@ -461,7 +467,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             Console.WriteLine("ID3LearnTest");
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -478,7 +486,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void C45LearnTest()
         {            
             Console.WriteLine("C45LearnTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);            
 
@@ -497,7 +508,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         public void CARTLearnTest()
         {
             Console.WriteLine("CARTLearnTest");
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 
@@ -523,7 +537,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             int maxHeight = -1;
 
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
 

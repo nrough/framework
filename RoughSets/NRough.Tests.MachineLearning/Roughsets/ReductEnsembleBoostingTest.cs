@@ -22,7 +22,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
@@ -248,7 +249,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [TestCase(0.0, 100, 10)]
         public void GenerateBoostingTestNullExceptionError(double epsilon, int iterations, int weak)
         {
-            DataStore train = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var train = Data.Benchmark.Factory.DnaModified();
+            //DataStore train = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, train.DataStoreInfo);
 
             //-------------------------------------- Parameters --------------------------
@@ -316,7 +318,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void GenerateExperimentBoostingStandard()
         {
-            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var trnData = Data.Benchmark.Factory.DnaModified();
+            //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
             WeightingSchema weightingSchema = WeightingSchema.Majority;
             int numberOfTests = 1;
@@ -536,7 +539,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             //Console.WriteLine("GenerateExperimentBoostingWithDiversity");
 
-            DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var trnData = Data.Benchmark.Factory.DnaModified();
+            //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
             /*

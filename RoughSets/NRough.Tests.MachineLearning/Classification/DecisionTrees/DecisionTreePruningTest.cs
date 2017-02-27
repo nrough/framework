@@ -18,7 +18,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void ErrorBasedPruningTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             
            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
               fieldInfo.IsNumeric = false;
@@ -65,7 +66,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void ReducedErrorPruningTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -113,7 +115,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePruningTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -145,7 +148,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePrunningTest2()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -176,7 +180,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
         public void PrunningInternalTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var attribute in data.DataStoreInfo.Attributes)
                 attribute.IsNumeric = false;
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
@@ -190,7 +195,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePrunningTest3()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var attribute in data.DataStoreInfo.Attributes)
                 attribute.IsNumeric = false;

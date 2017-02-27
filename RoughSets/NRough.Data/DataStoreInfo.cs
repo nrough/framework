@@ -176,6 +176,36 @@ namespace NRough.Data
                 else if (fieldInfo.IsSystem)
                     localFieldType = FieldGroup.Sys;
             }
+            else
+            {
+                switch (fieldType)
+                {
+                    case FieldGroup.Standard :
+                        fieldInfo.IsStandard = true;
+                        fieldInfo.IsDecision = false;
+                        break;
+                    case FieldGroup.Output:
+                        fieldInfo.IsStandard = false;
+                        fieldInfo.IsDecision = true;
+                        break;
+                    case FieldGroup.Id:
+                        fieldInfo.IsStandard = false;
+                        fieldInfo.IsDecision = false;
+                        fieldInfo.IsIdentifier = true;
+                        break;
+                    case FieldGroup.Sys:
+                        fieldInfo.IsStandard = false;
+                        fieldInfo.IsDecision = false;
+                        fieldInfo.IsSystem = true;
+                        break;
+                    case FieldGroup.Weight:
+                        fieldInfo.IsStandard = false;
+                        fieldInfo.IsDecision = false;
+                        fieldInfo.IsWeight = true;
+                        break;
+                }
+            }
+
 
             this.fieldId2Index.Add(fieldInfo.Id, this.fields.Count);
 

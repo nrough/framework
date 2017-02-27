@@ -1,4 +1,5 @@
 ﻿using NRough.Data;
+using NRough.Data.Benchmark;
 using NUnit.Framework;
 
 namespace NRough.Tests.Data
@@ -9,7 +10,8 @@ namespace NRough.Tests.Data
         [Test]
         public void GetDataTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataSampler sampler = new DataSampler(data);
             DataStore subData = null;
             for (int i = 0; i < 10; i++)

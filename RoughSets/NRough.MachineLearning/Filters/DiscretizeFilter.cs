@@ -13,12 +13,12 @@ namespace NRough.MachineLearning.Filters
     {        
         private object syncRoot = new object();
         private Dictionary<string, DataStore> cache;
-        public DataStoreDiscretizer DataStoreDiscretizer { get; set; }
+        public TableDiscretizer TableDiscretizer { get; set; }       
 
         public DiscretizeFilter()
         {
             cache = new Dictionary<string, DataStore>();
-            this.DataStoreDiscretizer = null;
+            this.TableDiscretizer = null;
         }
 
         public void Compute(DataStore data)
@@ -34,11 +34,11 @@ namespace NRough.MachineLearning.Filters
                     return;
                 }
 
-                if (DataStoreDiscretizer == null)
-                    DataStoreDiscretizer = new DataStoreDiscretizer();
+                if (TableDiscretizer == null)
+                    TableDiscretizer = new TableDiscretizer();
 
                 discretizedData = (DataStore)data.Clone();
-                DataStoreDiscretizer.Discretize(discretizedData, discretizedData.Weights);
+                TableDiscretizer.Discretize(discretizedData, discretizedData.Weights);
 
                 cache.Add(GetCacheKey(data), discretizedData);
 
@@ -55,11 +55,19 @@ namespace NRough.MachineLearning.Filters
                 throw new InvalidOperationException("cannot find discretized data set");
 
             var dataToDiscretize = (DataStore)data.Clone();
-            DataStoreDiscretizer.Discretize(dataToDiscretize, discretizedData);
+            TableDiscretizer.Discretize(dataToDiscretize, discretizedData);
 
             TraceData(dataToDiscretize, false);
 
             return dataToDiscretize;
+        }
+
+        public IDiscretizer GetAttributeDiscretizer(int attributeId)
+        {
+            IDiscretizer result;
+            if (TableDiscretizer.FieldDiscretizer.TryGetValue(attributeId, out result))
+                return result;
+            return null;
         }
 
         private string GetCacheKey(DataStore data)

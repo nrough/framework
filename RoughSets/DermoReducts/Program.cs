@@ -93,7 +93,7 @@ namespace DermoReducts
                 int value = (int)val;
                 if (value != (int)ageAttribute.MissingValue)
                 {
-                    DataStoreDiscretizer discretizer = new DataStoreDiscretizer(new DiscretizeManual(value));
+                    TableDiscretizer discretizer = new TableDiscretizer(new DiscretizeManual(value));
                     long[] cuts = discretizer.GetCuts(data, ageAttribute.Id, null);
                     long[] newValuesTrain = DiscretizeBase.Apply(data.GetColumn<long>(ageAttribute.Id), cuts);
                     

@@ -59,7 +59,7 @@ namespace NRough.Tests.MachineLearning
             model.FMeasure = FMeasures.MajorityWeighted;
             model.Epsilon = 0.0;
 
-            var reducts = model.Learn(data, data.SelectAttributes(a => a.IsStandard).Select(f => f.Id).ToArray());
+            var reducts = model.Learn(data, data.SelectAttributeIds(a => a.IsStandard).ToArray());
             foreach (var reduct in reducts)
                 Console.WriteLine(reduct);
         }
@@ -143,8 +143,7 @@ namespace NRough.Tests.MachineLearning
 
             //Build Random Forest
             forest.Learn(train, 
-                train.SelectAttributes(a => a.IsStandard)
-                    .Select(f => f.Id).ToArray());
+                train.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             //Test and output results
             var result = Classifier.Default.Classify(forest, test);
@@ -183,8 +182,7 @@ namespace NRough.Tests.MachineLearning
             //create ada boost ensemble 
             var adaBoost = new AdaBoost<ReductDecisionRules>(prototype);
             adaBoost.Learn(train, 
-                train.SelectAttributes(a => a.IsStandard)
-                     .Select(f => f.Id).ToArray());
+                train.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             //classify test data set
             var result = Classifier.Default.Classify(adaBoost, test);
@@ -301,8 +299,7 @@ namespace NRough.Tests.MachineLearning
             parms.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
             parms.SetParameter(ReductFactoryOptions.PermutationCollection, 
                 new PermutationCollection(10, 
-                    train.SelectAttributes(a => a.IsStandard)
-                        .Select(f => f.Id).ToArray()));
+                    train.SelectAttributeIds(a => a.IsStandard).ToArray()));
 
             //generate reducts
             var reductGenerator = ReductFactory.GetReductGenerator(parms);
@@ -326,8 +323,8 @@ namespace NRough.Tests.MachineLearning
             parms.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
             parms.SetParameter(ReductFactoryOptions.PermutationCollection,
                 new PermutationCollection(10,
-                    train.SelectAttributes(a => a.IsStandard)
-                        .Select(f => f.Id).ToArray()));
+                    train.SelectAttributeIds(a => a.IsStandard)
+                        .ToArray()));
             parms.SetParameter(ReductFactoryOptions.UseExceptionRules, 
                 true);
 
@@ -355,63 +352,43 @@ namespace NRough.Tests.MachineLearning
 
             //show results
             Console.WriteLine(result);
-        }
+        }        
 
         [Test]
         public void Disctretization()
         {
             var data = Data.Benchmark.Factory.Vehicle();
-            var splitter = new DataSplitterRatio(data, 0.8);
+
             DataStore train, test;
-            splitter.Split(out train, out test);            
-
-            var discretizer = new DataStoreDiscretizer(
-                new IDiscretizer[]
-                {
-                    //try to discretize using Fayyad MDL Criterion
-                    new DiscretizeFayyad(),
-
-                    //if previous discretizer fails, 
-                    //split using entropy to 5 buckets
-                    new DiscretizeEntropy(5)
-                });
-
-            discretizer.FieldsToDiscretize = train.DataStoreInfo
-                .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());
-
-            discretizer.Discretize(data, data.Weights);
-
-            foreach (var kvp in discretizer.FieldDiscretizer)
-                Console.WriteLine("Field {0} Cuts {1}", kvp.Key, (kvp.Value == null || kvp.Value.Cuts == null) ? "All" : kvp.Value.ToString());
-
-            DataStoreDiscretizer.Discretize(test, train, discretizer.FieldsToDiscretize);
-        }
-
-        [Test]
-        public void Disctretization2()
-        {
-            var data = Data.Benchmark.Factory.Vehicle();
-            var splitter = new DataSplitterRatio(data, 0.8);
-            DataStore train, test;
+            var splitter = new DataSplitterRatio(data, 0.8);            
             splitter.Split(out train, out test);
 
-            var discretizer = new DataStoreDiscretizer(
+            var tableDiscretizer = new TableDiscretizer(
                 new IDiscretizer[]
                 {
                     //try to discretize using Fayyad MDL Criterion
                     new DiscretizeFayyad(),
 
-                    //if previous discretizer fails, 
-                    //split using entropy to 5 buckets
+                    //in case Fayyad MDL is to strict 
+                    //use standard entropy and 5 buckets
                     new DiscretizeEntropy(5)
                 });
 
-            discretizer.FieldsToDiscretize = train.DataStoreInfo
+            tableDiscretizer.FieldsToDiscretize = train
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());
 
             var filter = new DiscretizeFilter();
-            filter.DataStoreDiscretizer = discretizer;
+            filter.TableDiscretizer = tableDiscretizer;
             filter.Compute(train);
+
+            foreach(int attributeId in tableDiscretizer.FieldsToDiscretize)
+            {
+                var fieldDiscretizer = filter.GetAttributeDiscretizer(attributeId);
+                
+                Console.WriteLine("Attribute {0} was discretized with {1}", 
+                    attributeId, fieldDiscretizer.GetType().Name);
+                Console.WriteLine("Computed Cuts: {0}", fieldDiscretizer.Cuts.ToStr());                  
+            }
 
             var trainDisc = filter.Apply(train);
             var testDisc = filter.Apply(test);

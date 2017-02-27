@@ -137,7 +137,7 @@
     <Compile Include="Classification\Ensembles\MultimodalEnsemble.cs" />
     <Compile Include="Evaluation\CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
-    <Compile Include="Discretization\DataStoreDiscretizer.cs" />
+    <Compile Include="Discretization\TableDiscretizer.cs" />
     <Compile Include="Discretization\DiscretizeBase.cs" />
     <Compile Include="Discretization\DiscretizeEntropy.cs" />
     <Compile Include="Discretization\DiscretizeUnsupervisedBase.cs" />

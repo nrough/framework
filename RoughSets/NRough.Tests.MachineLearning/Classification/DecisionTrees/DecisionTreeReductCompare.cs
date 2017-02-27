@@ -69,7 +69,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                         if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
-                            var discretizer = new DataStoreDiscretizer();
+                            var discretizer = new TableDiscretizer();
                             discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
@@ -102,7 +102,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
                                                         
-                            DataStoreDiscretizer.Discretize(validationSet, cachedData);
+                            TableDiscretizer.Discretize(validationSet, cachedData);
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -233,7 +233,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                     if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                     {
-                        var discretizer = new DataStoreDiscretizer();
+                        var discretizer = new TableDiscretizer();
                         discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo
                             .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());                        
                         discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -265,7 +265,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
                             
-                            DataStoreDiscretizer.Discretize(validationSet, cachedData);                                                        
+                            TableDiscretizer.Discretize(validationSet, cachedData);                                                        
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);

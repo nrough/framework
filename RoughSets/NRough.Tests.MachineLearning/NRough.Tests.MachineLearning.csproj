@@ -7,8 +7,8 @@
     <ProjectGuid>{C32F57FC-32D0-4853-8145-2645A559BF6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Raccoon.Tests.MachineLearning</RootNamespace>
-    <AssemblyName>Raccoon.Tests.MachineLearning</AssemblyName>
+    <RootNamespace>NRough.Tests.MachineLearning</RootNamespace>
+    <AssemblyName>NRough.Tests.MachineLearning</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

@@ -24,7 +24,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                         int numberOfPermutations = 10;
                         string reductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
 
-                        string trainFileName = @"Data\dna_modified.trn";
+                        //string trainFileName = @"Data\dna_modified.trn";
                         string testFileName = @"Data\dna_modified.tst";
 
                         IdentificationType identificationType = identType;
@@ -60,7 +60,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
                             default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
-                        DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
+                        var trainData = Data.Benchmark.Factory.DnaModified();
+                        //DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
                         DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 
                         Args args = new Args();
@@ -102,13 +103,14 @@ namespace NRough.Tests.MachineLearning.Roughsets
             double epsilon = 0.05;
             string reductFactoryKey = ReductTypes.ApproximateReductMajorityWeights;
 
-            string trainFileName = @"Data\dna_modified.trn";
+            //string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
             RuleQualityMethod identificationFunc = RuleQualityMethods.ConfidenceW;
             RuleQualityMethod voteFunc = RuleQualityMethods.ConfidenceW;
 
-            DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
+            var trainData = Data.Benchmark.Factory.DnaModified();
+            //DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
             DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 
             Args args = new Args();

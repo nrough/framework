@@ -18,6 +18,7 @@ namespace NRough.Data.Readers
         public DataRSESFileReader(Stream stream)
             : base(stream)
         {
+            Header = 1;
         }
 
         protected override void AnalyzeHeader(StreamReader streamReader)
@@ -32,10 +33,12 @@ namespace NRough.Data.Readers
             string[] fields = fileInfo.Split(this.GetFieldDelimiter(), StringSplitOptions.RemoveEmptyEntries);
 
             int tmp;
-            if (!Int32.TryParse(fields[1], out tmp)) throw new InvalidDataException("FileFormat error");
+            if (!Int32.TryParse(fields[1], out tmp))
+                throw new InvalidDataException("FileFormat error");
             ExpectedColumns = tmp;
 
-            if (!Int32.TryParse(fields[0], out tmp)) throw new InvalidDataException("FileFormat error");
+            if (!Int32.TryParse(fields[0], out tmp))
+                throw new InvalidDataException("FileFormat error");
             ExpectedRows = tmp;
 
             if (this.ReferenceDataStoreInfo != null && this.ReferenceDataStoreInfo.DecisionFieldId > 0)

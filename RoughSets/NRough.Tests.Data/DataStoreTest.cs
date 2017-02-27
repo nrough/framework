@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NRough.Data;
+using NRough.Data.Benchmark;
 
 namespace NRough.Tests.Data
 {
@@ -428,7 +429,8 @@ namespace NRough.Tests.Data
         [Test]
         public void OrderByTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             int[][] orderBy = new int[][]
             {
@@ -459,7 +461,8 @@ namespace NRough.Tests.Data
         [Test]
         public void CopyTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore data2 = DataStore.Copy(data, 0, data.NumberOfRecords);
             int[] fieldIds = data.DataStoreInfo.SelectAttributeIds().ToArray();
 
@@ -480,7 +483,8 @@ namespace NRough.Tests.Data
         [Test]
         public void SwapTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
                 for (int j = 0; j < data.NumberOfRecords; j++)
@@ -502,7 +506,8 @@ namespace NRough.Tests.Data
         [Test]
         public void ShuffleTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             data.Shuffle();
         }
     }

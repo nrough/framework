@@ -18,7 +18,9 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void CreateTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             int[] attributes = data.GetStandardFields();
 
@@ -51,7 +53,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void RemoveObjectsWithMinorDecisionsTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             int numberOfPermutations = 100;

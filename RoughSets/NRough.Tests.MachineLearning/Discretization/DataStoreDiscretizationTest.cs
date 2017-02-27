@@ -20,7 +20,7 @@ namespace NRough.Tests.MachineLearning.Discretization
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
-            var discretizer = new DataStoreDiscretizer();            
+            var discretizer = new TableDiscretizer();            
             discretizer.Discretize(data);
             
             foreach (int fieldId in numericFields)
@@ -44,7 +44,7 @@ namespace NRough.Tests.MachineLearning.Discretization
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()): fields;
 
             var discretizer =
-                new DataStoreDiscretizer(
+                new TableDiscretizer(
                     new DiscretizeSupervisedBase()
                     {
                         NumberOfBuckets = 5
@@ -74,12 +74,12 @@ namespace NRough.Tests.MachineLearning.Discretization
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
-            var discretizer = new DataStoreDiscretizer();
+            var discretizer = new TableDiscretizer();
             discretizer.FieldsToDiscretize = numericFields;
             discretizer.AddColumnsBasedOnCuts = true;
             discretizer.Discretize(trainData);
             
-            DataStoreDiscretizer.Discretize(testData, trainData);
+            TableDiscretizer.Discretize(testData, trainData);
 
             Assert.AreEqual(numberOfFields + 1, trainData.DataStoreInfo.NumberOfFields);
             Assert.AreEqual(numberOfFields + 1, testData.DataStoreInfo.NumberOfFields);

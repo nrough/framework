@@ -19,8 +19,9 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void BalancedAccuracy()
         {
-            string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
+            var localDataStore = Data.Benchmark.Factory.DnaModified();
+            //string localFileName = @"Data\dna_modified.trn";
+            //DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
 
             Args args = new Args();
             args.SetParameter(ReductFactoryOptions.DecisionTable, localDataStore);
@@ -368,8 +369,9 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void ReductMajorityTest()
         {
-            string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
+            var localDataStore = Data.Benchmark.Factory.DnaModified();
+            //string localFileName = @"Data\dna_modified.trn";
+            //DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
             int numberOfPermutations = 10;
 
             Args args = new Args();
@@ -401,8 +403,9 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void ReductRelativeTest()
         {
-            string localFileName = @"Data\dna_modified.trn";
-            DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
+            var localDataStore = Data.Benchmark.Factory.DnaModified();
+            //string localFileName = @"Data\dna_modified.trn";
+            //DataStore localDataStore = DataStore.Load(localFileName, DataFormat.RSES1);
             int numberOfPermutations = 20;
 
             Args args = new Args();

@@ -19,10 +19,11 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
         public ReductDiscernibilityMatrixTest()
         {
-            string trainFileName = @"Data\dna_modified.trn";
+            //string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
+            dataStoreTrain = Data.Benchmark.Factory.DnaModified();
+            //dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
             dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 
             dataStoreTrainInfo = dataStoreTrain.DataStoreInfo;

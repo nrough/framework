@@ -251,7 +251,7 @@ namespace DisesorTuning
             Console.WriteLine("Done");
 
             Console.Write("Discretizing data...");
-            var discretizer = new DataStoreDiscretizer();
+            var discretizer = new TableDiscretizer();
             foreach (AttributeInfo field in train.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
                 Console.WriteLine("Atribute {0} has type {1} and {2} distinct values.",
@@ -267,7 +267,7 @@ namespace DisesorTuning
             }
                 
             discretizer.Discretize(train, train.Weights);
-            DataStoreDiscretizer.Discretize(test, train);
+            TableDiscretizer.Discretize(test, train);
             
             Console.WriteLine("Done");
         }

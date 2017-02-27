@@ -34,7 +34,9 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void RunExperiment()
         {
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             string resultFileName = @"dna_modified_103.csv";
             int minEpsilon = 0;

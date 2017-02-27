@@ -51,11 +51,6 @@ namespace NRough.Data.Readers
             return dataReader;
         }        
 
-        public override DataStore Read()
-        {
-            return new Data.DataStore(Analyze());
-        }
-
         public void Dispose()
         {
             Dispose(true);

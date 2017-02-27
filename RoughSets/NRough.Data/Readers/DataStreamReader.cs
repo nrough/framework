@@ -15,7 +15,7 @@ namespace NRough.Data.Readers
         private Dictionary<int, int> numberOfDecimals = new Dictionary<int, int>();
         private Dictionary<int, int> missingValuesCount = new Dictionary<int, int>();
         private Dictionary<int, HashSet<string>> valueCount = new Dictionary<int, HashSet<string>>();
-
+        
         public char[] FieldDelimiter { get; set; }
         public Stream Stream { get; set; }
         public int Header { get; set; }
@@ -34,9 +34,13 @@ namespace NRough.Data.Readers
         #region Methods
 
         public override DataStore Read()
-        {
-            return new Data.DataStore(Analyze());
-        }        
+        {            
+            DataStoreInfo dataStoreInfo = Analyze();
+            DataStore dataStore = new DataStore(dataStoreInfo);
+            dataStore.Name = DataName;
+            Load(dataStore, dataStoreInfo);
+            return dataStore;
+        }                
 
         public char[] GetFieldDelimiter()
         {
@@ -48,16 +52,30 @@ namespace NRough.Data.Readers
             string line = String.Empty;
             int rows = 0;
 
-            using (StreamReader streamReader = new StreamReader(Stream))
+            MemoryStream streamCopy = new MemoryStream();
+            try
             {
-                this.AnalyzeHeader(streamReader);
-                line = streamReader.ReadLine();
-                while (!String.IsNullOrEmpty(line))
+                Stream.Position = 0;
+                Stream.CopyTo(streamCopy);
+                streamCopy.Position = 0;
+                Stream.Position = 0;
+
+                using (StreamReader streamReader = new StreamReader(streamCopy))
                 {
-                    rows++;
-                    this.AnalyzeLine(line, rows);
+                    this.AnalyzeHeader(streamReader);
                     line = streamReader.ReadLine();
+                    while (!String.IsNullOrEmpty(line))
+                    {
+                        rows++;
+                        this.AnalyzeLine(line, rows);
+                        line = streamReader.ReadLine();
+                    }
                 }
+            }
+            finally
+            {
+                if (streamCopy != null)
+                    streamCopy.Dispose();
             }
 
             if (!this.CheckNumberOfRows(rows))
@@ -100,14 +118,8 @@ namespace NRough.Data.Readers
 
                 if (referenceFieldInfo != null)
                 {
-                    fieldInfo.IsNumeric = referenceFieldInfo.IsNumeric;
-                    fieldInfo.IsSymbolic = referenceFieldInfo.IsSymbolic;
-                    fieldInfo.IsOrdered = referenceFieldInfo.IsOrdered;
-                    fieldInfo.IsUnique = referenceFieldInfo.IsUnique;
-                    fieldInfo.MissingValue = referenceFieldInfo.MissingValue;
-                    fieldInfo.MissingValueInternal = referenceFieldInfo.MissingValueInternal;
-                    fieldInfo.NumberOfDecimals = referenceFieldInfo.NumberOfDecimals;
-
+                    fieldInfo.InitFromReferenceAttribute(referenceFieldInfo);
+                                        
                     foreach (long internalValue in referenceFieldInfo.InternalValues())
                     {
                         object externalValue = referenceFieldInfo.Internal2External(internalValue);
@@ -122,12 +134,18 @@ namespace NRough.Data.Readers
                     fieldInfo.IsSymbolic = !fieldInfo.IsNumeric;
                     fieldInfo.IsOrdered = fieldInfo.IsNumeric;
                     fieldInfo.NumberOfDecimals = this.GetNumberOfDecimals(i - 1);
+
+                    fieldInfo.IsDecision = (i == dataStoreInfo.DecisionFieldId);
+                    if (fieldInfo.IsDecision)
+                        fieldInfo.IsNumeric = false;
+
+                    fieldInfo.IsStandard = !fieldInfo.IsDecision;
+                    
                 }
 
                 if (this.missingValuesCount.ContainsKey(i - 1))
                 {
                     fieldInfo.HasMissingValues = true;
-
                 }
 
                 dataStoreInfo.AddFieldInfo(fieldInfo, fieldType);
@@ -184,7 +202,10 @@ namespace NRough.Data.Readers
 
         public virtual void Load(DataStore dataStore, DataStoreInfo dataStoreInfo)
         {
-            int numberOfFields = this.ReferenceDataStoreInfo != null ? this.ReferenceDataStoreInfo.NumberOfFields : dataStoreInfo.NumberOfFields;
+            int numberOfFields = this.ReferenceDataStoreInfo != null 
+                ? this.ReferenceDataStoreInfo.NumberOfFields 
+                : dataStoreInfo.NumberOfFields;
+
             int[] fieldId = new int[numberOfFields];
             long[] fieldValue = new long[numberOfFields];
             string line = String.Empty;
@@ -192,115 +213,133 @@ namespace NRough.Data.Readers
             int i = 0;
 
             try
-            {                                
-                using (StreamReader streamReader = new StreamReader(Stream))
+            {
+                MemoryStream streamCopy = new MemoryStream(); ;
+                try
                 {
-                    this.SkipHeader(streamReader);
-                    while ((line = streamReader.ReadLine()) != null)
+                    Stream.Position = 0;
+                    Stream.CopyTo(streamCopy);
+                    streamCopy.Position = 0;
+                    Stream.Position = 0;
+
+                    using (StreamReader streamReader = new StreamReader(streamCopy))
                     {
-                        linenum++;
-
-                        string[] fileLine = line.Split(FieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (fileLine.Length != dataStoreInfo.NumberOfFields)
-                            throw new System.InvalidOperationException();
-
-                        IComparable[] typedFieldValues = new IComparable[fileLine.Length];
-
-                        for (i = 0; i < fileLine.Length; i++)
+                        this.SkipHeader(streamReader);
+                        while ((line = streamReader.ReadLine()) != null)
                         {
-                            if (this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue))
+                            linenum++;
+
+                            string[] fileLine = line.Split(FieldDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                            if (fileLine.Length != dataStoreInfo.NumberOfFields)
+                                throw new System.InvalidOperationException();
+
+                            IComparable[] typedFieldValues = new IComparable[fileLine.Length];
+
+                            for (i = 0; i < fileLine.Length; i++)
                             {
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
+                                if (this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue))
                                 {
-                                    case TypeCode.Int32:
-                                        typedFieldValues[i] = Int32.MaxValue;
-                                        break;
-
-                                    case TypeCode.Double:
-                                        typedFieldValues[i] = Double.MaxValue;
-                                        break;
-
-                                    case TypeCode.Int64:
-                                        typedFieldValues[i] = Int64.MaxValue;
-                                        break;
-
-                                    case TypeCode.String:
-                                        typedFieldValues[i] = this.MissingValue;
-                                        break;
-
-                                    default:
-                                        throw new System.InvalidOperationException();
-                                }
-                            }
-                            else
-                            {
-                                switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
-                                {
-                                    case TypeCode.Int32:
-                                        typedFieldValues[i] = Int32.Parse(fileLine[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.Int64:
-                                        typedFieldValues[i] = Int64.Parse(fileLine[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.Double:
-                                        typedFieldValues[i] = Double.Parse(fileLine[i], CultureInfo.InvariantCulture);
-                                        break;
-
-                                    case TypeCode.String:
-                                        typedFieldValues[i] = (string)fileLine[i].Clone();
-                                        break;
-
-                                    default:
-                                        throw new System.InvalidOperationException();
-                                }
-                            }
-                        }
-
-                        for (i = 0; i < dataStoreInfo.NumberOfFields; i++)
-                        {
-                            fieldId[i] = i + 1;
-
-                            IComparable externalValue = typedFieldValues[i];
-                            long internalValue;
-                            bool isMissing = this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue);
-
-                            if (this.ReferenceDataStoreInfo != null)
-                            {
-                                AttributeInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);
-                                if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
-                                {
-                                    for (int j = 0; j < localFieldInfo.Cuts.Length; j++)
+                                    switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
                                     {
-                                        //TODO We need to provide a way to dynamically convert types
-                                        if (externalValue.CompareTo(localFieldInfo.Cuts[j]) <= 0)
-                                            externalValue = j;
+                                        case TypeCode.Int32:
+                                            typedFieldValues[i] = Int32.MaxValue;
+                                            break;
+
+                                        case TypeCode.Double:
+                                            typedFieldValues[i] = Double.MaxValue;
+                                            break;
+
+                                        case TypeCode.Int64:
+                                            typedFieldValues[i] = Int64.MaxValue;
+                                            break;
+
+                                        case TypeCode.String:
+                                            typedFieldValues[i] = this.MissingValue;
+                                            break;
+
+                                        default:
+                                            throw new System.InvalidOperationException();
                                     }
                                 }
+                                else
+                                {
+                                    switch (Type.GetTypeCode(dataStoreInfo.GetFieldInfo(i + 1).DataType))
+                                    {
+                                        case TypeCode.Int32:
+                                            typedFieldValues[i] = Int32.Parse(fileLine[i], CultureInfo.InvariantCulture);
+                                            break;
 
-                                internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
-                                dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, externalValue, isMissing);
+                                        case TypeCode.Int64:
+                                            typedFieldValues[i] = Int64.Parse(fileLine[i], CultureInfo.InvariantCulture);
+                                            break;
+
+                                        case TypeCode.Double:
+                                            typedFieldValues[i] = Double.Parse(fileLine[i], CultureInfo.InvariantCulture);
+                                            break;
+
+                                        case TypeCode.String:
+                                            typedFieldValues[i] = (string)fileLine[i].Clone();
+                                            break;
+
+                                        default:
+                                            throw new System.InvalidOperationException();
+                                    }
+                                }
                             }
-                            else
+
+                            for (i = 0; i < dataStoreInfo.NumberOfFields; i++)
                             {
-                                internalValue = dataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                fieldId[i] = i + 1;
+
+                                IComparable externalValue = typedFieldValues[i];
+                                long internalValue;
+                                bool isMissing = this.HandleMissingData && String.Equals(fileLine[i], this.MissingValue);
+
+                                if (this.ReferenceDataStoreInfo != null)
+                                {
+                                    AttributeInfo localFieldInfo = this.ReferenceDataStoreInfo.GetFieldInfo(fieldId[i]);
+                                    if (localFieldInfo.IsNumeric && localFieldInfo.Cuts != null)
+                                    {
+                                        for (int j = 0; j < localFieldInfo.Cuts.Length; j++)
+                                        {
+                                            //TODO We need to provide a way to dynamically convert types
+                                            if (externalValue.CompareTo(localFieldInfo.Cuts[j]) <= 0)
+                                                externalValue = j;
+                                        }
+                                    }
+
+                                    internalValue = this.ReferenceDataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                    dataStoreInfo.AddFieldInternalValue(fieldId[i], internalValue, externalValue, isMissing);
+                                }
+                                else
+                                {
+                                    internalValue = dataStoreInfo.AddFieldValue(fieldId[i], externalValue, isMissing);
+                                }
+
+                                fieldValue[i] = internalValue;
                             }
 
-                            fieldValue[i] = internalValue;
+                            dataStore.Insert(new DataRecordInternal(fieldId, fieldValue));
                         }
-
-                        dataStore.Insert(new DataRecordInternal(fieldId, fieldValue));
                     }
+                }
+                finally
+                {
+                    if (streamCopy != null)
+                        streamCopy.Dispose();
                 }
             }
             catch (Exception e)
             {
-                throw new InvalidProgramException(String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message), e);
+                throw new InvalidProgramException(
+                    String.Format("Error in line {0}, field {1}, exception message was: {2}", linenum, i + 1, e.Message), e);
             }
 
+            dataStore.Weights.SetAll(1);
+
             dataStore.NormalizeWeights();
+
             if (this.DecisionId != -1)
                 dataStore.DataStoreInfo.CreateWeightHistogram(
                     dataStore,

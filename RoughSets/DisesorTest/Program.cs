@@ -217,7 +217,7 @@ namespace DisesorTest
 
             Console.Write("Discretizing data...");
 
-            var discretizer = new DataStoreDiscretizer();
+            var discretizer = new TableDiscretizer();
                                 
             foreach (AttributeInfo field in train.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
@@ -236,7 +236,7 @@ namespace DisesorTest
             }
 
             discretizer.Discretize(train, wGen.Weights);
-            DataStoreDiscretizer.Discretize(test, train);
+            TableDiscretizer.Discretize(test, train);
                         
             Console.WriteLine("Done");
 

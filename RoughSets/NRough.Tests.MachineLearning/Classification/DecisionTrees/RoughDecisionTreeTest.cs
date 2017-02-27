@@ -30,8 +30,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             CrossValidation cv = new CrossValidation(data, folds);
             var discFilter = new DiscretizeFilter();
 
-            discFilter.DataStoreDiscretizer =
-                new DataStoreDiscretizer(
+            discFilter.TableDiscretizer =
+                new TableDiscretizer(
                     new DiscretizeSupervisedBase()
                     {
                         NumberOfBuckets = 5,

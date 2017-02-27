@@ -711,6 +711,21 @@ namespace NRough.Data
             return this.DataStoreInfo.SelectAttributes(selector);
         }
 
+        public IEnumerable<AttributeInfo> SelectAttributes()
+        {
+            return this.DataStoreInfo.SelectAttributes();
+        }
+
+        public IEnumerable<int> SelectAttributeIds(Func<AttributeInfo, bool> selector)
+        {
+            return this.DataStoreInfo.SelectAttributeIds(selector);
+        }
+
+        public IEnumerable<int> SelectAttributeIds()
+        {
+            return this.DataStoreInfo.SelectAttributeIds();
+        }
+
         public void Dump(string filePath, string separator, bool includeHeader = false)
         {
             //System.IO.File.WriteAllText(filePath, this.ToStringInternal(separator));
@@ -946,8 +961,9 @@ namespace NRough.Data
 
         public object Clone()
         {
-            DataStore data1 = null, data2 = null;
-            new DataSplitterRatio(this, 1.0).Split(out data1, out data2);
+            DataStore data1, data2;
+            var splitter = new DataSplitterRatio(this, 1.0);
+            splitter.Split(out data1, out data2);
 
             data1.Name = this.Name;
             data1.Fold = this.Fold;

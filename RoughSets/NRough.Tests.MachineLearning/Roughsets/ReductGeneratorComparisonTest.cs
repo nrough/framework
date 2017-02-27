@@ -26,8 +26,12 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public static IEnumerable<Dictionary<string, object>> GetComparisonTestArgs()
         {
             int numberOfPermutations = 20;
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
-            DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
+
+            var data = Data.Benchmark.Factory.DnaModified();
+            var testData = Data.Benchmark.Factory.DnaModifiedTest();
+
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            //DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             int minEpsilon = 5;
             int maxEpsilon = 25;
 
@@ -72,7 +76,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void QuickTest()
         {
-            DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
+            var data = Data.Benchmark.Factory.DnaModified();
+            //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
             //Console.WriteLine(weightGenerator.GetType().Name);
         }

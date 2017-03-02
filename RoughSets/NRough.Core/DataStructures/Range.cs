@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NRough.Core.Helpers;
+using System;
 using System.Text;
 
-namespace NRough.Core
+namespace NRough.Core.DataStructures
 {
     [Serializable]
     public class Range<T>

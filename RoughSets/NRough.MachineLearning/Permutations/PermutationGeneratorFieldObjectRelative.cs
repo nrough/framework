@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.Random;
 
 namespace NRough.MachineLearning.Permutations
 {

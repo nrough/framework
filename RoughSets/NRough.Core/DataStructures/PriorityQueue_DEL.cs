@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NRough.Core
+namespace NRough.Core.DataStructures
 {
     [Serializable]
     public class PriorityQueue_DEL<TKey, TValue>

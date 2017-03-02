@@ -10,6 +10,7 @@ using NUnit.Framework;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
+using NRough.Core.Random;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

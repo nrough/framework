@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NRough.Math;
 using NRough.Core;
+using NRough.Core.DataStructures;
 
 namespace NRough.MachineLearning.Clustering.Hierarchical
 {

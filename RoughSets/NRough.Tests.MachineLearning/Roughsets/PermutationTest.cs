@@ -5,6 +5,7 @@ using NRough.Data;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Permutations;
+using NRough.Core.Random;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

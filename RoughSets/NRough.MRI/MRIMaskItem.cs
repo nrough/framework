@@ -1,5 +1,6 @@
 ﻿using System;
 using NRough.Core;
+using NRough.Core.Helpers;
 
 namespace NRough.MRI
 {

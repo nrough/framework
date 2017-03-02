@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using NRough.Core;
+using NRough.Core.DataStructures;
+using NRough.Core.BaseTypeExtensions;
 
 namespace NRough.Data
 {

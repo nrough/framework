@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning
 {

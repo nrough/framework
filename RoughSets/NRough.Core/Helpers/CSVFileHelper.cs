@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace NRough.Core
+namespace NRough.Core.Helpers
 {
     public static class CSVFileHelper
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.Random;
 
 namespace NRough.MachineLearning.Weighting
 {
@@ -113,7 +114,8 @@ namespace NRough.MachineLearning.Weighting
             double sum = 0;
             for (int i = 0; i < this.DataStore.NumberOfRecords; i++)
             {
-                this.Weights[i] = RandomSingleton.Random.Next(0, this.DataStore.NumberOfRecords);
+                this.Weights[i] = 
+                    RandomSingleton.Random.Next(0, this.DataStore.NumberOfRecords);
                 sum += this.Weights[i];
             }
 

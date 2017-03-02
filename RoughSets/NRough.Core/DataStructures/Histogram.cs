@@ -1,8 +1,9 @@
-﻿using System;
+﻿using NRough.Core.CollectionExtensions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NRough.Core
+namespace NRough.Core.DataStructures
 {
     [Serializable]
     public class Histogram<T>

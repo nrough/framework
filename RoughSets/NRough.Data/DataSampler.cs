@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NRough.Math;
 using NRough.Core;
+using NRough.Core.Random;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Data
 {

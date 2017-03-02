@@ -3,6 +3,7 @@ using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Roughsets;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Permutations
 {

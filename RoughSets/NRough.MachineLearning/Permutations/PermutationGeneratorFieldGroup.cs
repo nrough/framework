@@ -3,6 +3,8 @@ using System.Collections;
 using System.Linq;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.Random;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Permutations
 {

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using NRough.Core;
+using NRough.Core.CollectionExtensions;
 //using Newtonsoft.Json.Linq;
 
 namespace NRough.MachineLearning.Permutations

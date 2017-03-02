@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using NRough.Core;
+using NRough.Core.Helpers;
 
 namespace NRough.MachineLearning.Permutations
 {

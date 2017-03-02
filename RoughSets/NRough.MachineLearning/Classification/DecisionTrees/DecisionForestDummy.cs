@@ -3,6 +3,7 @@ using NRough.Core;
 using System;
 using System.Linq;
 using NRough.MachineLearning.Permutations;
+using NRough.Core.Random;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {

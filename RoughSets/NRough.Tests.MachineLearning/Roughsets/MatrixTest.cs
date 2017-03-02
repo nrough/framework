@@ -1,4 +1,5 @@
 ﻿using NRough.Core;
+using NRough.Core.DataStructures;
 using NRough.MachineLearning.Roughsets;
 using NUnit.Framework;
 

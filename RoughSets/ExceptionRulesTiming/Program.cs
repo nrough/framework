@@ -10,6 +10,7 @@ using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
+using NRough.Core.Random;
 
 namespace ExceptionRulesTiming
 {

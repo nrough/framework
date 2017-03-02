@@ -8,6 +8,7 @@ using NRough.Core;
 using System.Data;
 using System.IO;
 using NRough.Data.Readers;
+using NRough.Core.Random;
 
 namespace NRough.Data
 {

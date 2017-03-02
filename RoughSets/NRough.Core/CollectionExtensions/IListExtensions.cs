@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Core.Random;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.Core
+namespace NRough.Core.CollectionExtensions
 {
     public static class IListExtensions
     {

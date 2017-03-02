@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.DataStructures
 {
     /// <summary>
     /// Priority Queue data structure

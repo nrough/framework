@@ -6,6 +6,8 @@ using System.Text;
 using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Classification;
+using NRough.Core.CollectionExtensions;
+using NRough.Core.Comparers;
 
 namespace NRough.MachineLearning
 {

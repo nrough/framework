@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NRough.Core.Helpers;
+using System;
 using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.Comparers
 {
     [Serializable]
     public class Int64ArrayEqualityComparer : IEqualityComparer<long[]>

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using NRough.Core;
 using System.Collections.Generic;
 using NRough.MachineLearning.Roughsets;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

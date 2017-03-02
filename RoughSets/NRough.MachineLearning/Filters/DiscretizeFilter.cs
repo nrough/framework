@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Filters
 {

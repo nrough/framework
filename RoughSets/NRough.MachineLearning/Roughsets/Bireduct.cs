@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.Helpers;
 
 namespace NRough.MachineLearning.Roughsets
 {

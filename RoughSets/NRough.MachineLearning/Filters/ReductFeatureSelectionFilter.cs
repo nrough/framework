@@ -1,4 +1,5 @@
 ﻿using NRough.Core;
+using NRough.Core.CollectionExtensions;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using System;
@@ -128,7 +129,7 @@ namespace NRough.Data.Filters
             {
                 foreach (var perm in permutations)
                 {
-                    Trace.WriteLine(String.Format("Perm: {0}", perm.ToArray().ToStr()));
+                    Trace.WriteLine(string.Format("Perm: {0}", perm.ToArray().ToStr()));
                 }
             }
         }

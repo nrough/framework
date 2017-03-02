@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NRough.Core
+namespace NRough.Core.BaseTypeExtensions
 {
     public static class DoubleExtensions
     {

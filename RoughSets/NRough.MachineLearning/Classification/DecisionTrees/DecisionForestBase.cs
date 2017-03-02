@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Classification.Ensembles;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {

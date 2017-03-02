@@ -6,7 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 
-namespace NRough.Core
+namespace NRough.Core.CollectionExtensions
 {
     public static class IEnumerableExternsions
     {

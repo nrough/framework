@@ -10,6 +10,7 @@ using itk.simple;
 using NUnit.Framework;
 using NRough.Core;
 using NRough.MRI;
+using NRough.Core.Comparers;
 
 namespace NRough.Tests.MRI
 {
@@ -59,7 +60,7 @@ namespace NRough.Tests.MRI
                                             ExtractImageFilter.DirectionCollapseToStrategyType.DIRECTIONCOLLAPSETOSUBMATRIX);
 
             VectorUInt32 vector = new VectorUInt32(new uint[] { 0, 0 });
-            NRough.Core.Histogram<long> histogram = new NRough.Core.Histogram<long>();
+            NRough.Core.DataStructures.Histogram<long> histogram = new NRough.Core.DataStructures.Histogram<long>();
             for (uint x = 0; x < slice.GetWidth(); x++)
             {
                 for (uint y = 0; y < slice.GetHeight(); y++)

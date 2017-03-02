@@ -1,5 +1,7 @@
 ﻿using System;
 using NRough.Core;
+using NRough.Core.BaseTypeExtensions;
+using NRough.Core.Comparers;
 
 namespace NRough.Math
 {

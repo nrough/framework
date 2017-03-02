@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NRough.Core
+namespace NRough.Core.Random
 {
     public static class RandomExtensions
     {

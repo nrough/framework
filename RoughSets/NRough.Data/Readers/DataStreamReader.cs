@@ -1,4 +1,7 @@
 ﻿using NRough.Core;
+using NRough.Core.BaseTypeExtensions;
+using NRough.Core.CollectionExtensions;
+using NRough.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

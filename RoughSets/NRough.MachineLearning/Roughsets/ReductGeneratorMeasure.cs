@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.Core.CollectionExtensions;
+using NRough.Core.Comparers;
 
 namespace NRough.MachineLearning.Roughsets
 {

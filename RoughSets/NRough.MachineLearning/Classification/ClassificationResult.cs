@@ -8,6 +8,7 @@ using GenericParsing;
 using System.Reflection;
 using System.Linq.Dynamic;
 using System.Data;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification
 {    

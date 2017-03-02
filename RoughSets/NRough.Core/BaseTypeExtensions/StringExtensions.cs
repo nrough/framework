@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace NRough.Core
+namespace NRough.Core.BaseTypeExtensions
 {
     public static class StringExtensions
     {

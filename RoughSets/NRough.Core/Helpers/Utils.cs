@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Core.Random;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ using System.Management;
 using System.Reflection;
 using System.Text;
 
-namespace NRough.Core
+namespace NRough.Core.Helpers
 {
     public static class EnumHelper
     {

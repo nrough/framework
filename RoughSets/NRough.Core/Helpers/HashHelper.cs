@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.Helpers
 {
     public static class HashHelper
     {

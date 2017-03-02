@@ -1,8 +1,9 @@
-﻿using System;
+﻿using NRough.Core.Random;
+using System;
 using System.Linq;
 using System.Text;
 
-namespace NRough.Core
+namespace NRough.Core.CollectionExtensions
 {
     public static class ArrayExtensions
     {

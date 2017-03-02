@@ -9,6 +9,8 @@ using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning;
+using NRough.Core.Comparers;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

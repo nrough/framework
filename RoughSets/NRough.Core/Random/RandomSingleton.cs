@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NRough.Core
+namespace NRough.Core.Random
 {
     public class RandomSingleton
     {
@@ -47,7 +47,7 @@ namespace NRough.Core
         }
     }
 
-    public sealed class ThreadSafeRandom : Random
+    public sealed class ThreadSafeRandom : System.Random
     {
         private object _lock = new object();
 

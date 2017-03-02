@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using NRough.Core;
+using NRough.Core.BaseTypeExtensions;
 
 namespace NRough.Tests.Core
 {

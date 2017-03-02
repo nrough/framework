@@ -12,6 +12,8 @@ using NRough.Math;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
+using NRough.Core.Random;
+using NRough.Core.Comparers;
 
 namespace VotingVsRuleInduction
 {

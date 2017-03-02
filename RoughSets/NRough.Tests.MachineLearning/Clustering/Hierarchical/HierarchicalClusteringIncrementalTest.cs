@@ -6,6 +6,7 @@ using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.Math;
 using NRough.Core;
 using NUnit.Framework;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Tests.MachineLearning.Clustering.Hierarchical
 {

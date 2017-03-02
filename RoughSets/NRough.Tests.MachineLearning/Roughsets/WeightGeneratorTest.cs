@@ -10,6 +10,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning;
+using NRough.Core.Comparers;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

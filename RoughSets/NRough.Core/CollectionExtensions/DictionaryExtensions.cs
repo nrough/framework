@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NRough.Core
+namespace NRough.Core.CollectionExtensions
 {
     public static class DictionaryExtensions
     {

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Collections.Generic;
 using NRough.MachineLearning.Discretization;
 using NRough.MachineLearning.Filters;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Tests.MachineLearning
 {

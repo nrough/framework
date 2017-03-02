@@ -1,10 +1,11 @@
-﻿using System;
+﻿using NRough.Core.BaseTypeExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.Core
+namespace NRough.Core.Comparers
 {
     public class ToleranceDoubleComparer : EqualityComparer<double>, IComparer<double>        
     {

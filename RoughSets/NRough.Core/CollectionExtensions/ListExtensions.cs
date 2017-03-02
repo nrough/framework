@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NRough.Core.Random;
+using System;
 using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.CollectionExtensions
 {
     public static class ListExtensions
     {

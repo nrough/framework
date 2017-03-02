@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.Comparers
 {
     public class EpsilonComparer<T> : EqualityComparer<T>, IComparer<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>

@@ -10,6 +10,7 @@ using System.Threading;
 using NRough.MachineLearning.Classification.DecisionTrees.Pruning;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Discretization;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {       

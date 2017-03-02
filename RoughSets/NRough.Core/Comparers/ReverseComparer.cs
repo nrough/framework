@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NRough.Core
+namespace NRough.Core.Comparers
 {
     public sealed class ReverseComparer<T> : IComparer<T>
     {

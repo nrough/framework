@@ -6,6 +6,8 @@ using NUnit.Framework;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning;
+using NRough.Core.CollectionExtensions;
+using NRough.Core.Comparers;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

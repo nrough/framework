@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.Core;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification.DecisionRules
 {

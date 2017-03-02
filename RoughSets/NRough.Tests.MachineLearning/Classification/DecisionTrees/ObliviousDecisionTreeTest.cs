@@ -10,6 +10,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Evaluation;
 using NRough.MachineLearning;
+using NRough.Core.CollectionExtensions;
 
 namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {

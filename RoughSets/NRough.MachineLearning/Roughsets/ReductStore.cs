@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using NRough.Data;
 using NRough.Core;
 using NRough.Math;
+using NRough.Core.Comparers;
 
 namespace NRough.MachineLearning.Roughsets
 {

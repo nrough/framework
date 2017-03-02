@@ -1,4 +1,5 @@
 ﻿using NRough.Core;
+using NRough.Core.CollectionExtensions;
 using NRough.Data;
 using NRough.MachineLearning.Permutations;
 using System;

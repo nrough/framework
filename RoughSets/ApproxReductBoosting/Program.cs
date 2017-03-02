@@ -7,6 +7,7 @@ using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.MissingValues;
+using NRough.Core.Helpers;
 
 namespace ApproxReductBoosting
 {

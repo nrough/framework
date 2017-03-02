@@ -2,6 +2,7 @@
 using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.Core.Comparers;
 
 namespace NRough.MachineLearning.Roughsets
 {

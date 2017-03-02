@@ -2,6 +2,7 @@
 using System.Linq;
 using NRough.Data;
 using NRough.Core;
+using NRough.Core.Random;
 
 namespace NRough.MachineLearning.Permutations
 {

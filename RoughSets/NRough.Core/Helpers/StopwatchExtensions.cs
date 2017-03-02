@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace NRough.Core
+namespace NRough.Core.Helpers
 {
     public static class StopwatchExtensions
     {

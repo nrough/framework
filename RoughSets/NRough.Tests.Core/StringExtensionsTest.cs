@@ -1,4 +1,5 @@
 ﻿using NRough.Core;
+using NRough.Core.BaseTypeExtensions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

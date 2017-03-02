@@ -1,4 +1,6 @@
 ﻿using NRough.Core;
+using NRough.Core.CollectionExtensions;
+using NRough.Core.Random;
 using NRough.Data;
 using NRough.Math;
 using System;

@@ -1,4 +1,5 @@
 ﻿using NRough.Core;
+using NRough.Core.Helpers;
 using NUnit.Framework;
 
 namespace NRough.Tests.Core
@@ -25,12 +26,12 @@ namespace NRough.Tests.Core
         [Test]
         public void IsPowerOfTwo()
         {
-            Assert.AreEqual(true, NRough.Core.MiscHelper.IsPowerOfTwo(4));
-            Assert.AreEqual(true, NRough.Core.MiscHelper.IsPowerOfTwo(64));
-            Assert.AreEqual(true, NRough.Core.MiscHelper.IsPowerOfTwo(1024));
-            Assert.AreEqual(true, NRough.Core.MiscHelper.IsPowerOfTwo(4096));
-            Assert.AreEqual(false, NRough.Core.MiscHelper.IsPowerOfTwo(3));
-            Assert.AreEqual(false, NRough.Core.MiscHelper.IsPowerOfTwo(0));
+            Assert.AreEqual(true, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(4));
+            Assert.AreEqual(true, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(64));
+            Assert.AreEqual(true, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(1024));
+            Assert.AreEqual(true, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(4096));
+            Assert.AreEqual(false, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(3));
+            Assert.AreEqual(false, NRough.Core.Helpers.MiscHelper.IsPowerOfTwo(0));
             //Assert.AreEqual(false, NRough.Core.NRoughHelper.IsPowerOfTwo(9223372036854775809));
         }
     }

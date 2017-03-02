@@ -12,6 +12,7 @@ using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
+using NRough.Core.Random;
 
 namespace ExceptionRulesTest
 {

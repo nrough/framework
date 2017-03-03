@@ -1,5 +1,4 @@
-﻿using NRough.Core.DataStructures.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,17 +8,45 @@ using System.Threading.Tasks;
 
 namespace NRough.Doc
 {
-    public interface IAssemblyTreeNode : ITreeNode
+    public interface IAssemblyTreeNode
     {
+        string Name { get; set; }
+        bool IsLeaf { get; }
+        bool IsRoot { get; }
+        IList<IAssemblyTreeNode> Children { get; }
+        IAssemblyTreeNode Parent { get; set; }
+        void AddChild(IAssemblyTreeNode node);
+
         AssemblyTreeNodeType NodeType { get; }
     }
 
-    public abstract class AssemblyTreeNode : TreeNode, IAssemblyTreeNode
+    public abstract class AssemblyTreeNode : IAssemblyTreeNode
     {
+        public string Name { get; set; }
+        public IList<IAssemblyTreeNode> Children { get; set; }
+        public IAssemblyTreeNode Parent { get; set; }
+        public bool IsLeaf { get { return Children == null || Children.Count == 0; } }
+        public bool IsRoot { get { return Parent == null; } }
+
         public abstract AssemblyTreeNodeType NodeType { get; }
 
-        public AssemblyTreeNode(string name)
-            : base(name) { }
+        public AssemblyTreeNode(string name)        
+        {
+            Name = name;
+        }
+
+        public void AddChild(IAssemblyTreeNode node)
+        {
+            if (Children == null)
+                Children = new List<IAssemblyTreeNode>();
+            node.Parent = this;
+            Children.Add(node);
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class AssemblyAssemblyTreeNode : AssemblyTreeNode

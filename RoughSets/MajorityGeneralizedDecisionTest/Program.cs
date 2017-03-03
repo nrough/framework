@@ -10,7 +10,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Roughsets.Reducts.Comparers;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 
 namespace MajorityGeneralizedDecisionTest
 {

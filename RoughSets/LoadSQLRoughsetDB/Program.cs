@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using GenericParsing;
 using NRough.MachineLearning.Roughsets;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 
 namespace LoadSQLRoughsetDB
 {

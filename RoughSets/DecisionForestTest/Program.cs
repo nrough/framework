@@ -9,7 +9,7 @@ using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using GenericParsing;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 
 namespace DecisionForestTest
 {

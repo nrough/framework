@@ -2,7 +2,7 @@
 using System.Linq;
 using NRough.Data;
 
-namespace NRough.Benchmark
+namespace NRough.Data.Benchmark
 {
     public class BenchmarkData
     {

@@ -14,7 +14,7 @@ using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.Core.Random;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

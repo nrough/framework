@@ -11,7 +11,7 @@ using NRough.MachineLearning.Roughsets;
 using NRough.Core.Random;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.Tests.MachineLearning.Roughsets

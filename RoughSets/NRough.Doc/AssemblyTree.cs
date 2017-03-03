@@ -1,6 +1,4 @@
-﻿using NRough.Core.DataStructures.Tree;
-using NRough.Doc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,8 +7,15 @@ using System.Threading.Tasks;
 
 namespace NRough.Doc
 {
-    public class AssemblyTree : Tree
+    public interface IAssemblyTree
     {
+        IAssemblyTreeNode Root { get; }
+    }
+
+    public class AssemblyTree : IAssemblyTree
+    {
+        public IAssemblyTreeNode Root { get; set; }
+
         public AssemblyTree(string name)
             : base()
         {
@@ -27,7 +32,7 @@ namespace NRough.Doc
 
         public override string ToString()
         {
-            return this.ToString("G", new TreeStringFormatter());
+            return this.ToString("G", new AssemblyTreeStringFormatter());
         }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)

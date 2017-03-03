@@ -1,5 +1,4 @@
-﻿using NRough.Core.DataStructures.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +6,53 @@ using System.Threading.Tasks;
 
 namespace NRough.Doc
 {
-    public interface IAssemblyTreeFormatter
+    public interface IAssemblyTreeFormatter : IFormatProvider, ICustomFormatter
     {
     }
 
-    public class AssemblyTreeStringFormatter : TreeStringFormatter
+    public class AssemblyTreeStringFormatter : IAssemblyTreeFormatter
     {
+        public int Indent { get; set; }
 
+        public AssemblyTreeStringFormatter()
+        {
+            Indent = 4;
+        }
+
+        public virtual object GetFormat(Type formatType)
+        {
+            return formatType.IsAssignableFrom(typeof(IAssemblyTree)) ? this : null;
+        }
+
+        public virtual string Format(string format, object args, IFormatProvider formatProvider)
+        {
+            IAssemblyTree result = args as IAssemblyTree;
+            if (result == null)
+                return args.ToString();
+
+            if (result.Root == null)
+                return result.ToString();
+
+            if (String.IsNullOrEmpty(format))
+                return result.ToString();
+
+            StringBuilder sb = new StringBuilder();
+            Build(result.Root, 0, sb);
+            return sb.ToString();
+        }
+
+        private string NodeToString(IAssemblyTreeNode node, int currentLevel)
+        {
+            return string.Format("{0}{1}", new string(' ', this.Indent * currentLevel), node.ToString());
+        }
+
+        private void Build(IAssemblyTreeNode node, int currentLevel, StringBuilder sb)
+        {
+            sb.AppendLine(NodeToString(node, currentLevel));
+            if (node.Children != null)
+                foreach (var child in node.Children)
+                    Build(child, currentLevel + 1, sb);
+        }
     }
 
     public class LatexForestAssemblyTreeFormatter
@@ -41,7 +80,7 @@ namespace NRough.Doc
             return sb.ToString();
         }
 
-        private void Build(ITreeNode node, int currentLevel, StringBuilder sb)
+        private void Build(IAssemblyTreeNode node, int currentLevel, StringBuilder sb)
         {
             if (node == null) throw new ArgumentNullException("node");
             if (sb == null) throw new ArgumentNullException("sb");

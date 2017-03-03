@@ -8,7 +8,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Discretization;
 using NRough.Data;
-using NRough.Benchmark;
+using NRough.Data.Benchmark;
 
 namespace NRough.Tests.Data
 {

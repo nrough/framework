@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NRough.MachineLearning.Classification.DecisionLookup
 {
-    public class DecisionLookup : ClassificationModelBase, ILearner, IPredictionModel
+    public class DecisionLookup : ClassificationModelBase, ILearner, IClassificationModel
     {
         private EquivalenceClassCollection eqClassCollection;        
 

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NRough.MachineLearning.Roughsets
+namespace NRough.MachineLearning.Roughsets.Reducts.Comparers
 {
     public abstract class ReductBaseComparer : Comparer<IReduct>, ICloneable
     {

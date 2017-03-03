@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.Datamining.RCode
+namespace NRough.MachineLearning.RCode
 {
     public static class RProxy
     {        

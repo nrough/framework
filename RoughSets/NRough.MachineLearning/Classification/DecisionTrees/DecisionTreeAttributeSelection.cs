@@ -1,5 +1,6 @@
 ﻿using NRough.Core;
 using NRough.MachineLearning.Roughsets;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

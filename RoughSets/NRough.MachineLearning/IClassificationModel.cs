@@ -3,7 +3,7 @@ using NRough.MachineLearning.Classification;
 
 namespace NRough.MachineLearning
 {
-    public interface IPredictionModel : IModel
+    public interface IClassificationModel : IModel
     {
         long Compute(DataRecordInternal record);
         long? DefaultOutput { get; set; }

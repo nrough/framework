@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 namespace NRough.MachineLearning.Classification.Ensembles
 {
     public class AdaBoost<T> : EnsembleBase
-        where T : ILearner, IPredictionModel, ICloneable
+        where T : ILearner, IClassificationModel, ICloneable
     {
         protected static double DefaultThreshold = 0.5;
 
         public double Threshold { get; set; }
-        public WeightBoosingtMethod WeightBoosingtMethod { get; set; }
+        public WeightBoostingMethod WeightBoosingtMethod { get; set; }
 
         private T prototype;
 
@@ -60,7 +60,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
                     if (iterPassed == 0)
                     {
                         iterPassed++;
-                        var constClassifier = new ConstDecision();
+                        var constClassifier = new ConstDecisionModel();
                         if (DefaultOutput != null)
                             constClassifier.Output = (long)DefaultOutput;
                         constClassifier.Learn(data, attributes);
@@ -89,7 +89,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
         }     
     }
 
-    public delegate double[] WeightBoosingtMethod(
+    public delegate double[] WeightBoostingMethod(
         double error, int numberOfOuputs,
         long[] predictedOutput, long[] actualOutputs, 
         double[] currentWeights);

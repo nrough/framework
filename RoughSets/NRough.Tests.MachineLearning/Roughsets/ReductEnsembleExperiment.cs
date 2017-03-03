@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NRough.Data;
-using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.MachineLearning.Experimenter.Parms;
 using NRough.Math;
@@ -15,6 +14,7 @@ using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.Core.Random;
+using NRough.Benchmark;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

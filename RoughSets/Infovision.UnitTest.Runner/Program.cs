@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Classification;
-using NRough.Datamining.RCode;
+using NRough.MachineLearning.RCode;
 
 namespace NRough.UnitTest.Runner
 {   

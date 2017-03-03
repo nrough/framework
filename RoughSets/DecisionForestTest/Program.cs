@@ -4,13 +4,12 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using NRough.Data;
-using NRough.MachineLearning;
-using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Classification.DecisionTrees;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using GenericParsing;
+using NRough.Benchmark;
 
 namespace DecisionForestTest
 {

@@ -4,8 +4,6 @@ using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
 using NRough.Data;
-using NRough.MachineLearning;
-using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Experimenter.Parms;
 using NRough.MachineLearning.Roughsets;
 using NRough.Math;
@@ -14,6 +12,8 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using NRough.Core.Random;
 using NRough.Core.Comparers;
+using NRough.Benchmark;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace VotingVsRuleInduction
 {

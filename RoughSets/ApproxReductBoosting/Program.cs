@@ -72,7 +72,7 @@ namespace ApproxReductBoosting
 																				 ,ReductTypes.ReductEnsembleBoostingVarEps
 																				 ,ReductTypes.ReductEnsembleBoostingVarEpsWithAttributeDiversity
 																			   ),
-					ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
+					ParameterValueCollection<WeightingScheme>.CreateFromElements("WeightingSchama", WeightingScheme.Majority),
 					ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
 					ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
 					new ParameterNumericRange<int>(ReductFactoryOptions.Epsilon, 0, 50, 5)
@@ -107,7 +107,7 @@ namespace ApproxReductBoosting
                 int iter = (int)p[0];
                 int t = (int)p[1];
                 string factoryKey = (string)p[2];
-                WeightingSchema weightingSchema = (WeightingSchema)p[3];
+                WeightingScheme weightingSchema = (WeightingScheme)p[3];
                 bool checkEnsembleErrorDuringTraining = (bool)p[4];
                 UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
                 int epsilon = (int)p[6];
@@ -129,11 +129,11 @@ namespace ApproxReductBoosting
                 WeightGenerator weightGenerator;
                 switch (weightingSchema)
                 {
-                    case WeightingSchema.Majority:
+                    case WeightingScheme.Majority:
                         weightGenerator = new WeightGeneratorMajority(trnDataOrig);
                         break;
 
-                    case WeightingSchema.Relative:
+                    case WeightingScheme.Relative:
                         weightGenerator = new WeightGeneratorRelative(trnDataOrig);
                         break;
 

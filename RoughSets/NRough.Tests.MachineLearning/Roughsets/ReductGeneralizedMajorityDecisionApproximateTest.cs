@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NRough.Data;
-using NRough.MachineLearning.Benchmark;
-using NRough.Math;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Permutations;
@@ -17,6 +15,7 @@ using NRough.MachineLearning.Roughsets;
 using NRough.Core.Random;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
+using NRough.Benchmark;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

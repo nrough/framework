@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.Random;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {

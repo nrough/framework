@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using NRough.MachineLearning.Discretization;
 using NRough.MachineLearning.Filters;
 using NRough.Core.CollectionExtensions;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.Tests.MachineLearning
 {
@@ -364,7 +365,7 @@ namespace NRough.Tests.MachineLearning
             var splitter = new DataSplitterRatio(data, 0.8);            
             splitter.Split(out train, out test);
 
-            var tableDiscretizer = new TableDiscretizer(
+            var tableDiscretizer = new DecisionTableDiscretizer(
                 new IDiscretizer[]
                 {
                     //try to discretize using Fayyad MDL Criterion

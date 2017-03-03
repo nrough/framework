@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using NRough.Data;
-using NRough.MachineLearning.Benchmark;
 using NRough.Core;
 using NUnit.Framework;
 using NRough.MachineLearning.Weighting;
@@ -11,6 +10,8 @@ using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning;
 using NRough.Core.Comparers;
 using NRough.Core.CollectionExtensions;
+using NRough.Benchmark;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

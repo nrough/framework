@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NRough.MachineLearning.Classification.DecisionLookup
 {
-    public class DecisionLookupLocal : ClassificationModelBase, ILearner, IPredictionModel
+    public class DecisionLookupLocal : ClassificationModelBase, ILearner, IClassificationModel
     {
         private ObliviousDecisionTree obliviousDecisionTree = null;
         private DecisionDistribution aprioriDistribution;

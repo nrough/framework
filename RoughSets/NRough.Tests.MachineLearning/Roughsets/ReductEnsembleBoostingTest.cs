@@ -322,7 +322,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             var trnData = Data.Benchmark.Factory.DnaModified();
             //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
-            WeightingSchema weightingSchema = WeightingSchema.Majority;
+            WeightingScheme weightingSchema = WeightingScheme.Majority;
             int numberOfTests = 1;
             int maxNumberOfIterations = 100;
 
@@ -358,11 +358,11 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
                     {
-                        case WeightingSchema.Majority:
+                        case WeightingScheme.Majority:
                             weightGenerator = new WeightGeneratorMajority(trnData);
                             break;
 
-                        case WeightingSchema.Relative:
+                        case WeightingScheme.Relative:
                             weightGenerator = new WeightGeneratorRelative(trnData);
                             break;
 
@@ -432,7 +432,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             DataStore trnData = DataStore.Load(@"Data\optdigits.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\optdigits.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
-            WeightingSchema weightingSchema = WeightingSchema.Majority;
+            WeightingScheme weightingSchema = WeightingScheme.Majority;
             int numberOfTests = 2;
             //int maxNumberOfIterations = 100;
 
@@ -472,11 +472,11 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
                     {
-                        case WeightingSchema.Majority:
+                        case WeightingScheme.Majority:
                             weightGenerator = new WeightGeneratorMajority(trnData);
                             break;
 
-                        case WeightingSchema.Relative:
+                        case WeightingScheme.Relative:
                             weightGenerator = new WeightGeneratorRelative(trnData);
                             break;
 
@@ -622,7 +622,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             DataStore trnData = DataStore.Load(@"Data\pendigits.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\pendigits.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 
-            WeightingSchema weightingSchema = WeightingSchema.Majority;
+            WeightingScheme weightingSchema = WeightingScheme.Majority;
             int numberOfTests = 1;
             int maxNumberOfIterations = 2;
 
@@ -659,11 +659,11 @@ namespace NRough.Tests.MachineLearning.Roughsets
                     WeightGenerator weightGenerator;
                     switch (weightingSchema)
                     {
-                        case WeightingSchema.Majority:
+                        case WeightingScheme.Majority:
                             weightGenerator = new WeightGeneratorMajority(trnData);
                             break;
 
-                        case WeightingSchema.Relative:
+                        case WeightingScheme.Relative:
                             weightGenerator = new WeightGeneratorRelative(trnData);
                             break;
 

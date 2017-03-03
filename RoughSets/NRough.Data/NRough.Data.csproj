@@ -89,6 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmark\BenchmarkData.cs" />
+    <Compile Include="Benchmark\BenchmarkDataHelper.cs" />
     <Compile Include="Readers\DataReaderBase.cs" />
     <Compile Include="Readers\DataRSESFileReader.cs" />
     <Compile Include="Readers\DataStreamReader.cs" />

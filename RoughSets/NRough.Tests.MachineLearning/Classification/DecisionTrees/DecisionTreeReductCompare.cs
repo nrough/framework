@@ -13,6 +13,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Discretization;
 using NRough.MachineLearning.Evaluation;
 using NRough.MachineLearning;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
@@ -69,7 +70,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                         if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                         {
-                            var discretizer = new TableDiscretizer();
+                            var discretizer = new DecisionTableDiscretizer();
                             discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard)
                                             .Where(f => f.CanDiscretize())
                                             .Select(fld => fld.Id);                            
@@ -102,7 +103,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
                                                         
-                            TableDiscretizer.Discretize(validationSet, cachedData);
+                            DecisionTableDiscretizer.Discretize(validationSet, cachedData);
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);
@@ -233,7 +234,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
                     if (trainingSet.DataStoreInfo.SelectAttributes(a => a.IsStandard).Any(f => f.CanDiscretize()))
                     {
-                        var discretizer = new TableDiscretizer();
+                        var discretizer = new DecisionTableDiscretizer();
                         discretizer.FieldsToDiscretize = trainingSet.DataStoreInfo
                             .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize());                        
                         discretizer.Discretize(trainingSet, trainingSet.Weights);
@@ -265,7 +266,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                             if (!localDataFoldCache.TryGetValue(trainingCacheKey, out cachedData))
                                 throw new InvalidOperationException(String.Format("{0} not found", trainingCacheKey));
                             
-                            TableDiscretizer.Discretize(validationSet, cachedData);                                                        
+                            DecisionTableDiscretizer.Discretize(validationSet, cachedData);                                                        
                         }
 
                         localDataFoldCache.Add(cacheKey, validationSet);

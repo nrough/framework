@@ -77,7 +77,7 @@
         Unknown = 2
     }
 
-    public enum WeightingSchema
+    public enum WeightingScheme
     {
         Unknown = 0,
         Majority = 1,

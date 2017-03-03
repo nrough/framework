@@ -19,7 +19,7 @@ namespace NRough.MachineLearning.Classification.DecisionRules
     ///         Use the rule with the highest classification accuracy<br />
     /// </summary>
     [Serializable]
-    public class Holte1R : ModelBase, ILearner, IPredictionModel
+    public class Holte1R : ModelBase, ILearner, IClassificationModel
     {
         #region TODO
 

@@ -259,7 +259,7 @@ namespace NRough.MachineLearning.Roughsets
         }
     }
 
-    public class ReductEnsambleFactory : IReductFactory
+    public class ReductEnsembleFactory : IReductFactory
     {
         public virtual string FactoryKey
         {

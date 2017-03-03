@@ -59,7 +59,7 @@ namespace ApproxReductBoostingCV
                                                                                 ,ReductTypes.ReductEnsembleBoostingVarEps
                                                                                 ,ReductTypes.ReductEnsembleBoostingVarEpsWithAttributeDiversity
                                                                                ),
-                    ParameterValueCollection<WeightingSchema>.CreateFromElements("WeightingSchama", WeightingSchema.Majority),
+                    ParameterValueCollection<WeightingScheme>.CreateFromElements("WeightingSchama", WeightingScheme.Majority),
                     ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
                     ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0M, 2.0)))
@@ -97,7 +97,7 @@ namespace ApproxReductBoostingCV
                 int iter = (int)p[0];
                 int t = (int)p[1];
                 string factoryKey = (string)p[2];
-                WeightingSchema weightingSchema = (WeightingSchema)p[3];
+                WeightingScheme weightingSchema = (WeightingScheme)p[3];
                 bool checkEnsembleErrorDuringTraining = (bool)p[4];
                 UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
                 //int minLen = (int)p[6];
@@ -121,11 +121,11 @@ namespace ApproxReductBoostingCV
                         parms.SetParameter(ReductFactoryOptions.DecisionTable, trnFoldReplaced);
                         switch (weightingSchema)
                         {
-                            case WeightingSchema.Majority:
+                            case WeightingScheme.Majority:
                                 weightGenerator = new WeightGeneratorMajority(trnFoldReplaced);
                                 break;
 
-                            case WeightingSchema.Relative:
+                            case WeightingScheme.Relative:
                                 weightGenerator = new WeightGeneratorRelative(trnFoldReplaced);
                                 break;
 
@@ -139,11 +139,11 @@ namespace ApproxReductBoostingCV
                         parms.SetParameter(ReductFactoryOptions.DecisionTable, trnFoldOrig);
                         switch (weightingSchema)
                         {
-                            case WeightingSchema.Majority:
+                            case WeightingScheme.Majority:
                                 weightGenerator = new WeightGeneratorMajority(trnFoldOrig);
                                 break;
 
-                            case WeightingSchema.Relative:
+                            case WeightingScheme.Relative:
                                 weightGenerator = new WeightGeneratorRelative(trnFoldOrig);
                                 break;
 

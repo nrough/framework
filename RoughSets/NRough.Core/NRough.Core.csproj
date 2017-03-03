@@ -105,6 +105,9 @@
     <Compile Include="CollectionExtensions\IListExtensions.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="ConsoleCopy.cs" />
+    <Compile Include="DataStructures\Tree\Tree.cs" />
+    <Compile Include="DataStructures\Tree\TreeNode.cs" />
+    <Compile Include="DataStructures\Tree\TreeStringFormatter.cs" />
     <Compile Include="Helpers\CSVFileHelper.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="Data\DataTableExtensions.cs" />

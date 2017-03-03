@@ -9,6 +9,7 @@ using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {

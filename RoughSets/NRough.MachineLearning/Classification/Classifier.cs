@@ -7,7 +7,7 @@ namespace NRough.MachineLearning.Classification
 {
     public interface IClassifier
     {
-        ClassificationResult Classify(IPredictionModel model, DataStore testData, double[] weights = null);
+        ClassificationResult Classify(IClassificationModel model, DataStore testData, double[] weights = null);
     }
 
     public class Classifier : IClassifier
@@ -36,7 +36,7 @@ namespace NRough.MachineLearning.Classification
             }
         }
 
-        public ClassificationResult Classify(IPredictionModel model, DataStore testData, double[] weights = null)
+        public ClassificationResult Classify(IClassificationModel model, DataStore testData, double[] weights = null)
         {
             Stopwatch s = new Stopwatch();
             s.Start();

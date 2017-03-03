@@ -14,7 +14,7 @@ namespace NRough.MachineLearning.Filters
     {        
         private object syncRoot = new object();
         private Dictionary<string, DataStore> cache;
-        public TableDiscretizer TableDiscretizer { get; set; }       
+        public DecisionTableDiscretizer TableDiscretizer { get; set; }       
 
         public DiscretizeFilter()
         {
@@ -36,7 +36,7 @@ namespace NRough.MachineLearning.Filters
                 }
 
                 if (TableDiscretizer == null)
-                    TableDiscretizer = new TableDiscretizer();
+                    TableDiscretizer = new DecisionTableDiscretizer();
 
                 discretizedData = (DataStore)data.Clone();
                 TableDiscretizer.Discretize(discretizedData, discretizedData.Weights);
@@ -56,7 +56,7 @@ namespace NRough.MachineLearning.Filters
                 throw new InvalidOperationException("cannot find discretized data set");
 
             var dataToDiscretize = (DataStore)data.Clone();
-            TableDiscretizer.Discretize(dataToDiscretize, discretizedData);
+            DecisionTableDiscretizer.Discretize(dataToDiscretize, discretizedData);
 
             TraceData(dataToDiscretize, false);
 

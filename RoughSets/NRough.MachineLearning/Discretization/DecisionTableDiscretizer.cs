@@ -8,7 +8,7 @@ using System.Linq;
 namespace NRough.MachineLearning.Discretization
 {
     [Serializable]
-    public class TableDiscretizer
+    public class DecisionTableDiscretizer
     {
         #region TODO                                
         #endregion
@@ -38,7 +38,7 @@ namespace NRough.MachineLearning.Discretization
 
         #region Constructors
 
-        public TableDiscretizer()
+        public DecisionTableDiscretizer()
         {
             this.DiscretizerCollection = new List<IDiscretizer>(
                 new IDiscretizer[] {
@@ -49,7 +49,7 @@ namespace NRough.MachineLearning.Discretization
             this.fieldDiscretizer = new Dictionary<int, IDiscretizer>();
         }
 
-        public TableDiscretizer(IDiscretizer discretizer)
+        public DecisionTableDiscretizer(IDiscretizer discretizer)
         {
             if (discretizer == null)
                 throw new ArgumentNullException("discretizer", "discretizer == null");
@@ -57,7 +57,7 @@ namespace NRough.MachineLearning.Discretization
             this.fieldDiscretizer = new Dictionary<int, IDiscretizer>();
         }
 
-        public TableDiscretizer(IEnumerable<IDiscretizer> discretizerCollection)
+        public DecisionTableDiscretizer(IEnumerable<IDiscretizer> discretizerCollection)
         {
             if (discretizerCollection == null)
                 throw new ArgumentNullException("discretizerCollection", "discretizerCollection == null");

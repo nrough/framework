@@ -6,10 +6,11 @@ using NRough.Data;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Roughsets;
 using NRough.Core;
-using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
+using NRough.Benchmark;
 
 namespace MajorityGeneralizedDecisionTest
 {

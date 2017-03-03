@@ -51,7 +51,7 @@ namespace DisesorTest
         private UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 
         private CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
-        private bool boostingCheckEnsambleErrorDuringTraining = false;
+        private bool boostingCheckEnsembleErrorDuringTraining = false;
         private int numberOfWeightResets = 99;
 
         private double minimumVoteValue = Double.MinValue; //0.00001m;
@@ -114,7 +114,7 @@ namespace DisesorTest
                 Console.WriteLine("Boosting - Max iterations: {0}", iterations);
                 Console.WriteLine("Boosting - Update weights method: {0}", boostingUpdateWeights.Method.Name);
                 Console.WriteLine("Boosting - Model confidence calulate method: {0}", boostingCalcModelConfidence.Method.Name);
-                Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsambleErrorDuringTraining);
+                Console.WriteLine("Boosting - Check error during training: {0}", boostingCheckEnsembleErrorDuringTraining);
                 Console.WriteLine("Boosting - Inner model epsilon: {0}", eps);
                 Console.WriteLine("Boosting - Max number of weights resets: {0}", numberOfWeightResets);
                 Console.WriteLine("Boosting - Fixed permutations: {0}", fixedPermutations);
@@ -217,7 +217,7 @@ namespace DisesorTest
 
             Console.Write("Discretizing data...");
 
-            var discretizer = new TableDiscretizer();
+            var discretizer = new DecisionTableDiscretizer();
                                 
             foreach (AttributeInfo field in train.DataStoreInfo.SelectAttributes(a => a.IsStandard))
             {
@@ -236,7 +236,7 @@ namespace DisesorTest
             }
 
             discretizer.Discretize(train, wGen.Weights);
-            TableDiscretizer.Discretize(test, train);
+            DecisionTableDiscretizer.Discretize(test, train);
                         
             Console.WriteLine("Done");
 
@@ -270,7 +270,7 @@ namespace DisesorTest
             args.SetParameter(ReductFactoryOptions.CalcModelConfidence, boostingCalcModelConfidence);
             //args.SetParameter(ReductGeneratorParamHelper.MaxIterations, boostingMaxIterations);
             args.SetParameter(ReductFactoryOptions.MaxIterations, iterations);
-            args.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
+            args.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, boostingCheckEnsembleErrorDuringTraining);
             args.SetParameter(ReductFactoryOptions.MaxNumberOfWeightResets, numberOfWeightResets);
             args.SetParameter(ReductFactoryOptions.FixedPermutations, fixedPermutations);
             args.SetParameter(ReductFactoryOptions.UseClassificationCost, useClassificationCost);

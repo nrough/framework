@@ -16,6 +16,7 @@ using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Classification;
 using NRough.Core.Random;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace MRIExceptions
 {

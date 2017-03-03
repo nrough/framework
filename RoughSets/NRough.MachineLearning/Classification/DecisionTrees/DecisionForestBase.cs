@@ -11,7 +11,7 @@ using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : EnsembleBase, ILearner, IPredictionModel
+    public abstract class DecisionForestBase<T> : EnsembleBase, ILearner, IClassificationModel
         where T : IDecisionTree, new()
     {
         private ClassificationResult learningResult;
@@ -198,7 +198,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
 
         protected void AddTree(T tree, double vote)
         {
-            this.AddClassfier((IPredictionModel)tree, vote);
+            this.AddClassfier((IClassificationModel)tree, vote);
         }
     }
 }

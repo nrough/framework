@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace NRough.MachineLearning.Classification.Ensembles
 {
     public abstract class EnsembleBase 
-        : ClassificationModelBase, ILearner, IPredictionModel, IEnumerable<IPredictionModel>
+        : ClassificationModelBase, ILearner, IClassificationModel, IEnumerable<IClassificationModel>
     {
         protected static int DefaultIterations = 100;
 
@@ -22,12 +22,12 @@ namespace NRough.MachineLearning.Classification.Ensembles
 
         protected class WeakClassifierInfo
         {
-            public WeakClassifierInfo(IPredictionModel model, double weight)
+            public WeakClassifierInfo(IClassificationModel model, double weight)
             {
                 this.Model = model;
                 this.Weight = weight;
             }
-            public IPredictionModel Model { get; set; }
+            public IClassificationModel Model { get; set; }
             public double Weight { get; set; }
         }
 
@@ -43,7 +43,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
 
         public abstract ClassificationResult Learn(DataStore data, int[] attributes);
 
-        public virtual void AddClassfier(IPredictionModel model, double weight)
+        public virtual void AddClassfier(IClassificationModel model, double weight)
         {
             weakClassifiers.Add(new WeakClassifierInfo(model, weight));
         }
@@ -76,7 +76,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
             return votes.Count > 0 ? votes.FindMaxValueKey() : Classifier.UnclassifiedOutput;
         }
 
-        public IEnumerator<IPredictionModel> GetEnumerator()
+        public IEnumerator<IClassificationModel> GetEnumerator()
         {
             return weakClassifiers.Select(c => c.Model).GetEnumerator();
         }

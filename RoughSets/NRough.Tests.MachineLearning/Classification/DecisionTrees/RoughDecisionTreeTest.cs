@@ -31,7 +31,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             var discFilter = new DiscretizeFilter();
 
             discFilter.TableDiscretizer =
-                new TableDiscretizer(
+                new DecisionTableDiscretizer(
                     new DiscretizeSupervisedBase()
                     {
                         NumberOfBuckets = 5,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using NRough.Data;
 
-namespace NRough.MachineLearning.Benchmark
+namespace NRough.Benchmark
 {
     public class BenchmarkDataHelper
     {

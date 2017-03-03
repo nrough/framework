@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace NRough.MachineLearning.Classification
 {
     [Serializable]
-    public class ConstDecision : ClassificationModelBase, IPredictionModel, ILearner, ICloneable
+    public class ConstDecisionModel : ClassificationModelBase, IClassificationModel, ILearner, ICloneable
     {
         private long output = -1;
         public long Output

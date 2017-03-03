@@ -18,7 +18,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
     /// Base class for decision tree implementations
     /// </summary>
     [Serializable]
-    public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IPredictionModel, ICloneable
+    public abstract class DecisionTreeBase : ClassificationModelBase, IDecisionTree, IClassificationModel, ICloneable
     {
         #region TODO
         #endregion

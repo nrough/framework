@@ -8,6 +8,7 @@ using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {

@@ -42,14 +42,14 @@ namespace NRough.Tests.MachineLearning.Discretization
             train.DumpExt(@"C:\" + fileTrain + ".ext", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".ext", " ", false, true);
 
-            var discretizer = new TableDiscretizer(this.GetDiscretizer());
+            var discretizer = new DecisionTableDiscretizer(this.GetDiscretizer());
 
             discretizer.FieldsToDiscretize
                 = train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard)
                 .Where(fieldId => train.DataStoreInfo.GetFieldInfo(fieldId).IsNumeric);
 
             discretizer.Discretize(train, train.Weights);
-            TableDiscretizer.Discretize(test, train);
+            DecisionTableDiscretizer.Discretize(test, train);
 
             train.DumpExt(@"C:\" + fileTrain + ".disc", " ", false, true);
             test.DumpExt(@"C:\" + fileTest + ".disc", " ", false, true);
@@ -63,7 +63,7 @@ namespace NRough.Tests.MachineLearning.Discretization
             DataStore train = DataStore.Load(fileTrain, fileFormat);
             DataStore test = DataStore.Load(fileTest, fileFormat, train.DataStoreInfo);
 
-            var discretizer = new TableDiscretizer(this.GetDiscretizer());
+            var discretizer = new DecisionTableDiscretizer(this.GetDiscretizer());
 
             discretizer.FieldsToDiscretize = new int[] { 2 };
             discretizer.Discretize(train, train.Weights);
@@ -76,7 +76,7 @@ namespace NRough.Tests.MachineLearning.Discretization
             IEnumerable<int> numericFields = fields == null ? data.DataStoreInfo
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
-            var discretizer = new TableDiscretizer(this.GetDiscretizer());
+            var discretizer = new DecisionTableDiscretizer(this.GetDiscretizer());
             discretizer.FieldsToDiscretize = numericFields;
             discretizer.Discretize(data, data.Weights);
             
@@ -99,10 +99,10 @@ namespace NRough.Tests.MachineLearning.Discretization
             IEnumerable<int> numericFields = fields == null ? trainData.DataStoreInfo
                 .SelectAttributeIds(a => a.IsStandard && a.CanDiscretize()) : fields;
 
-            var discretizer = new TableDiscretizer(this.GetDiscretizer());
+            var discretizer = new DecisionTableDiscretizer(this.GetDiscretizer());
             discretizer.FieldsToDiscretize = numericFields;
             discretizer.Discretize(trainData, trainData.Weights);
-            TableDiscretizer.Discretize(testData, trainData);
+            DecisionTableDiscretizer.Discretize(testData, trainData);
 
             foreach (var kvp in discretizer.FieldDiscretizer)
                 Console.WriteLine("Field {0} Cuts {1}", kvp.Key, kvp.Value == null ? "All" : kvp.Value.ToString());

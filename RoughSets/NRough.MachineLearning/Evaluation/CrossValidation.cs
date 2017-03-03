@@ -46,13 +46,13 @@ namespace NRough.MachineLearning.Evaluation
             : this(data, new DataSplitter(data, DefaultFolds, true), DefaultRepeat) { }
                 
         public ClassificationResult Run<T>(T modelPrototype, int[] attributes)
-            where T : IModel, IPredictionModel, ILearner, ICloneable, new()
+            where T : IModel, IClassificationModel, ILearner, ICloneable, new()
         {            
             return this.CV<T>(modelPrototype, this.Data, attributes, this.Splitter);
         }
 
         public ClassificationResult Run<T>(T modelPrototype)
-            where T : IModel, IPredictionModel, ILearner, ICloneable, new()
+            where T : IModel, IClassificationModel, ILearner, ICloneable, new()
         {
             return this.Run<T>(modelPrototype, this.Data.GetStandardFields());
         }
@@ -78,7 +78,7 @@ namespace NRough.MachineLearning.Evaluation
 
         private ClassificationResult RunFold<T>(T modelPrototype, 
             IDataSplitter dataSplitter, int fold, int[] attributes)
-            where T : IModel, IPredictionModel, ILearner, ICloneable, new()
+            where T : IModel, IClassificationModel, ILearner, ICloneable, new()
         {
             DataStore trainDs = null, testDs = null;
             dataSplitter.Split(out trainDs, out testDs, fold);
@@ -111,7 +111,7 @@ namespace NRough.MachineLearning.Evaluation
 
         private ClassificationResult CV<T>(T modelPrototype, DataStore data, 
             int[] attributes, IDataSplitter dataSplitter)
-            where T : IModel, IPredictionModel, ILearner, ICloneable, new()
+            where T : IModel, IClassificationModel, ILearner, ICloneable, new()
         {
             if (data == null) throw new ArgumentNullException("data");
             if (attributes == null) throw new ArgumentNullException("attributes");

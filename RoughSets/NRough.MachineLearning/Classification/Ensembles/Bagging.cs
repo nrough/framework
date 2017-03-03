@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace NRough.MachineLearning.Classification.Ensembles
 {
     public class Bagging<TModel> : EnsembleBase
-        where TModel : ILearner, IPredictionModel, ICloneable
+        where TModel : ILearner, IClassificationModel, ICloneable
     {
         private TModel prototype;
 

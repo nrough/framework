@@ -106,15 +106,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Benchmark\BenchmarkData.cs" />
-    <Compile Include="Benchmark\BenchmarkDataHelper.cs" />
     <Compile Include="Classification\ClassificationModelBase.cs" />
     <Compile Include="Classification\ClassificationResult.cs" />
     <Compile Include="Classification\ClassificationResultFormatter.cs" />
     <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
     <Compile Include="Classification\Classifier.cs" />
-    <Compile Include="Classification\ConstDecision.cs" />
-    <Compile Include="Classification\DecisionGraphs\OODG.cs" />
+    <Compile Include="Classification\ConstDecisionModel.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeMetric.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
     <Compile Include="Classification\Ensembles\ReductDecisionRules.cs" />
@@ -137,7 +134,7 @@
     <Compile Include="Classification\Ensembles\MultimodalEnsemble.cs" />
     <Compile Include="Evaluation\CrossValidation.cs" />
     <Compile Include="DecisionDistribution.cs" />
-    <Compile Include="Discretization\TableDiscretizer.cs" />
+    <Compile Include="Discretization\DecisionTableDiscretizer.cs" />
     <Compile Include="Discretization\DiscretizeBase.cs" />
     <Compile Include="Discretization\DiscretizeEntropy.cs" />
     <Compile Include="Discretization\DiscretizeUnsupervisedBase.cs" />
@@ -153,11 +150,10 @@
     <Compile Include="Filters\DiscretizeFilter.cs" />
     <Compile Include="Filters\ReductFeatureSelectionFilter.cs" />
     <Compile Include="MissingValues\ReplaceMissingValues.cs" />
-    <Compile Include="IApproximationModel.cs" />
     <Compile Include="IDistibutionSelectStrategy.cs" />
     <Compile Include="ILearner.cs" />
     <Compile Include="IModel.cs" />
-    <Compile Include="IPredictionModel.cs" />
+    <Compile Include="IClassificationModel.cs" />
     <Compile Include="ModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />
@@ -229,7 +225,7 @@
     <Compile Include="Roughsets\Reduct.cs" />
     <Compile Include="Roughsets\ReductCache.cs" />
     <Compile Include="Roughsets\ReductCacheInfo.cs" />
-    <Compile Include="Roughsets\ReductComparer.cs" />
+    <Compile Include="Roughsets\Reducts\Comparers\ReductComparer.cs" />
     <Compile Include="Roughsets\ReductEnsembleBoostingGenerator.cs" />
     <Compile Include="Roughsets\ReductEnsembleBoostingVarEpsGenerator.cs" />
     <Compile Include="Roughsets\ReductEnsembleBoostingVarEpsWithAttributeDiversity.cs" />

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace NRough.MachineLearning.Roughsets
 {

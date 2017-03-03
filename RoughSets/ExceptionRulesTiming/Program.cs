@@ -5,12 +5,13 @@ using System.IO;
 using Common.Logging;
 using Common.Logging.Configuration;
 using NRough.Data;
-using NRough.MachineLearning.Benchmark;
 using NRough.MachineLearning.Roughsets;
 using NRough.Core;
 using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.Random;
+using NRough.Benchmark;
+using NRough.MachineLearning.Roughsets.Reducts.Comparers;
 
 namespace ExceptionRulesTiming
 {

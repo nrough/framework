@@ -17,11 +17,14 @@
 //  FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 //  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using NRough.Doc;
+
 namespace GenericParsing
 {
     /// <summary>
     ///   Indicates whether text fields are delimited or fixed width.
     /// </summary>
+    [AssemblyTreeVisible(false)]
     public enum FieldType
     {
         /// <summary>

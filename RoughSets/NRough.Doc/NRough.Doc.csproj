@@ -49,7 +49,9 @@
     <Compile Include="AssemblyTreeBuilder.cs" />
     <Compile Include="AssemblyTreeFormater.cs" />
     <Compile Include="AssemblyTreeNode.cs" />
+    <Compile Include="AssemblyTreeNodeFormatter.cs" />
     <Compile Include="AssemblyTreeNodeType.cs" />
+    <Compile Include="AssemblyTreeVisibleAttribute.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeNameExtensions.cs" />

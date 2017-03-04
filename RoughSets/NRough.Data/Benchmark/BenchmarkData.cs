@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NRough.Data;
+using NRough.Doc;
 
 namespace NRough.Data.Benchmark
 {
+    [AssemblyTreeVisible(false)]
     public class BenchmarkData
     {
         public string Name { get; set; }

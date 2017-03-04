@@ -14,6 +14,7 @@ namespace NRough.Doc
         Interface = 3,
         Enum = 4,
         Delegate = 5,
-        Folder = 6
+        Folder = 6,
+        Namespace = 7
     }
 }

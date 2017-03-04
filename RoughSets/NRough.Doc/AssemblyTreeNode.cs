@@ -20,7 +20,7 @@ namespace NRough.Doc
         AssemblyTreeNodeType NodeType { get; }
     }
 
-    public abstract class AssemblyTreeNode : IAssemblyTreeNode
+    public abstract class AssemblyTreeNode : IAssemblyTreeNode, IEnumerable<IAssemblyTreeNode>
     {
         public string Name { get; set; }
         public IList<IAssemblyTreeNode> Children { get; set; }
@@ -42,10 +42,54 @@ namespace NRough.Doc
             node.Parent = this;
             Children.Add(node);
         }
+        
+        public static IEnumerator<IAssemblyTreeNode> GetEnumerator(IAssemblyTreeNode node)
+        {
+            var stack = new Stack<IAssemblyTreeNode>(new[] { node });
+
+            while (stack.Count != 0)
+            {
+                IAssemblyTreeNode current = stack.Pop();
+                yield return current;
+                if (current.Children != null)
+                    for (int i = current.Children.Count - 1; i >= 0; i--)
+                        stack.Push((IAssemblyTreeNode)current.Children[i]);
+            }
+        }
+
+        public IEnumerator<IAssemblyTreeNode> GetEnumerator()
+        {
+            return AssemblyTreeNode.GetEnumerator(this);
+        }
+        
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public override string ToString()
         {
             return Name;
+        }
+
+        public virtual string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (formatProvider != null)
+            {
+                ICustomFormatter formatter = formatProvider.GetFormat(this.GetType()) as ICustomFormatter;
+                if (formatter != null)
+                    return formatter.Format(format, this, formatProvider);
+            }
+
+            if (String.IsNullOrEmpty(format))
+                format = "G";
+
+            switch (format)
+            {
+                case "G":
+                default:
+                    return this.ToString();
+            }
         }
     }
 
@@ -76,7 +120,7 @@ namespace NRough.Doc
                 Debugger.Break();
 
             Type = type;
-        }
+        }        
     }
 
     public class AssemblyClassTreeNode : AssemblyTypeTreeNode
@@ -89,13 +133,6 @@ namespace NRough.Doc
         public AssemblyClassTreeNode(string name, Type type)
             : base(name, type)
         {
-        }
-
-        public override string ToString()
-        {
-            if(Type.IsGenericType)
-                return "{$" + base.ToString() + "$}";
-            return base.ToString();
         }
     }
 
@@ -146,6 +183,19 @@ namespace NRough.Doc
         }
 
         public AssemblyFolderTreeNode(string name)
+            : base(name)
+        {
+        }
+    }
+
+    public class AssemblyNamespaceTreeNode : AssemblyTreeNode
+    {
+        public override AssemblyTreeNodeType NodeType
+        {
+            get { return AssemblyTreeNodeType.Namespace; }
+        }
+
+        public AssemblyNamespaceTreeNode(string name)
             : base(name)
         {
         }

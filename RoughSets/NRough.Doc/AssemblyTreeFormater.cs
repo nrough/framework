@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace NRough.Doc
 
     public class AssemblyTreeStringFormatter : IAssemblyTreeFormatter
     {
-        public int Indent { get; set; }
+        public int Indent { get; set; }        
 
         public AssemblyTreeStringFormatter()
         {
@@ -58,6 +59,23 @@ namespace NRough.Doc
     public class LatexForestAssemblyTreeFormatter
         : AssemblyTreeStringFormatter
     {
+        public bool IncludeStyle { get; set; }
+        private AssemblyTreeNodeFormatter NodeFormatter { get; set; }
+        
+        public LatexForestAssemblyTreeFormatter()
+            : base()
+        {
+            IncludeStyle = false;
+            NodeFormatter = new AssemblyTreeNodeFormatter();
+            NodeFormatter.EscapeCharTable = EscapeCharTable();
+        }
+
+        public LatexForestAssemblyTreeFormatter(bool includeStyle)
+            : this()
+        {
+            IncludeStyle = includeStyle;            
+        }
+
         public override object GetFormat(Type formatType)
         {
             return formatType.IsAssignableFrom(typeof(AssemblyTree)) ? this : null;
@@ -70,32 +88,61 @@ namespace NRough.Doc
                 return args.ToString();
 
             if (result.Root == null)
-                return String.Empty;
-
-            //if (String.IsNullOrEmpty(format))
-            //    return result.ToString();
+                return String.Empty;            
 
             StringBuilder sb = new StringBuilder();
             Build(result.Root, 0, sb);
             return sb.ToString();
-        }
+        }        
 
         private void Build(IAssemblyTreeNode node, int currentLevel, StringBuilder sb)
         {
             if (node == null) throw new ArgumentNullException("node");
             if (sb == null) throw new ArgumentNullException("sb");
 
-            var anode = node as IAssemblyTreeNode;
-            if (anode != null
-                && anode.IsLeaf
-                && anode.NodeType == AssemblyTreeNodeType.Folder)
+            if (node.Name == "GenericParsing")
+                Debugger.Break();
+
+            if (node != null 
+                && (node.NodeType == AssemblyTreeNodeType.Folder 
+                    || node.NodeType == AssemblyTreeNodeType.Namespace))
             {
-                return;
+                if(node.IsLeaf)
+                    return;
+
+                var children = AssemblyTreeNode.GetEnumerator(node).ToIEnumerable<IAssemblyTreeNode>();
+                if (!children
+                    .Any(n => n.NodeType != AssemblyTreeNodeType.Folder 
+                        && n.NodeType != AssemblyTreeNodeType.Namespace))
+                    return;
             }
+            
 
             sb.Append(new string(' ', this.Indent * currentLevel));
             sb.Append("[ ");
-            sb.Append(node.ToString());
+
+            var anode = node as AssemblyTreeNode;
+            if (anode != null)
+                sb.Append(anode.ToString("forest", NodeFormatter));
+            else
+                NodeFormatter.Format("forest", node, null);
+
+            if (IncludeStyle)
+            {
+                switch (node.NodeType)
+                {
+                    case AssemblyTreeNodeType.Assembly: sb.Append(", assembly"); break;
+                    case AssemblyTreeNodeType.Class: sb.Append(", class"); break;
+                    case AssemblyTreeNodeType.Enum: sb.Append(", enum"); break;
+                    case AssemblyTreeNodeType.Interface: sb.Append(", interface"); break;
+                    case AssemblyTreeNodeType.Delegate: sb.Append(", delegate"); break;
+                    case AssemblyTreeNodeType.Namespace: sb.Append(", namespace"); break;
+
+                    default:
+                        //do nothing
+                        break;
+                }
+            }
 
             if (node.Children != null)
             {
@@ -112,5 +159,17 @@ namespace NRough.Doc
             sb.Append("]");
             sb.AppendLine();
         }
+
+        private Dictionary<string, string> EscapeCharTable()
+        {
+            var result  = new Dictionary<string, string>();
+
+            result.Add("_", "\\_");
+            result.Add("^", "\\^");
+            result.Add("<", "$\\langle$");
+            result.Add(">", "$\\rangle$");
+
+            return result;
+        }        
     }
 }

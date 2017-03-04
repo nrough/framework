@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using NRough.Doc;
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
@@ -32,6 +33,7 @@ namespace GenericParsing
     ///   the parser can no longer continue parsing due to the data found in the
     ///   data-source.
     /// </summary>
+    [AssemblyTreeVisible(false)]
     [Serializable]
     public class ParsingException : Exception
     {

@@ -15,11 +15,15 @@ namespace NRough.Doc
 
     public class AssemblyTreeBuilder : IAssemblyTreeBuilder
     {
+        public bool GroupByObjectType { get; set; }
+
         private IList<Assembly> Assemblies { get; set; }
         private Dictionary<string, IEnumerable<string>> assemblyNamespaces { get; set; }
 
         public AssemblyTreeBuilder(IEnumerable<Assembly> assemblies)
         {
+            GroupByObjectType = false;
+
             Assemblies = new List<Assembly>(assemblies);
             assemblyNamespaces = new Dictionary<string, IEnumerable<string>>(Assemblies.Count);
 
@@ -53,10 +57,18 @@ namespace NRough.Doc
             var assemblyNode = new AssemblyAssemblyTreeNode(assembly.GetName().Name, assembly);
             root.AddChild(assemblyNode);
 
-            var namespaceFolderNode = new AssemblyFolderTreeNode("Namespaces");
-            assemblyNode.AddChild(namespaceFolderNode);
+            IAssemblyTreeNode namespaceFolderNode;
+            if (GroupByObjectType)
+            {
+                namespaceFolderNode = new AssemblyFolderTreeNode("Namespaces");
+                assemblyNode.AddChild(namespaceFolderNode);
+            }
+            else
+            {
+                namespaceFolderNode = assemblyNode;
+            }
 
-            foreach (var @namespace in assemblyNamespaces[assembly.FullName])
+            foreach (var @namespace in assemblyNamespaces[assembly.FullName])                
                 ProcessNamespace(assembly, @namespace, namespaceFolderNode);
         }
 
@@ -65,92 +77,101 @@ namespace NRough.Doc
             if (root == null) throw new ArgumentNullException("root");
             if (assembly == null) throw new ArgumentNullException("assembly");
 
-            var namespaceNode = new AssemblyFolderTreeNode(@namespace);
+            var namespaceNode = new AssemblyNamespaceTreeNode(@namespace);
             root.AddChild(namespaceNode);
+
+            IAssemblyTreeNode classFolderNode, interfaceFolderNode, enumFolderNode, delegateFolderNode;
+            if (GroupByObjectType)
+            {
+                classFolderNode = new AssemblyFolderTreeNode("Classes");
+                namespaceNode.AddChild(classFolderNode);
+
+                interfaceFolderNode = new AssemblyFolderTreeNode("Interfaces");
+                namespaceNode.AddChild(interfaceFolderNode);
+
+                enumFolderNode = new AssemblyFolderTreeNode("Enums");
+                namespaceNode.AddChild(enumFolderNode);
+
+                delegateFolderNode = new AssemblyFolderTreeNode("Delegates");
+                namespaceNode.AddChild(delegateFolderNode);
+            }
+            else
+            {
+                classFolderNode = namespaceNode;
+                interfaceFolderNode = namespaceNode;
+                enumFolderNode = namespaceNode;
+                delegateFolderNode = namespaceNode;                
+            }
+
             
-            var classFolderNode = new AssemblyFolderTreeNode("Classes");
-            namespaceNode.AddChild(classFolderNode);
             foreach (var type in assembly.GetTypes()
-                .Where(t => t.IsClass
-                    && t.IsVisible
+                .Where(t => t.IsClass                    
                     && t.Namespace == @namespace
-                    && t.BaseType != typeof(MulticastDelegate)
-                    && Attribute.GetCustomAttribute(
-                            t, typeof(CompilerGeneratedAttribute)) == null)
+                    && t.IsEnabled()
+                    && !t.IsDelegate()
+                    && !t.IsCompilerGenerated())
                 .OrderBy(t => t.Name))
             {
-                ProcessClass(assembly, type, classFolderNode);
+                ProcessClass(type, classFolderNode);
             }
 
-            var interfaceFolderNode = new AssemblyFolderTreeNode("Interfaces");
-            namespaceNode.AddChild(interfaceFolderNode);
+            
             foreach (var type in assembly.GetTypes()
-                .Where(t => t.IsInterface 
-                    && t.IsVisible 
-                    && t.Namespace == @namespace)
+                .Where(t => t.IsInterface                     
+                    && t.Namespace == @namespace
+                    && t.IsEnabled())
                 .OrderBy(t => t.Name))
             {
-                ProcessInterface(assembly, type, interfaceFolderNode);
+                ProcessInterface(type, interfaceFolderNode);
             }
 
-            var enumFolderNode = new AssemblyFolderTreeNode("Enums");
-            namespaceNode.AddChild(enumFolderNode);
+            
             foreach (var type in assembly.GetTypes()
-                .Where(t => t.IsEnum 
-                    && t.IsVisible 
-                    && t.Namespace == @namespace)
+                .Where(t => t.IsEnum                     
+                    && t.Namespace == @namespace
+                    && t.IsEnabled())
                 .OrderBy(t => t.Name))
             {
-                ProcessEnum(assembly, type, enumFolderNode);
+                ProcessEnum(type, enumFolderNode);
             }
 
-            var delegateFolderNode = new AssemblyFolderTreeNode("Delegates");
-            namespaceNode.AddChild(delegateFolderNode);
+            
             foreach (var type in assembly.GetTypes()
-                .Where(t => t.IsClass 
-                    && t.IsVisible 
-                    && t.Namespace == @namespace 
-                    && t.BaseType == typeof(MulticastDelegate)
-                    && Attribute.GetCustomAttribute(
-                        t, typeof(CompilerGeneratedAttribute)) == null)
+                .Where(t => t.IsClass                     
+                    && t.Namespace == @namespace
+                    && t.IsEnabled()
+                    && t.IsDelegate()
+                    && !t.IsCompilerGenerated())
                 .OrderBy(t => t.Name))
-            {
-                ProcessDelegate(assembly, type, delegateFolderNode);
+            {               
+                ProcessDelegate(type, delegateFolderNode);
             }
         }
 
-        private void ProcessClass(Assembly assembly, Type type, IAssemblyTreeNode root)
+        private void ProcessClass(Type type, IAssemblyTreeNode root)
         {
             if (root == null) throw new ArgumentNullException("root");
-            if (assembly == null) throw new ArgumentNullException("assembly");
-
             var node = new AssemblyClassTreeNode(type.GetFriendlyName(), type);
             root.AddChild(node);
         }
 
-        private void ProcessInterface(Assembly assembly, Type type, IAssemblyTreeNode root)
+        private void ProcessInterface(Type type, IAssemblyTreeNode root)
         {
             if (root == null) throw new ArgumentNullException("root");
-            if (assembly == null) throw new ArgumentNullException("assembly");
-
             var node = new AssemblyInterfaceTreeNode(type.Name, type);
             root.AddChild(node);
         }
 
-        private void ProcessDelegate(Assembly assembly, Type type, IAssemblyTreeNode root)
+        private void ProcessDelegate(Type type, IAssemblyTreeNode root)
         {
             if (root == null) throw new ArgumentNullException("root");
-            if (assembly == null) throw new ArgumentNullException("assembly");
-
             var node = new AssemblyDelegateTreeNode(type.Name, type);
             root.AddChild(node);
         }
 
-        private void ProcessEnum(Assembly assembly, Type type, IAssemblyTreeNode root)
+        private void ProcessEnum(Type type, IAssemblyTreeNode root)
         {
             if (root == null) throw new ArgumentNullException("root");
-            if (assembly == null) throw new ArgumentNullException("assembly");
-
             var node = new AssemblyEnumTreeNode(type.Name, type);
             root.AddChild(node);
         }

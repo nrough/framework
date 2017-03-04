@@ -14,12 +14,14 @@ namespace NRough.Doc
 
     public class AssemblyTree : IAssemblyTree
     {
+        public string Name { get; set; }
         public IAssemblyTreeNode Root { get; set; }
 
         public AssemblyTree(string name)
             : base()
         {
-            this.Root = new AssemblyFolderTreeNode(name);
+            Name = name;
+            Root = new AssemblyFolderTreeNode(name);
         }
 
         public AssemblyTree()
@@ -28,6 +30,8 @@ namespace NRough.Doc
         public void Build(IAssemblyTreeBuilder builder)
         {
             Root = builder.Build().Root;
+            if (!String.IsNullOrEmpty(Name))
+                Root.Name = Name;
         }
 
         public override string ToString()

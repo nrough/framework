@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using NRough.Doc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,6 +35,7 @@ namespace GenericParsing
     /// of parsing various flat files formats.
     /// </summary>
     /// <threadsafety static="false" instance="false"/>
+    [AssemblyTreeVisible(false)]
     public class GenericParser : IDisposable
     {
         #region Constants

@@ -23,9 +23,9 @@ namespace NRough.Tests.Doc
                 Assembly.Load("NRough.Math")
             };
 
-            var assemblyTree = new AssemblyTree();
+            var assemblyTree = new AssemblyTree("NRough");
             assemblyTree.Build(new AssemblyTreeBuilder(assemblies));
-            Console.WriteLine(assemblyTree.ToString("G", new LatexForestAssemblyTreeFormatter()));
+            Console.WriteLine(assemblyTree.ToString("G", new LatexForestAssemblyTreeFormatter(true)));
         }
     }
 }

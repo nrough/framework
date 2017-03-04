@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using NRough.Data;
+using NRough.Doc;
 
 namespace NRough.Data.Benchmark
 {
+    [AssemblyTreeVisible(false)]
     public class BenchmarkDataHelper
     {
         private static string GetFilePath(string path, string filename)

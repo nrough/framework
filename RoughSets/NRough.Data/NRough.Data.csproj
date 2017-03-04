@@ -128,6 +128,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NRough.Doc\NRough.Doc.csproj">
+      <Project>{58534579-7d62-4f0c-8bbf-e3e903e90e4e}</Project>
+      <Name>NRough.Doc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NRough.Math\NRough.Math.csproj">
       <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
       <Name>NRough.Math</Name>

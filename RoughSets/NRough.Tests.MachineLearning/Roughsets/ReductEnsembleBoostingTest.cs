@@ -268,8 +268,8 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             RuleQualityMethod boostingIdentificationFunction = null;
             RuleQualityMethod boostingVoteFunction = null;
-            UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
-            CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+            WeightsUpdateMethod boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+            ModelConfidenceCalcMethod boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
             bool boostingCheckEnsambleErrorDuringTraining = false;
 
             if (boostingIdentificationFunction == null)
@@ -407,7 +407,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                                       reductGenerator.IdentyficationType.Method.Name,
                                       reductGenerator.VoteType.Method.Name,
                         //reductGenerator.MinReductLength,
-                                      reductGenerator.UpdateWeights.Method.Name,
+                                      reductGenerator.WeightsUpdateMethod.Method.Name,
                                       weightingSchema,
                                       reductGenerator.CheckEnsembleErrorDuringTraining,
                                       t + 1,

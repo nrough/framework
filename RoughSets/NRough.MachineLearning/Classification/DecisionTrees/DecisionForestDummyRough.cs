@@ -15,14 +15,14 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class DecisionForestDummyRough<T> : DecisionForestBase<T>
-        where T : IDecisionTree, new()
+    /// <typeparam name="TTree"></typeparam>
+    public class DecisionForestDummyRough<TTree> : DecisionForestBase<TTree>
+        where TTree : IDecisionTree, new()
     {
         public string ReductGeneratorFactory { get; set; }
 
         //protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
-        protected override T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected override TTree LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
             var permutationCollection = new PermutationCollection(
                 this.NumberOfTreeProbes, attributes, RandomSingleton.Random.Next(1, attributes.Length));
@@ -58,7 +58,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
             );
             
             Array.Sort(reducts, new ReductRuleNumberComparer());            
-            T tree = this.InitDecisionTree();
+            TTree tree = this.InitDecisionTree();
             double error = tree.Learn(data, reducts[0].Attributes.ToArray()).Error;
 
             //return new Tuple<T, double>(tree, error);

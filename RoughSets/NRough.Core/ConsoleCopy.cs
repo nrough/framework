@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Doc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace NRough.Core
     /// <summary>
     /// http://stackoverflow.com/questions/420429/mirroring-console-output-to-a-file
     /// </summary>
+    [AssemblyTreeVisible(false)]
     public class ConsoleCopy : IDisposable
     {
         private FileStream fileStream;

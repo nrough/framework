@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Doc;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace NRough.Core
 {
+    [AssemblyTreeVisible(false)]
     public class ConfigManager
     {
 #if DEBUG

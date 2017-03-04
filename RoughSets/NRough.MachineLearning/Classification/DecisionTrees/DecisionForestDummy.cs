@@ -7,21 +7,21 @@ using NRough.Core.Random;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {
-    public class DecisionForestDummy<T> : DecisionForestBase<T>
-        where T : IDecisionTree, new()
+    public class DecisionForestDummy<TTree> : DecisionForestBase<TTree>
+        where TTree : IDecisionTree, new()
     {
         //protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
-        protected override T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected override TTree LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {            
             var permutationCollection = new PermutationCollection(
                 this.NumberOfTreeProbes, attributes, RandomSingleton.Random.Next(1, attributes.Length));
 
             //Tuple<T, double> bestTree = null;
-            T bestTree = default(T);
+            TTree bestTree = default(TTree);
             int minNumberOfLeaves = int.MaxValue;
             foreach (var perm in permutationCollection)
             {
-                T tree = this.InitDecisionTree();
+                TTree tree = this.InitDecisionTree();
                 double error = tree.Learn(data, perm.ToArray()).Error;
                 int numOfLeaves = DecisionTreeHelper.CountLeaves(tree.Root);
 

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.Core;
+using System.IO;
 
 namespace NRough.Tests.Doc
 {
@@ -16,6 +17,8 @@ namespace NRough.Tests.Doc
         [Test]
         public void GenerateTest()
         {
+            string filename = @"C:\Users\Admin\Documents\GitHub\PhD\Autoreferat\nrough_forest.tex";
+
             Assembly[] assemblies = new Assembly[] {
                 Assembly.Load("NRough.Core"),
                 Assembly.Load("NRough.Data"),
@@ -25,7 +28,13 @@ namespace NRough.Tests.Doc
 
             var assemblyTree = new AssemblyTree("NRough");
             assemblyTree.Build(new AssemblyTreeBuilder(assemblies));
-            Console.WriteLine(assemblyTree.ToString("G", new LatexForestAssemblyTreeFormatter(true)));
+            string forest = assemblyTree.ToString("G", new LatexForestAssemblyTreeFormatter(true));
+            Console.WriteLine(forest);
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename))
+            {
+                file.Write(forest);
+            }
         }
     }
 }

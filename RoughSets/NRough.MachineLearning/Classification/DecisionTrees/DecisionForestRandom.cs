@@ -9,8 +9,8 @@ using NRough.Core;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {
-    public class DecisionForestRandom<T> : DecisionForestBase<T>
-        where T : IDecisionTree, new()
+    public class DecisionForestRandom<TTree> : DecisionForestBase<TTree>
+        where TTree : IDecisionTree, new()
     {
         private int numberOfAttributesToCheckForSplit = -1;
         private bool isNumberOfAttributesToCheckForSplitSet = false;
@@ -29,9 +29,9 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         public DecisionForestRandom()
             : base() { }
 
-        protected override T InitDecisionTree()
+        protected override TTree InitDecisionTree()
         {
-            T tree = base.InitDecisionTree();
+            TTree tree = base.InitDecisionTree();
 
             if (this.NumberOfAttributesToCheckForSplit > 0)
                 tree.NumberOfAttributesToCheckForSplit = this.NumberOfAttributesToCheckForSplit;

@@ -3,9 +3,11 @@ using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.Comparers;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Roughsets
 {
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingVarEpsGenerator : ReductEnsembleBoostingGenerator
     {
         private double m0;
@@ -143,6 +145,7 @@ namespace NRough.MachineLearning.Roughsets
         }
     }
 
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingVarEpsFactory : IReductFactory
     {
         public virtual string FactoryKey

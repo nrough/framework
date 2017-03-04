@@ -13,9 +13,9 @@ using NRough.MachineLearning.Classification;
 namespace NRough.MachineLearning.Roughsets
 {
     
-    public delegate double UpdateWeightsDelegate(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
+    public delegate double WeightsUpdateMethod(double currentWeight, int numberOfOutputValues, long actualOutput, long predictedOutput, double totalError, double classificationCost);
 
-    public delegate double CalcModelConfidenceDelegate(int numberOfOutputValues, double totalError);
+    public delegate double ModelConfidenceCalcMethod(int numberOfOutputValues, double totalError);
 
     public class ReductEnsembleBoostingGenerator : ReductGenerator
     {
@@ -30,8 +30,8 @@ namespace NRough.MachineLearning.Roughsets
         public int NumberOfWeightResets { get; protected set; }
         public bool CheckEnsembleErrorDuringTraining { get; set; }
         public WeightGenerator WeightGenerator { get; set; }
-        public UpdateWeightsDelegate UpdateWeights { get; set; }
-        public CalcModelConfidenceDelegate CalcModelConfidence { get; set; }
+        public WeightsUpdateMethod WeightsUpdateMethod { get; set; }
+        public ModelConfidenceCalcMethod CalcModelConfidence { get; set; }
         public bool FixedPermutations { get; set; }
         public bool UseClassificationCost { get; set; }
 
@@ -54,7 +54,7 @@ namespace NRough.MachineLearning.Roughsets
             this.MaxIterations = 100;
             this.MaxNumberOfWeightResets = 0;
             this.CheckEnsembleErrorDuringTraining = false;
-            this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+            this.WeightsUpdateMethod = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
             this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
             this.MinimumVoteValue = Double.MinValue;
             this.UseClassificationCost = true;
@@ -77,7 +77,7 @@ namespace NRough.MachineLearning.Roughsets
             this.MaxIterations = 100;
             this.MaxNumberOfWeightResets = 0;
             this.CheckEnsembleErrorDuringTraining = false;
-            this.UpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+            this.WeightsUpdateMethod = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
             this.CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
             this.UseClassificationCost = true;
         }
@@ -128,10 +128,10 @@ namespace NRough.MachineLearning.Roughsets
                 this.CheckEnsembleErrorDuringTraining = (bool)args.GetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining);
 
             if (args.Exist(ReductFactoryOptions.UpdateWeights))
-                this.UpdateWeights = (UpdateWeightsDelegate)args.GetParameter(ReductFactoryOptions.UpdateWeights);
+                this.WeightsUpdateMethod = (WeightsUpdateMethod)args.GetParameter(ReductFactoryOptions.UpdateWeights);
 
             if (args.Exist(ReductFactoryOptions.CalcModelConfidence))
-                this.CalcModelConfidence = (CalcModelConfidenceDelegate)args.GetParameter(ReductFactoryOptions.CalcModelConfidence);
+                this.CalcModelConfidence = (ModelConfidenceCalcMethod)args.GetParameter(ReductFactoryOptions.CalcModelConfidence);
 
             if (args.Exist(ReductFactoryOptions.MaxNumberOfWeightResets))
                 this.MaxNumberOfWeightResets = (int)args.GetParameter(ReductFactoryOptions.MaxNumberOfWeightResets);
@@ -249,7 +249,7 @@ namespace NRough.MachineLearning.Roughsets
                             if (actual != result.GetPrediction(i))
                                 classificationCost = this.classificationCosts[this.value2index[actual]];
 
-                            weights[i] = (double)this.UpdateWeights((double)weights[i],
+                            weights[i] = (double)this.WeightsUpdateMethod((double)weights[i],
                                                                          K,
                                                                          actual,
                                                                          result.GetPrediction(i),

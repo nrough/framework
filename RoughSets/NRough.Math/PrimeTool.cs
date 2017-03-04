@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Doc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace NRough.Math
 {
+    [AssemblyTreeVisible(false)]
     public static class PrimeTool
     {
         public static bool IsPrime(int candidate)

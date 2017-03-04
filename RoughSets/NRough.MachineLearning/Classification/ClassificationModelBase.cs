@@ -1,4 +1,5 @@
 ﻿using NRough.Data;
+using NRough.Doc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +31,16 @@ namespace NRough.MachineLearning.Classification
             result.ModelName = ModelName;
         }
     }
-    
+
+    [AssemblyTreeVisible(false)]
     public delegate DataStore OnTrainingDataSubmission(
         IModel model, int[] attributes, DataStore trainingData);
 
+    [AssemblyTreeVisible(false)]
     public delegate int[] OnInputAttributeSubmission(
         IModel model, int[] attributes, DataStore trainingData);
 
+    [AssemblyTreeVisible(false)]
     public delegate DataStore OnValidationDataSubmission(
         IModel model, int[] attributes, DataStore trainingData);
 }

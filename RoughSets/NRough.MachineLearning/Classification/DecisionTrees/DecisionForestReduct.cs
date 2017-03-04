@@ -18,12 +18,12 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
     /// in terms of least number of decision rules is selected for a single decision tree.<br />
     /// A decision tree is constructed based on attributes belonging to selected decision reduct.
     /// </summary>
-    /// <typeparam name="T">
+    /// <typeparam name="TTree">
     /// Represents a class that implements <c>IDecisionTree</c> 
     /// interface and is resposble for decision tree construction
     /// </typeparam>
-    public class DecisionForestReduct<T> : DecisionForestBase<T>
-        where T : IDecisionTree, new()
+    public class DecisionForestReduct<TTree> : DecisionForestBase<TTree>
+        where TTree : IDecisionTree, new()
     {
         //private Dictionary<int, int> attributeCount;
 
@@ -47,7 +47,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         */
 
         //protected override Tuple<T, double> LearnDecisionTree(DataStore data, int[] attributes, int iteration)
-        protected override T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected override TTree LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
             PermutationCollection permutations = new PermutationCollection(this.NumberOfTreeProbes, attributes);
 
@@ -65,7 +65,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
                     this.attributeCount[attr] += 1;
             */
 
-            T tree = this.InitDecisionTree();
+            TTree tree = this.InitDecisionTree();
             double error = tree.Learn(data, reduct.Attributes.ToArray()).Error;
             //return new Tuple<T, double>(tree, error);
             return tree;

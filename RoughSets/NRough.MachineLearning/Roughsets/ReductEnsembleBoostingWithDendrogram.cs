@@ -5,9 +5,11 @@ using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.Math;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Roughsets
 {
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingWithDendrogramGenerator : ReductEnsembleBoostingGenerator
     {
         private IReduct[] reducts;
@@ -126,6 +128,7 @@ namespace NRough.MachineLearning.Roughsets
         }
     }
 
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingWithDendrogramFactory : IReductFactory
     {
         public virtual string FactoryKey

@@ -61,7 +61,7 @@ namespace ApproxReductBoostingCV
                                                                                ),
                     ParameterValueCollection<WeightingScheme>.CreateFromElements("WeightingSchama", WeightingScheme.Majority),
                     ParameterValueCollection<bool>.CreateFromElements("CheckEnsembleErrorDuringTraining", false),
-                    ParameterValueCollection<UpdateWeightsDelegate>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
+                    ParameterValueCollection<WeightsUpdateMethod>.CreateFromElements("SetWeights", ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All),
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", (int) System.Math.Floor(System.Math.Log((double)numOfAttr + 1.0M, 2.0)))
                     //ParameterValueCollection<int>.CreateFromElements("MinLenght", 1)
                     new ParameterNumericRange<int>(ReductFactoryOptions.Epsilon, 0, 50, 5)
@@ -99,7 +99,7 @@ namespace ApproxReductBoostingCV
                 string factoryKey = (string)p[2];
                 WeightingScheme weightingSchema = (WeightingScheme)p[3];
                 bool checkEnsembleErrorDuringTraining = (bool)p[4];
-                UpdateWeightsDelegate updateWeights = (UpdateWeightsDelegate)p[5];
+                WeightsUpdateMethod updateWeights = (WeightsUpdateMethod)p[5];
                 //int minLen = (int)p[6];
                 int epsilon = (int)p[6];
 
@@ -186,7 +186,7 @@ namespace ApproxReductBoostingCV
                         null);
 
                     string updWeightsMethodName = String.Empty;
-                    switch (reductGenerator.UpdateWeights.Method.Name)
+                    switch (reductGenerator.WeightsUpdateMethod.Method.Name)
                     {
                         case "UpdateWeightsAdaBoost_All":
                             updWeightsMethodName = "All";

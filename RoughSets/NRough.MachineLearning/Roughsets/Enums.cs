@@ -1,4 +1,6 @@
-﻿namespace NRough.MachineLearning.Roughsets
+﻿using NRough.Doc;
+
+namespace NRough.MachineLearning.Roughsets
 {
     public enum VoteType
     {
@@ -62,6 +64,7 @@
         Coverage = 3
     }
 
+    [AssemblyTreeVisible(false)]
     public enum SortDirection
     {
         Ascending = 0,
@@ -70,6 +73,7 @@
         None = 3
     }
 
+    [AssemblyTreeVisible(false)]
     public enum NoYesUnknown
     {
         No = 0,

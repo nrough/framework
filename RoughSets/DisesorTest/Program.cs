@@ -48,9 +48,9 @@ namespace DisesorTest
 
         //RuleQualityFunction boostingIdentificationFunction = null;
         //RuleQualityFunction boostingVoteFunction = null;
-        private UpdateWeightsDelegate boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
+        private WeightsUpdateMethod boostingUpdateWeights = ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All;
 
-        private CalcModelConfidenceDelegate boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+        private ModelConfidenceCalcMethod boostingCalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         private bool boostingCheckEnsembleErrorDuringTraining = false;
         private int numberOfWeightResets = 99;
 

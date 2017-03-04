@@ -57,14 +57,11 @@ namespace NRough.Doc
 
         #endregion
 
-
-
         #region Fields
 
         private IDictionary<String, Namespace> subNamespaces;
 
         #endregion
-
 
         #region Constructors
 
@@ -90,7 +87,6 @@ namespace NRough.Doc
         }
 
         #endregion
-
 
         #region Properties
 
@@ -131,8 +127,6 @@ namespace NRough.Doc
         }
 
         #endregion
-
-
 
         #region IDictionary implementation
 
@@ -252,8 +246,6 @@ namespace NRough.Doc
         }
 
         #endregion
-
-
 
         #region Overrides
 

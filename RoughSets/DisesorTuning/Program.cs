@@ -111,8 +111,8 @@ namespace DisesorTuning
                 args.SetParameter(ReductFactoryOptions.IdentificationType, identification);
                 args.SetParameter(ReductFactoryOptions.VoteType, voting);
                 args.SetParameter(ReductFactoryOptions.MinimumVoteValue, minimumVoteValue);
-                args.SetParameter(ReductFactoryOptions.UpdateWeights, (UpdateWeightsDelegate)ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All);
-                args.SetParameter(ReductFactoryOptions.CalcModelConfidence, (CalcModelConfidenceDelegate)ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1);
+                args.SetParameter(ReductFactoryOptions.UpdateWeights, (WeightsUpdateMethod)ReductEnsembleBoostingGenerator.UpdateWeightsAdaBoost_All);
+                args.SetParameter(ReductFactoryOptions.CalcModelConfidence, (ModelConfidenceCalcMethod)ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1);
                 args.SetParameter(ReductFactoryOptions.MaxIterations, iterations);
                 args.SetParameter(ReductFactoryOptions.CheckEnsembleErrorDuringTraining, boostingCheckEnsambleErrorDuringTraining);
                 args.SetParameter(ReductFactoryOptions.MaxNumberOfWeightResets, numberOfWeightResets);

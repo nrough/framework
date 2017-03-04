@@ -1,10 +1,12 @@
-﻿using System;
+﻿using NRough.Doc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace NRough.Core.DataStructures
 {
     [Serializable]
+    [AssemblyTreeVisible(false)]
     public class PriorityQueue_DEL<TKey, TValue>
     {
         private readonly Object lockObj;

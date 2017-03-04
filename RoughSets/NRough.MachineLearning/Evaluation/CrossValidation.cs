@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.MachineLearning.Classification;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Evaluation
 {
+    [AssemblyTreeVisible(false)]
     public delegate void PostLearingMethod(IModel model);
 
     [Serializable]

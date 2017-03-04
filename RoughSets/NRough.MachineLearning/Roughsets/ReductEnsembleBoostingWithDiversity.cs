@@ -6,9 +6,11 @@ using NRough.MachineLearning.Clustering.Hierarchical;
 using NRough.Math;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Roughsets
 {
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingWithDiversityGenerator : ReductEnsembleBoostingGenerator
     {
         private Dictionary<string, int> clusterInstances;
@@ -144,6 +146,7 @@ namespace NRough.MachineLearning.Roughsets
         }
     }
 
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingWithDiversityFactory : IReductFactory
     {
         public virtual string FactoryKey

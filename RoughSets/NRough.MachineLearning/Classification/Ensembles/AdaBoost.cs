@@ -12,17 +12,17 @@ using System.Threading.Tasks;
 
 namespace NRough.MachineLearning.Classification.Ensembles
 {
-    public class AdaBoost<T> : EnsembleBase
-        where T : ILearner, IClassificationModel, ICloneable
+    public class AdaBoost<TModel> : EnsembleBase
+        where TModel : ILearner, IClassificationModel, ICloneable
     {
         protected static double DefaultThreshold = 0.5;
 
         public double Threshold { get; set; }
         public WeightBoostingMethod WeightBoosingtMethod { get; set; }
 
-        private T prototype;
+        private TModel prototype;
 
-        public AdaBoost(T classifierPrototype)
+        public AdaBoost(TModel classifierPrototype)
             : base()
         {
             this.Threshold = -1.0;
@@ -49,7 +49,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
 
             do
             {
-                T weakClassifier = (T) prototype.Clone();
+                TModel weakClassifier = (TModel) prototype.Clone();
                 weakClassifier.Learn(data, attributes);
 
                 var result = Classifier.Default.Classify(weakClassifier, data);

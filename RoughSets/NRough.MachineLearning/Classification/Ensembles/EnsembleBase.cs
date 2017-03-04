@@ -18,7 +18,7 @@ namespace NRough.MachineLearning.Classification.Ensembles
 
         public int Iterations { get; set; }
         public int Size { get; set; }
-        public CalcModelConfidenceDelegate CalcModelConfidence { get; set; }
+        public ModelConfidenceCalcMethod CalcModelConfidence { get; set; }
 
         protected class WeakClassifierInfo
         {

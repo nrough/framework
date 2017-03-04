@@ -11,8 +11,8 @@ using NRough.Core.CollectionExtensions;
 
 namespace NRough.MachineLearning.Classification.DecisionTrees
 {
-    public abstract class DecisionForestBase<T> : EnsembleBase, ILearner, IClassificationModel
-        where T : IDecisionTree, new()
+    public abstract class DecisionForestBase<TTree> : EnsembleBase, ILearner, IClassificationModel
+        where TTree : IDecisionTree, new()
     {
         private ClassificationResult learningResult;
         public ClassificationResult LearningResult
@@ -82,21 +82,21 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
             }
         }
 
-        protected virtual T InitDecisionTree()
+        protected virtual TTree InitDecisionTree()
         {
-            T tree = new T();
+            TTree tree = new TTree();
             if (this.Gamma >= 0.0)
                 tree.Gamma = this.Gamma;
             return tree;
         }
 
-        protected virtual T LearnDecisionTree(DataStore data, int[] attributes, int iteration)
+        protected virtual TTree LearnDecisionTree(DataStore data, int[] attributes, int iteration)
         {
-            T bestTree = default(T);
+            TTree bestTree = default(TTree);
             int minNumberOfLeaves = int.MaxValue;
             for (int probe = 0; probe < this.NumberOfTreeProbes; probe++)
             {
-                T tree = this.InitDecisionTree();
+                TTree tree = this.InitDecisionTree();
                 double error = tree.Learn(data, attributes).Error;
                 int numOfLeaves = DecisionTreeHelper.CountLeaves(tree.Root);
 
@@ -196,7 +196,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
             return votes.Count > 0 ? votes.FindMaxValueKey() : Classifier.UnclassifiedOutput;
         }
 
-        protected void AddTree(T tree, double vote)
+        protected void AddTree(TTree tree, double vote)
         {
             this.AddClassfier((IClassificationModel)tree, vote);
         }

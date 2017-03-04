@@ -60,6 +60,8 @@ namespace NRough.Doc
         : AssemblyTreeStringFormatter
     {
         public bool IncludeStyle { get; set; }
+        public string Header { get; set; }
+        public string Footer { get; set; }
         private AssemblyTreeNodeFormatter NodeFormatter { get; set; }
         
         public LatexForestAssemblyTreeFormatter()
@@ -68,6 +70,8 @@ namespace NRough.Doc
             IncludeStyle = false;
             NodeFormatter = new AssemblyTreeNodeFormatter();
             NodeFormatter.EscapeCharTable = EscapeCharTable();
+            Header = DefaultHeader();
+            Footer = DefaultFooter();
         }
 
         public LatexForestAssemblyTreeFormatter(bool includeStyle)
@@ -91,7 +95,9 @@ namespace NRough.Doc
                 return String.Empty;            
 
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine(Header);
             Build(result.Root, 0, sb);
+            sb.AppendLine(Footer);
             return sb.ToString();
         }        
 
@@ -168,6 +174,17 @@ namespace NRough.Doc
             result.Add(">", "$\\rangle$");
 
             return result;
-        }        
+        }
+
+        private string DefaultHeader()
+        {
+            return @"\begin{forest}
+for tree = {folder,grow'=0,fit=band,font=\scriptsize,inner ysep=0.5pt}";
+        }
+
+        private string DefaultFooter()
+        {
+            return @"\end{forest}";
+        }
     }
 }

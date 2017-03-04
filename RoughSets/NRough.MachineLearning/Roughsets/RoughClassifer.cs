@@ -11,10 +11,12 @@ using NRough.Core;
 using NRough.MachineLearning.Classification;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Roughsets
 {
     [Serializable]
+    [AssemblyTreeVisible(false)]
     public class RoughClassifier
     {
         #region Members

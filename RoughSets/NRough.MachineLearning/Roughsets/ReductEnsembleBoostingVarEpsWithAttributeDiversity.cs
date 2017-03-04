@@ -2,9 +2,11 @@
 using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
+using NRough.Doc;
 
 namespace NRough.MachineLearning.Roughsets
 {
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingVarEpsWithAttributeDiversityGenerator : ReductEnsembleBoostingVarEpsGenerator
     {
         public ReductEnsembleBoostingVarEpsWithAttributeDiversityGenerator()
@@ -24,6 +26,7 @@ namespace NRough.MachineLearning.Roughsets
         }
     }
 
+    [AssemblyTreeVisible(false)]
     public class ReductEnsembleBoostingVarEpsWithAttributeDiversityFactory : IReductFactory
     {
         public virtual string FactoryKey

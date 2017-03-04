@@ -135,6 +135,10 @@
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NRough.Doc\NRough.Doc.csproj">
+      <Project>{58534579-7D62-4F0C-8BBF-E3E903E90E4E}</Project>
+      <Name>NRough.Doc</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

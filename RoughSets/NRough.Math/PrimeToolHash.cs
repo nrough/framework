@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Doc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace NRough.Math
     /// <remarks>
     /// http://www.dotnetperls.com/prime
     /// </remarks>
+    [AssemblyTreeVisible(false)]
     public static class PrimeToolHash
     {
         public static int[] primes;

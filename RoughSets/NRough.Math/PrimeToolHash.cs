@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NRough.Core
+namespace NRough.Math
 {
     /// <summary>
     /// 

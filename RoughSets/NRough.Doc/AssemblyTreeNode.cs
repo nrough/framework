@@ -115,10 +115,7 @@ namespace NRough.Doc
 
         public AssemblyTypeTreeNode(string name, Type type)
             : base(name)
-        {
-            if (name == "OnTrainingDataSubmission")
-                Debugger.Break();
-
+        {            
             Type = type;
         }        
     }

@@ -98,10 +98,7 @@ namespace NRough.Doc
         private void Build(IAssemblyTreeNode node, int currentLevel, StringBuilder sb)
         {
             if (node == null) throw new ArgumentNullException("node");
-            if (sb == null) throw new ArgumentNullException("sb");
-
-            if (node.Name == "GenericParsing")
-                Debugger.Break();
+            if (sb == null) throw new ArgumentNullException("sb");            
 
             if (node != null 
                 && (node.NodeType == AssemblyTreeNodeType.Folder 
@@ -137,6 +134,7 @@ namespace NRough.Doc
                     case AssemblyTreeNodeType.Interface: sb.Append(", interface"); break;
                     case AssemblyTreeNodeType.Delegate: sb.Append(", delegate"); break;
                     case AssemblyTreeNodeType.Namespace: sb.Append(", namespace"); break;
+                    case AssemblyTreeNodeType.Folder: sb.Append(", fldr"); break;
 
                     default:
                         //do nothing

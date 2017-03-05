@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -120,7 +119,6 @@ namespace NRough.Doc
                     return;
             }
             
-
             sb.Append(new string(' ', this.Indent * currentLevel));
             sb.Append("[ ");
 
@@ -132,20 +130,23 @@ namespace NRough.Doc
 
             if (IncludeStyle)
             {
-                switch (node.NodeType)
-                {
-                    case AssemblyTreeNodeType.Assembly: sb.Append(", assembly"); break;
-                    case AssemblyTreeNodeType.Class: sb.Append(", class"); break;
-                    case AssemblyTreeNodeType.Enum: sb.Append(", enum"); break;
-                    case AssemblyTreeNodeType.Interface: sb.Append(", interface"); break;
-                    case AssemblyTreeNodeType.Delegate: sb.Append(", delegate"); break;
-                    case AssemblyTreeNodeType.Namespace: sb.Append(", namespace"); break;
-                    case AssemblyTreeNodeType.Folder: sb.Append(", fldr"); break;
+                if(node.IsRoot)
+                    sb.Append(", root");
+                else
+                    switch (node.NodeType)
+                    {
+                        case AssemblyTreeNodeType.Assembly: sb.Append(", assembly"); break;
+                        case AssemblyTreeNodeType.Class: sb.Append(", class"); break;
+                        case AssemblyTreeNodeType.Enum: sb.Append(", enum"); break;
+                        case AssemblyTreeNodeType.Interface: sb.Append(", interface"); break;
+                        case AssemblyTreeNodeType.Delegate: sb.Append(", delegate"); break;
+                        case AssemblyTreeNodeType.Namespace: sb.Append(", namespace"); break;
+                        case AssemblyTreeNodeType.Folder: sb.Append(", fldr"); break;
 
-                    default:
-                        //do nothing
-                        break;
-                }
+                        default:
+                            //do nothing
+                            break;
+                    }
             }
 
             if (node.Children != null)

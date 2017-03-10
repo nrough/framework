@@ -19,22 +19,22 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class DecisionTreeReductCompare
-    {
-        [Test, Repeat(1)]                
-        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+    {        
+        [Test, Repeat(1)]        
+        //[TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\spect.train", @"Data\spect.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        //[TestCase(@"Data\dna.train", @"Data\dna.test", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\spect.train", @"Data\spect.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", FileFormat.Rses1, ReductFactoryKeyHelper.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights)]
-        public void ErrorImpurityTest(string trainFile, string testFile, DataFormat fileFormat, string reductFactoryKey)
+        //[TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights)]        
+        public void ErrorImpurityTest(string trainFile, string testFile, DataFormat fileFormat, string reductFactoryKey)                
         {
             DataStore data = DataStore.Load(trainFile, fileFormat);
             foreach (var attribute in data.DataStoreInfo.Attributes) attribute.IsNumeric = false;

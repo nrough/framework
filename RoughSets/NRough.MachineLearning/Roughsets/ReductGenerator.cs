@@ -34,7 +34,7 @@ namespace NRough.MachineLearning.Roughsets
         public virtual DataStore DecisionTable { get; set; }
         public virtual double Epsilon { get; set; }
         public virtual int ReductionStep { get; set; }
-
+        
         public virtual int[][] FieldGroups
         {
             get { return this.fieldGroups; }
@@ -86,6 +86,8 @@ namespace NRough.MachineLearning.Roughsets
             get { return timer.ElapsedMilliseconds; }
         }
 
+        protected bool IsComputed { get; set; }
+
         #endregion Properties
 
         #region Constructors
@@ -113,6 +115,8 @@ namespace NRough.MachineLearning.Roughsets
             timer.Start();
             this.Generate();
             timer.Stop();
+
+            IsComputed = true;
         }
 
         protected virtual IReductStore CreateReductStore(int initialSize = 0)
@@ -122,6 +126,9 @@ namespace NRough.MachineLearning.Roughsets
 
         public virtual IReductStoreCollection GetReductStoreCollection(int numberOfEnsembles = Int32.MaxValue)
         {
+            if (!IsComputed)
+                this.Run();
+
             ReductStoreCollection reductStoreCollection = new ReductStoreCollection(1);
             reductStoreCollection.AddStore(this.ReductPool);
             return reductStoreCollection;

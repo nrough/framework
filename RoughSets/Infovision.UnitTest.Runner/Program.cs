@@ -24,8 +24,8 @@ namespace NRough.UnitTest.Runner
         {
             ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
 
-            Test_CV(25);
-            Test_Benchmark(25);
+            //Test_CV(25);
+            Test_Benchmark2(20);
                                    
             //ProcessResultFiles();
         }
@@ -53,6 +53,34 @@ namespace NRough.UnitTest.Runner
                         reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
                         
                         test.ErrorImpurityTest(trainFile, testFile, fileFormat, reductFactoryKey);
+                    }
+                }
+            }
+        }
+
+        public static void Test_Benchmark2(int tests)
+        {
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
+            string trainFile, testFile, reductFactoryKey;
+            DataFormat fileFormat;
+
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeBenchmarkSplittedData");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
+
+            using (var cc = new ConsoleCopy("mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
+            {
+                Console.WriteLine(ClassificationResult.TableHeader());
+
+                for (int i = 0; i < tests; i++)
+                {
+                    foreach (var testCase in testCases)
+                    {
+                        trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
+                        fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
+                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
+
+                        test.DecisionTreeBenchmarkSplittedData(trainFile, testFile, fileFormat, reductFactoryKey);
                     }
                 }
             }

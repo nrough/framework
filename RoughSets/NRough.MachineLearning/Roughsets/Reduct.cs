@@ -240,21 +240,23 @@ namespace NRough.MachineLearning.Roughsets
         {
             if (this.IsException == false)
             {
-                return String.Format(                    
-                    "[Id:{0}] {1} (eps:{2:0.00})",
+                return String.Format(
+                    "[Id:{0}] {1} (eps:{2:0.00}, rules:{3})",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
-                    this.Epsilon                    
+                    this.Epsilon,
+                    (eqClassMap == null) ? "??" : eqClassMap.Count.ToString()
                     );
             }
             else
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(                    
-                    "[Id:{0}] {1} (eps:{2:0.00}) ",
+                    "[Id:{0}] {1} (eps:{2:0.00}, rules:{3}) ",
                     this.Id,
                     this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
-                    this.Epsilon                    
+                    this.Epsilon,
+                    (eqClassMap == null) ? "??" : eqClassMap.Count.ToString()
                     );
 
                 sb.Append("[");

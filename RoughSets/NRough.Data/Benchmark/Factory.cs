@@ -25,7 +25,7 @@ namespace NRough.Data.Benchmark
 
         private Factory()
         {
-        }
+        }        
 
         public static DataStore Dna()
         {

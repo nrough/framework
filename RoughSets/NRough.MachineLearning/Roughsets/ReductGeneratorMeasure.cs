@@ -100,8 +100,7 @@ namespace NRough.MachineLearning.Roughsets
                 MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
-            IReductStore reductStore = this.CreateReductStore(permutationList.Count);
-            //foreach (Permutation permutation in permutationList)
+            IReductStore reductStore = this.CreateReductStore(permutationList.Count);            
             Parallel.ForEach(permutationList, options, permutation =>
             {
                 IReduct reduct = this.CalculateReduct(permutation.ToArray(), reductStore, this.UseCache, this.Epsilon);

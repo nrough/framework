@@ -134,7 +134,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             CrossValidation cv = new CrossValidation(data, folds);
 
             var permutations = new PermutationCollection(
-                2, data.SelectAttributeIds(a => a.IsStandard).ToArray());
+                1, data.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             var reductFilter = new ReductFeatureSelectionFilter()
             {
@@ -179,7 +179,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
            
             var permutations = new PermutationCollection(
-                2, data.SelectAttributeIds(a => a.IsStandard).ToArray());            
+                1, data.SelectAttributeIds(a => a.IsStandard).ToArray());            
 
             for (double eps = 0.0; eps <= 0.5; eps += 0.01)
             {                

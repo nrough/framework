@@ -28,7 +28,7 @@ namespace NRough.UnitTest.Runner
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames = fileNames.Union(Test_Benchmark2(1, true));
+            fileNames = fileNames.Union(Test_Benchmark2(2, true));
             fileNames = fileNames.Union(Test_CV2(2, true));
             
             //ProcessResultFiles(fileNames);

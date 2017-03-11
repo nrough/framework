@@ -27,11 +27,11 @@ namespace NRough.MachineLearning.Permutations
             this.fieldIdsSorted = new int[this.Data.DataStoreInfo.CountAttributes(a => a.IsStandard)];
             double[] fieldQualityOrig = new double[fieldIdsSorted.Length];
             int c = 0;
-            foreach (var field in this.Data.DataStoreInfo.SelectAttributes(a => a.IsStandard))
+            foreach (var field in this.Data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
             {
-                fieldIdsSorted[c] = field.Id;
+                fieldIdsSorted[c] = field;
                 fieldQualityOrig[c] = InformationMeasureWeights.Instance.Calc(
-                    new ReductWeights(this.Data, new int[] { field.Id }, this.Epsilon, this.WeightGenerator.Weights));
+                    new ReductWeights(this.Data, new int[] { field }, this.Epsilon, this.WeightGenerator.Weights));
                 c++;
             }
 

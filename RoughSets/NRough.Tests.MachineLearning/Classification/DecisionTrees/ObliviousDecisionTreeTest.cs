@@ -17,10 +17,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
     [TestFixture]
     public class ObliviousDecisionTreeTest
     {
-        public static void PrintTree(IModel model)
+        public static void PrintTree(IModel model, DataStore data)
         {
             IDecisionTree tree = (IDecisionTree)model;
-            Console.WriteLine(DecisionTreeFormatter.Construct(tree));
+            Console.WriteLine(DecisionTreeFormatter.Construct(tree.Root, data.DataStoreInfo));
             Console.WriteLine("Number of rules: {0}", DecisionTreeMetric.GetNumberOfRules(tree));
         }
 

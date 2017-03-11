@@ -109,7 +109,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 
                 for (int i = 0; i < instances.Length; i++)
                     this.ComputePrediction(node, instances[i]);
-            }
+            }            
 
             return changed;
         }               
@@ -185,12 +185,13 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
         private double SingleRun()
         {            
             List<IDecisionTreeNode> nodeList = new List<IDecisionTreeNode>();
-            TreeNodeTraversal.TraversePostOrder(this.DecisionTree.Root, node => nodeList.Add(node));            
+            TreeNodeTraversal.TraverseLevelOrder(this.DecisionTree.Root, node => nodeList.Add(node));
             foreach (IDecisionTreeNode node in nodeList)
             {
                 if (node.IsLeaf)
                     continue;
-                this.TryToPrune(node);                
+
+                this.TryToPrune(node);
             }
 
             return this.ComputeError();

@@ -444,7 +444,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
             double maxGain = Double.NegativeInfinity;
             int maxIndex = -1;
             for (int i = 0; i < scores.Length; i++)
-            {
+            {                
                 //select best gain among attributes with more than a single value
                 if (maxGain < scores[i].Gain 
                     && scores[i].EquivalenceClassCollection.Count > 1)

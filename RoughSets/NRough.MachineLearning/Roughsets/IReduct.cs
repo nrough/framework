@@ -11,7 +11,7 @@ namespace NRough.MachineLearning.Roughsets
         bool IsException { get; }
         
         //TODO Move to Bireduct Interface? (Exceptions?)
-        //TODO This should be based on Eqialence Class Collection
+        //TODO This should be based on Equivalence Class Collection
         HashSet<int> SupportedObjects { get; }
         
         double[] Weights { get; }

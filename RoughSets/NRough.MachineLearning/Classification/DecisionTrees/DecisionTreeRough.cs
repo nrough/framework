@@ -14,15 +14,15 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         public DecisionTreeRough()
             : base()
         {
-            this.ImpurityFunction = ImpurityMeasure.Majority;
-            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority2;
+            //this.ImpurityNormalize = ImpurityMeasure.SplitInformationNormalize;
         }
 
         public DecisionTreeRough(string modelName)
             : base(modelName)
         {
-            this.ImpurityFunction = ImpurityMeasure.Majority;
-            this.ImpurityNormalize = ImpurityMeasure.DummyNormalize;
+            this.ImpurityFunction = ImpurityMeasure.Majority2;
+            //this.ImpurityNormalize = ImpurityMeasure.SplitInformationNormalize;
         }               
     }
 }

@@ -837,8 +837,8 @@ namespace NRough.MachineLearning.Classification
                     {                        
                         ds = row.Field<string>("ds"),
                         model = row.Field<string>("model"),                        
-                        eps = row.Field<double>("eps"),
-                        pruning = row.Field<string>("pruning")
+                        eps = row.Field<double>("eps")
+                        //pruning = row.Field<string>("pruning")
                         //ens = row.Field<int>("ens")                        
                     } into grp
                     select new
@@ -846,7 +846,7 @@ namespace NRough.MachineLearning.Classification
                         ds = grp.Key.ds,
                         model = grp.Key.model,                        
                         eps = grp.Key.eps,
-                        pruning = grp.Key.pruning,
+                        //pruning = grp.Key.pruning,
                         //ens = grp.Key.ens,
                         
                         field_min = grp.Min(x => x.Field<double>(columnName)),

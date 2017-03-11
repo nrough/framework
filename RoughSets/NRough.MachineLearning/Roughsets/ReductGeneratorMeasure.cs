@@ -7,6 +7,7 @@ using NRough.Core;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
+using System.Collections.Generic;
 
 namespace NRough.MachineLearning.Roughsets
 {
@@ -42,6 +43,7 @@ namespace NRough.MachineLearning.Roughsets
         }
 
         public bool UsePerformanceImprovements { get; set; }
+        public bool Greedy { get; set; }
 
         #endregion Properties
 
@@ -51,7 +53,7 @@ namespace NRough.MachineLearning.Roughsets
             : base()
         {
             this.dataSetQuality = Double.MinValue;
-            this.UsePerformanceImprovements = true;
+            this.UsePerformanceImprovements = false;
         }
 
         #endregion Constructors
@@ -140,6 +142,13 @@ namespace NRough.MachineLearning.Roughsets
         {
             IReduct reduct = null;
 
+            if (Greedy)
+            {
+                reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
+                GreedyReach(reduct, permutation, reductStore, useCache);
+                return reduct;
+            }
+
             if (this.UsePerformanceImprovements)
             {
                 if (this.initialEqClasses != null
@@ -166,7 +175,8 @@ namespace NRough.MachineLearning.Roughsets
                 else
                 {
                     reduct = this.CreateReductObject(permutation, epsilon, this.GetNextReductId().ToString());
-                    this.Reduce(reduct, permutation, reductStore, useCache);
+                    //this.Reduce(reduct, permutation, reductStore, useCache);
+                    this.ReduceForward(reduct, permutation, reductStore, useCache);
                 }
             }
 
@@ -182,6 +192,39 @@ namespace NRough.MachineLearning.Roughsets
             this.ReduceForward(reduct, attributes, null, false);
 
             return reduct;
+        }
+
+        protected virtual void GreedyReach(IReduct reduct, int[] attributes, IReductStore reductStore, bool useCache)
+        {
+            if (reduct == null) throw new ArgumentNullException("reduct");
+            if (attributes == null) throw new ArgumentNullException("reduct");
+
+            if (attributes.Length == 0)
+                return;
+
+            var attrTmp = new HashSet<int>(attributes);
+            do
+            {
+                int bestAttribute = -1;
+                double bestValue = -1;
+                foreach (int attr in attrTmp)
+                {
+                    var value = InformationMeasureMajority.Instance.Calc(
+                        EquivalenceClassCollection.Create(
+                            reduct.Attributes.Union(new int[] { attr }).ToArray(),
+                            reduct.DataStore));
+
+                    if (value > bestValue)
+                    {
+                        bestValue = value;
+                        bestAttribute = attr;
+                    }
+                }                
+
+                reduct.AddAttribute(bestAttribute);
+                attrTmp.Remove(bestAttribute);
+            }
+            while (!IsReduct(reduct, reductStore, useCache) || attrTmp.Count == 0);
         }
 
         protected virtual void Reach(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
@@ -209,23 +252,13 @@ namespace NRough.MachineLearning.Roughsets
         }
 
         protected virtual void ReduceForward(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)
-        {
-            //Console.WriteLine(permutation.ToStr(' '));
-
+        {            
             for (int i = 0; i < permutation.Length; i++)
-            {
-                //Console.WriteLine("Try to remove {0}", permutation[i]);
+            {                
                 if (reduct.TryRemoveAttribute(permutation[i]))
                 {
                     if (!this.IsReduct(reduct, reductStore, useCache))
-                    {
                         reduct.AddAttribute(permutation[i]);
-                        //Console.WriteLine("Failed to remove {0}", permutation[i]);
-                    }
-                    //else
-                    //{
-                    //    Console.WriteLine("Success to remove {0}", permutation[i]);
-                    //}
                 }
             }
         }

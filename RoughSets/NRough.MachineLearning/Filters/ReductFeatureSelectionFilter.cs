@@ -22,10 +22,12 @@ namespace NRough.Data.Filters
         #region Properties
 
         public string ReductFactoryKey { get; set; } = ReductTypes.ApproximateReductMajorityWeights;
-        public double Epsilon { get; set; } = 0.03;
-        public int NumberOfReductsToTest { get; set; } = 100;        
+        public double Epsilon { get; set; } = 0.0;
+        public int NumberOfReductsToTest { get; set; } = 1;        
         public IComparer<IReduct> ReductComparer { get; set; } = ReductRuleNumberComparer.Default;
         public bool UseCache { get; set; } = true;
+        public bool Greedy { get; set; }
+        public PermutationCollection Permutations { get; set; }
 
         #endregion
 
@@ -64,26 +66,43 @@ namespace NRough.Data.Filters
 
                 if (this.Epsilon >= 0.0)
                 {
-                    PermutationCollection permutations;
-                    if (!permutationCache.TryGetValue(GetAttributePermutationCacheKey(data), out permutations))
+                    PermutationCollection localPermutations;
+                    if (Permutations == null)
                     {
-                        permutations = new PermutationCollection(NumberOfReductsToTest, data.GetStandardFields());
-                        permutationCache.Add(GetAttributePermutationCacheKey(data), permutations);
-                        TracePermutations(permutations, false);
+                        if (!permutationCache.TryGetValue(GetAttributePermutationCacheKey(data), out localPermutations))
+                        {
+                            localPermutations = new PermutationCollection(NumberOfReductsToTest, data.GetStandardFields());
+                            permutationCache.Add(GetAttributePermutationCacheKey(data), localPermutations);
+                            TracePermutations(localPermutations, false);
+                        }
+                        else
+                        {
+                            TracePermutations(localPermutations, true);
+                        }
                     }
                     else
                     {
-                        TracePermutations(permutations, true);
-                    }                                         
+                        localPermutations = Permutations;
+                    }
 
                     Args parms = new Args(4);
                     parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
                     parms.SetParameter<string>(ReductFactoryOptions.ReductType, ReductFactoryKey);
                     parms.SetParameter<double>(ReductFactoryOptions.Epsilon, Epsilon);
                     parms.SetParameter<PermutationCollection>(
-                        ReductFactoryOptions.PermutationCollection, permutations);                    
+                        ReductFactoryOptions.PermutationCollection, localPermutations);                    
 
                     IReductGenerator generator = ReductFactory.GetReductGenerator(parms);
+                    if (Greedy)
+                    {
+                        var rGen = generator as ReductGeneratorMeasure;
+                        if (rGen != null)
+                        {
+                            rGen.UsePerformanceImprovements = false;
+                            rGen.Greedy = true;
+                        }
+                    }
+
                     generator.Run();
 
                     var reducts = generator.GetReducts();

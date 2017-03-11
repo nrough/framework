@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.MachineLearning.Roughsets;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -106,6 +107,14 @@ namespace NRough.MachineLearning
                 }                
             }
                        
+            return result;
+        }
+
+        public static double Majority2(EquivalenceClassCollection equivalenceClasses)
+        {
+            var result = InformationMeasureMajority.Instance.Calc(equivalenceClasses);
+            //var result2 = Majority(equivalenceClasses);
+            //var result3 = InformationMeasureWeights.Instance.Calc(equivalenceClasses);
             return 1.0 - result;
         }
 

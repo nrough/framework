@@ -11,7 +11,7 @@ using NRough.Doc;
 namespace NRough.MachineLearning.Evaluation
 {
     [AssemblyTreeVisible(false)]
-    public delegate void PostLearingMethod(IModel model);
+    public delegate void PostLearingMethod(IModel model, DataStore trainingData);
 
     [Serializable]
     public class CrossValidation
@@ -106,7 +106,7 @@ namespace NRough.MachineLearning.Evaluation
             ClassificationResult result = model.Learn(filteredTrainDs, localAttributes.ToArray());
 
             if (this.PostLearningMethod != null)
-                this.PostLearningMethod(model);
+                this.PostLearningMethod(model, filteredTrainDs);
 
             return Classifier.Default.Classify(model, ApplyFilters(testDs));
         }

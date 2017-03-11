@@ -22,12 +22,16 @@ namespace NRough.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
-            ClassificationResult.OutputColumns = @"ds;model;t;eps;ens;acc;attr;numrul;dthm;dtha;precisionmicro;precisionmacro;recallmicro;recallmacro;f1scoremicro;f1scoremacro";
+            ClassificationResult.OutputColumns = @"ds;model;acc;attr;numrul;dthm;dtha";
 
-            //Test_CV(25);
-            Test_Benchmark2(20);
-                                   
-            //ProcessResultFiles();
+            IEnumerable<string> fileNames = new List<string>(new string[] {
+            //    @"mylogfile_20170311102703.txt"
+            });
+
+            fileNames = fileNames.Union(Test_CV2(2, true));
+            fileNames = fileNames.Union(Test_Benchmark2(1, true));
+
+            //ProcessResultFiles(fileNames);
         }
 
         public static void Test_Benchmark(int tests)
@@ -58,32 +62,38 @@ namespace NRough.UnitTest.Runner
             }
         }
 
-        public static void Test_Benchmark2(int tests)
+        public static IEnumerable<string> Test_Benchmark2(int tests, bool processResultFile)
         {
+            List<string> resultFiles = new List<string>();
+
             RoughDecisionTreeTest test = new RoughDecisionTreeTest();
-            string trainFile, testFile, reductFactoryKey;
-            DataFormat fileFormat;
-
             MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeBenchmarkSplittedData");
-            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
-
-            using (var cc = new ConsoleCopy("mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt"))
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);            
+            foreach (var testCase in testCases)
             {
-                Console.WriteLine(ClassificationResult.TableHeader());
-
-                for (int i = 0; i < tests; i++)
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
                 {
-                    foreach (var testCase in testCases)
-                    {
-                        trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
-                        testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
-                        fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
-                        reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {                    
+                        var trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
+                        var reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
 
                         test.DecisionTreeBenchmarkSplittedData(trainFile, testFile, fileFormat, reductFactoryKey);
                     }
+                    resultFiles.Add(fileName);
+                }
+
+                if (processResultFile)
+                {
+                    ProcessResultFiles(new string[] { fileName });
                 }
             }
+            
+            return resultFiles;
         }
 
         public static void Test_CV(int tests)
@@ -112,48 +122,47 @@ namespace NRough.UnitTest.Runner
                     }
                 }
             }
-        }       
+        }
 
-        public static void ProcessResultFiles()
+        public static IEnumerable<string> Test_CV2(int tests, bool processResultFile)
         {
-            /*
-            List<string> fileNames = new List<string>(new string[] {
-                @"d:\temp\1\mylogfile_CV_20161128064439.txt",
-                @"d:\temp\1\mylogfile_CV_20161130122938.txt",
-                @"d:\temp\1\mylogfile_20161130004421.txt",
-                @"d:\temp\1\mylogfile_20161126193020.txt",
-                @"d:\temp\1\mylogfile_CV_20161125183714.txt",                
-                @"d:\temp\1\mylogfile_CV_20161122000641.txt",
-                @"d:\temp\1\mylogfile_20161121203530.txt",
-                @"d:\temp\1\mylogfile_CV_20161121152623.txt",
-                @"d:\temp\1\mylogfile_20161121110634.txt",
-                @"d:\temp\1\mylogfile_CV_20161121080710.txt",
-                @"d:\temp\1\mylogfile_20161121001141.txt",
-                @"d:\temp\1\mylogfile_CV_20161120211514.txt",
-                @"d:\temp\1\mylogfile_20161120104404.txt",
-                @"d:\temp\1\mylogfile_CV_20161120074024.txt",
-                @"d:\temp\1\mylogfile_CV_20161119200826.txt",
-                @"d:\temp\1\mylogfile_20161119231109.txt",
-                @"d:\temp\1\mylogfile_CV_20161207185711.txt",   // vehicle
-                @"d:\temp\1\mylogfile_CV_20161207213043.txt",   // vehicle
-                @"d:\temp\1\mylogfile_CV_20161207231310.txt",   // german credit
-                @"d:\temp\1\mylogfile_CV_20161208232856.txt",   // dermatology, dermatology_no_age, hypothyroid
-                @"d:\temp\1\mylogfile_20161209105906.txt",      // vowel disc
-                @"d:\temp\1\mylogfile_CV_20161209225000.txt"    // lymphography
-                });
-            */
+            List<string> resultFiles = new List<string>();
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();            
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeWithCV");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);                            
+            foreach (var testCase in testCases)
+            {                
+                string fileName = "mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
+                {
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {
+                        var dataFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[1];
+                        var reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[2];
+                        var folds = (int)((TestCaseAttribute)testCase).Arguments[3];
 
-            List<string> fileNames = new List<string>(new string[] {
-                //@"d:\temp\1\mylogfile_CV_20161224012153.txt",
-                //@"d:\temp\1\mylogfile_20161225080854.txt",
-                @"d:\temp\1\mylogfile_CV_20161231160308.txt" //nurse
-            });
+                        test.DecisionTreeWithCV(dataFile, fileFormat, reductFactoryKey, folds);
+                    }
+                    resultFiles.Add(fileName);                    
+                }
 
+                if (processResultFile)
+                    ProcessResultFiles(new string[] { fileName });
+            }
+            
+            return resultFiles;
+        }
+
+        public static void ProcessResultFiles(IEnumerable<string> fileNames)
+        {                       
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');
 
             if (dtc.Columns.Contains("Column1"))
                 dtc.Columns.Remove("Column1");
 
+            /*
             dtc.Columns.Add("pruning", typeof(string));
             foreach (DataRow row in dtc.Rows)
             {
@@ -169,13 +178,14 @@ namespace NRough.UnitTest.Runner
                     row["model"] = model.Substring(0, model.Length - 4);
                 }
             }
+            */
 
-            dtc.Dumb(@"D:\temp\1\results_all.csv", ";", true);
+            dtc.Dumb(@"results_all.csv", ";", true);
 
             //dt = ClassificationResult.AverageResults(dt);
-            //ClassificationResult.AverageResults(dtc).Dumb(@"D:\temp\1\results_avg.csv", ";", true);
+            //ClassificationResult.AverageResults(dtc).Dumb(@"results_avg.csv", ";", true);
 
-            var dt_acc = ClassificationResult.AggregateResults(dtc, "acc").Dumb(@"D:\temp\1\acc.csv", ";", true);
+            var dt_acc = ClassificationResult.AggregateResults(dtc, "acc").Dumb(@"acc.csv", ";", true);
             DataView view = new DataView(dt_acc);
             DataTable distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -184,12 +194,12 @@ namespace NRough.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_acc_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_acc", row["ds"].ToString()));
-                RProxy.PlotResult(dt_acc_ds, "eps", "acc_avg", "model", "pruning", "acc_max", "acc_min", "Accuracy: "+ row["ds"].ToString());
+                RProxy.Pdf(String.Format(@"{0}_acc", row["ds"].ToString()));
+                RProxy.PlotResultSimple(dt_acc_ds, "eps", "acc_avg", "model", "acc_max", "acc_min", "Accuracy: "+ row["ds"].ToString());
                 RProxy.DevOff();
             }
 
-            var dt_attr = ClassificationResult.AggregateResults(dtc, "attr").Dumb(@"D:\temp\1\attr.csv", ";", true);
+            var dt_attr = ClassificationResult.AggregateResults(dtc, "attr").Dumb(@"attr.csv", ";", true);
             view = new DataView(dt_attr);
             distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -198,12 +208,12 @@ namespace NRough.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_attr_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_attr", row["ds"].ToString()));
-                RProxy.PlotResult(dt_attr_ds, "eps", "attr_avg", "model", "pruning", "attr_max", "attr_min", "#Distinct attributes: " + row["ds"].ToString());
+                RProxy.Pdf(String.Format(@"{0}_attr", row["ds"].ToString()));
+                RProxy.PlotResultSimple(dt_attr_ds, "eps", "attr_avg", "model", "attr_max", "attr_min", "#Distinct attributes: " + row["ds"].ToString());
                 RProxy.DevOff();
             }
 
-            var dt_numrul = ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"D:\temp\1\numrul.csv", ";", true);
+            var dt_numrul = ClassificationResult.AggregateResults(dtc, "numrul").Dumb(@"numrul.csv", ";", true);
             view = new DataView(dt_numrul);
             distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -212,12 +222,12 @@ namespace NRough.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_attr_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_numrul", row["ds"].ToString()));
-                RProxy.PlotResult(dt_attr_ds, "eps", "numrul_avg", "model", "pruning", "numrul_max", "numrul_min", "#Rules: " + row["ds"].ToString());
+                RProxy.Pdf(String.Format(@"{0}_numrul", row["ds"].ToString()));
+                RProxy.PlotResultSimple(dt_attr_ds, "eps", "numrul_avg", "model", "numrul_max", "numrul_min", "#Rules: " + row["ds"].ToString());
                 RProxy.DevOff();
             }
 
-            var dt_dthm = ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"D:\temp\1\dthm.csv", ";", true);
+            var dt_dthm = ClassificationResult.AggregateResults(dtc, "dthm").Dumb(@"dthm.csv", ";", true);
             view = new DataView(dt_dthm);
             distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -226,12 +236,12 @@ namespace NRough.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_attr_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_dthm", row["ds"].ToString()));
-                RProxy.PlotResult(dt_attr_ds, "eps", "dthm_avg", "model", "pruning", "dthm_max", "dthm_min", "Max rule length: " + row["ds"].ToString());
+                RProxy.Pdf(String.Format(@"{0}_dthm", row["ds"].ToString()));
+                RProxy.PlotResultSimple(dt_attr_ds, "eps", "dthm_avg", "model", "dthm_max", "dthm_min", "Max rule length: " + row["ds"].ToString());
                 RProxy.DevOff();
             }
 
-            var dt_dtha = ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"D:\temp\1\dtha.csv", ";", true);
+            var dt_dtha = ClassificationResult.AggregateResults(dtc, "dtha").Dumb(@"dtha.csv", ";", true);
             view = new DataView(dt_dtha);
             distinctValues = view.ToTable(true, "ds");
             foreach (DataRow row in distinctValues.Rows)
@@ -240,8 +250,8 @@ namespace NRough.UnitTest.Runner
                 view.RowFilter = String.Format("ds = '{0}'", row["ds"].ToString());
                 DataTable dt_attr_ds = view.ToTable();
 
-                RProxy.Pdf(String.Format(@"D:\\temp\\1\\{0}_dtha", row["ds"].ToString()));
-                RProxy.PlotResult(dt_attr_ds, "eps", "dtha_avg", "model", "pruning", "dtha_max", "dtha_min", "Avg rule length attributes: " + row["ds"].ToString());
+                RProxy.Pdf(String.Format(@"{0}_dtha", row["ds"].ToString()));
+                RProxy.PlotResultSimple(dt_attr_ds, "eps", "dtha_avg", "model", "dtha_max", "dtha_min", "Avg rule length attributes: " + row["ds"].ToString());
                 RProxy.DevOff();
             }
 

@@ -674,26 +674,13 @@ namespace NRough.Data
         public static DataStore Load(string fileName, DataFormat fileFormat, DataStoreInfo referenceDataStoreInfo)
         {
             var fileReader = DataFileReader.Construct(fileFormat, fileName);
-            return fileReader.Read();
-
-            /*
             fileReader.ReferenceDataStoreInfo = referenceDataStoreInfo;
-            DataStore dataStore = DataStore.Load(fileReader);
-            return dataStore;
-            */
+            return Load(fileReader);
         }
 
         public static DataStore Load(IDataReader dataReader)
         {
-            return dataReader.Read();
-
-            /*
-            DataStoreInfo dataStoreInfo = dataReader.Analyze();
-            DataStore dataStore = new DataStore(dataStoreInfo);
-            dataStore.Name = dataReader.DataName;
-            dataReader.Load(dataStore, dataStoreInfo);
-            return dataStore;
-            */
+            return dataReader.Read();            
         }
 
         public static DataStore Load(string fileName, DataFormat fileFormat)

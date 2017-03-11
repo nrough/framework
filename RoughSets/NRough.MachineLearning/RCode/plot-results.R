@@ -60,10 +60,26 @@ plotresult <- function(
     return(p)
 }
 
-add_hline_to_plot <- function(p, dt, f) {
+add_hline_to_plot <- function(p, dt, f, groupby) {
     p <- p + geom_hline(data = dt, aes_string(yintercept = f))
     return(p)
 }
+
+plotresultsimple <- function(dt, xField, yField, groupBy, yMinField = "",
+    yMaxField = "", title = "", yLimitLow = 0, yLimitHigh = 1) {
+    p <- ggplot(data = dt, aes_string(x=xField, y=yField, group=groupBy, color=groupBy))
+    p <- p + expand_limits(y=yLimitLow)
+    p <- p + expand_limits(y=yLimitHigh)
+    if (yMinField != "" && yMaxField != "")
+        p <- p + geom_ribbon(aes_string(ymin=yMinField, ymax=yMaxField, fill=groupBy), alpha=0.2)
+    if (title != "")        
+        p <- p + ggtitle(title);    
+    p <- p + geom_line(size=.8)    
+    p <- p + theme_bw(base_size=20)
+    return(p)
+}
+
+
 
 
 

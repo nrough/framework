@@ -41,7 +41,8 @@ namespace NRough.MachineLearning.Classification
             Stopwatch s = new Stopwatch();
             s.Start();
 
-            ClassificationResult result = new ClassificationResult(testData, testData.DataStoreInfo.GetDecisionValues());            
+            ClassificationResult result = new ClassificationResult(
+                testData, testData.DataStoreInfo.GetDecisionValues());            
             model.SetClassificationResultParameters(result);                    
 
             ParallelOptions options = new ParallelOptions()

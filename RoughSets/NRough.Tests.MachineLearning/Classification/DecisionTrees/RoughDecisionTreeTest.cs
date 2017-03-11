@@ -134,13 +134,13 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             CrossValidation cv = new CrossValidation(data, folds);
 
             var permutations = new PermutationCollection(
-                1, data.SelectAttributeIds(a => a.IsStandard).ToArray());
+                20, data.SelectAttributeIds(a => a.IsStandard).ToArray());
 
             var reductFilter = new ReductFeatureSelectionFilter()
-            {
-                NumberOfReductsToTest = 1,
+            {                
                 ReductFactoryKey = reductFactoryKey,
-                Permutations = permutations
+                Permutations = permutations,
+                Greedy = true
             };
 
             cv.Filters.Add(reductFilter);
@@ -179,7 +179,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
            
             var permutations = new PermutationCollection(
-                1, data.SelectAttributeIds(a => a.IsStandard).ToArray());            
+                20, data.SelectAttributeIds(a => a.IsStandard).ToArray());            
 
             for (double eps = 0.0; eps <= 0.5; eps += 0.01)
             {                
@@ -211,8 +211,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             var rGen = reductGenerator as ReductGeneratorMeasure;
             if (rGen != null)
-            {
-                rGen.UsePerformanceImprovements = false;
+            {                
                 rGen.Greedy = true;
             }
 

@@ -22,7 +22,7 @@ namespace NRough.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
-            ClassificationResult.OutputColumns = @"ds;model;acc;attr;numrul;dthm;dtha";
+            ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
 
             IEnumerable<string> fileNames = new List<string>(new string[] {
             //    @"mylogfile_20170311102703.txt"

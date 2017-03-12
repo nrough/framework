@@ -8,6 +8,7 @@ using NRough.MachineLearning.Permutations;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace NRough.MachineLearning.Roughsets
 {
@@ -224,7 +225,8 @@ namespace NRough.MachineLearning.Roughsets
                 reduct.AddAttribute(bestAttribute);
                 attrTmp.Remove(bestAttribute);
             }
-            while (!IsReduct(reduct, reductStore, useCache) || attrTmp.Count == 0);
+            while (attrTmp.Count != 0 
+                && !IsReduct(reduct, reductStore, useCache));
         }
 
         protected virtual void Reach(IReduct reduct, int[] permutation, IReductStore reductStore, bool useCache)

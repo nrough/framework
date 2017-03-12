@@ -6,23 +6,25 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using NRough.Core.CollectionExtensions;
+using NRough.Data.Filters;
 
 namespace NRough.MachineLearning.Filters
 {
     [Serializable]
-    public class DiscretizeFilter : IFilter
+    public class DiscretizeFilter : FilterBase
     {        
         private object syncRoot = new object();
         private Dictionary<string, DataStore> cache;
         public DecisionTableDiscretizer TableDiscretizer { get; set; }       
 
         public DiscretizeFilter()
+            : base()
         {
             cache = new Dictionary<string, DataStore>();
             this.TableDiscretizer = null;
         }
 
-        public void Compute(DataStore data)
+        public override void Compute(DataStore data)
         {
             TraceData(data, true);
 
@@ -47,7 +49,7 @@ namespace NRough.MachineLearning.Filters
             }
         }
 
-        public DataStore Apply(DataStore data)
+        public override DataStore Apply(DataStore data)
         {
             TraceData(data, true);
 

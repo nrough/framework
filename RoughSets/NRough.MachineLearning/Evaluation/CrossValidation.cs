@@ -62,8 +62,8 @@ namespace NRough.MachineLearning.Evaluation
         private DataStore ComputeFilters(DataStore data)
         {
             var res = data;            
-            foreach (var filter in Filters)
-            {
+            foreach (var filter in Filters.Where(f => f.Enabled))
+            {                
                 filter.Compute(res);
                 res = filter.Apply(res);
             }
@@ -73,7 +73,7 @@ namespace NRough.MachineLearning.Evaluation
         private DataStore ApplyFilters(DataStore data)
         {
             var res = data;
-            foreach (var filter in Filters)
+            foreach (var filter in Filters.Where(f => f.Enabled))
                 res = filter.Apply(res);
             return res;
         }

@@ -385,14 +385,12 @@ namespace NRough.MachineLearning.Classification
         {
             int actualDecIdx = decisionValue2Index[actual];
             int predictionDecIdx = decisionValue2Index[prediction];
-
-            this.predictionResults[objectIdx] = prediction;
-
+            predictionResults[objectIdx] = prediction;
             lock (syncRoot)
-            {
+            {                
                 confusionTable[actualDecIdx][predictionDecIdx]++;
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
-                this.counter++;
+                counter++;
             }
         }
 

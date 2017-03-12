@@ -10,6 +10,7 @@ namespace NRough.Data.Filters
     {
         private IEnumerable<int> toKeep;
         public KeepColumns(IEnumerable<int> columnsToKeep)
+            : base()
         {
             this.toKeep = columnsToKeep.ToArray();
         }        

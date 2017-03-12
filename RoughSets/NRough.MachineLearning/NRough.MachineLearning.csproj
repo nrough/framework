@@ -149,6 +149,7 @@
     <Compile Include="Discretization\DiscretizeManual.cs" />
     <Compile Include="Filters\DiscretizeFilter.cs" />
     <Compile Include="Filters\ReductFeatureSelectionFilter.cs" />
+    <Compile Include="Filters\ReductFeatureSelectionFilter_Tmp.cs" />
     <Compile Include="MissingValues\ReplaceMissingValues.cs" />
     <Compile Include="IDistibutionSelectStrategy.cs" />
     <Compile Include="ILearner.cs" />

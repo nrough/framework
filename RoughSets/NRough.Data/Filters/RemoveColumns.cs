@@ -11,6 +11,7 @@ namespace NRough.Data.Filters
         private IEnumerable<int> toRemove;
 
         public RemoveColumns(IEnumerable<int> columnsToRemove)
+            : base()
         {
             if (columnsToRemove == null) throw new ArgumentNullException("columnsToKeep");
             toRemove = columnsToRemove.ToArray();

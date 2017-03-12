@@ -22,86 +22,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class RoughDecisionTreeTest
-    {
-        [Repeat(30)]
-        [TestCase(@"Data\german.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        public void DecisionTreeWithNewDiscretization(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
-        {
-            DataStore data = DataStore.Load(dataFile, fileFormat);
-            
-            var emptyDistribution = EquivalenceClassCollection
-                .Create(new int[] { }, data, data.Weights)
-                .DecisionDistribution;
-
-            CrossValidation cv = new CrossValidation(data, folds);
-            var discFilter = new DiscretizeFilter();
-
-            discFilter.TableDiscretizer =
-                new DecisionTableDiscretizer(
-                    new DiscretizeSupervisedBase()
-                    {
-                        NumberOfBuckets = 5,
-                        SortCuts = false
-                    })
-                {
-                    RemoveColumnAfterDiscretization = true,
-                    UpdateDataColumns = false,
-                    AddColumnsBasedOnCuts = true,
-                    UseBinaryCuts = true
-                };
-
-            var reductFilter = new ReductFeatureSelectionFilter() { NumberOfReductsToTest = 20 };
-            cv.Filters.Add(discFilter);
-            cv.Filters.Add(reductFilter);
-
-            double eps = -1.0;
-            reductFilter.Epsilon = eps;
-
-            ErrorImpurityTestIntPerReduct_CV(
-                cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
-
-            //ErrorImpurityTestIntPerReduct_CV(
-            //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
-
-            for (eps = 0.0; eps <= 1.0; eps += 0.01)
-            {
-                reductFilter.Epsilon = eps;
-
-                ErrorImpurityTestIntPerReduct_CV(cv, PruningType.None, reductFactoryKey, eps, emptyDistribution.Output);
-
-                //ErrorImpurityTestIntPerReduct_CV(
-                //    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, emptyDistribution.Output);
-            }
-        }
-
-        private void ErrorImpurityTestIntPerReduct_CV(
-            CrossValidation cv, PruningType pruningType, string redkey, double eps, long output)
-        {
-            DecisionTreeC45 treeC45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
-            treeC45.DefaultOutput = output;            
-
-            var treeC45Result = cv.Run<DecisionTreeC45>(treeC45);
-            treeC45Result.Epsilon = eps;
-            Console.WriteLine(treeC45Result);
-
-            DecisionTreeRough treeRough = new DecisionTreeRough("Rough-Majority-" + pruningType.ToSymbol());
-            treeRough.DefaultOutput = output;
-            treeRough.PruningType = pruningType;
-
-            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
-            treeRoughResult.Epsilon = eps;
-            Console.WriteLine(treeRoughResult);
-
-            if (pruningType == PruningType.None)
-            {
-                DecisionLookupMajority decTabMaj = new DecisionLookupMajority("DecTab-Majority-" + pruningType.ToSymbol());
-                decTabMaj.DefaultOutput = output;
-                var decTabMajResult = cv.Run<DecisionLookupMajority>(decTabMaj);
-                decTabMajResult.Epsilon = eps;
-                Console.WriteLine(decTabMajResult);
-            }
-        }
-
+    {       
         public static void PruneTree(IModel model, DataStore data)
         {
             IDecisionTree tree = (IDecisionTree)model;
@@ -124,7 +45,6 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\dermatology.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\lymphography.all", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
-
         public void DecisionTreeWithCV(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -132,6 +52,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 attribute.IsNumeric = false;
             
             CrossValidation cv = new CrossValidation(data, folds);
+            //cv.RunInParallel = false;
 
             var permutations = new PermutationCollection(
                 20, data.SelectAttributeIds(a => a.IsStandard).ToArray());
@@ -149,8 +70,11 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             for (double eps = 0.0; eps <= 0.5; eps += 0.01)
             {
                 reductFilter.Epsilon = eps;
+                TestStandardDecisionTree_CV(
+                    cv, PruningType.ErrorBasedPruning, eps, Classifier.UnclassifiedOutput);
+                
                 ErrorImpurityTestIntPerReduct_CV(
-                    cv, PruningType.ReducedErrorPruning, reductFactoryKey, eps, Classifier.UnclassifiedOutput);
+                    cv, PruningType.ErrorBasedPruning, eps, Classifier.UnclassifiedOutput);
             }
         }
 
@@ -222,8 +146,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             PruningType pruningType, double eps, long output, bool printTree = false)
         {
             var treeC45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
-            treeC45.DefaultOutput = output;
-            //treeC45.PruningType = pruningType;
+            treeC45.DefaultOutput = output;            
             treeC45.Gamma = eps;
             treeC45.Learn(train, train.SelectAttributeIds(a => a.IsStandard).ToArray());
 
@@ -239,29 +162,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             Console.WriteLine(treeC45Result);
 
             if (printTree)
-                Console.WriteLine(DecisionTreeFormatter.Construct(treeC45));
-
-            /*
-            DecisionTreeRough treeRough = new DecisionTreeRough("MAJ-Majority-" + pruningType.ToSymbol());
-            treeRough.DefaultOutput = output;
-            //treeRough.PruningType = pruningType;
-            treeRough.Gamma = eps;
-            treeRough.Learn(train, train.SelectAttributeIds(a => a.IsStandard).ToArray());
-
-            if (pruningType != PruningType.None)
-            {
-                IDecisionTreePruning pruningMethod = DecisionTreePruningBase.Construct(pruningType, treeRough, train);
-                pruningMethod.Prune();
-            }
-
-            var treeRoughResult = Classifier.Default.Classify(treeRough, test);
-            treeRoughResult.Epsilon = eps;
-            treeRoughResult.Gamma = eps;
-            Console.WriteLine(treeRoughResult);
-
-            if(printTree)
-                Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
-            */
+                Console.WriteLine(DecisionTreeFormatter.Construct(treeC45));            
         }
 
         private void ErrorImpurityTestIntPerReduct_noCV(
@@ -271,7 +172,6 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {                        
             var treeC45_Reduct = new DecisionTreeC45("Reduct-Entropy-" + pruningType.ToSymbol());
             treeC45_Reduct.DefaultOutput = output;
-            //treeC45_Reduct.PruningType = pruningType;            
             treeC45_Reduct.Learn(train, reduct);
 
             if (pruningType != PruningType.None)
@@ -288,8 +188,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 Console.WriteLine(DecisionTreeFormatter.Construct(treeC45_Reduct));
 
             DecisionTreeRough treeRough = new DecisionTreeRough("Reduct-Majority-" + pruningType.ToSymbol());
-            treeRough.DefaultOutput = output;
-            //treeRough.PruningType = pruningType;
+            treeRough.DefaultOutput = output;            
             treeRough.Learn(train, reduct);
 
             if (pruningType != PruningType.None)
@@ -306,8 +205,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
 
             DecisionTreeRough treeRough2 = new DecisionTreeRough("RedGam-Majority-" + pruningType.ToSymbol());
-            treeRough2.DefaultOutput = output;
-            //treeRough2.PruningType = pruningType;
+            treeRough2.DefaultOutput = output;            
             treeRough2.Gamma = eps;
             treeRough2.Learn(train, reduct);
 
@@ -321,6 +219,60 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             treeRoughResult2.Epsilon = eps;
             treeRoughResult2.Gamma = eps;
             Console.WriteLine(treeRoughResult2);
+
+            if (printTree)
+                Console.WriteLine(DecisionTreeFormatter.Construct(treeRough2));
+        }
+
+        private void TestStandardDecisionTree_CV(CrossValidation cv,
+            PruningType pruningType, double eps, long output, bool printTree = false)
+        {
+            cv.Filters.First().Enabled = false; //disable reduct filter
+
+            var treeC45 = new DecisionTreeC45("C45-Entropy-" + pruningType.ToSymbol());
+            treeC45.DefaultOutput = output;
+            treeC45.Gamma = eps;
+            var treeC45_Result = cv.Run<DecisionTreeC45>(treeC45);
+            treeC45_Result.Epsilon = eps;
+            treeC45_Result.Gamma = eps;
+            Console.WriteLine(treeC45_Result);                        
+
+            if (printTree)
+                Console.WriteLine(DecisionTreeFormatter.Construct(treeC45));
+
+            cv.Filters.First().Enabled = true; //disable reduct filter
+        }
+
+        private void ErrorImpurityTestIntPerReduct_CV(
+            CrossValidation cv,
+            PruningType pruningType, double eps,
+            long output, bool printTree = false)
+        {
+            var treeC45_Reduct = new DecisionTreeC45("Reduct-Entropy-" + pruningType.ToSymbol());
+            treeC45_Reduct.DefaultOutput = output;
+            var treeC45Result_Reduct = cv.Run<DecisionTreeC45>(treeC45_Reduct);
+            treeC45Result_Reduct.Epsilon = eps;
+            Console.WriteLine(treeC45Result_Reduct);                      
+
+            if (printTree)
+                Console.WriteLine(DecisionTreeFormatter.Construct(treeC45_Reduct));
+
+            DecisionTreeRough treeRough = new DecisionTreeRough("Reduct-Majority-" + pruningType.ToSymbol());
+            treeRough.DefaultOutput = output;
+            var treeRoughResult = cv.Run<DecisionTreeRough>(treeRough);
+            treeRoughResult.Epsilon = eps;
+            Console.WriteLine(treeRoughResult);            
+
+            if (printTree)
+                Console.WriteLine(DecisionTreeFormatter.Construct(treeRough));
+
+            DecisionTreeRough treeRough2 = new DecisionTreeRough("RedGam-Majority-" + pruningType.ToSymbol());
+            treeRough2.DefaultOutput = output;
+            treeRough2.Gamma = eps;
+            var treeRoughResult2 = cv.Run<DecisionTreeRough>(treeRough2);
+            treeRoughResult2.Epsilon = eps;
+            treeRoughResult2.Gamma = eps;
+            Console.WriteLine(treeRoughResult2);                       
 
             if (printTree)
                 Console.WriteLine(DecisionTreeFormatter.Construct(treeRough2));

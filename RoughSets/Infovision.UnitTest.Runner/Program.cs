@@ -24,13 +24,13 @@ namespace NRough.UnitTest.Runner
         {
             ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
 
-            IEnumerable<string> fileNames = new List<string>(new string[] {
+            List<string> fileNames = new List<string>(new string[] {
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames = fileNames.Union(Test_Benchmark2(2, true));
-            fileNames = fileNames.Union(Test_CV2(2, true));
-            
+            fileNames.AddRange(Test_CV2(2, true));
+            fileNames.AddRange(Test_Benchmark2(2, true));
+                        
             //ProcessResultFiles(fileNames);
         }
 
@@ -88,9 +88,7 @@ namespace NRough.UnitTest.Runner
                 }
 
                 if (processResultFile)
-                {
                     ProcessResultFiles(new string[] { fileName });
-                }
             }
             
             return resultFiles;
@@ -132,7 +130,7 @@ namespace NRough.UnitTest.Runner
             object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);                            
             foreach (var testCase in testCases)
             {                
-                string fileName = "mylogfile_CV_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
                 using (var cc = new ConsoleCopy(fileName))
                 {
                     Console.WriteLine(ClassificationResult.TableHeader());
@@ -175,6 +173,11 @@ namespace NRough.UnitTest.Runner
                 else if (model.Substring(model.Length - 3, 3) == "REP")
                 {
                     row["pruning"] = "REP";
+                    row["model"] = model.Substring(0, model.Length - 4);
+                }
+                else if (model.Substring(model.Length - 3, 3) == "EBP")
+                {
+                    row["pruning"] = "EBP";
                     row["model"] = model.Substring(0, model.Length - 4);
                 }
             }

@@ -39,10 +39,10 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\promoters.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\semeion.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\nursery.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\vehicle.tab", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\german.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\vehicle.tab", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\german.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\dermatology_modified.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\dermatology.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        //[TestCase(@"Data\dermatology.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\lymphography.all", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithCV(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
@@ -79,21 +79,25 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         }
 
 
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        /*
         [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajority)]
         [TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\spect.train", @"Data\spect.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights)]        
         [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\letter.trn", @"Data\letter.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\letter.trn", @"Data\letter.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        */
         public void DecisionTreeBenchmarkSplittedData(
             string trainFile, string testFile, DataFormat fileFormat, string reductFactoryKey)
         {

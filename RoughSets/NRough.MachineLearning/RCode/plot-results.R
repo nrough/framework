@@ -35,8 +35,8 @@ plotresult <- function(
     p <- p + expand_limits(y = yLimitHigh)
     #p <- p + scale_x_continuous(limits = c(0, NA))
     
-    #if (yMinField != "" && yMaxField != "")
-    #    p <- p + geom_ribbon(aes_string(ymin = yMinField, ymax = yMaxField), colour = "grey20", alpha = 0.1)
+    if (yMinField != "" && yMaxField != "")
+        p <- p + geom_ribbon(aes_string(ymin = yMinField, ymax = yMaxField), colour = "grey20", alpha = 0.1)
 
     if (title != "")
         #p <- p + annotate("text", x = Inf, y = Inf, label = title, vjust = 1, hjust = 1)
@@ -70,8 +70,8 @@ plotresultsimple <- function(dt, xField, yField, groupBy, yMinField = "",
     p <- ggplot(data = dt, aes_string(x=xField, y=yField, group=groupBy, color=groupBy))
     p <- p + expand_limits(y=yLimitLow)
     p <- p + expand_limits(y=yLimitHigh)
-    if (yMinField != "" && yMaxField != "")
-        p <- p + geom_ribbon(aes_string(ymin=yMinField, ymax=yMaxField, fill=groupBy), alpha=0.2)
+    #if (yMinField != "" && yMaxField != "")
+    #    p <- p + geom_ribbon(aes_string(ymin=yMinField, ymax=yMaxField, fill=groupBy), alpha=0.2)
     if (title != "")        
         p <- p + ggtitle(title);    
     p <- p + geom_line(size=.8)    

@@ -91,6 +91,8 @@
   <ItemGroup>
     <Compile Include="Benchmark\BenchmarkData.cs" />
     <Compile Include="Benchmark\BenchmarkDataHelper.cs" />
+    <Compile Include="Pivot\PivotService.cs" />
+    <Compile Include="Pivot\PivotTable.cs" />
     <Compile Include="Readers\DataReaderBase.cs" />
     <Compile Include="Readers\DataRSESFileReader.cs" />
     <Compile Include="Readers\DataStreamReader.cs" />
@@ -126,6 +128,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Writers\DataTableLatexTabularFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NRough.Doc\NRough.Doc.csproj">
@@ -225,6 +228,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

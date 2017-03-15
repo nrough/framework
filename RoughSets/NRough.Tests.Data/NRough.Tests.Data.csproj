@@ -81,8 +81,10 @@
     <Compile Include="DataStoreSplitterTest.cs" />
     <Compile Include="DiscretizeTest.cs" />
     <Compile Include="Benchmark\FactoryTest.cs" />
+    <Compile Include="Pivot\PivotServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataStoreTest.cs" />
+    <Compile Include="Writers\DataTableFormatterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NRough.MachineLearning\NRough.MachineLearning.csproj">

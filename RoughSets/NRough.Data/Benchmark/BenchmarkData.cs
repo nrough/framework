@@ -15,7 +15,7 @@ namespace NRough.Data.Benchmark
         public string NamesFile { get; set; }
         public bool CrossValidationActive { get; set; }
         public int CrossValidationFolds { get; set; }
-        public DataFormat FileFormat { get; set; }
+        public DataFormat DataFormat { get; set; }
         public int DecisionFieldId { get; set; }       
         private Dictionary<int, AttributeInfo> fieldMetadata;
 
@@ -23,7 +23,7 @@ namespace NRough.Data.Benchmark
         {
             this.CrossValidationActive = false;
             this.CrossValidationFolds = 1;
-            this.FileFormat = DataFormat.RSES1;
+            this.DataFormat = DataFormat.RSES1;
             this.DecisionFieldId = -1;
 
             this.fieldMetadata = new Dictionary<int, AttributeInfo>();

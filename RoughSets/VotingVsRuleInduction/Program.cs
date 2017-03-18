@@ -210,7 +210,7 @@ namespace VotingVsRuleInduction
 
             if (benchmark.CrossValidationActive)
             {
-                DataStore data = DataStore.Load(benchmark.DataFile, benchmark.FileFormat);
+                DataStore data = DataStore.Load(benchmark.DataFile, benchmark.DataFormat);
 
                 if (benchmark.DecisionFieldId > 0)
                     data.SetDecisionFieldId(benchmark.DecisionFieldId);
@@ -225,12 +225,12 @@ namespace VotingVsRuleInduction
             }
             else
             {
-                t1 = DataStore.Load(benchmark.TrainFile, benchmark.FileFormat);
+                t1 = DataStore.Load(benchmark.TrainFile, benchmark.DataFormat);
 
                 if (benchmark.DecisionFieldId > 0)
                     t1.SetDecisionFieldId(benchmark.DecisionFieldId);
 
-                t2 = DataStore.Load(benchmark.TestFile, benchmark.FileFormat, t1.DataStoreInfo);
+                t2 = DataStore.Load(benchmark.TestFile, benchmark.DataFormat, t1.DataStoreInfo);
                 dataTuple[0] = new Tuple<DataStore, DataStore, int>(t1, t2, 0);
             }
 

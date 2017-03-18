@@ -3,6 +3,7 @@ using NRough.Core.CollectionExtensions;
 using NRough.MachineLearning.Permutations;
 using NRough.MachineLearning.Roughsets;
 using NRough.MachineLearning.Roughsets.Reducts.Comparers;
+using NRough.MachineLearning.Weighting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ namespace NRough.Data.Filters
         public bool UseCache { get; set; } = true;
         public bool Greedy { get; set; }
         public PermutationCollection Permutations { get; set; }
+        public bool UseExceptionRules { get; set; }
 
         #endregion
 
@@ -87,10 +89,12 @@ namespace NRough.Data.Filters
                         localPermutations = Permutations;
                     }
 
-                    Args parms = new Args(4);
+
+                    Args parms = new Args();
                     parms.SetParameter<DataStore>(ReductFactoryOptions.DecisionTable, data);
                     parms.SetParameter<string>(ReductFactoryOptions.ReductType, ReductFactoryKey);
                     parms.SetParameter<double>(ReductFactoryOptions.Epsilon, Epsilon);
+                    parms.SetParameter<bool>(ReductFactoryOptions.UseExceptionRules, UseExceptionRules);                    
                     parms.SetParameter<PermutationCollection>(
                         ReductFactoryOptions.PermutationCollection, localPermutations);                    
 
@@ -101,7 +105,7 @@ namespace NRough.Data.Filters
                         if (rGen != null)
                         {
                             rGen.UsePerformanceImprovements = false;
-                            rGen.Greedy = true;
+                            rGen.Greedy = false;
                         }
                     }
 

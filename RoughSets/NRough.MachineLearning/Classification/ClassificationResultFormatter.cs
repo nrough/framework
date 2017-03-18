@@ -97,6 +97,7 @@ namespace NRough.MachineLearning.Classification
 
                         case "attr": sb.AppendFormat("{0,6}", "attr"); break;
                         case "numrul": sb.AppendFormat("{0,7}", "numrul"); break;
+                        case "numexrul": sb.AppendFormat("{0,7}", "numexrul"); break;
                         case "dthm": sb.AppendFormat("{0,5}", "dthm"); break;
                         case "dtha": sb.AppendFormat("{0,5}", "dtha"); break;
 
@@ -148,6 +149,7 @@ namespace NRough.MachineLearning.Classification
 
                         case "attr": sb.AppendFormat("{0,6:0.00}", result.AvgNumberOfAttributes); break;
                         case "numrul": sb.AppendFormat("{0,7:0.00}", result.NumberOfRules); break;
+                        case "numexrul": sb.AppendFormat("{0,7:0.00}", result.NumberOfExceptionRules); break;
                         case "dthm": sb.AppendFormat("{0,5:0.00}", result.MaxTreeHeight); break;
                         case "dtha": sb.AppendFormat("{0,5:0.00}", result.AvgTreeHeight); break;
 

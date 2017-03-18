@@ -200,6 +200,7 @@
     <Compile Include="Classification\DecisionTrees\Pruning\ReducedErrorPruningBottomUp.cs" />
     <Compile Include="Classification\DecisionTrees\SplitType.cs" />
     <Compile Include="Classification\DecisionTrees\TreeNodeTraversal.cs" />
+    <Compile Include="Roughsets\ReductTypes.cs" />
     <Compile Include="Roughsets\Diversify\HierarchicalClusterReductDiversifier.cs" />
     <Compile Include="Roughsets\Diversify\ReductDiversifyBase.cs" />
     <Compile Include="Roughsets\EnumHelper.cs" />
@@ -242,7 +243,7 @@
     <Compile Include="Roughsets\ReductGenerator.cs" />
     <Compile Include="Roughsets\ReductGeneratorExtensions.cs" />
     <Compile Include="Roughsets\ReductGeneratorMeasure.cs" />
-    <Compile Include="Roughsets\ReductGeneratorParamHelper.cs" />
+    <Compile Include="Roughsets\ReductFactoryOptions.cs" />
     <Compile Include="Roughsets\ReductGeneratorWeights.cs" />
     <Compile Include="Roughsets\ReductMeasure.cs" />
     <Compile Include="Roughsets\ReductRandomSubsetGenerator.cs" />

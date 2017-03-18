@@ -123,6 +123,7 @@
     <Compile Include="CodeSamples.cs" />
     <Compile Include="Roughsets\EquivalenceClassTest.cs" />
     <Compile Include="Roughsets\MatrixTest.cs" />
+    <Compile Include="Roughsets\NewMajorityGeneralizedDecisionReductTest.cs" />
     <Compile Include="Roughsets\PermutationTest.cs" />
     <Compile Include="Roughsets\ReductCacheTest.cs" />
     <Compile Include="Roughsets\ReductDiscernibilityMatrixTest.cs" />

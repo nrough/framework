@@ -15,7 +15,7 @@ namespace NRough.MachineLearning.Roughsets
         int Count { get; }
         bool ReductPerStore { get; set; }
 
-        double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+        double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true, bool exceptionOnly = false);
 
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
 
@@ -70,7 +70,7 @@ namespace NRough.MachineLearning.Roughsets
             return this.GetStoreList().GetEnumerator(); //return stores.GetEnumerator();
         }
 
-        public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false, bool exceptionsOnly = false)
         {
             if (reductMeasure == null)
                 return 0.0;
@@ -84,6 +84,9 @@ namespace NRough.MachineLearning.Roughsets
                     foreach (IReduct reduct in reducts)
                     {
                         if (reduct.IsException && includeExceptions == false)
+                            continue;
+
+                        if (!reduct.IsException && exceptionsOnly)
                             continue;
 
                         measureSum += (double)reductMeasure.Calc(reduct);

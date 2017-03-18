@@ -134,5 +134,5 @@ namespace NRough.MachineLearning.Roughsets.Reducts.Comparers
 
             return 0;
         }
-    }
+    }    
 }

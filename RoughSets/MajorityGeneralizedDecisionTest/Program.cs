@@ -281,7 +281,7 @@ namespace MajorityGeneralizedDecisionTest
                 splitter = null;
                 if (benchmarkData.CrossValidationActive)
                 {
-                    data = DataStore.Load(benchmarkData.DataFile, benchmarkData.FileFormat);
+                    data = DataStore.Load(benchmarkData.DataFile, benchmarkData.DataFormat);
 
                     if (benchmarkData.DecisionFieldId > 0)
                         data.SetDecisionFieldId(benchmarkData.DecisionFieldId);
@@ -292,7 +292,7 @@ namespace MajorityGeneralizedDecisionTest
                 }
                 else
                 {
-                    trainData = DataStore.Load(benchmarkData.TrainFile, benchmarkData.FileFormat);
+                    trainData = DataStore.Load(benchmarkData.TrainFile, benchmarkData.DataFormat);
 
                     if (benchmarkData.DecisionFieldId > 0)
                         trainData.SetDecisionFieldId(benchmarkData.DecisionFieldId);
@@ -300,7 +300,7 @@ namespace MajorityGeneralizedDecisionTest
                     WeightGenerator weightGenerator = new WeightGeneratorMajority(trainData);
                     trainData.SetWeights(weightGenerator.Weights);
 
-                    testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.FileFormat, trainData.DataStoreInfo);
+                    testData = DataStore.Load(benchmarkData.TestFile, benchmarkData.DataFormat, trainData.DataStoreInfo);
 
                     this.InitPermutation(trainData);
                 }

@@ -26,7 +26,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test, TestCaseSource("GetDataFiles")]
         public void GenerateZeroEpsilonTest(KeyValuePair<string, BenchmarkData> fileName)
         {
-            DataStore data = DataStore.Load(fileName.Value.TrainFile, fileName.Value.FileFormat);
+            DataStore data = DataStore.Load(fileName.Value.TrainFile, fileName.Value.DataFormat);
 
             Args parms = new Args();
             parms.SetParameter(ReductFactoryOptions.DecisionTable, data);

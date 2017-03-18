@@ -24,21 +24,25 @@ namespace ExceptionRulesTest
             string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");
             DataSplitter splitter = null;
 
-            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results5 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results5 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);
+                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.DataFormat);
+                foreach (var attribute in data.DataStoreInfo.Attributes)
+                    attribute.IsNumeric = false;
 
                 if (kvp.Value.DecisionFieldId != -1)
                     data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
                 splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
             }
+
+            Console.WriteLine(ClassificationResult.TableHeader());
 
             for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
             {
@@ -50,40 +54,26 @@ namespace ExceptionRulesTest
                 }
                 else if (f == 0)
                 {
-                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
+                    foreach (var attribute in trainData.DataStoreInfo.Attributes)
+                        attribute.IsNumeric = false;
                     if (kvp.Value.DecisionFieldId != -1)
                         trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);
+                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.DataFormat, trainData.DataStoreInfo);
                     if (kvp.Value.DecisionFieldId != -1)
                         testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
-                }
-
-                double mA = new InformationMeasureMajority().Calc(
-                    new Reduct(
-                        trainData,
-                        trainData.DataStoreInfo.SelectAttributeIds(a => a.IsStandard),
-                        0.0,
-                        new WeightGeneratorMajority(trainData).Weights));
+                }                
 
                 for (int t = 0; t < numberOfTests; t++)
                 {
                     var permGenerator = new PermutationGenerator(trainData);
-                    var permList = permGenerator.Generate(numberOfPermutations);
-
-                    log.InfoFormat(
-                        "{0} Test:{1}/{2} Fold:{3}/{4} M(A)={5}",
-                        trainData.Name,
-                        t,
-                        numberOfTests - 1,
-                        f,
-                        kvp.Value.CrossValidationFolds - 1,
-                        mA);
+                    var permList = permGenerator.Generate(numberOfPermutations);                    
 
                     ParallelOptions options = new ParallelOptions();
                     options.MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism;
 
-                    Parallel.For(0, 100, options, i =>
+                    Parallel.For(0, 50, options, i =>
                     //for(int i=0; i<100; i++)
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i, ensembleSize);
@@ -94,12 +84,11 @@ namespace ExceptionRulesTest
                         results4[t, i, f] = accuracy.Item4;
                         results5[t, i, f] = accuracy.Item5;
 
-                        Console.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                        Console.WriteLine("ARD|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                        Console.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
-                        Console.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
-                        Console.WriteLine("GAMDR+Gaps|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results5[t, i, f]);
-                        Console.WriteLine();
+                        Console.WriteLine(results1[t, i, f]);
+                        Console.WriteLine(results2[t, i, f]);
+                        Console.WriteLine(results3[t, i, f]);
+                        Console.WriteLine(results4[t, i, f]);
+                        Console.WriteLine(results5[t, i, f]);
                     }
                     );
 
@@ -109,15 +98,15 @@ namespace ExceptionRulesTest
         }
 
         private void SaveResults(string filename,
-            ClassificationResult[, ,] results1,
-            ClassificationResult[, ,] results2,
-            ClassificationResult[, ,] results3,
-            ClassificationResult[, ,] results4,
-            ClassificationResult[, ,] results5)
+            ClassificationResult[,,] results1,
+            ClassificationResult[,,] results2,
+            ClassificationResult[,,] results3,
+            ClassificationResult[,,] results4,
+            ClassificationResult[,,] results5)
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
-            {
-                outputFile.WriteLine("Method|Fold|Test|Epsilon|{0}", ClassificationResult.TableHeader());
+            {                
+                outputFile.WriteLine(ClassificationResult.TableHeader());
 
                 for (int t = 0; t < results1.GetLength(0); t++)
                 {
@@ -125,11 +114,11 @@ namespace ExceptionRulesTest
                     {
                         for (int f = 0; f < results1.GetLength(2); f++)
                         {
-                            outputFile.WriteLine("GMDR|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results1[t, i, f]);
-                            outputFile.WriteLine("ARD|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results2[t, i, f]);
-                            outputFile.WriteLine("GAMDR+Ex|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results3[t, i, f]);
-                            outputFile.WriteLine("Random|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results4[t, i, f]);
-                            outputFile.WriteLine("GAMDR+Gaps|{0,2}|{1,2}|{2,3}|{3}", f, t, i, results5[t, i, f]);
+                            outputFile.WriteLine(results1[t, i, f]);
+                            outputFile.WriteLine(results2[t, i, f]);
+                            outputFile.WriteLine(results3[t, i, f]);
+                            outputFile.WriteLine(results4[t, i, f]);
+                            outputFile.WriteLine(results5[t, i, f]);
                         }
                     }
                 }
@@ -139,11 +128,12 @@ namespace ExceptionRulesTest
         private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
             ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int ensembleSize)
         {
-            WeightGeneratorRelative weightGenerator = new WeightGeneratorRelative(trainData);
+            WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
             double eps = (double)epsilon / 100;
             ReductMeasureLength reductMeasureLength = new ReductMeasureLength();
-            ReductLengthComparer reductLengthComparer = new ReductLengthComparer();
-            ReductStoreLengthComparer reductStoreLengthComparer = new ReductStoreLengthComparer(false);
+            ReductMeasureNumberOfPartitions reductMeasureRules = new ReductMeasureNumberOfPartitions();
+            ReductLengthComparer reductRuleNumberComparer = new ReductLengthComparer();
+            ReductStoreLengthComparer reductStoreLengthComparer = new ReductStoreLengthComparer(true);
 
             Args parmsApprox = new Args();
             parmsApprox.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
@@ -157,19 +147,26 @@ namespace ExceptionRulesTest
                 ReductFactory.GetReductGenerator(parmsApprox) as ReductGeneratorWeightsMajority;
             generatorApprox.Run();
             IReductStoreCollection origReductStoreCollectionApprox = generatorApprox.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, reductLengthComparer);
+            IReductStoreCollection filteredReductStoreCollectionApprox = origReductStoreCollectionApprox.Filter(ensembleSize, reductRuleNumberComparer);
 
             RoughClassifier classifierApprox = new RoughClassifier(
                 filteredReductStoreCollectionApprox,
-                RuleQualityMethods.CoverageW,
-                RuleQualityMethods.CoverageW,
+                RuleQualityMethods.ConfidenceW,
+                RuleQualityMethods.SingleVote,
                 trainData.DataStoreInfo.GetDecisionValues());
+
             classifierApprox.UseExceptionRules = false;
             ClassificationResult resultApprox = classifierApprox.Classify(testData);
+            resultApprox.ModelName = "M-EPS";
+            resultApprox.Epsilon = eps;
+            resultApprox.EnsembleSize = ensembleSize;            
             resultApprox.AvgNumberOfAttributes = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureLength, false);
+            resultApprox.NumberOfRules = filteredReductStoreCollectionApprox.GetAvgMeasure(reductMeasureRules, false);
+            resultApprox.MaxTreeHeight = 0;
+            resultApprox.AvgTreeHeight = resultApprox.AvgNumberOfAttributes;            
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
-
+            
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
             parms_GMDR.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
@@ -183,19 +180,27 @@ namespace ExceptionRulesTest
                 ReductFactory.GetReductGenerator(parms_GMDR) as ReductGeneralizedMajorityDecisionGenerator;
             generator_GMDR.Run();
             IReductStoreCollection origReductStoreCollection_GMDR = generator_GMDR.GetReductStoreCollection();
-            IReductStoreCollection filteredReductStoreCollection_GMDR = origReductStoreCollection_GMDR.Filter(ensembleSize, reductLengthComparer);
+            IReductStoreCollection filteredReductStoreCollection_GMDR = origReductStoreCollection_GMDR.Filter(ensembleSize, reductRuleNumberComparer);
 
             RoughClassifier classifier_GMDR = new RoughClassifier(
                 filteredReductStoreCollection_GMDR,
-                RuleQualityMethods.CoverageW,
-                RuleQualityMethods.CoverageW,
+                RuleQualityAvgMethods.ConfidenceW,
+                RuleQualityMethods.SingleVote,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifier_GMDR.UseExceptionRules = false;
             ClassificationResult result_GMDR = classifier_GMDR.Classify(testData);
+            result_GMDR.Epsilon = eps;
+            result_GMDR.ModelName = "m-EPS-CAP";
+            result_GMDR.EnsembleSize = ensembleSize;
+
             result_GMDR.AvgNumberOfAttributes = filteredReductStoreCollection_GMDR.GetAvgMeasure(reductMeasureLength, false);
+            result_GMDR.NumberOfRules = filteredReductStoreCollection_GMDR.GetAvgMeasure(reductMeasureRules, false);
+            result_GMDR.MaxTreeHeight = 0;
+            result_GMDR.AvgTreeHeight = result_GMDR.AvgNumberOfAttributes;            
             result_GMDR.ModelCreationTime = generator_GMDR.ReductGenerationTime;
             result_GMDR.ClassificationTime = classifier_GMDR.ClassificationTime;
-
+            
+            
             Args parmsEx = new Args();
             parmsEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
             parmsEx.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
@@ -212,82 +217,82 @@ namespace ExceptionRulesTest
 
             RoughClassifier classifierEx = new RoughClassifier(
                 filteredReductStoreCollectionEx,
-                RuleQualityMethods.CoverageW,
-                RuleQualityMethods.CoverageW,
+                RuleQualityAvgMethods.ConfidenceW,
+                RuleQualityMethods.SingleVote,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierEx.UseExceptionRules = true;
             classifierEx.ExceptionRulesAsGaps = false;
             ClassificationResult resultEx = classifierEx.Classify(testData);
+            resultEx.Epsilon = eps;
+            resultEx.EnsembleSize = ensembleSize;
+            resultEx.ModelName = "m-PHICAP-EXEP";
             resultEx.AvgNumberOfAttributes = filteredReductStoreCollectionEx.GetWeightedAvgMeasure(reductMeasureLength, true);
+            resultEx.NumberOfRules = filteredReductStoreCollectionEx.GetAvgMeasure(reductMeasureRules, false);
+            resultEx.MaxTreeHeight = filteredReductStoreCollectionEx.GetAvgMeasure(reductMeasureRules, true, true);
+            resultEx.AvgTreeHeight = resultEx.AvgNumberOfAttributes;
             resultEx.ModelCreationTime = generatorEx.ReductGenerationTime;
-            resultEx.ClassificationTime = classifierEx.ClassificationTime;
-
-            /*
-            Args parmsGaps = new Args();
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.TrainData, trainData);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.FactoryKey, ReductFactoryKeyHelper.GeneralizedMajorityDecisionApproximate);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.WeightGenerator, weightGenerator);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.Epsilon, eps);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.PermutationCollection, permList);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.UseExceptionRules, true);
-            parmsGaps.SetParameter(ReductGeneratorParamHelper.ExceptionRulesAsGaps, true);
-            //parmsGaps.SetParameter(ReductGeneratorParamHelper.MaxReductLength, (int)resultApprox.QualityRatio > 0 ? (int)resultApprox.QualityRatio : 1);
-
-            ReductGeneralizedMajorityDecisionApproximateGenerator generatorGaps =
-                ReductFactory.GetReductGenerator(parmsGaps) as ReductGeneralizedMajorityDecisionApproximateGenerator;
-            generatorGaps.Generate();
-            */
+            resultEx.ClassificationTime = classifierEx.ClassificationTime;            
 
             IReductStoreCollection origReductStoreCollectionGap = generatorEx.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollectionGap = origReductStoreCollectionGap.FilterInEnsemble(ensembleSize, reductStoreLengthComparer);
 
             var localPermGenerator = new PermutationGenerator(trainData);
             var localPermList = localPermGenerator.Generate(ensembleSize);
+            
 
             RoughClassifier classifierGaps = new RoughClassifier(
                 filteredReductStoreCollectionGap,
-                RuleQualityMethods.CoverageW,
-                RuleQualityMethods.CoverageW,
+                RuleQualityAvgMethods.ConfidenceW,
+                RuleQualityMethods.SingleVote,
                 trainData.DataStoreInfo.GetDecisionValues());
             classifierGaps.UseExceptionRules = true;
             classifierGaps.ExceptionRulesAsGaps = true;
             ClassificationResult resultGaps = classifierGaps.Classify(testData);
+            resultGaps.Epsilon = eps;
+            resultGaps.EnsembleSize = ensembleSize;
+            resultGaps.ModelName = "m-PHICAP-GAPS";
             resultGaps.AvgNumberOfAttributes = filteredReductStoreCollectionGap.GetWeightedAvgMeasure(reductMeasureLength, false);
+            resultGaps.NumberOfRules = filteredReductStoreCollectionGap.GetAvgMeasure(reductMeasureRules, false);
+            resultGaps.MaxTreeHeight = filteredReductStoreCollectionGap.GetAvgMeasure(reductMeasureRules, true, true);
+            resultGaps.AvgTreeHeight = resultGaps.AvgNumberOfAttributes;           
             resultGaps.ModelCreationTime = generatorEx.ReductGenerationTime;
             resultGaps.ClassificationTime = classifierGaps.ClassificationTime;
+            
 
-            Args parmsRandom = new Args();
-            parmsRandom.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
-            parmsRandom.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.RandomSubset);
-            parmsRandom.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
-            parmsRandom.SetParameter(ReductFactoryOptions.Epsilon, eps);
-            parmsRandom.SetParameter(ReductFactoryOptions.PermutationCollection, localPermList);
-            parmsRandom.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
+            Args parmsNoEx = new Args();
+            parmsNoEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsNoEx.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+            parmsNoEx.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsNoEx.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsNoEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parmsNoEx.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
 
-            parmsRandom.SetParameter(ReductFactoryOptions.MinReductLength, (int)resultApprox.AvgNumberOfAttributes);
-            parmsRandom.SetParameter(ReductFactoryOptions.MaxReductLength, (int)resultApprox.AvgNumberOfAttributes);
+            ReductGeneralizedMajorityDecisionApproximateGenerator generatorNoEx =
+                ReductFactory.GetReductGenerator(parmsNoEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
+            generatorNoEx.Run();
+            IReductStoreCollection origReductStoreCollectionNoEx = generatorNoEx.GetReductStoreCollection();
+            IReductStoreCollection filteredReductStoreCollectionNoEx = origReductStoreCollectionNoEx.FilterInEnsemble(ensembleSize, reductStoreLengthComparer);
 
-            ReductRandomSubsetGenerator generatorRandom =
-                ReductFactory.GetReductGenerator(parmsRandom) as ReductRandomSubsetGenerator;
-            generatorRandom.Run();
-
-            RoughClassifier classifierRandom = new RoughClassifier(
-                generatorRandom.GetReductStoreCollection(),
-                RuleQualityMethods.CoverageW,
-                RuleQualityMethods.CoverageW,
+            RoughClassifier classifierNoEx = new RoughClassifier(
+                filteredReductStoreCollectionNoEx,
+                RuleQualityAvgMethods.ConfidenceW,
+                RuleQualityMethods.SingleVote,
                 trainData.DataStoreInfo.GetDecisionValues());
-            classifierRandom.UseExceptionRules = false;
-            ClassificationResult resultRandom = classifierRandom.Classify(testData);
-            resultRandom.AvgNumberOfAttributes = generatorRandom.GetReductStoreCollection().GetAvgMeasure(reductMeasureLength, false);
-            resultRandom.ModelCreationTime = generatorRandom.ReductGenerationTime;
-            resultRandom.ClassificationTime = classifierRandom.ClassificationTime;
+            classifierNoEx.UseExceptionRules = false;
+            classifierNoEx.ExceptionRulesAsGaps = false;
+            ClassificationResult resultNoEx = classifierNoEx.Classify(testData);
+            resultNoEx.Epsilon = eps;
+            resultNoEx.EnsembleSize = ensembleSize;
+            resultNoEx.ModelName = "m-PHICAP-NONE";
+            resultNoEx.AvgNumberOfAttributes = filteredReductStoreCollectionNoEx.GetWeightedAvgMeasure(reductMeasureLength, true);
+            resultNoEx.NumberOfRules = filteredReductStoreCollectionNoEx.GetAvgMeasure(reductMeasureRules, false);
+            resultNoEx.MaxTreeHeight = 0;
+            resultNoEx.AvgTreeHeight = resultNoEx.AvgNumberOfAttributes;            
+            resultNoEx.ModelCreationTime = generatorNoEx.ReductGenerationTime;
+            resultNoEx.ClassificationTime = classifierNoEx.ClassificationTime;
 
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
-                (result_GMDR,   //1
-                resultApprox,   //2
-                resultEx,       //3
-                resultRandom,   //5
-                resultGaps);    //4
+                (resultApprox, result_GMDR, resultEx, resultGaps, resultNoEx);    
         }
 
         private static ILog log;
@@ -319,10 +324,13 @@ namespace ExceptionRulesTest
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
 
+            ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dtha;dthm;";
+
             var dta = BenchmarkDataHelper.GetDataFiles("Data", datasets);
             foreach (var kvp in dta)
             {
-                program.ExceptiodnRulesTest(kvp, numberOfTests, ensembleSize * 10, ensembleSize);
+                int numberOfPermutation = ensembleSize * 20;
+                program.ExceptiodnRulesTest(kvp, numberOfTests, numberOfPermutation, ensembleSize);
             }
 
             Console.ReadKey();

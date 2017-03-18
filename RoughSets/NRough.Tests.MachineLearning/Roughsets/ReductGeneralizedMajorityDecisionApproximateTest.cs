@@ -42,7 +42,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test, TestCaseSource("GetDataFiles")]
         public void EmptyReductsTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             DataStore test = DataStore.Load(kvp.Value.TestFile, DataFormat.RSES1, data.DataStoreInfo);
 
             Args args = new Args();
@@ -67,7 +67,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
 
             foreach (int fieldId in data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard))
                 data.DataStoreInfo.GetFieldInfo(fieldId).Alias = kvp.Value.GetFieldAlias(fieldId);

@@ -41,6 +41,15 @@ namespace NRough.MachineLearning.Classification.Ensembles
             CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
         }
 
+        public EnsembleBase(string modelName)
+            : base(modelName)
+        {
+            Iterations = -1;
+            Size = -1;
+            weakClassifiers = new List<WeakClassifierInfo>();
+            CalcModelConfidence = ReductEnsembleBoostingGenerator.ModelConfidenceAdaBoostM1;
+        }
+
         public abstract ClassificationResult Learn(DataStore data, int[] attributes);
 
         public virtual void AddClassfier(IClassificationModel model, double weight)

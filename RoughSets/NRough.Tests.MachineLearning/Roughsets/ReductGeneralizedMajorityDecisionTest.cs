@@ -120,7 +120,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test, TestCaseSource("GetDataFiles")]
         public void CalculateReductTest(KeyValuePair<string, BenchmarkData> kvp)
         {
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             //Console.WriteLine(data.Name);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);
@@ -154,7 +154,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             int numberOfPermutations = 1;
             int cutoff = 2;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -217,7 +217,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void CheckIfApproximateReductASupersetOGeneralizedDecisionReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 20;
-            DataStore trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(trainData);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -294,7 +294,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 
@@ -322,7 +322,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void CheckIfGeneralizedDecisionIsMoreStrictThanApproximateReduct2(KeyValuePair<string, BenchmarkData> kvp)
         {
             int numberOfPermutations = 10;
-            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+            DataStore data = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
             PermutationGenerator permGenerator = new PermutationGenerator(data);
             PermutationCollection permutations = permGenerator.Generate(numberOfPermutations);
 

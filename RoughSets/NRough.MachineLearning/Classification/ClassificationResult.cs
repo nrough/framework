@@ -251,6 +251,9 @@ namespace NRough.MachineLearning.Classification
         [ClassificationResultValue("numrul", "{0,7:0.00}", true)]
         public double NumberOfRules { get; set; }
 
+        [ClassificationResultValue("numexrul", "{0,7:0.00}", true)]
+        public double NumberOfExceptionRules { get; set; }
+
         [ClassificationResultValue("dthm", "{0,5:0.00}", true)]
         public double MaxTreeHeight { get; set; }
 
@@ -808,7 +811,7 @@ namespace NRough.MachineLearning.Classification
                         ds = row.Field<string>("ds"),
                         model = row.Field<string>("model"),
                         eps = row.Field<double>("eps"),
-                        pruning = row.Field<string>("pruning")
+                        //pruning = row.Field<string>("pruning")
                         //ens = row.Field<int>("ens")                        
                     } into grp
                     select new
@@ -816,7 +819,7 @@ namespace NRough.MachineLearning.Classification
                         ds = grp.Key.ds,
                         model = grp.Key.model,                        
                         eps = grp.Key.eps,
-                        pruning = grp.Key.pruning,
+                        //pruning = grp.Key.pruning,
                         //ens = grp.Key.ens,
 
                         acc = grp.Average(x => x.Field<double>("acc")),

@@ -63,7 +63,7 @@ namespace ExceptionRulesTiming
 
             if (kvp.Value.CrossValidationActive)
             {
-                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.FileFormat);
+                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.DataFormat);
 
                 if (kvp.Value.DecisionFieldId != -1)
                     data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
@@ -81,11 +81,11 @@ namespace ExceptionRulesTiming
                 }
                 else if (f == 0)
                 {
-                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.FileFormat);
+                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
                     if (kvp.Value.DecisionFieldId != -1)
                         trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.FileFormat, trainData.DataStoreInfo);
+                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.DataFormat, trainData.DataStoreInfo);
                     if (kvp.Value.DecisionFieldId != -1)
                         testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
                 }

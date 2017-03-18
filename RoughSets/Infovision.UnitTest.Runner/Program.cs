@@ -22,14 +22,15 @@ namespace NRough.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
+            //ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
             ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
 
             List<string> fileNames = new List<string>(new string[] {
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames.AddRange(Test_Benchmark2(2, true));
-            //fileNames.AddRange(Test_CV2(2, true));                                    
+            fileNames.AddRange(Test_Benchmark2(3, true));
+            fileNames.AddRange(Test_CV2(2, true));                                    
             //ProcessResultFiles(fileNames);
         }
 
@@ -59,39 +60,7 @@ namespace NRough.UnitTest.Runner
                     }
                 }
             }
-        }
-
-        public static IEnumerable<string> Test_Benchmark2(int tests, bool processResultFile)
-        {
-            List<string> resultFiles = new List<string>();
-
-            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
-            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeBenchmarkSplittedData");
-            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);            
-            foreach (var testCase in testCases)
-            {
-                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
-                using (var cc = new ConsoleCopy(fileName))
-                {
-                    Console.WriteLine(ClassificationResult.TableHeader());
-                    for (int i = 0; i < tests; i++)
-                    {                    
-                        var trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
-                        var testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
-                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
-                        var reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
-
-                        test.DecisionTreeBenchmarkSplittedData(trainFile, testFile, fileFormat, reductFactoryKey);
-                    }
-                    resultFiles.Add(fileName);
-                }
-
-                if (processResultFile)
-                    ProcessResultFiles(new string[] { fileName });
-            }
-            
-            return resultFiles;
-        }
+        }        
 
         public static void Test_CV(int tests)
         {
@@ -119,6 +88,38 @@ namespace NRough.UnitTest.Runner
                     }
                 }
             }
+        }
+
+        public static IEnumerable<string> Test_Benchmark2(int tests, bool processResultFile)
+        {
+            List<string> resultFiles = new List<string>();
+
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeBenchmarkSplittedData");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
+            foreach (var testCase in testCases)
+            {
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
+                {
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {
+                        var trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
+                        var reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
+
+                        test.DecisionTreeBenchmarkSplittedData(trainFile, testFile, fileFormat, reductFactoryKey);
+                    }
+                    resultFiles.Add(fileName);
+                }
+
+                if (processResultFile)
+                    ProcessResultFiles(new string[] { fileName });
+            }
+
+            return resultFiles;
         }
 
         public static IEnumerable<string> Test_CV2(int tests, bool processResultFile)
@@ -152,14 +153,45 @@ namespace NRough.UnitTest.Runner
             return resultFiles;
         }
 
+        public static IEnumerable<string> Test_Benchmark3(int tests, bool processResultFile)
+        {
+            List<string> resultFiles = new List<string>();
+
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("DecisionTreeBenchmarkSplittedData");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
+            foreach (var testCase in testCases)
+            {
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
+                {
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {
+                        var trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
+                        var reductFactoryKey = (string)((TestCaseAttribute)testCase).Arguments[3];
+
+                        test.DecisionTreeBenchmarkSplittedData(trainFile, testFile, fileFormat, reductFactoryKey);
+                    }
+                    resultFiles.Add(fileName);
+                }
+
+                if (processResultFile)
+                    ProcessResultFiles(new string[] { fileName });
+            }
+
+            return resultFiles;
+        }
+
         public static void ProcessResultFiles(IEnumerable<string> fileNames)
         {                       
             DataTable dtc = ClassificationResult.ReadResults(fileNames, '|');
 
             if (dtc.Columns.Contains("Column1"))
-                dtc.Columns.Remove("Column1");
-
-            /*
+                dtc.Columns.Remove("Column1");            
+                        /*
             dtc.Columns.Add("pruning", typeof(string));
             foreach (DataRow row in dtc.Rows)
             {
@@ -182,7 +214,7 @@ namespace NRough.UnitTest.Runner
             }
             */
 
-            dtc.Dumb(@"results_all.csv", ";", true);
+                        dtc.Dumb(@"results_all.csv", ";", true);
 
             //dt = ClassificationResult.AverageResults(dt);
             //ClassificationResult.AverageResults(dtc).Dumb(@"results_avg.csv", ";", true);

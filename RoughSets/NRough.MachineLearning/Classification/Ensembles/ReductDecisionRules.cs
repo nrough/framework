@@ -20,20 +20,13 @@ namespace NRough.MachineLearning.Classification.Ensembles
 
         public ReductDecisionRules()
         {
-            reducts = new List<IReduct>();
+            InitDefault();
+        }
 
-            Args parm = new Args();
-            parm.SetParameter(ReductFactoryOptions.ReductType,
-                ReductTypes.ApproximateDecisionReduct);
-            parm.SetParameter(ReductFactoryOptions.FMeasure,
-                (FMeasure)FMeasures.MajorityWeighted);
-            parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
-            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 10);
-
-            ReductGeneratorArgs = parm;
-
-            DecisionIdentificationMethod = RuleQualityMethods.Confidence;
-            RuleVotingMethod = RuleQualityMethods.SingleVote;
+        public ReductDecisionRules(string modelName)
+            : base(modelName)
+        {
+            InitDefault();
         }
 
         public ReductDecisionRules(IReduct reduct)
@@ -47,6 +40,23 @@ namespace NRough.MachineLearning.Classification.Ensembles
         {
             foreach (var reduct in reductCollection)
                 reducts.Add(reduct);
+        }
+
+        private void InitDefault()
+        {
+            reducts = new List<IReduct>();
+            Args parm = new Args();
+            parm.SetParameter(ReductFactoryOptions.ReductType,
+                ReductTypes.ApproximateDecisionReduct);
+            parm.SetParameter(ReductFactoryOptions.FMeasure,
+                (FMeasure)FMeasures.MajorityWeighted);
+            parm.SetParameter(ReductFactoryOptions.Epsilon, 0.05);
+            parm.SetParameter(ReductFactoryOptions.NumberOfReducts, 10);
+
+            ReductGeneratorArgs = parm;
+
+            DecisionIdentificationMethod = RuleQualityMethods.Confidence;
+            RuleVotingMethod = RuleQualityMethods.SingleVote;
         }
 
         public override ClassificationResult Learn(DataStore data, int[] attributes)

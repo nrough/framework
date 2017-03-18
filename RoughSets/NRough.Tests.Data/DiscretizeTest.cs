@@ -37,13 +37,13 @@ namespace NRough.Tests.Data
 
             if (benchmark.CrossValidationActive)
             {
-                data = DataStore.Load(benchmark.DataFile, benchmark.FileFormat);
+                data = DataStore.Load(benchmark.DataFile, benchmark.DataFormat);
                 splitter = new DataSplitter(data, benchmark.CrossValidationFolds);
             }
             else
             {
-                train = DataStore.Load(benchmark.TrainFile, benchmark.FileFormat);
-                test = DataStore.Load(benchmark.TestFile, benchmark.FileFormat, train.DataStoreInfo);
+                train = DataStore.Load(benchmark.TrainFile, benchmark.DataFormat);
+                test = DataStore.Load(benchmark.TestFile, benchmark.DataFormat, train.DataStoreInfo);
             }
 
             for (int i = 0; i < benchmark.CrossValidationFolds; i++)

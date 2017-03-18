@@ -41,10 +41,10 @@ namespace NRough.Data.Benchmark
             benchmark = new BenchmarkData("testGMDR", GetFilePath(dataPath, "testGMDR.trn"), GetFilePath(dataPath, "testGMDR.trn"));
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("dna", GetFilePath(dataPath, "dna_modified.trn"), GetFilePath(dataPath, "dna_modified.tst"));
+            benchmark = new BenchmarkData("dna-modified", GetFilePath(dataPath, "dna_modified.trn"), GetFilePath(dataPath, "dna_modified.tst"));
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("dna-orig", GetFilePath(dataPath, "dna.train"), GetFilePath(dataPath, "dna.test"));
+            benchmark = new BenchmarkData("dna", GetFilePath(dataPath, "dna.train"), GetFilePath(dataPath, "dna.test"));
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("zoo", GetFilePath(dataPath, "zoo.dta"), cvFolds);
@@ -62,10 +62,11 @@ namespace NRough.Data.Benchmark
             benchmark = new BenchmarkData("spect", GetFilePath(dataPath, "SPECT.train"), GetFilePath(dataPath, "SPECT.test"));
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("letter", GetFilePath(dataPath, "letter.trn"), GetFilePath(dataPath, "letter.tst"));
+            benchmark = new BenchmarkData("letter", GetFilePath(dataPath, "letter.disc.trn"), GetFilePath(dataPath, "letter.disc.tst"));
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("pen", GetFilePath(dataPath, "pendigits.trn"), GetFilePath(dataPath, "pendigits.tst"));
+            //benchmark = new BenchmarkData("pen", GetFilePath(dataPath, "pendigits.trn"), GetFilePath(dataPath, "pendigits.tst"));
+            benchmark = new BenchmarkData("pen", GetFilePath(dataPath, "pendigits.disc.trn"), GetFilePath(dataPath, "pendigits.disc.tst"));            
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("opt", GetFilePath(dataPath, "optdigits.trn"), GetFilePath(dataPath, "optdigits.tst"));
@@ -77,6 +78,15 @@ namespace NRough.Data.Benchmark
             benchmark = new BenchmarkData("chess", GetFilePath(dataPath, "chess.dta"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
+            benchmark = new BenchmarkData("dermatology", GetFilePath(dataPath, "dermatology_modified.data"), cvFolds);
+            benchmark.DataFormat = DataFormat.CSV;
+            dataFiles.Add(benchmark.Name, benchmark);
+
+            benchmark = new BenchmarkData("lymphography", GetFilePath(dataPath, "lymphography.all"), cvFolds);
+            benchmark.DataFormat = DataFormat.CSV;
+            dataFiles.Add(benchmark.Name, benchmark);
+            
+          
             benchmark = new BenchmarkData("nursery", GetFilePath(dataPath, "nursery.2.data"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
@@ -93,32 +103,32 @@ namespace NRough.Data.Benchmark
                 GetFilePath(dataPath, "soybean-large.data"), 
                 GetFilePath(dataPath, "soybean-large.test"))
             {
-                FileFormat = DataFormat.CSV
+                DataFormat = DataFormat.CSV
             };
 
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("house", GetFilePath(dataPath, "house-votes-84.2.data"), cvFolds)
             {
-                FileFormat = DataFormat.RSES1_1
+                DataFormat = DataFormat.RSES1_1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("audiology", GetFilePath(dataPath, "audiology.standardized.2.data"), GetFilePath(dataPath, "audiology.standardized.2.test"))
             {
-                FileFormat = DataFormat.RSES1
+                DataFormat = DataFormat.RSES1
             };
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("promoters", GetFilePath(dataPath, "promoters.2.data"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("mashroom", GetFilePath(dataPath, "agaricus-lepiota.2.data"), cvFolds);
+            benchmark = new BenchmarkData("mushroom", GetFilePath(dataPath, "agaricus-lepiota.2.data"), cvFolds);
             dataFiles.Add(benchmark.Name, benchmark);
 
             benchmark = new BenchmarkData("german", GetFilePath(dataPath, "german.data"), cvFolds)
             {                
-                FileFormat = DataFormat.CSV
+                DataFormat = DataFormat.CSV
             };
 
             int[] numericFields = new int[] { 2, 5, 8, 11, 13, 16, 18 };
@@ -127,10 +137,12 @@ namespace NRough.Data.Benchmark
 
             dataFiles.Add(benchmark.Name, benchmark);
 
-            benchmark = new BenchmarkData("sat", GetFilePath(dataPath, "sat.trn"), GetFilePath(dataPath, "sat.tst"));
-            
-            for (int i = 1; i <= 36; i++)
-                benchmark.AddFieldInfo(i, new AttributeInfo(i, typeof(int)) { IsNumeric = true });
+            benchmark = new BenchmarkData("sat", GetFilePath(dataPath, "sat.disc.trn"), GetFilePath(dataPath, "sat.disc.tst"));                        
+            dataFiles.Add(benchmark.Name, benchmark);
+
+            benchmark = new BenchmarkData("vowel", GetFilePath(dataPath, "vowel.disc.trn"), GetFilePath(dataPath, "vowel.disc.tst"));
+            benchmark.DataFormat = DataFormat.CSV;
+
             dataFiles.Add(benchmark.Name, benchmark);
 
             if (names != null && names.Length > 0)

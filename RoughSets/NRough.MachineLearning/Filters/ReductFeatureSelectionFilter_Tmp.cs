@@ -102,7 +102,7 @@ namespace NRough.Data.Filters
                             if (rGen != null)
                             {
                                 rGen.UsePerformanceImprovements = false;
-                                rGen.Greedy = true;
+                                rGen.Greedy = false;
                             }
                         }
 

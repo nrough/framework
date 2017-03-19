@@ -103,7 +103,7 @@ namespace NRough.Data.Benchmark
                 GetFilePath(dataPath, "soybean-large.data"), 
                 GetFilePath(dataPath, "soybean-large.test"))
             {
-                DataFormat = DataFormat.CSV
+                DataFormat = DataFormat.RSES1
             };
 
             dataFiles.Add(benchmark.Name, benchmark);

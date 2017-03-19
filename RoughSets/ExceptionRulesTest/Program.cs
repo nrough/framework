@@ -24,57 +24,55 @@ namespace ExceptionRulesTest
             string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");
             DataSplitter splitter = null;
 
-            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results5 = new ClassificationResult[numberOfTests, 50, kvp.Value.CrossValidationFolds];
-
-            if (kvp.Value.CrossValidationActive)
-            {
-                data = DataStore.Load(kvp.Value.DataFile, kvp.Value.DataFormat);
-                foreach (var attribute in data.DataStoreInfo.Attributes)
-                    attribute.IsNumeric = false;
-
-                if (kvp.Value.DecisionFieldId != -1)
-                    data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
-
-                splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
-            }
+            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 100, kvp.Value.CrossValidationFolds];            
 
             Console.WriteLine(ClassificationResult.TableHeader());
 
-            for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
+            for (int t = 0; t < numberOfTests; t++)
             {
                 if (kvp.Value.CrossValidationActive)
                 {
-                    trainData = null;
-                    testData = null;                    
-                    splitter.Split(out trainData, out testData, f);
-                }
-                else if (f == 0)
-                {
-                    trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
-                    foreach (var attribute in trainData.DataStoreInfo.Attributes)
+                    data = DataStore.Load(kvp.Value.DataFile, kvp.Value.DataFormat);
+                    foreach (var attribute in data.DataStoreInfo.Attributes)
                         attribute.IsNumeric = false;
-                    if (kvp.Value.DecisionFieldId != -1)
-                        trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                    testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.DataFormat, trainData.DataStoreInfo);
                     if (kvp.Value.DecisionFieldId != -1)
-                        testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
-                }                
+                        data.SetDecisionFieldId(kvp.Value.DecisionFieldId);
 
-                for (int t = 0; t < numberOfTests; t++)
+                    splitter = new DataSplitter(data, kvp.Value.CrossValidationFolds);
+                }            
+
+                for (int f = 0; f < kvp.Value.CrossValidationFolds; f++)
                 {
+                    if (kvp.Value.CrossValidationActive)
+                    {
+                        trainData = null;
+                        testData = null;                    
+                        splitter.Split(out trainData, out testData, f);
+                    }
+                    else if (f == 0)
+                    {
+                        trainData = DataStore.Load(kvp.Value.TrainFile, kvp.Value.DataFormat);
+                        foreach (var attribute in trainData.DataStoreInfo.Attributes)
+                            attribute.IsNumeric = false;
+                        if (kvp.Value.DecisionFieldId != -1)
+                            trainData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
+
+                        testData = DataStore.Load(kvp.Value.TestFile, kvp.Value.DataFormat, trainData.DataStoreInfo);
+                        if (kvp.Value.DecisionFieldId != -1)
+                            testData.SetDecisionFieldId(kvp.Value.DecisionFieldId);
+                    }                
+                
                     var permGenerator = new PermutationGenerator(trainData);
-                    var permList = permGenerator.Generate(numberOfPermutations);                    
+                    var permList = permGenerator.Generate(numberOfPermutations);
 
                     ParallelOptions options = new ParallelOptions();
                     options.MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism;
 
-                    Parallel.For(0, 50, options, i =>
-                    //for(int i=0; i<100; i++)
+                    Parallel.For(0, 50, options, i =>                    
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i, ensembleSize);
 
@@ -82,17 +80,14 @@ namespace ExceptionRulesTest
                         results2[t, i, f] = accuracy.Item2;
                         results3[t, i, f] = accuracy.Item3;
                         results4[t, i, f] = accuracy.Item4;
-                        results5[t, i, f] = accuracy.Item5;
 
                         Console.WriteLine(results1[t, i, f]);
                         Console.WriteLine(results2[t, i, f]);
                         Console.WriteLine(results3[t, i, f]);
-                        Console.WriteLine(results4[t, i, f]);
-                        Console.WriteLine(results5[t, i, f]);
-                    }
-                    );
+                        Console.WriteLine(results4[t, i, f]); 
+                    });
 
-                    this.SaveResults(filename, results1, results2, results3, results4, results5);
+                    this.SaveResults(filename, results1, results2, results3, results4);
                 }
             }
         }
@@ -101,8 +96,7 @@ namespace ExceptionRulesTest
             ClassificationResult[,,] results1,
             ClassificationResult[,,] results2,
             ClassificationResult[,,] results3,
-            ClassificationResult[,,] results4,
-            ClassificationResult[,,] results5)
+            ClassificationResult[,,] results4)
         {
             using (StreamWriter outputFile = new StreamWriter(filename, false))
             {                
@@ -117,15 +111,14 @@ namespace ExceptionRulesTest
                             outputFile.WriteLine(results1[t, i, f]);
                             outputFile.WriteLine(results2[t, i, f]);
                             outputFile.WriteLine(results3[t, i, f]);
-                            outputFile.WriteLine(results4[t, i, f]);
-                            outputFile.WriteLine(results5[t, i, f]);
+                            outputFile.WriteLine(results4[t, i, f]);                            
                         }
                     }
                 }
             }
         }
 
-        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
+        private Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
             ExceptionRulesSingleRun(DataStore trainData, DataStore testData, PermutationCollection permList, int epsilon, int ensembleSize)
         {
             WeightGeneratorMajority weightGenerator = new WeightGeneratorMajority(trainData);
@@ -166,7 +159,8 @@ namespace ExceptionRulesTest
             resultApprox.AvgTreeHeight = resultApprox.AvgNumberOfAttributes;            
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
             resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
-            
+
+            /*
             Args parms_GMDR = new Args();
             parms_GMDR.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
             parms_GMDR.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecision);
@@ -199,7 +193,7 @@ namespace ExceptionRulesTest
             result_GMDR.AvgTreeHeight = result_GMDR.AvgNumberOfAttributes;            
             result_GMDR.ModelCreationTime = generator_GMDR.ReductGenerationTime;
             result_GMDR.ClassificationTime = classifier_GMDR.ClassificationTime;
-            
+            */
             
             Args parmsEx = new Args();
             parmsEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
@@ -239,7 +233,6 @@ namespace ExceptionRulesTest
             var localPermGenerator = new PermutationGenerator(trainData);
             var localPermList = localPermGenerator.Generate(ensembleSize);
             
-
             RoughClassifier classifierGaps = new RoughClassifier(
                 filteredReductStoreCollectionGap,
                 RuleQualityAvgMethods.ConfidenceW,
@@ -291,8 +284,8 @@ namespace ExceptionRulesTest
             resultNoEx.ModelCreationTime = generatorNoEx.ReductGenerationTime;
             resultNoEx.ClassificationTime = classifierNoEx.ClassificationTime;
 
-            return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
-                (resultApprox, result_GMDR, resultEx, resultGaps, resultNoEx);    
+            return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
+                (resultApprox, resultEx, resultGaps, resultNoEx);    
         }
 
         private static ILog log;
@@ -329,11 +322,9 @@ namespace ExceptionRulesTest
             var dta = BenchmarkDataHelper.GetDataFiles("Data", datasets);
             foreach (var kvp in dta)
             {
-                int numberOfPermutation = ensembleSize * 20;
+                int numberOfPermutation = ensembleSize == 1 ? ensembleSize * 20 : ensembleSize;
                 program.ExceptiodnRulesTest(kvp, numberOfTests, numberOfPermutation, ensembleSize);
-            }
-
-            Console.ReadKey();
+            }            
         }
     }
 }

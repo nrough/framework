@@ -46,7 +46,7 @@ namespace NRough.Tests.Data.Pivot
                 "zoo-1.result" //zoo                                                                
             };
 
-            Test(path, filenames, "Generalized majority decision reduct results ({0}) size=1", 1);
+            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1);
         }
 
         [Test]
@@ -141,6 +141,12 @@ namespace NRough.Tests.Data.Pivot
 
                     pivotTable.Columns.Remove("M-EPS-dthm");
                     pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
+
+                    for (int i = 0; i < pivotTable.Rows.Count; i++)
+                    {
+                        pivotTable.Rows[i]["m-PHICAP-EXEP-attr"] = pivotTable.Rows[i].Field<double>("m-PHICAP-GAPS-attr");
+                        pivotTable.Rows[i]["m-PHICAP-GAPS-dtha"] = pivotTable.Rows[i].Field<double>("m-PHICAP-EXEP-dtha");
+                    }
 
                     var dataFormatter = new DataTableLatexTabularFormatter();
 
@@ -345,10 +351,10 @@ namespace NRough.Tests.Data.Pivot
 & \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-Gaps}} 
 & \multicolumn{4}{c|}{\textbf{$(m^{\phi},\cap)$-None}}\\ 
 \cline{2-19}
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}}  
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}} \\ \hline";
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}}  
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}} \\ \hline";
         }
 
         private string CustomFooter()
@@ -378,7 +384,7 @@ namespace NRough.Tests.Data.Pivot
             switch (name)
             {
                 case "acc": return "Accuracy";
-                case "attr": return "\\#Attributes";
+                case "attr": return "Reduct length";
                 case "numrul": return "\\#Rules";
                 case "dtha": return "Rule length";
                 case "dthm": return "\\#Exceptions";
@@ -411,8 +417,10 @@ namespace NRough.Tests.Data.Pivot
                 case "soybean-large.test": return "soybean-large";
                 case "soybean-small.2.data": return "soybean-small";
                 case "spect.test": return "spect";
+                case "SPECT.test": return "spect";
                 case "vowel.disc.tst": return "vowel";
                 case "zoo.dta": return "zoo";
+
             }
 
             return name;

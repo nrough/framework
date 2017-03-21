@@ -220,7 +220,17 @@ namespace NRough.Data.Benchmark
 
         public static DataStore Lymphography()
         {
-            throw new NotImplementedException();
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.lymphography.all"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                res = dataReader.Read();
+            }
+            
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
+                fieldInfo.IsNumeric = false;
+            return res;
         }
 
         public static DataStore Monks1()
@@ -323,12 +333,56 @@ namespace NRough.Data.Benchmark
 
         public static DataStore Sat()
         {
-            throw new NotImplementedException();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.sat.dta"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore SatTrain()
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.sat.trn"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
         }
 
         public static DataStore SatTest()
         {
-            throw new NotImplementedException();
+            DataStore train = SatTrain();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.sat.tst"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore SatDiscTrain()
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.sat.disc.trn"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore SatDiscTest()
+        {
+            DataStore train = SatDiscTrain();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.sat.disc.tst"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }
         }
 
         public static DataStore Semeion()
@@ -385,9 +439,48 @@ namespace NRough.Data.Benchmark
             //return DataStore.Load(Path.Combine(location, "vehicle.tab"), DataFormat.RSES1);
         }
 
-        public static DataStore Vowel()
+        public static DataStore VowelTrain()
         {
-            throw new NotImplementedException();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.vowel.trn"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore VowelTest()
+        {
+            DataStore train = VowelTrain();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                 "NRough.Data.Benchmark.Data.vowel.tst"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore VowelDiscTrain()
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.vowel.disc.trn"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore VowelDiscTest()
+        {
+            DataStore train = VowelDiscTrain();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                 "NRough.Data.Benchmark.Data.vowel.disc.tst"))
+            {
+                IDataReader dataReader = new DataCSVFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }
         }
 
         public static DataStore Zoo()

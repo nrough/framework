@@ -424,6 +424,6 @@ namespace NRough.Tests.Data.Pivot
             }
 
             return name;
-        }
+        }        
     }
 }

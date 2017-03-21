@@ -34,6 +34,8 @@ namespace NRough.Tests.Data.Benchmark
             DataStore train = Factory.Dna();
             Assert.IsNotNull(train);
 
+            Console.WriteLine(train.GetStandardFields().Count());
+
             DataStore test = Factory.DnaTest();
             Assert.IsNotNull(test);
         }
@@ -53,6 +55,81 @@ namespace NRough.Tests.Data.Benchmark
         {
             DataStore data = Factory.German();
             Assert.IsNotNull(data);            
+        }
+
+        [Test]
+        public void Dermatology()
+        {
+            DataStore data = Factory.Dermatology();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine(data.DataStoreInfo.DecisionInfo.Histogram.ToString());
+        }
+
+        [Test]
+        public void Lymphography()
+        {
+            DataStore data = Factory.Lymphography();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", data.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", data.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", data.DataStoreInfo.DecisionInfo.Histogram.ToString());
+
+        }
+
+        [Test]
+        public void Sat()
+        {
+            DataStore data = Factory.SatDiscTrain();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", data.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", data.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", data.DataStoreInfo.DecisionInfo.Histogram.ToString());
+
+            DataStore test = Factory.SatDiscTest();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", test.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", test.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", test.DataStoreInfo.DecisionInfo.Histogram.ToString());
+        }
+
+        [Test]
+        public void VowelDisc()
+        {
+            DataStore data = Factory.VowelDiscTrain();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", data.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", data.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", data.DataStoreInfo.DecisionInfo.Histogram.ToString());
+
+            DataStore test = Factory.VowelDiscTest();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", test.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", test.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", test.DataStoreInfo.DecisionInfo.Histogram.ToString());
+        }
+
+        [Test]
+        public void Vowel()
+        {
+            DataStore data = Factory.VowelTrain();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", data.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", data.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", data.DataStoreInfo.DecisionInfo.Histogram.ToString());
+
+            DataStore test = Factory.VowelTest();
+            Assert.IsNotNull(data);
+
+            Console.WriteLine("Number of attributes: {0}", test.GetStandardFields().Count());
+            Console.WriteLine("Number of records: {0}", test.NumberOfRecords);
+            Console.WriteLine("Class distribution {0}", test.DataStoreInfo.DecisionInfo.Histogram.ToString());
         }
     }
 }

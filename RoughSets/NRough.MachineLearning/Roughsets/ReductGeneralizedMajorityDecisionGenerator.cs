@@ -13,6 +13,7 @@ namespace NRough.MachineLearning.Roughsets
 {
     public class ReductGeneralizedMajorityDecisionGenerator : ReductGenerator
     {
+
         private double dataSetQuality = 1.0;
         private WeightGenerator weightGenerator = null;
         protected List<int[]> attributePermutations;
@@ -72,6 +73,8 @@ namespace NRough.MachineLearning.Roughsets
             }
         }
 
+        //TODO moved upper for debugging purposes
+        public bool UseExceptionRules { get; set; }
         protected bool IsQualityCalculated { get; set; }
 
         public IReductStoreCollection ReductStoreCollection
@@ -143,7 +146,7 @@ namespace NRough.MachineLearning.Roughsets
             };
 
             ReductStore localReductPool = new ReductStore(this.attributePermutations.Count);
-            //foreach(var permutation in this.attributePermutations)
+            localReductPool.AllowDuplicates = true;
             Parallel.ForEach(this.attributePermutations, options, permutation =>
             {
                 localReductPool.AddReduct(this.CalculateReduct(permutation, localReductPool));
@@ -162,48 +165,33 @@ namespace NRough.MachineLearning.Roughsets
         {
             EquivalenceClassCollection eqClasses = EquivalenceClassCollection.Create(permutation, this.DecisionTable, weights);
             int len = permutation.Length;
-
             eqClasses.WeightSum = this.DataSetQuality;
             eqClasses.NumberOfObjects = this.DecisionTable.NumberOfRecords;
-
             this.KeepMajorDecisions(eqClasses, epsilon);
-
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
-
-            //Console.WriteLine(permutation.ToStr(' '));
 
             EquivalenceClassCollection newEqClasses = null;
             while (step >= 1)
             {
                 for (int i = 0; i < len && step <= len; i += step)
-                {
-                    //Console.WriteLine("+Trying to remove {0}", eqClasses.Attributes[i]);
-
+                {                    
                     newEqClasses = this.Reduce(eqClasses, i, step, reductStore);
 
                     //reduction was successful
                     if (!Object.ReferenceEquals(newEqClasses, eqClasses))
-                    {
-                        //Console.WriteLine("+Success to remove {0}", eqClasses.Attributes[i]);
-
+                    {                     
                         eqClasses = newEqClasses;
                         len -= step;
                         i -= step;
-                    }
-                    //else
-                    //{
-                    //    Console.WriteLine("+Failed to remove {0}", eqClasses.Attributes[i]);
-                    //}
-
+                    }                    
                 }
 
                 if (step == 1)
                     break;
-
                 step /= 2;
             }
 
-            //eqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
+            //eqClasses.RecalcEquivalenceClassStatistic(this.DataStore);            
 
             return this.CreateReductObject(
                 eqClasses.Attributes,

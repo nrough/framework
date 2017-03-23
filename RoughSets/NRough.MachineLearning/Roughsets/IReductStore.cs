@@ -20,6 +20,7 @@ namespace NRough.MachineLearning.Roughsets
         double GetAvgMeasure(IReductMeasure reductMeasure);
 
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions);
+        double GetSumMeasure(IReductMeasure reductMeasure, bool includeExceptions);
 
         void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
 

@@ -1,2 +1,2 @@
 @echo off
-ExceptionRulesTest.exe 5 1 audiology breast dermatology dna house letter lymphography mushroom
+ExceptionRulesTest.exe 5 1 mushroom zoo chess semeion pen dna letter

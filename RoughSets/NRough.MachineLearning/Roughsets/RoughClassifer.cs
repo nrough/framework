@@ -178,7 +178,7 @@ namespace NRough.MachineLearning.Roughsets
 
             timer.Stop();
 
-            result.AvgNumberOfAttributes = reductStoreCollection.GetAvgMeasure(new ReductMeasureLength(), false);
+            result.AvgNumberOfAttributes = reductStoreCollection.GetAvgMeasure(ReductMeasureLength.Instance, false);
 
             result.ClassificationTime = this.ClassificationTime;
 

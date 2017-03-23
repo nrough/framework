@@ -54,7 +54,7 @@ namespace NRough.MachineLearning.Roughsets
             : base()
         {
             this.dataSetQuality = Double.MinValue;
-            this.UsePerformanceImprovements = false;
+            this.UsePerformanceImprovements = true;
         }
 
         #endregion Constructors
@@ -103,7 +103,9 @@ namespace NRough.MachineLearning.Roughsets
                 MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
             };
 
-            IReductStore reductStore = this.CreateReductStore(permutationList.Count);            
+            IReductStore reductStore = this.CreateReductStore(permutationList.Count);
+            reductStore.AllowDuplicates = true;
+
             Parallel.ForEach(permutationList, options, permutation =>
             {
                 IReduct reduct = this.CalculateReduct(permutation.ToArray(), reductStore, this.UseCache, this.Epsilon);
@@ -151,20 +153,10 @@ namespace NRough.MachineLearning.Roughsets
             }
 
             if (this.UsePerformanceImprovements)
-            {
-                if (this.initialEqClasses != null
-                    && this.Epsilon < 0.5
-                    && permutation.Length < this.DecisionTable.DataStoreInfo.CountAttributes(a => a.IsStandard) / 2)
-                {
-                    reduct = this.CreateReductObject(this.initialEqClasses.Attributes, epsilon, this.GetNextReductId().ToString(), this.initialEqClasses);
-                    this.Reduce(reduct, permutation, reductStore, useCache);
-                }
-                else
-                {
-                    reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
-                    this.Reach(reduct, permutation, reductStore, useCache);
-                    this.Reduce(reduct, permutation, reductStore, useCache);
-                }
+            {                
+                reduct = this.CreateReductObject(new int[] { }, epsilon, this.GetNextReductId().ToString());
+                this.Reach(reduct, permutation, reductStore, useCache);
+                this.Reduce(reduct, permutation, reductStore, useCache);
             }
             else
             {

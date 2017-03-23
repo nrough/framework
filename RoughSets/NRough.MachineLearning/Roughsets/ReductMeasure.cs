@@ -26,6 +26,31 @@ namespace NRough.MachineLearning.Roughsets
     [Serializable]
     public class ReductMeasureLength : ReductMeasure
     {
+        private static volatile ReductMeasureLength instance;
+        private static object syncRoot = new object();
+
+        public ReductMeasureLength()
+            : base()
+        {
+        }
+
+        public static ReductMeasureLength Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new ReductMeasureLength();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Properties
 
         public override string FactoryKey
@@ -58,6 +83,31 @@ namespace NRough.MachineLearning.Roughsets
     [Serializable]
     public class ReductMeasureNumberOfPartitions : ReductMeasure
     {
+        private static volatile ReductMeasureNumberOfPartitions instance;
+        private static object syncRoot = new object();
+
+        public ReductMeasureNumberOfPartitions()
+            : base()
+        {
+        }
+
+        public static ReductMeasureNumberOfPartitions Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new ReductMeasureNumberOfPartitions();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         #region Properties
 
         public override string FactoryKey

@@ -20,7 +20,7 @@ namespace NRough.MachineLearning.Roughsets
 
         #region Properties
 
-        public bool UseExceptionRules { get; set; }
+        //public bool UseExceptionRules { get; set; }
         public SortDirection EquivalenceClassSortDirection { get; set; }
         public double Gamma { get; set; }
         protected double WeightDropLimit { get; set; }
@@ -50,8 +50,7 @@ namespace NRough.MachineLearning.Roughsets
                     MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
                 };
 
-                Parallel.ForEach(this.attributePermutations, options, permutation =>
-                //foreach (var permutation in this.attributePermutations)
+                Parallel.ForEach(this.attributePermutations, options, permutation =>                
                 {
                     ReductStore localReductPool = new ReductStore();
                     localReductPool.AllowDuplicates = true;
@@ -76,9 +75,11 @@ namespace NRough.MachineLearning.Roughsets
             IReductStore reductStore = null,
             IReductStoreCollection reductStoreCollection = null)
         {
-            if (this.UseExceptionRules)
-                return this.ReduceWithExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
-            return this.ReduceWithoutExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
+            return this.ReduceWithExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
+
+            //if (this.UseExceptionRules)            
+            //    return this.ReduceWithExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
+            //return this.ReduceWithoutExceptions(eqClasses, attributeIdx, length, reductStore, reductStoreCollection);
         }
 
         private EquivalenceClassCollection ReduceWithExceptions(
@@ -92,7 +93,8 @@ namespace NRough.MachineLearning.Roughsets
                 throw new ArgumentNullException("reductStore", "reductStore cannot be null when calculating exceptions");
 
             var newAttributes = eqClasses.Attributes.RemoveAt(attributeIdx, length);
-            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(this.DecisionTable, newAttributes, eqClasses.Count);
+            EquivalenceClassCollection newEqClasses = new EquivalenceClassCollection(
+                this.DecisionTable, newAttributes, eqClasses.Count);
             newEqClasses.WeightSum = eqClasses.WeightSum;
             newEqClasses.NumberOfObjects = eqClasses.NumberOfObjects;
 
@@ -109,7 +111,13 @@ namespace NRough.MachineLearning.Roughsets
                 EquivalenceClass newEqClass = newEqClasses.Find(newInstance);
                 if (newEqClass != null)
                 {
-                    //PascalSet<long> newDecisionSet = newEqClass.DecisionSet.IntersectionFast(eq.DecisionSet);
+                    /*
+                    if (newEqClass.DecisionSet.Count == 0)
+                        throw new InvalidOperationException("");
+                    if(newEqClass.WeightSum <= 0)
+                        throw new InvalidOperationException("");
+                    */
+
 
                     HashSet<long> newDecisionSet = new HashSet<long>(newEqClass.DecisionSet);
                     newDecisionSet.IntersectWith(eq.DecisionSet);
@@ -139,17 +147,30 @@ namespace NRough.MachineLearning.Roughsets
                         if (newEqClasses.WeightSum < this.WeightDropLimit)
                             return eqClasses;
 
-                        if (exceptionEqClasses == null)
+                        if (this.UseExceptionRules)
                         {
-                            exceptionEqClasses = new EquivalenceClassCollection(this.DecisionTable, eqClasses.Attributes);
+                            if (exceptionEqClasses == null)
+                            {
+                                exceptionEqClasses = new EquivalenceClassCollection(this.DecisionTable, eqClasses.Attributes);
+                            }
+
+                            exeptionEq = new EquivalenceClass(eq.Instance, eq.Instances, eq.DecisionSet);
+                            exeptionEq.AvgConfidenceWeight = eq.AvgConfidenceWeight;
+                            exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
+                            exeptionEq.WeightSum = eq.WeightSum;
+
+                            exceptionEqClasses.Add(exeptionEq);
+                            exceptionEqClasses.NumberOfObjects += eq.NumberOfObjects;
+                            exceptionEqClasses.WeightSum += eq.WeightSum;
                         }
-
-                        exeptionEq = new EquivalenceClass(eq.Instance, eq.Instances, eq.DecisionSet);
-                        exeptionEq.AvgConfidenceWeight = eq.AvgConfidenceWeight;
-                        exeptionEq.AvgConfidenceSum = eq.AvgConfidenceSum;
-                        exeptionEq.WeightSum = eq.WeightSum;
-
-                        exceptionEqClasses.Add(exeptionEq);
+                        else
+                        {
+                            //Update |E|
+                            //newEqClass.AddObjectInstances(eq.Instances);
+                            
+                            //Update |E|w
+                            //newEqClass.WeightSum += eq.WeightSum;
+                        }
                     }
                 }
                 else
@@ -163,7 +184,7 @@ namespace NRough.MachineLearning.Roughsets
                 }
             }
 
-            if (exceptionEqClasses != null)
+            if (this.UseExceptionRules && exceptionEqClasses != null)
             {
                 //exceptionEqClasses.RecalcEquivalenceClassStatistic(this.DataStore);
                 ReductWeights exception = new ReductWeights(
@@ -206,6 +227,7 @@ namespace NRough.MachineLearning.Roughsets
             }
         }
 
+        /*
         private EquivalenceClassCollection ReduceWithoutExceptions(
             EquivalenceClassCollection eqClasses,
             int attributeIdx,
@@ -277,6 +299,7 @@ namespace NRough.MachineLearning.Roughsets
 
             return newEqClasses;
         }
+        */
 
         public override void InitDefaultParameters()
         {

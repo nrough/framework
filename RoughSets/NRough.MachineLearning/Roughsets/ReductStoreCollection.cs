@@ -16,8 +16,10 @@ namespace NRough.MachineLearning.Roughsets
         bool ReductPerStore { get; set; }
 
         double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true, bool exceptionOnly = false);
-
+        double GetAvgSumPerStoreMeasure(IReductMeasure reductMeasure, bool includeExceptions = true, bool exceptionOnly = false);
+        
         double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = true);
+        double GetWeightedAvgPerEnsembleMeasure(IReductMeasure reductMeasure, bool includeExceptions = false);
 
         IReductStoreCollection Filter(int numberOfReducts, IComparer<IReduct> comparer);
 
@@ -70,6 +72,38 @@ namespace NRough.MachineLearning.Roughsets
             return this.GetStoreList().GetEnumerator(); //return stores.GetEnumerator();
         }
 
+        public double GetAvgSumPerStoreMeasure(IReductMeasure reductMeasure, bool includeExceptions = false, bool exceptionsOnly = false)
+        {
+            if (reductMeasure == null)
+                return 0.0;
+            double measureSum = 0.0;
+            int count = 0;
+
+            lock (mutex)
+            {
+                foreach (IReductStore reducts in this)
+                {
+                    foreach (IReduct reduct in reducts)
+                    {
+                        if (reduct.IsException && includeExceptions == false)
+                            continue;
+
+                        if (!reduct.IsException && exceptionsOnly)
+                            continue;
+
+                        measureSum += (double)reductMeasure.Calc(reduct);                        
+                    }
+
+                    count++;
+                }
+            }
+
+            if (count > 0)
+                return measureSum / (double)count;
+
+            return 0;
+        }
+
         public double GetAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false, bool exceptionsOnly = false)
         {
             if (reductMeasure == null)
@@ -101,12 +135,50 @@ namespace NRough.MachineLearning.Roughsets
             return 0;
         }
 
+        public double GetWeightedAvgPerEnsembleMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
+        {
+            if (reductMeasure == null)
+                return 0.0;
+            
+            double globalSum = 0.0;
+
+            lock (mutex)
+            {
+                foreach (IReductStore reducts in this)
+                {
+                    double sum = 0.0;
+                    double denominator = 0.0;
+                    foreach (IReduct reduct in reducts)
+                    {
+                        int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated
+                            ? reduct.EquivalenceClasses.CountSupportedObjects()
+                            : reduct.EquivalenceClasses.NumberOfObjects;
+
+                        if (reduct.IsException && includeExceptions == false)
+                            continue;
+
+                        sum += reductMeasure.Calc(reduct) * numberOfSupportedObjects;
+                        denominator += numberOfSupportedObjects;
+                    }
+
+                    if (denominator > 0)
+                        globalSum += sum / denominator;
+                }
+            }
+
+            if (Count > 0)
+                return globalSum / (double)Count;
+
+            return 0;
+        }
+
         public double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceptions = false)
         {
             if (reductMeasure == null)
                 return 0.0;
-            double measureSum = 0.0;
-            int count = 0;
+
+            double sum = 0.0;
+            double denominator = 0.0;            
 
             lock (mutex)
             {
@@ -119,20 +191,16 @@ namespace NRough.MachineLearning.Roughsets
                             : reduct.EquivalenceClasses.NumberOfObjects;
 
                         if (reduct.IsException && includeExceptions == false)
-                        {
-                            count += numberOfSupportedObjects;
-                        }
-                        else
-                        {
-                            measureSum += (double)reductMeasure.Calc(reduct) * numberOfSupportedObjects;
-                            count += numberOfSupportedObjects;
-                        }
-                    }
+                            continue;
+
+                        sum += reductMeasure.Calc(reduct) * numberOfSupportedObjects;
+                        denominator += numberOfSupportedObjects;
+                    }                    
                 }
             }
 
-            if (count > 0)
-                return measureSum / (double)count;
+            if (denominator > 0)
+                return sum / denominator;
 
             return 0;
         }

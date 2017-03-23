@@ -1,2 +1,2 @@
 @echo off
-ExceptionRulesTest.exe 5 1 monks-1 monks-3 pen promoters sat semeion soybean-large soybean-small spect vowel zoo
+ExceptionRulesTest.exe 10 1 soybean-large soybean-small promoters vowel audiology breast dermatology house sat spect lymphography monks-1 monks-2 monks-3

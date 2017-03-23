@@ -59,6 +59,8 @@ namespace NRough.MachineLearning.Roughsets
 
         public abstract double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool includeExceltions);
 
+        public abstract double GetSumMeasure(IReductMeasure reductMeasure, bool includeExceltions);
+
         public abstract void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev);
 
         public abstract void GetMeanAveDev(IReductMeasure reductMeasure, out double mean, out double aveDev);
@@ -75,7 +77,7 @@ namespace NRough.MachineLearning.Roughsets
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < this.Count; i++)
+            for (int i = this.Count - 1; i >= 0; i--)
                 stringBuilder.Append(String.Format("{0}: ", i)).Append(this.GetReduct(i).ToString()).Append(Environment.NewLine);
             return stringBuilder.ToString();
         }
@@ -212,16 +214,18 @@ namespace NRough.MachineLearning.Roughsets
 
         public override void AddReduct(IReduct reduct)
         {
-            if (this.AllowDuplicates)
-            {
-                this.DoAddReduct(reduct);
-            }
-
             lock (mutex)
             {
-                if (this.CanAddReduct(reduct))
+                if (this.AllowDuplicates)
                 {
                     this.DoAddReduct(reduct);
+                }
+                else
+                {                
+                    if (this.CanAddReduct(reduct))
+                    {
+                        this.DoAddReduct(reduct);
+                    }
                 }
             }
         }
@@ -306,34 +310,40 @@ namespace NRough.MachineLearning.Roughsets
         public override double GetWeightedAvgMeasure(IReductMeasure reductMeasure, bool isGap = false)
         {
             if (reductMeasure == null)
-                return 0.0;
-            double measureSum = 0.0;
-            int count = 0;
-
+                return 0;
+            
             lock (mutex)
             {
+                double measureSum = 0.0;
+                double count = 0.0;
                 foreach (IReduct reduct in this)
                 {
                     int numberOfSupportedObjects = reduct.IsEquivalenceClassCollectionCalculated
                         ? reduct.EquivalenceClasses.CountSupportedObjects()
                         : reduct.EquivalenceClasses.NumberOfObjects;
 
-                    if (reduct.IsException && isGap == false)
-                    {
-                        count += numberOfSupportedObjects;
-                    }
-                    else
-                    {
-                        measureSum += (double)reductMeasure.Calc(reduct) * numberOfSupportedObjects;
-                        count += numberOfSupportedObjects;
-                    }
+                    measureSum += (double)reductMeasure.Calc(reduct) * numberOfSupportedObjects;
+                    count += numberOfSupportedObjects;                    
                 }
+                if (count > 0)
+                    return measureSum / count;
             }
-
-            if (count > 0)
-                return measureSum / (double)count;
-
+                                    
             return 0;
+        }
+
+        public override double GetSumMeasure(IReductMeasure reductMeasure, bool isGap = false)
+        {
+            if (reductMeasure == null)
+                return 0;
+
+            lock (mutex)
+            {
+                double measureSum = 0.0;
+                foreach (IReduct reduct in this)
+                    measureSum += (double)reductMeasure.Calc(reduct);
+                return measureSum;
+            }            
         }
 
         public override void GetMeanStdDev(IReductMeasure reductMeasure, out double mean, out double stdDev)

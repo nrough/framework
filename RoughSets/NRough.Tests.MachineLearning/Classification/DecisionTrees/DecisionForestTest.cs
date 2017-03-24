@@ -69,7 +69,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         {
             Console.WriteLine("RandomForestTest");
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -100,7 +100,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestCARTTest");
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -127,7 +127,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestRoughTest");
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -153,7 +153,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
             Console.WriteLine("RandomForestRoughGammaTest");
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;
@@ -262,7 +262,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test]
         public void ReductSubsetC45Tree()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
                 fieldInfo.IsNumeric = false;

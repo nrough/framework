@@ -36,7 +36,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             int numberOfPermutations = 10;
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore testData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, data.DataStoreInfo);
             string resultFileName = @"dna_modified_103.csv";

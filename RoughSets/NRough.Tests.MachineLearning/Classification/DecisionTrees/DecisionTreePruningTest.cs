@@ -18,7 +18,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void ErrorBasedPruningTest()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             
            foreach (var fieldInfo in data.DataStoreInfo.Attributes)
@@ -66,7 +66,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void ReducedErrorPruningTest()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
@@ -115,7 +115,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePruningTest()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
@@ -148,7 +148,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePrunningTest2()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var fieldInfo in data.DataStoreInfo.Attributes)
@@ -180,7 +180,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 
         public void PrunningInternalTest()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             foreach (var attribute in data.DataStoreInfo.Attributes)
                 attribute.IsNumeric = false;
@@ -195,7 +195,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [Test, Repeat(1)]
         public void PrePrunningTest3()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             foreach (var attribute in data.DataStoreInfo.Attributes)

@@ -26,15 +26,20 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test, Repeat(1)]
         public void TestExceptionCaseWithoutExceptions()
         {
-            var trainData = Data.Benchmark.Factory.SoybeanSmall();
-            var testData = Data.Benchmark.Factory.Monks2Test();
+            var data = Data.Benchmark.Factory.SoybeanSmall();
+            double eps = 0.00;
 
+            var splitter = new DataSplitter(data, 5);
+            DataStore trainData, testData;
+            splitter.Split(out trainData, out testData);
 
-            double eps = 0.2;
+            trainData = data;
+
+            Console.WriteLine(trainData.DataStoreInfo.DecisionInfo.Histogram.ToString());
+
             var weightGenerator = new WeightGeneratorMajority(trainData);
+            //var permList = new PermutationCollection(300, trainData.GetStandardFields());
 
-            var permList = new PermutationCollection(100, trainData.GetStandardFields());
-            
             /*
             var permList = new PermutationCollection(new Permutation[] {
                 new Permutation(new int[] { 4, 6, 5, 1, 3, 2 }),
@@ -44,9 +49,23 @@ namespace NRough.Tests.MachineLearning.Roughsets
                 new Permutation(new int[] { 6, 1, 4, 5, 2, 3 })
                 });
             */
+            var permList = new PermutationCollection(new Permutation[] {
+                new Permutation(
+                    new int[] {18,16,25,19,8,28,5,35,26,7,6,24,11,13,17,9,29,21,1,10,2,12,31,30,27,3,33,23,32,4,22,15,34,20,14}),
+                new Permutation(
+                    new int[] {18,16,25,19,8,28,5,35,26,7,6,24,11,13,17,9,29,21,1,10,2,12,31,30,27,3,33,23,32,15,34,20,14,4,22}),
+                new Permutation(
+                    new int[] {18,16,25,19,8,28,5,35,26,7,6,24,11,13,17,9,29,21,1,10,2,12,31,30,27,3,33,23,32,15,34,20,4,22,14}),
+                    new Permutation(
+                    new int[] {4,22})
+                //new Permutation(
+                //    new int[] {33,6,19,11,18,14,16,7,29,25,20,34,27,26,3,23,21,31,5,9,10,1,8,2,30,22,32,28,12,13,17,35,15,4,24}),
+                //new Permutation(
+                //    new int[] {30,12,34,5,13,35,20,6,10,24,25,16,2,21,29,3,4,15,8,26,28,27,9,18,1,19,31,32,11,7,23,14,33,17,22})
+            });
 
-            Console.WriteLine(permList.ElementAt(0).ToArray().ToStr(' '));
 
+            //Console.WriteLine(permList.ElementAt(0).ToArray().ToStr(' '));
             trainData.SetWeights(weightGenerator.Weights);
 
             Args parmsEx = new Args(6);
@@ -57,7 +76,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             parmsEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
             parmsEx.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
             parmsEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, 
-                SortDirection.Descending);
+                SortDirection.None);
             
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -70,7 +89,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             {
                 Console.Write(permList.ElementAt(i).ToArray().ToStr(' '));
                 Console.Write(" : ");
-                foreach (var reduct in reductStore.Where(r => r.IsException == false))
+                foreach (var reduct in reductStore.Where(r => !r.IsException))
                     Console.Write(reduct);
                 Console.Write(" -> ");
                 Console.Write(reductStore.Where(r => r.IsException).Count());
@@ -78,15 +97,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                 var eqClasses = EquivalenceClassCollection.Create(
                     permList.ElementAt(i).ToArray(),
                     trainData,
-                    weightGenerator.Weights);
-
-
-
-                Console.WriteLine();
-                foreach (var eqClass in eqClasses)
-                {
-                    Console.WriteLine("[{0}]{{{1}}}", eqClass.Instance.ToStr(' '), eqClass.DecisionSet.ToArray().ToStr(','));
-                }
+                    weightGenerator.Weights);                
 
                 i++;
                 Console.WriteLine();

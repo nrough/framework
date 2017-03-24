@@ -23,7 +23,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
         public static IEnumerable<Dictionary<string, object>> GetGenerateTestArgs()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
@@ -250,7 +250,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [TestCase(0.0, 100, 10)]
         public void GenerateBoostingTestNullExceptionError(double epsilon, int iterations, int weak)
         {
-            var train = Data.Benchmark.Factory.DnaModified();
+            var train = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore train = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore test = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, train.DataStoreInfo);
 
@@ -319,7 +319,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void GenerateExperimentBoostingStandard()
         {
-            var trnData = Data.Benchmark.Factory.DnaModified();
+            var trnData = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
             WeightingScheme weightingSchema = WeightingScheme.Majority;
@@ -540,7 +540,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             //Console.WriteLine("GenerateExperimentBoostingWithDiversity");
 
-            var trnData = Data.Benchmark.Factory.DnaModified();
+            var trnData = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore trnData = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore tstData = DataStore.Load(@"Data\dna_modified.tst", DataFormat.RSES1, trnData.DataStoreInfo);
 

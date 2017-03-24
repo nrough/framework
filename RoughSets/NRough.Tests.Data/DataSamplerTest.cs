@@ -10,7 +10,7 @@ namespace NRough.Tests.Data
         [Test]
         public void GetDataTest()
         {
-            var data = Factory.DnaModified();
+            var data = Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataSampler sampler = new DataSampler(data);
             DataStore subData = null;

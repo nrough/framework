@@ -26,7 +26,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             List<Dictionary<string, object>> argsList = new List<Dictionary<string, object>>();
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             PermutationGenerator permGenerator = new PermutationGenerator(data);

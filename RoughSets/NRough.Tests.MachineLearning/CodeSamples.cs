@@ -156,7 +156,7 @@ namespace NRough.Tests.MachineLearning
         public void ReductAdaBoost()
         {
             //load training and testing DNA (spieces) data sets 
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
             var test = Data.Benchmark.Factory.DnaTest();
 
             //set weights 
@@ -197,7 +197,7 @@ namespace NRough.Tests.MachineLearning
         public void DiversiifyReductsHierarchicalClustering()
         {
             //load training and testing DNA (spieces) data sets 
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
             var test = Data.Benchmark.Factory.DnaTest();
 
             //create reduct diversification 
@@ -237,7 +237,7 @@ namespace NRough.Tests.MachineLearning
         public void Bireduct()
         {
             //load training and testing DNA (spieces) data sets 
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
             var test = Data.Benchmark.Factory.DnaTest();
 
             //create parameters for reduct factory
@@ -263,7 +263,7 @@ namespace NRough.Tests.MachineLearning
         public void BireductsFromClassHierarchy()
         {
             //load training data sets 
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
 
             //generate permutations based on attributes and objects
             var permGenerator = new PermutationAttributeObjectGenerator(train, 0.5);
@@ -289,7 +289,7 @@ namespace NRough.Tests.MachineLearning
         public void GeneralizedMajorityDecisionReduct()
         {
             //load training data sets 
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
 
             //setup reduct factory parameters
             Args parms = new Args();
@@ -312,7 +312,7 @@ namespace NRough.Tests.MachineLearning
         public void GeneralizedMajorityDecisionReductWithExceptions()
         {
             //load training and test data sets
-            var train = Data.Benchmark.Factory.Dna();
+            var train = Data.Benchmark.Factory.DnaTrain();
             var test = Data.Benchmark.Factory.DnaTest();
 
             //setup reduct factory parameters

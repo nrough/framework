@@ -203,7 +203,7 @@ namespace NRough.MachineLearning.Roughsets
                 Console.WriteLine();
             }
 
-            TraceEquivalenceClasses(newEqClasses);
+            //TraceEquivalenceClasses(newEqClasses);
 
             return newEqClasses;
         }

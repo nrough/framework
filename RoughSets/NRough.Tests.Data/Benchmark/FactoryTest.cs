@@ -6,12 +6,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NRough.Data;
+using System.Reflection;
 
 namespace NRough.Tests.Data.Benchmark
 {
     [TestFixture]
     public class FactoryTest
     {
+
+        [Test]
+        public void TestAll()
+        {
+            DataStore data = null;
+            Type factoryType = typeof(Factory);
+            var methods = factoryType.GetMethods(
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            foreach (var method in methods)
+            {
+                if (method.GetParameters().Length == 0 
+                    && !method.IsSpecialName)
+                {
+                    data = method.Invoke(null, null) as DataStore;
+                    Assert.NotNull(data, method.Name);
+                    Assert.Greater(data.NumberOfRecords, 0, method.Name);
+                }
+            }
+        }
+
         [Test]
         public void Mashroom()
         {
@@ -31,7 +52,7 @@ namespace NRough.Tests.Data.Benchmark
         [Test]
         public void Dna()
         {
-            DataStore train = Factory.Dna();
+            DataStore train = Factory.DnaTrain();
             Assert.IsNotNull(train);
 
             Console.WriteLine(train.GetStandardFields().Count());
@@ -43,7 +64,7 @@ namespace NRough.Tests.Data.Benchmark
         [Test]
         public void DnaModified()
         {
-            DataStore train = Factory.DnaModified();
+            DataStore train = Factory.DnaModifiedTrain();
             Assert.IsNotNull(train);
 
             DataStore test = Factory.DnaModifiedTest();

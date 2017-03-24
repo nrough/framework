@@ -60,7 +60,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
                             default: throw new ArgumentException("Unknown key", "voteType");
                         }
 
-                        var trainData = Data.Benchmark.Factory.DnaModified();
+                        var trainData = Data.Benchmark.Factory.DnaModifiedTrain();
                         //DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
                         DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 
@@ -109,7 +109,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             RuleQualityMethod identificationFunc = RuleQualityMethods.ConfidenceW;
             RuleQualityMethod voteFunc = RuleQualityMethods.ConfidenceW;
 
-            var trainData = Data.Benchmark.Factory.DnaModified();
+            var trainData = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore trainData = DataStore.Load(trainFileName, DataFormat.RSES1);
             DataStore testData = DataStore.Load(testFileName, DataFormat.RSES1, trainData.DataStoreInfo);
 

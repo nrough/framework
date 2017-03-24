@@ -429,7 +429,7 @@ namespace NRough.Tests.Data
         [Test]
         public void OrderByTest()
         {
-            var data = Factory.DnaModified();
+            var data = Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
 
             int[][] orderBy = new int[][]
@@ -461,7 +461,7 @@ namespace NRough.Tests.Data
         [Test]
         public void CopyTest()
         {
-            var data = Factory.DnaModified();
+            var data = Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             DataStore data2 = DataStore.Copy(data, 0, data.NumberOfRecords);
             int[] fieldIds = data.DataStoreInfo.SelectAttributeIds().ToArray();
@@ -483,7 +483,7 @@ namespace NRough.Tests.Data
         [Test]
         public void SwapTest()
         {
-            var data = Factory.DnaModified();
+            var data = Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             for (int i = 0; i < data.NumberOfRecords; i++)
             {
@@ -506,7 +506,7 @@ namespace NRough.Tests.Data
         [Test]
         public void ShuffleTest()
         {
-            var data = Factory.DnaModified();
+            var data = Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             data.Shuffle();
         }

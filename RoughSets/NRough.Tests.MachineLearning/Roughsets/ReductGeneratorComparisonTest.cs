@@ -28,7 +28,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         {
             int numberOfPermutations = 20;
 
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             var testData = Data.Benchmark.Factory.DnaModifiedTest();
 
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
@@ -77,7 +77,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         [Test]
         public void QuickTest()
         {
-            var data = Data.Benchmark.Factory.DnaModified();
+            var data = Data.Benchmark.Factory.DnaModifiedTrain();
             //DataStore data = DataStore.Load(@"Data\dna_modified.trn", DataFormat.RSES1);
             WeightGenerator weightGenerator = new WeightGeneratorConstant(data);
             //Console.WriteLine(weightGenerator.GetType().Name);

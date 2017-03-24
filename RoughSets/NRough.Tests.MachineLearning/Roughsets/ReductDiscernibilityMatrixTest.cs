@@ -22,7 +22,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             //string trainFileName = @"Data\dna_modified.trn";
             string testFileName = @"Data\dna_modified.tst";
 
-            dataStoreTrain = Data.Benchmark.Factory.DnaModified();
+            dataStoreTrain = Data.Benchmark.Factory.DnaModifiedTrain();
             //dataStoreTrain = DataStore.Load(trainFileName, DataFormat.RSES1);
             dataStoreTest = DataStore.Load(testFileName, DataFormat.RSES1, dataStoreTrain.DataStoreInfo);
 

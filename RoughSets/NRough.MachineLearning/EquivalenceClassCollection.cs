@@ -738,8 +738,13 @@ namespace NRough.MachineLearning
         public string ToStringExt()
         {
             StringBuilder stringBuilder = new StringBuilder();
+
             foreach (var kvp in this.partitions)
-                stringBuilder.AppendLine(kvp.Value.ToStringExt(this.data, this.attributes));
+                stringBuilder.AppendLine(
+                    String.Format("[{0}] {{{1}}}", 
+                    kvp.Value.ToStringExt(this.data, this.attributes), 
+                    kvp.Value.DecisionSet.ToArray().ToStr(',')));
+
             return stringBuilder.ToString();
         }
 

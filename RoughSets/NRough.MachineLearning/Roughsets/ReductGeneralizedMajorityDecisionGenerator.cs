@@ -8,6 +8,7 @@ using NRough.MachineLearning.Weighting;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
+using System.Diagnostics;
 
 namespace NRough.MachineLearning.Roughsets
 {
@@ -156,6 +157,12 @@ namespace NRough.MachineLearning.Roughsets
             this.ReductStoreCollection.AddStore(localReductPool);
         }
 
+        [Conditional("DEBUG")]
+        protected void TraceEquivalenceClasses(EquivalenceClassCollection eqClasses)
+        {
+            Console.WriteLine(eqClasses.ToString());
+        }
+
         public override IReduct CreateReduct(
             int[] permutation, 
             double epsilon, 
@@ -169,6 +176,8 @@ namespace NRough.MachineLearning.Roughsets
             eqClasses.NumberOfObjects = this.DecisionTable.NumberOfRecords;
             this.KeepMajorDecisions(eqClasses, epsilon);
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
+
+            TraceEquivalenceClasses(eqClasses);   
 
             EquivalenceClassCollection newEqClasses = null;
             while (step >= 1)

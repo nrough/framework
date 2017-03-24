@@ -16,12 +16,87 @@ using NRough.Core.Random;
 using NRough.Core.CollectionExtensions;
 using NRough.Core.Comparers;
 using NRough.Data.Benchmark;
+using NRough.MachineLearning;
 
 namespace NRough.Tests.MachineLearning.Roughsets
 {
     [TestFixture]
-    public class ReductGeneralizedMajorityDecisionApproximateTest
+    public class ReductGeneralizedMajorityDecisionApproximateTest 
     {
+        [Test, Repeat(1)]
+        public void TestExceptionCaseWithoutExceptions()
+        {
+            var trainData = Data.Benchmark.Factory.SoybeanSmall();
+            var testData = Data.Benchmark.Factory.Monks2Test();
+
+
+            double eps = 0.2;
+            var weightGenerator = new WeightGeneratorMajority(trainData);
+
+            var permList = new PermutationCollection(100, trainData.GetStandardFields());
+            
+            /*
+            var permList = new PermutationCollection(new Permutation[] {
+                new Permutation(new int[] { 4, 6, 5, 1, 3, 2 }),
+                new Permutation(new int[] { 4, 6, 5, 1, 2, 3 }),
+                new Permutation(new int[] { 4, 6, 5, 2, 1, 3 }),
+                new Permutation(new int[] { 6, 1, 4, 5, 3, 2 }),
+                new Permutation(new int[] { 6, 1, 4, 5, 2, 3 })
+                });
+            */
+
+            Console.WriteLine(permList.ElementAt(0).ToArray().ToStr(' '));
+
+            trainData.SetWeights(weightGenerator.Weights);
+
+            Args parmsEx = new Args(6);
+            parmsEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
+            parmsEx.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
+            parmsEx.SetParameter(ReductFactoryOptions.WeightGenerator, weightGenerator);
+            parmsEx.SetParameter(ReductFactoryOptions.Epsilon, eps);
+            parmsEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
+            parmsEx.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
+            parmsEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, 
+                SortDirection.Descending);
+            
+            ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
+                ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
+            generatorEx.Run();
+            IReductStoreCollection origReductStoreCollectionEx = generatorEx.GetReductStoreCollection();
+
+
+            int i = 0;
+            foreach (var reductStore in origReductStoreCollectionEx)
+            {
+                Console.Write(permList.ElementAt(i).ToArray().ToStr(' '));
+                Console.Write(" : ");
+                foreach (var reduct in reductStore.Where(r => r.IsException == false))
+                    Console.Write(reduct);
+                Console.Write(" -> ");
+                Console.Write(reductStore.Where(r => r.IsException).Count());
+
+                var eqClasses = EquivalenceClassCollection.Create(
+                    permList.ElementAt(i).ToArray(),
+                    trainData,
+                    weightGenerator.Weights);
+
+
+
+                Console.WriteLine();
+                foreach (var eqClass in eqClasses)
+                {
+                    Console.WriteLine("[{0}]{{{1}}}", eqClass.Instance.ToStr(' '), eqClass.DecisionSet.ToArray().ToStr(','));
+                }
+
+                i++;
+                Console.WriteLine();
+            }
+        }
+
+
+
+
+
         public static IEnumerable<KeyValuePair<string, BenchmarkData>> GetDataFiles()
         {
             return BenchmarkDataHelper.GetDataFiles("Data",

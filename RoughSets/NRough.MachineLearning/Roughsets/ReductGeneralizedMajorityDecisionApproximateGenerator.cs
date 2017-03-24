@@ -6,6 +6,7 @@ using NRough.Data;
 using NRough.Core;
 using NRough.MachineLearning.Permutations;
 using NRough.Core.CollectionExtensions;
+using System.Diagnostics;
 
 namespace NRough.MachineLearning.Roughsets
 {
@@ -196,7 +197,13 @@ namespace NRough.MachineLearning.Roughsets
                 exception.IsException = true;
 
                 reductStore.AddReduct(exception);
+
+                Console.WriteLine("Exceptions:");
+                TraceEquivalenceClasses(exceptionEqClasses);
+                Console.WriteLine();
             }
+
+            TraceEquivalenceClasses(newEqClasses);
 
             return newEqClasses;
         }

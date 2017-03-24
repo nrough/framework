@@ -245,12 +245,29 @@ namespace NRough.Data.Benchmark
 
         public static DataStore Monks2()
         {
-            throw new NotImplementedException();
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.monks-2.train"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                res = dataReader.Read();
+            }
+
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
+                fieldInfo.IsNumeric = false;
+            return res;
         }
 
         public static DataStore Monks2Test()
         {
-            throw new NotImplementedException();
+            DataStore train = Monks2();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.monks-2.test"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                dataReader.ReferenceDataStoreInfo = train.DataStoreInfo;
+                return dataReader.Read();
+            }
         }
 
         public static DataStore Monks3()
@@ -401,9 +418,30 @@ namespace NRough.Data.Benchmark
             return res;
         }
 
-        public static DataStore SoybeanLarge()
+        public static DataStore SoybeanLargeTrain()
         {
-            throw new NotImplementedException();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.soybean-large.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                return dataReader.Read();
+            }
+        }
+
+        public static DataStore SoybeanLargeTest()
+        {
+            DataStore res;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                "NRough.Data.Benchmark.Data.soybean-large.data"))
+            {
+                IDataReader dataReader = new DataRSESFileReader(stream);
+                res = dataReader.Read();
+            }
+
+            foreach (var fieldInfo in res.DataStoreInfo.SelectAttributes(x => x.IsNumeric))
+                fieldInfo.IsNumeric = false;
+
+            return res;
         }
 
         public static DataStore SoybeanSmall()

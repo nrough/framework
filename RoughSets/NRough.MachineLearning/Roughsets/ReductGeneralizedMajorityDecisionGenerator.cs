@@ -177,7 +177,7 @@ namespace NRough.MachineLearning.Roughsets
             this.KeepMajorDecisions(eqClasses, epsilon);
             int step = this.ReductionStep > 0 ? this.ReductionStep : 1;
 
-            TraceEquivalenceClasses(eqClasses);   
+            //TraceEquivalenceClasses(eqClasses);   
 
             EquivalenceClassCollection newEqClasses = null;
             while (step >= 1)

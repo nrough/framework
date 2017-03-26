@@ -32,7 +32,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void CacheReductFirstFoundTrue()
         {
             HashSet<int> attributeSet = new HashSet<int>(new int[] { 1, 2, 3 });
-            string key = "#$#$#$" + attributeSet.ToArray().ToStr(' ');
+            string key = "#$#$#$" + attributeSet.ToArray().ToStr(" ");
             ReductCache.Instance.Set(key, new ReductCacheInfo(true, 10));
 
             ReductCacheInfo reductInfo = ReductCache.Instance.Get(key, null) as ReductCacheInfo;
@@ -62,7 +62,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
         public void CacheReductFirstFoundFalse()
         {
             HashSet<int> attributeSet = new HashSet<int>(new int[] { 1, 2, 3 });
-            string key = "#$#$#$" + attributeSet.ToArray().ToStr(' ');
+            string key = "#$#$#$" + attributeSet.ToArray().ToStr(" ");
             ReductCache.Instance.Set(key, new ReductCacheInfo(false, 8), null);
 
             ReductCacheInfo reductInfo = ReductCache.Instance.Get(key, null) as ReductCacheInfo;

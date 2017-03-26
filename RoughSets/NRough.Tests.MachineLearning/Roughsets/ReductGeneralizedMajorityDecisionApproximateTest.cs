@@ -87,7 +87,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             int i = 0;
             foreach (var reductStore in origReductStoreCollectionEx)
             {
-                Console.Write(permList.ElementAt(i).ToArray().ToStr(' '));
+                Console.Write(permList.ElementAt(i).ToArray().ToStr(" "));
                 Console.Write(" : ");
                 foreach (var reduct in reductStore.Where(r => !r.IsException))
                     Console.Write(reduct);

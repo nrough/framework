@@ -89,182 +89,177 @@ namespace NRough.Tests.Data.Pivot
             bool first = true;
 
             string output = Path.Combine(path, "latextable-" + size.ToString() + ".tex");
-            using (StreamWriter outputFile = new StreamWriter(output))
+
+            using (FileStream fileStreamWrite =
+                new FileStream(output, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                foreach (var f in filenames)
+                using (StreamWriter outputFile = new StreamWriter(fileStreamWrite))
                 {
-                    string filename = Path.Combine(path, f);
-
-                    if (!File.Exists(filename))
-                        continue;
-
-                    DataTable dtc = ClassificationResult.ReadResults(filename, '|');
-
-                    if (dtc.Columns.Contains("Column1"))
-                        dtc.Columns.Remove("Column1");
-
-                    //for (int i = 0; i < dtc.Rows.Count; i++)
-                    //    dtc.Rows[i]["numrul"] = dtc.Rows[i].Field<double>("numrul") + dtc.Rows[i].Field<double>("dthm");                    
-
-                    string datasetname = dtc.Rows[0]["ds"].ToString().Replace('_', '-');
-                    if (datasetname.Substring(datasetname.Length - 5, 3) == "TST")
-                        datasetname = datasetname.Substring(0, datasetname.Length - 6);
-
-                    for (int i = 0; i < dtc.Rows.Count; i++)
-                        dtc.Rows[i]["ds"] = datasetname;                        
-
-                    dtc = ClassificationResult.AverageResults(dtc);
-                    Console.WriteLine(new DataTableLatexTabularFormatter().Format("", dtc, null));
-
-                    datasetNames.Add(datasetname);
-                    dtc.Columns.Remove("ds"); 
-
-                    DataColumn[] cols = new DataColumn[colNames.Length];
-                    for (int i = 0; i < colNames.Length; i++)
-                        cols[i] = dtc.Columns[colNames[i]];
-
-                    if (first)
+                    foreach (var f in filenames)
                     {
-                        modelNames = dtc.AsEnumerable()
-                            .GroupBy(r => r["model"].ToString())
-                            .Select(g => g.Key).ToArray();
-                    }
+                        string filename = Path.Combine(path, f);
 
-                    var pivot = new PivotService();
-                    var pivotTable = pivot.Pivot(
-                        dtc,
-                        dtc.Columns["model"],
-                        cols,
-                        "-");
+                        if (!File.Exists(filename))
+                            continue;
 
-                    pivotTable.Columns.Remove("M-EPS-dthm");
-                    pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
+                        DataTable dtc = ClassificationResult.ReadResults(filename, '|');
 
-                    //for (int i = 0; i < pivotTable.Rows.Count; i++)
-                    //{
-                    //    pivotTable.Rows[i]["m-PHICAP-EXEP-attr"] = pivotTable.Rows[i].Field<double>("m-PHICAP-GAPS-attr");
-                    //    pivotTable.Rows[i]["m-PHICAP-GAPS-dtha"] = pivotTable.Rows[i].Field<double>("m-PHICAP-EXEP-dtha");
-                    //}
+                        if (dtc.Columns.Contains("Column1"))
+                            dtc.Columns.Remove("Column1");
 
-                    var dataFormatter = new DataTableLatexTabularFormatter();
+                        string datasetname = dtc.Rows[0]["ds"].ToString().Replace('_', '-');
+                        if (datasetname.Substring(datasetname.Length - 5, 3) == "TST")
+                            datasetname = datasetname.Substring(0, datasetname.Length - 6);
 
-                    foreach (string modelName in modelNames)
-                    {
-                        int maxRowIndex = pivotTable.AsEnumerable()
-                            .Select((row, index) => new { row, index })
-                            .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), 2, MidpointRounding.AwayFromZero))
-                            .ThenByDescending(r => r.row.Field<double>("eps"))
-                            .Select(r => r.index).First();
+                        for (int i = 0; i < dtc.Rows.Count; i++)
+                            dtc.Rows[i]["ds"] = datasetname;
 
-                        compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
+                        dtc = ClassificationResult.AverageResults(dtc);
+                        //Console.WriteLine(new DataTableLatexTabularFormatter().Format("", dtc, null));
 
+                        datasetNames.Add(datasetname);
+                        dtc.Columns.Remove("ds");
+
+                        DataColumn[] cols = new DataColumn[colNames.Length];
                         for (int i = 0; i < colNames.Length; i++)
-                        {
-                            if (!pivotTable.Columns.Contains(String.Format("{0}-{1}", modelName, colNames[i])))
-                                continue;
-
-                            dataFormatter.SetCellProperty(
-                                pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].Ordinal,
-                                maxRowIndex,
-                                "fontface",
-                                "textbf");
-                        }
-                    }
-
-                    dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
-                    dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
-                    dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
-                    dataFormatter.CustomFooter = CustomFooter();
-
-                    string latexTable = dataFormatter.Format("G", pivotTable, null);
-
-                    Console.WriteLine(latexTable);
-                    Console.WriteLine();
-
-                    outputFile.WriteLine(latexTable);
-                    outputFile.WriteLine();
-
-                    first = false;
-
-                }
-
-                int[][] summary = new int[3][];
-                for (int i = 0; i < summary.Length; i++)
-                    summary[i] = new int[5];
-
-                string referenceModelName = "M-EPS";
-                foreach (var modelName in modelNames
-                    .Where(m => m != referenceModelName))
-                {
-                    summary.SetAll(0);
-
-                    StringBuilder sb = new StringBuilder();
-
-                    int j = 0;
-                    first = true;
-                    foreach (var dataset in datasetNames)
-                    {
-                        DataRow referenceRow = compareBest[new Tuple<string, string>(dataset, referenceModelName)];
-                        DataRow rowToValidate = compareBest[new Tuple<string, string>(dataset, modelName)];
+                            cols[i] = dtc.Columns[colNames[i]];
 
                         if (first)
                         {
-                            sb.Append(@"\textbf{Data}");
-                            foreach (var colname in colNames)
-                            {
-                                if (rowToValidate.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname))
-                                    && referenceRow.Table.Columns.Contains(String.Format("{0}-{1}", referenceModelName, colname)))
-                                {
-                                    sb.AppendFormat(@" &  \textbf{{{0}}}", ConvertColName(colname));
-                                }
-                            }
-                            sb.AppendLine(@"\\ \hline");
+                            modelNames = dtc.AsEnumerable()
+                                .GroupBy(r => r["model"].ToString())
+                                .Select(g => g.Key).ToArray();
                         }
 
-                        sb.AppendFormat(@"\hyperref[results:gmdr{1}_{0}]{{{0}}}", ConvertDataSetName(dataset), size);
-                        j = 0;
-                        foreach (var colname in colNames)
+                        var pivot = new PivotService();
+                        var pivotTable = pivot.Pivot(
+                            dtc,
+                            dtc.Columns["model"],
+                            cols,
+                            "-");
+
+                        pivotTable.Columns.Remove("M-EPS-dthm");
+                        pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
+
+                        var dataFormatter = new DataTableLatexTabularFormatter();
+
+                        foreach (string modelName in modelNames)
                         {
-                            if (!rowToValidate.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname))
-                                || !referenceRow.Table.Columns.Contains(String.Format("{0}-{1}", referenceModelName, colname)))
-                                continue;
+                            int maxRowIndex = pivotTable.AsEnumerable()
+                                .Select((row, index) => new { row, index })
+                                .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), 2, MidpointRounding.AwayFromZero))
+                                .ThenByDescending(r => r.row.Field<double>("eps"))
+                                .Select(r => r.index).First();
 
-                            double newval = Math.Round(
-                                rowToValidate.Field<double>(String.Format("{0}-{1}", modelName, colname)),
-                                2, MidpointRounding.AwayFromZero);
+                            compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
 
-                            double refval = Math.Round(
-                                referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
-                                2, MidpointRounding.AwayFromZero);
-
-                            int comparisonResult = colname == "acc"
-                                                 ? newval.CompareTo(refval)
-                                                 : refval.CompareTo(newval);
-
-                            switch (comparisonResult)
+                            for (int i = 0; i < colNames.Length; i++)
                             {
-                                case 1:
-                                    sb.Append(" & +");
-                                    summary[0][j]++;
-                                    break;
-                                case -1:
-                                    sb.Append(" & -");
-                                    summary[1][j]++;
-                                    break;
-                                case 0:
-                                    sb.Append(" & o");
-                                    summary[2][j]++;
-                                    break;
+                                if (!pivotTable.Columns.Contains(String.Format("{0}-{1}", modelName, colNames[i])))
+                                    continue;
+
+                                dataFormatter.SetCellProperty(
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].Ordinal,
+                                    maxRowIndex,
+                                    "fontface",
+                                    "textbf");
                             }
-                            j++;
                         }
-                        sb.AppendLine(@"\\ \hline");
+
+                        dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
+                        dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
+                        dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
+                        dataFormatter.CustomFooter = CustomFooter();
+
+                        string latexTable = dataFormatter.Format("G", pivotTable, null);
+
+                        Console.WriteLine(latexTable);
+                        Console.WriteLine();
+
+                        outputFile.WriteLine(latexTable);
+                        outputFile.WriteLine();
+
                         first = false;
+
                     }
 
-                    if (j == 4)
+                    int[][] summary = new int[3][];
+                    for (int i = 0; i < summary.Length; i++)
+                        summary[i] = new int[5];
+
+                    string referenceModelName = "M-EPS";
+                    foreach (var modelName in modelNames
+                        .Where(m => m != referenceModelName))
                     {
-                        sb.Insert(0, @"\begin{table}[!htbp]		
+                        summary.SetAll(0);
+
+                        StringBuilder sb = new StringBuilder();
+
+                        int j = 0;
+                        first = true;
+                        foreach (var dataset in datasetNames)
+                        {
+                            DataRow referenceRow = compareBest[new Tuple<string, string>(dataset, referenceModelName)];
+                            DataRow rowToValidate = compareBest[new Tuple<string, string>(dataset, modelName)];
+
+                            if (first)
+                            {
+                                sb.Append(@"\textbf{Data}");
+                                foreach (var colname in colNames)
+                                {
+                                    if (rowToValidate.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname))
+                                        && referenceRow.Table.Columns.Contains(String.Format("{0}-{1}", referenceModelName, colname)))
+                                    {
+                                        sb.AppendFormat(@" &  \textbf{{{0}}}", ConvertColName(colname));
+                                    }
+                                }
+                                sb.AppendLine(@"\\ \hline");
+                            }
+
+                            sb.AppendFormat(@"\hyperref[results:gmdr{1}_{0}]{{{0}}}", ConvertDataSetName(dataset), size);
+                            j = 0;
+                            foreach (var colname in colNames)
+                            {
+                                if (!rowToValidate.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname))
+                                    || !referenceRow.Table.Columns.Contains(String.Format("{0}-{1}", referenceModelName, colname)))
+                                    continue;
+
+                                double newval = Math.Round(
+                                    rowToValidate.Field<double>(String.Format("{0}-{1}", modelName, colname)),
+                                    2, MidpointRounding.AwayFromZero);
+
+                                double refval = Math.Round(
+                                    referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
+                                    2, MidpointRounding.AwayFromZero);
+
+                                int comparisonResult = colname == "acc"
+                                                     ? newval.CompareTo(refval)
+                                                     : refval.CompareTo(newval);
+
+                                switch (comparisonResult)
+                                {
+                                    case 1:
+                                        sb.Append(" & +");
+                                        summary[0][j]++;
+                                        break;
+                                    case -1:
+                                        sb.Append(" & -");
+                                        summary[1][j]++;
+                                        break;
+                                    case 0:
+                                        sb.Append(" & o");
+                                        summary[2][j]++;
+                                        break;
+                                }
+                                j++;
+                            }
+                            sb.AppendLine(@"\\ \hline");
+                            first = false;
+                        }
+
+                        if (j == 4)
+                        {
+                            sb.Insert(0, @"\begin{table}[!htbp]		
 \centering
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results" + size.ToString() + ":" + modelName.ToLower() + @"}
@@ -272,20 +267,20 @@ namespace NRough.Tests.Data.Pivot
 \begin{tabular}{|l||c|c|c|c|}
 \hline" + Environment.NewLine);
 
-                        sb.AppendLine(@"\hline");
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "+",
-                            summary[0][0], summary[0][1], summary[0][2], summary[0][3]);
-                        sb.AppendLine();
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "-",
-                            summary[1][0], summary[1][1], summary[1][2], summary[1][3]);
-                        sb.AppendLine();
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "o",
-                            summary[2][0], summary[2][1], summary[2][2], summary[2][3]);
-                        sb.AppendLine();
-                    }
-                    else
-                    {
-                        sb.Insert(0, @"\begin{table}[!htbp]		
+                            sb.AppendLine(@"\hline");
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "+",
+                                summary[0][0], summary[0][1], summary[0][2], summary[0][3]);
+                            sb.AppendLine();
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "-",
+                                summary[1][0], summary[1][1], summary[1][2], summary[1][3]);
+                            sb.AppendLine();
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "o",
+                                summary[2][0], summary[2][1], summary[2][2], summary[2][3]);
+                            sb.AppendLine();
+                        }
+                        else
+                        {
+                            sb.Insert(0, @"\begin{table}[!htbp]		
 \centering
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results:" + modelName.ToLower() + @"}
@@ -293,29 +288,32 @@ namespace NRough.Tests.Data.Pivot
 \begin{tabular}{|l||c|c|c|c|c|}
 \hline" + Environment.NewLine);
 
-                        sb.AppendLine(@"\hline");
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "+",
-                            summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4]);
-                        sb.AppendLine();
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "-",
-                            summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4]);
-                        sb.AppendLine();
-                        sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "o",
-                            summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4]);
-                        sb.AppendLine();
+                            sb.AppendLine(@"\hline");
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "+",
+                                summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4]);
+                            sb.AppendLine();
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "-",
+                                summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4]);
+                            sb.AppendLine();
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "o",
+                                summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4]);
+                            sb.AppendLine();
+                        }
+
+                        sb.AppendLine(@"\end{tabular}");
+                        sb.AppendLine(@"\end{table}");
+
+                        Console.WriteLine(sb.ToString());
+
+                        outputFile.WriteLine(sb.ToString());
+                        outputFile.WriteLine();
+
                     }
 
-                    sb.AppendLine(@"\end{tabular}");
-                    sb.AppendLine(@"\end{table}");
-
-                    Console.WriteLine(sb.ToString());
-
-                    outputFile.WriteLine(sb.ToString());
-                    outputFile.WriteLine();
                 }
             }
         }
-
+         
         private string CustomHeader_OLD(string caption, string label)
         {
             return @"\begin{table}[htbp]

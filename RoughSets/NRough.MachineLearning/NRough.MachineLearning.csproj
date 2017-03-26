@@ -83,6 +83,10 @@
       <HintPath>..\packages\DynamicInterop.0.7.4\lib\net40\DynamicInterop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LinqStatistics, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqStatistics.2.1.0\lib\net40\LinqStatistics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RDotNet, Version=1.6.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\R.NET.Community.1.6.5\lib\net40\RDotNet.dll</HintPath>
       <Private>True</Private>
@@ -111,6 +115,7 @@
     <Compile Include="Classification\ClassificationResultFormatter.cs" />
     <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
     <Compile Include="Classification\Classifier.cs" />
+    <Compile Include="Classification\ConfusionMatrix.cs" />
     <Compile Include="Classification\ConstDecisionModel.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeMetric.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />

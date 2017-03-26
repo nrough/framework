@@ -201,8 +201,7 @@ namespace NRough.MachineLearning.Roughsets
 
             foreach (IReductStore rs in this.ReductStoreCollection.Where(r => r.IsActive))
             {
-                for (int k = 0; k < this.decCountPlusOne; k++)
-                    reductsVotes[k] = 0.0;
+                reductsVotes.SetAll(0);
 
                 foreach (IReduct reduct in rs)
                 {
@@ -216,10 +215,8 @@ namespace NRough.MachineLearning.Roughsets
 
                         continue;
                     }
-
-                    for (int k = 0; k < this.decCountPlusOne; k++)
-                        identificationWeights[k] = 0.0;
-
+                    
+                    identificationWeights.SetAll(0);
                     identifiedDecision = 0; // -1 (unclassified)
                     identifiedDecisionWeight = 0.0;
 
@@ -227,6 +224,8 @@ namespace NRough.MachineLearning.Roughsets
 
                     if (eqClass != null)
                     {
+                        //TODO
+                        /*
                         if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
                         {
                             lock (mutex)
@@ -237,6 +236,7 @@ namespace NRough.MachineLearning.Roughsets
 
                             break;
                         }
+                        */
 
                         lock (mutex)
                         {
@@ -251,45 +251,26 @@ namespace NRough.MachineLearning.Roughsets
                                 this.StandardRuleLengthSum += reduct.Attributes.Count;
                             }
                         }
-
-                        foreach (var decVal in eqClass.DecisionSet)
+                        
+                        if (reduct.IsException && this.ExceptionRulesAsGaps)
                         {
-                            int idx = dec2index[decVal];
-                            identificationWeights[idx] = this.IdentificationFunction(decVal, reduct, eqClass);
-                            if (identifiedDecisionWeight < identificationWeights[idx])
-                            {
-                                identifiedDecisionWeight = identificationWeights[idx];
-                                identifiedDecision = idx;
-                            }
-                        }
-
-                        if (this.VoteFunction.Equals(this.IdentificationFunction))
-                        {
-                            if (this.IdentifyMultipleDecision)
-                            {
-                                foreach (var decVal in eqClass.DecisionSet)
-                                {
-                                    int idx = dec2index[decVal];
-                                    if (DoubleEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
-                                    {
-                                        if ((this.MinimumVoteValue <= 0) || (identificationWeights[idx] >= this.MinimumVoteValue))
-                                        {
-                                            reductsVotes[idx] += identificationWeights[idx];
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
-                                {
-                                    reductsVotes[identifiedDecision] += identificationWeights[identifiedDecision];
-                                }
-                            }
+                            identificationWeights[0] = 1;
+                            identifiedDecision = 0;
                         }
                         else
                         {
-                            if (identifiedDecision != 0)
+                            foreach (var decVal in eqClass.DecisionSet)
+                            {
+                                int idx = dec2index[decVal];
+                                identificationWeights[idx] = this.IdentificationFunction(decVal, reduct, eqClass);
+                                if (identifiedDecisionWeight < identificationWeights[idx])
+                                {
+                                    identifiedDecisionWeight = identificationWeights[idx];
+                                    identifiedDecision = idx;
+                                }
+                            }
+
+                            if (this.VoteFunction.Equals(this.IdentificationFunction))
                             {
                                 if (this.IdentifyMultipleDecision)
                                 {
@@ -298,39 +279,67 @@ namespace NRough.MachineLearning.Roughsets
                                         int idx = dec2index[decVal];
                                         if (DoubleEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
                                         {
-                                            double vote = this.VoteFunction(decVal, reduct, eqClass);
-                                            if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                            if ((this.MinimumVoteValue <= 0) || (identificationWeights[idx] >= this.MinimumVoteValue))
                                             {
-                                                reductsVotes[idx] += vote;
+                                                reductsVotes[idx] += identificationWeights[idx];
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    double vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
-                                    if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                    if ((this.MinimumVoteValue <= 0) || (identifiedDecisionWeight >= this.MinimumVoteValue))
                                     {
-                                        reductsVotes[identifiedDecision] += vote;
+                                        reductsVotes[identifiedDecision] += identificationWeights[identifiedDecision];
                                     }
                                 }
                             }
                             else
                             {
-                                if (this.VoteFunction.Method.Name == singleVoteName
-                                    && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
+                                if (identifiedDecision != 0)
                                 {
-                                    reductsVotes[0] += 1;
+                                    if (this.IdentifyMultipleDecision)
+                                    {
+                                        foreach (var decVal in eqClass.DecisionSet)
+                                        {
+                                            int idx = dec2index[decVal];
+                                            if (DoubleEpsilonComparer.Instance.Equals(identificationWeights[idx], identifiedDecisionWeight))
+                                            {
+                                                double vote = this.VoteFunction(decVal, reduct, eqClass);
+                                                if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                                {
+                                                    reductsVotes[idx] += vote;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        double vote = this.VoteFunction(decisions[identifiedDecision], reduct, eqClass);
+                                        if ((this.MinimumVoteValue <= 0) || (vote >= this.MinimumVoteValue))
+                                        {
+                                            reductsVotes[identifiedDecision] += vote;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (this.VoteFunction.Method.Name == singleVoteName
+                                        && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)
+                                    {
+                                        reductsVotes[0] += 1;
+                                    }
                                 }
                             }
                         }
                     }
                     else //equivalence class not found
                     {
-                        if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
-                            continue;
+                        //TODO
+                        //if (this.UseExceptionRules && reduct.IsException && this.ExceptionRulesAsGaps)
+                        //    continue;
 
-                        if (!reduct.IsException)
+                        if ( ! reduct.IsException)
                         {
                             if (this.VoteFunction.Method.Name == singleVoteName
                                 && this.VoteFunction.Method.DeclaringType.FullName == singleVoteModule)

@@ -243,7 +243,7 @@ namespace NRough.MachineLearning.Roughsets
                 return String.Format(
                     "[Id:{0}] {1} (eps:{2:0.00}, rules:{3})",
                     this.Id,
-                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(" ") : "empty",
                     this.Epsilon,
                     (eqClassMap == null) ? "??" : eqClassMap.Count.ToString()
                     );
@@ -254,7 +254,7 @@ namespace NRough.MachineLearning.Roughsets
                 sb.AppendFormat(                    
                     "[Id:{0}] {1} (eps:{2:0.00}, rules:{3}) ",
                     this.Id,
-                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(' ') : "empty",
+                    this.attributeSet.Count > 0 ? this.attributeSet.ToArray().ToStr(" ") : "empty",
                     this.Epsilon,
                     (eqClassMap == null) ? "??" : eqClassMap.Count.ToString()
                     );

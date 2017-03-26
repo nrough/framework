@@ -234,7 +234,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
             {
                 int[] attributes = (int[])permutation.ToArray().Clone();
 
-                Console.WriteLine(attributes.ToStr(' '));
+                Console.WriteLine(attributes.ToStr(" "));
 
                 int[] gd_attributes = CalculateGeneralizedDecisionReductFromSubset(
                     trainData, eps, attributes).Attributes.ToArray();
@@ -264,7 +264,7 @@ namespace NRough.Tests.MachineLearning.Roughsets
 
             int[] attributes = new int[] { 4, 3, 2, 1 };
 
-            Console.WriteLine(attributes.ToStr(' '));
+            Console.WriteLine(attributes.ToStr(" "));
 
             int[] gd_attributes = CalculateGeneralizedDecisionReductFromSubset(
                 trainData, eps, attributes).Attributes.ToArray();

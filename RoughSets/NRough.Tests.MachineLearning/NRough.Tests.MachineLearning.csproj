@@ -90,6 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classification\ConfusionMatrixTest.cs" />
     <Compile Include="Classification\DecisionRules\Holte1RTest.cs" />
     <Compile Include="Classification\DecisionRules\TestTest.cs" />
     <Compile Include="Classification\DecisionTrees\DecisionForestTest.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Classification\DecisionTrees\DecisionTreeTest.cs" />
     <Compile Include="Classification\DecisionTrees\ObliviousDecisionTreeTest.cs" />
     <Compile Include="Classification\DecisionTrees\RoughDecisionTreeTest.cs" />
+    <Compile Include="Classification\TextFixtureAttribute.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimpleTest.cs" />
     <Compile Include="Clustering\Hierarchical\HierarchicalClusteringTest.cs" />

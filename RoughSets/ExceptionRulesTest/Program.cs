@@ -13,6 +13,7 @@ using NRough.MachineLearning.Classification;
 using NRough.Core.Random;
 using NRough.Data.Benchmark;
 using NRough.MachineLearning.Roughsets.Reducts.Comparers;
+using System.Diagnostics;
 
 namespace ExceptionRulesTest
 {
@@ -21,8 +22,11 @@ namespace ExceptionRulesTest
         private ReductRuleNumberComparer reductRuleNumberComparer = new ReductRuleNumberComparer();        
         private ReductStoreRuleNumberComparer reductStoreRuleNumComparer = new ReductStoreRuleNumberComparer(true);
 
+        int minEpsilon = 0;
+        int maxEpsilon = 60;
+
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations, int ensembleSize)
-        {            
+        {           
             DataStore trainData = null, testData = null, data = null;
             string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");
             DataSplitter splitter = null;
@@ -71,9 +75,9 @@ namespace ExceptionRulesTest
                     var permList = permGenerator.Generate(numberOfPermutations);                    
 
                     ParallelOptions options = new ParallelOptions();
-                    options.MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism;
-                    
-                    Parallel.For(20, 60, options, i =>                    
+                    options.MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism;                    
+
+                    Parallel.For(minEpsilon, maxEpsilon, options, i =>                    
                     {
                         var accuracy = this.ExceptionRulesSingleRun(trainData, testData, permList, i, ensembleSize);
 
@@ -161,8 +165,10 @@ namespace ExceptionRulesTest
             resultApprox.MaxTreeHeight = 0;
 
             resultApprox.ModelCreationTime = generatorApprox.ReductGenerationTime;
-            resultApprox.ClassificationTime = classifierApprox.ClassificationTime;            
-            
+            resultApprox.ClassificationTime = classifierApprox.ClassificationTime;
+
+            TraceClassificationResult(resultApprox);            
+
             Args parmsEx = new Args(6);
             parmsEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
             parmsEx.SetParameter(ReductFactoryOptions.ReductType, ReductTypes.GeneralizedMajorityDecisionApproximate);
@@ -199,7 +205,9 @@ namespace ExceptionRulesTest
             resultEx.MaxTreeHeight = filteredReductStoreCollectionEx.GetAvgSumPerStoreMeasure(ReductMeasureNumberOfPartitions.Instance, true, true);
 
             resultEx.ModelCreationTime = generatorEx.ReductGenerationTime;
-            resultEx.ClassificationTime = classifierEx.ClassificationTime;            
+            resultEx.ClassificationTime = classifierEx.ClassificationTime;
+
+            TraceClassificationResult(resultEx);            
 
             IReductStoreCollection origReductStoreCollectionGap = generatorEx.GetReductStoreCollection();
             IReductStoreCollection filteredReductStoreCollectionGap
@@ -229,7 +237,8 @@ namespace ExceptionRulesTest
             
             resultGaps.ModelCreationTime = generatorEx.ReductGenerationTime;
             resultGaps.ClassificationTime = classifierGaps.ClassificationTime;
-            
+
+            TraceClassificationResult(resultGaps);            
 
             Args parmsNoEx = new Args(6);
             parmsNoEx.SetParameter(ReductFactoryOptions.DecisionTable, trainData);
@@ -272,6 +281,8 @@ namespace ExceptionRulesTest
             resultNoEx.ModelCreationTime = generatorNoEx.ReductGenerationTime;
             resultNoEx.ClassificationTime = classifierNoEx.ClassificationTime;
 
+            TraceClassificationResult(resultNoEx);
+
             return new Tuple<ClassificationResult, ClassificationResult, ClassificationResult, ClassificationResult>
                 (resultApprox, resultEx, resultGaps, resultNoEx);
         }
@@ -312,7 +323,21 @@ namespace ExceptionRulesTest
             {
                 int numberOfPermutation = ensembleSize == 1 ? ensembleSize * 20 : ensembleSize;
                 program.ExceptiodnRulesTest(kvp, numberOfTests, numberOfPermutation, ensembleSize);
-            }            
+            }
+
+            Pause();
+        }
+
+        [Conditional("DEBUG")]
+        public static void TraceClassificationResult(ClassificationResult result)
+        {
+            Console.WriteLine(result.ConfusionMatrix);
+        }
+
+        [Conditional("DEBUG")]
+        public static void Pause()
+        {
+            Console.ReadKey();
         }
     }
 }

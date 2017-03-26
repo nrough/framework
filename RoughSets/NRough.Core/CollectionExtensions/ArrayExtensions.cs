@@ -103,7 +103,7 @@ namespace NRough.Core.CollectionExtensions
             return array.RemoveAt(numIndex);            
         }
 
-        public static string ToStr<T>(this T[] array, char separator = '|')
+        public static string ToStr<T>(this T[] array, string separator = "|")
         {
             if (array == null)
                 return "NULL";
@@ -118,6 +118,27 @@ namespace NRough.Core.CollectionExtensions
                 if (i < array.Length - 1)
                     sb.Append(separator);
             }
+            return sb.ToString();
+        }
+
+        public static string ToStr<T>(this T[][] array, string colSeparator = " ", string recordSeparator = "\n")
+        {
+            if (array == null)
+                return String.Empty;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array[0].Length; i++)
+            {
+                for (int j = 0; j < array.Length; j++)
+                {                
+                    sb.Append(array[j][i].ToString());
+                    if (j < array.Length - 1)
+                        sb.Append(colSeparator);
+                }
+                
+                sb.Append(recordSeparator);
+            }
+
             return sb.ToString();
         }
 

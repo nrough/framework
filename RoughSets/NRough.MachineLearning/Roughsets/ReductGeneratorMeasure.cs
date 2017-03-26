@@ -316,7 +316,7 @@ namespace NRough.MachineLearning.Roughsets
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("m=").Append(this.GetType().Name);
             stringBuilder.Append("|d=").Append(this.DecisionTable.Name);
-            stringBuilder.Append("|a=").Append(reduct.Attributes.ToArray().ToStr(' '));
+            stringBuilder.Append("|a=").Append(reduct.Attributes.ToArray().ToStr(" "));
             return stringBuilder.ToString();
         }
 

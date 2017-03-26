@@ -743,7 +743,7 @@ namespace NRough.MachineLearning
                 stringBuilder.AppendLine(
                     String.Format("[{0}] {{{1}}}", 
                     kvp.Value.ToStringExt(this.data, this.attributes), 
-                    kvp.Value.DecisionSet.ToArray().ToStr(',')));
+                    kvp.Value.DecisionSet.ToArray().ToStr(",")));
 
             return stringBuilder.ToString();
         }

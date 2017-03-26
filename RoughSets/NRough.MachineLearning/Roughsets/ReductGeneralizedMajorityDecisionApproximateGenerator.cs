@@ -198,9 +198,9 @@ namespace NRough.MachineLearning.Roughsets
 
                 reductStore.AddReduct(exception);
 
-                Console.WriteLine("Exceptions:");
-                TraceEquivalenceClasses(exceptionEqClasses);
-                Console.WriteLine();
+                //Console.WriteLine("Exceptions:");
+                //TraceEquivalenceClasses(exceptionEqClasses);
+                //Console.WriteLine();
             }
 
             //TraceEquivalenceClasses(newEqClasses);

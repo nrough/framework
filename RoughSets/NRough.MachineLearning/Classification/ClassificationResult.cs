@@ -9,29 +9,36 @@ using System.Reflection;
 using System.Linq.Dynamic;
 using System.Data;
 using NRough.Core.CollectionExtensions;
+using LinqStatistics;
 
 namespace NRough.MachineLearning.Classification
-{    
+{
+    
+
     [Serializable]
     public class ClassificationResult : IFormattable
     {
         #region Members
 
         public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
-
+        
         private Dictionary<long, int> decisionValue2Index;
         private long[] decisions;
         private int decCount;
         private int decCountPlusOne;
-        private long[] predictionResults;
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
+
+        private long[] predictionResults;
         private int counter;
+
         private readonly object syncRoot = new object();
 
         #endregion Members
 
         #region Properties
+
+        public ConfusionMatrix ConfusionMatrix { get; private set; }
 
         public int Count
         {
@@ -322,13 +329,17 @@ namespace NRough.MachineLearning.Classification
 
         public ClassificationResult(DataStore dataStore, ICollection<long> decisionValues)
             : this()
-        {
-            List<long> localDecisionValues = decisionValues.ToList();
-            localDecisionValues.Sort();
-
+        {            
             this.Fold = dataStore.Fold;
             this.TestData = dataStore;
             this.DatasetName = dataStore.Name;
+
+            this.predictionResults = new long[dataStore.NumberOfRecords];
+
+            ConfusionMatrix = new ConfusionMatrix(decisionValues.ToArray());
+            
+            List<long> localDecisionValues = decisionValues.ToList();
+            localDecisionValues.Sort();
             this.decCount = localDecisionValues.Count;
             this.decCountPlusOne = this.decCount + 1;
             this.decisions = new long[decCountPlusOne];
@@ -340,7 +351,7 @@ namespace NRough.MachineLearning.Classification
                 this.decisionValue2Index.Add(localDecisionValues.ElementAt(i-1), i);
             }
             this.decisionValue2Index.Add(Classifier.UnclassifiedOutput, 0);          
-            this.predictionResults = new long[dataStore.NumberOfRecords];
+            
             this.confusionTable = new int[decCountPlusOne][];
             this.confusionTableWeights = new double[decCountPlusOne][];
             for (int i = 0; i < decCountPlusOne; i++)
@@ -348,6 +359,7 @@ namespace NRough.MachineLearning.Classification
                 this.confusionTable[i] = new int[decCountPlusOne];
                 this.confusionTableWeights[i] = new double[decCountPlusOne];
             }
+            
         }
 
         #endregion Constructors
@@ -359,6 +371,7 @@ namespace NRough.MachineLearning.Classification
             lock (syncRoot)
             {
                 predictionResults.SetAll(Classifier.UnclassifiedOutput);
+                ConfusionMatrix.Reset();
                 
                 for (int i = 0; i < decCountPlusOne; i++)
                 {
@@ -395,6 +408,8 @@ namespace NRough.MachineLearning.Classification
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
                 counter++;
             }
+
+            ConfusionMatrix.AddResult(actual, prediction, 1, weight);
         }
 
         public long GetPrediction(int objectIdx)
@@ -415,11 +430,6 @@ namespace NRough.MachineLearning.Classification
         public long GetActual(long objectId)
         {
             return TestData.GetFieldValue(TestData.ObjectId2ObjectIndex(objectId), TestData.DataStoreInfo.DecisionFieldId);
-        }
-
-        public int GetConfusionTable(long prediction, long actual)
-        {
-            return confusionTable[decisionValue2Index[actual]][decisionValue2Index[prediction]];
         }        
 
         /// <summary>
@@ -680,13 +690,26 @@ namespace NRough.MachineLearning.Classification
                 this.StandardRuleLengthSum += localResult.StandardRuleLengthSum;
 
                 this.counter += localResult.counter;
+                
 
                 for (int i = 0; i < decCountPlusOne; i++)
                 {
                     for (int j = 0; j < decCountPlusOne; j++)
                     {
                         confusionTable[i][j] += localResult.confusionTable[i][j];
-                        confusionTableWeights[i][j] += localResult.confusionTableWeights[i][j];
+                        confusionTableWeights[i][j] += localResult.confusionTableWeights[i][j];                        
+                    }
+                }
+
+                foreach (var kvpActual in decisionValue2Index)
+                {
+                    foreach (var kvpPredicted in decisionValue2Index)
+                    {
+                        ConfusionMatrix.AddResult(
+                            kvpActual.Key, kvpPredicted.Key,
+                            localResult.ConfusionMatrix.GetCount(kvpActual.Key, kvpPredicted.Key),
+                            localResult.ConfusionMatrix.GetWeight(kvpActual.Key, kvpPredicted.Key));
+
                     }
                 }
             }
@@ -831,6 +854,39 @@ namespace NRough.MachineLearning.Classification
                     }).ToDataTable();
         }
 
+        public static DataTable AverageResults2(DataTable dtc)
+        {            
+            return (from row in dtc.AsEnumerable()
+                    group row by new
+                    {
+                        ds = row.Field<string>("ds"),
+                        model = row.Field<string>("model"),
+                        eps = row.Field<double>("eps")                        
+                    } into grp
+                    select new
+                    {
+                        ds = grp.Key.ds,
+                        model = grp.Key.model,
+                        eps = grp.Key.eps,                        
+
+                        acc = grp.Average(x => x.Field<double>("acc")),
+                        acc_dev = grp.StandardDeviation(x => x.Field<double>("acc")),
+
+                        attr = grp.Average(x => x.Field<double>("attr")),
+                        attr_dev = grp.StandardDeviation(x => x.Field<double>("attr")),
+
+                        numrul = grp.Average(x => x.Field<double>("numrul")),
+                        numrul_dev = grp.StandardDeviation(x => x.Field<double>("numrul")),
+
+                        dthm = grp.Average(x => x.Field<double>("dthm")),
+                        dthm_dev = grp.StandardDeviation(x => x.Field<double>("dthm")),
+
+                        dtha = grp.Average(x => x.Field<double>("dtha")),
+                        dtha_dev = grp.StandardDeviation(x => x.Field<double>("dtha"))
+
+                    }).ToDataTable();
+        }
+
         public static DataTable AggregateResults(DataTable dtc, string columnName)
         {
             var result =  (from row in dtc.AsEnumerable()
@@ -852,9 +908,9 @@ namespace NRough.MachineLearning.Classification
                         
                         field_min = grp.Min(x => x.Field<double>(columnName)),
                         field_max = grp.Max(x => x.Field<double>(columnName)),
-                        field_avg = grp.Average(x => x.Field<double>(columnName))
-                        //field_dev = grp.StandardDeviation(x => x.Field<double>(columnName)),
-                        //field_med = grp.Median(x => x.Field<double>(columnName))                        
+                        field_avg = grp.Average(x => x.Field<double>(columnName)),
+                        field_dev = grp.StandardDeviation(x => x.Field<double>(columnName))
+                        //field_med = grp.Median(x => x.Field<double>(columnName))
                     }).ToDataTable();
 
             result.Columns["field_min"].ColumnName = columnName + "_min";

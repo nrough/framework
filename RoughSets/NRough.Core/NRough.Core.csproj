@@ -108,6 +108,7 @@
     <Compile Include="DataStructures\Tree\Tree.cs" />
     <Compile Include="DataStructures\Tree\TreeNode.cs" />
     <Compile Include="DataStructures\Tree\TreeStringFormatter.cs" />
+    <Compile Include="Data\DataRowExtensions.cs" />
     <Compile Include="Helpers\CSVFileHelper.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="Data\DataTableExtensions.cs" />

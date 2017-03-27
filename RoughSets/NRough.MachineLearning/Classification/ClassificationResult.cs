@@ -870,19 +870,19 @@ namespace NRough.MachineLearning.Classification
                         eps = grp.Key.eps,                        
 
                         acc = grp.Average(x => x.Field<double>("acc")),
-                        acc_dev = grp.StandardDeviation(x => x.Field<double>("acc")),
+                        accdev = grp.StandardDeviation(x => x.Field<double>("acc")),
 
                         attr = grp.Average(x => x.Field<double>("attr")),
-                        attr_dev = grp.StandardDeviation(x => x.Field<double>("attr")),
+                        attrdev = grp.StandardDeviation(x => x.Field<double>("attr")),
 
                         numrul = grp.Average(x => x.Field<double>("numrul")),
-                        numrul_dev = grp.StandardDeviation(x => x.Field<double>("numrul")),
+                        numruldev = grp.StandardDeviation(x => x.Field<double>("numrul")),
 
                         dthm = grp.Average(x => x.Field<double>("dthm")),
-                        dthm_dev = grp.StandardDeviation(x => x.Field<double>("dthm")),
+                        dthmdev = grp.StandardDeviation(x => x.Field<double>("dthm")),
 
                         dtha = grp.Average(x => x.Field<double>("dtha")),
-                        dtha_dev = grp.StandardDeviation(x => x.Field<double>("dtha"))
+                        dthadev = grp.StandardDeviation(x => x.Field<double>("dtha"))
 
                     }).ToDataTable();
         }

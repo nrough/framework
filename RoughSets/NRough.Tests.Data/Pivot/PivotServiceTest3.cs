@@ -1,4 +1,5 @@
 ﻿using NRough.Core.CollectionExtensions;
+using NRough.Core.Data;
 using NRough.Data.Pivot;
 using NRough.Data.Writers;
 using NRough.MachineLearning.Classification;
@@ -83,8 +84,10 @@ namespace NRough.Tests.Data.Pivot
         public void Test(string path, string[] filenames, string caption, int size)
         {
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
+            var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
             List<string> datasetNames = new List<string>(filenames.Length);
             string[] colNames = new string[] { "acc", "attr", "numrul", "dtha", "dthm" };
+            //string[] colNames2 = new string[] { "acc", "accdev", "attr", "attrdev", "numrul", "numruldev", "dtha", "dthadev", "dthm", "dthmdev" };
             string[] modelNames = null;
             bool first = true;
 
@@ -114,7 +117,11 @@ namespace NRough.Tests.Data.Pivot
                         for (int i = 0; i < dtc.Rows.Count; i++)
                             dtc.Rows[i]["ds"] = datasetname;
 
-                        dtc = ClassificationResult.AverageResults(dtc);
+                        var dtc1 = ClassificationResult.AverageResults(dtc);
+                        var dtc2 = ClassificationResult.AverageResults2(dtc);
+
+                        dtc = dtc1;
+
                         //Console.WriteLine(new DataTableLatexTabularFormatter().Format("", dtc, null));
 
                         datasetNames.Add(datasetname);
@@ -123,6 +130,13 @@ namespace NRough.Tests.Data.Pivot
                         DataColumn[] cols = new DataColumn[colNames.Length];
                         for (int i = 0; i < colNames.Length; i++)
                             cols[i] = dtc.Columns[colNames[i]];
+
+                        DataColumn[] cols2 = new DataColumn[colNames.Length * 2];
+                        for (int i = 0; i < colNames.Length; i++)
+                        {
+                            cols2[i*2] = dtc2.Columns[colNames[i]];
+                            cols2[(i*2)+1] = dtc2.Columns[colNames[i]+"dev"];
+                        }
 
                         if (first)
                         {
@@ -138,8 +152,19 @@ namespace NRough.Tests.Data.Pivot
                             cols,
                             "-");
 
+                        var pivotTable2 = pivot.Pivot(
+                            dtc2,
+                            dtc2.Columns["model"],
+                            cols2,
+                            "-");
+
                         pivotTable.Columns.Remove("M-EPS-dthm");
                         pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
+
+                        pivotTable2.Columns.Remove("M-EPS-dthm");
+                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
+                        pivotTable2.Columns.Remove("M-EPS-dthmdev");
+                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
@@ -152,6 +177,7 @@ namespace NRough.Tests.Data.Pivot
                                 .Select(r => r.index).First();
 
                             compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
+                            compareBest2.Add(new Tuple<string, string>(datasetname, modelName), pivotTable2.Rows[maxRowIndex]);
 
                             for (int i = 0; i < colNames.Length; i++)
                             {
@@ -309,7 +335,93 @@ namespace NRough.Tests.Data.Pivot
                         outputFile.WriteLine();
 
                     }
+                    
+                    foreach (var modelName in modelNames)
+                    {
+                        var firstRow = compareBest2.FirstOrDefault().Value;
 
+                        StringBuilder sb2 = new StringBuilder();
+
+                        int cols = colNames.Count(s => firstRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, s)));
+
+                        if (cols == 5)
+                        {
+                            sb2.Append(@"\begin{table}[!htbp]
+\centering
+\caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
+\label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
+\scriptsize
+\begin{tabular}{|l||l|l|l|l|l|l|}
+\hline" + Environment.NewLine);
+                        }
+                        else
+                        {
+                            sb2.Append(@"\begin{table}[!htbp]
+\centering
+\caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
+\label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
+\scriptsize
+\begin{tabular}{|l||l|l|l|l|l|}
+\hline" + Environment.NewLine);
+                        }
+
+                        sb2.Append(@"\textbf{Data}");
+                        sb2.Append(" & ");
+
+                        if (modelName == referenceModelName)
+                            sb2.Append(@"\bm{$\varepsilon$}");
+                        else
+                            sb2.Append(@"\bm{$\phi$}");
+
+                        foreach (var colname in colNames)
+                        {
+                            if (firstRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname)))
+                            {
+                                sb2.Append(" & ");
+                                sb2.Append(String.Format(@"\textbf{{{0}}}", ConvertColName(colname)));
+                            }
+                        }
+
+                        sb2.AppendLine(@"\\ \hline");
+
+                        foreach (var dataset in datasetNames)
+                        {
+                            sb2.Append(ConvertDataSetName(dataset));
+                            
+                            DataRow bestRow = compareBest2[new Tuple<string, string>(dataset, modelName)];
+
+                            sb2.Append(" & ");
+                            sb2.Append(bestRow["eps"].ToString());
+
+                            foreach (var colname in colNames)
+                            {
+                                if (bestRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname)))
+                                {
+                                    sb2.Append(" & ");
+                                    if (bestRow[String.Format("{0}-{1}", modelName, colname)] is double)
+                                    {
+                                        sb2.Append(((double)bestRow[String.Format("{0}-{1}", modelName, colname)]).ToString(
+                                                "0.##", System.Globalization.CultureInfo.InvariantCulture));
+                                        sb2.Append(" (");
+                                        sb2.Append(((double)bestRow[String.Format("{0}-{1}dev", modelName, colname)]).ToString(
+                                                "0.##", System.Globalization.CultureInfo.InvariantCulture));
+                                        sb2.Append(")");
+                                    }
+                                    else
+                                        sb2.Append(bestRow[String.Format("{0}-{1}", modelName, colname)].ToString());
+                                }
+                            }
+
+                            sb2.AppendLine(@"\\ \hline");
+                        }
+
+                        sb2.AppendLine(@"\end{tabular}");
+                        sb2.AppendLine(@"\end{table}");
+
+                        Console.WriteLine(sb2.ToString());
+
+                        Console.WriteLine();
+                    }                                                          
                 }
             }
         }

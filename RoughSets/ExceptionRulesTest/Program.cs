@@ -24,6 +24,7 @@ namespace ExceptionRulesTest
 
         int minEpsilon = 0;
         int maxEpsilon = 60;
+        SortDirection sortDirection = SortDirection.Descending;
 
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations, int ensembleSize)
         {           
@@ -176,7 +177,7 @@ namespace ExceptionRulesTest
             parmsEx.SetParameter(ReductFactoryOptions.Epsilon, eps);
             parmsEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
             parmsEx.SetParameter(ReductFactoryOptions.UseExceptionRules, true);
-            parmsEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, SortDirection.Descending);
+            parmsEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, sortDirection);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorEx =
                 ReductFactory.GetReductGenerator(parmsEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;
@@ -247,7 +248,7 @@ namespace ExceptionRulesTest
             parmsNoEx.SetParameter(ReductFactoryOptions.Epsilon, eps);
             parmsNoEx.SetParameter(ReductFactoryOptions.PermutationCollection, permList);
             parmsNoEx.SetParameter(ReductFactoryOptions.UseExceptionRules, false);
-            parmsNoEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, SortDirection.Descending);
+            parmsNoEx.SetParameter(ReductFactoryOptions.EquivalenceClassSortDirection, sortDirection);
 
             ReductGeneralizedMajorityDecisionApproximateGenerator generatorNoEx =
                 ReductFactory.GetReductGenerator(parmsNoEx) as ReductGeneralizedMajorityDecisionApproximateGenerator;

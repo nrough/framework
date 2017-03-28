@@ -152,6 +152,7 @@
     <Compile Include="Discretization\DiscretizeFayyad.cs" />
     <Compile Include="Discretization\DiscretizeKononenko.cs" />
     <Compile Include="Discretization\DiscretizeManual.cs" />
+    <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankTest.cs" />
     <Compile Include="Filters\DiscretizeFilter.cs" />
     <Compile Include="Filters\ReductFeatureSelectionFilter.cs" />
     <Compile Include="Filters\ReductFeatureSelectionFilter_Tmp.cs" />

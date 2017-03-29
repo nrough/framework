@@ -17,11 +17,16 @@ namespace NRough.MachineLearning.Evaluation.HypothesisTesting
 
         public double Compute(double[] serie1, double[] serie2)
         {
-            if (serie1 == null) throw new ArgumentNullException("serie1");
-            if (serie2 == null) throw new ArgumentNullException("serie2");
-            if (serie1.Length == 0) throw new ArgumentException("serie1.Length == 0", "serie1");
-            if (serie2.Length == 0) throw new ArgumentException("serie2.Length == 0", "serie2");
-            if (serie1.Length != serie2.Length) throw new ArgumentException("serie1.Length != serie2.Length", "serie2");
+            if (serie1 == null)
+                throw new ArgumentNullException("serie1");
+            if (serie2 == null)
+                throw new ArgumentNullException("serie2");
+            if (serie1.Length == 0)
+                throw new ArgumentException("serie1.Length == 0", "serie1");
+            if (serie2.Length == 0)
+                throw new ArgumentException("serie2.Length == 0", "serie2");
+            if (serie1.Length != serie2.Length)
+                throw new ArgumentException("serie1.Length != serie2.Length", "serie2");
 
             
             double[] difference = new double[serie1.Length];

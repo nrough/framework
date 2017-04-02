@@ -1,5 +1,6 @@
 ﻿using NRough.Core.Random;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -103,7 +104,35 @@ namespace NRough.Core.CollectionExtensions
             return array.RemoveAt(numIndex);            
         }
 
-        public static string ToStr<T>(this T[] array, string separator = "|")
+        public static T[][] Transpose<T>(this T[][] source)
+        {
+            var numRows = source.Max(a => a.Length);
+
+            //Will be adjusting multiple "rows" at the same time so need to use a more flexible collection
+            var items = new List<List<T>>();
+            for (int row = 0; row < source.Length; ++row)
+            {
+                for (int col = 0; col < source[row].Length; ++col)
+                {
+                    //Get the current "row" for this column, if any
+                    if (items.Count <= col)
+                        items.Add(new List<T>());
+
+                    var current = items[col];
+
+                    //Insert the value into the row
+                    current.Add(source[row][col]);
+                };
+            };
+
+            //Convert the nested lists back into a jagged array
+            return (from i in items
+                    select i.ToArray()
+                    ).ToArray();
+        }
+        
+        public static string ToStr<T>(this T[] array, string separator = "|", 
+            string format = "", IFormatProvider formatProvider = null)
         {
             if (array == null)
                 return "NULL";
@@ -112,52 +141,77 @@ namespace NRough.Core.CollectionExtensions
                 return "NOELEMENTS";
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < array.Length; i++)
+
+            if (!String.IsNullOrEmpty(format) && typeof(T).GetInterface("IFormattable") != null)
             {
-                sb.Append(array[i].ToString());
-                if (i < array.Length - 1)
-                    sb.Append(separator);
+                Converter<T, IFormattable> c = new Converter<T, IFormattable>(input => (IFormattable)input);
+                IFormattable[] formattableArray = Array.ConvertAll<T, IFormattable>(array, c);
+                for (int i = 0; i < formattableArray.Length; i++)
+                {                    
+                    sb.Append(formattableArray[i].ToString(format, formatProvider));
+                    if (i < formattableArray.Length - 1)
+                        sb.Append(separator);
+                }
+            }
+            else
+            { 
+                for (int i = 0; i < array.Length; i++)
+                {
+                    sb.Append(array[i].ToString());
+                    if (i < array.Length - 1)
+                        sb.Append(separator);
+                }
             }
             return sb.ToString();
         }
 
-        public static string ToStr<T>(this T[][] array, string colSeparator = " ", string recordSeparator = "\n")
+        public static string ToStr2d<T>(this T[][] array, string colSeparator = " ", string recordSeparator = "\n", 
+            string format = "", IFormatProvider formatProvider = null, bool transpose = false)
         {
             if (array == null)
                 return String.Empty;
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < array[0].Length; i++)
-            {
-                for (int j = 0; j < array.Length; j++)
-                {                
-                    sb.Append(array[j][i].ToString());
-                    if (j < array.Length - 1)
-                        sb.Append(colSeparator);
-                }
-                
-                sb.Append(recordSeparator);
-            }
+            T[][] localArray = null;
+            if (transpose)
+                localArray = array.Transpose();
+            else
+                localArray = array.CopyArrayBuiltIn();
 
-            return sb.ToString();
-        }
-
-        public static string ToStr2D<T>(this T[][] array, char separator = '|')
-        {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < array.Length; i++)
+            if (!String.IsNullOrEmpty(format) && typeof(T).GetInterface("IFormattable") != null)
             {
-                for (int j = 0; j < array[i].Length; j++)
+                for (int i = 0; i < localArray.Length; i++)
                 {
-                    sb.Append(array[i][j].ToString());
-                    if (j < array[i].Length - 1)
-                        sb.Append(separator);
-                }
+                    Converter<T, IFormattable> c = new Converter<T, IFormattable>(input => (IFormattable)input);
+                    IFormattable[] formattableArray = Array.ConvertAll<T, IFormattable>(localArray[i], c);
 
-                sb.Append(Environment.NewLine);
+                    for (int j = 0; j < localArray[i].Length; j++)
+                    {
+                        sb.Append(formattableArray[j].ToString(format, formatProvider));
+                        if (j < formattableArray.Length - 1)
+                            sb.Append(colSeparator);
+                    }
+
+                    sb.Append(recordSeparator);
+                }
             }
+            else
+            {
+                for (int i = 0; i < localArray.Length; i++)
+                {
+                    for (int j = 0; j < localArray[i].Length; j++)
+                    {
+                        sb.Append(localArray[i][j].ToString());
+                        if (j < localArray[i].Length - 1)
+                            sb.Append(colSeparator);
+                    }
+
+                    sb.Append(recordSeparator);
+                }
+            }            
+
             return sb.ToString();
-        }
+        }        
 
         public static T[] SubArray<T>(this T[] array, int index, int length)
         {
@@ -246,6 +300,28 @@ namespace NRough.Core.CollectionExtensions
             for (int i = 0; i < size; i++)
                 result[i] = array[tmpArray[i]];
             return result;
+        }
+
+        public static T[][] CopyArrayLinq<T>(this T[][] source)
+        {
+            return source.Select(s => s.ToArray()).ToArray();
+        }
+
+        public static T[][] CopyArrayBuiltIn<T>(this T[][] source)
+        {
+            var len = source.Length;
+            var dest = new T[len][];
+
+            for (var x = 0; x < len; x++)
+            {
+                var inner = source[x];
+                var ilen = inner.Length;
+                var newer = new T[ilen];
+                Array.Copy(inner, newer, ilen);
+                dest[x] = newer;
+            }
+
+            return dest;
         }
     }
 }

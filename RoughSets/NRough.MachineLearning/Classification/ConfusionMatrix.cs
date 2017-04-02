@@ -292,7 +292,7 @@ namespace NRough.MachineLearning.Classification
 
         public override string ToString()
         {
-            return Output().ToStr(" ", Environment.NewLine);
+            return Output().ToStr2d(" ", Environment.NewLine);
         }
 
     }

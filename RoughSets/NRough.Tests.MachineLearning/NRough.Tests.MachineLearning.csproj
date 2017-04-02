@@ -117,6 +117,7 @@
     <Compile Include="Discretization\DiscretizeFayyadTest.cs" />
     <Compile Include="Discretization\DiscretizeKononenkoTest.cs" />
     <Compile Include="Discretization\DiscretizeUnsupervisedTest.cs" />
+    <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankPairTestTest.cs" />
     <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankTestTest.cs" />
     <Compile Include="MissingValues\ReplaceMissingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

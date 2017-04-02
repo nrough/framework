@@ -3,6 +3,7 @@ using NRough.Core.Data;
 using NRough.Data.Pivot;
 using NRough.Data.Writers;
 using NRough.MachineLearning.Classification;
+using NRough.MachineLearning.Evaluation.HypothesisTesting;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,9 @@ namespace NRough.Tests.Data.Pivot
 
         public void Test(string path, string[] filenames, string caption, int size)
         {
+            int accuracyDecimals = 3;
+            int otherDecimals = 1;
+
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
             List<string> datasetNames = new List<string>(filenames.Length);
@@ -172,7 +176,7 @@ namespace NRough.Tests.Data.Pivot
                         {
                             int maxRowIndex = pivotTable.AsEnumerable()
                                 .Select((row, index) => new { row, index })
-                                .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), 2, MidpointRounding.AwayFromZero))
+                                .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
                                 .ThenByDescending(r => r.row.Field<double>("eps"))
                                 .Select(r => r.index).First();
 
@@ -183,6 +187,23 @@ namespace NRough.Tests.Data.Pivot
                             {
                                 if (!pivotTable.Columns.Contains(String.Format("{0}-{1}", modelName, colNames[i])))
                                     continue;
+
+                                if (colNames[i] == "eps")
+                                {
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0.##");
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                else if (colNames[i] == "acc")
+                                {
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0." + new string('#', accuracyDecimals));
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0." + new string('#', otherDecimals));
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+
 
                                 dataFormatter.SetCellProperty(
                                     pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].Ordinal,
@@ -250,13 +271,17 @@ namespace NRough.Tests.Data.Pivot
                                     || !referenceRow.Table.Columns.Contains(String.Format("{0}-{1}", referenceModelName, colname)))
                                     continue;
 
+                                int numOfDec = otherDecimals;
+                                if (colname == "acc")
+                                    numOfDec = accuracyDecimals;
+
                                 double newval = Math.Round(
                                     rowToValidate.Field<double>(String.Format("{0}-{1}", modelName, colname)),
-                                    2, MidpointRounding.AwayFromZero);
+                                    numOfDec, MidpointRounding.AwayFromZero);
 
                                 double refval = Math.Round(
                                     referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
-                                    2, MidpointRounding.AwayFromZero);
+                                    accuracyDecimals, MidpointRounding.AwayFromZero);
 
                                 int comparisonResult = colname == "acc"
                                                      ? newval.CompareTo(refval)
@@ -334,8 +359,10 @@ namespace NRough.Tests.Data.Pivot
                         outputFile.WriteLine(sb.ToString());
                         outputFile.WriteLine();
 
-                    }
-                    
+                    }                    
+
+                    //////////////////////////////// BEST RESULT TABLES ////////////////////////////////////////
+
                     foreach (var modelName in modelNames)
                     {
                         var firstRow = compareBest2.FirstOrDefault().Value;
@@ -400,11 +427,15 @@ namespace NRough.Tests.Data.Pivot
                                     sb2.Append(" & ");
                                     if (bestRow[String.Format("{0}-{1}", modelName, colname)] is double)
                                     {
+                                        int numOfDec = otherDecimals;
+                                        if (colname == "acc")
+                                            numOfDec = accuracyDecimals;
+
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}", modelName, colname)]).ToString(
-                                                "0.##", System.Globalization.CultureInfo.InvariantCulture));
+                                                    "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(" (");
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}dev", modelName, colname)]).ToString(
-                                                "0.##", System.Globalization.CultureInfo.InvariantCulture));
+                                                "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(")");
                                     }
                                     else
@@ -421,7 +452,110 @@ namespace NRough.Tests.Data.Pivot
                         Console.WriteLine(sb2.ToString());
 
                         Console.WriteLine();
-                    }                                                          
+                    }
+
+                    //////////////////////////////// WILCOXON ////////////////////////////////////////
+
+                    foreach (var modelName in modelNames
+                        .Where(m => m != referenceModelName))
+                    {
+                        Console.WriteLine("Comparison {0} vs. {1}", referenceModelName, modelName);
+
+                        var firstRow = compareBest[new Tuple<string, string>(datasetNames.FirstOrDefault(), referenceModelName)];
+                        foreach (var colname in colNames)
+                        {
+                            var currColumnName = String.Format("{0}-{1}", modelName, colname);
+                            var currReferenceColumnName = String.Format("{0}-{1}", referenceModelName, colname);
+
+                            int numOfDec = otherDecimals;
+                            if (colname == "acc")
+                                numOfDec = accuracyDecimals;
+
+                            if (firstRow.Table.Columns.Contains(currReferenceColumnName))
+                            {
+                                double[] serie1 = new double[datasetNames.Count];
+                                double[] serie2 = new double[datasetNames.Count];
+
+                                int i = 0;
+                                foreach (var dataset in datasetNames)
+                                {
+                                    DataRow referenceResult = compareBest[new Tuple<string, string>(dataset, referenceModelName)];
+                                    DataRow testedResult = compareBest[new Tuple<string, string>(dataset, modelName)];
+
+                                    serie1[i] = Math.Round((double)referenceResult[currReferenceColumnName], numOfDec, MidpointRounding.AwayFromZero);
+                                    serie2[i] = Math.Round((double)testedResult[currColumnName], numOfDec, MidpointRounding.AwayFromZero);
+                                    i++;
+                                }
+
+                                Console.WriteLine("============== {0} =============", ConvertColName(colname));
+
+                                string format = "0." + new string('#', numOfDec);
+                                Console.WriteLine(serie1.ToStr(" ", format, null));
+                                Console.WriteLine(serie2.ToStr(" ", format, null));
+
+                                var wilcoxon = new WilcoxonSignedRankPairTest();                                
+
+                                if (colname == "acc")
+                                    wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsSmallerThanSecond;
+                                else
+                                    wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsGreaterThanSecond;
+
+                                wilcoxon.Alpha = 0.05;
+                                wilcoxon.Compute(serie1, serie2);
+                                Console.WriteLine(wilcoxon.ToString("DEBUG", null));
+                            }
+                        }
+                    }
+
+                    //////////////////////////////// FRIEDMAN ////////////////////////////////////////
+
+                    double[][][] data = new double[colNames.Length][][];
+                    for (int i = 0; i < colNames.Length; i++)
+                    {
+                        data[i] = new double[modelNames.Length][];
+                        for (int j = 0; j < modelNames.Length; j++)
+                        {
+                            data[i][j] = new double[datasetNames.Count];
+                            for (int k = 0; k < datasetNames.Count; k++)
+                            {
+                                data[i][j][k] = 0.0;
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < colNames.Length; i++)
+                    {
+                        string colname = colNames[i];
+                        if (colname == "dthm")
+                            continue;
+
+                        int numOfDec = otherDecimals;
+                        if (colname == "acc")
+                            numOfDec = accuracyDecimals;
+
+                        Console.WriteLine("============== {0} =============", ConvertColName(colname));
+
+                        for (int j = 0; j < modelNames.Length; j++)
+                        {
+                            string modelName = modelNames[j];
+                            var pivotColName = String.Format("{0}-{1}", modelName, colname);
+
+                            for (int k = 0; k < datasetNames.Count; k++)
+                            {
+                                string dataset = datasetNames.ElementAt(k);                                                                                                
+                                
+                                DataRow testedResult = compareBest[new Tuple<string, string>(dataset, modelName)];
+                                if (testedResult.Table.Columns.Contains(pivotColName))
+                                    data[i][j][k] = Math.Round((double)testedResult[pivotColName], numOfDec, MidpointRounding.AwayFromZero);
+                                else
+                                    data[i][j][k] = Double.NaN;
+                            }
+                        }
+
+                        Console.WriteLine(data[i].ToStr2d(", ", Environment.NewLine, "0.###", System.Globalization.CultureInfo.InvariantCulture, true));
+                    }
+                    
+                                                             
                 }
             }
         }

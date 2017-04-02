@@ -49,10 +49,27 @@ namespace NRough.Data.Writers
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
                     string cellValue;
+                    if (dt.Columns[j].DataType.GetInterface("IFormattable") != null
+                        & dt.Columns[j].ExtendedProperties.ContainsKey("format"))
+                    {
+                        string format = (string)dt.Columns[j].ExtendedProperties["format"];
+                        IFormatProvider formatProvider = null;
+                        if (dt.Columns[j].ExtendedProperties.ContainsKey("formatProvider"))
+                            formatProvider = (IFormatProvider)dt.Columns[j].ExtendedProperties["formatProvider"];
+
+                        cellValue = datarow.Field<IFormattable>(j).ToString(
+                                format, formatProvider);
+
+                    }
+                    else
+                    {
+                        cellValue = datarow[j].ToString();
+                    }
+
+                    /*
                     switch (Type.GetTypeCode(dt.Columns[j].DataType))
                     {                        
-                        case TypeCode.Double:
-                            //dt.Columns[j].ExtendedProperties
+                        case TypeCode.Double:                            
                             cellValue = datarow.Field<double>(j).ToString(
                                 "0.##", System.Globalization.CultureInfo.InvariantCulture);
                             if (String.IsNullOrEmpty(cellValue))
@@ -64,6 +81,7 @@ namespace NRough.Data.Writers
                             cellValue = datarow[j].ToString();
                             break;                            
                     }
+                    */
 
                     cellValue = ApplyFontFace(j, i, cellValue);
 
@@ -82,7 +100,7 @@ namespace NRough.Data.Writers
                     .Select(x => String.Join(" & ", x.ItemArray))));
             sb.AppendLine(@"\\ ");
             */
-        }
+        }        
 
         private string ApplyFontFace(int col, int row, string value)
         {

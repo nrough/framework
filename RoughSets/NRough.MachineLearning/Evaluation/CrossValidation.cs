@@ -132,28 +132,19 @@ namespace NRough.MachineLearning.Evaluation
 
                 Parallel.For(0, dataSplitter.NFold, options, f =>
                 {
-                    result.AddLocalResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes));
+                    result.MergeResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes));
                 });
             }
             else
             {                
                 for (int f = 0; f < dataSplitter.NFold; f++)
                 {
-                    result.AddLocalResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes));
+                    result.MergeResult(this.RunFold<T>(modelPrototype, dataSplitter, f, attributes));
                 }
             }
 
-            result.AvgNumberOfAttributes /= dataSplitter.NFold;
-            result.NumberOfRules /= dataSplitter.NFold;
-            result.MaxTreeHeight /= dataSplitter.NFold;
-            result.AvgTreeHeight /= dataSplitter.NFold;
-            result.ClassificationTime /= dataSplitter.NFold;
-            result.ModelCreationTime /= dataSplitter.NFold;
-            result.ExceptionRuleHitCounter /= dataSplitter.NFold;
-            result.StandardRuleHitCounter /= dataSplitter.NFold;
-            result.ExceptionRuleLengthSum /= dataSplitter.NFold;
-            result.StandardRuleLengthSum /= dataSplitter.NFold;
-
+            result.AverageIndicators(dataSplitter.NFold);
+            
             return result;
         }
     }

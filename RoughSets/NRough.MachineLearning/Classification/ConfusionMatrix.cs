@@ -14,6 +14,7 @@ namespace NRough.MachineLearning.Classification
         private long[] decisions;
         private int[][] confusionTable;
         private double[][] confusionTableWeights;
+        private int total;
         private readonly object syncRoot = new object();
 
         public double TruePositiveAvg
@@ -126,6 +127,7 @@ namespace NRough.MachineLearning.Classification
             {
                 confusionTable[actualDecIdx][predictionDecIdx] += count;
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
+                total += count;
             }
         }
         
@@ -142,6 +144,7 @@ namespace NRough.MachineLearning.Classification
                 {
                     confusionTable[i][j] = 0;
                     confusionTableWeights[i][j] = 0;
+                    total = 0;
                 }
             }
         }
@@ -292,7 +295,91 @@ namespace NRough.MachineLearning.Classification
 
         public override string ToString()
         {
-            return Output().ToStr2d(" ", Environment.NewLine);
+            return Output().ToStr2d(" ", Environment.NewLine, "", null, true);
+        }
+
+        [ClassificationResultValue("precisionmacro", "{0:0.0000}", false)]
+        public double PrecisionMacro
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var dec in decisions)
+                    sum += Precision(dec);
+                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("precisionmicro", "{0:0.0000}", false)]
+        public double PrecisionMicro
+        {
+            get
+            {
+                double a = 0.0, b = 0.0;
+                foreach (var dec in decisions)
+                {
+                    a += TruePositive(dec);
+                    b += (TruePositive(dec) + FalsePositive(dec));
+                }
+                return b > 0 ? a / b : 1.0;
+            }
+        }
+
+        [ClassificationResultValue("recallmacro", "{0:0.0000}", false)]
+        public double RecallMacro
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var dec in decisions)
+                    sum += Recall(dec);
+                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            }
+        }
+
+        [ClassificationResultValue("recallmicro", "{0:0.0000}", false)]
+        public double RecallMicro
+        {
+            get
+            {
+                double a = 0.0, b = 0.0;
+                foreach (var dec in decisions)
+                {
+                    a += TruePositive(dec);
+                    b += (TruePositive(dec) + FalseNegative(dec));
+                }
+                return b > 0 ? a / b : 1.0;
+            }
+        }
+
+        public double Recall(long decision)
+        {
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositive(decision) + FalseNegative(decision) == 0)
+                return 1.0;
+
+            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalseNegative(decision));
+        }
+
+        public double Precision(long decision)
+        {
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositive(decision) + FalsePositive(decision) == 0.0)
+                return 1.0;
+
+            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalsePositive(decision));
+        }
+
+        [ClassificationResultValue("acc", "{0:0.0000}", true)]
+        public double Accuracy
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var dec in decisions)
+                    sum += TruePositive(dec);
+                return total > 0 ? sum / total : 0.0;
+            }
         }
 
     }

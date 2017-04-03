@@ -29,9 +29,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             var pruning = new ErrorBasedPruning(tree, data);
             pruning.Prune();            
         }
-
-        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\zoo.dta", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        
         [TestCase(@"Data\soybean-small.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\house-votes-84.2.data", DataFormat.RSES1_1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\agaricus-lepiota.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
@@ -45,6 +43,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         //[TestCase(@"Data\dermatology.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\hypothyroid.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\lymphography.all", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\zoo.dta", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         public void DecisionTreeWithCV(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -67,7 +67,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             cv.Filters.Add(reductFilter);
             cv.PostLearningMethod = PruneTree;
 
-            for (double eps = 0.0; eps <= 0.5; eps += 0.01)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {
                 reductFilter.Epsilon = eps;
                 TestStandardDecisionTree_CV(
@@ -79,10 +79,9 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         }
 
 
-        //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]        
-        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajority)]
         [TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajority)]        
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
@@ -108,7 +107,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             var permutations = new PermutationCollection(
                 20, data.SelectAttributeIds(a => a.IsStandard).ToArray());            
 
-            for (double eps = 0.0; eps <= 0.5; eps += 0.01)
+            for (double eps = 0.0; eps < 1.0; eps += 0.01)
             {                
                 TestStandardDecisionTree(data, test, PruningType.ErrorBasedPruning, eps, Classifier.UnclassifiedOutput);
 
@@ -163,6 +162,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             treeC45Result.Epsilon = eps;
             treeC45Result.Gamma = eps;
             Console.WriteLine(treeC45Result);
+
+            //Console.WriteLine(treeC45Result.ConfusionMatrix);
 
             if (printTree)
                 Console.WriteLine(DecisionTreeFormatter.Construct(treeC45));            

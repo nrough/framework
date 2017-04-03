@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using NRough.MachineLearning;
 using NRough.MachineLearning.Classification;
 using NRough.MachineLearning.RCode;
+using System.Diagnostics;
 
 namespace NRough.UnitTest.Runner
 {   
@@ -22,15 +23,23 @@ namespace NRough.UnitTest.Runner
     {
         public static void Main(string[] args)
         {
+            
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+
             //ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
-            ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dthm;dtha";
+            ClassificationResult.OutputColumns = @"ds;model;eps;acc;recallmacro;precisionmacro;attr;numrul;dthm;dtha";
+
+            int numOfTests = 20;
+            if(args.Length == 1)
+                numOfTests = Int32.Parse(args[0]);
 
             List<string> fileNames = new List<string>(new string[] {
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames.AddRange(Test_Benchmark2(3, true));
-            fileNames.AddRange(Test_CV2(2, true));                                    
+            fileNames.AddRange(Test_Benchmark2(numOfTests, false));
+            fileNames.AddRange(Test_CV2(numOfTests, false));
+                        
             //ProcessResultFiles(fileNames);
         }
 

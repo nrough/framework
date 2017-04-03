@@ -301,6 +301,8 @@ namespace ExceptionRulesTest
             string[] datasets = new string[args.Length - 2];
             Array.Copy(args, 2, datasets, 0, args.Length - 2);
 
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+
             Program program = new Program();
 
             RandomSingleton.Seed = Guid.NewGuid().GetHashCode();
@@ -317,7 +319,7 @@ namespace ExceptionRulesTest
             Common.Logging.LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             log = Common.Logging.LogManager.GetLogger(program.GetType());
 
-            ClassificationResult.OutputColumns = @"ds;model;eps;acc;attr;numrul;dtha;dthm;";
+            ClassificationResult.OutputColumns = @"ds;model;eps;acc;recallmacro;precisionmacro;attr;numrul;dtha;dthm;";
 
             var dta = BenchmarkDataHelper.GetDataFiles("Data", datasets);
             foreach (var kvp in dta)

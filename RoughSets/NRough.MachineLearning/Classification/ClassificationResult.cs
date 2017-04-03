@@ -20,7 +20,7 @@ namespace NRough.MachineLearning.Classification
     {
         #region Members
 
-        public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;attr;numrul;dthm;dtha";
+        public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;recallmacro;precisionmacro;attr;numrul;dthm;dtha";
         
         private Dictionary<long, int> decisionValue2Index;
         private long[] decisions;
@@ -31,6 +31,10 @@ namespace NRough.MachineLearning.Classification
 
         private long[] predictionResults;
         private int counter;
+
+        private double macroRecall;
+        private double macroPrecision;
+        private double macroFScore;
 
         private readonly object syncRoot = new object();
 
@@ -52,11 +56,16 @@ namespace NRough.MachineLearning.Classification
         {
             get
             {
-                double sum = 0.0;
-                foreach (var dec in decisions)
-                    sum += Precision(dec);
-                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+                return macroPrecision;                
             }
+        }
+
+        public double CalcPrecisionMacro()
+        {
+            double sum = 0.0;
+            foreach (var dec in decisions)
+                sum += Precision(dec);
+            return decisions.Length > 0 ? sum / decisions.Length : 0.0;
         }
 
         [ClassificationResultValue("precisionmicro", "{0:0.0000}", false)]
@@ -70,7 +79,7 @@ namespace NRough.MachineLearning.Classification
                     a += TruePositive(dec);
                     b += (TruePositive(dec) + FalsePositive(dec));
                 }
-                return b > 0 ? a / b : 0.0;
+                return b > 0 ? a / b : 1.0;
             }
         }
 
@@ -79,11 +88,16 @@ namespace NRough.MachineLearning.Classification
         {
             get
             {
-                double sum = 0.0;
-                foreach (var dec in decisions)
-                    sum += Recall(dec);
-                return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+                return macroRecall;                
             }
+        }
+
+        public double CalcRecallMacro()
+        {
+            double sum = 0.0;
+            foreach (var dec in decisions)
+                sum += Recall(dec);
+            return decisions.Length > 0 ? sum / decisions.Length : 0.0;
         }
 
         [ClassificationResultValue("recallmicro", "{0:0.0000}", false)]
@@ -97,7 +111,7 @@ namespace NRough.MachineLearning.Classification
                     a += TruePositive(dec);
                     b += (TruePositive(dec) + FalseNegative(dec));
                 }
-                return b > 0 ? a / b : 0.0;
+                return b > 0 ? a / b : 1.0;
             }
         }
 
@@ -106,8 +120,13 @@ namespace NRough.MachineLearning.Classification
         {
             get
             {
-                return 2 * (PrecisionMacro * RecallMacro) / (PrecisionMacro + RecallMacro);
+                return macroFScore;
             }
+        }
+
+        public double CalcF1scoreMacro()
+        {
+            return 2 * (PrecisionMacro * RecallMacro) / (PrecisionMacro + RecallMacro);
         }
 
         [ClassificationResultValue("f1scoremicro", "{0:0.0000}", false)]
@@ -123,8 +142,8 @@ namespace NRough.MachineLearning.Classification
         public double Accuracy
         {
             get
-            {
-                return counter > 0 ? (double)this.Classified / (double)counter : 0;
+            {                
+                return counter > 0 ? (double)Classified / (double)counter : 0;
             }
         }
 
@@ -383,6 +402,10 @@ namespace NRough.MachineLearning.Classification
                 }
 
                 this.counter = 0;
+                
+                macroPrecision = 0.0;
+                macroRecall = 0.0;
+                macroFScore = 0.0;
 
                 this.AvgNumberOfAttributes = 0.0;
                 this.NumberOfRules = 0.0;
@@ -397,6 +420,13 @@ namespace NRough.MachineLearning.Classification
             }
         }
 
+        public void Calc()
+        {
+            macroRecall = CalcRecallMacro();
+            macroPrecision = CalcPrecisionMacro();
+            macroFScore = CalcF1scoreMacro();
+        }
+
         public virtual void AddResult(int objectIdx, long prediction, long actual, double weight = 1.0)
         {
             int actualDecIdx = decisionValue2Index[actual];
@@ -407,9 +437,11 @@ namespace NRough.MachineLearning.Classification
                 confusionTable[actualDecIdx][predictionDecIdx]++;
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
                 counter++;
+                Calc();
             }
 
             ConfusionMatrix.AddResult(actual, prediction, 1, weight);
+
         }
 
         public long GetPrediction(int objectIdx)
@@ -439,8 +471,12 @@ namespace NRough.MachineLearning.Classification
         /// <returns></returns>
         public int TruePositive(long decision)
         {
+            return ConfusionMatrix.TruePositive(decision);
+
+            /*
             int decIdx = decisionValue2Index[decision];
             return confusionTable[decIdx][decIdx];
+            */
         }
 
         /// <summary>
@@ -450,12 +486,15 @@ namespace NRough.MachineLearning.Classification
         /// <returns></returns>
         public int FalseNegative(long decision)
         {
+            return ConfusionMatrix.FalseNegative(decision);
+            /*
             int result = 0;
             int decIdx = decisionValue2Index[decision];
             for (int i = 0; i < decCountPlusOne; i++)
                 if (decIdx != i)
                     result += confusionTable[decIdx][i];
             return result;
+            */
         }
 
         /// <summary>
@@ -465,12 +504,16 @@ namespace NRough.MachineLearning.Classification
         /// <returns></returns>
         public int FalsePositive(long decision)
         {
+            return ConfusionMatrix.FalsePositive(decision);
+
+            /*
             int result = 0;
             int decIdx = decisionValue2Index[decision];
             for (int i = 0; i < decCountPlusOne; i++)
                 if (decIdx != i)
                     result += confusionTable[i][decIdx];
             return result;
+            */
         }
 
         /// <summary>
@@ -480,12 +523,15 @@ namespace NRough.MachineLearning.Classification
         /// <returns></returns>
         public int TrueNegative(long decision)
         {
+            return ConfusionMatrix.TrueNegative(decision);
+            /*
             int result = 0;
             int decIdx = decisionValue2Index[decision];
             for(int i = 0; i < decCountPlusOne; i++)
                 if (decIdx != i)
                     result += confusionTable[i][i];
             return result;
+            */
         }
 
         /// <summary>
@@ -568,15 +614,17 @@ namespace NRough.MachineLearning.Classification
 
         public double Recall(long decision)
         {
-            if (FalseNegative(decision) == 0)
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositive(decision) + FalseNegative(decision) == 0)
                 return 1.0;
 
-            return TruePositive(decision) / (TruePositive(decision) + FalseNegative(decision));            
+            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalseNegative(decision));
         }
 
         public double RecallWeight(long decision)
         {
-            if (FalseNegativeWeight(decision) == 0.0)
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositiveWeight(decision) + FalseNegativeWeight(decision) == 0.0)
                 return 1.0;
 
             return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalseNegativeWeight(decision));
@@ -584,15 +632,17 @@ namespace NRough.MachineLearning.Classification
 
         public double Precision(long decision)
         {
-            if (this.FalsePositive(decision) == 0.0)
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositive(decision) + FalsePositive(decision) == 0)
                 return 1.0;
 
-            return TruePositive(decision) / (TruePositive(decision) + FalsePositive(decision));
+            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalsePositive(decision));
         }
 
         public double PrecisionWeight(long decision)
         {
-            if (this.FalsePositiveWeight(decision) == 0.0)
+            //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
+            if (TruePositiveWeight(decision) + FalsePositiveWeight(decision) == 0.0)
                 return 1.0;
 
             return TruePositiveWeight(decision) / (TruePositiveWeight(decision) + FalsePositiveWeight(decision));
@@ -663,12 +713,12 @@ namespace NRough.MachineLearning.Classification
         }
 
         /// <summary>
-        /// Method is used during reuslt meting in cross validation.
-        /// this object must be initialized with datastore that contains all records, 
-        /// while localResult is the result besed on a single fold in CV process
+        /// Method is used during result merging in cross validation.
+        /// this object must be initialized with data store that contains all records, 
+        /// while localResult is the result based on a single fold in CV process
         /// </summary>
         /// <param name="localResult">Classification result from classification of a single fold in cross validation</param>
-        public virtual void AddLocalResult(ClassificationResult localResult)
+        public virtual void MergeResult(ClassificationResult localResult)
         {
             if (this.decisionValue2Index.Count != localResult.decisionValue2Index.Count
                     || this.decisionValue2Index.Except(localResult.decisionValue2Index).Any())
@@ -688,6 +738,10 @@ namespace NRough.MachineLearning.Classification
                 this.StandardRuleHitCounter += localResult.StandardRuleHitCounter;
                 this.ExceptionRuleLengthSum += localResult.ExceptionRuleLengthSum;
                 this.StandardRuleLengthSum += localResult.StandardRuleLengthSum;
+
+                macroRecall += localResult.RecallMacro;
+                macroPrecision += localResult.PrecisionMacro;
+                macroFScore += localResult.F1scoreMacro;
 
                 this.counter += localResult.counter;
                 
@@ -709,13 +763,33 @@ namespace NRough.MachineLearning.Classification
                             kvpActual.Key, kvpPredicted.Key,
                             localResult.ConfusionMatrix.GetCount(kvpActual.Key, kvpPredicted.Key),
                             localResult.ConfusionMatrix.GetWeight(kvpActual.Key, kvpPredicted.Key));
-
                     }
                 }
             }
 
             foreach (var objectId in localResult.TestData.GetObjectIds())                
-                this.predictionResults[this.TestData.ObjectId2ObjectIndex(objectId)] = localResult.GetPrediction(objectId);                        
+                this.predictionResults[this.TestData.ObjectId2ObjectIndex(objectId)] 
+                    = localResult.GetPrediction(objectId);                        
+        }
+
+        public void AverageIndicators(int n)
+        {
+            AvgNumberOfAttributes /= (double)n;
+            NumberOfRules /= (double)n;
+            MaxTreeHeight /= (double)n;
+            AvgTreeHeight /= (double)n;
+
+            macroRecall /= (double)n;
+            macroPrecision /= (double)n;
+            macroFScore /= (double)n;
+
+            ClassificationTime /= n;
+            ModelCreationTime /= n;
+
+            ExceptionRuleHitCounter /= n;
+            StandardRuleHitCounter /= n;
+            ExceptionRuleLengthSum /= n;
+            StandardRuleLengthSum /= n;
         }
 
         /// <summary>

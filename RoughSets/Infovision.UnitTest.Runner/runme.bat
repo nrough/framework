@@ -1,2 +1,2 @@
 @echo off
-NRough.UnitTest.Runner.exe 1
+NRough.UnitTest.Runner.exe 20

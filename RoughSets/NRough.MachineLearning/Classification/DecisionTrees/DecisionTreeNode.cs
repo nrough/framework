@@ -154,11 +154,11 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         }
 
         public ICollection<int> GetChildUniqueKeys()
-        {            
+        {
             return this.Where(x => x.Attribute != -1)
                     .GroupBy(x => x.Attribute)
                     .Select(g => g.First().Attribute)
-                    .OrderBy(x => x).ToArray().ToArray();            
+                    .OrderBy(x => x).ToArray();
         }
 
         public bool Compute(long value)

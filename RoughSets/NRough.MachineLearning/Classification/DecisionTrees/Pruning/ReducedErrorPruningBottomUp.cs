@@ -40,7 +40,7 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 
         private void ComputePrediction(IDecisionTreeNode node, int objectIdx)
         {
-            DataRecordInternal record = node.IsLeaf ? null : this.PruningData.GetRecordByIndex(objectIdx, false);
+            //DataRecordInternal record = node.IsLeaf ? null : this.PruningData.GetRecordByIndex(objectIdx, false);
             IDecisionTreeNode current = node;
             while (current != null)
             {
@@ -50,7 +50,11 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
                     predictionResult[objectIdx] = current.Output;
                     return;
                 }
-                current = current.Children.Where(x => x.Compute(record[x.Attribute])).FirstOrDefault();
+
+                current = current.Children
+                    //.Where(x => x.Compute(record[x.Attribute]))
+                    .Where(x => x.Compute(PruningData.GetFieldValue(objectIdx, x.Attribute)))
+                    .FirstOrDefault();
             }
         }
 

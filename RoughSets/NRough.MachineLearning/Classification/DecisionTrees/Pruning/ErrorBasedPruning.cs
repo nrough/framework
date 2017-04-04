@@ -27,18 +27,16 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
             this.predictionResult = new long[data.NumberOfRecords];
             this.predictionResult.SetAll(-1);
 
-            this.node2indices = new Dictionary<IDecisionTreeNode, List<int>>();
+            this.node2indices = new Dictionary<IDecisionTreeNode, List<int>>(decisionTree.Count());
             foreach (IDecisionTreeNode node in this.DecisionTree)
                 this.node2indices[node] = new List<int>();
 
             for (int i = 0; i < data.NumberOfRecords; i++)
-                this.ComputePrediction(this.DecisionTree.Root, i);            
+                this.ComputePrediction(this.DecisionTree.Root, i);
         }
 
         private void ComputePrediction(IDecisionTreeNode node, int objectIdx)
-        {
-            DataRecordInternal record = this.PruningData.GetRecordByIndex(objectIdx, false);
-
+        {            
             IDecisionTreeNode current = node;
             while (current != null)
             {
@@ -49,40 +47,41 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
                     break;
                 }
 
-                current = current.Children
-                    .Where(x => x.Compute(record[x.Attribute]))
+                current = current.Children                    
+                    .Where(x => x.Compute(PruningData.GetFieldValue(objectIdx, x.Attribute)))
                     .FirstOrDefault();
             }
         }
 
-        private bool  TryToPrune(IDecisionTreeNode node)
+        private bool TryToPrune(IDecisionTreeNode node)
         {
-            int[] instances = node2indices[node].ToArray();
-
-            if (instances.Length == 0)
+            //keep copy of instances for later use
+            var instances = node2indices[node].ToArray(); 
+            if(instances.Length == 0)
             {
                 node.Children = null;
-                node.OutputDistribution = null;
-
+                node.OutputDistribution = null;                
                 return true;
             }
 
-            double baselineError = this.ComputeError();
-            baselineError = ErrorBasedPruning.UpperErrorBound(this.PruningData.NumberOfRecords, baselineError, this.Confidence);
+            double baselineError = ComputeError();
+            baselineError = ErrorBasedPruning.UpperErrorBound(PruningData.NumberOfRecords, baselineError, Confidence);
             
             var majorDecision = node.OutputDistribution;
             double errorLeaf = ComputeErrorWithoutSubtree(node, majorDecision);
-            errorLeaf = ErrorBasedPruning.UpperErrorBound(this.PruningData.NumberOfRecords, errorLeaf, this.Confidence);
+            errorLeaf = ErrorBasedPruning.UpperErrorBound(PruningData.NumberOfRecords, errorLeaf, Confidence);
 
             IDecisionTreeNode maxChild = GetMaxChild(node);
             double errorLargestBranch = ComputeErrorReplacingSubtrees(node, maxChild);
-            errorLargestBranch = ErrorBasedPruning.UpperErrorBound(this.PruningData.NumberOfRecords, errorLargestBranch, this.Confidence);            
+            errorLargestBranch = ErrorBasedPruning.UpperErrorBound(PruningData.NumberOfRecords, errorLargestBranch, Confidence);            
 
             bool changed = false;
 
-            if ((errorLeaf <= (baselineError + this.GainThreshold + 0.00000001))
-                || (errorLargestBranch <= (baselineError + this.GainThreshold + 0.00000001)))
+            if ((errorLeaf <= (baselineError + GainThreshold + 0.00000001))
+                || (errorLargestBranch <= (baselineError + GainThreshold + 0.00000001)))
             {
+                TreeNodeTraversal.TraversePostOrder(node, n => { node2indices[n].Clear(); });
+
                 if (errorLargestBranch < errorLeaf)
                 {
                     // Replace the subtree with its maximum child
@@ -94,19 +93,17 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
                             child.Parent = node;
                 }
                 else
-                {
+                {                                        
                     // Prune the subtree
                     node.Children = null;
                     node.OutputDistribution = majorDecision;
                 }
 
-                changed = true;
-
-                TreeNodeTraversal.TraversePostOrder(node, n => { node2indices[n].Clear(); });
+                changed = true;                
 
                 //We cleared all the object indices from the node 2 indices map
                 //So now we should once again recalc indices on this tree
-
+                
                 for (int i = 0; i < instances.Length; i++)
                     this.ComputePrediction(node, instances[i]);
             }            
@@ -121,8 +118,28 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 
         private double ComputeError()
         {
-            ClassificationResult result = Classifier.Default.Classify(this.DecisionTree, this.PruningData);
-            return result.Error;
+            //ClassificationResult result = Classifier.Default.Classify(this.DecisionTree, this.PruningData);
+            //return result.Error;
+
+            int[] correct = new int[PruningData.NumberOfRecords];
+            ParallelOptions options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = ConfigManager.MaxDegreeOfParallelism
+            };
+
+            Parallel.For(0, PruningData.NumberOfRecords, options, objectIndex =>
+            {
+                DataRecordInternal record = PruningData.GetRecordByIndex(objectIndex, false);
+                var prediction = DecisionTree.Compute(record);
+
+                if (prediction == Classifier.UnclassifiedOutput && DecisionTree.DefaultOutput.HasValue)
+                    prediction = (long)DecisionTree.DefaultOutput;
+
+                if (prediction == record[PruningData.DataStoreInfo.DecisionFieldId])
+                    correct[objectIndex] = 1;
+            });
+
+            return 1.0 - ((double)correct.Sum() / (double)correct.Length);
         }
 
         //private double ComputeErrorWithoutSubtree(IDecisionTreeNode tree, long majorDecision)
@@ -142,18 +159,18 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
             return error;
         }
 
-        private double ComputeErrorReplacingSubtrees(IDecisionTreeNode tree, IDecisionTreeNode child)
+        private double ComputeErrorReplacingSubtrees(IDecisionTreeNode node, IDecisionTreeNode child)
         {
-            var branches = tree.Children;
-            var outputDistribution = tree.OutputDistribution;
+            var branches = node.Children;
+            var outputDistribution = node.OutputDistribution;
 
-            tree.Children = child.Children;
-            tree.OutputDistribution = child.OutputDistribution;
+            node.Children = child.Children;
+            node.OutputDistribution = child.OutputDistribution;
 
             double error = this.ComputeError();
 
-            tree.Children = branches;
-            tree.OutputDistribution = outputDistribution;
+            node.Children = branches;
+            node.OutputDistribution = outputDistribution;
 
             return error;
         }
@@ -178,13 +195,12 @@ namespace NRough.MachineLearning.Classification.DecisionTrees.Pruning
 
         public override double Prune()
         {
-            this.SingleRun();
-            return this.ComputeError();            
+            return this.SingleRun();
         }
 
         private double SingleRun()
         {            
-            List<IDecisionTreeNode> nodeList = new List<IDecisionTreeNode>();
+            List<IDecisionTreeNode> nodeList = new List<IDecisionTreeNode>(node2indices.Count);
             TreeNodeTraversal.TraverseLevelOrder(this.DecisionTree.Root, node => nodeList.Add(node));
             foreach (IDecisionTreeNode node in nodeList)
             {

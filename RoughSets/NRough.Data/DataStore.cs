@@ -185,16 +185,15 @@ namespace NRough.Data
 
         public DataRecordInternal GetRecordByIndex(int objectIndex, bool setObjectId = true)
         {
-            Dictionary<int, long> valueMap = new Dictionary<int, long>(this.DataStoreInfo.NumberOfFields);
+            var valueMap = new Dictionary<int, long>(DataStoreInfo.NumberOfFields);
+            foreach (int fieldId in DataStoreInfo.SelectAttributeIds())
+                valueMap[fieldId] = GetFieldValue(objectIndex, fieldId);
 
-            foreach (int fieldId in this.DataStoreInfo.SelectAttributeIds())
-                valueMap[fieldId] = this.GetFieldValue(objectIndex, fieldId);
-
-            DataRecordInternal ret = new DataRecordInternal(valueMap);
+            var ret = new DataRecordInternal(valueMap);
             ret.ObjectIdx = objectIndex;
 
             if (setObjectId)
-                ret.ObjectId = this.ObjectIndex2ObjectId(objectIndex);
+                ret.ObjectId = ObjectIndex2ObjectId(objectIndex);
 
             return ret;
         }
@@ -503,7 +502,7 @@ namespace NRough.Data
 
         public long GetFieldValue(int objectIndex, int fieldId)
         {
-            return this.GetFieldIndexValue(objectIndex, this.DataStoreInfo.GetFieldIndex(fieldId));
+            return GetFieldIndexValue(objectIndex, DataStoreInfo.GetFieldIndex(fieldId));
         }
 
         public long[] GetFieldValue(int[] objectIndices, int fieldId)

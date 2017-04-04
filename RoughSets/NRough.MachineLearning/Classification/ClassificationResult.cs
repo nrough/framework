@@ -20,7 +20,7 @@ namespace NRough.MachineLearning.Classification
     {
         #region Members
 
-        public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;recallmacro;precisionmacro;attr;numrul;dthm;dtha";
+        public static string OutputColumns = @"ds;model;t;f;eps;ens;acc;recallmacro;,00000333precisionmacro;attr;numrul;dthm;dtha";
         
         private Dictionary<long, int> decisionValue2Index;
         private long[] decisions;
@@ -437,6 +437,7 @@ namespace NRough.MachineLearning.Classification
                 confusionTable[actualDecIdx][predictionDecIdx]++;
                 confusionTableWeights[actualDecIdx][predictionDecIdx] += weight;
                 counter++;
+
                 Calc();
             }
 

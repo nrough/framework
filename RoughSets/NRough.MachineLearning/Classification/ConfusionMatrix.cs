@@ -103,7 +103,7 @@ namespace NRough.MachineLearning.Classification
         public int GetCount(long actual, long predicted)
         {
             int actualIdx = decisionValue2Index[actual];
-            int predictedIdx = decisionValue2Index[predicted];
+            int predictedIdx = actual != predicted ? decisionValue2Index[predicted] : actualIdx;
             return GetCountByIndex(actualIdx, predictedIdx);
         }
 
@@ -115,14 +115,14 @@ namespace NRough.MachineLearning.Classification
         public double GetWeight(long actual, long predicted)
         {
             int actualIdx = decisionValue2Index[actual];
-            int predictedIdx = decisionValue2Index[predicted];
+            int predictedIdx = actual != predicted ? decisionValue2Index[predicted] : actualIdx;
             return GetWeightByIndex(actualIdx, predictedIdx);
         }
 
         public virtual void AddResult(long actual, long prediction, int count, double weight)
         {
             int actualDecIdx = decisionValue2Index[actual];
-            int predictionDecIdx = decisionValue2Index[prediction];
+            int predictionDecIdx = actual != prediction ? decisionValue2Index[prediction] : actualDecIdx;
             lock (syncRoot)
             {
                 confusionTable[actualDecIdx][predictionDecIdx] += count;

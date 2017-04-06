@@ -100,7 +100,8 @@ namespace NRough.Tests.Data.Pivot
                     {
                         int maxRowIndex = pivotTable.AsEnumerable()
                         .Select((row, index) => new { row, index })
-                        .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), 2, MidpointRounding.AwayFromZero))
+                        .OrderByDescending(r => Math.Round(r.row.Field<double>(
+                            String.Format("{0}-acc", modelName)), 2, MidpointRounding.AwayFromZero))
                         .ThenByDescending(r => r.row.Field<double>("eps"))
                         .Select(r => r.index).First();
 
@@ -244,9 +245,15 @@ namespace NRough.Tests.Data.Pivot
 \caption{" + caption + @"}
 \label{" + label + @"}
 \rowcolors{4}{gray!25}{white}
-\resizebox{\columnwidth}{!}{%
+\resizebox{\columnwidth}{\dimexpr\textheight-2em-\lineskip\relax}{%{%
 \begin{tabular}{|c|lllll|lllll|lllll|lllll|} \hline
- \multirow{2}{*}[-3.5cm]{{\LARGE $\varepsilon$}} & \multicolumn{5}{c|}{\textbf{FULL-ENT}} & \multicolumn{5}{c|}{\textbf{RED-ENT}} & \multicolumn{5}{c|}{\textbf{RED-MAJ}} & \multicolumn{5}{c|}{\textbf{RED-MAJ-EPS}} \\ \cline{2-21}
+ \multirow{2}{*}[-3.5cm]{{\LARGE $\varepsilon$}} 
+& \multicolumn{5}{c|}{\textbf{FULL-ENT}} 
+& \multicolumn{5}{c|}{\textbf{RED-ENT}} 
+& \multicolumn{5}{c|}{\textbf{RED-MAJ}} 
+& \multicolumn{5}{c|}{\textbf{RED-MAJ-EPS}} 
+\\ \cline{2-21}
+
  & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}
  & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
  & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 

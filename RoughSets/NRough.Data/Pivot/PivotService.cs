@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace NRough.Data.Pivot
 {
+    //https://github.com/mcarmenjc/ClientPivoting
+    //TODO PivotService: Add aggregate functions
+    //TODO Add filtering
     public class PivotService
     {
         private DataColumn[] GetPivotedColumns(DataTable data, DataColumn pivotColumn, DataColumn[] pivotingColumns, string separator)

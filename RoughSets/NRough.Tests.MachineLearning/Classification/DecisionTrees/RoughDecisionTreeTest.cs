@@ -29,6 +29,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             var pruning = new ErrorBasedPruning(tree, data);
             pruning.Prune();            
         }
+
         
         [TestCase(@"Data\soybean-small.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\promoters.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
@@ -38,13 +39,16 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\lymphography.all", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\agaricus-lepiota.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\zoo.dta", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]        
+        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\nursery.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\semeion.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+                
         //[TestCase(@"Data\vehicle.tab", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\german.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]        
         //[TestCase(@"Data\dermatology.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         //[TestCase(@"Data\hypothyroid.data", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\semeion.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+
         public void DecisionTreeWithCV(string dataFile, DataFormat fileFormat, string reductFactoryKey, int folds)
         {
             DataStore data = DataStore.Load(dataFile, fileFormat);
@@ -86,8 +90,8 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\spect.train", @"Data\spect.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]        
-        [TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]        
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\dna_modified.trn", @"Data\dna_modified.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajority)]                                                
         //[TestCase(@"Data\letter.trn", @"Data\letter.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]        
         [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]

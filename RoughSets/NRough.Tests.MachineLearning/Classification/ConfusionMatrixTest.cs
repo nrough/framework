@@ -31,20 +31,20 @@ namespace NRough.Tests.MachineLearning.Classification
 
             Console.WriteLine(confusionMatrix);
 
-            Assert.AreEqual(5, confusionMatrix.TruePositive(1));
-            Assert.AreEqual(2, confusionMatrix.FalsePositive(1));
-            Assert.AreEqual(3, confusionMatrix.FalseNegative(1));
-            Assert.AreEqual(17, confusionMatrix.TrueNegative(1));
+            Assert.AreEqual(5, confusionMatrix.TP(1));
+            Assert.AreEqual(2, confusionMatrix.FP(1));
+            Assert.AreEqual(3, confusionMatrix.FN(1));
+            Assert.AreEqual(17, confusionMatrix.TN(1));
 
-            Assert.AreEqual(3, confusionMatrix.TruePositive(2));
-            Assert.AreEqual(5, confusionMatrix.FalsePositive(2));
-            Assert.AreEqual(3, confusionMatrix.FalseNegative(2));
-            Assert.AreEqual(16, confusionMatrix.TrueNegative(2));
+            Assert.AreEqual(3, confusionMatrix.TP(2));
+            Assert.AreEqual(5, confusionMatrix.FP(2));
+            Assert.AreEqual(3, confusionMatrix.FN(2));
+            Assert.AreEqual(16, confusionMatrix.TN(2));
 
-            Assert.AreEqual(11, confusionMatrix.TruePositive(3));
-            Assert.AreEqual(1, confusionMatrix.FalsePositive(3));
-            Assert.AreEqual(2, confusionMatrix.FalseNegative(3));
-            Assert.AreEqual(13, confusionMatrix.TrueNegative(3));
+            Assert.AreEqual(11, confusionMatrix.TP(3));
+            Assert.AreEqual(1, confusionMatrix.FP(3));
+            Assert.AreEqual(2, confusionMatrix.FN(3));
+            Assert.AreEqual(13, confusionMatrix.TN(3));
 
             Console.WriteLine(confusionMatrix.TruePositiveAvg);
             Console.WriteLine(confusionMatrix.FalsePositiveAvg);

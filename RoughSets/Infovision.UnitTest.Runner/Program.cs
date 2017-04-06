@@ -37,8 +37,9 @@ namespace NRough.UnitTest.Runner
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames.AddRange(Test_Benchmark2(numOfTests, false));
             fileNames.AddRange(Test_CV2(numOfTests, false));
+            fileNames.AddRange(Test_Benchmark2(numOfTests, false));
+            
                         
             //ProcessResultFiles(fileNames);
         }

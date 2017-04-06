@@ -63,9 +63,17 @@ namespace NRough.MachineLearning.Classification
         public double CalcPrecisionMacro()
         {
             double sum = 0.0;
-            foreach (var dec in decisions)
-                sum += Precision(dec);
-            return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            double count = 0.0;
+            foreach (var dec in decisions.Where(d => d != Classifier.UnclassifiedOutput))
+            {
+                if (TP(dec) + FP(dec) != 0)
+                {
+                    sum += Precision(dec);
+                    count += 1.0;
+                }
+            }
+                
+            return count > 0 ? sum / count : 0.0;
         }
 
         [ClassificationResultValue("precisionmicro", "{0:0.0000}", false)]
@@ -76,8 +84,8 @@ namespace NRough.MachineLearning.Classification
                 double a = 0.0, b = 0.0;
                 foreach (var dec in decisions)
                 {
-                    a += TruePositive(dec);
-                    b += (TruePositive(dec) + FalsePositive(dec));
+                    a += TP(dec);
+                    b += (TP(dec) + FP(dec));
                 }
                 return b > 0 ? a / b : 1.0;
             }
@@ -95,9 +103,17 @@ namespace NRough.MachineLearning.Classification
         public double CalcRecallMacro()
         {
             double sum = 0.0;
-            foreach (var dec in decisions)
-                sum += Recall(dec);
-            return decisions.Length > 0 ? sum / decisions.Length : 0.0;
+            double count = 0.0;
+
+            foreach (var dec in decisions.Where(d => d != Classifier.UnclassifiedOutput))
+            {
+                if (TP(dec) + FN(dec) != 0)
+                {
+                    sum += Recall(dec);
+                    count += 1.0;
+                }                
+            }
+            return count > 0 ? sum / count : 0.0;
         }
 
         [ClassificationResultValue("recallmicro", "{0:0.0000}", false)]
@@ -108,8 +124,8 @@ namespace NRough.MachineLearning.Classification
                 double a = 0.0, b = 0.0;
                 foreach (var dec in decisions)
                 {
-                    a += TruePositive(dec);
-                    b += (TruePositive(dec) + FalseNegative(dec));
+                    a += TP(dec);
+                    b += (TP(dec) + FN(dec));
                 }
                 return b > 0 ? a / b : 1.0;
             }
@@ -126,6 +142,9 @@ namespace NRough.MachineLearning.Classification
 
         public double CalcF1scoreMacro()
         {
+            if (PrecisionMacro + RecallMacro == 0.0)
+                return 0.0;
+
             return 2 * (PrecisionMacro * RecallMacro) / (PrecisionMacro + RecallMacro);
         }
 
@@ -470,9 +489,9 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int TruePositive(long decision)
+        public int TP(long decision)
         {
-            return ConfusionMatrix.TruePositive(decision);
+            return ConfusionMatrix.TP(decision);
 
             /*
             int decIdx = decisionValue2Index[decision];
@@ -485,9 +504,9 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int FalseNegative(long decision)
+        public int FN(long decision)
         {
-            return ConfusionMatrix.FalseNegative(decision);
+            return ConfusionMatrix.FN(decision);
             /*
             int result = 0;
             int decIdx = decisionValue2Index[decision];
@@ -503,9 +522,9 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int FalsePositive(long decision)
+        public int FP(long decision)
         {
-            return ConfusionMatrix.FalsePositive(decision);
+            return ConfusionMatrix.FP(decision);
 
             /*
             int result = 0;
@@ -522,9 +541,9 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int TrueNegative(long decision)
+        public int TN(long decision)
         {
-            return ConfusionMatrix.TrueNegative(decision);
+            return ConfusionMatrix.TN(decision);
             /*
             int result = 0;
             int decIdx = decisionValue2Index[decision];
@@ -593,11 +612,11 @@ namespace NRough.MachineLearning.Classification
 
         public double AUC(long decision)
         {
-            double truePositiveRate = (double)this.TruePositive(decision) / 
-                (double)(this.TruePositive(decision) + this.FalseNegative(decision));
+            double truePositiveRate = (double)this.TP(decision) / 
+                (double)(this.TP(decision) + this.FN(decision));
 
-            double falsePositiveRate = (double)this.FalsePositive(decision) / 
-                (double)(this.FalsePositive(decision) + this.TrueNegative(decision));
+            double falsePositiveRate = (double)this.FP(decision) / 
+                (double)(this.FP(decision) + this.TN(decision));
 
             return (1.0 + truePositiveRate - falsePositiveRate) / 2.0;
         }        
@@ -616,10 +635,10 @@ namespace NRough.MachineLearning.Classification
         public double Recall(long decision)
         {
             //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
-            if (TruePositive(decision) + FalseNegative(decision) == 0)
+            if (TP(decision) + FN(decision) == 0)
                 return 1.0;
 
-            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalseNegative(decision));
+            return (double)TP(decision) / (double)(TP(decision) + FN(decision));
         }
 
         public double RecallWeight(long decision)
@@ -634,10 +653,10 @@ namespace NRough.MachineLearning.Classification
         public double Precision(long decision)
         {
             //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
-            if (TruePositive(decision) + FalsePositive(decision) == 0)
+            if (TP(decision) + FP(decision) == 0)
                 return 1.0;
 
-            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalsePositive(decision));
+            return (double)TP(decision) / (double)(TP(decision) + FP(decision));
         }
 
         public double PrecisionWeight(long decision)
@@ -946,6 +965,96 @@ namespace NRough.MachineLearning.Classification
 
                         acc = grp.Average(x => x.Field<double>("acc")),
                         accdev = grp.StandardDeviation(x => x.Field<double>("acc")),
+
+                        attr = grp.Average(x => x.Field<double>("attr")),
+                        attrdev = grp.StandardDeviation(x => x.Field<double>("attr")),
+
+                        numrul = grp.Average(x => x.Field<double>("numrul")),
+                        numruldev = grp.StandardDeviation(x => x.Field<double>("numrul")),
+
+                        dthm = grp.Average(x => x.Field<double>("dthm")),
+                        dthmdev = grp.StandardDeviation(x => x.Field<double>("dthm")),
+
+                        dtha = grp.Average(x => x.Field<double>("dtha")),
+                        dthadev = grp.StandardDeviation(x => x.Field<double>("dtha"))
+
+                    }).ToDataTable();
+        }
+
+        public static DataTable AverageResults3(DataTable dtc)
+        {
+            //Linq.Dynamic
+            /*
+            var query = dtc.AsEnumerable()
+                        .GroupBy("new (it[\"ds\"].ToString() as ds, " +
+                                      "it[\"model\"].ToString() as model, " +
+                                      "Convert.ToInt32(it[\"ens\"]) as ens, " +
+                                      "Convert.ToInt32(it[\"eps\"]) as eps)", "it")
+                        .Select("new (it.Key.ds, " +
+                                "it.Key.model, " +                                
+                                "it.Key.ens, " +
+                                "it.Key.eps, " +
+                                "Min(Convert.ToDouble(it[\"acc\"])) as acc, " +
+                                "Max(Convert.ToDouble(it[\"attr\"])) as attr, " +
+                                "Min(Convert.ToDouble(it[\"numrul\"])) as numrul, " +
+                                "Sum(Convert.ToDouble(it[\"dthm\"])) as dthm, " +
+                                "Average(Convert.ToDouble(it[\"dtha\"])) as dtha)"
+                                );
+
+            return query.ToDataTable();
+            */
+
+            return (from row in dtc.AsEnumerable()
+                    group row by new
+                    {
+                        ds = row.Field<string>("ds"),
+                        model = row.Field<string>("model"),
+                        eps = row.Field<double>("eps"),
+                        //pruning = row.Field<string>("pruning")
+                        //ens = row.Field<int>("ens")                        
+                    } into grp
+                    select new
+                    {
+                        ds = grp.Key.ds,
+                        model = grp.Key.model,
+                        eps = grp.Key.eps,
+                        //pruning = grp.Key.pruning,
+                        //ens = grp.Key.ens,
+
+                        acc = grp.Average(x => x.Field<double>("acc")),
+                        recallmacro = grp.Average(x => x.Field<double>("recallmacro")),
+                        precisionmacro = grp.Average(x => x.Field<double>("precisionmacro")),
+                        attr = grp.Average(x => x.Field<double>("attr")),
+                        numrul = grp.Average(x => x.Field<double>("numrul")),
+                        dthm = grp.Average(x => x.Field<double>("dthm")),
+                        dtha = grp.Average(x => x.Field<double>("dtha"))
+
+                    }).ToDataTable();
+        }
+
+        public static DataTable AverageResults4(DataTable dtc)
+        {
+            return (from row in dtc.AsEnumerable()
+                    group row by new
+                    {
+                        ds = row.Field<string>("ds"),
+                        model = row.Field<string>("model"),
+                        eps = row.Field<double>("eps")
+                    } into grp
+                    select new
+                    {
+                        ds = grp.Key.ds,
+                        model = grp.Key.model,
+                        eps = grp.Key.eps,
+
+                        acc = grp.Average(x => x.Field<double>("acc")),
+                        accdev = grp.StandardDeviation(x => x.Field<double>("acc")),
+
+                        recallmacro = grp.Average(x => x.Field<double>("recallmacro")),
+                        recallmacrodev = grp.StandardDeviation(x => x.Field<double>("recallmacro")),
+
+                        precisionmacro = grp.Average(x => x.Field<double>("precisionmacro")),
+                        precisionmacrodev = grp.StandardDeviation(x => x.Field<double>("precisionmacro")),
 
                         attr = grp.Average(x => x.Field<double>("attr")),
                         attrdev = grp.StandardDeviation(x => x.Field<double>("attr")),

@@ -154,7 +154,7 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int TruePositive(long decision)
+        public int TP(long decision)
         {
             int decIdx = decisionValue2Index[decision];
             return confusionTable[decIdx][decIdx];
@@ -165,7 +165,7 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int FalseNegative(long decision)
+        public int FN(long decision)
         {
             int result = 0;
             int decIdx = decisionValue2Index[decision];
@@ -180,7 +180,7 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int FalsePositive(long decision)
+        public int FP(long decision)
         {
             int result = 0;
             int decIdx = decisionValue2Index[decision];
@@ -195,7 +195,7 @@ namespace NRough.MachineLearning.Classification
         /// </summary>
         /// <param name="decision"></param>
         /// <returns></returns>
-        public int TrueNegative(long decision)
+        public int TN(long decision)
         {
             int result = 0;
             int decIdx = decisionValue2Index[decision];
@@ -318,8 +318,8 @@ namespace NRough.MachineLearning.Classification
                 double a = 0.0, b = 0.0;
                 foreach (var dec in decisions)
                 {
-                    a += TruePositive(dec);
-                    b += (TruePositive(dec) + FalsePositive(dec));
+                    a += TP(dec);
+                    b += (TP(dec) + FP(dec));
                 }
                 return b > 0 ? a / b : 1.0;
             }
@@ -345,8 +345,8 @@ namespace NRough.MachineLearning.Classification
                 double a = 0.0, b = 0.0;
                 foreach (var dec in decisions)
                 {
-                    a += TruePositive(dec);
-                    b += (TruePositive(dec) + FalseNegative(dec));
+                    a += TP(dec);
+                    b += (TP(dec) + FN(dec));
                 }
                 return b > 0 ? a / b : 1.0;
             }
@@ -355,19 +355,19 @@ namespace NRough.MachineLearning.Classification
         public double Recall(long decision)
         {
             //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
-            if (TruePositive(decision) + FalseNegative(decision) == 0)
+            if (TP(decision) + FN(decision) == 0)
                 return 1.0;
 
-            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalseNegative(decision));
+            return (double)TP(decision) / (double)(TP(decision) + FN(decision));
         }
 
         public double Precision(long decision)
         {
             //http://stats.stackexchange.com/questions/1773/what-are-correct-values-for-precision-and-recall-in-edge-cases
-            if (TruePositive(decision) + FalsePositive(decision) == 0.0)
+            if (TP(decision) + FP(decision) == 0.0)
                 return 1.0;
 
-            return (double)TruePositive(decision) / (double)(TruePositive(decision) + FalsePositive(decision));
+            return (double)TP(decision) / (double)(TP(decision) + FP(decision));
         }
 
         [ClassificationResultValue("acc", "{0:0.0000}", true)]
@@ -377,7 +377,7 @@ namespace NRough.MachineLearning.Classification
             {
                 double sum = 0.0;
                 foreach (var dec in decisions)
-                    sum += TruePositive(dec);
+                    sum += TP(dec);
                 return total > 0 ? sum / total : 0.0;
             }
         }

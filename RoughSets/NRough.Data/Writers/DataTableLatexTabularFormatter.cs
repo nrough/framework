@@ -46,60 +46,42 @@ namespace NRough.Data.Writers
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var datarow = dt.Rows[i];
+                int k = 0;
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
+                    var columnProperties = dt.Columns[j].ExtendedProperties;
+
+                    if (columnProperties.ContainsKey("active"))
+                        if ((bool)columnProperties["active"] == false)
+                            continue;
+
                     string cellValue;
                     if (dt.Columns[j].DataType.GetInterface("IFormattable") != null
-                        & dt.Columns[j].ExtendedProperties.ContainsKey("format"))
+                        & columnProperties.ContainsKey("format"))
                     {
-                        string format = (string)dt.Columns[j].ExtendedProperties["format"];
+                        string format = (string)columnProperties["format"];
                         IFormatProvider formatProvider = null;
-                        if (dt.Columns[j].ExtendedProperties.ContainsKey("formatProvider"))
-                            formatProvider = (IFormatProvider)dt.Columns[j].ExtendedProperties["formatProvider"];
+                        if (columnProperties.ContainsKey("formatProvider"))
+                            formatProvider = (IFormatProvider)columnProperties["formatProvider"];
 
                         cellValue = datarow.Field<IFormattable>(j).ToString(
                                 format, formatProvider);
-
                     }
                     else
                     {
                         cellValue = datarow[j].ToString();
-                    }
-
-                    /*
-                    switch (Type.GetTypeCode(dt.Columns[j].DataType))
-                    {                        
-                        case TypeCode.Double:                            
-                            cellValue = datarow.Field<double>(j).ToString(
-                                "0.##", System.Globalization.CultureInfo.InvariantCulture);
-                            if (String.IsNullOrEmpty(cellValue))
-                                cellValue = "0";
-                                //System.Globalization.CultureInfo.InvariantCulture));                                
-                            break;                        
-
-                        default:
-                            cellValue = datarow[j].ToString();
-                            break;                            
-                    }
-                    */
+                    }                    
 
                     cellValue = ApplyFontFace(j, i, cellValue);
 
-                    sb.Append(cellValue);
-
-                    if (j < dt.Columns.Count - 1)
+                    if(k > 0)
                         sb.Append(" & ");
+
+                    sb.Append(cellValue);
+                    k++;                                            
                 }
                 sb.AppendLine(@"\\");
-            }
-
-            /*
-            sb.Append(String.Join(
-                String.Format(@"\\ {0}", Environment.NewLine), 
-                dt.Rows.OfType<DataRow>()
-                    .Select(x => String.Join(" & ", x.ItemArray))));
-            sb.AppendLine(@"\\ ");
-            */
+            }            
         }        
 
         private string ApplyFontFace(int col, int row, string value)

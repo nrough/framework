@@ -86,9 +86,9 @@ namespace NRough.Tests.Data.Pivot
 
         public void Test(string path, string[] filenames, string caption, int size)
         {
-            int accuracyDecimals = 3;
-            int otherDecimals = 1;
-            bool splitTableToParts = true;
+            int accuracyDecimals = 2;
+            int otherDecimals = 0;
+            bool splitTableToParts = false;
 
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
@@ -178,7 +178,7 @@ namespace NRough.Tests.Data.Pivot
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
-                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", "0.00");
+                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", ".00");
                         pivotTable.Columns["eps"].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
 
                         foreach (string modelName in modelNames)
@@ -200,7 +200,7 @@ namespace NRough.Tests.Data.Pivot
                                 
                                 if (colNames[i] == "acc" || colNames[i] == "precisionmacro" || colNames[i] == "recallmacro")
                                 {
-                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0." + new string('#', accuracyDecimals));
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "." + new string('#', accuracyDecimals));
                                     pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
                                 }
                                 else
@@ -641,7 +641,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{" + caption + @"}
 \label{" + label + @"}
 \rowcolors{4}{gray!25}{white}
-\resizebox{\columnwidth}{\dimexpr\textheight-2em-\lineskip\relax}{%{%
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|c|lllllll|lllllll|lllllll|lllllll|} \hline
  \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
 & \multicolumn{7}{c|}{\textbf{FULL-ENT}} 

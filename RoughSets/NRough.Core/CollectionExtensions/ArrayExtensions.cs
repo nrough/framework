@@ -165,11 +165,38 @@ namespace NRough.Core.CollectionExtensions
             return sb.ToString();
         }
 
-        public static string ToStr2d<T>(this T[][] array, string colSeparator = " ", string recordSeparator = "\n", 
-            string format = "", IFormatProvider formatProvider = null, bool transpose = false)
+        public static string ToStr2d<T>(
+            this T[][] array,
+            string colSeparator = " ",
+            string recordSeparator = "\n",
+            bool transpose = true,
+            string format = "",
+            IFormatProvider formatProvider = null,
+            string[] colNames = null,
+            string[] rowNames = null)
         {
             if (array == null)
-                return String.Empty;
+                return String.Empty;            
+
+            if (colNames != null)
+            {
+                if (rowNames != null)
+                {
+                    if (colNames.Length != array.Length + 1)
+                        throw new ArgumentException("colNames.Length != array.Length + 1", "colNames");
+                }
+                else
+                {
+                    if (colNames.Length != array.Length)
+                        throw new ArgumentException("colNames.Length != array.Length", "colNames");
+                }
+            }
+
+            if (rowNames != null)
+            {
+                if (rowNames.Length != array[0].Length)
+                    throw new ArgumentException("rowNames.Length != array[0].Length", "rowNames");
+            }
 
             T[][] localArray = null;
             if (transpose)
@@ -178,10 +205,29 @@ namespace NRough.Core.CollectionExtensions
                 localArray = array.CopyArrayBuiltIn();
 
             StringBuilder sb = new StringBuilder();
+
+            if (colNames != null)
+            {
+                for (int i = 0; i < colNames.Length; i++)
+                {
+                    sb.Append(colNames[i]);
+                    if(i != colNames.Length - 1)
+                        sb.Append(colSeparator);
+                    else
+                        sb.Append(recordSeparator);
+                }
+            }
+            
             if (!String.IsNullOrEmpty(format) && typeof(T).GetInterface("IFormattable") != null)
             {
                 for (int i = 0; i < localArray.Length; i++)
                 {
+                    if (rowNames != null)
+                    {
+                        sb.Append(rowNames[i]);
+                        sb.Append(colSeparator);
+                    }
+
                     Converter<T, IFormattable> c = new Converter<T, IFormattable>(input => (IFormattable)input);
                     IFormattable[] formattableArray = Array.ConvertAll<T, IFormattable>(localArray[i], c);
 
@@ -190,23 +236,29 @@ namespace NRough.Core.CollectionExtensions
                         sb.Append(formattableArray[j].ToString(format, formatProvider));
                         if (j < formattableArray.Length - 1)
                             sb.Append(colSeparator);
-                    }
-
-                    sb.Append(recordSeparator);
+                        else
+                            sb.Append(recordSeparator);
+                    }                    
                 }
             }
             else
             {
                 for (int i = 0; i < localArray.Length; i++)
                 {
+                    if (rowNames != null)
+                    {
+                        sb.Append(rowNames[i]);
+                        sb.Append(colSeparator);
+                    }
+
                     for (int j = 0; j < localArray[i].Length; j++)
                     {
                         sb.Append(localArray[i][j].ToString());
                         if (j < localArray[i].Length - 1)
                             sb.Append(colSeparator);
-                    }
-
-                    sb.Append(recordSeparator);
+                        else
+                            sb.Append(recordSeparator);
+                    }                    
                 }
             }            
 

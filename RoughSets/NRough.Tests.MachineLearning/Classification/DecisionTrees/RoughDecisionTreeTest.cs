@@ -39,8 +39,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\lymphography.all", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\agaricus-lepiota.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\zoo.dta", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
-        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
+        [TestCase(@"Data\chess.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]        
         [TestCase(@"Data\nursery.2.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
         [TestCase(@"Data\semeion.data", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights, 5)]
                 
@@ -83,6 +82,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         }
 
 
+        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", DataFormat.CSV, ReductTypes.ApproximateReductMajorityWeights)]
         [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
@@ -98,7 +98,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         //[TestCase(@"Data\optdigits.disc.trn", @"Data\optdigits.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\pendigits.trn", @"Data\pendigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
         //[TestCase(@"Data\optdigits.trn", @"Data\optdigits.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
-        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", DataFormat.RSES1, ReductTypes.ApproximateReductMajorityWeights)]
+        
         public void DecisionTreeBenchmarkSplittedData(
             string trainFile, string testFile, DataFormat fileFormat, string reductFactoryKey)
         {

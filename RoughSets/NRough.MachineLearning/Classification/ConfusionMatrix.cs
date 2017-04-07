@@ -295,7 +295,7 @@ namespace NRough.MachineLearning.Classification
 
         public override string ToString()
         {
-            return Output().ToStr2d(" ", Environment.NewLine, "", null, true);
+            return Output().ToStr2d(" ", Environment.NewLine, true, "", null);
         }
 
         [ClassificationResultValue("precisionmacro", "{0:0.0000}", false)]

@@ -14,14 +14,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NRough.Tests.Data.Pivot
-{
+{    
     [TestFixture]
-    public class PivotServiceTest3
+    public class PivotServiceTest_Generalized
     {
         [Test]
         public void Test1()
-        {            
-            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release3\log\";
+        {
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
             string[] filenames = new string[]
             {
                 "audiology-1.result", //audiology
@@ -53,7 +53,7 @@ namespace NRough.Tests.Data.Pivot
         [Test]
         public void Test100()
         {
-            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release3\log\";
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
             string[] filenames = new string[]
             {
                 "audiology-100.result", //audiology
@@ -82,16 +82,18 @@ namespace NRough.Tests.Data.Pivot
             Test(path, filenames, "Generalized majority decision reduct results ({0}) size=100", 100);
         }
 
+
         public void Test(string path, string[] filenames, string caption, int size)
         {
             int accuracyDecimals = 3;
             int otherDecimals = 1;
+            bool splitTableToParts = true;
 
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
             List<string> datasetNames = new List<string>(filenames.Length);
-            string[] colNames = new string[] { "acc", "attr", "numrul", "dtha", "dthm" };
-            //string[] colNames2 = new string[] { "acc", "accdev", "attr", "attrdev", "numrul", "numruldev", "dtha", "dthadev", "dthm", "dthmdev" };
+            string[] colNames = new string[] { "acc", "recallmacro", "precisionmacro", "attr", "numrul", "dtha", "dthm" };
+
             string[] modelNames = null;
             bool first = true;
 
@@ -121,8 +123,8 @@ namespace NRough.Tests.Data.Pivot
                         for (int i = 0; i < dtc.Rows.Count; i++)
                             dtc.Rows[i]["ds"] = datasetname;
 
-                        var dtc1 = ClassificationResult.AverageResults(dtc);
-                        var dtc2 = ClassificationResult.AverageResults2(dtc);
+                        var dtc1 = ClassificationResult.AverageResults3(dtc);
+                        var dtc2 = ClassificationResult.AverageResults4(dtc);
 
                         dtc = dtc1;
 
@@ -138,8 +140,8 @@ namespace NRough.Tests.Data.Pivot
                         DataColumn[] cols2 = new DataColumn[colNames.Length * 2];
                         for (int i = 0; i < colNames.Length; i++)
                         {
-                            cols2[i*2] = dtc2.Columns[colNames[i]];
-                            cols2[(i*2)+1] = dtc2.Columns[colNames[i]+"dev"];
+                            cols2[i * 2] = dtc2.Columns[colNames[i]];
+                            cols2[(i * 2) + 1] = dtc2.Columns[colNames[i] + "dev"];
                         }
 
                         if (first)
@@ -162,6 +164,7 @@ namespace NRough.Tests.Data.Pivot
                             cols2,
                             "-");
 
+                        
                         pivotTable.Columns.Remove("M-EPS-dthm");
                         pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
 
@@ -169,6 +172,7 @@ namespace NRough.Tests.Data.Pivot
                         pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
                         pivotTable2.Columns.Remove("M-EPS-dthmdev");
                         pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
+                        
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
@@ -179,7 +183,8 @@ namespace NRough.Tests.Data.Pivot
                         {
                             int maxRowIndex = pivotTable.AsEnumerable()
                                 .Select((row, index) => new { row, index })
-                                .OrderByDescending(r => Math.Round(r.row.Field<double>(String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
+                                .OrderByDescending(r => Math.Round(r.row.Field<double>(
+                                    String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
                                 .ThenByDescending(r => r.row.Field<double>("eps"))
                                 .Select(r => r.index).First();
 
@@ -191,7 +196,7 @@ namespace NRough.Tests.Data.Pivot
                                 if (!pivotTable.Columns.Contains(String.Format("{0}-{1}", modelName, colNames[i])))
                                     continue;
 
-                                if (colNames[i] == "acc")
+                                if (colNames[i] == "acc" || colNames[i] == "precisionmacro" || colNames[i] == "recallmacro")
                                 {
                                     pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0." + new string('#', accuracyDecimals));
                                     pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
@@ -211,12 +216,65 @@ namespace NRough.Tests.Data.Pivot
                             }
                         }
 
-                        dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
-                        dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
-                        dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
-                        dataFormatter.CustomFooter = CustomFooter();
+                        string latexTable;
+                        if (!splitTableToParts)
+                        {
+                            dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
+                            dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
+                            dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
+                            dataFormatter.CustomFooter = CustomFooter();
+                        }
+                        else
+                        {
 
-                        string latexTable = dataFormatter.Format("G", pivotTable, null);
+                            foreach (string modelName in modelNames.Where((m, i) => i >= 2))
+                            {
+                                for (int i = 0; i < colNames.Length; i++)
+                                {
+                                    string curColumnName = String.Format("{0}-{1}", modelName, colNames[i]);
+                                    if(pivotTable.Columns.Contains(curColumnName))
+                                        pivotTable.Columns[curColumnName].ExtendedProperties.Add("active", false);
+                                }
+                            }
+
+                            dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
+                            dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
+                            dataFormatter.CustomHeader = CustomHeader_Part1(dataFormatter.Caption, dataFormatter.Label);
+                            dataFormatter.CustomFooter = CustomFooter();
+                            latexTable = dataFormatter.Format("G", pivotTable, null);
+
+                            Console.WriteLine(latexTable);
+                            Console.WriteLine();
+
+                            outputFile.WriteLine(latexTable);
+                            outputFile.WriteLine();
+
+                            for (int m = 0; m < modelNames.Length; m++)
+                            {
+                                for (int i = 0; i < colNames.Length; i++)
+                                {
+                                    string curColumnName = String.Format("{0}-{1}", modelNames[m], colNames[i]);
+                                    if (pivotTable.Columns.Contains(curColumnName))
+                                    {
+                                        if (m < 2)
+                                        {
+                                            pivotTable.Columns[curColumnName].ExtendedProperties["active"] = false;
+                                        }
+                                        else
+                                        {
+                                            pivotTable.Columns[curColumnName].ExtendedProperties["active"] = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
+                            dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
+                            dataFormatter.CustomHeader = CustomHeader_Part2(dataFormatter.Caption, dataFormatter.Label);
+                            dataFormatter.CustomFooter = CustomFooter();
+                        }
+
+                        latexTable = dataFormatter.Format("G", pivotTable, null);
 
                         Console.WriteLine(latexTable);
                         Console.WriteLine();
@@ -225,12 +283,11 @@ namespace NRough.Tests.Data.Pivot
                         outputFile.WriteLine();
 
                         first = false;
-
                     }
 
                     int[][] summary = new int[3][];
                     for (int i = 0; i < summary.Length; i++)
-                        summary[i] = new int[5];
+                        summary[i] = new int[7];
 
                     string referenceModelName = "M-EPS";
                     foreach (var modelName in modelNames
@@ -270,7 +327,7 @@ namespace NRough.Tests.Data.Pivot
                                     continue;
 
                                 int numOfDec = otherDecimals;
-                                if (colname == "acc")
+                                if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                                     numOfDec = accuracyDecimals;
 
                                 double newval = Math.Round(
@@ -281,7 +338,7 @@ namespace NRough.Tests.Data.Pivot
                                     referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
                                     accuracyDecimals, MidpointRounding.AwayFromZero);
 
-                                int comparisonResult = colname == "acc"
+                                int comparisonResult = (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                                                      ? newval.CompareTo(refval)
                                                      : refval.CompareTo(newval);
 
@@ -306,25 +363,25 @@ namespace NRough.Tests.Data.Pivot
                             first = false;
                         }
 
-                        if (j == 4)
+                        if (j == 6)
                         {
                             sb.Insert(0, @"\begin{table}[!htbp]		
 \centering
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||c|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|c|c|}
 \hline" + Environment.NewLine);
 
                             sb.AppendLine(@"\hline");
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "+",
-                                summary[0][0], summary[0][1], summary[0][2], summary[0][3]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6}\\ \hline", "+",
+                                summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4], summary[0][5]);
                             sb.AppendLine();
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "-",
-                                summary[1][0], summary[1][1], summary[1][2], summary[1][3]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6}\\ \hline", "-",
+                                summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4], summary[1][5]);
                             sb.AppendLine();
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4}\\ \hline", "o",
-                                summary[2][0], summary[2][1], summary[2][2], summary[2][3]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6}\\ \hline", "o",
+                                summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4], summary[2][5]);
                             sb.AppendLine();
                         }
                         else
@@ -334,18 +391,18 @@ namespace NRough.Tests.Data.Pivot
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results:" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||c|c|c|c|c|}
+\begin{tabular}{|l||c|c|c|c|c|c|c|}
 \hline" + Environment.NewLine);
 
                             sb.AppendLine(@"\hline");
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "+",
-                                summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "+",
+                                summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4], summary[0][5], summary[0][6]);
                             sb.AppendLine();
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "-",
-                                summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "-",
+                                summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4], summary[1][5], summary[1][6]);
                             sb.AppendLine();
-                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5}\\ \hline", "o",
-                                summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4]);
+                            sb.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "o",
+                                summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4], summary[0][5], summary[0][6]);
                             sb.AppendLine();
                         }
 
@@ -357,7 +414,7 @@ namespace NRough.Tests.Data.Pivot
                         outputFile.WriteLine(sb.ToString());
                         outputFile.WriteLine();
 
-                    }                    
+                    }
 
                     //////////////////////////////// BEST RESULT TABLES ////////////////////////////////////////
 
@@ -369,14 +426,14 @@ namespace NRough.Tests.Data.Pivot
 
                         int cols = colNames.Count(s => firstRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, s)));
 
-                        if (cols == 5)
+                        if (cols == 7)
                         {
                             sb2.Append(@"\begin{table}[!htbp]
 \centering
 \caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
 \label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||l|l|l|l|l|l|}
+\begin{tabular}{|l||l|l|l|l|l|l|l|l|}
 \hline" + Environment.NewLine);
                         }
                         else
@@ -386,7 +443,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
 \label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||l|l|l|l|l|}
+\begin{tabular}{|l||l|l|l|l|l|l|l|}
 \hline" + Environment.NewLine);
                         }
 
@@ -412,7 +469,7 @@ namespace NRough.Tests.Data.Pivot
                         foreach (var dataset in datasetNames)
                         {
                             sb2.Append(ConvertDataSetName(dataset));
-                            
+
                             DataRow bestRow = compareBest2[new Tuple<string, string>(dataset, modelName)];
 
                             sb2.Append(" & ");
@@ -426,7 +483,7 @@ namespace NRough.Tests.Data.Pivot
                                     if (bestRow[String.Format("{0}-{1}", modelName, colname)] is double)
                                     {
                                         int numOfDec = otherDecimals;
-                                        if (colname == "acc")
+                                        if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                                             numOfDec = accuracyDecimals;
 
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}", modelName, colname)]).ToString(
@@ -466,7 +523,7 @@ namespace NRough.Tests.Data.Pivot
                             var currReferenceColumnName = String.Format("{0}-{1}", referenceModelName, colname);
 
                             int numOfDec = otherDecimals;
-                            if (colname == "acc")
+                            if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                                 numOfDec = accuracyDecimals;
 
                             if (firstRow.Table.Columns.Contains(currReferenceColumnName))
@@ -491,9 +548,9 @@ namespace NRough.Tests.Data.Pivot
                                 Console.WriteLine(serie1.ToStr(" ", format, null));
                                 Console.WriteLine(serie2.ToStr(" ", format, null));
 
-                                var wilcoxon = new WilcoxonSignedRankPairTest();                                
+                                var wilcoxon = new WilcoxonSignedRankPairTest();
 
-                                if (colname == "acc")
+                                if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                                     wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsSmallerThanSecond;
                                 else
                                     wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsGreaterThanSecond;
@@ -528,7 +585,7 @@ namespace NRough.Tests.Data.Pivot
                             continue;
 
                         int numOfDec = otherDecimals;
-                        if (colname == "acc")
+                        if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
                             numOfDec = accuracyDecimals;
 
                         Console.WriteLine("============== {0} =============", ConvertColName(colname));
@@ -540,8 +597,8 @@ namespace NRough.Tests.Data.Pivot
 
                             for (int k = 0; k < datasetNames.Count; k++)
                             {
-                                string dataset = datasetNames.ElementAt(k);                                                                                                
-                                
+                                string dataset = datasetNames.ElementAt(k);
+
                                 DataRow testedResult = compareBest[new Tuple<string, string>(dataset, modelName)];
                                 if (testedResult.Table.Columns.Contains(pivotColName))
                                     data[i][j][k] = Math.Round((double)testedResult[pivotColName], numOfDec, MidpointRounding.AwayFromZero);
@@ -550,29 +607,27 @@ namespace NRough.Tests.Data.Pivot
                             }
                         }
 
-                        Console.WriteLine(data[i].ToStr2d(", ", Environment.NewLine, true, "0.###", System.Globalization.CultureInfo.InvariantCulture));
+                        string comparisonTable =
+                            data[i].ToStr2d(",", Environment.NewLine,
+                                true, "0." + new string('#', numOfDec),
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                new string[] { "Data" }.Concat(modelNames).ToArray(),
+                                datasetNames.ToArray()
+                                );
+
+                        string comparisonfilename = Path.Combine(path, "comparison_" + colname + "-" + size.ToString() + ".out");
+                        using (FileStream comparisonFileStream =
+                            new FileStream(comparisonfilename, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            using (StreamWriter comparisionStreamWriter = new StreamWriter(comparisonFileStream))
+                            {
+                                comparisionStreamWriter.Write(comparisonTable);
+                                Console.WriteLine(comparisonTable);
+                            }
+                        }
                     }
-                    
-                                                             
                 }
             }
-        }
-         
-        private string CustomHeader_OLD(string caption, string label)
-        {
-            return @"\begin{table}[htbp]
-\centering
-\caption{" + caption + @"}
-\label{" + label + @"}
-\rowcolors{4}{gray!25}{white}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|c|lllll|lllll|lllll|lllll|lllll|} \hline
-\multirow{2}{*}[-3.5cm]{{\LARGE $\varepsilon$}} & \multicolumn{5}{c|}{\textbf{$(M,\varepsilon)$}} & \multicolumn{5}{c|}{\textbf{$(m^{\varepsilon},\cap)$}} & \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-Exep}} & \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-Gaps}} & \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-None}}\\ \cline{2-26}
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}}
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}}\\ \hline";
         }
 
         private string CustomHeader(string caption, string label)
@@ -582,19 +637,55 @@ namespace NRough.Tests.Data.Pivot
 \caption{" + caption + @"}
 \label{" + label + @"}
 \rowcolors{4}{gray!25}{white}
-\resizebox*{\columnwidth}{\dimexpr\textheight-2em-\lineskip\relax}{%
-\begin{tabular}{|c|llll|lllll|lllll|llll|} 
-\hline
-\multirow{2}{*}[-1.5cm]{{\LARGE \begin{tabular}{c}$\varepsilon$ \\ $\phi$ \end{tabular}}} 
-& \multicolumn{4}{c|}{\textbf{$(M,\varepsilon)$}} 
-& \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-Exep}} 
-& \multicolumn{5}{c|}{\textbf{$(m^{\phi},\cap)$-Gaps}} 
-& \multicolumn{4}{c|}{\textbf{$(m^{\phi},\cap)$-None}}\\ 
-\cline{2-19}
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}}  
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}} \\ \hline";
+\resizebox{\columnwidth}{\dimexpr\textheight-2em-\lineskip\relax}{%{%
+\begin{tabular}{|c|lllllll|lllllll|lllllll|lllllll|} \hline
+ \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
+& \multicolumn{7}{c|}{\textbf{FULL-ENT}} 
+& \multicolumn{7}{c|}{\textbf{RED-ENT}} 
+& \multicolumn{7}{c|}{\textbf{RED-MAJ}} 
+& \multicolumn{7}{c|}{\textbf{RED-MAJ-EPS}} 
+\\ \cline{2-29}
+
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
+        }
+
+        private string CustomHeader_Part1(string caption, string label)
+        {
+            return @"\begin{table}[htbp]
+\centering
+\caption{" + caption + @" (part 1)" + @"}
+\label{" + label + @"}
+\rowcolors{4}{gray!25}{white}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|lllllll|lllllll|} \hline
+ \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
+& \multicolumn{7}{c|}{\textbf{RED-MAJ}} 
+& \multicolumn{7}{c|}{\textbf{RED-MAJ-EPS}} 
+\\ \cline{2-15}
+ 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
+        }
+
+        private string CustomHeader_Part2(string caption, string label)
+        {
+            return @"\begin{table}[htbp]
+\centering
+\caption{" + caption + @" (part 2)" + @"}
+\label{" + label + @"-part2" + @"}
+\rowcolors{4}{gray!25}{white}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|lllllll|lllllll|} \hline
+ \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
+& \multicolumn{7}{c|}{\textbf{FULL-ENT}} 
+& \multicolumn{7}{c|}{\textbf{RED-ENT}} 
+\\ \cline{2-15}
+ 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
         }
 
         private string CustomFooter()
@@ -609,13 +700,17 @@ namespace NRough.Tests.Data.Pivot
         {
             switch (name)
             {
+                case "C45-Entropy-EBP": return "FULL-ENT";
+                case "Reduct-Entropy-EBP": return "RED-ENT";
+                case "Reduct-Majority-EBP": return "RED-MAJ";
+                case "RedGam-Majority-EBP": return "RED-MAJ-EPS";
+
                 case "M-EPS": return "$(M,\\varepsilon)$";
                 case "m-EPS-CAP": return "$(m^{\\varepsilon},\\cap)$";
                 case "m-PHICAP-EXEP": return "$(m^{\\phi},\\cap)$-Exep";
                 case "m-PHICAP-GAPS": return "$(m^{\\phi},\\cap)$-Gaps";
                 case "m-PHICAP-NONE": return "$(m^{\\phi},\\cap)$-None";
             }
-
             return name;
         }
 
@@ -624,10 +719,12 @@ namespace NRough.Tests.Data.Pivot
             switch (name)
             {
                 case "acc": return "Accuracy";
-                case "attr": return "Reduct length";
+                case "precisionmacro": return "Precision";
+                case "recallmacro": return "Recall";
+                case "attr": return "\\#Attributes";
                 case "numrul": return "\\#Rules";
-                case "dtha": return "Rule length";
-                case "dthm": return "\\#Exceptions";
+                case "dtha": return "Avg tree depth";
+                case "dthm": return "Max tree depth";
             }
             return name;
         }

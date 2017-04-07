@@ -19,7 +19,40 @@ namespace NRough.Tests.Data.Pivot
     public class PivotServiceTest_TreesPrecision
     {
         [Test]
-        public void TestTree()
+        public void TestTree_FixedPrecision()
+        {
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\Infovision.UnitTest.Runner\bin\x64\Release4\";
+            string[] filenames = new string[]
+            {
+                //"mylogfile_20170404232714647.txt", //audiology
+                "mylogfile_20170406210705968.txt", //breast                
+                "mylogfile_20170407000709072.txt", //chess
+                "mylogfile_20170406211208189.txt", //dermatology_modified
+                //"mylogfile_20170405011958797.txt", //dna
+                "mylogfile_20170406212547724.txt", //house
+                //"mylogfile_20170405060556808.txt", //letter.disc
+                "mylogfile_20170406213152629.txt", //lymphography
+                "mylogfile_20170406213503241.txt", //mashroom
+                //"mylogfile_20170405011848643.txt", //monks-1
+                ////"monks-2-1.result", //monks-2
+                //"mylogfile_20170405011925837.txt", //monks-3
+                "mylogfile_20170407042145482.txt", //nursery
+                //"mylogfile_20170405030713171.txt", //pen.disc
+                "mylogfile_20170406205928250.txt", //promoters
+                //"mylogfile_20170404233356630.txt", //sat.disc
+                //"mylogfile_20170407090202989.txt", //semeion
+                //"mylogfile_20170404231657231.txt", //soybean-large
+                "mylogfile_20170406205713152.txt", //soybean-small
+                //"mylogfile_20170405011803882.txt", //spect
+                //"mylogfile_20170404232226776.txt", //vowel
+                "mylogfile_20170407000530119.txt" //zoo                                                                
+            };
+
+            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1);
+        }
+
+        [Test]
+        public void TestTree_OLD()
         {
             string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\Infovision.UnitTest.Runner\bin\x64\Release2\";
             string[] filenames = new string[]
@@ -145,7 +178,7 @@ namespace NRough.Tests.Data.Pivot
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
-                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", "0.##");
+                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", "0.00");
                         pivotTable.Columns["eps"].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
 
                         foreach (string modelName in modelNames)
@@ -201,7 +234,8 @@ namespace NRough.Tests.Data.Pivot
                                 for (int i = 0; i < colNames.Length; i++)
                                 {
                                     string curColumnName = String.Format("{0}-{1}", modelName, colNames[i]);
-                                    pivotTable.Columns[curColumnName].ExtendedProperties.Add("active", false);
+                                    if (pivotTable.Columns.Contains(curColumnName))
+                                        pivotTable.Columns[curColumnName].ExtendedProperties.Add("active", false);
                                 }
                             }
 
@@ -222,13 +256,16 @@ namespace NRough.Tests.Data.Pivot
                                 for (int i = 0; i < colNames.Length; i++)
                                 {
                                     string curColumnName = String.Format("{0}-{1}", modelNames[m], colNames[i]);
-                                    if (m < 2)
+                                    if (pivotTable.Columns.Contains(curColumnName))
                                     {
-                                        pivotTable.Columns[curColumnName].ExtendedProperties["active"] = false;
-                                    }
-                                    else
-                                    {
-                                        pivotTable.Columns[curColumnName].ExtendedProperties["active"] = true;
+                                        if (m < 2)
+                                        {
+                                            pivotTable.Columns[curColumnName].ExtendedProperties["active"] = false;
+                                        }
+                                        else
+                                        {
+                                            pivotTable.Columns[curColumnName].ExtendedProperties["active"] = true;
+                                        }
                                     }
                                 }
                             }
@@ -282,8 +319,8 @@ namespace NRough.Tests.Data.Pivot
                                 }
                                 sb.AppendLine(@"\\ \hline");
                             }
-
-                            sb.AppendFormat(@"\hyperref[results:gmdr{1}_{0}]{{{0}}}", ConvertDataSetName(dataset), size);
+                                                        
+                            sb.AppendFormat(@"\hyperref[results:dectree_{0}]{{{0}}}", ConvertDataSetName(dataset), size);
                             j = 0;
                             foreach (var colname in colNames)
                             {
@@ -572,7 +609,24 @@ namespace NRough.Tests.Data.Pivot
                             }
                         }
 
-                        Console.WriteLine(data[i].ToStr2d(", ", Environment.NewLine, "0.###", System.Globalization.CultureInfo.InvariantCulture, true));
+                        string comparisonTable =
+                            data[i].ToStr2d(",", Environment.NewLine,
+                                true, "0." + new string('#', numOfDec),
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                new string[] { "Data" }.Concat(modelNames).ToArray(),
+                                datasetNames.ToArray()
+                                );
+
+                        string comparisonfilename = Path.Combine(path, "comparison_" + colname + "-" + size.ToString() + ".out");
+                        using (FileStream comparisonFileStream =
+                            new FileStream(comparisonfilename, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            using (StreamWriter comparisionStreamWriter = new StreamWriter(comparisonFileStream))
+                            {
+                                comparisionStreamWriter.Write(comparisonTable);
+                                Console.WriteLine(comparisonTable);
+                            }
+                        }
                     }
 
 
@@ -664,7 +718,7 @@ namespace NRough.Tests.Data.Pivot
             {
                 case "acc": return "Accuracy";
                 case "precisionmacro": return "Precision";
-                case "recallmacro": return "Precision";
+                case "recallmacro": return "Recall";
                 case "attr": return "\\#Attributes";
                 case "numrul": return "\\#Rules";
                 case "dtha": return "Avg tree depth";

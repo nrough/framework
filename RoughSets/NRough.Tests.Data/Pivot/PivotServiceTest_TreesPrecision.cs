@@ -23,28 +23,28 @@ namespace NRough.Tests.Data.Pivot
         {
             string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\Infovision.UnitTest.Runner\bin\x64\Release4\";
             string[] filenames = new string[]
-            {
-                //"mylogfile_20170404232714647.txt", //audiology
-                "mylogfile_20170406210705968.txt", //breast                
+            {                
+                "mylogfile_20170408031113238.txt", //audiology
+                "mylogfile_20170408110430055.txt", //breast                
                 "mylogfile_20170407000709072.txt", //chess
                 "mylogfile_20170406211208189.txt", //dermatology_modified
-                //"mylogfile_20170405011958797.txt", //dna
+                "mylogfile_20170408052330412.txt", //dna
                 "mylogfile_20170406212547724.txt", //house
-                //"mylogfile_20170405060556808.txt", //letter.disc
+                "mylogfile_20170406210508360.txt", //letter.disc
                 "mylogfile_20170406213152629.txt", //lymphography
                 "mylogfile_20170406213503241.txt", //mashroom
-                //"mylogfile_20170405011848643.txt", //monks-1
+                "mylogfile_20170408052114205.txt", //monks-1
                 ////"monks-2-1.result", //monks-2
-                //"mylogfile_20170405011925837.txt", //monks-3
+                "mylogfile_20170408052224144.txt", //monks-3
                 "mylogfile_20170407042145482.txt", //nursery
-                //"mylogfile_20170405030713171.txt", //pen.disc
-                "mylogfile_20170406205928250.txt", //promoters
-                //"mylogfile_20170404233356630.txt", //sat.disc
-                //"mylogfile_20170407090202989.txt", //semeion
-                //"mylogfile_20170404231657231.txt", //soybean-large
-                "mylogfile_20170406205713152.txt", //soybean-small
-                //"mylogfile_20170405011803882.txt", //spect
-                //"mylogfile_20170404232226776.txt", //vowel
+                "mylogfile_20170408072723630.txt", //pen.disc
+                "mylogfile_20170408105453398.txt", //promoters
+                "mylogfile_20170408031802530.txt", //sat.disc
+                "mylogfile_20170407090202989.txt", //semeion
+                "mylogfile_20170408025948922.txt", //soybean-large
+                "mylogfile_20170408105146283.txt", //soybean-small
+                "mylogfile_20170408051958296.txt", //spect
+                "mylogfile_20170408030546025.txt", //vowel
                 "mylogfile_20170407000530119.txt" //zoo                                                                
             };
 
@@ -97,6 +97,7 @@ namespace NRough.Tests.Data.Pivot
             
             string[] modelNames = null;
             bool first = true;
+            bool isFirstTable = true;
 
             string output = Path.Combine(path, "treeresults-" + size.ToString() + ".tex");
 
@@ -105,6 +106,7 @@ namespace NRough.Tests.Data.Pivot
             {
                 using (StreamWriter outputFile = new StreamWriter(fileStreamWrite))
                 {
+                    isFirstTable = true;
                     foreach (var f in filenames)
                     {
                         string filename = Path.Combine(path, f);
@@ -153,6 +155,10 @@ namespace NRough.Tests.Data.Pivot
                                 .Select(g => g.Key).ToArray();
                         }
 
+                        dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        
+
                         var pivot = new PivotService();
                         var pivotTable = pivot.Pivot(
                             dtc,
@@ -174,7 +180,7 @@ namespace NRough.Tests.Data.Pivot
                         pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
                         pivotTable2.Columns.Remove("M-EPS-dthmdev");
                         pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
-                        */
+                        */                        
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
@@ -223,8 +229,10 @@ namespace NRough.Tests.Data.Pivot
                         {
                             dataFormatter.Caption = String.Format("Reduct based decision tree results ({0})", ConvertDataSetName(datasetname));
                             dataFormatter.Label = String.Format("results:dectree_{0}", ConvertDataSetName(datasetname));
-                            dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
-                            dataFormatter.CustomFooter = CustomFooter();                           
+                            dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label, isFirstTable);
+                            dataFormatter.CustomFooter = CustomFooter();
+
+                            isFirstTable = false;
                         }
                         else
                         {
@@ -634,14 +642,16 @@ namespace NRough.Tests.Data.Pivot
             }
         }
 
-        private string CustomHeader(string caption, string label)
+        private string CustomHeader(string caption, string label, bool first)
         {
+            string ratio = (first == true) ? "0.92" : "";
+
             return @"\begin{table}[htbp]
 \centering
 \caption{" + caption + @"}
 \label{" + label + @"}
 \rowcolors{4}{gray!25}{white}
-\resizebox{\columnwidth}{!}{%
+\resizebox{"+ ratio + @"\columnwidth}{!}{%
 \begin{tabular}{|c|lllllll|lllllll|lllllll|lllllll|} \hline
  \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
 & \multicolumn{7}{c|}{\textbf{FULL-ENT}} 

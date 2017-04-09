@@ -10,6 +10,9 @@ using System.Linq.Dynamic;
 using System.Data;
 using NRough.Core.CollectionExtensions;
 using LinqStatistics;
+using System.IO;
+using System.Globalization;
+using NRough.Core.Helpers;
 
 namespace NRough.MachineLearning.Classification
 {
@@ -819,7 +822,7 @@ namespace NRough.MachineLearning.Classification
         /// <returns></returns>
         private static DataTable SetDataTableColumnTypes(DataTable dt)
         {
-            DataTable dtc = dt.Clone();
+            //DataTable dtc = dt.Clone();
 
             PropertyInfo[] properties = typeof(ClassificationResult).GetProperties();
             foreach (var property in properties)
@@ -830,47 +833,82 @@ namespace NRough.MachineLearning.Classification
 
                 if (resultValue != null)
                 {
-                    SetColumnType(dtc, 
-                        String.IsNullOrEmpty(resultValue.Alias) 
-                            ? property.Name : resultValue.Alias,
-                        property.PropertyType);
+                    string columnName = String.IsNullOrEmpty(resultValue.Alias) ? property.Name : resultValue.Alias;
+                    if(dt.Columns.Contains(columnName))
+                        SetColumnType(dt, columnName, property.PropertyType);                                        
                 }
             }
-
-            foreach (DataRow row in dt.Rows)
+            /*
+            foreach (DataRow row in dt.Rows)                
                 dtc.ImportRow(row);
-
             return dtc;
+            */
+
+            return dt;
         }
 
         private static void SetColumnType(DataTable dt, string columnName, Type t)
         {
+            if (dt == null)
+                throw new ArgumentNullException("dt");
+            if(t == null)
+                throw new ArgumentNullException("t");            
+            if (String.IsNullOrEmpty(columnName))
+                throw new ArgumentNullException("columnName");
+            if (!dt.Columns.Contains(columnName))
+                throw new ArgumentException(String.Format("Column {0} does not exist"), "columnName");
+            
+            DataColumn col = dt.Columns[columnName];
+            if (col.DataType != t)
+            {
+                switch (Type.GetTypeCode(t))
+                {
+                    case TypeCode.Double :
+                        col.ChangeType(t, (value) => {
+                            double output = 0;
+                            string text = value.ToString().Replace(',', '.');
+                            Double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out output);
+                            return output;
+                        });
+                        break;
+
+                    default:
+                        col.ChangeType(t, v => MiscHelper.ChangeType(v, t));                        
+                        break;
+                }
+            }
+
+            /*
             if (dt.Columns.Contains(columnName))
                 dt.Columns[columnName].DataType = t;
+            */
+
         }
 
         public static DataTable ReadResults(string fileName, char columnDelimiter, bool setColumnTypes = true, int expectedColumnCount = 0)
         {
             DataTable dt;
-            using (GenericParserAdapter gpa = new GenericParserAdapter(fileName))
+
+            using (StreamReader reader = File.OpenText(fileName))
             {
-                gpa.ColumnDelimiter = columnDelimiter;
-                gpa.FirstRowHasHeader = true;
-                gpa.IncludeFileLineNumber = false;
-                gpa.FirstRowSetsExpectedColumnCount = true;                
-                gpa.TrimResults = true;
+                //using (GenericParserAdapter gpa = new GenericParserAdapter(fileName))
+                using (GenericParserAdapter gpa = new GenericParserAdapter(reader))
+                {
+                    gpa.ColumnDelimiter = columnDelimiter;
+                    gpa.FirstRowHasHeader = true;
+                    gpa.IncludeFileLineNumber = false;
+                    gpa.FirstRowSetsExpectedColumnCount = true;
+                    gpa.TrimResults = true;
 
-                //if (expectedColumnCount > 0)
-                //    gpa.ExpectedColumnCount = expectedColumnCount;
+                    //if (expectedColumnCount > 0)
+                    //    gpa.ExpectedColumnCount = expectedColumnCount;
 
-                dt = gpa.GetDataTable();
+                    dt = gpa.GetDataTable();
+                }
             }
-
-            if (!setColumnTypes)
-                return dt;
-
-            var dtc = SetDataTableColumnTypes(dt);
-            return dtc;                        
+            if (setColumnTypes)
+                dt = SetDataTableColumnTypes(dt);
+            return dt;
         }
 
         public static DataTable ReadResults(IEnumerable<string> fileNames, char columnDelimiter)

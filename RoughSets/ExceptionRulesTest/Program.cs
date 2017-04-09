@@ -23,7 +23,8 @@ namespace ExceptionRulesTest
         private ReductStoreRuleNumberComparer reductStoreRuleNumComparer = new ReductStoreRuleNumberComparer(true);
 
         int minEpsilon = 0;
-        int maxEpsilon = 60;
+        int maxEpsilon = 100;
+
         SortDirection sortDirection = SortDirection.Descending;
 
         public void ExceptiodnRulesTest(KeyValuePair<string, BenchmarkData> kvp, int numberOfTests, int numberOfPermutations, int ensembleSize)
@@ -32,10 +33,10 @@ namespace ExceptionRulesTest
             string filename = Path.Combine(@"log", kvp.Value.Name + String.Format("-{0}", ensembleSize) + ".result");
             DataSplitter splitter = null;
 
-            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, 60, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, 60, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, 60, kvp.Value.CrossValidationFolds];
-            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, 60, kvp.Value.CrossValidationFolds];            
+            ClassificationResult[, ,] results1 = new ClassificationResult[numberOfTests, maxEpsilon, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results2 = new ClassificationResult[numberOfTests, maxEpsilon, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results3 = new ClassificationResult[numberOfTests, maxEpsilon, kvp.Value.CrossValidationFolds];
+            ClassificationResult[, ,] results4 = new ClassificationResult[numberOfTests, maxEpsilon, kvp.Value.CrossValidationFolds];            
 
             Console.WriteLine(ClassificationResult.TableHeader());
 

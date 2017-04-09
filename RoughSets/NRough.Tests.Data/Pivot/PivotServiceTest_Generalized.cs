@@ -21,7 +21,8 @@ namespace NRough.Tests.Data.Pivot
         [Test]
         public void Test1()
         {
-            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
+            //string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\60\";
             string[] filenames = new string[]
             {
                 "audiology-1.result", //audiology
@@ -32,7 +33,7 @@ namespace NRough.Tests.Data.Pivot
                 "house-1.result", //house                
                 "letter-1.result", //letter.disc                
                 "lymphography-1.result", //lymphography
-                "mashroom-1.result", //mashroom
+                "mushroom-1.result", //mashroom
                 "monks-1-1.result", //monks-1
                 "monks-2-1.result", //monks-2
                 "monks-3-1.result", //monks-3                
@@ -85,9 +86,9 @@ namespace NRough.Tests.Data.Pivot
 
         public void Test(string path, string[] filenames, string caption, int size)
         {
-            int accuracyDecimals = 3;
-            int otherDecimals = 1;
-            bool splitTableToParts = true;
+            int accuracyDecimals = 2;
+            int otherDecimals = 0;
+            bool splitTableToParts = false;
 
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
@@ -96,6 +97,7 @@ namespace NRough.Tests.Data.Pivot
 
             string[] modelNames = null;
             bool first = true;
+            bool isFirstTable = true;
 
             string output = Path.Combine(path, "latextable-" + size.ToString() + ".tex");
 
@@ -104,6 +106,7 @@ namespace NRough.Tests.Data.Pivot
             {
                 using (StreamWriter outputFile = new StreamWriter(fileStreamWrite))
                 {
+                    isFirstTable = true;
                     foreach (var f in filenames)
                     {
                         string filename = Path.Combine(path, f);
@@ -151,6 +154,9 @@ namespace NRough.Tests.Data.Pivot
                                 .Select(g => g.Key).ToArray();
                         }
 
+                        //dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        //dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
+
                         var pivot = new PivotService();
                         var pivotTable = pivot.Pivot(
                             dtc,
@@ -176,7 +182,7 @@ namespace NRough.Tests.Data.Pivot
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
-                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", "0.00");
+                        pivotTable.Columns["eps"].ExtendedProperties.Add("format", ".00");
                         pivotTable.Columns["eps"].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
 
                         foreach (string modelName in modelNames)
@@ -221,8 +227,10 @@ namespace NRough.Tests.Data.Pivot
                         {
                             dataFormatter.Caption = String.Format(caption, ConvertDataSetName(datasetname));
                             dataFormatter.Label = String.Format("results:gmdr{1}_{0}", ConvertDataSetName(datasetname), size);
-                            dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label);
+                            dataFormatter.CustomHeader = CustomHeader(dataFormatter.Caption, dataFormatter.Label, isFirstTable);
                             dataFormatter.CustomFooter = CustomFooter();
+
+                            isFirstTable = false;
                         }
                         else
                         {
@@ -630,26 +638,28 @@ namespace NRough.Tests.Data.Pivot
             }
         }
 
-        private string CustomHeader(string caption, string label)
+        private string CustomHeader(string caption, string label, bool first)
         {
+            string ratio = (first == true) ? "0.92" : "";
+
             return @"\begin{table}[htbp]
 \centering
 \caption{" + caption + @"}
 \label{" + label + @"}
 \rowcolors{4}{gray!25}{white}
-\resizebox{\columnwidth}{\dimexpr\textheight-2em-\lineskip\relax}{%{%
-\begin{tabular}{|c|lllllll|lllllll|lllllll|lllllll|} \hline
- \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
-& \multicolumn{7}{c|}{\textbf{FULL-ENT}} 
-& \multicolumn{7}{c|}{\textbf{RED-ENT}} 
-& \multicolumn{7}{c|}{\textbf{RED-MAJ}} 
-& \multicolumn{7}{c|}{\textbf{RED-MAJ-EPS}} 
-\\ \cline{2-29}
-
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
- & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
+\resizebox{" + ratio + @"\columnwidth}{!}{%
+\begin{tabular}{|c|llllll|lllllll|lllllll|llllll|} 
+\hline
+\multirow{2}{*}[-1.5cm]{{\LARGE \begin{tabular}{c}$\varepsilon$ \\ $\phi$ \end{tabular}}} 
+& \multicolumn{6}{c|}{\textbf{$(M,\varepsilon)$}} 
+& \multicolumn{7}{c|}{\textbf{$(m^{\phi},\cap)$-Exep}} 
+& \multicolumn{7}{c|}{\textbf{$(m^{\phi},\cap)$-Gaps}} 
+& \multicolumn{6}{c|}{\textbf{$(m^{\phi},\cap)$-None}}\\ 
+\cline{2-27}
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}}  
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Rules length}} & \rotl{\textbf{\#Exceptions}} 
+ & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{Reduct length}} & \rot{\textbf{\#Rules}} & \rotl{\textbf{Rules length}} \\ \hline";
         }
 
         private string CustomHeader_Part1(string caption, string label)
@@ -662,9 +672,9 @@ namespace NRough.Tests.Data.Pivot
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{|c|lllllll|lllllll|} \hline
  \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
-& \multicolumn{7}{c|}{\textbf{RED-MAJ}} 
-& \multicolumn{7}{c|}{\textbf{RED-MAJ-EPS}} 
-\\ \cline{2-15}
+& \multicolumn{6}{c|}{\textbf{$(M,\varepsilon)$}} 
+& \multicolumn{7}{c|}{\textbf{$(m^{\phi},\cap)$-Exep}}} 
+\\ \cline{2-14}
  
  & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
  & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
@@ -680,9 +690,9 @@ namespace NRough.Tests.Data.Pivot
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{|c|lllllll|lllllll|} \hline
  \multirow{2}{*}[-1.5cm]{{\LARGE $\varepsilon$}} 
-& \multicolumn{7}{c|}{\textbf{FULL-ENT}} 
-& \multicolumn{7}{c|}{\textbf{RED-ENT}} 
-\\ \cline{2-15}
+& \multicolumn{7}{c|}{\textbf{$(m^{\phi},\cap)$-Gaps}} 
+& \multicolumn{6}{c|}{\textbf{$(m^{\phi},\cap)$-None}}} 
+\\ \cline{2-14}
  
  & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}} 
  & \rot{\textbf{Accuracy}} & \rot{\textbf{Recall}} & \rot{\textbf{Precision}} & \rot{\textbf{\#Attributes}} & \rot{\textbf{\#Rules}} & \rot{\textbf{Avg tree depth}} & \rotl{\textbf{Max tree depth}}\\ \hline";
@@ -719,12 +729,10 @@ namespace NRough.Tests.Data.Pivot
             switch (name)
             {
                 case "acc": return "Accuracy";
-                case "precisionmacro": return "Precision";
-                case "recallmacro": return "Recall";
-                case "attr": return "\\#Attributes";
+                case "attr": return "Reduct length";
                 case "numrul": return "\\#Rules";
-                case "dtha": return "Avg tree depth";
-                case "dthm": return "Max tree depth";
+                case "dtha": return "Rule length";
+                case "dthm": return "\\#Exceptions";                
             }
             return name;
         }

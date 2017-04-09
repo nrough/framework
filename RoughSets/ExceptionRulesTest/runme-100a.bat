@@ -1,2 +1,2 @@
 @echo off
-ExceptionRulesTest.exe 20 100 mushroom zoo chess pen dna letter semeion
+ExceptionRulesTest.exe 5 100 sat mushroom zoo chess pen dna letter semeion

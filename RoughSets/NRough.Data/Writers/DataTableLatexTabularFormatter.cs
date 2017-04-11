@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 namespace NRough.Data.Writers
 {
     public class DataTableLatexTabularFormatter : IFormatProvider, ICustomFormatter
-    {
+    {        
         Dictionary<Tuple<int, int>, Dictionary<string, string>> cellsProperties;
+        Dictionary<int, Dictionary<string, string>> rowProperties;
 
         public string Caption { get; set; }
         public string Label { get; set; }
@@ -41,11 +42,26 @@ namespace NRough.Data.Writers
             return sb.ToString();
         }
 
+        private bool IsRowActive(int row)
+        {
+            
+            if (rowProperties.ContainsKey(row))
+                if (rowProperties[row].ContainsKey("active"))
+                    if(rowProperties[row]["active"].ToLower() == "false")
+                        return false;
+
+            return true;
+        }
+
         private void AddRows(DataTable dt, StringBuilder sb)
         {
             for (int i = 0; i < dt.Rows.Count; i++)
             {
+                if (!IsRowActive(i))
+                    continue;
+
                 var datarow = dt.Rows[i];
+
                 int k = 0;
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
@@ -91,7 +107,6 @@ namespace NRough.Data.Writers
                 return value;
             return String.Format(@"\{0}{{{1}}}", fontface, value);
         }
-
 
         private void AddColumnNames(DataTable dt, StringBuilder sb)
         {
@@ -150,11 +165,30 @@ namespace NRough.Data.Writers
         private void CreateCellsProperty()
         {
             cellsProperties = new Dictionary<Tuple<int, int>, Dictionary<string, string>>();
+            rowProperties = new Dictionary<int, Dictionary<string, string>>();
         }
 
         public void ResetCellProperties()
         {
             CreateCellsProperty();
+        }
+
+        public void SetRowProperty(int row, string propertyName, string propertyValue)
+        {
+            Dictionary<string, string> rowProp;            
+            if (rowProperties.TryGetValue(row, out rowProp))
+            {
+                if (rowProp.ContainsKey(propertyName))
+                    rowProp[propertyName] = propertyValue;
+                else
+                    rowProp.Add(propertyName, propertyValue);
+            }
+            else
+            {
+                rowProp = new Dictionary<string, string>();
+                rowProp.Add(propertyName, propertyValue);
+                rowProperties.Add(row, rowProp);
+            }
         }
 
         public void SetCellProperty(int col, int row, string propertyName, string propertyValue)
@@ -174,6 +208,18 @@ namespace NRough.Data.Writers
                 cellProp.Add(propertyName, propertyValue);
                 cellsProperties.Add(cellId, cellProp);
             }
+        }
+
+        public string GetRowProperty(int row, string propertyName)
+        {
+            Dictionary<string, string> rowProp;            
+            if (rowProperties.TryGetValue(row, out rowProp))
+            {
+                string result;
+                if (rowProp.TryGetValue(propertyName, out result))
+                    return result;
+            }
+            return null;
         }
 
         public string GetCellProperty(int col, int row, string propertyName)

@@ -21,8 +21,8 @@ namespace NRough.Tests.Data.Pivot
         [Test]
         public void Test1()
         {
-            //string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
-            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\60\";
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\";
+            //string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\ExceptionRulesTest\bin\x64\Release5\log\60\";
             string[] filenames = new string[]
             {
                 "audiology-1.result", //audiology
@@ -179,11 +179,12 @@ namespace NRough.Tests.Data.Pivot
                         pivotTable2.Columns.Remove("M-EPS-dthmdev");
                         pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
                         
-
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
                         pivotTable.Columns["eps"].ExtendedProperties.Add("format", ".00");
                         pivotTable.Columns["eps"].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
+                        
+                        int bottomRowIdx = 59;
 
                         foreach (string modelName in modelNames)
                         {
@@ -193,6 +194,9 @@ namespace NRough.Tests.Data.Pivot
                                     String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
                                 .ThenByDescending(r => r.row.Field<double>("eps"))
                                 .Select(r => r.index).First();
+                            
+                            if (bottomRowIdx < maxRowIndex)
+                                bottomRowIdx = maxRowIndex;
 
                             compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
                             compareBest2.Add(new Tuple<string, string>(datasetname, modelName), pivotTable2.Rows[maxRowIndex]);
@@ -220,6 +224,11 @@ namespace NRough.Tests.Data.Pivot
                                     "fontface",
                                     "textbf");
                             }
+                        }
+
+                        for (int j = bottomRowIdx + 1; j < pivotTable.Rows.Count; j++)
+                        {
+                            dataFormatter.SetRowProperty(j, "active", "false");
                         }
 
                         string latexTable;
@@ -335,7 +344,7 @@ namespace NRough.Tests.Data.Pivot
                                     continue;
 
                                 int numOfDec = otherDecimals;
-                                if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                                if (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                                     numOfDec = accuracyDecimals;
 
                                 double newval = Math.Round(
@@ -346,7 +355,7 @@ namespace NRough.Tests.Data.Pivot
                                     referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
                                     accuracyDecimals, MidpointRounding.AwayFromZero);
 
-                                int comparisonResult = (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                                int comparisonResult = (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                                                      ? newval.CompareTo(refval)
                                                      : refval.CompareTo(newval);
 
@@ -491,7 +500,7 @@ namespace NRough.Tests.Data.Pivot
                                     if (bestRow[String.Format("{0}-{1}", modelName, colname)] is double)
                                     {
                                         int numOfDec = otherDecimals;
-                                        if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                                        if (colname == "acc" || colname == "precisionmaco" || colname == "recallmacro")
                                             numOfDec = accuracyDecimals;
 
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}", modelName, colname)]).ToString(
@@ -531,7 +540,7 @@ namespace NRough.Tests.Data.Pivot
                             var currReferenceColumnName = String.Format("{0}-{1}", referenceModelName, colname);
 
                             int numOfDec = otherDecimals;
-                            if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                            if (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                                 numOfDec = accuracyDecimals;
 
                             if (firstRow.Table.Columns.Contains(currReferenceColumnName))
@@ -558,7 +567,7 @@ namespace NRough.Tests.Data.Pivot
 
                                 var wilcoxon = new WilcoxonSignedRankPairTest();
 
-                                if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                                if (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                                     wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsSmallerThanSecond;
                                 else
                                     wilcoxon.AlternativeHypothesis = HypothesisType.FirstIsGreaterThanSecond;
@@ -593,7 +602,7 @@ namespace NRough.Tests.Data.Pivot
                             continue;
 
                         int numOfDec = otherDecimals;
-                        if (colname == "acc" || colname == "precisionmarco" || colname == "recallmacro")
+                        if (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                             numOfDec = accuracyDecimals;
 
                         Console.WriteLine("============== {0} =============", ConvertColName(colname));

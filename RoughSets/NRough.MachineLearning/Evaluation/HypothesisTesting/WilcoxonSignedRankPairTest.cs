@@ -212,8 +212,8 @@ namespace NRough.MachineLearning.Evaluation.HypothesisTesting
 
         private double[] InitExactDistribution(double[] ranks)
         {
-            if (ranks.Length > 20)
-                throw new ArgumentException("ranks > 20", "ranks");
+            if (ranks.Length > 21)
+                throw new ArgumentException("ranks > 21", "ranks");
 
             //int size = (int)System.Math.Pow(2, ranks.Length);
             int size = 1 << ranks.Length;

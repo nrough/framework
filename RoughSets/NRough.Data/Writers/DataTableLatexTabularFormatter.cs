@@ -15,13 +15,16 @@ namespace NRough.Data.Writers
         public string Caption { get; set; }
         public string Label { get; set; }
         public string CustomHeader { get; set; }
-        public string CustomFooter { get; set; }        
+        public string CustomFooter { get; set; }
+        public string ExtraRow { get; set; }
 
         public DataTableLatexTabularFormatter()
         {
             Caption = "";
             Label = "";
-            CreateCellsProperty();           
+            ExtraRow = null;
+
+            CreateCellsProperty();
         }
 
         public virtual object GetFormat(Type formatType)
@@ -55,10 +58,22 @@ namespace NRough.Data.Writers
 
         private void AddRows(DataTable dt, StringBuilder sb)
         {
+            bool isNonActiveRow = false;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 if (!IsRowActive(i))
+                {
+                    if (isNonActiveRow == false && !String.IsNullOrEmpty(ExtraRow))
+                    {
+                        sb.AppendLine(ExtraRow);
+                        isNonActiveRow = true;
+                    }
                     continue;
+                }
+                else
+                {
+                    isNonActiveRow = false;
+                }
 
                 var datarow = dt.Rows[i];
 

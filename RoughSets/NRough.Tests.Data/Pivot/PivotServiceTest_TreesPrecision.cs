@@ -155,8 +155,8 @@ namespace NRough.Tests.Data.Pivot
                                 .Select(g => g.Key).ToArray();
                         }
 
-                        dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
-                        dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        //dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        //dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
                         
 
                         var pivot = new PivotService();
@@ -187,6 +187,8 @@ namespace NRough.Tests.Data.Pivot
                         pivotTable.Columns["eps"].ExtendedProperties.Add("format", ".00");
                         pivotTable.Columns["eps"].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
 
+                        int bottomRowIdx = 69;
+
                         foreach (string modelName in modelNames)
                         {
                             int maxRowIndex = pivotTable.AsEnumerable()
@@ -195,6 +197,9 @@ namespace NRough.Tests.Data.Pivot
                                     String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
                                 .ThenByDescending(r => r.row.Field<double>("eps"))
                                 .Select(r => r.index).First();
+
+                            if (bottomRowIdx < maxRowIndex)
+                                bottomRowIdx = maxRowIndex;
 
                             compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
                             compareBest2.Add(new Tuple<string, string>(datasetname, modelName), pivotTable2.Rows[maxRowIndex]);                            
@@ -206,7 +211,7 @@ namespace NRough.Tests.Data.Pivot
                                 
                                 if (colNames[i] == "acc" || colNames[i] == "precisionmacro" || colNames[i] == "recallmacro")
                                 {
-                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "." + new string('#', accuracyDecimals));
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("format", "0." + new string('#', accuracyDecimals));
                                     pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("formatProvider", System.Globalization.CultureInfo.InvariantCulture);
                                 }
                                 else
@@ -221,6 +226,21 @@ namespace NRough.Tests.Data.Pivot
                                     maxRowIndex,
                                     "fontface",
                                     "textbf");
+                            }
+                        }
+
+                        dataFormatter.ExtraRow = @"... & \multicolumn{7}{c|}{...} & \multicolumn{7}{c|}{...} & \multicolumn{7}{c|}{...} & \multicolumn{7}{c|}{...}\\";
+
+                        if (bottomRowIdx == 99)
+                        {
+                            for (int j = bottomRowIdx - 2; j > pivotTable.Rows.Count - 23; j--)
+                                dataFormatter.SetRowProperty(j, "active", "false");
+                        }
+                        else
+                        {
+                            for (int j = bottomRowIdx + 1; j < pivotTable.Rows.Count; j++)
+                            {
+                                dataFormatter.SetRowProperty(j, "active", "false");
                             }
                         }
 
@@ -380,6 +400,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l||c|c|c|c|c|c|}
 \hline" + Environment.NewLine);
 
@@ -401,6 +422,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Experimental Results Summary(" + ConvertModelName(modelName) + @")}
 \label{table:results:" + modelName.ToLower() + @"}
 \scriptsize
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l||c|c|c|c|c|c|c|}
 \hline" + Environment.NewLine);
 
@@ -417,6 +439,7 @@ namespace NRough.Tests.Data.Pivot
                         }
 
                         sb.AppendLine(@"\end{tabular}");
+                        sb.AppendLine(@"}");
                         sb.AppendLine(@"\end{table}");
 
                         Console.WriteLine(sb.ToString());
@@ -443,6 +466,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
 \label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l||l|l|l|l|l|l|l|l|}
 \hline" + Environment.NewLine);
                         }
@@ -453,6 +477,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Best accuracy results (" + ConvertModelName(modelName) + @")}
 \label{table:accresults" + size.ToString() + ":" + modelName.ToLower() + @"}
 \scriptsize
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l||l|l|l|l|l|l|l|}
 \hline" + Environment.NewLine);
                         }
@@ -483,7 +508,7 @@ namespace NRough.Tests.Data.Pivot
                             DataRow bestRow = compareBest2[new Tuple<string, string>(dataset, modelName)];
 
                             sb2.Append(" & ");
-                            sb2.Append(bestRow["eps"].ToString());
+                            sb2.Append(bestRow.Field<double>("eps").ToString(".00", System.Globalization.CultureInfo.InvariantCulture));
 
                             foreach (var colname in colNames)
                             {
@@ -500,7 +525,7 @@ namespace NRough.Tests.Data.Pivot
                                                     "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(" (");
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}dev", modelName, colname)]).ToString(
-                                                "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
+                                                "0." + new string('#', accuracyDecimals), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(")");
                                     }
                                     else
@@ -512,6 +537,7 @@ namespace NRough.Tests.Data.Pivot
                         }
 
                         sb2.AppendLine(@"\end{tabular}");
+                        sb2.AppendLine(@"}");
                         sb2.AppendLine(@"\end{table}");
 
                         Console.WriteLine(sb2.ToString());
@@ -618,10 +644,10 @@ namespace NRough.Tests.Data.Pivot
                         }
 
                         string comparisonTable =
-                            data[i].ToStr2d(",", Environment.NewLine,
+                            data[i].ToStr2d(";", Environment.NewLine,
                                 true, "0." + new string('#', numOfDec),
                                 System.Globalization.CultureInfo.InvariantCulture,
-                                new string[] { "Data" }.Concat(modelNames).ToArray(),
+                                new string[] { "Data" }.Concat(modelNames.Select(x => ConvertModelName(x))).ToArray(),
                                 datasetNames.ToArray()
                                 );
 
@@ -644,7 +670,7 @@ namespace NRough.Tests.Data.Pivot
 
         private string CustomHeader(string caption, string label, bool first)
         {
-            string ratio = (first == true) ? "0.92" : "";
+            string ratio = (first == true) ? "0.88" : "";
 
             return @"\begin{table}[htbp]
 \centering

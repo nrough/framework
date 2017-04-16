@@ -18,6 +18,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
     [TestFixture]
     public class DecisionForestTest
     {
+        
         [Test, Repeat(1)]
         public void DecisionForestForNumericAttributeTest()
         {

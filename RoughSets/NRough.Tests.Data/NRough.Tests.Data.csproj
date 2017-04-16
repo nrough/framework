@@ -81,6 +81,8 @@
     <Compile Include="DataStoreSplitterTest.cs" />
     <Compile Include="DiscretizeTest.cs" />
     <Compile Include="Benchmark\FactoryTest.cs" />
+    <Compile Include="Pivot\AddResultsOfRandomForest.cs" />
+    <Compile Include="Pivot\ComplexitySingleVsEnsemble.cs" />
     <Compile Include="Pivot\PivotServiceTest.cs" />
     <Compile Include="Pivot\PivotServiceTest2.cs" />
     <Compile Include="Pivot\PivotServiceTest3.cs" />

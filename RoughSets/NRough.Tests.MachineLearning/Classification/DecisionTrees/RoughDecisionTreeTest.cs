@@ -22,7 +22,80 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
 {
     [TestFixture]
     public class RoughDecisionTreeTest
-    {       
+    {
+        [TestCase(@"Data\soybean-small.2.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\promoters.2.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\breast-cancer-wisconsin.2.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\dermatology_modified.data", DataFormat.CSV, 5)]
+        [TestCase(@"Data\house-votes-84.2.data", DataFormat.RSES1_1, 5)]
+        [TestCase(@"Data\lymphography.all", DataFormat.CSV, 5)]
+        [TestCase(@"Data\agaricus-lepiota.2.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\zoo.dta", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\chess.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\nursery.2.data", DataFormat.RSES1, 5)]
+        [TestCase(@"Data\semeion.data", DataFormat.RSES1, 5)]
+        public void RandomForestTestWithCV(string dataFile, DataFormat fileFormat, int folds)
+        {
+            DataStore data = DataStore.Load(dataFile, fileFormat);
+            foreach (var attribute in data.DataStoreInfo.Attributes)
+                attribute.IsNumeric = false;
+
+            DataSplitter splitter = new DataSplitter(data, folds);
+
+            for (int f = 0; f < folds; f++)
+            {
+                DataStore train, test;
+                splitter.Split(out train, out test, f);
+
+                //CrossValidation cv = new CrossValidation(data, folds);
+                //cv.RunInParallel = false;
+
+                DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>("RandomC45");
+                int[] attributes = train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
+                randomForest.Size = 100;
+                randomForest.NumberOfTreeProbes = 1;
+                randomForest.VoteType = DecisionForestVoteType.ErrorBased;
+
+                //var results = cv.Run<DecisionForestRandom<DecisionTreeC45>>(randomForest);
+                //Console.WriteLine(results);
+
+                randomForest.Learn(train, train.GetStandardFields());
+                var result = Classifier.Default.Classify(randomForest, test);
+                Console.WriteLine(result);
+            }
+        }
+        
+        [TestCase(@"Data\vowel.disc.trn", @"Data\vowel.disc.tst", DataFormat.CSV)]
+        [TestCase(@"Data\audiology.standardized.2.data", @"Data\audiology.standardized.2.test", DataFormat.RSES1)]
+        [TestCase(@"Data\sat.disc.trn", @"Data\sat.disc.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\spect.train", @"Data\spect.test", DataFormat.RSES1)]
+        [TestCase(@"Data\monks-1.train", @"Data\monks-1.test", DataFormat.RSES1)]
+        [TestCase(@"Data\monks-2.train", @"Data\monks-2.test", DataFormat.RSES1)]
+        [TestCase(@"Data\monks-3.train", @"Data\monks-3.test", DataFormat.RSES1)]
+        [TestCase(@"Data\dna.train", @"Data\dna.test", DataFormat.RSES1)]
+        [TestCase(@"Data\pendigits.disc.trn", @"Data\pendigits.disc.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\letter.disc.trn", @"Data\letter.disc.tst", DataFormat.RSES1)]
+        [TestCase(@"Data\soybean-large.data", @"Data\soybean-large.test", DataFormat.RSES1)]
+        public void RandomForestSplittedData(
+            string trainFile, string testFile, DataFormat fileFormat)
+        {
+            DataStore data = DataStore.Load(trainFile, fileFormat);
+            foreach (var attribute in data.DataStoreInfo.Attributes)
+                attribute.IsNumeric = false;
+            DataStore test = DataStore.Load(testFile, fileFormat, data.DataStoreInfo);
+            
+            DecisionForestRandom<DecisionTreeC45> randomForest = new DecisionForestRandom<DecisionTreeC45>("RandomC45");
+            int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
+            randomForest.Size = 100;
+            randomForest.NumberOfTreeProbes = 1;
+            randomForest.VoteType = DecisionForestVoteType.Unified;            
+
+            randomForest.Learn(data, data.GetStandardFields());
+            var result = Classifier.Default.Classify(randomForest, test);
+            Console.WriteLine(result);
+        }
+
+
         public static void PruneTree(IModel model, DataStore data)
         {
             IDecisionTree tree = (IDecisionTree)model;

@@ -324,8 +324,8 @@ namespace ExceptionRulesTest
 
             var dta = BenchmarkDataHelper.GetDataFiles("Data", datasets);
             foreach (var kvp in dta)
-            {
-                int numberOfPermutation = ensembleSize == 1 ? ensembleSize * 20 : ensembleSize;
+            {                
+                int numberOfPermutation = ensembleSize == 1 ? ensembleSize * 20 : ensembleSize;                
                 program.ExceptiodnRulesTest(kvp, numberOfTests, numberOfPermutation, ensembleSize);
             }
 

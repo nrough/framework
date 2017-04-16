@@ -29,6 +29,9 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         public DecisionForestRandom()
             : base() { }
 
+        public DecisionForestRandom(string modelName)
+            : base(modelName) { }
+
         protected override TTree InitDecisionTree()
         {
             TTree tree = base.InitDecisionTree();

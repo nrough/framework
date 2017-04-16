@@ -89,9 +89,12 @@ namespace NRough.Tests.Data.Pivot
             int accuracyDecimals = 2;
             int otherDecimals = 0;
             bool splitTableToParts = false;
+            string referenceModelName = "C45-Entropy-EBP";
 
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
+            var baselineRows = new Dictionary<Tuple<string, string>, DataRow>();
+
             List<string> datasetNames = new List<string>(filenames.Length);
             string[] colNames = new string[] { "acc", "recallmacro", "precisionmacro", "attr", "numrul", "dtha", "dthm" };
             
@@ -170,17 +173,7 @@ namespace NRough.Tests.Data.Pivot
                             dtc2,
                             dtc2.Columns["model"],
                             cols2,
-                            "-");
-
-                        /*
-                        pivotTable.Columns.Remove("M-EPS-dthm");
-                        pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
-
-                        pivotTable2.Columns.Remove("M-EPS-dthm");
-                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
-                        pivotTable2.Columns.Remove("M-EPS-dthmdev");
-                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
-                        */                        
+                            "-");                                              
 
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
@@ -202,7 +195,12 @@ namespace NRough.Tests.Data.Pivot
                                 bottomRowIdx = maxRowIndex;
 
                             compareBest.Add(new Tuple<string, string>(datasetname, modelName), pivotTable.Rows[maxRowIndex]);
-                            compareBest2.Add(new Tuple<string, string>(datasetname, modelName), pivotTable2.Rows[maxRowIndex]);                            
+                            compareBest2.Add(new Tuple<string, string>(datasetname, modelName), pivotTable2.Rows[maxRowIndex]);
+
+                            if (modelName == referenceModelName)
+                            {
+                                baselineRows.Add(new Tuple<string, string>(datasetname, referenceModelName), pivotTable2.Rows[0]);
+                            }
 
                             for (int i = 0; i < colNames.Length; i++)
                             {
@@ -318,8 +316,7 @@ namespace NRough.Tests.Data.Pivot
                     int[][] summary = new int[3][];
                     for (int i = 0; i < summary.Length; i++)
                         summary[i] = new int[7];
-
-                    string referenceModelName = "C45-Entropy-EBP";
+                    
                     foreach (var modelName in modelNames
                         .Where(m => m != referenceModelName))
                     {
@@ -603,7 +600,7 @@ namespace NRough.Tests.Data.Pivot
                     double[][][] data = new double[colNames.Length][][];
                     for (int i = 0; i < colNames.Length; i++)
                     {
-                        data[i] = new double[modelNames.Length][];
+                        data[i] = new double[modelNames.Length + 1][];
                         for (int j = 0; j < modelNames.Length; j++)
                         {
                             data[i][j] = new double[datasetNames.Count];
@@ -612,6 +609,12 @@ namespace NRough.Tests.Data.Pivot
                                 data[i][j][k] = 0.0;
                             }
                         }
+                        data[i][modelNames.Length] = new double[datasetNames.Count];
+                        for (int k = 0; k < datasetNames.Count; k++)
+                        {
+                            data[i][modelNames.Length][k] = 0.0;
+                        }
+
                     }
 
                     for (int i = 0; i < colNames.Length; i++)
@@ -625,11 +628,13 @@ namespace NRough.Tests.Data.Pivot
                             numOfDec = accuracyDecimals;
 
                         Console.WriteLine("============== {0} =============", ConvertColName(colname));
+                         
+                        string pivotColName = null;
 
                         for (int j = 0; j < modelNames.Length; j++)
                         {
                             string modelName = modelNames[j];
-                            var pivotColName = String.Format("{0}-{1}", modelName, colname);
+                            pivotColName = String.Format("{0}-{1}", modelName, colname);
 
                             for (int k = 0; k < datasetNames.Count; k++)
                             {
@@ -640,14 +645,28 @@ namespace NRough.Tests.Data.Pivot
                                     data[i][j][k] = Math.Round((double)testedResult[pivotColName], numOfDec, MidpointRounding.AwayFromZero);
                                 else
                                     data[i][j][k] = Double.NaN;
-                            }
+                            }                            
+                        }
+                        
+                        pivotColName = String.Format("{0}-{1}", referenceModelName, colname);
+
+                        for (int k = 0; k < datasetNames.Count; k++)
+                        {
+                            string dataset = datasetNames.ElementAt(k);
+
+                            DataRow testedResult = baselineRows[new Tuple<string, string>(dataset, referenceModelName)];
+
+                            if (testedResult.Table.Columns.Contains(pivotColName))
+                                data[i][modelNames.Length][k] = Math.Round((double)testedResult[pivotColName], numOfDec, MidpointRounding.AwayFromZero);
+                            else
+                                data[i][modelNames.Length][k] = Double.NaN;                            
                         }
 
                         string comparisonTable =
                             data[i].ToStr2d(";", Environment.NewLine,
                                 true, "0." + new string('#', numOfDec),
                                 System.Globalization.CultureInfo.InvariantCulture,
-                                new string[] { "Data" }.Concat(modelNames.Select(x => ConvertModelName(x))).ToArray(),
+                                new string[] { "Data" }.Concat(modelNames.Select(x => ConvertModelName(x))).Concat(new string[] { "C4.5" }).ToArray(),
                                 datasetNames.ToArray()
                                 );
 

@@ -36,10 +36,10 @@ namespace NRough.Data
         public string Name { get; set; }
         public int Fold { get; set; }
         public DataStoreInfo DataStoreInfo { get; set; }
-        public bool IsBag { get { return this.index2OrigObjectId != null; } }
-        public int NumberOfRecords { get { return this.DataStoreInfo.NumberOfRecords; } }
-        public double[] Weights { get { return this.weights; } }
-
+        public bool IsBag { get { return index2OrigObjectId != null; } }
+        public int NumberOfRecords { get { return DataStoreInfo.NumberOfRecords; } }
+        public int NumberOfAttributes { get { return GetStandardFields().Length; } }
+        public double[] Weights { get { return weights; } }
         public Guid TableId { get; set; }
         public DatasetType DatasetType { get; set; }
 

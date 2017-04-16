@@ -37,9 +37,12 @@ namespace NRough.UnitTest.Runner
             //    @"mylogfile_20170311102703.txt"
             });
 
-            fileNames.AddRange(Test_Benchmark2(numOfTests, false));
-            fileNames.AddRange(Test_CV2(numOfTests, false));                        
-                        
+            //fileNames.AddRange(Test_Benchmark2(numOfTests, false));
+            //fileNames.AddRange(Test_CV2(numOfTests, false));
+
+            //fileNames.AddRange(RandomForest_Splitted(numOfTests));
+            fileNames.AddRange(RandomForest_CV(numOfTests));
+
             //ProcessResultFiles(fileNames);
         }
 
@@ -126,6 +129,60 @@ namespace NRough.UnitTest.Runner
 
                 if (processResultFile)
                     ProcessResultFiles(new string[] { fileName });
+            }
+
+            return resultFiles;
+        }
+
+        public static IEnumerable<string> RandomForest_Splitted(int tests)
+        {
+            List<string> resultFiles = new List<string>();
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("RandomForestSplittedData");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
+            foreach (var testCase in testCases)
+            {
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
+                {
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {
+                        var trainFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var testFile = (string)((TestCaseAttribute)testCase).Arguments[1];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[2];
+
+                        test.RandomForestSplittedData(trainFile, testFile, fileFormat);
+                    }
+                    resultFiles.Add(fileName);
+                }
+            }
+
+            return resultFiles;
+        }
+
+        public static IEnumerable<string> RandomForest_CV(int tests)
+        {
+            List<string> resultFiles = new List<string>();
+            RoughDecisionTreeTest test = new RoughDecisionTreeTest();
+            MethodBase method = typeof(RoughDecisionTreeTest).GetMethod("RandomForestTestWithCV");
+            object[] testCases = method.GetCustomAttributes(typeof(TestCaseAttribute), true);
+            foreach (var testCase in testCases)
+            {
+                string fileName = "mylogfile_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                using (var cc = new ConsoleCopy(fileName))
+                {
+                    Console.WriteLine(ClassificationResult.TableHeader());
+                    for (int i = 0; i < tests; i++)
+                    {
+                        var dataFile = (string)((TestCaseAttribute)testCase).Arguments[0];
+                        var fileFormat = (DataFormat)((TestCaseAttribute)testCase).Arguments[1];                        
+                        var folds = (int)((TestCaseAttribute)testCase).Arguments[2];
+
+                        test.RandomForestTestWithCV(dataFile, fileFormat, folds);
+                    }
+                    resultFiles.Add(fileName);
+                }
             }
 
             return resultFiles;

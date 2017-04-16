@@ -65,7 +65,7 @@ namespace NRough.Tests.Data.Pivot
                 "house-100.result", //house                
                 "letter-100.result", //letter.disc                
                 "lymphography-100.result", //lymphography
-                "mashroom-100.result", //mashroom
+                "mushroom-100.result", //mashroom
                 "monks-1-100.result", //monks-1
                 "monks-2-100.result", //monks-2
                 "monks-3-100.result", //monks-3                
@@ -546,7 +546,7 @@ namespace NRough.Tests.Data.Pivot
                         Console.WriteLine(sb2.ToString());
 
                         Console.WriteLine();
-                    }
+                    }                    
 
                     //////////////////////////////// WILCOXON ////////////////////////////////////////
 

@@ -56,6 +56,17 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         public DecisionForestBase()
             : base()
         {
+            Init();
+        }
+
+        public DecisionForestBase(string modelName)
+            : base(modelName)
+        {
+            Init();
+        }
+
+        private void Init()
+        {
             Iterations = 100;
             Size = 100;
             NumberOfTreeProbes = 1;

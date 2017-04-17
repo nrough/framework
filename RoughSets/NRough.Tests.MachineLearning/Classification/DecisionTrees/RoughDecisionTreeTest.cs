@@ -32,7 +32,7 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
         [TestCase(@"Data\agaricus-lepiota.2.data", DataFormat.RSES1, 5)]
         [TestCase(@"Data\zoo.dta", DataFormat.RSES1, 5)]
         [TestCase(@"Data\chess.data", DataFormat.RSES1, 5)]
-        [TestCase(@"Data\nursery.2.data", DataFormat.RSES1, 5)]
+        //[TestCase(@"Data\nursery.2.data", DataFormat.RSES1, 5)]
         [TestCase(@"Data\semeion.data", DataFormat.RSES1, 5)]
         public void RandomForestTestWithCV(string dataFile, DataFormat fileFormat, int folds)
         {
@@ -54,12 +54,14 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
                 int[] attributes = train.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
                 randomForest.Size = 100;
                 randomForest.NumberOfTreeProbes = 1;
-                randomForest.VoteType = DecisionForestVoteType.ErrorBased;
+                randomForest.VoteType = DecisionForestVoteType.Unified;
 
                 //var results = cv.Run<DecisionForestRandom<DecisionTreeC45>>(randomForest);
                 //Console.WriteLine(results);
 
-                randomForest.Learn(train, train.GetStandardFields());
+                randomForest.DefaultOutput = Classifier.UnclassifiedOutput;
+                randomForest.Learn(train, train.GetStandardFields());                
+
                 var result = Classifier.Default.Classify(randomForest, test);
                 Console.WriteLine(result);
             }
@@ -88,9 +90,11 @@ namespace NRough.Tests.MachineLearning.Classification.DecisionTrees
             int[] attributes = data.DataStoreInfo.SelectAttributeIds(a => a.IsStandard).ToArray();
             randomForest.Size = 100;
             randomForest.NumberOfTreeProbes = 1;
-            randomForest.VoteType = DecisionForestVoteType.Unified;            
+            randomForest.VoteType = DecisionForestVoteType.Unified;
 
+            randomForest.DefaultOutput = Classifier.UnclassifiedOutput;
             randomForest.Learn(data, data.GetStandardFields());
+            
             var result = Classifier.Default.Classify(randomForest, test);
             Console.WriteLine(result);
         }

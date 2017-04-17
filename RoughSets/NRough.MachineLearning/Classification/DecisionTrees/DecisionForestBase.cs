@@ -96,8 +96,12 @@ namespace NRough.MachineLearning.Classification.DecisionTrees
         protected virtual TTree InitDecisionTree()
         {
             TTree tree = new TTree();
-            if (this.Gamma >= 0.0)
-                tree.Gamma = this.Gamma;
+            if (Gamma >= 0.0)
+                tree.Gamma = Gamma;
+
+            if (DefaultOutput != null)
+                tree.DefaultOutput = DefaultOutput;
+
             return tree;
         }
 

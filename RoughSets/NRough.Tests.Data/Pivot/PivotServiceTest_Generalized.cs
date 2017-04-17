@@ -48,7 +48,7 @@ namespace NRough.Tests.Data.Pivot
                 "zoo-1.result" //zoo                                                                
             };
 
-            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1);
+            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1, "M-EPS");
         }
 
         [Test]
@@ -80,11 +80,43 @@ namespace NRough.Tests.Data.Pivot
                 "zoo-100.result" //zoo                                                                
             };
 
-            Test(path, filenames, "Generalized majority decision reduct results ({0}) size=100", 100);
+            Test(path, filenames, "Generalized majority decision reduct results ({0}) size=100", 100, "M-EPS");
+        }
+
+        [Test]
+        public void Test100WithRF()
+        {
+            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\Infovision.UnitTest.Runner\bin\x64\Release5\";
+            string[] filenames = new string[]
+            {
+                "audiology-100.result", //audiology
+                "breast-100.result", //breast                
+                "chess-100.result", //chess
+                "dermatology-100.result", //dermatology_modified
+                "dna-100.result", //dna                
+                "house-100.result", //house                
+                "letter-100.result", //letter.disc                
+                "lymphography-100.result", //lymphography
+                "mushroom-100.result", //mashroom
+                "monks-1-100.result", //monks-1
+                "monks-2-100.result", //monks-2
+                "monks-3-100.result", //monks-3                
+                "pen-100.result", //pen.disc                
+                "promoters-100.result", //promoters
+                "sat-100.result", //sat.disc
+                "semeion-100.result", //semeion
+                "soybean-large-100.result", //soybean-large
+                "soybean-small-100.result", //soybean-small
+                "spect-100.result", //spect
+                "vowel-100.result", //vowel
+                "zoo-100.result" //zoo                                                                
+            };
+
+            Test(path, filenames, "Generalized majority decision reduct results ({0}) size=100", 100, "RandomC45");
         }
 
 
-        public void Test(string path, string[] filenames, string caption, int size)
+        public void Test(string path, string[] filenames, string caption, int size, string referenceModelName)
         {
             int accuracyDecimals = 2;
             int otherDecimals = 0;
@@ -93,7 +125,7 @@ namespace NRough.Tests.Data.Pivot
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
             List<string> datasetNames = new List<string>(filenames.Length);
-            //string[] colNames = new string[] { "acc", "recallmacro", "precisionmacro", "attr", "numrul", "dtha", "dthm" };
+                        
             string[] colNames = new string[] { "acc", "recallmacro", "precisionmacro", "numrul", "dtha", "dthm" };
 
             string[] modelNames = null;
@@ -160,8 +192,8 @@ namespace NRough.Tests.Data.Pivot
                                 .Select(g => g.Key).ToArray();
                         }
 
-                        //dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
-                        //dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        dtc.DeleteRows(r => r.Field<double>("eps") > 0.6);
+                        dtc2.DeleteRows(r => r.Field<double>("eps") > 0.6);
 
                         var pivot = new PivotService();
                         var pivotTable = pivot.Pivot(
@@ -176,15 +208,18 @@ namespace NRough.Tests.Data.Pivot
                             cols2,
                             "-");
 
-                        
-                        pivotTable.Columns.Remove("M-EPS-dthm");
-                        pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
+                        pivotTable.DeleteColumn("M-EPS-dthm");
+                        pivotTable2.DeleteColumn("M-EPS-dthm");
+                        pivotTable2.DeleteColumn("M-EPS-dthmdev");
 
-                        pivotTable2.Columns.Remove("M-EPS-dthm");
-                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
-                        pivotTable2.Columns.Remove("M-EPS-dthmdev");
-                        pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
-                        
+                        pivotTable.DeleteColumn("m-PHICAP-NONE-dthm");
+                        pivotTable2.DeleteColumn("m-PHICAP-NONE-dthm");
+                        pivotTable2.DeleteColumn("m-PHICAP-NONE-dthmdev");
+
+                        pivotTable.DeleteColumn("RandomC45-dthm");
+                        pivotTable2.DeleteColumn("RandomC45-dthm");
+                        pivotTable2.DeleteColumn("RandomC45-dthmdev");
+
                         var dataFormatter = new DataTableLatexTabularFormatter();
 
                         pivotTable.Columns["eps"].ExtendedProperties.Add("format", ".00");
@@ -194,13 +229,21 @@ namespace NRough.Tests.Data.Pivot
 
                         foreach (string modelName in modelNames)
                         {
-                            int maxRowIndex = pivotTable.AsEnumerable()
-                                .Select((row, index) => new { row, index })
-                                .OrderByDescending(r => Math.Round(r.row.Field<double>(
-                                    String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
-                                .ThenByDescending(r => r.row.Field<double>("eps"))
-                                .Select(r => r.index).First();
-                            
+                            int maxRowIndex;
+                            if (modelName != "RandomC45")
+                            {
+                                maxRowIndex = pivotTable.AsEnumerable()
+                                    .Select((row, index) => new { row, index })
+                                    .OrderByDescending(r => Math.Round(r.row.Field<double>(
+                                        String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
+                                    .ThenByDescending(r => r.row.Field<double>("eps"))
+                                    .Select(r => r.index).First();
+                            }
+                            else
+                            {
+                                maxRowIndex = 0;
+                            }
+
                             if (bottomRowIdx < maxRowIndex)
                                 bottomRowIdx = maxRowIndex;
 
@@ -211,6 +254,12 @@ namespace NRough.Tests.Data.Pivot
                             {
                                 if (!pivotTable.Columns.Contains(String.Format("{0}-{1}", modelName, colNames[i])))
                                     continue;
+
+                                if(modelName == "RandomC45")
+                                {
+                                    pivotTable.Columns[String.Format("{0}-{1}", modelName, colNames[i])].ExtendedProperties.Add("active", false);
+                                    continue;
+                                }
 
                                 if (colNames[i] == "acc" || colNames[i] == "precisionmacro" || colNames[i] == "recallmacro")
                                 {
@@ -321,8 +370,7 @@ namespace NRough.Tests.Data.Pivot
                     int[][] summary = new int[3][];
                     for (int i = 0; i < summary.Length; i++)
                         summary[i] = new int[7];
-
-                    string referenceModelName = "M-EPS";
+                    
                     foreach (var modelName in modelNames
                         .Where(m => m != referenceModelName))
                     {
@@ -786,6 +834,7 @@ namespace NRough.Tests.Data.Pivot
                 case "audiology.standardized.2.test": return "audiology";
                 case "breast-cancer-wisconsin.2.data": return "breast";
                 case "chess.dta": return "chess";
+                case "chess.data": return "chess";
                 case "dermatology-modified.data": return "dermatology";
                 case "dna.test": return "dna";
                 case "house-votes-84.2.data": return "house";

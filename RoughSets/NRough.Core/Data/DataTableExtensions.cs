@@ -278,5 +278,17 @@ namespace NRough.Core.Data
             foreach (var row in dt.Rows.Cast<DataRow>().Where(predicate).ToList())
                 row.Delete();
         }
+
+        public static void DeleteColumn(this DataTable dt, string columnName, bool throwWhenColumnNotExists = false)
+        {
+            if (throwWhenColumnNotExists)
+            {
+                dt.Columns.Remove(columnName);
+            }
+            else if(dt.Columns.Contains(columnName))
+            {
+                dt.Columns.Remove(columnName);
+            }
+        }
     }
 }

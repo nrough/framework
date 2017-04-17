@@ -130,19 +130,17 @@ namespace NRough.Tests.Data.Pivot
                     dtc2,
                     dtc2.Columns["model"],
                     cols2,
-                    "-");
-
+                    "-");                                                
 
                 pivotTable.Columns.Remove("M-EPS-dthm");
-                pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
-                pivotTable.Columns.Remove("RandomC45-dthm");
-
                 pivotTable2.Columns.Remove("M-EPS-dthm");
                 pivotTable2.Columns.Remove("M-EPS-dthmdev");
 
+                pivotTable.Columns.Remove("m-PHICAP-NONE-dthm");
                 pivotTable2.Columns.Remove("m-PHICAP-NONE-dthm");
                 pivotTable2.Columns.Remove("m-PHICAP-NONE-dthmdev");
 
+                pivotTable.Columns.Remove("RandomC45-dthm");
                 pivotTable2.Columns.Remove("RandomC45-dthm");
                 pivotTable2.Columns.Remove("RandomC45-dthmdev");
 

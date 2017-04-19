@@ -82,7 +82,7 @@ namespace NRough.Tests.Data.Pivot
 
             List<string> datasetNames = new List<string>(filenames1.Length);
             //string[] colNames = new string[] { "acc", "recallmacro", "precisionmacro", "numrul", "dtha", "dthm" };
-            string[] colNames = new string[] { "acc", "numrul", "dtha", "dthm" };
+            string[] colNames = new string[] { "acc", "precisionmacro", "numrul", "dtha", "dthm" };
 
             string[] modelNames = null;
 
@@ -133,12 +133,12 @@ namespace NRough.Tests.Data.Pivot
                 dtc1_avg.Columns.Remove("ds");
                 dtc1_avg.Columns.Remove("attr");
                 dtc1_avg.Columns.Remove("recallmacro");
-                dtc1_avg.Columns.Remove("precisionmacro");
+                //dtc1_avg.Columns.Remove("precisionmacro");
 
                 dtc100_avg.Columns.Remove("ds");
                 dtc100_avg.Columns.Remove("attr");
                 dtc100_avg.Columns.Remove("recallmacro");
-                dtc100_avg.Columns.Remove("precisionmacro");                
+                //dtc100_avg.Columns.Remove("precisionmacro");                
 
                 DataColumn[] cols1 = new DataColumn[colNames.Length];
                 for (int i = 0; i < colNames.Length; i++)
@@ -221,17 +221,7 @@ namespace NRough.Tests.Data.Pivot
                             .First();
                     }
 
-                    /*
-                    int rowIndex100 = pivotTable100.AsEnumerable()
-                        .Select((row, index) => new { row, index })
-                        .OrderByDescending(r => Math.Round(r.row.Field<double>(
-                            String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero))
-                        .ThenByDescending(r => r.row.Field<double>("eps"))
-                        .Where(r => Math.Round(r.row.Field<double>(
-                            String.Format("{0}-acc", modelName)), accuracyDecimals, MidpointRounding.AwayFromZero) <= acc1)
-                        .Select(r => r.index)
-                        .First();
-                    */
+                    
 
                     compare1.Add(new Tuple<string, string>(datasetname1, modelName), pivotTable1.Rows[rowIndex1]);
                     compare100.Add(new Tuple<string, string>(datasetname100, modelName), pivotTable100.Rows[rowIndex100]);
@@ -247,14 +237,14 @@ namespace NRough.Tests.Data.Pivot
                 StringBuilder sb2 = new StringBuilder();
                 int cols = colNames.Count(s => firstRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, s)));
 
-                if (cols == 4)
+                if (cols == 5)
                 {
                     sb2.Append(@"\begin{table}[!htbp]
 \centering
 \caption{Ensemble complexity comparison with single classifier (" + ConvertModelName(modelName) + @")}
 \label{table:accresultsens:" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||l|l|l|l|l|}
+\begin{tabular}{|l||l|l|l|l|l|l|}
 \hline" + Environment.NewLine);
                 }
                 else
@@ -264,7 +254,7 @@ namespace NRough.Tests.Data.Pivot
 \caption{Ensemble complexity comparison with single classifier (" + ConvertModelName(modelName) + @")}
 \label{table:accresultsens:" + modelName.ToLower() + @"}
 \scriptsize
-\begin{tabular}{|l||l|l|l|l|}
+\begin{tabular}{|l||l|l|l|l|l|}
 \hline" + Environment.NewLine);
                 }
 
@@ -295,7 +285,33 @@ namespace NRough.Tests.Data.Pivot
                     DataRow bestRow = compare100[new Tuple<string, string>(dataset, modelName)];
 
                     sb2.Append(" & ");
-                    sb2.Append(bestRow.Field<double>("eps").ToString(".00", System.Globalization.CultureInfo.InvariantCulture));
+
+                    double epsEnsemble = bestRow.Field<double>("eps");
+                    double epsSingle = singleRow.Field<double>("eps");
+
+                    int epsComparison = epsEnsemble.CompareTo(epsSingle);
+                    string appendValueEps = epsEnsemble.ToString(
+                                            ".00" , System.Globalization.CultureInfo.InvariantCulture);
+                    switch (epsComparison)
+                    {
+                        case 1:
+                            appendValueEps = String.Format("\\textbf{{{0}}}", appendValueEps);
+                            //sb2.Append("+"); 
+                            break;
+                        case 0:
+                            //appendValueEps = String.Format("\\textbf{{{0}}}", appendValueEps);
+                            //sb2.Append("o"); 
+                            break;
+                        case -1:
+                            //appendValueEps += "^{-}"
+                            //sb2.Append("-");
+                            break;
+                    }
+
+                    appendValueEps = appendValueEps + " (" + epsSingle.ToString(
+                                            ".00" , System.Globalization.CultureInfo.InvariantCulture) + ")";
+
+                    sb2.Append(appendValueEps);
 
                     foreach (var colname in colNames)
                     {
@@ -311,9 +327,38 @@ namespace NRough.Tests.Data.Pivot
                                 double ensembleValue = System.Math.Round((double)bestRow[String.Format("{0}-{1}", modelName, colname)], numOfDec, MidpointRounding.AwayFromZero);
                                 double singleValue = System.Math.Round((double)singleRow[String.Format("{0}-{1}", modelName, colname)], numOfDec, MidpointRounding.AwayFromZero);
 
-                                sb2.Append(ensembleValue.ToString(
-                                            "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
-                                
+                                string appendValue = ensembleValue.ToString(
+                                            "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture);
+
+                                if (colname != "acc")
+                                {
+                                    int comparison = singleValue.CompareTo(ensembleValue);
+                                    if(colname == "precisionmacro")
+                                        comparison = ensembleValue.CompareTo(singleValue);
+
+                                    switch (comparison)
+                                    {
+                                        case 1:
+                                            appendValue = String.Format("\\textbf{{{0}}}", appendValue);
+                                            //sb2.Append("+"); 
+                                            break;
+                                        case 0:
+                                            //appendValue = String.Format("\\textit{{{0}}}", appendValue);
+                                            //sb2.Append("o"); 
+                                            break;
+                                        case -1:
+                                            //appendValue = String.Format("\\textit{{{0}}}", appendValue);
+                                            //sb2.Append("-");
+                                            break;
+                                    }
+
+                                    appendValue = appendValue + " (" + singleValue.ToString(
+                                            "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture) + ")";
+                                }
+
+                                sb2.Append(appendValue);
+
+                                /*                                
                                 if (colname != "acc" && colname != "precisionmacro" && colname != "recallmacro")
                                 {
                                     sb2.Append(" (");
@@ -328,6 +373,7 @@ namespace NRough.Tests.Data.Pivot
 
                                     sb2.Append(")");
                                 }
+                                */
 
                             }
                             else

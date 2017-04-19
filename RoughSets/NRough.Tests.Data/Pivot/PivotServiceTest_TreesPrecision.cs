@@ -1,4 +1,5 @@
-﻿using NRough.Core.CollectionExtensions;
+﻿using NRough.Core.BaseTypeExtensions;
+using NRough.Core.CollectionExtensions;
 using NRough.Core.Data;
 using NRough.Data.Pivot;
 using NRough.Data.Writers;
@@ -48,48 +49,14 @@ namespace NRough.Tests.Data.Pivot
                 "mylogfile_20170407000530119.txt" //zoo                                                                
             };
 
-            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1);
-        }
+            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1, "C45-Entropy-EBP");
+        }        
 
-        [Test]
-        public void TestTree_OLD()
-        {
-            string path = @"C:\Users\Admin\Source\Workspaces\RoughSets\RoughSets\Infovision.UnitTest.Runner\bin\x64\Release2\";
-            string[] filenames = new string[]
-            {
-                "mylogfile_20170404232714647.txt", //audiology
-                "mylogfile_20170406092041346.txt", //breast                
-                "mylogfile_20170406190613948.txt", //chess
-                "mylogfile_20170406092520510.txt", //dermatology_modified
-                "mylogfile_20170405011958797.txt", //dna                
-                "mylogfile_20170406093836253.txt", //house                
-                "mylogfile_20170405060556808.txt", //letter.disc                
-                "mylogfile_20170406094344090.txt", //lymphography
-                "mylogfile_20170406094646073.txt", //mashroom
-                "mylogfile_20170405011848643.txt", //monks-1
-                ////"monks-2-1.result", //monks-2
-                "mylogfile_20170405011925837.txt", //monks-3
-                //nursery
-                "mylogfile_20170405030713171.txt", //pen.disc                
-                "mylogfile_20170406091340369.txt", //promoters
-                "mylogfile_20170404233356630.txt", //sat.disc
-                //"semeion-1.result", //semeion
-                "mylogfile_20170404231657231.txt", //soybean-large
-                "mylogfile_20170406091144271.txt", //soybean-small
-                "mylogfile_20170405011803882.txt", //spect
-                "mylogfile_20170404232226776.txt", //vowel
-                "mylogfile_20170406121242141.txt" //zoo                                                                
-            };
-
-            Test(path, filenames, "Generalized majority decision reduct results ({0})", 1);
-        }
-
-        public void Test(string path, string[] filenames, string caption, int size)
+        public void Test(string path, string[] filenames, string caption, int size, string referenceModelName)
         {
             int accuracyDecimals = 2;
             int otherDecimals = 0;
-            bool splitTableToParts = false;
-            string referenceModelName = "C45-Entropy-EBP";
+            bool splitTableToParts = false;            
 
             var compareBest = new Dictionary<Tuple<string, string>, DataRow>();
             var compareBest2 = new Dictionary<Tuple<string, string>, DataRow>();
@@ -363,11 +330,11 @@ namespace NRough.Tests.Data.Pivot
 
                                 double refval = Math.Round(
                                     referenceRow.Field<double>(String.Format("{0}-{1}", referenceModelName, colname)),
-                                    accuracyDecimals, MidpointRounding.AwayFromZero);
+                                    numOfDec, MidpointRounding.AwayFromZero);
 
                                 int comparisonResult = (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
-                                                     ? newval.CompareTo(refval)
-                                                     : refval.CompareTo(newval);
+                                                     ? newval.CompareToEpsilon(refval)
+                                                     : refval.CompareToEpsilon(newval);
 
                                 switch (comparisonResult)
                                 {
@@ -450,6 +417,9 @@ namespace NRough.Tests.Data.Pivot
 
                     foreach (var modelName in modelNames)
                     {
+
+                        summary.SetAll(0);
+
                         var firstRow = compareBest2.FirstOrDefault().Value;
 
                         StringBuilder sb2 = new StringBuilder();
@@ -500,13 +470,16 @@ namespace NRough.Tests.Data.Pivot
 
                         foreach (var dataset in datasetNames)
                         {
-                            sb2.Append(ConvertDataSetName(dataset));
+                            //sb2.Append(ConvertDataSetName(dataset));
+                            sb2.AppendFormat(@"\hyperref[results:dectree_{0}]{{{0}}}", ConvertDataSetName(dataset), size);
 
                             DataRow bestRow = compareBest2[new Tuple<string, string>(dataset, modelName)];
+                            DataRow referenceRow = compareBest2[new Tuple<string, string>(dataset, referenceModelName)];
 
                             sb2.Append(" & ");
                             sb2.Append(bestRow.Field<double>("eps").ToString(".00", System.Globalization.CultureInfo.InvariantCulture));
 
+                            int j = 0;
                             foreach (var colname in colNames)
                             {
                                 if (bestRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, colname)))
@@ -518,12 +491,52 @@ namespace NRough.Tests.Data.Pivot
                                         if (colname == "acc" || colname == "precisionmacro" || colname == "recallmacro")
                                             numOfDec = accuracyDecimals;
 
+
+                                        double bestValue = System.Math.Round((double)bestRow[String.Format("{0}-{1}", modelName, colname)], numOfDec, MidpointRounding.AwayFromZero);
+                                        double referenceValue = System.Math.Round((double)referenceRow[String.Format("{0}-{1}", referenceModelName, colname)], numOfDec, MidpointRounding.AwayFromZero);
+
+                                        string appendValue = bestValue.ToString(
+                                                    "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture);
+                                        appendValue += " (";
+                                        appendValue += ((double)bestRow[String.Format("{0}-{1}dev", modelName, colname)]).ToString(
+                                               "0." + new string('#', accuracyDecimals), System.Globalization.CultureInfo.InvariantCulture);
+                                        appendValue += ")";
+                                        
+                                        int comparison = bestValue.CompareToEpsilon(referenceValue);
+                                        if (colname != "acc" && colname != "precisionmacro" && colname != "recallmacro")
+                                            comparison = referenceValue.CompareToEpsilon(bestValue);
+
+                                        switch (comparison)
+                                        {
+                                            case 1:
+                                                appendValue = String.Format("\\textbf{{{0}}}", appendValue);
+                                                summary[0][j]++;
+                                                //sb2.Append("+"); 
+                                                break;                                            
+                                            case -1:
+                                                summary[1][j]++;
+                                                //appendValue = String.Format("\\textit{{{0}}}", appendValue);
+                                                //sb2.Append("-");
+                                                break;
+                                            case 0:
+                                                summary[2][j]++;
+                                                //appendValue = String.Format("\\textit{{{0}}}", appendValue);
+                                                //sb2.Append("o"); 
+                                                break;
+                                        }
+                                        j++;
+
+                                        sb2.Append(appendValue);
+
+
+                                        /*
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}", modelName, colname)]).ToString(
                                                     "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(" (");
                                         sb2.Append(((double)bestRow[String.Format("{0}-{1}dev", modelName, colname)]).ToString(
-                                                "0." + new string('#', accuracyDecimals), System.Globalization.CultureInfo.InvariantCulture));
+                                               "0." + new string('#', accuracyDecimals), System.Globalization.CultureInfo.InvariantCulture));
                                         sb2.Append(")");
+                                        */
                                     }
                                     else
                                         sb2.Append(bestRow[String.Format("{0}-{1}", modelName, colname)].ToString());
@@ -531,6 +544,20 @@ namespace NRough.Tests.Data.Pivot
                             }
 
                             sb2.AppendLine(@"\\ \hline");
+                        }
+
+                        if (modelName != referenceModelName)
+                        {
+                            sb2.AppendLine(@"\hline");
+                            sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "+",
+                                summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4], summary[0][5], summary[0][6]);
+                            sb2.AppendLine();
+                            sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "-",
+                                summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4], summary[1][5], summary[1][6]);
+                            sb2.AppendLine();
+                            sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & & {1} & {2} & {3} & {4} & {5} & {6} & {7}\\ \hline", "o",
+                                summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4], summary[0][5], summary[0][6]);
+                            sb2.AppendLine();
                         }
 
                         sb2.AppendLine(@"\end{tabular}");
@@ -774,10 +801,10 @@ namespace NRough.Tests.Data.Pivot
                 case "acc": return "Accuracy";
                 case "precisionmacro": return "Precision";
                 case "recallmacro": return "Recall";
-                case "attr": return "\\#Attributes";
+                case "attr": return "\\#Attr.";
                 case "numrul": return "\\#Rules";
-                case "dtha": return "Avg tree depth";
-                case "dthm": return "Max tree depth";
+                case "dtha": return "Avg depth";
+                case "dthm": return "Max depth";
             }
             return name;
         }
@@ -790,6 +817,7 @@ namespace NRough.Tests.Data.Pivot
                 case "audiology.standardized.2.test": return "audiology";
                 case "breast-cancer-wisconsin.2.data": return "breast";
                 case "chess.dta": return "chess";
+                case "chess.data": return "chess";
                 case "dermatology-modified.data": return "dermatology";
                 case "dna.test": return "dna";
                 case "house-votes-84.2.data": return "house";

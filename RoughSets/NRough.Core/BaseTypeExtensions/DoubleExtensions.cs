@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NRough.Core.Comparers;
+using System;
 
 namespace NRough.Core.BaseTypeExtensions
 {
@@ -55,6 +56,11 @@ namespace NRough.Core.BaseTypeExtensions
             long rightAsBits = right.ToBits2Complement();
             long floatingPointRepresentationsDiff = System.Math.Abs(leftAsBits - rightAsBits);
             return (floatingPointRepresentationsDiff <= representationTolerance);
+        }
+
+        public static int CompareToEpsilon(this double left, double right)
+        {
+            return DoubleEpsilonComparer.Instance.Compare(left, right);
         }
 
         private static unsafe long ToBits2Complement(this double value)

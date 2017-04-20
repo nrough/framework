@@ -230,9 +230,14 @@ namespace NRough.Tests.Data.Pivot
                 first = false;
             }
 
+            int[][] summary = new int[3][];
+            for (int i = 0; i < summary.Length; i++)
+                summary[i] = new int[7];
 
             foreach (var modelName in modelNames)
             {
+                summary.SetAll(0);
+
                 var firstRow = compare1.FirstOrDefault().Value;
                 StringBuilder sb2 = new StringBuilder();
                 int cols = colNames.Count(s => firstRow.Table.Columns.Contains(String.Format("{0}-{1}", modelName, s)));
@@ -279,6 +284,7 @@ namespace NRough.Tests.Data.Pivot
 
                 foreach (var dataset in datasetNames)
                 {
+                    int j = 0;
                     sb2.Append(ConvertDataSetName(dataset));
 
                     DataRow singleRow = compare1[new Tuple<string, string>(dataset, modelName)];
@@ -296,17 +302,23 @@ namespace NRough.Tests.Data.Pivot
                     {
                         case 1:
                             appendValueEps = String.Format("\\textbf{{{0}}}", appendValueEps);
+                            summary[0][j]++;
                             //sb2.Append("+"); 
                             break;
-                        case 0:
-                            //appendValueEps = String.Format("\\textbf{{{0}}}", appendValueEps);
-                            //sb2.Append("o"); 
-                            break;
+                        
                         case -1:
+                            summary[1][j]++;
                             //appendValueEps += "^{-}"
                             //sb2.Append("-");
                             break;
+
+                        case 0:
+                            summary[2][j]++;
+                            //appendValueEps = String.Format("\\textbf{{{0}}}", appendValueEps);
+                            //sb2.Append("o"); 
+                            break;
                     }
+                    j++;
 
                     appendValueEps = appendValueEps + " (" + epsSingle.ToString(
                                             ".00" , System.Globalization.CultureInfo.InvariantCulture) + ")";
@@ -340,17 +352,23 @@ namespace NRough.Tests.Data.Pivot
                                     {
                                         case 1:
                                             appendValue = String.Format("\\textbf{{{0}}}", appendValue);
+                                            summary[0][j]++;
                                             //sb2.Append("+"); 
                                             break;
-                                        case 0:
-                                            //appendValue = String.Format("\\textit{{{0}}}", appendValue);
-                                            //sb2.Append("o"); 
-                                            break;
+                                        
                                         case -1:
                                             //appendValue = String.Format("\\textit{{{0}}}", appendValue);
                                             //sb2.Append("-");
+                                            summary[1][j]++;
+                                            break;
+
+                                        case 0:
+                                            //appendValue = String.Format("\\textit{{{0}}}", appendValue);
+                                            //sb2.Append("o"); 
+                                            summary[2][j]++;
                                             break;
                                     }
+                                    j++;
 
                                     appendValue = appendValue + " (" + singleValue.ToString(
                                             "0." + new string('#', numOfDec), System.Globalization.CultureInfo.InvariantCulture) + ")";
@@ -383,6 +401,35 @@ namespace NRough.Tests.Data.Pivot
 
                     sb2.AppendLine(@"\\ \hline");
                 }
+
+                //if (modelName != referenceModelName)
+                //{
+                    sb2.AppendLine(@"\hline");
+                    if (cols == 5)
+                    {
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &  & {2} & {3} & {4} & {5} \\ \hline", "+",
+                            summary[0][0], summary[0][1], summary[0][2], summary[0][3], summary[0][4]);
+                        sb2.AppendLine();
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &  & {2} & {3} & {4} & {5} \\ \hline", "-",
+                            summary[1][0], summary[1][1], summary[1][2], summary[1][3], summary[1][4]);
+                        sb2.AppendLine();
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &  & {2} & {3} & {4} & {5} \\ \hline", "o",
+                            summary[2][0], summary[2][1], summary[2][2], summary[2][3], summary[2][4]);
+                    }
+                    else
+                    {
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &   & {2} & {3} & {4}  \\ \hline", "+",
+                            summary[0][0], summary[0][1], summary[0][2], summary[0][3]);
+                        sb2.AppendLine();
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &   & {2} & {3} & {4}  \\ \hline", "-",
+                            summary[1][0], summary[1][1], summary[1][2], summary[1][3]);
+                        sb2.AppendLine();
+                        sb2.AppendFormat(@"\multicolumn{{1}}{{|c||}}{{{0}}} & {1} &   & {2} & {3} & {4}  \\ \hline", "o",
+                            summary[2][0], summary[2][1], summary[2][2], summary[2][3]);
+                        
+                    }
+                    sb2.AppendLine();
+                //}
 
                 sb2.AppendLine(@"\end{tabular}");
                 sb2.AppendLine(@"\end{table}");

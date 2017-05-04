@@ -95,7 +95,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx86", "SimpleITKx8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Math", "NRough.Tests.Math\NRough.Tests.Math.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{DC06D7E3-73A5-415B-8937-E66C64AD7C05}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments", "{DC06D7E3-73A5-415B-8937-E66C64AD7C05}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoosting", "ApproxReductBoosting\ApproxReductBoosting.csproj", "{9C213D37-3249-453F-BA30-460255EA955D}"
 	ProjectSection(ProjectDependencies) = postProject

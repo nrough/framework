@@ -302,6 +302,7 @@ namespace NRough.Tests.Data.Pivot
                 case "breast-cancer-wisconsin.2.data": return "breast";
                 case "dermatology-modified.data": return "dermatology";
                 case "dna.test": return "dna";
+                case "chess.data": return "chess";
                 case "house-votes-84.2.data": return "house";
                 case "letter.disc.tst": return "letter";
                 case "lymphography.all": return "lymphography";

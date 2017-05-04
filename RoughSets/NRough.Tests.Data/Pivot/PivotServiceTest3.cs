@@ -640,6 +640,7 @@ namespace NRough.Tests.Data.Pivot
                 case "audiology.standardized.2.test": return "audiology";
                 case "breast-cancer-wisconsin.2.data": return "breast";
                 case "chess.dta": return "chess";
+                case "chess.data": return "chess";
                 case "dermatology-modified.data": return "dermatology";
                 case "dna.test": return "dna";
                 case "house-votes-84.2.data": return "house";

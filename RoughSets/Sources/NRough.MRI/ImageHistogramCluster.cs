@@ -6,8 +6,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Permissions;
 using System.Text;
-using IntervalTreeLib;
 using MathNet.Numerics.Statistics;
+using NRough.Core.IntervalTree;
 
 namespace NRough.MRI
 {

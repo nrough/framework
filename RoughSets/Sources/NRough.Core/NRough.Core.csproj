@@ -126,6 +126,9 @@
     <Compile Include="DataStructures\Matrix.cs" />
     <Compile Include="DataStructures\PriorityQueue.cs" />
     <Compile Include="DataStructures\PriorityQueue_DEL.cs" />
+    <Compile Include="IntervalTree\Interval.cs" />
+    <Compile Include="IntervalTree\IntervalNode.cs" />
+    <Compile Include="IntervalTree\IntervalTree.cs" />
     <Compile Include="Random\RandomExtensions.cs" />
     <Compile Include="Random\RandomSingleton.cs" />
     <Compile Include="DataStructures\Range.cs" />
@@ -142,6 +145,7 @@
       <Name>NRough.Doc</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

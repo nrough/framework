@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Data", "NRough.Data\NRough.Data.csproj", "{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Data", "Sources\NRough.Data\NRough.Data.csproj", "{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A} = {DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Core", "NRough.Core\NRough.Core.csproj", "{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Core", "Sources\NRough.Core\NRough.Core.csproj", "{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{782E2AE5-62EB-4A45-9F48-7131603041FA}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,34 +19,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NRough.pfx = NRough.pfx
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning", "NRough.MachineLearning\NRough.MachineLearning.csproj", "{82E1F95C-4559-44AB-9114-42E78DA331A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning", "Sources\NRough.MachineLearning\NRough.MachineLearning.csproj", "{82E1F95C-4559-44AB-9114-42E78DA331A1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 		{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A} = {DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Data", "NRough.Tests.Data\NRough.Tests.Data.csproj", "{5D273260-69B2-49ED-8B82-21E0BC9D0778}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Data", "Tests\NRough.Tests.Data\NRough.Tests.Data.csproj", "{5D273260-69B2-49ED-8B82-21E0BC9D0778}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.TestAssembly", "Infovision.TestAssembly\NRough.Tests.TestAssembly.csproj", "{9DDFE474-0A4C-492C-82B2-C0A850217774}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.TestAssembly", "Tests\NRough.Tests.TestAssembly\NRough.Tests.TestAssembly.csproj", "{9DDFE474-0A4C-492C-82B2-C0A850217774}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Core", "NRough.Tests.Core\NRough.Tests.Core.csproj", "{EA325EEA-CB1E-4517-974B-7205C8420198}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Core", "Tests\NRough.Tests.Core\NRough.Tests.Core.csproj", "{EA325EEA-CB1E-4517-974B-7205C8420198}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MRI", "NRough.MRI\NRough.MRI.csproj", "{3E09373E-33C7-4119-9FC9-068A141668E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MRI", "Sources\NRough.MRI\NRough.MRI.csproj", "{3E09373E-33C7-4119-9FC9-068A141668E1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MRI", "NRough.Tests.MRI\NRough.Tests.MRI.csproj", "{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MRI", "Tests\NRough.Tests.MRI\NRough.Tests.MRI.csproj", "{C58CB0F1-E7D4-4445-8414-CA9662E24E4E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3E09373E-33C7-4119-9FC9-068A141668E1} = {3E09373E-33C7-4119-9FC9-068A141668E1}
 	EndProjectSection
@@ -56,48 +56,48 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{79AD8C
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning.Experimenter", "NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj", "{BDCA67F1-8B38-4F12-9149-D93D7C23CB26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.MachineLearning.Experimenter", "Sources\NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj", "{BDCA67F1-8B38-4F12-9149-D93D7C23CB26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning.Experimenter", "NRough.Tests.MachineLearning.Experimenter\NRough.Tests.MachineLearning.Experimenter.csproj", "{D4C765AF-AC85-472D-9549-5D682015A124}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning.Experimenter", "Tests\NRough.Tests.MachineLearning.Experimenter\NRough.Tests.MachineLearning.Experimenter.csproj", "{D4C765AF-AC85-472D-9549-5D682015A124}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning", "NRough.Tests.MachineLearning\NRough.Tests.MachineLearning.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.MachineLearning", "Tests\NRough.Tests.MachineLearning\NRough.Tests.MachineLearning.csproj", "{C32F57FC-32D0-4853-8145-2645A559BF6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DDFE474-0A4C-492C-82B2-C0A850217774} = {9DDFE474-0A4C-492C-82B2-C0A850217774}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Math", "NRough.Math\NRough.Math.csproj", "{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Math", "Sources\NRough.Math\NRough.Math.csproj", "{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx64", "SimpleITKx64", "{640ABD90-29B0-4CEF-99B5-68B0FA9FAC09}"
 	ProjectSection(SolutionItems) = preProject
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll = external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx86", "SimpleITKx86", "{E0FD0250-8740-4501-BDCB-13AED3D208CE}"
 	ProjectSection(SolutionItems) = preProject
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll
-		external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll = external\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll
+		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Math", "NRough.Tests.Math\NRough.Tests.Math.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Math", "Tests\NRough.Tests.Math\NRough.Tests.Math.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments", "{DC06D7E3-73A5-415B-8937-E66C64AD7C05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoosting", "ApproxReductBoosting\ApproxReductBoosting.csproj", "{9C213D37-3249-453F-BA30-460255EA955D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoosting", "Experiments\ApproxReductBoosting\ApproxReductBoosting.csproj", "{9C213D37-3249-453F-BA30-460255EA955D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
@@ -105,7 +105,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoosting", "App
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoostingCV", "ApproxReductBoostingCV\ApproxReductBoostingCV.csproj", "{9FE417F8-022C-40E7-9574-BA7014339B6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoostingCV", "Experiments\ApproxReductBoostingCV\ApproxReductBoostingCV.csproj", "{9FE417F8-022C-40E7-9574-BA7014339B6D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
@@ -113,9 +113,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApproxReductBoostingCV", "A
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTest", "ExceptionRulesTest\ExceptionRulesTest.csproj", "{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTest", "Experiments\ExceptionRulesTest\ExceptionRulesTest.csproj", "{3E2A2F70-2A98-4645-86AA-B3D8C5D35D58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTest", "DisesorTest\DisesorTest.csproj", "{5579F5EC-3490-4C36-B2C1-BED348951F06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTest", "Experiments\DisesorTest\DisesorTest.csproj", "{5579F5EC-3490-4C36-B2C1-BED348951F06}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
@@ -124,7 +124,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTest", "DisesorTest\
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTuning", "DisesorTuning\DisesorTuning.csproj", "{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTuning", "Experiments\DisesorTuning\DisesorTuning.csproj", "{0541F780-7CF5-4DFA-AF3A-7F05005CDEFD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
@@ -133,16 +133,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisesorTuning", "DisesorTun
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTiming", "ExceptionRulesTiming\ExceptionRulesTiming.csproj", "{67AF087D-606E-44F4-9396-74BF2AB160E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionRulesTiming", "Experiments\ExceptionRulesTiming\ExceptionRulesTiming.csproj", "{67AF087D-606E-44F4-9396-74BF2AB160E2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingVsRuleInduction", "VotingVsRuleInduction\VotingVsRuleInduction.csproj", "{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingVsRuleInduction", "Experiments\VotingVsRuleInduction\VotingVsRuleInduction.csproj", "{1DBAA0AA-A210-44F2-AFD5-BC4E219BC40F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "DermoReducts\DermoReducts.csproj", "{BEA130EC-3920-42F3-AD18-A72231881DBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "Experiments\DermoReducts\DermoReducts.csproj", "{BEA130EC-3920-42F3-AD18-A72231881DBD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A8C06C97-4B48-4531-A69E-E9CCAF1A9471} = {A8C06C97-4B48-4531-A69E-E9CCAF1A9471}
@@ -150,25 +150,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DermoReducts", "DermoReduct
 		{BDCA67F1-8B38-4F12-9149-D93D7C23CB26} = {BDCA67F1-8B38-4F12-9149-D93D7C23CB26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorityGeneralizedDecisionTest", "MajorityGeneralizedDecisionTest\MajorityGeneralizedDecisionTest.csproj", "{D460989F-C801-44DA-B74F-E5187D99F446}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorityGeneralizedDecisionTest", "Experiments\MajorityGeneralizedDecisionTest\MajorityGeneralizedDecisionTest.csproj", "{D460989F-C801-44DA-B74F-E5187D99F446}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRIExceptions", "MRIExceptions\MRIExceptions.csproj", "{6BBF1A65-3D72-4F26-807B-82689E2AA90E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRIExceptions", "Experiments\MRIExceptions\MRIExceptions.csproj", "{6BBF1A65-3D72-4F26-807B-82689E2AA90E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{82E1F95C-4559-44AB-9114-42E78DA331A1} = {82E1F95C-4559-44AB-9114-42E78DA331A1}
 		{A98784BB-1E90-4FC6-949D-D2CFADCC45CD} = {A98784BB-1E90-4FC6-949D-D2CFADCC45CD}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionForestTest", "DecisionForestTest\DecisionForestTest.csproj", "{49B766A1-58E9-4943-A597-1572C4A30030}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionForestTest", "Experiments\DecisionForestTest\DecisionForestTest.csproj", "{49B766A1-58E9-4943-A597-1572C4A30030}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.UnitTest.Runner", "Infovision.UnitTest.Runner\NRough.UnitTest.Runner.csproj", "{44513510-2207-420A-AA54-3BC1E0D122F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.UnitTest.Runner", "Tests\NRough.UnitTest.Runner\NRough.UnitTest.Runner.csproj", "{44513510-2207-420A-AA54-3BC1E0D122F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Doc", "NRough.Doc\NRough.Doc.csproj", "{58534579-7D62-4F0C-8BBF-E3E903E90E4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Doc", "Sources\NRough.Doc\NRough.Doc.csproj", "{58534579-7D62-4F0C-8BBF-E3E903E90E4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Doc", "NRough.Tests.Doc\NRough.Tests.Doc.csproj", "{3BBD70F5-75BF-43AD-92CE-D7072ECD5B73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Doc", "Tests\NRough.Tests.Doc\NRough.Tests.Doc.csproj", "{3BBD70F5-75BF-43AD-92CE-D7072ECD5B73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -870,110 +870,110 @@ Global
 		{3BBD70F5-75BF-43AD-92CE-D7072ECD5B73} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 28
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://infovision.visualstudio.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = ApproxReductBoosting\\ApproxReductBoosting.csproj
+		SccProjectUniqueName1 = Experiments\\ApproxReductBoosting\\ApproxReductBoosting.csproj
 		SccProjectTopLevelParentUniqueName1 = NRough.sln
-		SccProjectName1 = ApproxReductBoosting
-		SccLocalPath1 = ApproxReductBoosting
-		SccProjectUniqueName2 = ApproxReductBoostingCV\\ApproxReductBoostingCV.csproj
+		SccProjectName1 = Experiments\\ApproxReductBoosting
+		SccLocalPath1 = Experiments\\ApproxReductBoosting
+		SccProjectUniqueName2 = Experiments\\ApproxReductBoostingCV\\ApproxReductBoostingCV.csproj
 		SccProjectTopLevelParentUniqueName2 = NRough.sln
-		SccProjectName2 = ApproxReductBoostingCV
-		SccLocalPath2 = ApproxReductBoostingCV
-		SccProjectUniqueName3 = ExceptionRulesTest\\ExceptionRulesTest.csproj
+		SccProjectName2 = Experiments\\ApproxReductBoostingCV
+		SccLocalPath2 = Experiments\\ApproxReductBoostingCV
+		SccProjectUniqueName3 = Experiments\\ExceptionRulesTest\\ExceptionRulesTest.csproj
 		SccProjectTopLevelParentUniqueName3 = NRough.sln
-		SccProjectName3 = ExceptionRulesTest
-		SccLocalPath3 = ExceptionRulesTest
-		SccProjectUniqueName4 = DisesorTest\\DisesorTest.csproj
+		SccProjectName3 = Experiments\\ExceptionRulesTest
+		SccLocalPath3 = Experiments\\ExceptionRulesTest
+		SccProjectUniqueName4 = Experiments\\DisesorTest\\DisesorTest.csproj
 		SccProjectTopLevelParentUniqueName4 = NRough.sln
-		SccProjectName4 = DisesorTest
-		SccLocalPath4 = DisesorTest
-		SccProjectUniqueName5 = DisesorTuning\\DisesorTuning.csproj
+		SccProjectName4 = Experiments\\DisesorTest
+		SccLocalPath4 = Experiments\\DisesorTest
+		SccProjectUniqueName5 = Experiments\\DisesorTuning\\DisesorTuning.csproj
 		SccProjectTopLevelParentUniqueName5 = NRough.sln
-		SccProjectName5 = DisesorTuning
-		SccLocalPath5 = DisesorTuning
-		SccProjectUniqueName6 = ExceptionRulesTiming\\ExceptionRulesTiming.csproj
+		SccProjectName5 = Experiments\\DisesorTuning
+		SccLocalPath5 = Experiments\\DisesorTuning
+		SccProjectUniqueName6 = Experiments\\ExceptionRulesTiming\\ExceptionRulesTiming.csproj
 		SccProjectTopLevelParentUniqueName6 = NRough.sln
-		SccProjectName6 = ExceptionRulesTiming
-		SccLocalPath6 = ExceptionRulesTiming
-		SccProjectUniqueName7 = VotingVsRuleInduction\\VotingVsRuleInduction.csproj
+		SccProjectName6 = Experiments\\ExceptionRulesTiming
+		SccLocalPath6 = Experiments\\ExceptionRulesTiming
+		SccProjectUniqueName7 = Experiments\\VotingVsRuleInduction\\VotingVsRuleInduction.csproj
 		SccProjectTopLevelParentUniqueName7 = NRough.sln
-		SccProjectName7 = VotingVsRuleInduction
-		SccLocalPath7 = VotingVsRuleInduction
-		SccProjectUniqueName8 = DermoReducts\\DermoReducts.csproj
+		SccProjectName7 = Experiments\\VotingVsRuleInduction
+		SccLocalPath7 = Experiments\\VotingVsRuleInduction
+		SccProjectUniqueName8 = Experiments\\DermoReducts\\DermoReducts.csproj
 		SccProjectTopLevelParentUniqueName8 = NRough.sln
-		SccProjectName8 = DermoReducts
-		SccLocalPath8 = DermoReducts
-		SccProjectUniqueName9 = MajorityGeneralizedDecisionTest\\MajorityGeneralizedDecisionTest.csproj
+		SccProjectName8 = Experiments\\DermoReducts
+		SccLocalPath8 = Experiments\\DermoReducts
+		SccProjectUniqueName9 = Experiments\\MajorityGeneralizedDecisionTest\\MajorityGeneralizedDecisionTest.csproj
 		SccProjectTopLevelParentUniqueName9 = NRough.sln
-		SccProjectName9 = MajorityGeneralizedDecisionTest
-		SccLocalPath9 = MajorityGeneralizedDecisionTest
-		SccProjectUniqueName10 = MRIExceptions\\MRIExceptions.csproj
+		SccProjectName9 = Experiments\\MajorityGeneralizedDecisionTest
+		SccLocalPath9 = Experiments\\MajorityGeneralizedDecisionTest
+		SccProjectUniqueName10 = Experiments\\MRIExceptions\\MRIExceptions.csproj
 		SccProjectTopLevelParentUniqueName10 = NRough.sln
-		SccProjectName10 = MRIExceptions
-		SccLocalPath10 = MRIExceptions
-		SccProjectUniqueName11 = DecisionForestTest\\DecisionForestTest.csproj
+		SccProjectName10 = Experiments\\MRIExceptions
+		SccLocalPath10 = Experiments\\MRIExceptions
+		SccProjectUniqueName11 = Experiments\\DecisionForestTest\\DecisionForestTest.csproj
 		SccProjectTopLevelParentUniqueName11 = NRough.sln
-		SccProjectName11 = DecisionForestTest
-		SccLocalPath11 = DecisionForestTest
-		SccProjectUniqueName12 = NRough.Math\\NRough.Math.csproj
-		SccProjectName12 = NRough.Math
-		SccLocalPath12 = NRough.Math
-		SccProjectUniqueName13 = NRough.Core\\NRough.Core.csproj
-		SccProjectName13 = NRough.Core
-		SccLocalPath13 = NRough.Core
-		SccProjectUniqueName14 = NRough.Data\\NRough.Data.csproj
-		SccProjectName14 = NRough.Data
-		SccLocalPath14 = NRough.Data
-		SccProjectUniqueName15 = NRough.MachineLearning\\NRough.MachineLearning.csproj
-		SccProjectName15 = NRough.MachineLearning
-		SccLocalPath15 = NRough.MachineLearning
-		SccProjectUniqueName16 = NRough.MachineLearning.Experimenter\\NRough.MachineLearning.Experimenter.csproj
-		SccProjectName16 = NRough.MachineLearning.Experimenter
-		SccLocalPath16 = NRough.MachineLearning.Experimenter
-		SccProjectUniqueName17 = Infovision.UnitTest.Runner\\NRough.UnitTest.Runner.csproj
+		SccProjectName11 = Experiments\\DecisionForestTest
+		SccLocalPath11 = Experiments\\DecisionForestTest
+		SccProjectUniqueName12 = Sources\\NRough.Math\\NRough.Math.csproj
+		SccProjectName12 = Sources\\NRough.Math
+		SccLocalPath12 = Sources\\NRough.Math
+		SccProjectUniqueName13 = Sources\\NRough.Core\\NRough.Core.csproj
+		SccProjectName13 = Sources\\NRough.Core
+		SccLocalPath13 = Sources\\NRough.Core
+		SccProjectUniqueName14 = Sources\\NRough.Data\\NRough.Data.csproj
+		SccProjectName14 = Sources\\NRough.Data
+		SccLocalPath14 = Sources\\NRough.Data
+		SccProjectUniqueName15 = Sources\\NRough.MachineLearning\\NRough.MachineLearning.csproj
+		SccProjectName15 = Sources\\NRough.MachineLearning
+		SccLocalPath15 = Sources\\NRough.MachineLearning
+		SccProjectUniqueName16 = Sources\\NRough.MachineLearning.Experimenter\\NRough.MachineLearning.Experimenter.csproj
+		SccProjectName16 = Sources\\NRough.MachineLearning.Experimenter
+		SccLocalPath16 = Sources\\NRough.MachineLearning.Experimenter
+		SccProjectUniqueName17 = Tests\\NRough.UnitTest.Runner\\NRough.UnitTest.Runner.csproj
 		SccProjectTopLevelParentUniqueName17 = NRough.sln
-		SccProjectName17 = Infovision.UnitTest.Runner
-		SccLocalPath17 = Infovision.UnitTest.Runner
-		SccProjectUniqueName18 = NRough.MRI\\NRough.MRI.csproj
-		SccProjectName18 = NRough.MRI
-		SccLocalPath18 = NRough.MRI
-		SccProjectUniqueName19 = NRough.Tests.Core\\NRough.Tests.Core.csproj
+		SccProjectName17 = Tests\\NRough.UnitTest.Runner
+		SccLocalPath17 = Tests\\NRough.UnitTest.Runner
+		SccProjectUniqueName18 = Sources\\NRough.MRI\\NRough.MRI.csproj
+		SccProjectName18 = Sources\\NRough.MRI
+		SccLocalPath18 = Sources\\NRough.MRI
+		SccProjectUniqueName19 = Tests\\NRough.Tests.Core\\NRough.Tests.Core.csproj
 		SccProjectTopLevelParentUniqueName19 = NRough.sln
-		SccProjectName19 = NRough.Tests.Core
-		SccLocalPath19 = NRough.Tests.Core
-		SccProjectUniqueName20 = NRough.Tests.Data\\NRough.Tests.Data.csproj
+		SccProjectName19 = Tests\\NRough.Tests.Core
+		SccLocalPath19 =  Tests\\NRough.Tests.Core
+		SccProjectUniqueName20 = Tests\\NRough.Tests.Data\\NRough.Tests.Data.csproj
 		SccProjectTopLevelParentUniqueName20 = NRough.sln
-		SccProjectName20 = NRough.Tests.Data
-		SccLocalPath20 = NRough.Tests.Data
-		SccProjectUniqueName21 = NRough.Tests.MachineLearning.Experimenter\\NRough.Tests.MachineLearning.Experimenter.csproj
+		SccProjectName20 = Tests\\NRough.Tests.Data
+		SccLocalPath20 =  Tests\\NRough.Tests.Data
+		SccProjectUniqueName21 = Tests\\NRough.Tests.MachineLearning.Experimenter\\NRough.Tests.MachineLearning.Experimenter.csproj
 		SccProjectTopLevelParentUniqueName21 = NRough.sln
-		SccProjectName21 = NRough.Tests.MachineLearning.Experimenter
-		SccLocalPath21 = NRough.Tests.MachineLearning.Experimenter
-		SccProjectUniqueName22 = NRough.Tests.MachineLearning\\NRough.Tests.MachineLearning.csproj
+		SccProjectName21 = Tests\\NRough.Tests.MachineLearning.Experimenter
+		SccLocalPath21 =  Tests\\NRough.Tests.MachineLearning.Experimenter
+		SccProjectUniqueName22 = Tests\\NRough.Tests.MachineLearning\\NRough.Tests.MachineLearning.csproj
 		SccProjectTopLevelParentUniqueName22 = NRough.sln
-		SccProjectName22 = NRough.Tests.MachineLearning
-		SccLocalPath22 = NRough.Tests.MachineLearning
-		SccProjectUniqueName23 = NRough.Tests.Math\\NRough.Tests.Math.csproj
+		SccProjectName22 = Tests\\NRough.Tests.MachineLearning
+		SccLocalPath22 =  Tests\\NRough.Tests.MachineLearning
+		SccProjectUniqueName23 = Tests\\NRough.Tests.Math\\NRough.Tests.Math.csproj
 		SccProjectTopLevelParentUniqueName23 = NRough.sln
-		SccProjectName23 = NRough.Tests.Math
-		SccLocalPath23 = NRough.Tests.Math
-		SccProjectUniqueName24 = Infovision.TestAssembly\\NRough.Tests.TestAssembly.csproj
+		SccProjectName23 = Tests\\NRough.Tests.Math
+		SccLocalPath23 =  Tests\\NRough.Tests.Math
+		SccProjectUniqueName24 = Tests\\NRough.Tests.TestAssembly\\NRough.Tests.TestAssembly.csproj
 		SccProjectTopLevelParentUniqueName24 = NRough.sln
-		SccProjectName24 = Infovision.TestAssembly
-		SccLocalPath24 = Infovision.TestAssembly
-		SccProjectUniqueName25 = NRough.Tests.MRI\\NRough.Tests.MRI.csproj
+		SccProjectName24 = Tests\\NRough.Tests.TestAssembly
+		SccLocalPath24 =  Tests\\NRough.Tests.TestAssembly
+		SccProjectUniqueName25 = Tests\\NRough.Tests.MRI\\NRough.Tests.MRI.csproj
 		SccProjectTopLevelParentUniqueName25 = NRough.sln
-		SccProjectName25 = NRough.Tests.MRI
-		SccLocalPath25 = NRough.Tests.MRI
-		SccProjectUniqueName26 = NRough.Doc\\NRough.Doc.csproj
-		SccProjectName26 = NRough.Doc
-		SccLocalPath26 = NRough.Doc
-		SccProjectUniqueName27 = NRough.Tests.Doc\\NRough.Tests.Doc.csproj
+		SccProjectName25 = Tests\\NRough.Tests.MRI
+		SccLocalPath25 =  Tests\\NRough.Tests.MRI
+		SccProjectUniqueName26 = Sources\\NRough.Doc\\NRough.Doc.csproj
+		SccProjectName26 = Sources\\NRough.Doc
+		SccLocalPath26 = Sources\\NRough.Doc
+		SccProjectUniqueName27 = Tests\\NRough.Tests.Doc\\NRough.Tests.Doc.csproj
 		SccProjectTopLevelParentUniqueName27 = NRough.sln
-		SccProjectName27 = NRough.Tests.Doc
-		SccLocalPath27 = NRough.Tests.Doc
+		SccProjectName27 = Tests\\NRough.Tests.Doc
+		SccLocalPath27 = Tests\\NRough.Tests.Doc
 	EndGlobalSection
 EndGlobal

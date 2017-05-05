@@ -63,16 +63,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SimpleITKCSharpManaged, Version=0.8.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
+      <HintPath>..\..\Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -95,15 +95,15 @@
     <Compile Include="HistogramTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj">
       <Project>{bdca67f1-8b38-4f12-9149-d93d7c23cb26}</Project>
       <Name>NRough.MachineLearning.Experimenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NRough.MRI\NRough.MRI.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.MRI\NRough.MRI.csproj">
       <Project>{3e09373e-33c7-4119-9fc9-068a141668e1}</Project>
       <Name>NRough.MRI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.Core\NRough.Core.csproj">
       <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>
@@ -153,7 +153,7 @@
     <None Include="Properties\DataSources\Infovision.MRI.DAL.ImageMask.datasource" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\external\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll">
+    <Content Include="..\..\Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll">
       <Link>SimpleITKCSharpNative.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -64,7 +64,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -93,15 +93,15 @@
     <Compile Include="Writers\DataTableFormatterTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NRough.MachineLearning\NRough.MachineLearning.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.MachineLearning\NRough.MachineLearning.csproj">
       <Project>{82E1F95C-4559-44AB-9114-42E78DA331A1}</Project>
       <Name>NRough.MachineLearning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NRough.Data\NRough.Data.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.Data\NRough.Data.csproj">
       <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
       <Name>NRough.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
+    <ProjectReference Include="..\..\Sources\NRough.Core\NRough.Core.csproj">
       <Project>{A8C06C97-4B48-4531-A69E-E9CCAF1A9471}</Project>
       <Name>NRough.Core</Name>
     </ProjectReference>

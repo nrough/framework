@@ -1,7 +1,0 @@
-         ds|           model| t|  eps|ens|   acc|  attr| numrul| dthm| dtha
-          chess.data|  Rough-Majority-REP| 0| 0,00|  1|0,9856| 21,60|  55,00|17,20|10,04
-          chess.data|     C45-Entropy-REP| 0| 0,00|  1|0,9844| 21,00|  32,20|12,60| 7,92
-          chess.data|     Olv-Entropy-REP| 0| 0,00|  1|0,6608| 21,80| 100,80|21,80|15,65
-          chess.data|  Rough-Majority-REP| 0| 0,01|  1|0,9787| 15,00|  34,80|12,20| 7,46
-          chess.data|     C45-Entropy-REP| 0| 0,01|  1|0,9815| 14,60|  25,80|10,60| 7,12
-          chess.data|     Olv-Entropy-REP| 0| 0,01|  1|0,8392| 14,40| 114,80|14,40|11,52

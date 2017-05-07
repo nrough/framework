@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{82E1F95C-4559-44AB-9114-42E78DA331A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NRough.MachineLearning</RootNamespace>
+    <AssemblyName>NRough.MachineLearning</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Infovision.Datamining.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DynamicInterop, Version=0.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicInterop.0.7.4\lib\net40\DynamicInterop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LinqStatistics, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LinqStatistics.2.1.0\lib\net40\LinqStatistics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RDotNet, Version=1.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\R.NET.Community.1.6.5\lib\net40\RDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RDotNet.NativeLibrary, Version=1.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\R.NET.Community.1.6.5\lib\net40\RDotNet.NativeLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classification\ClassificationModelBase.cs" />
+    <Compile Include="Classification\ClassificationResult.cs" />
+    <Compile Include="Classification\ClassificationResultFormatter.cs" />
+    <Compile Include="Classification\ClassificationResultValueAttribute.cs" />
+    <Compile Include="Classification\Classifier.cs" />
+    <Compile Include="Classification\ConfusionMatrix.cs" />
+    <Compile Include="Classification\ConstDecisionModel.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeMetric.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeReduct.cs" />
+    <Compile Include="Classification\Ensembles\ReductDecisionRules.cs" />
+    <Compile Include="Clustering\ClusteringResult.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramChartNode.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramNode.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringBase.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSIHC.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncremental.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringSimple.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClustering.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalCluster.cs" />
+    <Compile Include="Clustering\Hierarchical\ClusteringLinkage.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusterTuple.cs" />
+    <Compile Include="Clustering\Hierarchical\HierarchicalClusteringIncrementalExt.cs" />
+    <Compile Include="Clustering\KMeans.cs" />
+    <Compile Include="Classification\Ensembles\AdaBoost.cs" />
+    <Compile Include="Classification\Ensembles\Bagging.cs" />
+    <Compile Include="Classification\Ensembles\EnsembleBase.cs" />
+    <Compile Include="Classification\Ensembles\MultimodalEnsemble.cs" />
+    <Compile Include="Evaluation\CrossValidation.cs" />
+    <Compile Include="DecisionDistribution.cs" />
+    <Compile Include="Discretization\DecisionTableDiscretizer.cs" />
+    <Compile Include="Discretization\DiscretizeBase.cs" />
+    <Compile Include="Discretization\DiscretizeEntropy.cs" />
+    <Compile Include="Discretization\DiscretizeUnsupervisedBase.cs" />
+    <Compile Include="Discretization\DiscretizeSupervisedBase.cs" />
+    <Compile Include="Discretization\DiscretizeEqualFreqency.cs" />
+    <Compile Include="Discretization\DiscretizeEqualWidth.cs" />
+    <Compile Include="Discretization\IDiscretizer.cs" />
+    <Compile Include="Discretization\IDiscretizerSupervised.cs" />
+    <Compile Include="Discretization\IDiscretizerUnsupervised.cs" />
+    <Compile Include="Discretization\DiscretizeFayyad.cs" />
+    <Compile Include="Discretization\DiscretizeKononenko.cs" />
+    <Compile Include="Discretization\DiscretizeManual.cs" />
+    <Compile Include="Evaluation\HypothesisTesting\MannWithneyTest.cs" />
+    <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankTest.cs" />
+    <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankPairTest.cs" />
+    <Compile Include="Filters\DiscretizeFilter.cs" />
+    <Compile Include="Filters\ReductFeatureSelectionFilter.cs" />
+    <Compile Include="Filters\ReductFeatureSelectionFilter_Tmp.cs" />
+    <Compile Include="MissingValues\ReplaceMissingValues.cs" />
+    <Compile Include="IDistibutionSelectStrategy.cs" />
+    <Compile Include="ILearner.cs" />
+    <Compile Include="IModel.cs" />
+    <Compile Include="IClassificationModel.cs" />
+    <Compile Include="ModelBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Clustering\Hierarchical\DendrogramChart.cs" />
+    <Compile Include="RCode\RProxy.cs" />
+    <Compile Include="Roughsets\Bireduct.cs" />
+    <Compile Include="Roughsets\BireductGamma.cs" />
+    <Compile Include="Roughsets\BireductGenerator.cs" />
+    <Compile Include="Roughsets\BireductStore.cs" />
+    <Compile Include="ComparisonType.cs" />
+    <Compile Include="Classification\DecisionRules\DecisionList.cs" />
+    <Compile Include="Classification\DecisionRules\DecisionListCollection.cs" />
+    <Compile Include="Classification\DecisionRules\DecisionRule.cs" />
+    <Compile Include="Classification\DecisionRules\DecisionRuleCondition.cs" />
+    <Compile Include="Classification\DecisionRules\Holte1R.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookup.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookupLocal.cs" />
+    <Compile Include="Classification\DecisionLookup\DecisionLookupMajority.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestBase.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestDummy.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestDummyRough.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestRandom.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestReduct.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionForestVoteType.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeAttributeSelection.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeBase.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeC45.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeCART.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeFormatter.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeHelper.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeID3.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeNode.cs" />
+    <Compile Include="Classification\DecisionTrees\DecisionTreeRough.cs" />
+    <Compile Include="Classification\DecisionTrees\IDecisionTree.cs" />
+    <Compile Include="Classification\DecisionTrees\IDecisionTreeNode.cs" />
+    <Compile Include="ImpurityMeasure.cs" />
+    <Compile Include="Classification\DecisionTrees\ObliviousDecisionTree.cs" />
+    <Compile Include="Classification\DecisionTrees\PruningObjectiveType.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\DecisionTreePruningBase.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\ErrorBasedPruning.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\IDecisionTreePruning.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\PruningType.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\ReducedErrorPruning.cs" />
+    <Compile Include="Classification\DecisionTrees\Pruning\ReducedErrorPruningBottomUp.cs" />
+    <Compile Include="Classification\DecisionTrees\SplitType.cs" />
+    <Compile Include="Classification\DecisionTrees\TreeNodeTraversal.cs" />
+    <Compile Include="Roughsets\ReductTypes.cs" />
+    <Compile Include="Roughsets\Diversify\HierarchicalClusterReductDiversifier.cs" />
+    <Compile Include="Roughsets\Diversify\ReductDiversifyBase.cs" />
+    <Compile Include="Roughsets\EnumHelper.cs" />
+    <Compile Include="Roughsets\Enums.cs" />
+    <Compile Include="EquivalenceClass.cs" />
+    <Compile Include="EquivalenceClassCollection.cs" />
+    <Compile Include="Roughsets\InformationMeasure.cs" />
+    <Compile Include="Roughsets\IReduct.cs" />
+    <Compile Include="Roughsets\IReductGenerator.cs" />
+    <Compile Include="Roughsets\IReductMeasure.cs" />
+    <Compile Include="Roughsets\IReductStore.cs" />
+    <Compile Include="Roughsets\IReductStoreMeasure.cs" />
+    <Compile Include="Permutations\Permutation.cs" />
+    <Compile Include="Permutations\PermutationCollection.cs" />
+    <Compile Include="Permutations\PermutationGenerator.cs" />
+    <Compile Include="Permutations\PermutationGeneratorEnsemble.cs" />
+    <Compile Include="Permutations\PermutationGeneratorFieldGroup.cs" />
+    <Compile Include="Permutations\PermutationGeneratorFieldObject.cs" />
+    <Compile Include="Permutations\PermutationGeneratorFieldObjectRelative.cs" />
+    <Compile Include="Permutations\PermutationGeneratorFieldQuality.cs" />
+    <Compile Include="Permutations\PermutationGeneratorReverse.cs" />
+    <Compile Include="Permutations\PermutationGeneratorTwin.cs" />
+    <Compile Include="Permutations\PermutationGeneratorTwinReverse.cs" />
+    <Compile Include="Roughsets\Reduct.cs" />
+    <Compile Include="Roughsets\ReductCache.cs" />
+    <Compile Include="Roughsets\ReductCacheInfo.cs" />
+    <Compile Include="Roughsets\Reducts\Comparers\ReductComparer.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingGenerator.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingVarEpsGenerator.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingVarEpsWithAttributeDiversity.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingWithAttributeDiversity.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingWithDendrogram.cs" />
+    <Compile Include="Roughsets\ReductEnsembleBoostingWithDiversity.cs" />
+    <Compile Include="Roughsets\ReductEnsembleDistanceHelper.cs" />
+    <Compile Include="Roughsets\ReductEnsembleGenerator.cs" />
+    <Compile Include="Roughsets\ReductEnsembleReconWeightsHelper.cs" />
+    <Compile Include="Roughsets\ReductFactory.cs" />
+    <Compile Include="Roughsets\ReductGeneralizedMajorityDecisionApproximateGenerator.cs" />
+    <Compile Include="Roughsets\ReductGeneralizedMajorityDecisionGenerator.cs" />
+    <Compile Include="Roughsets\ReductGenerator.cs" />
+    <Compile Include="Roughsets\ReductGeneratorExtensions.cs" />
+    <Compile Include="Roughsets\ReductGeneratorMeasure.cs" />
+    <Compile Include="Roughsets\ReductFactoryOptions.cs" />
+    <Compile Include="Roughsets\ReductGeneratorWeights.cs" />
+    <Compile Include="Roughsets\ReductMeasure.cs" />
+    <Compile Include="Roughsets\ReductRandomSubsetGenerator.cs" />
+    <Compile Include="Roughsets\ReductStore.cs" />
+    <Compile Include="Roughsets\ReductStoreCollection.cs" />
+    <Compile Include="Roughsets\ReductStoreWeights.cs" />
+    <Compile Include="Roughsets\ReductStoreWorkerTaskInfo.cs" />
+    <Compile Include="Roughsets\Reducts\ApproximateDecisionReduct.cs" />
+    <Compile Include="Roughsets\Reducts\DecisionBireduct.cs" />
+    <Compile Include="Roughsets\ReductWeight.cs" />
+    <Compile Include="Roughsets\ReductWithExceptions.cs" />
+    <Compile Include="Roughsets\RoughClassifer.cs" />
+    <Compile Include="Roughsets\RuleMeasure.cs" />
+    <Compile Include="Weighting\WeightBoostingGenerator.cs" />
+    <Compile Include="Weighting\WeightGenerator.cs" />
+    <Compile Include="Weighting\WeightGeneratorType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NRough.Data\NRough.Data.csproj">
+      <Project>{a98784bb-1e90-4fc6-949d-d2cfadcc45cd}</Project>
+      <Name>NRough.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRough.Doc\NRough.Doc.csproj">
+      <Project>{58534579-7D62-4F0C-8BBF-E3E903E90E4E}</Project>
+      <Name>NRough.Doc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRough.Math\NRough.Math.csproj">
+      <Project>{db7629e7-bb5c-4197-89d3-a9eb0e5d4e0a}</Project>
+      <Name>NRough.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRough.Core\NRough.Core.csproj">
+      <Project>{a8c06c97-4b48-4531-a69e-e9ccaf1a9471}</Project>
+      <Name>NRough.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="RCode\plot-results.R">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

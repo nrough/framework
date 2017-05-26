@@ -13,7 +13,6 @@ using NRough.MachineLearning.Roughsets.Reducts;
 using NRough.MachineLearning.Weighting;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using NRough.MachineLearning.Discretization;
 using NRough.MachineLearning.Filters;
 using NRough.Core.CollectionExtensions;

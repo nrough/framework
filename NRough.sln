@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Data", "Sources\NRough.Data\NRough.Data.csproj", "{A98784BB-1E90-4FC6-949D-D2CFADCC45CD}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -70,28 +70,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Math", "Sources\NRough.Math\NRough.Math.csproj", "{DB7629E7-BB5C-4197-89D3-A9EB0E5D4E0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx64", "SimpleITKx64", "{640ABD90-29B0-4CEF-99B5-68B0FA9FAC09}"
-	ProjectSection(SolutionItems) = preProject
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-NOTICE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\ITK-4.8-README.txt
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\LICENSE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\NOTICE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\Readme.md
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleITKx86", "SimpleITKx86", "{E0FD0250-8740-4501-BDCB-13AED3D208CE}"
-	ProjectSection(SolutionItems) = preProject
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-NOTICE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\ITK-4.8-README.txt
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\LICENSE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\NOTICE
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\Readme.md
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpManaged.dll
-		Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll = Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win32-x86\SimpleITKCSharpNative.dll
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRough.Tests.Math", "Tests\NRough.Tests.Math\NRough.Tests.Math.csproj", "{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD}"
 EndProject
@@ -852,8 +830,6 @@ Global
 		{C58CB0F1-E7D4-4445-8414-CA9662E24E4E} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{D4C765AF-AC85-472D-9549-5D682015A124} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{C32F57FC-32D0-4853-8145-2645A559BF6B} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
-		{640ABD90-29B0-4CEF-99B5-68B0FA9FAC09} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
-		{E0FD0250-8740-4501-BDCB-13AED3D208CE} = {5EFB5109-C1EE-4DC6-ACB9-4C16C129D796}
 		{4AEA9ACD-3C74-4B59-8628-99C708A2F4BD} = {2C5EBDCB-D9AA-4A5B-B6DF-E52974B8BD2C}
 		{9C213D37-3249-453F-BA30-460255EA955D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}
 		{9FE417F8-022C-40E7-9574-BA7014339B6D} = {DC06D7E3-73A5-415B-8937-E66C64AD7C05}

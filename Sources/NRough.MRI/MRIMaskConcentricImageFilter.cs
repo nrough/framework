@@ -98,7 +98,7 @@ namespace NRough.MRI
             SubtractImageFilter subtractImageFilter = new SubtractImageFilter();
 
             CastImageFilter castImageFilter = new CastImageFilter();
-            castImageFilter.SetOutputPixelType(PixelIDValueEnum.sitkComplexFloat64.swigValue);
+            castImageFilter.SetOutputPixelType(PixelIDValueEnum.sitkComplexFloat64);
 
             itk.simple.Image outerMask;
             ImageITK imageITK = ImageITK.GetImageITK(image);

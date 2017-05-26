@@ -45,7 +45,7 @@ namespace NRough.Tests.MRI
             itk.simple.Image blurredImage = gaussian.Execute(input);
 
             CastImageFilter caster = new CastImageFilter();
-            caster.SetOutputPixelType(input.GetPixelIDValue());
+            caster.SetOutputPixelType(input.GetPixelID());
             itk.simple.Image output = caster.Execute(blurredImage);
 
             ImageFileWriter writer = new ImageFileWriter();

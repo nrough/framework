@@ -57,8 +57,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleITKCSharpManaged">
-      <HintPath>..\..\Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpManaged.dll</HintPath>
+    <Reference Include="SimpleITKCSharpManaged, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\SimpleITK-win64-CSharp-x64.1.0.0.1\lib\SimpleITKCSharpManaged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,6 +86,7 @@
     <None Include="Data\t2_icbm_normal_1mm_pn3_rf20.rawb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\NRough.MachineLearning\NRough.MachineLearning.csproj">
@@ -110,10 +111,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Externals\SimpleITK\SimpleITK-0.9.1-CSharp-win64-x64\SimpleITKCSharpNative.dll">
-      <Link>SimpleITKCSharpNative.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Results\tmp.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

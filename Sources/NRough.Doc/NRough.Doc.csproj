@@ -57,6 +57,7 @@
     <Compile Include="TypeNameExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NRough.Doc.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ApproxReductBoosting.licenseheader" />
     <None Include="Data\audiology.standardized.2.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

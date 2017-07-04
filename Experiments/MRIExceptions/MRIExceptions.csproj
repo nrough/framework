@@ -86,6 +86,7 @@
     <None Include="Data\t2_icbm_normal_1mm_pn3_rf20.rawb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="MRIExceptions.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

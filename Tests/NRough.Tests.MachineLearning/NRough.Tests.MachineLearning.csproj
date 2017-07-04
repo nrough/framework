@@ -396,6 +396,7 @@
     <EmbeddedResource Include="Data\zoo.names">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="NRough.Tests.MachineLearning.licenseheader" />
     <None Include="packages.config" />
     <Content Include="Roughsets\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

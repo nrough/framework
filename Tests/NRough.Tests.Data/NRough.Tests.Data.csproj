@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="NRough.Tests.Data.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

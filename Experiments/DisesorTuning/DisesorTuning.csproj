@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DisesorTuning.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\NRough.MachineLearning.Experimenter\NRough.MachineLearning.Experimenter.csproj">

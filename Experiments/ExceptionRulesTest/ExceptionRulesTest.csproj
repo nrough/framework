@@ -314,6 +314,7 @@
     <EmbeddedResource Include="data\zoo.names">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="ExceptionRulesTest.licenseheader" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

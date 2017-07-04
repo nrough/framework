@@ -291,6 +291,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="NRough.MachineLearning.licenseheader" />
     <None Include="packages.config" />
     <None Include="RCode\plot-results.R">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ApproxReductBoostingCV.licenseheader" />
     <None Include="Data\agaricus-lepiota.2.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

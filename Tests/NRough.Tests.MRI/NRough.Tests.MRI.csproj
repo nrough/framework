@@ -147,6 +147,7 @@
     <None Include="Data\tst-convert.mnc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="NRough.Tests.MRI.licenseheader" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Infovision.MRI.DAL.ImageMask.datasource" />
   </ItemGroup>

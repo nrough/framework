@@ -119,6 +119,7 @@
     <Compile Include="Discretization\DiscretizeUnsupervisedTest.cs" />
     <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankPairTestTest.cs" />
     <Compile Include="Evaluation\HypothesisTesting\WilcoxonSignedRankTestTest.cs" />
+    <Compile Include="LDA\FisherTest.cs" />
     <Compile Include="MissingValues\ReplaceMissingValuesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roughsets\ApproximateReductTest.cs" />

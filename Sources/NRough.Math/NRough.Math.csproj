@@ -120,6 +120,7 @@
     <Compile Include="AgregateFunction.cs" />
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Correlation.cs" />
+    <Compile Include="MatrixHelper.cs" />
     <Compile Include="PrimeTool.cs" />
     <Compile Include="PrimeToolHash.cs" />
     <Compile Include="Distance.cs" />
